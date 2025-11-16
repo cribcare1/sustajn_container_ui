@@ -33,7 +33,7 @@ class WelcomeScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF78B5A4),
@@ -59,7 +59,7 @@ class WelcomeScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD1E5DE),
