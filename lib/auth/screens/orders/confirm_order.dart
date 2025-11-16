@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const ConfirmOrderScreen(),
-    );
-  }
-}
+import 'order_rejection.dart';
 
 class ConfirmOrderScreen extends StatelessWidget {
   const ConfirmOrderScreen({super.key});
@@ -84,6 +70,7 @@ class ConfirmOrderScreen extends StatelessWidget {
                       text: 'Confirm Order',
                       backgroundColor: Color(0xff6eac9e),
                       textColor: Colors.white,
+                      onTap: (){}
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -92,6 +79,10 @@ class ConfirmOrderScreen extends StatelessWidget {
                       text: 'Reject Order',
                       backgroundColor: Colors.red,
                       textColor: Colors.white,
+                      onTap: (){
+                        Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ConfirmRejectionScreen() ));
+                      }
                     ),
                   ),
                 ],
@@ -125,7 +116,7 @@ class ConfirmOrderScreen extends StatelessWidget {
         // Large Content Box
         Container(
           width: double.infinity,
-          height: 100, // Large box height
+          height: 100,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
@@ -147,20 +138,24 @@ class ConfirmOrderScreen extends StatelessWidget {
     required String text,
     required Color backgroundColor,
     required Color textColor,
+    required void Function() onTap
   }) {
-    return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: textColor,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
           ),
         ),
       ),

@@ -125,7 +125,6 @@ class MenuCard extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          // const SizedBox(height: 8),
 
           // Description
           Row(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'confirm_order.dart';
+
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -55,9 +57,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildReturnItem('John Doe'),
+                    _buildReturnItem('John Doe', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ConfirmOrderScreen()),
+                      );
+                    }),
                     const SizedBox(height: 12),
-                    _buildReturnItem('John Doe'),
+                    _buildReturnItem('John Doe', () {}),
                     const SizedBox(height: 24),
 
                     // Active Orders
@@ -167,74 +174,76 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
-  Widget _buildReturnItem(String name) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xfff7f8fd),
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          // Icon/Image with blue background that touches card borders
-          Container(
-            width: 70, // Reduced width
-            height: 90, // Reduced height
-            padding: const EdgeInsets.all(16), // Reduced padding
-            decoration: const BoxDecoration(
-              color: Color(0xffe9f2ff), // Blue background
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                bottomLeft: Radius.circular(8),
+  Widget _buildReturnItem(String name, void Function() onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xfff7f8fd),
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 70,
+              height: 90,
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Color(0xffe9f2ff),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              child: const Icon(
+                Icons.image,
+                color: Color(0xffb3daff),
+                size: 30,
               ),
             ),
-            child: const Icon(
-              Icons.image,
-              color: Color(0xffb3daff),
-              size: 30, // Reduced icon size
-            ),
-          ),
 
-          // Text Content
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0), // Reduced padding
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
-                children: [
-                  // Name
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+            // Text Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Name
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4), // Reduced spacing
+                    const SizedBox(height: 4),
 
-                  // Pickup Time
-                  _buildInfoRow('Pickup Time: xxxx'),
-                  const SizedBox(height: 2), // Reduced spacing
+                    // Pickup Time
+                    _buildInfoRow('Pickup Time: xxxx'),
+                    const SizedBox(height: 2),
 
-                  // Pickup Distance
-                  _buildInfoRow('Pickup Distance: xxxx'),
-                  const SizedBox(height: 2), // Reduced spacing
+                    // Pickup Distance
+                    _buildInfoRow('Pickup Distance: xxxx'),
+                    const SizedBox(height: 2),
 
-                  // Order Valid
-                  _buildInfoRow('Order valid for xxxx'),
-                ],
+                    // Order Valid
+                    _buildInfoRow('Order valid for xxxx'),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          // Chevron Icon
-          const Padding(
-            padding: EdgeInsets.only(right: 12.0), // Reduced padding
-            child: Icon(Icons.chevron_right, color: Colors.grey),
-          ),
-        ],
+
+            const Padding(
+              padding: EdgeInsets.only(right: 12.0),
+              child: Icon(Icons.chevron_right, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -248,13 +257,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
       ),
       child: Row(
         children: [
-          // Icon/Image with blue background that touches card borders
           Container(
-            width: 70, // Reduced width
-            height: 90, // Reduced height
-            padding: const EdgeInsets.all(16), // Reduced padding
+            width: 70,
+            height: 90,
+            padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              color: Color(0xffe9f2ff), // Blue background
+              color: Color(0xffe9f2ff),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
                 bottomLeft: Radius.circular(8),
@@ -263,17 +271,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
             child: const Icon(
               Icons.image,
               color: Color(0xffb3daff),
-              size: 30, // Reduced icon size
+              size: 30,
             ),
           ),
 
           // Text Content
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12.0), // Reduced padding
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Name
                   Text(
@@ -284,15 +292,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 4), // Reduced spacing
+                  const SizedBox(height: 4),
 
                   // Pickup Time
                   _buildInfoRow('Pickup Time: xxxx'),
-                  const SizedBox(height: 2), // Reduced spacing
+                  const SizedBox(height: 2),
 
                   // Pickup Distance
                   _buildInfoRow('Pickup Distance: xxxx'),
-                  const SizedBox(height: 2), // Reduced spacing
+                  const SizedBox(height: 2),
 
                   // Order Valid
                   _buildInfoRow('Order valid for xxxx'),
@@ -301,7 +309,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.only(right: 12.0), // Reduced padding
+            padding: EdgeInsets.only(right: 12.0),
             child: Icon(Icons.chevron_right, color: Colors.grey),
           ),
         ],
