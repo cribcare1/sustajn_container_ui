@@ -3,6 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
+import '../../constants/number_constants.dart';
+
 class MapSelectionScreen extends StatefulWidget {
   const MapSelectionScreen({super.key});
 
@@ -13,12 +15,13 @@ class MapSelectionScreen extends StatefulWidget {
 class _MapSelectionScreenState extends State<MapSelectionScreen> {
   GoogleMapController? _mapController;
   LatLng? _selectedLocation;
-  String _address = 'Select a location by tapping on the map';
+  String _address = 'Getting your current location...';
   bool _isLoading = true;
-  final TextEditingController _searchController = TextEditingController();
+  bool _isCurrentLocation = true;
+  bool _locationServiceAvailable = true;
 
   static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(20.5937, 78.9629), // Default to India center
+    target: LatLng(20.5937, 78.9629),
     zoom: 4,
   );
 
@@ -34,14 +37,13 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
     try {
       setState(() {
         _isLoading = true;
+        _address = 'Getting your current location...';
       });
 
       // Check if location service is enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        setState(() {
-          _isLoading = false;
-        });
+        _setDefaultLocation();
         return;
       }
 
@@ -50,27 +52,22 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          setState(() {
-            _isLoading = false;
-          });
+          _setDefaultLocation();
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          _isLoading = false;
-        });
+        _setDefaultLocation();
         return;
       }
 
       // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 10),
+        timeLimit: Duration(seconds: 15),
       );
 
-      // Move camera to current location
       final currentLatLng = LatLng(position.latitude, position.longitude);
       if (_mapController != null) {
         await _mapController!.animateCamera(
@@ -84,13 +81,32 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       setState(() {
         _selectedLocation = currentLatLng;
         _isLoading = false;
+        _isCurrentLocation = true;
+        _locationServiceAvailable = true;
       });
     } catch (e) {
       print('Location error: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      _setDefaultLocation();
     }
+  }
+
+  void _setDefaultLocation() {
+    final defaultLatLng = LatLng(20.5937, 78.9629);
+    setState(() {
+      _selectedLocation = defaultLatLng;
+      _isLoading = false;
+      _isCurrentLocation = true;
+      _locationServiceAvailable = false;
+      _address = 'Default Location: India';
+    });
+
+    if (_mapController != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(defaultLatLng, 5),
+      );
+    }
+
+    _getAddressFromLatLng(defaultLatLng);
   }
 
   Future<void> _getAddressFromLatLng(LatLng latLng) async {
@@ -115,68 +131,34 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
         if (postalCode.isNotEmpty) address += '$postalCode, ';
         if (country.isNotEmpty) address += country;
 
-        // Remove trailing comma
         address = address.replaceAll(RegExp(r',\s*$'), '');
 
         setState(() {
           _address = address.isNotEmpty ? address : 'Address not available';
-          _searchController.text = address; // Update search field with address
-        });
-      } else {
-        setState(() {
-          _address = 'Address not available';
         });
       }
     } catch (e) {
-      setState(() {
-        _address = 'Unable to get address';
-      });
-    }
-  }
-
-  Future<void> _searchLocation(String query) async {
-    if (query.isEmpty) return;
-
-    try {
-      List<Location> locations = await locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        Location location = locations.first;
-        LatLng latLng = LatLng(location.latitude, location.longitude);
-
-        if (_mapController != null) {
-          await _mapController!.animateCamera(
-            CameraUpdate.newLatLngZoom(latLng, 15),
-          );
-        }
-
-        setState(() {
-          _selectedLocation = latLng;
-        });
-
-        await _getAddressFromLatLng(latLng);
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Location not found: $query'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      print('Geocoding error: $e');
     }
   }
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
 
-    // Try to get location again once map is created
     if (_selectedLocation == null) {
       _getCurrentLocation();
+    } else {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(_selectedLocation!, 15),
+      );
     }
   }
 
   void _onMapTap(LatLng latLng) {
     setState(() {
       _selectedLocation = latLng;
+      _isCurrentLocation = false;
+      _address = 'Getting address...';
     });
     _getAddressFromLatLng(latLng);
   }
@@ -217,71 +199,29 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                 markerId: const MarkerId('selected_location'),
                 position: _selectedLocation!,
                 icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueRed,
+                  _isCurrentLocation ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed,
                 ),
-                infoWindow: const InfoWindow(
-                  title: 'Selected Location',
+                infoWindow: InfoWindow(
+                  title: _isCurrentLocation ? 'Current Location' : 'Selected Location',
                 ),
               ),
             }
                 : {},
           ),
 
-          // Search Bar
-          // Positioned(
-          //   top: 16,
-          //   left: 16,
-          //   right: 16,
-          //   child: Card(
-          //     elevation: 4,
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(12),
-          //     ),
-          //     child: Padding(
-          //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          //       child: Row(
-          //         children: [
-          //           const Icon(Icons.search, color: Colors.grey),
-          //           const SizedBox(width: 8),
-          //           Expanded(
-          //             child: TextField(
-          //               controller: _searchController,
-          //               decoration: const InputDecoration(
-          //                 hintText: 'Search for an address...',
-          //                 border: InputBorder.none,
-          //                 contentPadding: EdgeInsets.symmetric(vertical: 12),
-          //               ),
-          //               onSubmitted: _searchLocation,
-          //             ),
-          //           ),
-          //           if (_searchController.text.isNotEmpty)
-          //             IconButton(
-          //               icon: const Icon(Icons.clear, size: 20),
-          //               onPressed: () {
-          //                 setState(() {
-          //                   _searchController.clear();
-          //                 });
-          //               },
-          //             ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
           // Loading Indicator
           if (_isLoading)
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text(
+                  const CircularProgressIndicator(),
+                  SizedBox(height: Constant.CONTAINER_SIZE_16),
+                   Text(
                     'Loading your location...',
                     style: TextStyle(
                       color: Colors.black87,
-                      fontSize: 16,
+                      fontSize: Constant.LABEL_TEXT_SIZE_16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -291,16 +231,16 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
 
           // Location Info Card
           Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
+            bottom: Constant.CONTAINER_SIZE_20,
+            left: Constant.CONTAINER_SIZE_20,
+            right: Constant.CONTAINER_SIZE_20,
             child: Card(
-              elevation: 8,
+              elevation: Constant.SIZE_08,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(Constant.LABEL_TEXT_SIZE_16),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -308,21 +248,21 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                       children: [
                         Icon(
                           Icons.location_on,
-                          color: Colors.blue.shade700,
-                          size: 20,
+                          color: _isCurrentLocation ? Colors.green : Colors.blue.shade700,
+                          size: Constant.CONTAINER_SIZE_20,
                         ),
-                        const SizedBox(width: 8),
+                         SizedBox(width: Constant.SIZE_08),
                         Text(
-                          'Selected Location',
+                          _isCurrentLocation ? 'Current Location' : 'Selected Location',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: Constant.LABEL_TEXT_SIZE_16,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey.shade800,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                     SizedBox(height: Constant.CONTAINER_SIZE_12),
                     Text(
                       _address,
                       style: const TextStyle(
@@ -330,13 +270,13 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                         color: Colors.black87,
                         height: 1.4,
                       ),
-                      maxLines: 2,
+                      maxLines: Constant.MAX_LINE_3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 20),
+                     SizedBox(height: Constant.CONTAINER_SIZE_20),
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: Constant.CONTAINER_SIZE_50,
                       child: ElevatedButton(
                         onPressed: _confirmLocation,
                         style: ElevatedButton.styleFrom(
@@ -344,16 +284,15 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                               ? Color(0xff6eac9e)
                               : Colors.grey.shade400,
                           foregroundColor: Colors.white,
-                          elevation: 2,
+                          elevation: Constant.SIZE_02,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: const Text(
+                        child:  Text(
                           'Confirm Location',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: Constant.CONTAINER_SIZE_16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -372,7 +311,6 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
   @override
   void dispose() {
     _mapController?.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 }

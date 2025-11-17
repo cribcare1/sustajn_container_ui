@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../constants/string_utils.dart';
-import 'map_selection_screen.dart'; // Import the new map screen
+import 'map_selection_screen.dart';
 
 enum UserType { user, restaurant, admin }
 
@@ -63,6 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
                         Expanded(
@@ -76,6 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
                         Expanded(
@@ -89,6 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
                       ],
@@ -157,31 +160,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: height * 0.02),
 
-                    /// --- Location Field ---
-                    TextFormField(
-                      controller: _locationController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: 'Location',
-                        prefixIcon: const Icon(Icons.location_on),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.map),
-                          onPressed: _navigateToMap,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Please select your location';
-                        }
-                        return null;
-                      },
-                      onTap: _navigateToMap,
-                    ),
+
+
                     SizedBox(height: height * 0.02),
 
                     /// --- Password Field ---
@@ -194,7 +175,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -228,7 +208,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: Colors.grey,
                           ),
                           onPressed: () {
                             setState(() {
@@ -249,6 +228,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         return null;
                       },
+                    ),
+
+                    SizedBox(height: height * 0.02),
+                    /// --- Location Field ---
+                    TextFormField(
+                      controller: _locationController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Location',
+                        prefixIcon: const Icon(Icons.location_on),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.map),
+                          onPressed: _navigateToMap,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Please select your location';
+                        }
+                        return null;
+                      },
+                      onTap: _navigateToMap,
                     ),
                     SizedBox(height: height * 0.03),
 
