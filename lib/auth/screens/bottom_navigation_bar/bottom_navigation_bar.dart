@@ -1,8 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
 import '../profile_screen.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const HomeScreen(),
+    );
+  }
+}
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -32,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
           backgroundColor: Color(0xffb3dbff),
-          selectedItemColor:  Color(0xff6eac9e),
+          selectedItemColor: Color(0xff6eac9e),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(
             fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -64,6 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getCurrentScreen() {
+    return Column(
+      children: [
+        Expanded(
+          child: _buildCurrentTabContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCurrentTabContent() {
     switch (_currentIndex) {
       case 0:
         return _buildHomeTab();
@@ -72,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return _buildHistoryTab();
       case 3:
-        return _buildProfileTab();
+        return ProfileScreen();
       default:
         return _buildHomeTab();
     }
@@ -86,13 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRequestTab() {
-    return Padding(
-      padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-    );
-  }
-
-  Widget _buildHistoryTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
       child: Column(
         children: [
@@ -101,8 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildProfileTab() {
-    return ProfileScreen();
+  Widget _buildHistoryTab() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
+      child: Column(
+        children: [
+        ],
+      ),
+    );
   }
-
 }

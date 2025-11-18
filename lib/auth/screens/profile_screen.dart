@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../constants/number_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -14,8 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Profile',
-        style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text('Profile'),
         backgroundColor: Color(0xff6eac9e),
         foregroundColor: Colors.black,
         actions: [
@@ -25,58 +26,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          children: [
-            // User Info
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-              decoration: BoxDecoration(
-                color: Color(0xffe9f2ff),
-                borderRadius: BorderRadius.circular(Constant.SIZE_15),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
               ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.person,
-                    size: Constant.CONTAINER_SIZE_50,
-                    color: Color(0xff6eac9e),
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_16),
-                  Text(
-                    'Lucky',
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_24,
-                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: Column(
+                  children: [
+                    // User Info
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                      decoration: BoxDecoration(
+                        color: Color(0xffe9f2ff),
+                        borderRadius: BorderRadius.circular(Constant.SIZE_15),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.person,
+                            size: Constant.CONTAINER_SIZE_50,
+                            color: Color(0xff6eac9e),
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_16),
+                          Text(
+                            'Lucky',
+                            style: TextStyle(
+                              fontSize: Constant.LABEL_TEXT_SIZE_24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: Constant.SIZE_08),
+                          Text(
+                            'lucky@example.com',
+                            style: TextStyle(
+                              fontSize: Constant.LABEL_TEXT_SIZE_16,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: Constant.SIZE_08),
-                  Text(
-                    'lucky@example.com',
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      color: Colors.grey.shade600,
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                    // Profile Details
+                    Column(
+                      children: [
+                        _buildProfileItem(Icons.phone, 'Mobile Number', '2309876543'),
+                        SizedBox(height: Constant.SIZE_10),
+                        _buildProfileItem(Icons.location_on, 'Location', 'Bengaluru, Karnataka'),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-
-            SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-            // Profile Details
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildProfileItem(Icons.phone, 'Mobile Number', '2309876543'),
-                  _buildProfileItem(Icons.location_on, 'Location', 'Bengaluru, Karnataka'),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -84,7 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildProfileItem(IconData icon, String title, String value) {
     return Container(
       height: Constant.CONTAINER_SIZE_70,
-      margin: EdgeInsets.symmetric(vertical: Constant.SIZE_05),
       decoration: BoxDecoration(
         color: Color(0xffe9f2ff),
         borderRadius: BorderRadius.circular(Constant.SIZE_10),
