@@ -1,7 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
+import '../profile_screen.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const HomeScreen(),
+    );
+  }
+}
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -31,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
           backgroundColor: Color(0xffb3dbff),
-          selectedItemColor:  Color(0xff6eac9e),
+          selectedItemColor: Color(0xff6eac9e),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(
             fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -63,6 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getCurrentScreen() {
+    return Column(
+      children: [
+        Expanded(
+          child: _buildCurrentTabContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCurrentTabContent() {
     switch (_currentIndex) {
       case 0:
         return _buildHomeTab();
@@ -71,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return _buildHistoryTab();
       case 3:
-        return _buildProfileTab();
+        return ProfileScreen();
       default:
         return _buildHomeTab();
     }
@@ -85,85 +112,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRequestTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
+      child: Column(
+        children: [
+        ],
+      ),
     );
   }
 
   Widget _buildHistoryTab() {
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
       child: Column(
         children: [
         ],
-      ),
-    );
-  }
-
-  Widget _buildProfileTab() {
-    return Padding(
-      padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: Constant.CONTAINER_SIZE_50,
-            backgroundColor:  Color(0xffb3dbff),
-            child: Icon(
-              Icons.person,
-              size: Constant.CONTAINER_SIZE_50,
-              color: Color(0xff6eac9e),
-            ),
-          ),
-          SizedBox(height: Constant.SIZE_10),
-          Text(
-            'John Doe',
-            style: TextStyle(
-              fontSize: Constant.LABEL_TEXT_SIZE_24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            'john.doe@example.com',
-            style: TextStyle(
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(height: Constant.CONTAINER_SIZE_20),
-          Expanded(
-            child: ListView(
-              children: [
-                _buildProfileItem(Icons.settings, 'Settings'),
-                _buildProfileItem(Icons.security, 'Privacy'),
-                _buildProfileItem(Icons.help, 'Help & Support'),
-                _buildProfileItem(Icons.info, 'About'),
-                _buildProfileItem(Icons.logout, 'Logout'),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileItem(IconData icon, String text) {
-    return Container(
-      height: Constant.CONTAINER_SIZE_60,
-      margin: EdgeInsets.symmetric(vertical: Constant.SIZE_05),
-      decoration: BoxDecoration(
-        color:Color(0xffe9f2ff),
-        borderRadius: BorderRadius.circular(Constant.SIZE_10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: Constant.SIZE_03,
-          ),
-        ],
-      ),
-      child: ListTile(
-        leading: Icon(icon, size: Constant.CONTAINER_SIZE_24),
-        title: Text(text, style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_16)),
-        trailing: Icon(Icons.chevron_right, size: Constant.CONTAINER_SIZE_20),
       ),
     );
   }
