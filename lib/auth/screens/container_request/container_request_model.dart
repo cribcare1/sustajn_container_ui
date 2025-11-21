@@ -1,4 +1,3 @@
-// models/container_request_model.dart
 class ContainerRequest {
   final String id;
   final String restaurantName;
@@ -20,7 +19,6 @@ class ContainerRequest {
     this.status = 'Pending',
   });
 
-  // Sample data for demonstration
   static List<ContainerRequest> sampleRequests = [
     ContainerRequest(
       id: '1',

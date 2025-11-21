@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/number_constants.dart';
+import '../../../constants/number_constants.dart';
+import 'model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -148,7 +149,6 @@ class _RestaurantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      // color: Color(0xffb3dbff),
       margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
       elevation: Constant.SIZE_01,
       shape: RoundedRectangleBorder(
@@ -220,8 +220,6 @@ class _RestaurantCard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Arrow Icon
               const Icon(Icons.chevron_right, color: Colors.grey),
             ],
           ),
@@ -273,7 +271,7 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-// Restaurant Detail Screen
+
 class RestaurantDetailScreen extends StatelessWidget {
   final Restaurant restaurant;
 
@@ -344,7 +342,7 @@ class RestaurantDetailScreen extends StatelessWidget {
 
             SizedBox(height: Constant.CONTAINER_SIZE_16),
 
-            // Usage Statistics
+            // Usage
             Card(
               elevation: Constant.SIZE_01,
               shape: RoundedRectangleBorder(
@@ -633,15 +631,3 @@ class _DetailItem extends StatelessWidget {
   }
 }
 
-// Data Models
-class Restaurant {
-  final String name;
-  final int totalContainers;
-  final int borrowedContainers;
-
-  Restaurant({
-    required this.name,
-    required this.totalContainers,
-    required this.borrowedContainers,
-  });
-}

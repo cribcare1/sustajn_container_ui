@@ -62,20 +62,6 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
     }
   }
 
-  void _navigateToMapScreen(ContainerRequest request) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GoogleMapScreen(
-          destinationLat: request.latitude,
-          destinationLng: request.longitude,
-          restaurantName: request.restaurantName,
-          address: request.address,
-        ),
-      ),
-    );
-  }
-
   Widget _buildRequestCard(ContainerRequest request) {
     return Card(
       elevation: Constant.SIZE_02,
@@ -131,7 +117,6 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
               ],
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_12),
-
             // Quantity Row
             Row(
               children: [

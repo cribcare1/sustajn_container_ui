@@ -62,7 +62,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       _markers.add(destinationMarker);
     });
 
-    // Move camera to show both markers
     _mapController.animateCamera(
       CameraUpdate.newLatLngBounds(
         LatLngBounds(
@@ -90,7 +89,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       ),
       body: Column(
         children: [
-          // Restaurant Info Card
+          // Restaurant
           Card(
             margin: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
             elevation: Constant.SIZE_02,
