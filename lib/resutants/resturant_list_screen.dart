@@ -52,6 +52,120 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     });
   }
 
+  // resturant card
+  Widget _buildRestaurantCard(Restaurant restaurant) {
+    return Card(
+      margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
+      elevation: Constant.SIZE_01,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantDetailScreen(restaurant: restaurant),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Row(
+            children: [
+              // Restaurant Icon
+              Container(
+                width: Constant.CONTAINER_SIZE_50,
+                height: Constant.CONTAINER_SIZE_50,
+                decoration: BoxDecoration(
+                  color: Color(0xffb3dbff),
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                ),
+                child: Icon(
+                  Icons.restaurant,
+                  color: Colors.blue[700],
+                  size: Constant.CONTAINER_SIZE_24,
+                ),
+              ),
+              SizedBox(width: Constant.CONTAINER_SIZE_16),
+
+              // Restaurant Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      restaurant.name,
+                      style: TextStyle(
+                        fontSize: Constant.LABEL_TEXT_SIZE_18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: Constant.MAX_LINE_1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: Constant.SIZE_08),
+                    Row(
+                      children: [
+                        _buildInfoChip(
+                          icon: Icons.inventory_2,
+                          value: '${restaurant.totalContainers}',
+                          label: 'Total',
+                          color: Constant.blueshade100,
+                        ),
+                        SizedBox(width: Constant.SIZE_08),
+                        _buildInfoChip(
+                          icon: Icons.shopping_basket,
+                          value: '${restaurant.borrowedContainers}',
+                          label: 'Borrowed',
+                          color: Constant.tealshade100,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: Colors.grey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildInfoChip({
+    required IconData icon,
+    required String value,
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.SIZE_08,
+        vertical: Constant.SIZE_04,
+      ),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(Constant.SIZE_08),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: Constant.CONTAINER_SIZE_12),
+          SizedBox(width: Constant.SIZE_04),
+          Text(
+            '$value $label',
+            style: TextStyle(
+              fontSize: Constant.CONTAINER_SIZE_12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +225,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               itemCount: filteredRestaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = filteredRestaurants[index];
-                return _RestaurantCard(restaurant: restaurant);
+                return _buildRestaurantCard(restaurant);
               },
             ),
           ),
@@ -605,4 +719,3 @@ class _DetailItem extends StatelessWidget {
     );
   }
 }
-
