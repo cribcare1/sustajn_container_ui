@@ -112,7 +112,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
                 onPressed: () {
                   _updateRequestStatus(request.id, 'Approved', approvedQuantity);
                   Navigator.pop(context);
-                  _showSuccessSnackbar('Request approved for $approvedQuantity containers');
+                  _showSuccessSnackBar('Request approved for $approvedQuantity containers');
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Constant.greenshade100),
                 child: Text('Approve', style: TextStyle(color: Colors.white)),
@@ -139,7 +139,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
             onPressed: () {
               _updateRequestStatus(request.id, 'Rejected', null);
               Navigator.pop(context);
-              _showSuccessSnackbar('Request rejected');
+              _showSuccessSnackBar('Request rejected');
             },
             style: ElevatedButton.styleFrom(backgroundColor: Constant.pinkshade100),
             child: Text('Reject', style: TextStyle(color: Colors.white)),
@@ -149,7 +149,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
     );
   }
 
-  void _showSuccessSnackbar(String message) {
+  void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -346,7 +346,10 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
     return Scaffold(
       appBar: CustomAppBar(
           leading: const SizedBox(),
-          title: "Container Requests").getAppBar(context),
+          title: "Container Requests",action: [
+            IconButton(onPressed: (){},
+                icon: Icon(Icons.search,color: Colors.white),)
+      ]).getAppBar(context),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Constant.blueshade100)))
           : _requests.isEmpty
