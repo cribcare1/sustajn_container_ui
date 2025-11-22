@@ -7,6 +7,7 @@ class ContainerRequest {
   final double longitude;
   final DateTime requestDate;
   final String status;
+  final int? approvedQuantity;
 
   ContainerRequest({
     required this.id,
@@ -17,7 +18,25 @@ class ContainerRequest {
     required this.longitude,
     required this.requestDate,
     this.status = 'Pending',
+    this.approvedQuantity,
   });
+
+  ContainerRequest copyWith({
+    String? status,
+    int? approvedQuantity,
+  }) {
+    return ContainerRequest(
+      id: id,
+      restaurantName: restaurantName,
+      requestedQuantity: requestedQuantity,
+      address: address,
+      latitude: latitude,
+      longitude: longitude,
+      requestDate: requestDate,
+      status: status ?? this.status,
+      approvedQuantity: approvedQuantity ?? this.approvedQuantity,
+    );
+  }
 
   static List<ContainerRequest> sampleRequests = [
     ContainerRequest(
