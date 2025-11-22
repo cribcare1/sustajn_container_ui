@@ -4,21 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../constants/number_constants.dart';
 import '../profile_screen.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
-    );
-  }
-}
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -34,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: _getCurrentScreen(),
       bottomNavigationBar: Container(
-        height: Constant.CONTAINER_SIZE_70,
+        // height: Constant.CONTAINER_SIZE_70,
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
@@ -80,54 +65,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getCurrentScreen() {
-    return Column(
-      children: [
-        Expanded(
-          child: _buildCurrentTabContent(),
-        ),
-      ],
-    );
+    return _buildCurrentTabContent();
   }
 
   Widget _buildCurrentTabContent() {
     switch (_currentIndex) {
       case 0:
-        return _buildHomeTab();
+        return Container();
       case 1:
-        return _buildRequestTab();
+        return Container();
       case 2:
-        return _buildHistoryTab();
+        return Container();
       case 3:
         return ProfileScreen();
       default:
-        return _buildHomeTab();
+        return Container();
     }
   }
 
-  Widget _buildHomeTab() {
-    return Column(
-      children: [
-      ],
-    );
-  }
-
-  Widget _buildRequestTab() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-      child: Column(
-        children: [
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHistoryTab() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-      child: Column(
-        children: [
-        ],
-      ),
-    );
-  }
+  // Widget _buildHomeTab() {
+  //   return Column(
+  //     children: [
+  //     ],
+  //   );
+  // }
+  //
+  // Widget _buildRequestTab() {
+  //   return SingleChildScrollView(
+  //     padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
+  //     child: Column(
+  //       children: [
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildHistoryTab() {
+  //   return SingleChildScrollView(
+  //     padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
+  //     child: Column(
+  //       children: [
+  //       ],
+  //     ),
+  //   );
+  // }
 }

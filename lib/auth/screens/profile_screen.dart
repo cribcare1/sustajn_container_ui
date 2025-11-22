@@ -15,6 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: SizedBox(),
         centerTitle: true,
         title: const Text('Profile'),
         backgroundColor: Color(0xff6eac9e),
