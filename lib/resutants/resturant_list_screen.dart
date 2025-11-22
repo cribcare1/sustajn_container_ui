@@ -1,24 +1,9 @@
+import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
+import '../common_widgets/custom_app_bar.dart';
 import 'model.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const RestaurantListScreen(),
-    );
-  }
-}
-
 class RestaurantListScreen extends StatefulWidget {
   const RestaurantListScreen({super.key});
 
@@ -70,14 +55,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Restaurants'),
-        backgroundColor: Color(0xff6eac9e),
-        elevation: Constant.SIZE_00,
-        foregroundColor: Colors.black,
-      ),
+      appBar: CustomAppBar(
+          leading: const SizedBox(),
+          title: "Restaurants").getAppBar(context),
       body: Column(
         children: [
           // Search Bar
@@ -284,14 +264,9 @@ class RestaurantDetailScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(restaurant.name,
-        style: TextStyle(fontWeight: FontWeight.bold),),
-        backgroundColor: Color(0xff6eac9e),
-        elevation: Constant.SIZE_00,
-        foregroundColor: Colors.black,
-      ),
+      appBar:CustomAppBar(
+          leading: const CustomBackButton(),
+          title: restaurant.name).getAppBar(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Column(

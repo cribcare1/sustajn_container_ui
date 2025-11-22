@@ -2,27 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants/number_constants.dart';
+import '../common_widgets/custom_app_bar.dart';
 import 'container_request_model.dart';
-import 'google_map_screen.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const ContainerRequestScreen(),
-    );
-  }
-}
 
 class ContainerRequestScreen extends StatefulWidget {
-  const ContainerRequestScreen({Key? key}) : super(key: key);
+  const ContainerRequestScreen({super.key});
 
   @override
   State<ContainerRequestScreen> createState() => _ContainerRequestScreenState();
@@ -212,18 +197,9 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Container Requests',
-          style: TextStyle(
-            fontSize: Constant.LABEL_TEXT_SIZE_20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Constant.blueshade100,
-        elevation: Constant.SIZE_02,
-      ),
+      appBar: CustomAppBar(
+          leading: const SizedBox(),
+          title: "Container Requests").getAppBar(context),
       body: _isLoading
           ? Center(
         child: CircularProgressIndicator(

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../common_widgets/custom_app_bar.dart';
 import '../../constants/number_constants.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -14,19 +15,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        centerTitle: true,
-        title: const Text('Profile'),
-        backgroundColor: Color(0xff6eac9e),
-        foregroundColor: Colors.black,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(
+          leading: const SizedBox(),
+          title: "Profile",action: [
+        IconButton(
+          icon: Icon(Icons.edit,color: Colors.white,),
+          onPressed: () {},
+        ),
+      ]).getAppBar(context),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(

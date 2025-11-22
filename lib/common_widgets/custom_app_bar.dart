@@ -9,7 +9,8 @@ class CustomAppBar {
   final List<Widget>? action;
   final PreferredSize? bottom;
   bool? centerTitle;
-  CustomAppBar({required this.title, this.action, this.bottom, this.centerTitle = false});
+  final Widget leading;
+  CustomAppBar({required this.title, this.action, this.bottom, this.centerTitle = false, required this.leading});
   PreferredSizeWidget getAppBar(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
     return AppBar(
@@ -23,7 +24,7 @@ class CustomAppBar {
       // leadingWidth: 30,
       actions: action,
       bottom: bottom,
-      leading:const CustomBackButton(),
+      leading:leading,
     );
   }
 }

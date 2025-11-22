@@ -1,24 +1,9 @@
-import 'package:container_tracking/auth/screens/orders/return.dart';
+import 'package:container_tracking/orders/screens/return.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class OrderScreen extends StatelessWidget {
+  const OrderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

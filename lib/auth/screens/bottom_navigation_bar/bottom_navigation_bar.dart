@@ -1,7 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
+import '../../../container_request/container_request_screen.dart';
+import '../../../history/screens/history_screen.dart';
+import '../../../resutants/resturant_list_screen.dart';
 import '../profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,17 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Color(0xffb3dbff),
           selectedItemColor: Color(0xff6eac9e),
           unselectedItemColor: Colors.grey,
-          selectedLabelStyle: TextStyle(
-            fontSize: Constant.LABEL_TEXT_SIZE_14,
-          ),
+          selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
           unselectedLabelStyle: TextStyle(
             fontSize: Constant.LABEL_TEXT_SIZE_14,
           ),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
               icon: Icon(Icons.request_page),
               label: 'Request',
@@ -54,10 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.history),
               label: 'History',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
         ),
       ),
@@ -71,42 +65,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCurrentTabContent() {
     switch (_currentIndex) {
       case 0:
-        return Container();
+        return RestaurantListScreen();
       case 1:
-        return Container();
+        return ContainerRequestScreen();
       case 2:
-        return Container();
+        return HistoryScreen();
       case 3:
         return ProfileScreen();
       default:
-        return Container();
+        return RestaurantListScreen();
     }
   }
-
-  // Widget _buildHomeTab() {
-  //   return Column(
-  //     children: [
-  //     ],
-  //   );
-  // }
-  //
-  // Widget _buildRequestTab() {
-  //   return SingleChildScrollView(
-  //     padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-  //     child: Column(
-  //       children: [
-  //       ],
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildHistoryTab() {
-  //   return SingleChildScrollView(
-  //     padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
-  //     child: Column(
-  //       children: [
-  //       ],
-  //     ),
-  //   );
-  // }
 }
