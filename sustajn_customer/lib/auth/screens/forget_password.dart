@@ -43,7 +43,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     var themeData = CustomTheme.getTheme(true);
 
     return Scaffold(
-      appBar: CustomAppBar(title: "Forgot Password").getAppBar(context),
+      appBar: CustomAppBar(title: "Forgot Password", leading: Icon(Icons.arrow_back)).getAppBar(context),
 
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
