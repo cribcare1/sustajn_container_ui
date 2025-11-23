@@ -12,7 +12,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "History", leading: const SizedBox()).getAppBar(context),
+      appBar: CustomAppBar(title: "History", leading: const SizedBox(),action: [
+        IconButton(onPressed: (){},
+            icon: Icon(Icons.search,color: Colors.white),)
+      ]).getAppBar(context),
     );
   }
 }

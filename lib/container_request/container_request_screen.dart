@@ -52,7 +52,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) {
           return AlertDialog(
-            title: Center(child: Text('Approve Request', style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_18))),
+            title: Text('Approve Request', style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_18)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,22 +104,18 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
               ],
             ),
             actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel', style: TextStyle(color: Constant.greyshade100)),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _updateRequestStatus(request.id, 'Approved', approvedQuantity);
-                      Navigator.pop(context);
-                      _showSuccessSnackbar('Request approved for $approvedQuantity containers');
-                    },
-                    child: Text('Approve', style: TextStyle(color: Constant.greenshade100)),
-                  ),
-                ],
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel', style: TextStyle(color: Constant.greyshade100)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _updateRequestStatus(request.id, 'Approved', approvedQuantity);
+                  Navigator.pop(context);
+                  _showSuccessSnackBar('Request approved for $approvedQuantity containers');
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Constant.greenshade100),
+                child: Text('Approve', style: TextStyle(color: Colors.white)),
               ),
             ],
           );
@@ -127,6 +123,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
       ),
     );
   }
+
   void _showRejectDialog(ContainerRequest request) {
     showDialog(
       context: context,
@@ -138,29 +135,21 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text('Cancel', style: TextStyle(color: Constant.greyshade100)),
           ),
-          Expanded(
-            child: TextButton.icon(
-              onPressed: () {
-                _updateRequestStatus(request.id, 'Rejected', null);
-                Navigator.pop(context);
-                _showSuccessSnackbar('Request rejected');
-              },
-              label: Text(
-                'Reject',
-                style: TextStyle(
-                  color:  Constant.pinkshade100,
-                  fontSize: Constant.LABEL_TEXT_SIZE_15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+          ElevatedButton(
+            onPressed: () {
+              _updateRequestStatus(request.id, 'Rejected', null);
+              Navigator.pop(context);
+              _showSuccessSnackBar('Request rejected');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Constant.pinkshade100),
+            child: Text('Reject', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
 
-  void _showSuccessSnackbar(String message) {
+  void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -259,32 +248,28 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: TextButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () => _showRejectDialog(request),
-                      icon: Icon(Icons.close, size: Constant.CONTAINER_SIZE_16,
-                        color: Constant.pinkshade100,),
-                      label: Text('Reject',
-                      style: TextStyle(
-                        color: Constant.pinkshade100,
-                        fontSize: Constant.LABEL_TEXT_SIZE_15,
-                        fontWeight: FontWeight.bold,
+                      icon: Icon(Icons.close, size: Constant.CONTAINER_SIZE_16),
+                      label: Text('Reject'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.pinkshade100,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
                       ),
-    ),
                     ),
                   ),
                   SizedBox(width: Constant.CONTAINER_SIZE_12),
                   Expanded(
-                    child: TextButton.icon(
+                    child: ElevatedButton.icon(
                       onPressed: () => _showApproveDialog(request),
-                      icon: Icon(Icons.check, size: Constant.CONTAINER_SIZE_16,
-                      color: Constant.greenshade100,),
-                      label: Text('Approve',
-                        style: TextStyle(
-                          color:  Constant.greenshade100,
-                          fontSize: Constant.LABEL_TEXT_SIZE_15,
-                          fontWeight: FontWeight.bold,
-                        ),),
-
+                      icon: Icon(Icons.check, size: Constant.CONTAINER_SIZE_16),
+                      label: Text('Approve'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.greenshade100,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
+                      ),
                     ),
                   ),
                 ],
@@ -361,7 +346,10 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
     return Scaffold(
       appBar: CustomAppBar(
           leading: const SizedBox(),
-          title: "Container Requests").getAppBar(context),
+          title: "Container Requests",action: [
+            IconButton(onPressed: (){},
+                icon: Icon(Icons.search,color: Colors.white),)
+      ]).getAppBar(context),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Constant.blueshade100)))
           : _requests.isEmpty

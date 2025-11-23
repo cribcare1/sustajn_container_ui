@@ -1,11 +1,11 @@
-import 'package:container_tracking/auth/screens/sign_up_screen.dart';
-import 'package:container_tracking/constants/number_constants.dart';
-import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/card_widget.dart';
+import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
 import 'forget_password.dart';
 
 class LoginScreen extends StatefulWidget {

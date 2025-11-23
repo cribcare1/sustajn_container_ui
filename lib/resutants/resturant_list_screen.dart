@@ -171,40 +171,45 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
           leading: const SizedBox(),
-          title: "Restaurants").getAppBar(context),
+          title: "Restaurants",
+      action: [
+        IconButton(onPressed: (){},
+            icon: Icon(Icons.search,color: Colors.white),)
+      ]
+      ).getAppBar(context),
       body: Column(
         children: [
           // Search Bar
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: Container(
-              height: Constant.TEXT_FIELD_HEIGHT,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(Constant.SIZE_005),
-                    blurRadius: Constant.SIZE_02,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: _filterRestaurants,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  hintText: 'Search restaurants',
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          //   child: Container(
+          //     height: Constant.TEXT_FIELD_HEIGHT,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.black.withOpacity(Constant.SIZE_005),
+          //           blurRadius: Constant.SIZE_02,
+          //           offset: const Offset(0, 1),
+          //         ),
+          //       ],
+          //     ),
+          //     child: TextField(
+          //       controller: _searchController,
+          //       onChanged: _filterRestaurants,
+          //       textAlignVertical: TextAlignVertical.center,
+          //       decoration: InputDecoration(
+          //         hintText: 'Search restaurants',
+          //         prefixIcon: const Icon(Icons.search, color: Colors.grey),
+          //         border: InputBorder.none,
+          //         contentPadding: EdgeInsets.symmetric(
+          //           horizontal: Constant.CONTAINER_SIZE_16,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           // Restaurant List
           Expanded(
@@ -221,6 +226,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 : ListView.builder(
               padding: EdgeInsets.symmetric(
                 horizontal: Constant.CONTAINER_SIZE_16,
+                vertical: Constant.CONTAINER_SIZE_16
               ),
               itemCount: filteredRestaurants.length,
               itemBuilder: (context, index) {
