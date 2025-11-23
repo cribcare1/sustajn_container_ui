@@ -1,10 +1,9 @@
-import 'package:container_tracking/common_widgets/custom_app_bar.dart';
-import 'package:container_tracking/constants/number_constants.dart';
-import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/card_widget.dart';
-import '../../constants/string_utils.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
