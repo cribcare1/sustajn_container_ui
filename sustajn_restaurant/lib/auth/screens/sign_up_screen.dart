@@ -1,10 +1,10 @@
-import 'package:container_tracking/auth/screens/login_screen.dart';
-import 'package:container_tracking/constants/number_constants.dart';
-import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../common_widgets/card_widget.dart';
+import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import 'login_screen.dart';
 
 enum UserType { user, restaurant, admin }
 
