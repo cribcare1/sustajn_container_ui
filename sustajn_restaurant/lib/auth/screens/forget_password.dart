@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
@@ -42,8 +43,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     var themeData = CustomTheme.getTheme(true);
 
     return Scaffold(
-      appBar: CustomAppBar(title: "Forgot Password", leading: Icon(Icons.arrow_back)).getAppBar(context),
-
+      appBar: CustomAppBar(title: "Forgot Password", 
+          leading: CustomBackButton()).getAppBar(context),
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Center(
