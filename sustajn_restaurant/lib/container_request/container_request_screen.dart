@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
@@ -10,25 +8,6 @@ import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
 import 'model.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProviderScope(child: const MyApp()));
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Container tracking',
-        theme: CustomTheme.getTheme(true),
-        home: const ContainerRequestScreen(),
-      ),
-    );
-  }
-}
 class ContainerRequestScreen extends StatefulWidget {
   const ContainerRequestScreen({super.key});
 

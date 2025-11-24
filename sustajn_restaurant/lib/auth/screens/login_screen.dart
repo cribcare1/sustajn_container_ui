@@ -6,6 +6,7 @@ import '../../common_widgets/card_widget.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'forget_password.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -110,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+                    },
                     child: Text(
                       'Login',
                       style: themeData.textTheme.titleMedium!.copyWith(

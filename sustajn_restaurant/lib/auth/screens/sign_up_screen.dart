@@ -5,6 +5,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import 'login_screen.dart';
+import 'map_selection_screen.dart';
 
 enum UserType { user, restaurant, admin }
 
@@ -22,8 +23,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _locationController = TextEditingController();
 
   UserType _selectedType = UserType.user;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +52,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: height * 0.02),
                     Row(
                       children: [
-                        Expanded(flex: 2,
+                        Expanded(
+                          flex: 2,
                           child: RadioListTile<UserType>(
-                            visualDensity: VisualDensity(vertical: 0,horizontal: -4),
+                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
                             title: const Text('User'),
                             value: UserType.user,
                             groupValue: _selectedType,
@@ -58,11 +63,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
-                        Expanded(flex: 3,
+                        Expanded(
+                          flex: 3,
                           child: RadioListTile<UserType>(
-                            visualDensity: VisualDensity(vertical: 0,horizontal: -4),
+                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
                             title: const Text('Restaurant'),
                             value: UserType.restaurant,
                             groupValue: _selectedType,
@@ -70,12 +77,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: RadioListTile<UserType>(
-                            visualDensity: VisualDensity(vertical: 0,horizontal: -4),
+                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
                             title: const Text('Admin'),
                             value: UserType.admin,
                             groupValue: _selectedType,
@@ -83,10 +91,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => _selectedType = val!);
                             },
                             contentPadding: EdgeInsets.zero,
+                            activeColor: themeData.primaryColor,
                           ),
                         ),
                       ],
                     ),
+
                     /// --- Name Field ---
                     TextFormField(
                       controller: _nameController,
@@ -150,15 +160,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                     ),
+
+
+
                     SizedBox(height: height * 0.02),
 
                     /// --- Password Field ---
                     TextFormField(
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -178,10 +201,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     /// --- Confirm Password Field ---
                     TextFormField(
                       controller: _confirmPasswordController,
-                      obscureText: true,
+                      obscureText: !_isConfirmPasswordVisible,
                       decoration: InputDecoration(
                         labelText: 'Confirm Password',
                         prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                            });
+                          },
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -195,6 +228,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                         return null;
                       },
+                    ),
+
+                    SizedBox(height: height * 0.02),
+                    /// --- Location Field ---
+                    TextFormField(
+                      controller: _locationController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Location',
+                        prefixIcon: const Icon(Icons.location_on),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.map),
+                          onPressed: _navigateToMap,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Please select your location';
+                        }
+                        return null;
+                      },
+                      onTap: _navigateToMap,
                     ),
                     SizedBox(height: height * 0.03),
 
@@ -222,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             .copyWith(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: height*0.02),
+                    SizedBox(height: height * 0.02),
                     Text.rich(
                       TextSpan(
                         text: "Already have Account? ",
@@ -256,5 +314,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void _navigateToMap() async {
+    final selectedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const MapSelectionScreen(),
+      ),
+    );
+
+    if (selectedLocation != null && mounted) {
+      setState(() {
+        _locationController.text = selectedLocation;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _mobileController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _locationController.dispose();
+    super.dispose();
   }
 }
