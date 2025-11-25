@@ -98,12 +98,6 @@ void showTransactionDetailsBottomSheet(
                           Center(
                             child: Column(
                               children: [
-                                Icon(
-                                  Icons.dinner_dining,
-                                  size: Constant.CONTAINER_SIZE_36,
-                                  color: Colors.green,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
                                 Text(
                                   count.toString(),
                                   style: TextStyle(
