@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xffb3dbff),
+          backgroundColor: Color(0xFFe8f7f1),
           selectedItemColor: Color(0xff6eac9e),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),

@@ -182,11 +182,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             ),
           ],
         ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: Constant.CONTAINER_SIZE_16,
-          color: Colors.grey.shade600,
-        ),
       ),
     );
   }

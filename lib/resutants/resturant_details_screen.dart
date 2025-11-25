@@ -73,7 +73,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     Strings.VIEW_RESTURANT_DETAILS,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      color: Colors.blue,
+                      color: Color(0xFF8daba0),
                       decoration: TextDecoration.underline,
                     ),
                   ),
@@ -145,7 +145,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                 Strings.VIEW_ALL,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  color: Colors.blue,
+                  color: Color(0xFF8daba0),
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -160,7 +160,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
           date: "20/11/2025",
           count: "50",
           status: "Pending",
-          statusColor: Colors.orange,
+          statusColor: Color(0xFFfadb7f),
         ),
 
         Divider(
@@ -174,7 +174,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
           date: "01/10/2025",
           count: "100",
           status: "Approved",
-          statusColor: Colors.green,
+          statusColor: Color(0xFF75c487),
         ),
 
         Divider(
@@ -188,7 +188,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
           date: "09/09/2025",
           count: "500",
           status: "Rejected",
-          statusColor: Colors.red,
+          statusColor: Color(0xFFe26571),
         ),
       ],
     );
@@ -378,7 +378,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                                 vertical: Constant.CONTAINER_SIZE_14,
                               ),
                               side: BorderSide(
-                                color: themeData.primaryColor,
+                                color:  Color(0xFF3f715e),
                                 width: 1.4,
                               ),
                               shape: RoundedRectangleBorder(
@@ -393,7 +393,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: Constant.CONTAINER_SIZE_16,
 
-                                color: themeData.primaryColor,
+                                color:  Color(0xFF3f715e),
                               ),
                             ),
                           ),
@@ -405,7 +405,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: themeData.primaryColor,
+                              backgroundColor: Color(0xFF3f715e),
                               padding: EdgeInsets.symmetric(
                                 vertical: Constant.CONTAINER_SIZE_14,
                               ),

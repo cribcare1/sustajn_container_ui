@@ -11,11 +11,11 @@ class TransactionItemCard extends StatelessWidget {
 
   Color _statusColor(BuildContext context) {
     if (data.status == Strings.APPROVED_STATUS) {
-      return Colors.green;
+      return Color(0xFF75c487);
     } else if (data.status == Strings.REJECTED_STATUS) {
-      return Colors.red;
+      return Color(0xFFe26571);
     } else {
-      return Colors.orange;
+      return Color(0xFFfadb7f);
     }
   }
 
