@@ -52,7 +52,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: containerCards.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 per row
+                  crossAxisCount: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 1.6,
