@@ -6,6 +6,7 @@ import 'models/transaction_record.dart';
 
 class TransactionItemCard extends StatelessWidget {
   final TransactionRecord data;
+
   const TransactionItemCard({super.key, required this.data});
 
   Color _statusColor(BuildContext context) {
@@ -61,11 +62,11 @@ class TransactionItemCard extends StatelessWidget {
             children: [
               Text(
                 data.amount.toString(),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: 4),
+              SizedBox(height: Constant.SIZE_04),
               Text(
                 data.status,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -76,10 +77,10 @@ class TransactionItemCard extends StatelessWidget {
             ],
           ),
 
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 16,
-          )
+          // Icon(
+          //   Icons.arrow_forward_ios_rounded,
+          //   size: Constant.CONTAINER_SIZE_16,
+          // )
         ],
       ),
     );

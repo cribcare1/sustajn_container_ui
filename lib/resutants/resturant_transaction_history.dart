@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
+import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import 'models/transaction_record.dart';
 
@@ -58,7 +59,10 @@ class _RestaurantTransactionHistoryScreenState
       ).getAppBar(context),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        padding: EdgeInsets.symmetric(
+          vertical: Constant.CONTAINER_SIZE_12,
+          horizontal: Constant.CONTAINER_SIZE_12,
+        ),
         child: Column(
           children: [
             Row(
@@ -66,12 +70,17 @@ class _RestaurantTransactionHistoryScreenState
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: selectedStatus,
-                    items: [Strings.STATUS, Strings.APPROVED_STATUS, Strings.REJECTED_STATUS,Strings.PENDING_STATUS]
-                        .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    ))
-                        .toList(),
+                    items:
+                        [
+                              Strings.STATUS,
+                              Strings.APPROVED_STATUS,
+                              Strings.REJECTED_STATUS,
+                              Strings.PENDING_STATUS,
+                            ]
+                            .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                            )
+                            .toList(),
                     onChanged: (v) => setState(() => selectedStatus = v!),
                     decoration: InputDecoration(
                       isDense: true,
@@ -79,30 +88,30 @@ class _RestaurantTransactionHistoryScreenState
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: Constant.SIZE_08),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: selectedMonth,
-                    items: [
-                      "Month",
-                      "January",
-                      "February",
-                      "March",
-                      "April",
-                      "May",
-                      "June",
-                      "July",
-                      "August",
-                      "September",
-                      "October",
-                      "November",
-                      "December"
-                    ]
-                        .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    ))
-                        .toList(),
+                    items:
+                        [
+                              "Month",
+                              "January",
+                              "February",
+                              "March",
+                              "April",
+                              "May",
+                              "June",
+                              "July",
+                              "August",
+                              "September",
+                              "October",
+                              "November",
+                              "December",
+                            ]
+                            .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                            )
+                            .toList(),
                     onChanged: (v) => setState(() => selectedMonth = v!),
                     decoration: InputDecoration(
                       isDense: true,
@@ -113,13 +122,13 @@ class _RestaurantTransactionHistoryScreenState
               ],
             ),
 
-            SizedBox(height: 12),
+            SizedBox(height: Constant.CONTAINER_SIZE_12),
 
             Expanded(
               child: ListView.separated(
                 padding: EdgeInsets.zero,
                 itemCount: transactions.length,
-                separatorBuilder: (_, __) => Divider(height: 0.5),
+                separatorBuilder: (_, __) => Divider(height: 0.4),
                 itemBuilder: (context, index) {
                   return TransactionItemCard(data: transactions[index]);
                 },
