@@ -1,34 +1,10 @@
 import 'package:container_tracking/resutants/resturant_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
 import 'models/model.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProviderScope(child: const MyApp()));
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Container tracking',
-        theme: CustomTheme.getTheme(true),
-        home: const RestaurantListScreen(),
-      ),
-    );
-  }
-}
 
 class RestaurantListScreen extends StatefulWidget {
   const RestaurantListScreen({super.key});
