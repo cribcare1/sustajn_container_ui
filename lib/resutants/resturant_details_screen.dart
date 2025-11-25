@@ -1,3 +1,4 @@
+import 'package:container_tracking/resutants/resturant_transaction_history.dart';
 import 'package:container_tracking/resutants/transaction_details_bottomsheet.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
-import 'model.dart';
+import 'models/model.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final Restaurant restaurant;
@@ -134,12 +135,19 @@ class RestaurantDetailsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              Strings.VIEW_ALL,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
+            GestureDetector(
+              onTap: (){
+                print('on tap called');
+                Navigator.push(context,
+                MaterialPageRoute(builder: (context)=>RestaurantTransactionHistoryScreen() ));
+              },
+              child: Text(
+                Strings.VIEW_ALL,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: Constant.LABEL_TEXT_SIZE_14,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
           ],

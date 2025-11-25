@@ -7,7 +7,7 @@ import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
-import 'model.dart';
+import 'models/model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -159,7 +159,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         title: Text(
           restaurant.name,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: Constant.LABEL_TEXT_SIZE_18,
+            fontSize: Constant.LABEL_TEXT_SIZE_14,
             fontWeight: FontWeight.bold,
           ),
         ),

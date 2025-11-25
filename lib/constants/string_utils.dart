@@ -21,4 +21,6 @@ static const String RESTURANT_DETAILS_TITLE = 'Resturant Details';
 static const String LARGE = 'Large';
 static const String MEDIUM = 'Medium';
 static const String SMALL = 'Small';
+static const String RESTURANT_TRANSACTION_HISTORY_TITLE = 'Resturant Transaction History';
+static const String STATUS= 'Status';
 }
