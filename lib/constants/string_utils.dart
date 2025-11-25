@@ -2,4 +2,23 @@ class Strings{
 static const String LOGIN = "Log In";
 static const String SIGN_UP = "Sign Up";
 static const String FORGOT_PASSWORD = "Forgot Password";
+static const String RESTURANT_TITLE = 'Resturants';
+static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
+static const String APPROVED_STATUS = 'Approved';
+static const String PENDING_STATUS = 'Pending';
+static const String REJECTED_STATUS = 'Rejected';
+static const String TRANSACTION_DETAILS_TITLE = 'Transaction Details';
+static const String REQUESTED_CONTAINER_TYPES = 'Requested Container types';
+static const String REQUESTED_ON = 'Requested on';
+static const String APPROVED_CONTAINER = 'Approved Container types';
+static const String APPROVED_ON = 'Approved on';
+static const String DIRECTION = 'Direction';
+static const String CALL = 'Call';
+static const String VIEW_ALL = 'View All';
+static const String RESTURANT_HISTORY = 'Resturant History';
+static const String VIEW_RESTURANT_DETAILS = 'View Resturant Details';
+static const String RESTURANT_DETAILS_TITLE = 'Resturant Details';
+static const String LARGE = 'Large';
+static const String MEDIUM = 'Medium';
+static const String SMALL = 'Small';
 }

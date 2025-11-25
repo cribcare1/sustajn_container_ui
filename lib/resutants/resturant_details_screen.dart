@@ -1,290 +1,452 @@
+import 'package:container_tracking/resutants/transaction_details_bottomsheet.dart';
 import 'package:flutter/material.dart';
 
-import '../../../constants/number_constants.dart';
+import '../common_widgets/custom_app_bar.dart';
+import '../common_widgets/custom_back_button.dart';
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
+import '../utils/theme_utils.dart';
 import 'model.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailsScreen extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantDetailScreen({super.key, required this.restaurant});
+  RestaurantDetailsScreen({super.key, required this.restaurant});
 
+  final List<Map<String, dynamic>> containerCards = [
+    {'title': "Total Containers Issued", 'value': 2343},
+    {'title': "Total available", 'value': 1354},
+    {'title': "Total Given to Customers", 'value': 1543},
+    {'title': "Pending from Customers", 'value': 234},
+  ];
 
-  Widget _buildUsageProgressBar(double percentage, int borrowed, int total) {
+  @override
+  Widget build(BuildContext context) {
+    final themeData = CustomTheme.getTheme(true);
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: Strings.RESTURANT_DETAILS_TITLE,
+        leading: CustomBackButton(),
+      ).getAppBar(context),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  restaurant.name,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              GridView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: containerCards.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 per row
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1.6,
+                ),
+                itemBuilder: (context, index) {
+                  return _buildContainersInfo(context, containerCards[index]);
+                },
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    showRestaurantDetailsSheet(context, restaurant, themeData!);
+                  },
+                  child: Text(
+                    Strings.VIEW_RESTURANT_DETAILS,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: Constant.LABEL_TEXT_SIZE_16,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+              _buildRestaurantHistory(context),
+              SizedBox(height: Constant.CONTAINER_SIZE_24),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContainersInfo(BuildContext context, Map<String, dynamic> item) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(Constant.SIZE_08),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            item['title'],
+            style: TextStyle(
+              fontSize: Constant.CONTAINER_SIZE_14,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          SizedBox(height: Constant.SIZE_04),
+          Text(
+            item['value'].toString(),
+            style: TextStyle(
+              fontSize: Constant.CONTAINER_SIZE_18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRestaurantHistory(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Container Usage',
-              style: TextStyle(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                fontWeight: FontWeight.w500,
+              Strings.RESTURANT_HISTORY,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              '${percentage.toStringAsFixed(1)}%',
-              style: TextStyle(
+              Strings.VIEW_ALL,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontSize: Constant.LABEL_TEXT_SIZE_14,
-                fontWeight: FontWeight.w600,
-                color: _getPercentageColor(percentage),
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
               ),
             ),
           ],
         ),
-        SizedBox(height: Constant.SIZE_08),
-        LinearProgressIndicator(
-          value: percentage / 100,
-          backgroundColor: Colors.grey[200],
-          valueColor: AlwaysStoppedAnimation<Color>(_getPercentageColor(percentage)),
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
-          minHeight: Constant.CONTAINER_SIZE_12,
+        SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+        _buildHistoryRow(
+          context,
+          title: "Requested on",
+          date: "20/11/2025",
+          count: "50",
+          status: "Pending",
+          statusColor: Colors.orange,
         ),
-        SizedBox(height: Constant.SIZE_08),
-        Text(
-          '$borrowed out of $total containers are currently borrowed',
-          style: TextStyle(
-            fontSize: Constant.CONTAINER_SIZE_12,
-            color: Colors.grey,
-          ),
+
+        Divider(
+          color: Colors.grey.shade300,
+          height: Constant.CONTAINER_SIZE_24,
+        ),
+
+        _buildHistoryRow(
+          context,
+          title: "Approved on",
+          date: "01/10/2025",
+          count: "100",
+          status: "Approved",
+          statusColor: Colors.green,
+        ),
+
+        Divider(
+          color: Colors.grey.shade300,
+          height: Constant.CONTAINER_SIZE_24,
+        ),
+
+        _buildHistoryRow(
+          context,
+          title: "Rejected on",
+          date: "09/09/2025",
+          count: "500",
+          status: "Rejected",
+          statusColor: Colors.red,
         ),
       ],
     );
   }
 
-  Color _getPercentageColor(double percentage) {
-    if (percentage < 50) return Colors.green;
-    if (percentage < 80) return Colors.orange;
-    return Colors.red;
-  }
-
-
-  Widget _buildStatCircle({
-    required String value,
-    required String label,
-    required Color color,
-    required Color textColor,
+  Widget _buildHistoryRow(
+    BuildContext context, {
+    required String title,
+    required String date,
+    required String count,
+    required String status,
+    required Color statusColor,
   }) {
-    return Column(
-      children: [
-        Container(
-          width: Constant.CONTAINER_SIZE_70,
-          height: Constant.CONTAINER_SIZE_70,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
+    return GestureDetector(
+      onTap: () {
+        showTransactionDetailsBottomSheet(
+          context,
+          status: status,
+          requestedDate: "20/11/2025",
+          approvedDate: "21/11/2025",
+          large: 50,
+          medium: 30,
+          small: 20,
+          count: int.parse(count),
+        );
+      },
+
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                SizedBox(height: Constant.SIZE_04),
+                Text(
+                  date,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        SizedBox(height: Constant.SIZE_08),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: Constant.CONTAINER_SIZE_12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
 
-  // detail item
-  Widget _buildDetailItem({
-    required IconData icon,
-    required String title,
-    required String value,
-    required String subtitle,
-    required Color color,
-  }) {
-    return Row(
-      children: [
-        Container(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: Constant.CONTAINER_SIZE_20),
-        ),
-        SizedBox(width: Constant.CONTAINER_SIZE_16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                title,
-                style: TextStyle(
-                  fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  color: Colors.grey,
+                count,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: Constant.LABEL_TEXT_SIZE_16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: Constant.SIZE_04),
               Text(
-                value,
-                style: TextStyle(
-                  fontSize: Constant.LABEL_TEXT_SIZE_18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: Constant.SIZE_02),
-              Text(
-                subtitle,
-                style: TextStyle(
+                status,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontSize: Constant.CONTAINER_SIZE_12,
-                  color: Colors.grey,
+                  color: statusColor,
                 ),
               ),
             ],
           ),
-        ),
-      ],
+
+          SizedBox(width: Constant.SIZE_08),
+          Icon(
+            Icons.chevron_right,
+            size: Constant.CONTAINER_SIZE_20,
+            color: Colors.grey.shade500,
+          ),
+        ],
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final availableContainers = restaurant.totalContainers - restaurant.borrowedContainers;
-    final usagePercentage = (restaurant.borrowedContainers / restaurant.totalContainers) * 100;
-
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          restaurant.name,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Color(0xff6eac9e),
-        elevation: Constant.SIZE_00,
-        foregroundColor: Colors.black,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          children: [
-            SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-            // Usage Statistics Card
-            Card(
-              elevation: Constant.SIZE_01,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+  void showRestaurantDetailsSheet(
+    BuildContext context,
+    Restaurant restaurant,
+    ThemeData themeData,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.65,
+          maxChildSize: 0.85,
+          minChildSize: 0.50,
+          builder: (_, controller) {
+            return Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_24),
+                ),
+                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
               ),
-              child: Padding(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Usage Statistics',
-                      style: TextStyle(
-                        fontSize: Constant.LABEL_TEXT_SIZE_18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    _buildUsageProgressBar(
-                      usagePercentage,
-                      restaurant.borrowedContainers,
-                      restaurant.totalContainers,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    controller: controller,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildStatCircle(
-                          value: restaurant.totalContainers.toString(),
-                          label: 'Total',
-                          color: Constant.blueshade100,
-                          textColor: Colors.blue,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          child: Image.asset(
+                            restaurant.imageUrl,
+                            height: Constant.CONTAINER_SIZE_180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        _buildStatCircle(
-                          value: restaurant.borrowedContainers.toString(),
-                          label: 'Borrowed',
-                          color: Constant.orangeshade100,
-                          textColor: Colors.orange,
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                        Text(
+                          restaurant.name,
+                          style: TextStyle(
+                            fontSize: Constant.CONTAINER_SIZE_20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                        _buildStatCircle(
-                          value: availableContainers.toString(),
-                          label: 'Available',
-                          color: Constant.greenshade100,
-                          textColor: Colors.green,
+
+                        SizedBox(height: Constant.SIZE_10),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on_outlined,
+                              size: Constant.CONTAINER_SIZE_20,
+                              color: Colors.grey.shade700,
+                            ),
+                            SizedBox(width: Constant.SIZE_06),
+                            Expanded(
+                              child: Text(
+                                restaurant.address,
+                                style: TextStyle(
+                                  fontSize: Constant.CONTAINER_SIZE_14,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+
+                        SizedBox(height: Constant.SIZE_08),
+
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.phone,
+                              size: Constant.CONTAINER_SIZE_20,
+                              color: Colors.grey.shade700,
+                            ),
+                            SizedBox(width: Constant.SIZE_06),
+                            Text(
+                              "9875643212",
+                              style: TextStyle(
+                                fontSize: Constant.CONTAINER_SIZE_14,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: Constant.CONTAINER_SIZE_14,
+                              ),
+                              side: BorderSide(
+                                color: themeData.primaryColor,
+                                width: 1.4,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_12,
+                                ),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "📞   ${Strings.CALL}",
+                              style: TextStyle(
+                                fontSize: Constant.CONTAINER_SIZE_16,
+
+                                color: themeData.primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_14),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: themeData.primaryColor,
+                              padding: EdgeInsets.symmetric(
+                                vertical: Constant.CONTAINER_SIZE_14,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_12,
+                                ),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              Strings.DIRECTION,
+                              style: TextStyle(
+                                fontSize: Constant.CONTAINER_SIZE_16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
 
-            SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-            // Detailed Breakdown Card
-            Card(
-              elevation: Constant.SIZE_01,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Detailed Breakdown',
-                      style: TextStyle(
-                        fontSize: Constant.LABEL_TEXT_SIZE_18,
-                        fontWeight: FontWeight.w600,
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: EdgeInsets.all(Constant.SIZE_04),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: Constant.CONTAINER_SIZE_26,
+                        ),
                       ),
                     ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    _buildDetailItem(
-                      icon: Icons.inventory_2,
-                      title: 'Total Containers',
-                      value: '${restaurant.totalContainers}',
-                      subtitle: 'Maximum container capacity',
-                      color: Constant.blueshade100,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    _buildDetailItem(
-                      icon: Icons.shopping_basket,
-                      title: 'Borrowed Containers',
-                      value: '${restaurant.borrowedContainers}',
-                      subtitle: 'Currently with customers',
-                      color: Constant.orangeshade100,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    _buildDetailItem(
-                      icon: Icons.warehouse,
-                      title: 'Available Containers',
-                      value: availableContainers.toString(),
-                      subtitle: 'Ready for use',
-                      color: Constant.greenshade100,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    _buildDetailItem(
-                      icon: Icons.percent,
-                      title: 'Usage Rate',
-                      value: '${usagePercentage.toStringAsFixed(1)}%',
-                      subtitle: 'Borrowed vs Total',
-                      color: Constant.indigoShade100,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }
