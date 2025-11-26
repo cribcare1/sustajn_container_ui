@@ -176,7 +176,7 @@ void showTransactionDetailsBottomSheet(
                               ),
                             ),
                             SizedBox(height: Constant.CONTAINER_SIZE_16),
-                            Divider(color: Colors.grey.shade300),
+                            // Divider(color: Colors.grey.shade300),
                           ],
 
                           SizedBox(height: Constant.SIZE_10),
