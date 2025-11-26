@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+
 
 void showTransactionDetailsBottomSheet(
   BuildContext context, {
@@ -176,7 +177,7 @@ void showTransactionDetailsBottomSheet(
                               ),
                             ),
                             SizedBox(height: Constant.CONTAINER_SIZE_16),
-                            Divider(color: Colors.grey.shade300),
+                            // Divider(color: Colors.grey.shade300),
                           ],
 
                           SizedBox(height: Constant.SIZE_10),

@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           leading: const SizedBox(),
           title: "Profile",action: [
         IconButton(
-          icon: Icon(Icons.edit,color: Colors.white,),
+          icon: Icon(Icons.edit,color: Colors.black,),
           onPressed: () {},
         ),
       ]).getAppBar(context),
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
                       decoration: BoxDecoration(
-                        color: Color(0xffe9f2ff),
+                        color:  Color(0xffeff7f4),
                         borderRadius: BorderRadius.circular(Constant.SIZE_15),
                       ),
                       child: Column(
@@ -93,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       height: Constant.CONTAINER_SIZE_70,
       decoration: BoxDecoration(
-        color: Color(0xffe9f2ff),
+        color: Color(0xffeff7f4),
         borderRadius: BorderRadius.circular(Constant.SIZE_10),
         boxShadow: [
           BoxShadow(

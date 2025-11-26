@@ -1,13 +1,14 @@
-import 'package:container_tracking/resutants/resturant_transaction_history.dart';
-import 'package:container_tracking/resutants/transaction_details_bottomsheet.dart';
+import 'package:container_tracking/resutants/screens/resturant_transaction_history.dart';
+import 'package:container_tracking/resutants/screens/transaction_details_bottomsheet.dart';
 import 'package:flutter/material.dart';
 
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
-import 'models/model.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../models/model.dart';
+import 'container_count_details.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
   final Restaurant restaurant;
@@ -17,8 +18,8 @@ class RestaurantDetailsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> containerCards = [
     {'title': "Total Containers Issued", 'value': 2343},
     {'title': "Total available", 'value': 1354},
-    {'title': "Total Given to Customers", 'value': 1543},
-    {'title': "Pending from Customers", 'value': 234},
+    {'title': "Total Issued to the Customers", 'value': 1543},
+    {'title': "Total Returned from Customers", 'value': 234},
   ];
 
   @override
@@ -58,7 +59,19 @@ class RestaurantDetailsScreen extends StatelessWidget {
                   childAspectRatio: 1.6,
                 ),
                 itemBuilder: (context, index) {
-                  return _buildContainersInfo(context, containerCards[index]);
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ContainerCountDetails(
+                            title: containerCards[index]['title'],
+                          ),
+                        ),
+                      );
+                    },
+                    child: _buildContainersInfo(context, containerCards[index]),
+                  );
                 },
               ),
 
@@ -136,10 +149,14 @@ class RestaurantDetailsScreen extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 print('on tap called');
-                Navigator.push(context,
-                MaterialPageRoute(builder: (context)=>RestaurantTransactionHistoryScreen() ));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RestaurantTransactionHistoryScreen(),
+                  ),
+                );
               },
               child: Text(
                 Strings.VIEW_ALL,
@@ -378,7 +395,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                                 vertical: Constant.CONTAINER_SIZE_14,
                               ),
                               side: BorderSide(
-                                color:  Color(0xFF3f715e),
+                                color: Color(0xFF3f715e),
                                 width: 1.4,
                               ),
                               shape: RoundedRectangleBorder(
@@ -393,7 +410,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: Constant.CONTAINER_SIZE_16,
 
-                                color:  Color(0xFF3f715e),
+                                color: Color(0xFF3f715e),
                               ),
                             ),
                           ),
