@@ -401,7 +401,7 @@ class _ContainerRequestScreenState extends State<ContainerRequestScreen> {
         Icon(
           Icons.location_on,
           size: Constant.CONTAINER_SIZE_16,
-          color: Colors.red,
+          color: Constant.indigoShade100,
         ),
         SizedBox(width: Constant.SIZE_08),
         Expanded(
