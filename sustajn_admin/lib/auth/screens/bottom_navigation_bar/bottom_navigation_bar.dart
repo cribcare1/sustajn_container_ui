@@ -5,6 +5,7 @@ import '../../../container_list/container_list_screen.dart';
 import '../../../container_request/container_request_screen.dart';
 import '../../../history/screens/history_screen.dart';
 import '../../../resutants/resturant_list_screen.dart';
+import '../../../utils/theme_utils.dart';
 import '../profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = CustomTheme.getTheme(true);
     return Scaffold(
       body: _getCurrentScreen(),
       bottomNavigationBar: Container(
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xFFe8f7f1),
+          backgroundColor: themeData!.secondaryHeaderColor,
           selectedItemColor: Color(0xff6eac9e),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
               icon: Icon(Icons.request_page),
-              label: 'Request',
+              label: 'Containers',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
