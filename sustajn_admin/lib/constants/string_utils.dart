@@ -23,4 +23,7 @@ static const String MEDIUM = 'Medium';
 static const String SMALL = 'Small';
 static const String RESTURANT_TRANSACTION_HISTORY_TITLE = 'Resturant Transaction History';
 static const String STATUS= 'Status';
+static const CONTAINERS_TITLE  = 'Containers';
+static const CONTAINER_DETAILS = 'Container Details';
+static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
 }
