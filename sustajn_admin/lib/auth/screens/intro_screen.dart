@@ -2,11 +2,14 @@ import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/auth/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/theme_utils.dart';
+
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeData = CustomTheme.getTheme(true);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +42,7 @@ Expanded(
               Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF78B5A4),
+              backgroundColor: themeData!.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),

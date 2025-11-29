@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
+import '../common_widgets/filter_screen.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
@@ -137,7 +138,19 @@ class _ContainersScreenState extends State<ContainersScreen> {
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                 borderSide: BorderSide.none,
               ),
-              suffixIcon: const Icon(Icons.filter_list),
+              suffixIcon: GestureDetector(
+                onTap: () async {
+                  final result = await showContainerFilterBottomSheet(
+                    context,
+                    containerList,
+                  );
+
+                  if (result != null) {
+                    print("Selected: $result");
+                  }
+
+                },
+                  child: const Icon(Icons.filter_list)),
             ),
           ),
         ),

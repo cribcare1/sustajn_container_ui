@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
           backgroundColor: themeData!.secondaryHeaderColor,
-          selectedItemColor: Color(0xff6eac9e),
+          selectedItemColor: themeData.primaryColor,
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
           unselectedLabelStyle: TextStyle(
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.request_page),
+              icon: Icon(Icons.rice_bowl),
               label: 'Containers',
             ),
             BottomNavigationBarItem(
