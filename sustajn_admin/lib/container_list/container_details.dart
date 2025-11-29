@@ -321,7 +321,7 @@ class ContainerDetailsScreen extends StatelessWidget {
         shape: BoxShape.circle,
         color: const Color(0xFFEFF7F1),
       ),
-      child: const Icon(Icons.arrow_outward, size: 18),
+      child:  Icon(Icons.arrow_outward, size: Constant.CONTAINER_SIZE_18),
     );
   }
 }

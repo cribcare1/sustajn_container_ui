@@ -35,7 +35,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
             ? _buildEmptyScreen()
             : _buildContainerList(themeData!),
       ),
-      floatingActionButton :
+      floatingActionButton :  containerList.isNotEmpty ?
       FloatingActionButton(
         backgroundColor: const Color(0xFF2D8F6E),
         onPressed: () async {
@@ -49,8 +49,8 @@ class _ContainersScreenState extends State<ContainersScreen> {
             });
           }
         },
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
-      ) ,
+        child: Icon(Icons.add, color: Colors.white, size: Constant.CONTAINER_SIZE_28),
+      ) : null,
 
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -61,19 +61,65 @@ class _ContainersScreenState extends State<ContainersScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Image.asset(
+            'assets/images/bowls.png',
+            width: Constant.CONTAINER_SIZE_80,
+            height: Constant.CONTAINER_SIZE_80,
+            color: Colors.grey,
+            fit: BoxFit.contain,
+          ),
+          SizedBox(height: Constant.CONTAINER_SIZE_20),
           Text(
-            'No Containers added yet',
+            'No containers added yet',
             style: TextStyle(
               fontSize: Constant.LABEL_TEXT_SIZE_16,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+          SizedBox(height: Constant.SIZE_08),
+          Text(
+            'Start by adding container items so they appear here.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: Constant.CONTAINER_SIZE_14,
+              color: Colors.grey,
+            ),
+          ),
+
+          SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AddContainerScreen()),
+              );
+              if (result != null) {
+                      setState(() {
+                        containerList.add(result);
+                      });
+                    }
+            },
+            icon: Icon(Icons.add, color: Colors.white),
+            label: Text(
+              'Add container',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFD9A21B),
+              padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14, horizontal: Constant.CONTAINER_SIZE_24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
+
 
   Widget _buildContainerList(ThemeData themeData) {
     return Column(
@@ -135,8 +181,8 @@ class _ContainersScreenState extends State<ContainersScreen> {
               child: item["image"] != null
                   ? Image.file(
                 item["image"] as File,
-                width: 55,
-                height: 55,
+                width: Constant.CONTAINER_SIZE_55,
+                height: Constant.CONTAINER_SIZE_55,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return _buildPlaceholderImage();
@@ -156,7 +202,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: Constant.SIZE_04),
                   Text(
                     item["id"]?.toString() ?? 'No ID',
                     style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14, color: Colors.grey),
@@ -175,8 +221,8 @@ class _ContainersScreenState extends State<ContainersScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(width: 10),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+             SizedBox(width: Constant.SIZE_10),
+             Icon(Icons.arrow_forward_ios, size: Constant.CONTAINER_SIZE_16, color: Colors.grey),
           ],
         ),
 
@@ -186,8 +232,8 @@ class _ContainersScreenState extends State<ContainersScreen> {
 
   Widget _buildPlaceholderImage() {
     return Container(
-      width: 55,
-      height: 55,
+      width: Constant.CONTAINER_SIZE_55,
+      height: Constant.CONTAINER_SIZE_55,
       color: Colors.grey[200],
       child: Icon(Icons.image, color: Colors.grey[400]),
     );

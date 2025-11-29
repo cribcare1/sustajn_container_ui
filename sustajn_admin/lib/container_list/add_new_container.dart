@@ -419,7 +419,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, size: 18, color: Colors.black),
+              child:  Icon(Icons.close, size: Constant.CONTAINER_SIZE_18, color: Colors.black),
             ),
           )
         ],
@@ -432,7 +432,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 1, minHeight: 1),
+          constraints: BoxConstraints(minWidth: Constant.SIZE_01, minHeight: Constant.SIZE_01),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -451,7 +451,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                "Upload container image (JPG/PNG, max 5 MB)",
+                "Upload container image (JPG/PNG)",
                 style: TextStyle(
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
                   color: Colors.grey,
@@ -488,8 +488,8 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
           ),
         ),
         Positioned(
-          top: 8,
-          right: 8,
+          top: Constant.SIZE_08,
+          right: Constant.SIZE_08,
           child: GestureDetector(
             onTap: _removeImage,
             child: Container(
@@ -499,7 +499,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                 color: Colors.white.withOpacity(0.9),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, size: 18, color: Colors.black),
+              child:  Icon(Icons.close, size: Constant.CONTAINER_SIZE_18, color: Colors.black),
             ),
           ),
         ),
