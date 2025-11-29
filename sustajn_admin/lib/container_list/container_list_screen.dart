@@ -19,10 +19,11 @@ class ContainersScreen extends StatefulWidget {
 
 class _ContainersScreenState extends State<ContainersScreen> {
   List<Map<String, dynamic>> containerList = [];
-  final themeData = CustomTheme.getTheme(true);
+
 
   @override
   Widget build(BuildContext context) {
+    final themeData = CustomTheme.getTheme(true);
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
@@ -32,7 +33,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
       body: SafeArea(
         child: containerList.isEmpty
             ? _buildEmptyScreen()
-            : _buildContainerList(),
+            : _buildContainerList(themeData!),
       ),
       floatingActionButton :
       FloatingActionButton(
@@ -74,7 +75,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
     );
   }
 
-  Widget _buildContainerList() {
+  Widget _buildContainerList(ThemeData themeData) {
     return Column(
       children: [
         Padding(
@@ -106,7 +107,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
             ),
             itemBuilder: (context, index) {
               final item = containerList[index];
-              return _buildContainerTile(item);
+              return _buildContainerTile(item, themeData!);
             },
           ),
         ),
@@ -114,7 +115,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
     );
   }
 
-  Widget _buildContainerTile(Map<String, dynamic> item) {
+  Widget _buildContainerTile(Map<String, dynamic> item, ThemeData themeData) {
     return GestureDetector(
       onTap: (){
         Navigator.push(context,
@@ -124,7 +125,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
         margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         decoration: BoxDecoration(
-          color: themeData?.scaffoldBackgroundColor,
+          color: themeData.scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         ),
         child: Row(

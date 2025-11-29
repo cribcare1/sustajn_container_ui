@@ -8,7 +8,7 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF78B5A4),
+      primaryColor: const Color(0xFFe7f7f1),
       secondaryHeaderColor: const Color(0xFFD1E5DE),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
@@ -21,7 +21,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xfffbfbfa),
+      scaffoldBackgroundColor: const Color(0xFFeef6f3),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),

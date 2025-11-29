@@ -31,16 +31,15 @@ class TotalListScreen extends StatelessWidget {
       ).getAppBar(context),
       body: Column(
         children: [
-          _buildSearchBar(context),
-          _buildMonthHeader(context),
-          Expanded(child: _buildList(context)),
+          _buildSearchBar(context, themeData!),
+          _buildMonthHeader(context, themeData),
+          Expanded(child: _buildList(context, themeData)),
         ],
       ),
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildSearchBar(BuildContext context, ThemeData theme) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: Constant.CONTAINER_SIZE_16,
@@ -69,8 +68,7 @@ class TotalListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMonthHeader(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildMonthHeader(BuildContext context, ThemeData theme) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
@@ -101,7 +99,7 @@ class TotalListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildList(BuildContext context) {
+  Widget _buildList(BuildContext context, ThemeData theme) {
     return ListView.builder(
       padding: EdgeInsets.only(
         left: Constant.CONTAINER_SIZE_16,
@@ -111,13 +109,12 @@ class TotalListScreen extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _buildListTile(context, item);
+        return _buildListTile(context, item, theme);
       },
     );
   }
 
-  Widget _buildListTile(BuildContext context, Map<String, dynamic> item) {
-    final theme = Theme.of(context);
+  Widget _buildListTile(BuildContext context, Map<String, dynamic> item, ThemeData theme) {
     return Container(
       margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_20),
       child: Column(

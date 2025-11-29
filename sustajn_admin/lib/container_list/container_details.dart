@@ -72,13 +72,13 @@ class ContainerDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildContainerHeader(context),
+              _buildContainerHeader(context, themeData!),
               SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-              _buildAvailableContainerCard(context),
+              _buildAvailableContainerCard(context, themeData),
               SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-              _buildIssuedReturnedRow(context),
+              _buildIssuedReturnedRow(context, themeData),
             ],
           ),
         ),
@@ -86,9 +86,7 @@ class ContainerDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContainerHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
+  Widget _buildContainerHeader(BuildContext context, ThemeData theme) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
       decoration: BoxDecoration(
@@ -155,8 +153,7 @@ class ContainerDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAvailableContainerCard(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildAvailableContainerCard(BuildContext context, ThemeData theme) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -187,18 +184,17 @@ class ContainerDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildIssuedReturnedRow(BuildContext context) {
+  Widget _buildIssuedReturnedRow(BuildContext context, ThemeData theme) {
     return Row(
       children: [
-        Expanded(child: _buildIssuedCard(context)),
+        Expanded(child: _buildIssuedCard(context, theme)),
         SizedBox(width: Constant.CONTAINER_SIZE_12),
-        Expanded(child: _buildReturnedCard(context)),
+        Expanded(child: _buildReturnedCard(context, theme)),
       ],
     );
   }
 
-  Widget _buildIssuedCard(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildIssuedCard(BuildContext context, ThemeData theme) {
     return GestureDetector(
       onTap: (){
         Navigator.push(
@@ -250,8 +246,7 @@ class ContainerDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReturnedCard(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildReturnedCard(BuildContext context, ThemeData theme) {
     return GestureDetector(
       onTap: (){
         Navigator.push(

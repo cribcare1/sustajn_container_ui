@@ -145,7 +145,6 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final themeData = CustomTheme.getTheme(true);
-
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
