@@ -165,7 +165,7 @@ class ContainerDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Available Containers",
+           Strings.AVAILABLE_CONTAINERS,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontSize: Constant.LABEL_TEXT_SIZE_16,
               fontWeight: FontWeight.w600,
@@ -201,8 +201,8 @@ class ContainerDetailsScreen extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (_) => TotalListScreen(
-              title: "Total Issued",
-              searchHint: "Search by restaurant, street…",
+              title: Strings.TOTAL_ISSUED_TITLE,
+              searchHint: Strings.SEARCH_BY_RESTURANT,
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: items,
@@ -223,7 +223,7 @@ class ContainerDetailsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Total Issued",
+                  Strings.TOTAL_ISSUED_TITLE,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -253,8 +253,8 @@ class ContainerDetailsScreen extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (_) => TotalListScreen(
-              title: "Total Returned",
-              searchHint: "Search by restaurant, street…",
+              title: Strings.TOTAL_RETURNED,
+              searchHint: Strings.SEARCH_BY_RESTURANT,
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: totalReturnedItems,
@@ -275,7 +275,7 @@ class ContainerDetailsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Total Returned",
+                  Strings.TOTAL_RETURNED,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: Constant.LABEL_TEXT_SIZE_16,

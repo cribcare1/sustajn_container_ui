@@ -171,7 +171,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Container Information',
+                            Strings.CONTAINER_INFORMATION,
                             style: TextStyle(
                               fontSize: Constant.LABEL_TEXT_SIZE_18,
                               fontWeight: FontWeight.bold,
@@ -185,7 +185,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                               children: [
                                 _buildTextField(
                                   controller: _productController,
-                                  hint: 'Enter Product*',
+                                  hint: Strings.ENTER_PRODUCT,
                                   validator: _validateProduct,
                                   keyboardType: TextInputType.text,
                                 ),
@@ -193,7 +193,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
 
                                 _buildTextField(
                                   controller: _productIdController,
-                                  hint: 'Enter Product ID*',
+                                  hint: Strings.ENTER_PRODUCT_ID,
                                   validator: _validateProductId,
                                   keyboardType: TextInputType.text,
                                 ),
@@ -201,7 +201,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
 
                                 _buildTextField(
                                   controller: _volumeController,
-                                  hint: 'Enter Volume in ml*',
+                                  hint:Strings.ENTER_VOLUME,
                                   validator: _validateVolume,
                                   keyboardType: TextInputType.text,
                                 ),
@@ -209,7 +209,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
 
                                 _buildTextField(
                                   controller: _quantityController,
-                                  hint: 'Quantity*',
+                                  hint: Strings.ENTER_QUANTITY,
                                   validator: _validateQuantity,
                                   keyboardType: TextInputType.number,
                                 ),
@@ -217,7 +217,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
 
                                 _buildTextField(
                                   controller: _priceController,
-                                  hint: 'Price of the container*',
+                                  hint: Strings.CONTAINER_PRICE,
                                   validator: _validatePrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 ),
@@ -239,7 +239,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Container Image',
+                            Strings.CONTAINER_IMAGE,
                             style: TextStyle(
                               fontSize: Constant.LABEL_TEXT_SIZE_18,
                               fontWeight: FontWeight.bold,
@@ -293,7 +293,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                     }
                   },
                   child: Text(
-                    'Add Container',
+                    Strings.ADD_CONTAINER,
                     style: TextStyle(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
                       color: Colors.black,
@@ -381,7 +381,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Choose",
+                  Strings.CHOOSE,
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_18,
                     fontWeight: FontWeight.bold,
@@ -393,12 +393,12 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildDialogOption(
-                      label: "Camera",
+                      label: Strings.CAMERA,
                       icon: Icons.camera_alt_outlined,
                       onTap: () => _pickImage(ImageSource.camera),
                     ),
                     _buildDialogOption(
-                      label: "Gallery",
+                      label: Strings.GALLERY,
                       icon: Icons.image_outlined,
                       onTap: () => _pickImage(ImageSource.gallery),
                     ),
@@ -451,7 +451,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                "Upload container image (JPG/PNG)",
+                Strings.UPLOAD_IMAGE,
                 style: TextStyle(
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
                   color: Colors.grey,
@@ -460,7 +460,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                "Choose",
+                Strings.CHOOSE,
                 style: TextStyle(
                   fontSize: Constant.LABEL_TEXT_SIZE_15,
                   color: const Color(0xFF2D8F6E),

@@ -26,4 +26,25 @@ static const String STATUS= 'Status';
 static const CONTAINERS_TITLE  = 'Containers';
 static const CONTAINER_DETAILS = 'Container Details';
 static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
+static const CONTAINER_INFORMATION = 'Container Information';
+static const ENTER_PRODUCT = 'Enter Product*';
+static const ENTER_PRODUCT_ID = 'Enter Product ID*';
+static const ENTER_VOLUME = 'Enter Volume in ml*';
+static const ENTER_QUANTITY = 'Quantity*';
+static const CONTAINER_PRICE = 'Price of the container*';
+static const CONTAINER_IMAGE = 'Container Image';
+static const ADD_CONTAINER= 'Add Container';
+static const CHOOSE = 'Choose';
+static const CAMERA = 'Camera';
+static const GALLERY = 'Gallery';
+static const UPLOAD_IMAGE = 'Upload container image (JPG/PNG)';
+static const NO_CONTAINERS = 'No containers added yet';
+static const START_ADD_CONTAINERS= 'Start by adding container items so they appear here';
+static const SEARCH_CONTAINER_NAME = 'Search by Container Name or ID';
+static const AVAILABLE_CONTAINERS = 'Available Containers';
+static const TOTAL_ISSUED_TITLE = 'Total Issued';
+static const SEARCH_BY_RESTURANT= 'Search by resturant';
+static const TOTAL_RETURNED= 'Total Returned';
+
+
 }

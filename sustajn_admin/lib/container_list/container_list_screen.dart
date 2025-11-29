@@ -70,7 +70,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_20),
           Text(
-            'No containers added yet',
+            Strings.NO_CONTAINERS,
             style: TextStyle(
               fontSize: Constant.LABEL_TEXT_SIZE_16,
               fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
 
           SizedBox(height: Constant.SIZE_08),
           Text(
-            'Start by adding container items so they appear here.',
+            Strings.START_ADD_CONTAINERS,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: Constant.CONTAINER_SIZE_14,
@@ -104,7 +104,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
             },
             icon: Icon(Icons.add, color: Colors.white),
             label: Text(
-              'Add container',
+              Strings.ADD_CONTAINER,
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
@@ -128,7 +128,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: TextField(
             decoration: InputDecoration(
-              hintText: "Search by Container Name or ID",
+              hintText: Strings.SEARCH_CONTAINER_NAME,
               prefixIcon: const Icon(Icons.search),
               filled: true,
               fillColor: Colors.white,
