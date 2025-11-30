@@ -247,7 +247,10 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
                           GestureDetector(
-                            onTap: _showChooseDialog,
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              _showChooseDialog();
+                            },
                             child: _buildDashedContainer(
                               height: screenWidth * 0.35,
                               child: _selectedImage == null
