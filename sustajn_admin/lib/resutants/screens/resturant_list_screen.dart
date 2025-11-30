@@ -1,10 +1,11 @@
-import 'package:container_tracking/resutants/resturant_details_screen.dart';
+import 'package:container_tracking/resutants/screens/resturant_details_screen.dart';
 import 'package:flutter/material.dart';
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import 'models/model.dart';
+
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../models/model.dart';
 
 class RestaurantListScreen extends StatefulWidget {
   const RestaurantListScreen({super.key});

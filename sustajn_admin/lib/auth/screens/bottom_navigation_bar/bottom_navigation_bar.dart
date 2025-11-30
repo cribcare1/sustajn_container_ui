@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../../container_request/container_request_screen.dart';
+import '../../../customer/screens/customer_list_screen.dart';
 import '../../../history/screens/history_screen.dart';
-import '../../../resutants/resturant_list_screen.dart';
+import '../../../resutants/screens/resturant_list_screen.dart';
 import '../profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return HistoryScreen();
       case 3:
-        return ProfileScreen();
+        return CustomerListScreen(); //CustomerListScreen  ProfileScreen
       default:
         return RestaurantListScreen();
     }
