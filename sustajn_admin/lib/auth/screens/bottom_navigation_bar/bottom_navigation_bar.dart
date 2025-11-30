@@ -6,7 +6,6 @@ import '../../../container_request/container_request_screen.dart';
 import '../../../customer/screens/customer_list_screen.dart';
 import '../../../history/screens/history_screen.dart';
 import '../../../resutants/screens/resturant_list_screen.dart';
-import '../../../resutants/resturant_list_screen.dart';
 import '../../../utils/theme_utils.dart';
 import '../profile_screen.dart';
 
@@ -47,7 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: Constant.LABEL_TEXT_SIZE_14,
           ),
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.home),
+                label: 'Home'),
             BottomNavigationBarItem(
               icon: Icon(Icons.rice_bowl),
               label: 'Containers',
@@ -56,7 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.history),
               label: 'History',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            BottomNavigationBarItem(icon: Icon(Icons.person),
+                label: 'Profile'),
           ],
         ),
       ),
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return HistoryScreen();
       case 3:
-        return CustomerListScreen(); //CustomerListScreen  ProfileScreen
+        return CustomerListScreen();
       default:
         return RestaurantListScreen();
     }
