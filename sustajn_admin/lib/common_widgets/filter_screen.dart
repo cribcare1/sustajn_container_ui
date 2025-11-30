@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/number_constants.dart';   // your Constant class
+import '../constants/number_constants.dart';
 
 Future<List<Map<String, dynamic>>?> showContainerFilterBottomSheet(
     BuildContext context,
@@ -77,7 +77,6 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
     );
   }
 
-  // ========================= UI SECTIONS =========================
 
   Widget _buildTopHandle() {
     return Padding(
@@ -186,6 +185,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
 
           Checkbox(
             value: isSelected,
+            activeColor: Color(0xFFD9B649),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Constant.SIZE_06),
             ),
@@ -257,7 +257,6 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
     );
   }
 
-  // ========================= LOGIC =========================
 
   void _filterSearch(String value) {
     setState(() {
