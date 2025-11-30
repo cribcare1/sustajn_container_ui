@@ -3,6 +3,8 @@ import 'package:container_tracking/container_list/total_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
+import '../common_widgets/edit_delete_menu.dart';
+import '../common_widgets/filter_screen_2.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
@@ -64,6 +66,22 @@ class ContainerDetailsScreen extends StatelessWidget {
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: Strings.CONTAINER_DETAILS,
+        action: [
+          IconButton(
+              onPressed: (){
+                showEditDeleteMenu(
+                  context: context,
+                  onEdit: () {
+                    print("Edit clicked");
+                  },
+                  onDelete: () {
+                    print("Delete clicked");
+                  },
+                );
+
+              },
+              icon: Icon(Icons.more_vert))
+        ],
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: SafeArea(
@@ -206,6 +224,36 @@ class ContainerDetailsScreen extends StatelessWidget {
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: items,
+              onTap: (){
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ReusableFilterBottomSheet(
+                    title: "Filters",
+                    leftTabTitle: "Month",
+                    options: [
+                      "December–2024",
+                      "January–2025",
+                      "February–2024",
+                      "March–2024",
+                      "Apiral–2024",
+                      "May–2024",
+                      "June–2024",
+                      "July–2024",
+                      "August–2024",
+                      "September–2025",
+                      "October–2025",
+                      "November–2025",
+                    ],
+                    selectedValue: "January–2025",
+                    onApply: (value) {
+                      print("Selected Month = $value");
+                    },
+                  ),
+                );
+
+              },
             ),
           ),
         );
@@ -258,6 +306,36 @@ class ContainerDetailsScreen extends StatelessWidget {
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: totalReturnedItems,
+              onTap: (){
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ReusableFilterBottomSheet(
+                    title: "Filters",
+                    leftTabTitle: "Month",
+                    options: [
+                      "December–2024",
+                      "January–2025",
+                      "February–2024",
+                      "March–2024",
+                      "Apiral–2024",
+                      "May–2024",
+                      "June–2024",
+                      "July–2024",
+                      "August–2024",
+                      "September–2025",
+                      "October–2025",
+                      "November–2025",
+                    ],
+                    selectedValue: "January–2025",
+                    onApply: (value) {
+                      print("Selected Month = $value");
+                    },
+                  ),
+                );
+
+              },
             ),
           ),
         );

@@ -10,6 +10,7 @@ class TotalListScreen extends StatelessWidget {
   final String monthTitle;
   final int totalAmount;
   final List<Map<String, dynamic>> items;
+  final VoidCallback onTap;
 
   const TotalListScreen({
     super.key,
@@ -18,6 +19,7 @@ class TotalListScreen extends StatelessWidget {
     required this.monthTitle,
     required this.totalAmount,
     required this.items,
+    required this.onTap
   });
 
   @override
@@ -27,6 +29,7 @@ class TotalListScreen extends StatelessWidget {
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: title,
+
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: Column(
@@ -54,8 +57,10 @@ class TotalListScreen extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white,
-          prefixIcon: Icon(Icons.search, color: theme.primaryColorDark),
-          suffixIcon: Icon(Icons.filter_list, color: theme.primaryColorDark),
+          prefixIcon: Icon(Icons.search, color: theme.primaryColor),
+          suffixIcon: GestureDetector(
+            onTap: onTap,
+              child: Icon(Icons.filter_list, color: theme.primaryColor)),
           contentPadding: EdgeInsets.symmetric(
             vertical: Constant.CONTAINER_SIZE_14,
           ),
