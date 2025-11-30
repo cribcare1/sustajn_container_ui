@@ -1,8 +1,9 @@
 import 'package:container_tracking/constants/string_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../constants/number_constants.dart';
-import 'models/transaction_record.dart';
+import '../../constants/number_constants.dart';
+import '../models/transaction_record.dart';
+
 
 class TransactionItemCard extends StatelessWidget {
   final TransactionRecord data;

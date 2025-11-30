@@ -1,11 +1,12 @@
-import 'package:container_tracking/resutants/transaction_card.dart';
+import 'package:container_tracking/resutants/screens/transaction_card.dart';
 import 'package:flutter/material.dart';
 
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import 'models/transaction_record.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../models/transaction_record.dart';
+
 
 class RestaurantTransactionHistoryScreen extends StatefulWidget {
   const RestaurantTransactionHistoryScreen({super.key});
