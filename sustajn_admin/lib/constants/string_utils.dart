@@ -1,7 +1,6 @@
 class Strings{
 static const String LOGIN = "Log In";
 static const String SIGN_UP = "Sign Up";
-static const String FORGOT_PASSWORD = "Forgot Password";
 static const String RESTURANT_TITLE = 'Resturants';
 static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
 static const String APPROVED_STATUS = 'Approved';
@@ -45,6 +44,49 @@ static const AVAILABLE_CONTAINERS = 'Available Containers';
 static const TOTAL_ISSUED_TITLE = 'Total Issued';
 static const SEARCH_BY_RESTURANT= 'Search by resturant';
 static const TOTAL_RETURNED= 'Total Returned';
+static const OVERDUE = 'Overdue';
+static const RETURNED = 'Returned';
+static const BORROWED = 'Borrowed';
+static const MONTHLY = 'Monthly';
+static const DAILY = 'Daily';
+static const TOTAL_RETURNED_CONTAINER = 'Total Returned Containers';
+static const TOTAL_BORROWED_CONTAINER = 'Total Borrowed Containers';
+static const TOTAL_ACTIVE_CUSTOMER = 'Total Active Customers';
+static const TOTAL_REGISTERED_CUST = 'Total Customers Registered';
+static const TOTAL_ISSUED_CONTAINER = 'Total Issued Containers';
+static const TOTAL_ACTIVE_RESTURANTS = 'Total Active Resturants';
+static const TOTAL_REGISTERED_RESTURANT = 'Total Resturants Registered';
+static const RESTURANT = 'Resturant';
+static const CUSTOMER = 'Customer';
+static const TOTAL_EARNINGS = 'Total Earnings';
+static const VERIFY_EMAIL = 'Verify your email';
+static const SEND_CODE =  "We've sent you a code to verify your email id on\nabc***@gmail.com";
+static const VERIFY = 'Verify';
+static const DIDNT_RECV_CODE = "Didn't receive the code? ";
+static const RESEND = 'Resend';
+static const FILL_DETAILS = 'Please fill the below details to create your account';
+static const NAME = 'Name';
+static const MOBILE_NUMBER = 'Mobile Number';
+static const EMAIL = 'Email';
+static const PASSWORD = 'Password';
+static const CONFIRM_PASSWORD = 'Confirm Password';
+static const LOCATION = 'Location';
+static const CONTINUE_VERIFICATION = 'Continue to verification';
+static const ALREADY_HAVE_ACC = 'Already have an account?';
+static const RESET = 'Reset';
+static const SET_NEW_PASSWORD= 'Please set your new password';
+static const RESET_PASSWORD = 'Reset Password';
+static const WELCOME = 'Welcome';
+static const LOGIN_YOUR_ACC = 'Login to your account';
+static const FORGOT_PASSWORD = 'Forgot Password?';
+static const DONT_HAVE_ACC = "Don't have an account?";
+static const FORGOT_PASSWORD_TXT = 'Forgot Password';
+static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
+
+
+
+
+
 
 
 }

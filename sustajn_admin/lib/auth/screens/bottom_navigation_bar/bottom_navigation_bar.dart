@@ -7,6 +7,7 @@ import '../../../customer/screens/customer_list_screen.dart';
 import '../../../history/screens/history_screen.dart';
 import '../../../resutants/screens/resturant_list_screen.dart';
 import '../../../utils/theme_utils.dart';
+import '../dashboard_screen.dart';
 import '../profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCurrentTabContent() {
     switch (_currentIndex) {
       case 0:
-        return RestaurantListScreen();
+        return DashboardScreen();
       case 1:
         return ContainersScreen();
       case 2:

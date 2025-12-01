@@ -1,4 +1,5 @@
 import 'package:container_tracking/auth/screens/login_screen.dart';
+import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
@@ -25,7 +26,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _confirmPasswordController = TextEditingController();
   final _locationController = TextEditingController();
 
-  UserType _selectedType = UserType.user;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
@@ -38,276 +38,233 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Center(
-          child: SummaryCard(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      Strings.SIGN_UP,
-                      style: themeData!.textTheme.titleLarge,
-                    ),
-                    SizedBox(height: height * 0.02),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('User'),
-                            value: UserType.user,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('Restaurant'),
-                            value: UserType.restaurant,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('Admin'),
-                            value: UserType.admin,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Strings.SIGN_UP,
+                    style: themeData!.textTheme.titleLarge,
+                  ),
+                  SizedBox(height: height * 0.005),
+                  Text(
+                    Strings.FILL_DETAILS,
+                    style: themeData.textTheme.bodyMedium,
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                    /// --- Name Field ---
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: Strings.NAME,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your name';
-                        }
-                        return null;
-                      },
                     ),
-                    SizedBox(height: height * 0.02),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Enter your name';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                    /// --- Mobile Number Field ---
-                    TextFormField(
-                      controller: _mobileController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Mobile Number',
-                        prefixIcon: const Icon(Icons.phone),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  TextFormField(
+                    controller: _mobileController,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: Strings.MOBILE_NUMBER,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your mobile number';
-                        }
-                        if (v.length != 10) {
-                          return 'Enter a valid 10-digit number';
-                        }
-                        return null;
-                      },
                     ),
-                    SizedBox(height: height * 0.02),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Enter your mobile number';
+                      }
+                      if (v.length != 10) {
+                        return 'Enter a valid 10-digit number';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                    /// --- Email Field ---
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText:Strings.EMAIL,
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your email';
-                        }
-                        if (!v.contains('@')) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
-                      },
                     ),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Enter your email';
+                      }
+                      if (!v.contains('@')) {
+                        return 'Enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
 
 
 
-                    SizedBox(height: height * 0.02),
+                  SizedBox(height: height * 0.02),
 
-                    /// --- Password Field ---
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: Strings.PASSWORD,
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.grey,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
                       ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Enter your password';
-                        }
-                        if (v.length < 8) {
-                          return 'Password must be at least 8 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: height * 0.02),
-
-                    /// --- Confirm Password Field ---
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: !_isConfirmPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                            });
-                          },
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Confirm your password';
-                        }
-                        if (v != _passwordController.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
                     ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Enter your password';
+                      }
+                      if (v.length < 8) {
+                        return 'Password must be at least 8 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
 
-                    SizedBox(height: height * 0.02),
-                    /// --- Location Field ---
-                    TextFormField(
-                      controller: _locationController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: 'Location',
-                        prefixIcon: const Icon(Icons.location_on),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.map),
-                          onPressed: _navigateToMap,
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: !_isConfirmPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: Strings.CONFIRM_PASSWORD,
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.grey,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          });
+                        },
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Please select your location';
-                        }
-                        return null;
-                      },
-                      onTap: _navigateToMap,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    SizedBox(height: height * 0.03),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Confirm your password';
+                      }
+                      if (v != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
 
-                    /// --- Sign Up Button ---
-                    ElevatedButton(
+                  SizedBox(height: height * 0.02),
+                  TextFormField(
+                    controller: _locationController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText:Strings.LOCATION,
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.location_on, color: Colors.grey,),
+                        onPressed: _navigateToMap,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Please select your location';
+                      }
+                      return null;
+                    },
+                    onTap: _navigateToMap,
+                  ),
+                  SizedBox(height: height * 0.03),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:  themeData.primaryColor,
+                        backgroundColor: const Color(0xFFD0A52C),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Registered as ${_selectedType.name.toUpperCase()}'),
-                            ),
-                          );
-                        }
-                      },
+                        Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> VerifyEmailScreen()));
+
+                            },
                       child: Text(
-                        Strings.SIGN_UP,
-                        style: themeData.textTheme.titleMedium!
-                            .copyWith(color: Colors.white),
+                        Strings.CONTINUE_VERIFICATION,
+                        style: themeData.textTheme.titleMedium!.copyWith(
+                          color: themeData.primaryColor,
+                        ),
                       ),
                     ),
-                    SizedBox(height: height * 0.02),
-                    Text.rich(
+                  ),
+                  SizedBox(height: height * 0.02),
+                  Center(
+                    child: Text.rich(
                       TextSpan(
-                        text: "Already have Account? ",
-                        style: const TextStyle(fontSize: 14),
+                        text: Strings.ALREADY_HAVE_ACC,
+                        style: themeData.textTheme.bodyMedium,
                         children: [
                           TextSpan(
                             text: Strings.LOGIN,
-                            style: const TextStyle(
-                              color: Colors.indigo,
+                            style: TextStyle(
+                              color: themeData.primaryColor,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const LoginScreen(),
-                                  ),
-                                );
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context)=> LoginScreen()));
+
                               },
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),

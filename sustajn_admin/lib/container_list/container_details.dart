@@ -3,11 +3,11 @@ import 'package:container_tracking/container_list/total_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
-import '../common_widgets/edit_delete_menu.dart';
 import '../common_widgets/filter_screen_2.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
+import '../utils/utility.dart';
 
 class ContainerDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> containerData;
@@ -59,6 +59,9 @@ class ContainerDetailsScreen extends StatelessWidget {
       "amount": 300,
     },
   ];
+
+  final GlobalKey _menuKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
@@ -67,21 +70,24 @@ class ContainerDetailsScreen extends StatelessWidget {
       appBar: CustomAppBar(
         title: Strings.CONTAINER_DETAILS,
         action: [
-          IconButton(
-              onPressed: (){
-                showEditDeleteMenu(
-                  context: context,
-                  onEdit: () {
-                    print("Edit clicked");
-                  },
-                  onDelete: () {
-                    print("Delete clicked");
-                  },
-                );
+        IconButton(
+        key: _menuKey,
+        icon: const Icon(Icons.more_vert),
+        onPressed: () {
+          Utils.showEditDeleteMenu(
+            context: context,
+            iconKey: _menuKey,
+            onEdit: () {
+              print("Edit clicked");
+            },
+            onDelete: () {
+              print("Delete clicked");
+            },
+          );
+        },
+      )
 
-              },
-              icon: Icon(Icons.more_vert))
-        ],
+      ],
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: SafeArea(
