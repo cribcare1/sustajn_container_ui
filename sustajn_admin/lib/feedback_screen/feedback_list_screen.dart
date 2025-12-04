@@ -9,27 +9,6 @@ import '../utils/theme_utils.dart';
 import 'feedback_details_screen.dart';
 import 'model/feedback_details_model.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp( MyApp());
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Container tracking',
-        theme: CustomTheme.getTheme(true),
-        home: const FeedBackScreen(),
-      ),
-    );
-  }
-}
-
-
 class FeedBackScreen extends StatefulWidget {
   const FeedBackScreen({
     super.key});

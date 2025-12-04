@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return HistoryScreen();
       case 3:
-        return CustomerListScreen();
+        return MyProfileScreen();
       default:
         return RestaurantListScreen();
     }
