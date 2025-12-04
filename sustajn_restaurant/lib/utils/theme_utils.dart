@@ -8,8 +8,8 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF78B5A4),
-      secondaryHeaderColor: const Color(0xFFD1E5DE),
+      primaryColor: const Color(0xFF3f715e),
+      secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
         secondary: Color(0xff00c4cc),
@@ -21,7 +21,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xfffbfbfa),
+      scaffoldBackgroundColor: const Color(0xFFeef6f3),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),
@@ -106,6 +106,8 @@ class CustomTheme {
       color: Colors.white,
     );
   }
+
+
 
 
 }
