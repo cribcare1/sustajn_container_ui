@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/number_constants.dart';
+import '../feedback_screen/model/feedback_details_model.dart';
 
 class CustomTheme {
   static ThemeData? getTheme(isLightMode) {
@@ -105,6 +106,19 @@ class CustomTheme {
       fontSize: 18.0,
       color: Colors.white,
     );
+  }
+
+  static Color? badgeColor(BuildContext context, FeedbackStatus status) {
+    switch (status) {
+      case FeedbackStatus.newUnread:
+        return null;
+      case FeedbackStatus.inProgress:
+        return const Color(0xFFF1C94A);
+      case FeedbackStatus.resolved:
+        return const Color(0xFF4CAF50);
+      case FeedbackStatus.rejected:
+        return const Color(0xFFE53935);
+    }
   }
 
 

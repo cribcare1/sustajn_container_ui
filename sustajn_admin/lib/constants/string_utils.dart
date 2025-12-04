@@ -82,6 +82,44 @@ static const FORGOT_PASSWORD = 'Forgot Password?';
 static const DONT_HAVE_ACC = "Don't have an account?";
 static const FORGOT_PASSWORD_TXT = 'Forgot Password';
 static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
+static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
+static const FEEDBACK = 'Feedback';
+static const EDIT = 'Edit';
+static const DELETE = 'Delete';
+static const REJECT_TXT = 'rejected';
+static const RESOLVED_TXT = 'resolved';
+static const INPROGRESS_TXT = 'in progress';
+static const NEW_UNREAD = 'New / Unread';
+static const FEEDBACK_TITLE = 'Feedback';
+static const REJECT_BUTTON = 'Reject';
+static const RESOLVE_BUTTON= 'Resolve';
+static const RESOLVE_FEEDBACK = 'Resolve feedback?';
+static const RESOLVE_DIALOG_TXT = 'Are you sure you want to resolve this feedback?';
+static const REJECT_FEEDBACK= 'Reject feedback?';
+static const REJECT_DIALOG_TXT = 'Are you sure you want to reject this feedback? This action cannot be undone';
+static const ACKNOWLEDGEMENT_TXT = 'Acknowledgement';
+static const ACK_TITLE = 'Acknowledgement feedback?';
+static const ACK_DIALOG_TXT = 'Are you sure you want to acknowledge this feedback?';
+static const APPROVE_TXT = 'Approve';
+static const IMAGES = 'Images';
+static const DESCRIPTION = 'Description';
+static const SUBJECT = 'Subject';
+static const REPORT_ID = 'Report ID';
+static const DATE_TIME = 'Date & Time';
+static const FEEDBACK_DETAILS = 'Feedback Details';
+static const STATUS_INPROGRESS = 'In Progress';
+static const STATUS_RESOLVED = 'Resolved';
+static const STATUS_REJECTED = 'Rejected';
+static const ACK_REMARKS= 'Acknowledged Remarks';
+static const RESOLVED_REMARKS= 'Resolved Remarks';
+static const REJECTED_RAMARKS= 'Rejected Remarks';
+
+
+
+
+
+
+
 
 
 

@@ -11,6 +11,10 @@ class TotalListScreen extends StatelessWidget {
   final int totalAmount;
   final List<Map<String, dynamic>> items;
   final VoidCallback onTap;
+  final String? subtitleField;
+  final String? extraField;
+  final bool showInnerDivider;
+  final bool showSegmentedTab;
 
   const TotalListScreen({
     super.key,
@@ -19,7 +23,11 @@ class TotalListScreen extends StatelessWidget {
     required this.monthTitle,
     required this.totalAmount,
     required this.items,
-    required this.onTap
+    required this.onTap,
+    this.subtitleField,
+    this.extraField,
+    this.showInnerDivider = false,
+    this.showSegmentedTab = false,
   });
 
   @override
@@ -150,12 +158,6 @@ class TotalListScreen extends StatelessWidget {
           SizedBox(height: Constant.SIZE_06),
           Row(
             children: [
-              Icon(
-                Icons.location_on,
-                size: Constant.CONTAINER_SIZE_16,
-                color: Colors.grey.shade600,
-              ),
-              SizedBox(width: Constant.SIZE_06),
               Expanded(
                 child: Text(
                   item["address"],
