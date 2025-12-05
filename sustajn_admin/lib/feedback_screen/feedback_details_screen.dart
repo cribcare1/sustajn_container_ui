@@ -142,7 +142,9 @@ class FeedbackDetailsScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),),
                     SizedBox(height: Constant.SIZE_10,),
-                    Text(data.subject, style: theme.textTheme.bodyMedium),
+                    Text('High-quality leak-proof stainless steel lunch '
+                        'box with multiple compartments. Durable, reusable, and '
+                        'perfect for office or school meals.', style: theme.textTheme.bodyMedium),
                   ],
                 ),
               ),
@@ -158,7 +160,10 @@ class FeedbackDetailsScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ), ),
                     SizedBox(height: Constant.SIZE_10,),
-                    Text(data.description, style: theme.textTheme.bodyMedium),
+                    Text('Lightweight yet strong, this reusable cotton tote '
+                        'bag is perfect for groceries, books, and everyday essentials. '
+                        'Made from 100% organic cotton and machine washable for '
+                        'long-term use.', style: theme.textTheme.bodyMedium),
                   ],
                 ),
               ),
@@ -181,7 +186,12 @@ class FeedbackDetailsScreen extends StatelessWidget {
                     SizedBox(height: Constant.SIZE_06),
 
                     Column(
-                      children: data.images
+                      children: [
+                        "image_01.png",
+                        "image_02.jpg",
+                        "product_photo.png",
+                        "banner_sample.jpg",
+                      ]
                           .map(
                             (img) => Padding(
                           padding: EdgeInsets.only(bottom: Constant.SIZE_10),
@@ -190,7 +200,7 @@ class FeedbackDetailsScreen extends StatelessWidget {
                               Icon(
                                 Icons.image,
                                 size: Constant.CONTAINER_SIZE_20,
-                                color: theme.colorScheme.primary,
+                                color: theme.primaryColor,
                               ),
                               SizedBox(width: Constant.CONTAINER_SIZE_12),
                               Expanded(

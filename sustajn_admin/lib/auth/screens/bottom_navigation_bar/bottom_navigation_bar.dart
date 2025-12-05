@@ -54,11 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Containers',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'History',
+              icon: Icon(Icons.home),
+              label: 'Resturants',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person),
-                label: 'Profile'),
+            BottomNavigationBarItem(icon: Icon(Icons.group),
+                label: 'Customers'),
           ],
         ),
       ),
@@ -76,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return ContainersScreen();
       case 2:
-        return HistoryScreen();
+        return RestaurantListScreen();
       case 3:
-        return MyProfileScreen();
+        return CustomerListScreen();
       default:
         return RestaurantListScreen();
     }

@@ -1,4 +1,5 @@
 
+import 'package:container_tracking/auth/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -67,6 +68,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildHeaderRow(ThemeData theme) {
     return Row(
       children: [
+        GestureDetector(
+          onTap: (){
+            Navigator.push(context,
+            MaterialPageRoute(builder: (context)=> MyProfileScreen()));
+          },
+          child: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.person_2_outlined, color: theme.primaryColor,),
+          ),
+        ),
+        SizedBox(width: Constant.SIZE_07,),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
           SizedBox(height: 2),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
+import '../../feedback_screen/feedback_list_screen.dart';
 import '../../utils/theme_utils.dart';
 
 
@@ -13,13 +14,6 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final List<Map<String, dynamic>> detailList = [
-    {"name": "Bank Details", "icon": Icons.account_balance_outlined},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Reports", "icon": Icons.bar_chart_outlined},
-    {"name": "Feedback", "icon": Icons.feedback_outlined},
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
-  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -150,27 +144,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                 ),
 
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: h*0.02),
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(), // to use inside SingleChildScrollView
-                    shrinkWrap: true,
-                    itemCount: detailList.length,
-                    separatorBuilder: (context, index) => Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final item = detailList[index];
-                      return ListTile(
-                        leading: Icon(item['icon'], size: w*0.054, color: Colors.black),
-                        title: Text(item['name'], style: TextStyle(fontSize: 14)),
-                        trailing: Icon(Icons.arrow_forward_ios, size: w*0.044),
-                        onTap: () {
-                          // Handle tap for each menu item
-                        },
-                      );
-                    },
-                  ),
-                ),
 
+                SizedBox(height: Constant.CONTAINER_SIZE_40,),
                 Center(
                   child: Container(
                     width: w * 0.55,
@@ -193,13 +168,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
+                        Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> FeedBackScreen()));
                       },
                     ),
                   ),
                 ),
-
-
-
               ],
             ),
           ],

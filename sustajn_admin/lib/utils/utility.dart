@@ -79,13 +79,17 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: buttonText == 'Reject' ?
+                  Colors.red.withOpacity(0.1) :
+                      theme.primaryColor.withOpacity(0.1),
+                  // color: Colors.red.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
                   size: Constant.CONTAINER_SIZE_40,
-                  color: Colors.red,
+                  color: buttonText == 'Reject' ? Colors.red :
+                  theme.primaryColor,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
@@ -140,7 +144,8 @@ class Utils {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: buttonText == 'Reject' ? Colors.red :
+                        theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
