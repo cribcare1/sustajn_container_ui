@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class MapSelectionScreen extends StatefulWidget {
   const MapSelectionScreen({super.key});
@@ -178,13 +181,12 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = CustomTheme.getTheme(true);
+    Color primaryColor = themeData!.primaryColor;
+    double hue = HSLColor.fromColor(primaryColor).hue;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Location'),
-        backgroundColor: Color(0xff6eac9e),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: CustomAppBar(title: 'Select Home Address', leading: CustomBackButton(),
+      ).getAppBar(context),
       body: Stack(
         children: [
           GoogleMap(
@@ -198,8 +200,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
               Marker(
                 markerId: const MarkerId('selected_location'),
                 position: _selectedLocation!,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  _isCurrentLocation ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed,
+                icon: BitmapDescriptor.defaultMarkerWithHue(hue
+                  // _isCurrentLocation ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed,
                 ),
                 infoWindow: InfoWindow(
                   title: _isCurrentLocation ? 'Current Location' : 'Selected Location',
@@ -248,7 +250,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                       children: [
                         Icon(
                           Icons.location_on,
-                          color: _isCurrentLocation ? Colors.green : Colors.blue.shade700,
+                          color:  themeData!.primaryColor,
                           size: Constant.CONTAINER_SIZE_20,
                         ),
                         SizedBox(width: Constant.SIZE_08),
@@ -281,7 +283,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                         onPressed: _confirmLocation,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _selectedLocation != null
-                              ? Color(0xff6eac9e)
+                              ?   Color(0xFFD0A52C)
                               : Colors.grey.shade400,
                           foregroundColor: Colors.white,
                           elevation: Constant.SIZE_02,
@@ -290,8 +292,9 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                           ),
                         ),
                         child:  Text(
-                          'Confirm Location',
+                          'Confirm & Sign Up',
                           style: TextStyle(
+                            color: themeData.primaryColor,
                             fontSize: Constant.CONTAINER_SIZE_16,
                             fontWeight: FontWeight.w600,
                           ),
