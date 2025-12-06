@@ -1,22 +1,24 @@
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
-import 'package:container_tracking/common_widgets/custom_app_bar.dart';
-import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/string_utils.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
-  const ForgetPasswordScreen({super.key});
+
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
 
   @override
@@ -26,7 +28,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
     return Scaffold(
 
-backgroundColor: theme!.scaffoldBackgroundColor,
+      backgroundColor: theme!.scaffoldBackgroundColor,
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(
@@ -38,7 +40,7 @@ backgroundColor: theme!.scaffoldBackgroundColor,
               children: [
                 SizedBox(height: Constant.CONTAINER_SIZE_140),
                 Text(
-                  Strings.FORGOT_PASSWORD_TXT,
+                  Strings.RESET_PASSWORD,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
@@ -47,7 +49,7 @@ backgroundColor: theme!.scaffoldBackgroundColor,
 
                 SizedBox(height: Constant.CONTAINER_SIZE_10),
                 Text(
-                  Strings.ENTER_EMAIL_TORCV_CODE,
+                  Strings.SET_NEW_PASSWORD,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color!
                         .withOpacity(Constant.SIZE_065),
@@ -57,22 +59,67 @@ backgroundColor: theme!.scaffoldBackgroundColor,
 
                 SizedBox(height: Constant.CONTAINER_SIZE_40),
                 TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    labelText: Strings.PASSWORD,
                     filled: true,
                     fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) {
-                      return 'Enter your email ID';
+                    if (v == null || v.isEmpty) {
+                      return 'Enter your password';
                     }
-                    if (!v.contains('@gmail.com')) {
-                      return 'Enter a valid Gmail ID';
+                    if (v.length < 8) {
+                      return 'Password must be at least 8 characters';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: height * 0.02),
+
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: !_isConfirmPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: Strings.CONFIRM_PASSWORD,
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Confirm your password';
+                    }
+                    if (v != _passwordController.text) {
+                      return 'Passwords do not match';
                     }
                     return null;
                   },
@@ -90,10 +137,10 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
                     },
                     child: Text(
-                      Strings.CONTINUE_VERIFICATION,
+                      Strings.RESET,
                       style: theme.textTheme.titleMedium!
                           .copyWith(color: theme.primaryColor),
                     ),

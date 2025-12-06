@@ -86,7 +86,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     Strings.VIEW_RESTURANT_DETAILS,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      color: Color(0xFF8daba0),
+                      color: themeData!.primaryColor,
                       decoration: TextDecoration.underline,
                     ),
                   ),

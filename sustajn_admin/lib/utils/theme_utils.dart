@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/number_constants.dart';
+import '../feedback_screen/model/feedback_details_model.dart';
 
 class CustomTheme {
   static ThemeData? getTheme(isLightMode) {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF78B5A4),
-      secondaryHeaderColor: const Color(0xFFD1E5DE),
+      primaryColor: const Color(0xFF3f715e),
+      secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
         secondary: Color(0xff00c4cc),
@@ -21,7 +22,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xfffbfbfa),
+      scaffoldBackgroundColor: const Color(0xFFeef6f3),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),
@@ -105,6 +106,19 @@ class CustomTheme {
       fontSize: 18.0,
       color: Colors.white,
     );
+  }
+
+  static Color? badgeColor(BuildContext context, FeedbackStatus status) {
+    switch (status) {
+      case FeedbackStatus.newUnread:
+        return null;
+      case FeedbackStatus.inProgress:
+        return const Color(0xFFF1C94A);
+      case FeedbackStatus.resolved:
+        return const Color(0xFF4CAF50);
+      case FeedbackStatus.rejected:
+        return const Color(0xFFE53935);
+    }
   }
 
 
