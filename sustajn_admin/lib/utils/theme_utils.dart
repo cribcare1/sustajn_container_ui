@@ -24,18 +24,18 @@ class CustomTheme {
       scaffoldBackgroundColor: const Color(0xfffbfbfa),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.openSans(),
-        titleSmall: GoogleFonts.roboto(
+        displayLarge: GoogleFonts.dmSans(),
+        titleSmall: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: const Color(0xff3e4042)),
-        titleMedium: GoogleFonts.roboto(
+        titleMedium: GoogleFonts.dmSans(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: const Color(0xff3e4042),
           textStyle: const TextStyle(overflow: TextOverflow.visible),
         ),
-        titleLarge: GoogleFonts.roboto(
+        titleLarge: GoogleFonts.dmSans(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             color: const Color(0xff3e4042),
@@ -44,7 +44,7 @@ class CustomTheme {
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: const TextStyle(
           // letterSpacing: 1,
-            fontFamily: 'OpenSans',
+            fontFamily: 'DM Sans',
             color: Colors.black,
             fontSize: 15,
             fontWeight: FontWeight.w600),
