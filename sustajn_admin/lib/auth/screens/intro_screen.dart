@@ -62,7 +62,7 @@ Expanded(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD1E5DE),

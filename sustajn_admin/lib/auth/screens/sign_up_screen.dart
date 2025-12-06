@@ -24,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
+  // final _locationController = TextEditingController();
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -190,31 +190,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
-                  SizedBox(height: height * 0.02),
-                  TextFormField(
-                    controller: _locationController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText:Strings.LOCATION,
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.location_on, color: Colors.grey,),
-                        onPressed: _navigateToMap,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) {
-                        return 'Please select your location';
-                      }
-                      return null;
-                    },
-                    onTap: _navigateToMap,
-                  ),
+                  //TODO :- Required for google map
+                  // SizedBox(height: height * 0.02),
+                  // TextFormField(
+                  //   controller: _locationController,
+                  //   readOnly: true,
+                  //   decoration: InputDecoration(
+                  //     labelText:Strings.LOCATION,
+                  //     filled: true,
+                  //     fillColor: Colors.white,
+                  //     suffixIcon: IconButton(
+                  //       icon: const Icon(Icons.location_on, color: Colors.grey,),
+                  //       onPressed: _navigateToMap,
+                  //     ),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(10),
+                  //     ),
+                  //   ),
+                  //   validator: (v) {
+                  //     if (v == null || v.trim().isEmpty) {
+                  //       return 'Please select your location';
+                  //     }
+                  //     return null;
+                  //   },
+                  //   onTap: _navigateToMap,
+                  // ),
                   SizedBox(height: height * 0.03),
                   SizedBox(
                     width: double.infinity,
@@ -273,20 +273,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _navigateToMap() async {
-    final selectedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const MapSelectionScreen(),
-      ),
-    );
-
-    if (selectedLocation != null && mounted) {
-      setState(() {
-        _locationController.text = selectedLocation;
-      });
-    }
-  }
+  // void _navigateToMap() async {
+  //   final selectedLocation = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (_) => const MapSelectionScreen(),
+  //     ),
+  //   );
+  //
+  //   if (selectedLocation != null && mounted) {
+  //     setState(() {
+  //       _locationController.text = selectedLocation;
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -295,7 +295,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _locationController.dispose();
+    // _locationController.dispose();
     super.dispose();
   }
 }
