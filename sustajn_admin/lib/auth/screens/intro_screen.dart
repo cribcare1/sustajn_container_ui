@@ -98,6 +98,7 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
+  //Reusable social icon widget
   static Widget _socialIcon(String path) {
     return CircleAvatar(
       radius: 25,
@@ -106,3 +107,4 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
+

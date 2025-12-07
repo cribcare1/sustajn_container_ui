@@ -46,6 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             key: _formKey,
             child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(Strings.SIGN_UP,
@@ -66,7 +67,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: height * 0.02),
 
-                  // MOBILE
                   TextFormField(
                     controller: _mobileController,
                     keyboardType: TextInputType.number,
@@ -93,7 +93,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: height * 0.02),
 
-                  // EMAIL
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -110,9 +109,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
+
+
+
                   SizedBox(height: height * 0.02),
 
-                  // PASSWORD
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -132,6 +133,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Enter your password';
@@ -141,7 +145,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   SizedBox(height: height * 0.02),
 
-                  // CONFIRM PASSWORD
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: !_isConfirmPasswordVisible,
@@ -163,6 +166,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Confirm your password';
@@ -172,27 +178,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
+                  //TODO :- Required for google map
                   // SizedBox(height: height * 0.02),
-
-                  // // LOCATION
                   // TextFormField(
                   //   controller: _locationController,
                   //   readOnly: true,
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   decoration: _inputDecoration(Strings.LOCATION).copyWith(
+                  //   decoration: InputDecoration(
+                  //     labelText:Strings.LOCATION,
+                  //     filled: true,
+                  //     fillColor: Colors.white,
                   //     suffixIcon: IconButton(
-                  //       icon: const Icon(Icons.location_on, color: Colors.grey),
+                  //       icon: const Icon(Icons.location_on, color: Colors.grey,),
                   //       onPressed: _navigateToMap,
                   //     ),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(10),
+                  //     ),
                   //   ),
-                  //   validator: (v) =>
-                  //   v == null || v.trim().isEmpty ? 'Please select location' : null,
+                  //   validator: (v) {
+                  //     if (v == null || v.trim().isEmpty) {
+                  //       return 'Please select your location';
+                  //     }
+                  //     return null;
+                  //   },
                   //   onTap: _navigateToMap,
                   // ),
-
                   SizedBox(height: height * 0.03),
-
-                  // SUBMIT BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -221,7 +232,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-
                   SizedBox(height: height * 0.02),
 
                   Center(

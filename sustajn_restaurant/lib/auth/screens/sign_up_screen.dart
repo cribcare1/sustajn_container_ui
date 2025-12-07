@@ -1,344 +1,213 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../common_widgets/card_widget.dart';
+import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../utils/theme_utils.dart';
-import 'login_screen.dart';
-import 'map_selection_screen.dart';
-
-enum UserType { user, restaurant, admin }
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  final int currentStep;
+  const SignUpScreen({super.key, this.currentStep=0});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
+  bool passwordVisible = false;
 
-  UserType _selectedType = UserType.user;
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.sizeOf(context).height;
-    var themeData = CustomTheme.getTheme(true);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Center(
-          child: SummaryCard(
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      Strings.SIGN_UP,
-                      style: themeData!.textTheme.titleLarge,
-                    ),
-                    SizedBox(height: height * 0.02),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('User'),
-                            value: UserType.user,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('Restaurant'),
-                            value: UserType.restaurant,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: RadioListTile<UserType>(
-                            visualDensity: const VisualDensity(vertical: 0, horizontal: -4),
-                            title: const Text('Admin'),
-                            value: UserType.admin,
-                            groupValue: _selectedType,
-                            onChanged: (val) {
-                              setState(() => _selectedType = val!);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            activeColor: themeData.primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    /// --- Name Field ---
-                    TextFormField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Name',
-                        prefixIcon: const Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: height * 0.02),
-
-                    /// --- Mobile Number Field ---
-                    TextFormField(
-                      controller: _mobileController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Mobile Number',
-                        prefixIcon: const Icon(Icons.phone),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your mobile number';
-                        }
-                        if (v.length != 10) {
-                          return 'Enter a valid 10-digit number';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: height * 0.02),
-
-                    /// --- Email Field ---
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Enter your email';
-                        }
-                        if (!v.contains('@')) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-
-
-
-                    SizedBox(height: height * 0.02),
-
-                    /// --- Password Field ---
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Enter your password';
-                        }
-                        if (v.length < 8) {
-                          return 'Password must be at least 8 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: height * 0.02),
-
-                    /// --- Confirm Password Field ---
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: !_isConfirmPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                            });
-                          },
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return 'Confirm your password';
-                        }
-                        if (v != _passwordController.text) {
-                          return 'Passwords do not match';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    SizedBox(height: height * 0.02),
-                    /// --- Location Field ---
-                    TextFormField(
-                      controller: _locationController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: 'Location',
-                        prefixIcon: const Icon(Icons.location_on),
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.map),
-                          onPressed: _navigateToMap,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'Please select your location';
-                        }
-                        return null;
-                      },
-                      onTap: _navigateToMap,
-                    ),
-                    SizedBox(height: height * 0.03),
-
-                    /// --- Sign Up Button ---
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: themeData.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Registered as ${_selectedType.name.toUpperCase()}'),
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        Strings.SIGN_UP,
-                        style: themeData.textTheme.titleMedium!
-                            .copyWith(color: Colors.white),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(Constant.SIZE_15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).padding.top + Constant.CONTAINER_SIZE_70),
+              Row(
+                children: List.generate(4, (index) {
+                  bool active = index <= widget.currentStep;
+                  return Expanded(
+                    child: Container(
+                      height: Constant.SIZE_05,
+                      margin: EdgeInsets.only(right: index == 3 ? 0 : Constant.SIZE_10),
+                      decoration: BoxDecoration(
+                        color: active
+                            ? theme.primaryColor
+                            : theme.primaryColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(Constant.SIZE_10),
                       ),
                     ),
-                    SizedBox(height: height * 0.02),
-                    Text.rich(
-                      TextSpan(
-                        text: "Already have Account? ",
-                        style: const TextStyle(fontSize: 14),
-                        children: [
-                          TextSpan(
-                            text: Strings.LOGIN,
-                            style: const TextStyle(
-                              color: Colors.indigo,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const LoginScreen(),
-                                  ),
-                                );
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  );
+                }),
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+              Text(
+                Strings.SIGN_UP,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontSize: Constant.LABEL_TEXT_SIZE_22,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
+              SizedBox(height: Constant.SIZE_05),
+
+              Text(
+                Strings.PROVE_DETAILS,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.hintColor,
+                  fontSize: Constant.LABEL_TEXT_SIZE_14,
+                ),
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+              _buildTextField(context, Strings.RESTURANT_NAME),
+              _buildTextField(context, Strings.EMAIL),
+              _buildTextField(context, Strings.MOBILE_NUMBER, keyboard: TextInputType.phone),
+
+              _buildPasswordField(context, Strings.PASSWORD),
+
+              _buildTextField(context,Strings.CONFIRM_PASSWORD, obscure: true),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+              SizedBox(
+                width: double.infinity,
+                height: Constant.CONTAINER_SIZE_50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFD0A52C),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(Constant.SIZE_10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                  },
+                  child: Text(
+                    Strings.CONTINUE_VERIFICATION,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.primaryColor,
+                      fontSize: Constant.LABEL_TEXT_SIZE_16,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text:Strings.ALREADY_HAVE_ACC,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.hintColor,
+                      fontSize: Constant.LABEL_TEXT_SIZE_14,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: Strings.LOGIN,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.primaryColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                         ..onTap = (){
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=>LoginScreen()));
+                         }
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void _navigateToMap() async {
-    final selectedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const MapSelectionScreen(),
+  Widget _buildTextField(
+      BuildContext context,
+      String hint, {
+        bool obscure = false,
+        TextInputType keyboard = TextInputType.text,
+      }) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: TextField(
+        obscureText: obscure,
+        keyboardType: keyboard,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.SIZE_15,
+            vertical: Constant.SIZE_15,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.SIZE_10),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+        ),
       ),
     );
-
-    if (selectedLocation != null && mounted) {
-      setState(() {
-        _locationController.text = selectedLocation;
-      });
-    }
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _mobileController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _locationController.dispose();
-    super.dispose();
+
+  Widget _buildPasswordField(BuildContext context, String hint) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: TextField(
+        obscureText: !passwordVisible,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.SIZE_15,
+            vertical: Constant.SIZE_15,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.SIZE_10),
+            borderSide: BorderSide(color: theme.dividerColor),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              passwordVisible ? Icons.visibility : Icons.visibility_off,
+              color: theme.iconTheme.color,
+            ),
+            onPressed: () {
+              setState(() {
+                passwordVisible = !passwordVisible;
+              });
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
