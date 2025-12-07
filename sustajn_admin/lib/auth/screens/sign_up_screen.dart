@@ -228,7 +228,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       onPressed: () {
                         Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> VerifyEmailScreen()));
+                        MaterialPageRoute(builder: (context)=> VerifyEmailScreen(previousScreen: 'signUp',)));
 
                             },
                       child: Text(

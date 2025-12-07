@@ -29,17 +29,17 @@ class CustomTheme {
         titleSmall: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color: const Color(0xff3e4042)),
+            color:  Colors.black),
         titleMedium: GoogleFonts.dmSans(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: const Color(0xff3e4042),
+          color:  Colors.black,
           textStyle: const TextStyle(overflow: TextOverflow.visible),
         ),
         titleLarge: GoogleFonts.dmSans(
             fontSize: 22,
             fontWeight: FontWeight.w700,
-            color: const Color(0xff3e4042),
+            color: Colors.black,
             textStyle: const TextStyle(overflow: TextOverflow.visible)),
       ),
       inputDecorationTheme: InputDecorationTheme(

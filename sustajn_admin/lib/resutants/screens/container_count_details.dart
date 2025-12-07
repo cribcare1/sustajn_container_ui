@@ -84,7 +84,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: ListView.separated(
           itemCount: items.length,
-          separatorBuilder: (_, __) => SizedBox(height: 4),
+          separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
           itemBuilder: (context, index) {
             final item = items[index];
             return _containerTile(
@@ -108,53 +108,49 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
     required String size,
     required String qty,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
 
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(image, width: 55, height: 55, fit: BoxFit.cover),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(image, width: 55, height: 55, fit: BoxFit.cover),
+          ),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(code,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                Text(size,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
+          ),
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(code,
-                    style: const TextStyle(fontSize: 13, color: Colors.grey),
-                  ),
-                  Text(size,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
+          Text(
+            qty,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
             ),
-
-            Text(
-              qty,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

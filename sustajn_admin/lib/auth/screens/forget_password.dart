@@ -1,6 +1,4 @@
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
-import 'package:container_tracking/common_widgets/custom_app_bar.dart';
-import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +88,7 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                      MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword',)));
                     },
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,

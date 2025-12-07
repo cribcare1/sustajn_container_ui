@@ -5,7 +5,6 @@ import '../../constants/number_constants.dart';
 import '../../feedback_screen/feedback_list_screen.dart';
 import '../../utils/theme_utils.dart';
 
-
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -26,17 +25,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       appBar: AppBar(
         backgroundColor: const Color(0xff0E3A2F),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        ),
-        title: const Text(
-          "My Profile",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
             color: Colors.white,
+            size: 20,
           ),
+        ),
+        title: Text(
+          "My Profile",
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
       ),
 
@@ -64,14 +67,31 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           color: Colors.white,
                           width: w * 0.012,
                         ),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                          ),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
                           fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+
+                            return Center(
+                              child: SizedBox(
+                                height: w * 0.08,
+                                width: w * 0.08,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.error, color: Colors.red),
                         ),
                       ),
                     ),
+
                     Container(
                       height: w * 0.09,
                       width: w * 0.09,
@@ -124,34 +144,41 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         title: "Email",
                         value: "hello597@gmail.com",
                         w: w,
+                        isRequired: false,
                       ),
-                      const Divider(),
+                      const Divider(color: Colors.grey),
+                      //TODO:- address
                       _detailItem(
                         icon: Icons.location_on_outlined,
                         title: "Address",
                         value:
-                        "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                            "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
                         w: w,
+                        isRequired: false,
                       ),
-                      const Divider(),
+                      const Divider(color: Colors.grey),
                       _detailItem(
                         icon: Icons.phone_outlined,
                         title: "Mobile Number",
                         value: "980765432",
                         w: w,
+                        isRequired: true,
                       ),
                     ],
                   ),
                 ),
 
-
-                SizedBox(height: Constant.CONTAINER_SIZE_40,),
+                SizedBox(height: Constant.CONTAINER_SIZE_40),
                 Center(
                   child: Container(
                     width: w * 0.55,
                     margin: EdgeInsets.only(top: h * 0.02),
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.logout, color: theme!.primaryColor, size: w * 0.05),
+                      icon: Icon(
+                        Icons.logout,
+                        color: theme!.primaryColor,
+                        size: w * 0.05,
+                      ),
                       label: Text(
                         "Log Out",
                         style: TextStyle(
@@ -168,8 +195,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> FeedBackScreen()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FeedBackScreen(),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -187,6 +218,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     required String title,
     required String value,
     required double w,
+    required bool isRequired,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,9 +244,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-        Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+        isRequired
+            ? Icon(Icons.edit, size: w * 0.045, color: Colors.green)
+            : const SizedBox(),
       ],
     );
   }
-
 }

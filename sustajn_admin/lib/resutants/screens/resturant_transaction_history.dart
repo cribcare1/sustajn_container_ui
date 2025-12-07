@@ -1,4 +1,3 @@
-import 'package:container_tracking/resutants/screens/transaction_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_app_bar.dart';
@@ -53,7 +52,6 @@ class _RestaurantTransactionHistoryScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: CustomAppBar(
         title: Strings.RESTURANT_TRANSACTION_HISTORY_TITLE,
         leading: CustomBackButton(),
@@ -70,6 +68,7 @@ class _RestaurantTransactionHistoryScreenState
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
+                    style: Theme.of(context).textTheme.titleSmall,
                     value: selectedStatus,
                     items:
                         [
@@ -92,6 +91,7 @@ class _RestaurantTransactionHistoryScreenState
                 SizedBox(width: Constant.SIZE_08),
                 Expanded(
                   child: DropdownButtonFormField<String>(
+                    style: Theme.of(context).textTheme.titleSmall,
                     value: selectedMonth,
                     items:
                         [
@@ -128,10 +128,13 @@ class _RestaurantTransactionHistoryScreenState
             Expanded(
               child: ListView.separated(
                 padding: EdgeInsets.zero,
-                itemCount: transactions.length,
-                separatorBuilder: (_, __) => Divider(height: 0.4),
+                itemCount: transactionsList.length,
+                separatorBuilder: (_, __) => Padding(
+                  padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
+                  child: Divider(height: 0.4,color: Colors.grey.shade300,),
+                ),
                 itemBuilder: (context, index) {
-                  return TransactionItemCard(data: transactions[index]);
+                  return buildHistoryItem( transactionsList[index]);
                 },
               ),
             ),
@@ -140,4 +143,100 @@ class _RestaurantTransactionHistoryScreenState
       ),
     );
   }
+  Widget buildHistoryItem(TransactionItem item) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(item.icon, size: 18, color: item.iconColor),
+
+        SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.status,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+              SizedBox(height: 4),
+              Text(
+                item.restaurant,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 4),
+              Text(
+                item.date,
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+        ),
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              item.count,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+
+        SizedBox(width: 8),
+        Icon(Icons.chevron_right, size: 22, color: Colors.grey),
+      ],
+    );
+  }
+  final List<TransactionItem> transactionsList = [
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_received,
+      iconColor: Colors.green,
+      status: "Returned",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "6",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "20/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "18/11/2025",
+      count: "3",
+    ),
+  ];
+}
+class TransactionItem {
+  final IconData icon;
+  final Color iconColor;
+  final String status;
+  final String restaurant;
+  final String date;
+  final String count;
+
+  TransactionItem({
+    required this.icon,
+    required this.iconColor,
+    required this.status,
+    required this.restaurant,
+    required this.date,
+    required this.count,
+  });
 }

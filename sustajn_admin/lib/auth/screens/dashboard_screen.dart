@@ -9,7 +9,7 @@ import '../../constants/string_utils.dart';
 import '../../container_list/total_list_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -86,8 +86,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ]),
         Spacer(),
         _iconCircle(theme, Icons.notifications_none),
-        SizedBox(width: Constant.SIZE_08),
-        _iconCircle(theme, Icons.menu),
+        // SizedBox(width: Constant.SIZE_08),
+        // _iconCircle(theme, Icons.menu),
       ],
     );
   }
@@ -388,53 +388,72 @@ class _DashboardScreenState extends State<DashboardScreen> {
       Text(label, style: Theme.of(context).textTheme.titleSmall),
     ]);
   }
-
   Widget _metricsRow(ThemeData theme) {
-    return Row(children: [
-      _metricCard(Strings.BORROWED, '3,993', theme.primaryColor),
-      SizedBox(width: Constant.SIZE_10),
-      _metricCard(Strings.RETURNED, '1,087', Colors.green),
-      SizedBox(width: Constant.SIZE_10),
-      _metricCard(Strings.OVERDUE, '247', Colors.redAccent),
-    ]);
+    return Row(
+      children: [
+        Expanded(child: _metricCard(Strings.BORROWED, '3,993', theme.primaryColor)),
+        SizedBox(width: Constant.SIZE_10),
+        Expanded(child: _metricCard(Strings.RETURNED, '1,087', Colors.green)),
+        SizedBox(width: Constant.SIZE_10),
+        Expanded(child: _metricCard(Strings.OVERDUE, '247', Colors.redAccent)),
+      ],
+    );
   }
 
+
   Widget _metricCard(String label, String value, Color color) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Constant.SIZE_10, horizontal: Constant.CONTAINER_SIZE_12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.withOpacity(0.12)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-              ),
-            ),
-            SizedBox(width: Constant.SIZE_10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: Theme.of(context).textTheme.titleSmall),
-                SizedBox(height: Constant.SIZE_06),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: Constant.SIZE_08,               // reduced for safety
+        horizontal: Constant.SIZE_08,             // reduced to prevent overflow
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.withOpacity(0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 6),
+          Text(
+            value,
+            maxLines: 1,textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ],
       ),
     );
   }
+
   Widget _barChart(ThemeData theme) {
     final maxY = _calcMaxY();
     final groups = <BarChartGroupData>[];
@@ -477,59 +496,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     final monthYearLabel = "December - 2025";
 
-    return BarChart(
-      BarChartData(
-        maxY: maxY,
-        groupsSpace: 18,
-        barGroups: groups,
-        alignment: BarChartAlignment.spaceBetween,
-        gridData: FlGridData(show: false),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 40,
-              interval: maxY / 5,
-              getTitlesWidget: (val, meta) {
-                return Text(val.toInt().toString(), style: TextStyle(fontSize: 10));
-              },
-            ),
-            axisNameWidget: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                Strings.CONTAINERS_TITLE,
-                // monthYearLabel,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+    return SizedBox(height: MediaQuery.of(context).size.width * 0.70,
+      child: BarChart(
+        BarChartData(
+          maxY: maxY,
+          groupsSpace: 18,
+          barGroups: groups,
+          alignment: BarChartAlignment.spaceBetween,
+          gridData: FlGridData(show: false),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                interval: maxY / 5,
+                getTitlesWidget: (val, meta) {
+                  return Text(val.toInt().toString(), style: TextStyle(fontSize: 10));
+                },
               ),
-            ),
-            axisNameSize: 20,
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (val, meta) {
-                final idx = val.toInt();
-                final label = (idx >= 0 && idx < weekLabels.length) ? weekLabels[idx] : '';
-                return Padding(
-                  padding: EdgeInsets.only(top: 6),
-                  child: Text(label, style: TextStyle(fontSize: 11)),
-                );
-              },
-            ),
-            axisNameWidget: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                monthYearLabel,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              axisNameWidget: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  Strings.CONTAINERS_TITLE,
+                  // monthYearLabel,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
               ),
+              axisNameSize: 20,
             ),
-            axisNameSize: 20,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (val, meta) {
+                  final idx = val.toInt();
+                  final label = (idx >= 0 && idx < weekLabels.length) ? weekLabels[idx] : '';
+                  return Padding(
+                    padding: EdgeInsets.only(top: 6),
+                    child: Text(label, style: TextStyle(fontSize: 11)),
+                  );
+                },
+              ),
+              axisNameWidget: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  monthYearLabel,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ),
+              axisNameSize: 20,
+            ),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          borderData: FlBorderData(show: false),
+          barTouchData: BarTouchData(enabled: true),
         ),
-        borderData: FlBorderData(show: false),
-        barTouchData: BarTouchData(enabled: true),
       ),
     );
   }

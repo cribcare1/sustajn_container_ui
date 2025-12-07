@@ -15,13 +15,13 @@ class CustomAppBar {
     final themeData = CustomTheme.getTheme(true);
     return AppBar(
       backgroundColor: Color(0xFFe7f7f1),
+      surfaceTintColor: Color(0xFFe7f7f1),
       centerTitle: true,
       elevation: 0,
       title: Text(
         title,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black),
       ),
-      // leadingWidth: 30,
       actions: action,
       bottom: bottom,
       leading:leading,

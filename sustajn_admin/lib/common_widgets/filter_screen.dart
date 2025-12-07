@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
 import '../constants/number_constants.dart';
 
@@ -39,41 +40,44 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return DraggableScrollableSheet(
-      initialChildSize: 0.80,
-      minChildSize: 0.50,
-      maxChildSize: 0.95,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Constant.CONTAINER_SIZE_20),
-            ),
-          ),
-          child: Column(
-            children: [
-              _buildTopHandle(),
-              _buildHeader(theme),
-              _buildSearchField(theme),
-              Expanded(
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: filteredContainers.length,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                  ),
-                  itemBuilder: (context, index) {
-                    final item = filteredContainers[index];
-                    return _buildContainerTile(item, theme);
-                  },
-                ),
+    return SafeArea(
+      bottom: true,top: false,
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.80,
+        minChildSize: 0.50,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Constant.CONTAINER_SIZE_20),
               ),
-              _buildBottomButtons(theme),
-            ],
-          ),
-        );
-      },
+            ),
+            child: Column(
+              children: [
+                _buildTopHandle(),
+                _buildHeader(theme),
+                _buildSearchField(theme),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: filteredContainers.length,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Constant.CONTAINER_SIZE_16,
+                    ),
+                    itemBuilder: (context, index) {
+                      final item = filteredContainers[index];
+                      return _buildContainerTile(item, theme);
+                    },
+                  ),
+                ),
+                _buildBottomButtons(theme),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -136,9 +140,11 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
       ),
       child: TextField(
         controller: searchController,
+        style: Theme.of(context).textTheme.titleSmall,
         onChanged: _filterSearch,
         decoration: InputDecoration(
           hintText: "Search by container name",
+          hintStyle: Theme.of(context).textTheme.titleSmall,
           prefixIcon: Icon(Icons.search),
           contentPadding: EdgeInsets.zero,
           filled: true,
@@ -185,10 +191,12 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
 
           Checkbox(
             value: isSelected,
-            activeColor: Color(0xFFD9B649),
+            activeColor: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Constant.SIZE_06),
             ),
+            checkColor: Colors.white,
+
             onChanged: (value) {
               setState(() {
                 value == true
@@ -205,57 +213,24 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
   Widget _buildBottomButtons(ThemeData theme) {
     return Padding(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: Row(
-        children: [
-          Expanded(
-            child: _buildClearButton(theme),
-          ),
-          SizedBox(width: Constant.CONTAINER_SIZE_16),
-          Expanded(
-            child: _buildApplyButton(theme),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildClearButton(ThemeData theme) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
-        side: BorderSide(color: Colors.grey.shade400),
-      ),
-      onPressed: () {
+      child: SubmitClearButton(onLeftTap: (){
         setState(() {
           selectedIds.clear();
         });
-      },
-      child: Text("Clear", style: TextStyle(color: Colors.black)),
+      }, onRightTap: (){
+        setState(() {
+          final selectedItems = widget.containerList
+              .where((e) => selectedIds.contains(e['id']))
+              .toList();
+
+          Navigator.pop(context, selectedItems);
+        });
+      })
+
     );
   }
 
-  Widget _buildApplyButton(ThemeData theme) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFFD9B649),
-        padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
-      ),
-      onPressed: () {
-        final selectedItems = widget.containerList
-            .where((e) => selectedIds.contains(e['id']))
-            .toList();
 
-        Navigator.pop(context, selectedItems);
-      },
-      child: Text(
-        "Apply",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: Constant.LABEL_TEXT_SIZE_16,
-        ),
-      ),
-    );
-  }
 
 
   void _filterSearch(String value) {

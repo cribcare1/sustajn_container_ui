@@ -9,7 +9,6 @@ import '../../resutants/screens/resturant_transaction_history.dart';
 import '../../resutants/screens/transaction_details_bottomsheet.dart';
 
 class CustomerDetailsScreen extends StatefulWidget {
-
   const CustomerDetailsScreen({super.key});
 
   @override
@@ -17,7 +16,6 @@ class CustomerDetailsScreen extends StatefulWidget {
 }
 
 class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
-
   final List<Map<String, dynamic>> containerCards = [
     {'title': "Total Borrowed", 'value': 2343},
     {'title': "Total Returned", 'value': 1354},
@@ -43,7 +41,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
               physics: NeverScrollableScrollPhysics(),
               itemCount: containerCards.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
                 childAspectRatio: 1.6,
@@ -66,18 +64,20 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_16),
-            _buildRestaurantHistory(context)
+            buildTransactionHistory(context),
           ],
         ),
       ),
     );
   }
+
   Widget _buildContainersInfo(BuildContext context, Map<String, dynamic> item) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(Constant.SIZE_08),
+        color: Colors.white
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +101,8 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
       ),
     );
   }
-  Widget _buildRestaurantHistory(BuildContext context) {
+
+  Widget buildTransactionHistory(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,15 +110,11 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              Strings.RESTURANT_HISTORY,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                fontWeight: FontWeight.bold,
-              ),
+              Strings.TRANSACTION_HISTORY,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             GestureDetector(
               onTap: () {
-                print('on tap called');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -127,132 +124,150 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
               },
               child: Text(
                 Strings.VIEW_ALL,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  color: Color(0xFF8daba0),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Colors.green,
                   decoration: TextDecoration.underline,
+                  decorationColor: Colors.green,
+                  decorationThickness: 1.5,
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: Constant.CONTAINER_SIZE_16),
 
-        _buildHistoryRow(
-          context,
-          title: "Requested on",
-          date: "20/11/2025",
-          count: "50",
-          status: "Pending",
-          statusColor: Color(0xFFfadb7f),
-        ),
-
-        Divider(
-          color: Colors.grey.shade300,
-          height: Constant.CONTAINER_SIZE_24,
-        ),
-
-        _buildHistoryRow(
-          context,
-          title: "Approved on",
-          date: "01/10/2025",
-          count: "100",
-          status: "Approved",
-          statusColor: Color(0xFF75c487),
-        ),
-
-        Divider(
-          color: Colors.grey.shade300,
-          height: Constant.CONTAINER_SIZE_24,
-        ),
-
-        _buildHistoryRow(
-          context,
-          title: "Rejected on",
-          date: "09/09/2025",
-          count: "500",
-          status: "Rejected",
-          statusColor: Color(0xFFe26571),
+        SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+            color: Colors.white
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding:  EdgeInsets.all(Constant.SIZE_06),
+            itemCount: transactions.length,
+            separatorBuilder: (context, index) =>
+                Divider(color: Colors.grey.shade300),
+            itemBuilder: (context, index) {
+              final item = transactions[index];
+              return InkWell(
+                onTap: () {
+                  showTransactionDetailsBottomSheet(
+                    context,
+                    status: item.status,
+                    requestedDate: "20/11/2025",
+                    approvedDate: "21/11/2025",
+                    large: 50,
+                    medium: 30,
+                    small: 20,
+                    count: int.parse(item.count),
+                  );
+                },
+                child: buildHistoryItem(item),
+              );
+            },
+          ),
         ),
       ],
     );
   }
-  Widget _buildHistoryRow(
-      BuildContext context, {
-        required String title,
-        required String date,
-        required String count,
-        required String status,
-        required Color statusColor,
-      }) {
-    return GestureDetector(
-      onTap: () {
-        showTransactionDetailsBottomSheet(
-          context,
-          status: status,
-          requestedDate: "20/11/2025",
-          approvedDate: "21/11/2025",
-          large: 50,
-          medium: 30,
-          small: 20,
-          count: int.parse(count),
-        );
-      },
 
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_14,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                SizedBox(height: Constant.SIZE_04),
-                Text(
-                  date,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
+  Widget buildHistoryItem(TransactionItem item) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(item.icon, size: 18, color: item.iconColor),
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                count,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: Constant.LABEL_TEXT_SIZE_16,
-                  fontWeight: FontWeight.bold,
-                ),
+                item.status,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
-              SizedBox(height: Constant.SIZE_04),
+              SizedBox(height: 4),
               Text(
-                status,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: Constant.CONTAINER_SIZE_12,
-                  color: statusColor,
-                ),
+                item.restaurant,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 4),
+              Text(
+                item.date,
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
               ),
             ],
           ),
+        ),
 
-          SizedBox(width: Constant.SIZE_08),
-          Icon(
-            Icons.chevron_right,
-            size: Constant.CONTAINER_SIZE_20,
-            color: Colors.grey.shade500,
-          ),
-        ],
-      ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              item.count,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+
+        SizedBox(width: 8),
+        Icon(Icons.chevron_right, size: 22, color: Colors.grey),
+      ],
     );
   }
+
+  final List<TransactionItem> transactions = [
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_received,
+      iconColor: Colors.green,
+      status: "Returned",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "6",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "20/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "18/11/2025",
+      count: "3",
+    ),
+  ];
+}
+
+class TransactionItem {
+  final IconData icon;
+  final Color iconColor;
+  final String status;
+  final String restaurant;
+  final String date;
+  final String count;
+
+  TransactionItem({
+    required this.icon,
+    required this.iconColor,
+    required this.status,
+    required this.restaurant,
+    required this.date,
+    required this.count,
+  });
 }

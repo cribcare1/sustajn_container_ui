@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
+import '../common_widgets/submit_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
@@ -262,46 +263,23 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                       ),
                     ),
 
-                    SizedBox(height: Constant.CONTAINER_SIZE_100),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SubmitButton(onRightTap: () {
+                      if (_formKey.currentState!.validate()) {
+                                  Navigator.pop(context, {
+                                    "name": _productController.text,
+                                    "id": _productIdController.text,
+                                    "volume": _volumeController.text,
+                                    "quantity": _quantityController.text,
+                                    "image": _selectedImage,
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Please complete required fields")),
+                                  );
+                                }
+                    },rightText: "Add Container",),
                   ],
-                ),
-              ),
-            ),
-            Positioned(
-              left: Constant.CONTAINER_SIZE_16,
-              right: Constant.CONTAINER_SIZE_16,
-              bottom: Constant.CONTAINER_SIZE_18,
-              child: SizedBox(
-                height: Constant.CONTAINER_SIZE_50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD9B400),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pop(context, {
-                        "name": _productController.text,
-                        "id": _productIdController.text,
-                        "volume": _volumeController.text,
-                        "quantity": _quantityController.text,
-                        "image": _selectedImage,
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please complete required fields")),
-                      );
-                    }
-                  },
-                  child: Text(
-                    Strings.ADD_CONTAINER,
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      color: Colors.black,
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -318,34 +296,31 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
     required TextInputType keyboardType,
     IconData? suffix,
   }) {
-    return SizedBox(
-      height: Constant.TEXT_FIELD_HEIGHT,
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          filled: true,
-          fillColor: const Color(0xFFF8F9F7),
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: Constant.LABEL_TEXT_SIZE_14,
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: Constant.CONTAINER_SIZE_12,
-            vertical: 0,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0xFFE8EFEA)),
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0xFFBFDCCF)),
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          ),
-          suffixIcon: suffix != null ? Icon(suffix, color: Colors.grey) : null,
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        hintText: hint,
+        filled: true,
+        fillColor: const Color(0xFFF8F9F7),
+        hintStyle: TextStyle(
+          color: Colors.grey,
+          fontSize: Constant.LABEL_TEXT_SIZE_14,
         ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: Constant.CONTAINER_SIZE_12,
+          vertical: 0,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFE8EFEA)),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFBFDCCF)),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        ),
+        suffixIcon: suffix != null ? Icon(suffix, color: Colors.grey) : null,
       ),
     );
   }

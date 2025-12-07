@@ -7,6 +7,7 @@ static const String APPROVED_STATUS = 'Approved';
 static const String PENDING_STATUS = 'Pending';
 static const String REJECTED_STATUS = 'Rejected';
 static const String TRANSACTION_DETAILS_TITLE = 'Transaction Details';
+static const String TRANSACTION_HISTORY = 'Transaction History';
 static const String REQUESTED_CONTAINER_TYPES = 'Requested Container types';
 static const String REQUESTED_ON = 'Requested on';
 static const String APPROVED_CONTAINER = 'Approved Container types';
