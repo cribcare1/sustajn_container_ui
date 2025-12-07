@@ -4,11 +4,8 @@ import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../common_widgets/card_widget.dart';
 import '../../constants/string_utils.dart';
 import 'map_selection_screen.dart';
-
-enum UserType { user, restaurant, admin }
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,15 +16,22 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final _nameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  // final _locationController = TextEditingController();
+  final _locationController = TextEditingController();
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+
+  void _revalidate() {
+    if (_formKey.currentState != null) {
+      _formKey.currentState!.validate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,47 +49,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    Strings.SIGN_UP,
-                    style: themeData!.textTheme.titleLarge,
-                  ),
+                  Text(Strings.SIGN_UP,
+                      style: themeData!.textTheme.titleLarge),
                   SizedBox(height: height * 0.005),
-                  Text(
-                    Strings.FILL_DETAILS,
-                    style: themeData.textTheme.bodyMedium,
-                  ),
+                  Text(Strings.FILL_DETAILS,
+                      style: themeData.textTheme.bodyMedium),
                   SizedBox(height: height * 0.02),
 
+                  // NAME
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: Strings.NAME,
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) {
-                        return 'Enter your name';
-                      }
-                      return null;
-                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (_) => _revalidate(),
+                    decoration: _inputDecoration(Strings.NAME),
+                    validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Enter your name' : null,
                   ),
                   SizedBox(height: height * 0.02),
 
                   TextFormField(
                     controller: _mobileController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: Strings.MOBILE_NUMBER,
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                    keyboardType: TextInputType.number,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (v) {
+                      if (v.length > 10) {
+                        _mobileController.text = v.substring(0, 10);
+                        _mobileController.selection = TextSelection.fromPosition(
+                          TextPosition(offset: 10),
+                        );
+                      }
+                      _revalidate();
+                    },
+                    decoration: _inputDecoration(Strings.MOBILE_NUMBER),
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) {
                         return 'Enter your mobile number';
@@ -101,14 +96,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText:Strings.EMAIL,
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (_) => _revalidate(),
+                    decoration: _inputDecoration(Strings.EMAIL),
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) {
                         return 'Enter your email';
@@ -127,13 +117,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: Strings.PASSWORD,
-                      filled: true,
-                      fillColor: Colors.white,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (_) => _revalidate(),
+                    decoration: _inputDecoration(Strings.PASSWORD).copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.grey,
                         ),
                         onPressed: () {
@@ -147,12 +138,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Enter your password';
-                      }
-                      if (v.length < 8) {
-                        return 'Password must be at least 8 characters';
-                      }
+                      if (v == null || v.isEmpty) return 'Enter your password';
+                      if (v.length < 8) return 'Password must be at least 8 characters';
                       return null;
                     },
                   ),
@@ -161,18 +148,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: !_isConfirmPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: Strings.CONFIRM_PASSWORD,
-                      filled: true,
-                      fillColor: Colors.white,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (_) => _revalidate(),
+                    decoration:
+                    _inputDecoration(Strings.CONFIRM_PASSWORD).copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _isConfirmPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
-                            _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                            _isConfirmPasswordVisible =
+                            !_isConfirmPasswordVisible;
                           });
                         },
                       ),
@@ -181,9 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Confirm your password';
-                      }
+                      if (v == null || v.isEmpty) return 'Confirm your password';
                       if (v != _passwordController.text) {
                         return 'Passwords do not match';
                       }
@@ -227,10 +215,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> VerifyEmailScreen()));
-
-                            },
+                        if (_formKey.currentState!.validate()) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VerifyEmailScreen(),
+                            ),
+                          );
+                        }
+                      },
                       child: Text(
                         Strings.CONTINUE_VERIFICATION,
                         style: themeData.textTheme.titleMedium!.copyWith(
@@ -240,6 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   SizedBox(height: height * 0.02),
+
                   Center(
                     child: Text.rich(
                       TextSpan(
@@ -255,15 +249,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context)=> LoginScreen()));
-
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                );
                               },
                           ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -273,20 +270,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // void _navigateToMap() async {
-  //   final selectedLocation = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (_) => const MapSelectionScreen(),
-  //     ),
-  //   );
-  //
-  //   if (selectedLocation != null && mounted) {
-  //     setState(() {
-  //       _locationController.text = selectedLocation;
-  //     });
-  //   }
-  // }
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
 
   @override
   void dispose() {
@@ -295,7 +289,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    // _locationController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 }
