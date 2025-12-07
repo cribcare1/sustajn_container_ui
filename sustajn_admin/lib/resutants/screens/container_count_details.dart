@@ -17,34 +17,56 @@ class ContainerCountDetails extends ConsumerStatefulWidget {
 class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
 
   final List<Map<String, String>> items = [
-    {"image": "assets/images/bowl_image.jpg","name": "Dip Cups","code": "ST-DC-50","size": "50ml","qty": "1,000"},
-    {"image": "assets/images/bowl_image.jpg","name": "Dip Cups","code": "ST-DC-70","size": "70ml","qty": "500"},
-    {"image": "assets/images/bowl_image.jpg","name": "Dip Cups","code": "ST-DC-80","size": "80ml","qty": "400"},
-    {"image": "assets/images/bowl_image.jpg","name": "Round Bowl","code": "ST-DC-450","size": "450ml","qty": "300"},
-    {"image": "assets/images/bowl_image.jpg","name": "Round Bowl","code": "ST-DC-900","size": "900ml","qty": "200"},
-    {"image": "assets/images/bowl_image.jpg","name": "Rectangular Container","code": "ST-RC-600","size": "600ml","qty": "500"},
-    {"image": "assets/images/bowl_image.jpg","name": "Rectangular Container","code": "ST-DC-100","size": "100ml","qty": "500"},
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Dip Cups",
+      "code": "ST-DC-50",
+      "size": "50ml",
+      "qty": "1,000",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Dip Cups",
+      "code": "ST-DC-70",
+      "size": "70ml",
+      "qty": "500",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Dip Cups",
+      "code": "ST-DC-80",
+      "size": "80ml",
+      "qty": "400",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Round Bowl",
+      "code": "ST-DC-450",
+      "size": "450ml",
+      "qty": "300",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Round Bowl",
+      "code": "ST-DC-900",
+      "size": "900ml",
+      "qty": "200",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Rectangular Container",
+      "code": "ST-RC-600",
+      "size": "600ml",
+      "qty": "500",
+    },
+    {
+      "image": "assets/images/bowl_image.jpg",
+      "name": "Rectangular Container",
+      "code": "ST-DC-100",
+      "size": "100ml",
+      "qty": "500",
+    },
   ];
-
-  List<Map<String, String>> filteredItems = [];
-  TextEditingController searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    filteredItems = items;
-  }
-
-  void _filterItems(String query) {
-    final lowerQuery = query.toLowerCase();
-    setState(() {
-      filteredItems = items.where((item) {
-        final name = item['name']!.toLowerCase();
-        final code = item['code']!.toLowerCase();
-        return name.contains(lowerQuery) || code.contains(lowerQuery);
-      }).toList();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,54 +75,26 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
         leading: CustomBackButton(),
         title: widget.title,
         action: [
-          IconButton(
-              onPressed: () { showFilterSheet(context); },
-              icon: const Icon(Icons.filter_alt_outlined)
-          ),
+          IconButton(onPressed: (){}, icon: Icon(Icons.search)),
+          IconButton(onPressed: (){showFilterSheet(context);}, icon: Icon(Icons.filter_alt_outlined)),
         ],
       ).getAppBar(context),
 
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          children: [
-            // Search bar
-            TextField(
-              controller: searchController,
-              onChanged: _filterItems,
-              decoration: InputDecoration(
-                hintText: "Search containers",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                fillColor: Colors.white,
-                filled: true,
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // List of items
-            Expanded(
-              child: filteredItems.isEmpty
-                  ? const Center(child: Text("No containers found"))
-                  : ListView.separated(
-                itemCount: filteredItems.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 4),
-                itemBuilder: (context, index) {
-                  final item = filteredItems[index];
-                  return _containerTile(
-                    image: item["image"]!,
-                    name: item["name"]!,
-                    code: item["code"]!,
-                    size: item["size"]!,
-                    qty: item["qty"]!,
-                  );
-                },
-              ),
-            ),
-          ],
+        child: ListView.separated(
+          itemCount: items.length,
+          separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return _containerTile(
+              image: item["image"]!,
+              name: item["name"]!,
+              code: item["code"]!,
+              size: item["size"]!,
+              qty: item["qty"]!,
+            );
+          },
         ),
       ),
     );
@@ -114,46 +108,53 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
     required String size,
     required String qty,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(image, width: 55, height: 55, fit: BoxFit.cover),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(image, width: 55, height: 55, fit: BoxFit.cover),
+          ),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(code,
+                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                Text(size,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(code, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                  Text(size, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                ],
-              ),
+          ),
+
+          Text(
+            qty,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
             ),
-            Text(
-              qty,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
 }
-
 void showFilterSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,

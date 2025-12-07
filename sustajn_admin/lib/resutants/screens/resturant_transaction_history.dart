@@ -1,4 +1,3 @@
-import 'package:container_tracking/resutants/screens/transaction_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_app_bar.dart';
@@ -6,6 +5,7 @@ import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../models/transaction_record.dart';
+
 
 class RestaurantTransactionHistoryScreen extends StatefulWidget {
   const RestaurantTransactionHistoryScreen({super.key});
@@ -48,37 +48,6 @@ class _RestaurantTransactionHistoryScreenState
     ),
   ];
 
-  // filtered list based on selected status and month
-  List<TransactionRecord> get filteredTransactions {
-    return transactions.where((tx) {
-      bool statusMatch = selectedStatus == "Status" || tx.status == selectedStatus;
-      bool monthMatch = true;
-      if (selectedMonth != "Month") {
-        final monthIndex = _monthNameToNumber(selectedMonth);
-        monthMatch = tx.date.month == monthIndex;
-      }
-      return statusMatch && monthMatch;
-    }).toList();
-  }
-
-  int _monthNameToNumber(String month) {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-    return months.indexOf(month) + 1; // 1-based month number
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +56,7 @@ class _RestaurantTransactionHistoryScreenState
         title: Strings.RESTURANT_TRANSACTION_HISTORY_TITLE,
         leading: CustomBackButton(),
       ).getAppBar(context),
+
       body: Padding(
         padding: EdgeInsets.symmetric(
           vertical: Constant.CONTAINER_SIZE_12,
@@ -98,22 +68,20 @@ class _RestaurantTransactionHistoryScreenState
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
+                    style: Theme.of(context).textTheme.titleSmall,
                     value: selectedStatus,
-                    items: [
-                      Strings.STATUS,
-                      Strings.APPROVED_STATUS,
-                      Strings.REJECTED_STATUS,
-                      Strings.PENDING_STATUS,
-                    ]
-                        .map(
-                          (e) => DropdownMenuItem(value: e, child: Text(e)),
-                    )
-                        .toList(),
-                    onChanged: (v) {
-                      setState(() {
-                        selectedStatus = v!;
-                      });
-                    },
+                    items:
+                        [
+                              Strings.STATUS,
+                              Strings.APPROVED_STATUS,
+                              Strings.REJECTED_STATUS,
+                              Strings.PENDING_STATUS,
+                            ]
+                            .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                            )
+                            .toList(),
+                    onChanged: (v) => setState(() => selectedStatus = v!),
                     decoration: InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),
@@ -123,31 +91,29 @@ class _RestaurantTransactionHistoryScreenState
                 SizedBox(width: Constant.SIZE_08),
                 Expanded(
                   child: DropdownButtonFormField<String>(
+                    style: Theme.of(context).textTheme.titleSmall,
                     value: selectedMonth,
-                    items: [
-                      "Month",
-                      "January",
-                      "February",
-                      "March",
-                      "April",
-                      "May",
-                      "June",
-                      "July",
-                      "August",
-                      "September",
-                      "October",
-                      "November",
-                      "December",
-                    ]
-                        .map(
-                          (e) => DropdownMenuItem(value: e, child: Text(e)),
-                    )
-                        .toList(),
-                    onChanged: (v) {
-                      setState(() {
-                        selectedMonth = v!;
-                      });
-                    },
+                    items:
+                        [
+                              "Month",
+                              "January",
+                              "February",
+                              "March",
+                              "April",
+                              "May",
+                              "June",
+                              "July",
+                              "August",
+                              "September",
+                              "October",
+                              "November",
+                              "December",
+                            ]
+                            .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                            )
+                            .toList(),
+                    onChanged: (v) => setState(() => selectedMonth = v!),
                     decoration: InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),
@@ -156,17 +122,19 @@ class _RestaurantTransactionHistoryScreenState
                 ),
               ],
             ),
+
             SizedBox(height: Constant.CONTAINER_SIZE_12),
+
             Expanded(
-              child: filteredTransactions.isEmpty
-                  ? Center(child: Text("No transactions found"))
-                  : ListView.separated(
+              child: ListView.separated(
                 padding: EdgeInsets.zero,
-                itemCount: filteredTransactions.length,
-                separatorBuilder: (_, __) => Divider(height: 0.4),
+                itemCount: transactionsList.length,
+                separatorBuilder: (_, __) => Padding(
+                  padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
+                  child: Divider(height: 0.4,color: Colors.grey.shade300,),
+                ),
                 itemBuilder: (context, index) {
-                  return TransactionItemCard(
-                      data: filteredTransactions[index]);
+                  return buildHistoryItem( transactionsList[index]);
                 },
               ),
             ),
@@ -175,4 +143,100 @@ class _RestaurantTransactionHistoryScreenState
       ),
     );
   }
+  Widget buildHistoryItem(TransactionItem item) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(item.icon, size: 18, color: item.iconColor),
+
+        SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.status,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+              SizedBox(height: 4),
+              Text(
+                item.restaurant,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 4),
+              Text(
+                item.date,
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+        ),
+
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              item.count,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+
+        SizedBox(width: 8),
+        Icon(Icons.chevron_right, size: 22, color: Colors.grey),
+      ],
+    );
+  }
+  final List<TransactionItem> transactionsList = [
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_received,
+      iconColor: Colors.green,
+      status: "Returned",
+      restaurant: "Marina Sky Dine",
+      date: "21/11/2025",
+      count: "6",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "20/11/2025",
+      count: "3",
+    ),
+    TransactionItem(
+      icon: Icons.call_made,
+      iconColor: Colors.grey,
+      status: "Borrowed",
+      restaurant: "Marina Sky Dine",
+      date: "18/11/2025",
+      count: "3",
+    ),
+  ];
+}
+class TransactionItem {
+  final IconData icon;
+  final Color iconColor;
+  final String status;
+  final String restaurant;
+  final String date;
+  final String count;
+
+  TransactionItem({
+    required this.icon,
+    required this.iconColor,
+    required this.status,
+    required this.restaurant,
+    required this.date,
+    required this.count,
+  });
 }

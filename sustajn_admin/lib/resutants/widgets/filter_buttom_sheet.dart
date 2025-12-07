@@ -1,5 +1,6 @@
+import 'package:container_tracking/common_widgets/submit_clear_button.dart';
+import 'package:container_tracking/constants/number_constants.dart';
 import 'package:flutter/material.dart';
-import '../../common_widgets/custom_buttons.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
@@ -15,8 +16,18 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   bool showMonthView = true;
 
   final months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   final List<Map<String, String>> containerList = [
@@ -44,7 +55,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final years = List.generate(6, (i) => DateTime.now().year - i);
-
     return SafeArea(
       top: false,
       bottom: true,
@@ -53,12 +63,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Close Button
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
                   padding: const EdgeInsets.all(4),
                   margin: const EdgeInsets.all(8),
                   child: InkWell(
@@ -69,22 +81,21 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               ],
             ),
 
-            // Main Content
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   color: Colors.white,
                 ),
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    Padding(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Filters",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          "Containers",
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
@@ -92,51 +103,25 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // LEFT TABS
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _selectorTab(
-                                  label: "Month",
-                                  isSelected: showMonthView,
-                                  onTap: () => setState(() => showMonthView = true),
-                                ),
-                                const SizedBox(height: 25),
-                                _selectorTab(
-                                  label: "Containers",
-                                  isSelected: !showMonthView,
-                                  onTap: () => setState(() => showMonthView = false),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const VerticalDivider(color: Colors.black, thickness: 1, indent: 1),
-                          // RIGHT CONTENT AREA
                           Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: showMonthView
-                                  ? _buildMonthView(years)
-                                  : _buildContainerView(),
-                            ),
+                            child: _buildContainerView(),
                           ),
                         ],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: ActionButtons(
-                        onClear: () {
-                          if (showMonthView) {
-                            setState(() => selectedMonth = null);
-                          } else {
-                            setState(() =>
-                                selectedContainers.updateAll((key, value) => false));
-                          }
+                      padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      child: SubmitClearButton(
+                        onLeftTap: () {
+                          setState(() {
+                            selectedMonth = null;
+                            selectedContainers.updateAll((key, value) => false);
+                          });
+                          Navigator.pop(context);
                         },
-                        onApply: () => Navigator.pop(context),
+                        onRightTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
                   ],
@@ -193,60 +178,64 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget _buildContainerView() {
-    return Column(
-      children: [
-        SizedBox(
-          height: 50,
-          child: TextField(
-            decoration: const InputDecoration(
-              hintText: "Search name or ID",
-              border: InputBorder.none,
-              prefixIcon: Icon(Icons.search),
+    return Padding(
+      padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+      child: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.05,
+            child:  TextField(
+              style: Theme.of(context).textTheme.titleSmall,
+              decoration: InputDecoration(
+                hintText: "Search name or ID",
+                hintStyle: Theme.of(context).textTheme.titleSmall,
+                border: InputBorder.none,
+                prefixIcon: Icon(Icons.search),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        // LIST
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: containerList.length,
-            itemBuilder: (context, index) {
-              final item = containerList[index];
-              final name = item["name"]!;
-              final id = item["id"]!;
-
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Column(
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: containerList.length,
+              itemBuilder: (context, index) {
+                final item = containerList[index];
+                final name = item["name"]!;
+                final id = item["id"]!;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name, style: const TextStyle(fontSize: 15)),
+                        Text(name, style: Theme.of(context).textTheme.titleSmall),
                         const SizedBox(height: 3),
-                        Text(id,
-                            style: TextStyle(
-                                fontSize: 12, color: Colors.grey.shade600)),
+                        Text(
+                          id,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  Checkbox(
-                    activeColor: Theme.of(context).primaryColor,
-                    checkColor: Colors.white,
-                    value: selectedContainers[id],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedContainers[id] = value!;
-                      });
-                    },
-                  )
-                ],
-              );
-            },
+                    Checkbox(
+                      activeColor: Theme.of(context).primaryColor,
+                      checkColor: Colors.white,
+                      value: selectedContainers[id],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedContainers[id] = value!;
+                        });
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -269,12 +258,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             ),
           ),
           const SizedBox(height: 4),
-          if (isSelected)
-            Container(
-              width: 80,
-              height: 2,
-              color: Colors.green,
-            ),
+          if (isSelected) Container(width: 80, height: 2, color: Colors.green),
         ],
       ),
     );

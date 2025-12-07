@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../../container_list/container_list_screen.dart';
-import '../../../container_request/container_request_screen.dart';
 import '../../../customer/screens/customer_list_screen.dart';
-import '../../../history/screens/history_screen.dart';
 import '../../../resutants/screens/resturant_list_screen.dart';
 import '../../../utils/theme_utils.dart';
 import '../dashboard_screen.dart';
-import '../profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: _getCurrentScreen(),
       bottomNavigationBar: Container(
-        // height: Constant.CONTAINER_SIZE_70,
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
@@ -55,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Resturants',
+              label: 'Restaurants',
             ),
             BottomNavigationBarItem(icon: Icon(Icons.group),
                 label: 'Customers'),
@@ -80,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 3:
         return CustomerListScreen();
       default:
-        return RestaurantListScreen();
+        return DashboardScreen();
     }
   }
 }

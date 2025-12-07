@@ -1,9 +1,9 @@
-import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/string_utils.dart';
+import 'login_screen.dart';
 
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -136,8 +136,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                     ),
                     onPressed: (){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context)=>LoginScreen()));
                     },
                     child: Text(
                       Strings.RESET,

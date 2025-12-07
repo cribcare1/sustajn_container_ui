@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
+import '../common_widgets/submit_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
@@ -27,9 +28,6 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
 
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
-  final FocusScopeNode _blockedFocusNode = FocusScopeNode();
-
-
 
   @override
   void dispose() {
@@ -41,26 +39,16 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
     super.dispose();
   }
 
-  void _showChooseDialog() async {
-    _blockedFocusNode.requestFocus();
-
-    await showDialog(
+  void _showChooseDialog() {
+    showDialog(
       context: context,
       barrierColor: Colors.black54,
       builder: (_) => _buildChooseDialog(),
     );
-
-    Future.delayed(Duration(milliseconds: 100), () {
-      _blockedFocusNode.requestFocus();
-    });
   }
-
-
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      _blockedFocusNode.requestFocus();
-
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
         imageQuality: 70,
@@ -77,18 +65,21 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
-
-      Future.delayed(Duration(milliseconds: 100), () {
-        _blockedFocusNode.requestFocus();
-      });
     } catch (e) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error picking image: ${e.toString()}"),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
-
-
 
   void _removeImage() {
     setState(() {
@@ -155,171 +146,144 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final themeData = CustomTheme.getTheme(true);
-    return FocusScope(
-      node: _blockedFocusNode,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: themeData?.scaffoldBackgroundColor,
-        appBar: CustomAppBar(
-          title: Strings.ADD_NEWCONTAINER_TITLE,
-          leading: CustomBackButton(),
-        ).getAppBar(context),
-      
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Strings.CONTAINER_INFORMATION,
-                              style: TextStyle(
-                                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: Constant.CONTAINER_SIZE_12),
-      
-                            Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  _buildTextField(
-                                    controller: _productController,
-                                    hint: Strings.ENTER_PRODUCT,
-                                    validator: _validateProduct,
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-      
-                                  _buildTextField(
-                                    controller: _productIdController,
-                                    hint: Strings.ENTER_PRODUCT_ID,
-                                    validator: _validateProductId,
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-      
-                                  _buildTextField(
-                                    controller: _volumeController,
-                                    hint:Strings.ENTER_VOLUME,
-                                    validator: _validateVolume,
-                                    keyboardType: TextInputType.text,
-                                  ),
-                                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-      
-                                  _buildTextField(
-                                    controller: _quantityController,
-                                    hint: Strings.ENTER_QUANTITY,
-                                    validator: _validateQuantity,
-                                    keyboardType: TextInputType.number,
-                                  ),
-                                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-      
-                                  _buildTextField(
-                                    controller: _priceController,
-                                    hint: Strings.CONTAINER_PRICE,
-                                    validator: _validatePrice,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+    return Scaffold(
+      backgroundColor: themeData?.scaffoldBackgroundColor,
+      appBar: CustomAppBar(
+        title: Strings.ADD_NEWCONTAINER_TITLE,
+        leading: CustomBackButton(),
+      ).getAppBar(context),
+
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                       ),
-      
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
-                      Container(
-                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Strings.CONTAINER_IMAGE,
-                              style: TextStyle(
-                                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            Strings.CONTAINER_INFORMATION,
+                            style: TextStyle(
+                              fontSize: Constant.LABEL_TEXT_SIZE_18,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: Constant.CONTAINER_SIZE_12),
-                            GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                _showChooseDialog();
-                              },
-                              child: _buildDashedContainer(
-                                height: screenWidth * 0.35,
-                                child: _selectedImage == null
-                                    ? _buildUploadUI()
-                                    : _buildSelectedImageUI(),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-      
-                      SizedBox(height: Constant.CONTAINER_SIZE_100),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: Constant.CONTAINER_SIZE_16,
-                right: Constant.CONTAINER_SIZE_16,
-                bottom: Constant.CONTAINER_SIZE_18,
-                child: SizedBox(
-                  height: Constant.CONTAINER_SIZE_50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD9B400),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                _buildTextField(
+                                  controller: _productController,
+                                  hint: Strings.ENTER_PRODUCT,
+                                  validator: _validateProduct,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                                _buildTextField(
+                                  controller: _productIdController,
+                                  hint: Strings.ENTER_PRODUCT_ID,
+                                  validator: _validateProductId,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                                _buildTextField(
+                                  controller: _volumeController,
+                                  hint:Strings.ENTER_VOLUME,
+                                  validator: _validateVolume,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                                _buildTextField(
+                                  controller: _quantityController,
+                                  hint: Strings.ENTER_QUANTITY,
+                                  validator: _validateQuantity,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                                _buildTextField(
+                                  controller: _priceController,
+                                  hint: Strings.CONTAINER_PRICE,
+                                  validator: _validatePrice,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    onPressed: () {
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    Container(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            Strings.CONTAINER_IMAGE,
+                            style: TextStyle(
+                              fontSize: Constant.LABEL_TEXT_SIZE_18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+                          GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              _showChooseDialog();
+                            },
+                            child: _buildDashedContainer(
+                              height: screenWidth * 0.35,
+                              child: _selectedImage == null
+                                  ? _buildUploadUI()
+                                  : _buildSelectedImageUI(),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SubmitButton(onRightTap: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pop(context, {
-                          "name": _productController.text,
-                          "id": _productIdController.text,
-                          "volume": _volumeController.text,
-                          "quantity": _quantityController.text,
-                          "image": _selectedImage,
-                        });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please complete required fields")),
-                        );
-                      }
-                    },
-                    child: Text(
-                      Strings.ADD_CONTAINER,
-                      style: TextStyle(
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+                                  Navigator.pop(context, {
+                                    "name": _productController.text,
+                                    "id": _productIdController.text,
+                                    "volume": _volumeController.text,
+                                    "quantity": _quantityController.text,
+                                    "image": _selectedImage,
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Please complete required fields")),
+                                  );
+                                }
+                    },rightText: "Add Container",),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -335,13 +299,6 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
     return TextFormField(
       controller: controller,
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-
-      onChanged: (value) {
-        if (_formKey.currentState != null) {
-          _formKey.currentState!.validate();
-        }
-      },
       keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
