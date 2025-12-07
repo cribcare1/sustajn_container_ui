@@ -7,7 +7,6 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../models/transaction_record.dart';
 
-
 class RestaurantTransactionHistoryScreen extends StatefulWidget {
   const RestaurantTransactionHistoryScreen({super.key});
 
@@ -49,16 +48,45 @@ class _RestaurantTransactionHistoryScreenState
     ),
   ];
 
+  // filtered list based on selected status and month
+  List<TransactionRecord> get filteredTransactions {
+    return transactions.where((tx) {
+      bool statusMatch = selectedStatus == "Status" || tx.status == selectedStatus;
+      bool monthMatch = true;
+      if (selectedMonth != "Month") {
+        final monthIndex = _monthNameToNumber(selectedMonth);
+        monthMatch = tx.date.month == monthIndex;
+      }
+      return statusMatch && monthMatch;
+    }).toList();
+  }
+
+  int _monthNameToNumber(String month) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    return months.indexOf(month) + 1; // 1-based month number
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: CustomAppBar(
         title: Strings.RESTURANT_TRANSACTION_HISTORY_TITLE,
         leading: CustomBackButton(),
       ).getAppBar(context),
-
       body: Padding(
         padding: EdgeInsets.symmetric(
           vertical: Constant.CONTAINER_SIZE_12,
@@ -71,18 +99,21 @@ class _RestaurantTransactionHistoryScreenState
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: selectedStatus,
-                    items:
-                        [
-                              Strings.STATUS,
-                              Strings.APPROVED_STATUS,
-                              Strings.REJECTED_STATUS,
-                              Strings.PENDING_STATUS,
-                            ]
-                            .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
-                            )
-                            .toList(),
-                    onChanged: (v) => setState(() => selectedStatus = v!),
+                    items: [
+                      Strings.STATUS,
+                      Strings.APPROVED_STATUS,
+                      Strings.REJECTED_STATUS,
+                      Strings.PENDING_STATUS,
+                    ]
+                        .map(
+                          (e) => DropdownMenuItem(value: e, child: Text(e)),
+                    )
+                        .toList(),
+                    onChanged: (v) {
+                      setState(() {
+                        selectedStatus = v!;
+                      });
+                    },
                     decoration: InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),
@@ -93,27 +124,30 @@ class _RestaurantTransactionHistoryScreenState
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: selectedMonth,
-                    items:
-                        [
-                              "Month",
-                              "January",
-                              "February",
-                              "March",
-                              "April",
-                              "May",
-                              "June",
-                              "July",
-                              "August",
-                              "September",
-                              "October",
-                              "November",
-                              "December",
-                            ]
-                            .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
-                            )
-                            .toList(),
-                    onChanged: (v) => setState(() => selectedMonth = v!),
+                    items: [
+                      "Month",
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December",
+                    ]
+                        .map(
+                          (e) => DropdownMenuItem(value: e, child: Text(e)),
+                    )
+                        .toList(),
+                    onChanged: (v) {
+                      setState(() {
+                        selectedMonth = v!;
+                      });
+                    },
                     decoration: InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),
@@ -122,16 +156,17 @@ class _RestaurantTransactionHistoryScreenState
                 ),
               ],
             ),
-
             SizedBox(height: Constant.CONTAINER_SIZE_12),
-
             Expanded(
-              child: ListView.separated(
+              child: filteredTransactions.isEmpty
+                  ? Center(child: Text("No transactions found"))
+                  : ListView.separated(
                 padding: EdgeInsets.zero,
-                itemCount: transactions.length,
+                itemCount: filteredTransactions.length,
                 separatorBuilder: (_, __) => Divider(height: 0.4),
                 itemBuilder: (context, index) {
-                  return TransactionItemCard(data: transactions[index]);
+                  return TransactionItemCard(
+                      data: filteredTransactions[index]);
                 },
               ),
             ),

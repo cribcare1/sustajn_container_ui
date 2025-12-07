@@ -15,6 +15,8 @@ class RestaurantListScreen extends StatefulWidget {
 }
 
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   final List<Restaurant> restaurants = [
     Restaurant(
       name: "FlavourFusion Bistro",
@@ -48,6 +50,28 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     ),
   ];
 
+  List<Restaurant> filteredRestaurants = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredRestaurants = restaurants;
+
+    _searchController.addListener(() {
+      filterRestaurants();
+    });
+  }
+
+  void filterRestaurants() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      filteredRestaurants = restaurants.where((resto) {
+        return resto.name.toLowerCase().contains(query) ||
+            resto.address.toLowerCase().contains(query);
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,15 +86,17 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              // Search Field
               Container(
                 height: Constant.TEXT_FIELD_HEIGHT,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_10,
-                  ),
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                 ),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
                     hintText: Strings.SEARCH_RESTURANTS,
@@ -81,23 +107,27 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: Constant.CONTAINER_SIZE_16),
-              // todo this may need in future
-              // Total Count
-              // Text(
-              //   "Total - ${restaurants.length}",
-              //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              //     fontSize: Constant.LABEL_TEXT_SIZE_16,
-              //     color: Colors.grey.shade700,
-              //     fontWeight: FontWeight.bold
-              //   ),
-              // ),
-              // SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+              // Restaurant List
               Expanded(
-                child: ListView.builder(
-                  itemCount: restaurants.length,
+                child: filteredRestaurants.isEmpty
+                    ? Center(
+                  child: Text(
+                    "No restaurants found",
+                    style: TextStyle(
+                      fontSize: Constant.LABEL_TEXT_SIZE_16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+                    : ListView.builder(
+                  padding: EdgeInsets.only(bottom: 10),
+                  itemCount: filteredRestaurants.length,
                   itemBuilder: (context, index) {
-                    return _buildRestaurantCard(restaurants[index]);
+                    return _buildRestaurantCard(
+                        filteredRestaurants[index]);
                   },
                 ),
               ),
@@ -122,15 +152,13 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             ),
           );
         },
-        leading: Container(
-          width: Constant.CONTAINER_SIZE_50,
-          height: Constant.CONTAINER_SIZE_50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constant.SIZE_08),
-            image: DecorationImage(
-              image: AssetImage(restaurant.imageUrl),
-              fit: BoxFit.cover,
-            ),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(Constant.SIZE_08),
+          child: Image.asset(
+            restaurant.imageUrl,
+            width: Constant.CONTAINER_SIZE_50,
+            height: Constant.CONTAINER_SIZE_50,
+            fit: BoxFit.cover,
           ),
         ),
         title: Text(
@@ -143,17 +171,16 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: Constant.SIZE_02),
             Row(
               children: [
-                Icon(
-                  Icons.ramen_dining,
-                  size: Constant.CONTAINER_SIZE_12,
-                  color: Colors.grey.shade600,
-                ),
+                Icon(Icons.ramen_dining,
+                    size: Constant.CONTAINER_SIZE_12,
+                    color: Colors.grey.shade600),
                 SizedBox(width: Constant.SIZE_04),
                 Text(
                   restaurant.containers.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                     color: Colors.grey.shade600,
                   ),
@@ -163,20 +190,18 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             SizedBox(height: Constant.SIZE_02),
             Row(
               children: [
-                Icon(
-                  Icons.location_on,
-                  size: Constant.CONTAINER_SIZE_12,
-                  color: Colors.grey.shade600,
-                ),
+                Icon(Icons.location_on,
+                    size: Constant.CONTAINER_SIZE_12,
+                    color: Colors.grey.shade600),
                 SizedBox(width: Constant.SIZE_04),
                 Expanded(
                   child: Text(
                     restaurant.address,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
                       fontSize: Constant.CONTAINER_SIZE_12,
                       color: Colors.grey.shade500,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

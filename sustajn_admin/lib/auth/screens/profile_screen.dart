@@ -124,6 +124,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         title: "Email",
                         value: "hello597@gmail.com",
                         w: w,
+                        showEdit: false
                       ),
                       const Divider(),
                       _detailItem(
@@ -132,6 +133,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         value:
                         "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
                         w: w,
+                        showEdit: true
                       ),
                       const Divider(),
                       _detailItem(
@@ -139,6 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         title: "Mobile Number",
                         value: "980765432",
                         w: w,
+                        showEdit: true
                       ),
                     ],
                   ),
@@ -182,11 +185,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
+// Update _detailItem to include showEdit parameter
   Widget _detailItem({
     required IconData icon,
     required String title,
     required String value,
     required double w,
+    bool showEdit = true, // new parameter
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,9 +217,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-        Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+        if (showEdit)
+          Icon(Icons.edit, size: w * 0.045, color: Colors.green), // only show if true
       ],
     );
   }
+
 
 }
