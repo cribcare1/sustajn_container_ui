@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 
 
 class MyProfileScreen extends StatefulWidget {
@@ -78,14 +79,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: w * 0.09,
-                      width: w * 0.09,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: (){
+                        Utility.showProfilePhotoBottomSheet(context);
+                      },
+                      child: Container(
+                        height: w * 0.09,
+                        width: w * 0.09,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child:
+                        Icon(Icons.edit_outlined, size: w * 0.045, color: theme!.primaryColor,),
                       ),
-                      child: Icon(Icons.edit, size: w * 0.045),
                     ),
                   ],
                 ),
@@ -102,7 +109,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                     SizedBox(width: w * 0.015),
-                    Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+                    Icon(Icons.edit_outlined, size: w * 0.045, color:theme.primaryColor),
                   ],
                 ),
                 SizedBox(height: h * 0.03),
@@ -213,6 +220,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     required String title,
     required String value,
     required double w,
+      ThemeData? theme
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +246,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-        Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+        Icon(Icons.edit_outlined, size: w * 0.045, color: theme?.primaryColor),
       ],
     );
   }
