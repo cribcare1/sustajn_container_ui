@@ -50,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: height * 0.03),
                 TextFormField(
                   controller: _emailController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: Strings.EMAIL,
@@ -61,6 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderSide: BorderSide(color: Colors.grey),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (_formKey.currentState != null) {
+                      _formKey.currentState!.validate();
+                    }
+                  },
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
                       return 'Enter your email';
@@ -75,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     hintText: Strings.PASSWORD,
                     filled: true,
@@ -98,6 +105,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  onChanged: (value) {
+                    if (_formKey.currentState != null) {
+                      _formKey.currentState!.validate();
+                    }
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Enter your password";
