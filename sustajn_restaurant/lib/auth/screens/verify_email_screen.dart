@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import 'bank_details_screen.dart';
+import 'package:pinput/pinput.dart';
 
+import 'login_screen.dart';
 class VerifyEmailScreen extends StatefulWidget {
-  final int currentStep;
-  const VerifyEmailScreen({super.key, this.currentStep =1});
+  final String previousScreen;
+  const VerifyEmailScreen({super.key, required this.previousScreen});
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -35,7 +36,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       return false;
     });
   }
-
+  final _otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -58,8 +59,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top + Constant.CONTAINER_SIZE_100),
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SizedBox(height: Constant.CONTAINER_SIZE_140),
                     Text(
                       Strings.VERIFY_EMAIL,
                       style: theme.textTheme.headlineSmall?.copyWith(
@@ -67,7 +67,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
+
+
                     Text(
                       Strings.SEND_CODE,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -76,18 +79,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         fontSize: Constant.LABEL_TEXT_SIZE_15,
                       ),
                     ),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(4, (index) {
-                        return _otpBox(context, controllers[index]);
-                      }),
-                    ),
+
+                    Center(child: buildOtp(context,_otpController)),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
+
 
                     SizedBox(
                       width: double.infinity,
-                      height: Constant.CONTAINER_SIZE_50,
+                      // height: Constant.CONTAINER_SIZE_50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:Color(0xFFD0A52C),
@@ -98,23 +100,32 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(context, 
-                          MaterialPageRoute(builder: (context)=> BankDetails()));
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (context)=>SelectAddress()));
+                          if(widget.previousScreen == "forgotPassword"){
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
+                          }else{
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context)=>LoginScreen()));
+                          }
+
                         },
-                        child: Text(
-                          Strings.VERIFY,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.primaryColor,
-                            fontSize: Constant.LABEL_TEXT_SIZE_16,
-                            fontWeight: FontWeight.w600,
+                        child: Padding(
+                          padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+                          child: Text(
+                            Strings.VERIFY,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.primaryColor,
+                              fontSize: Constant.LABEL_TEXT_SIZE_16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+
                     Center(
                       child: Text(
                         "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
@@ -124,7 +135,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         ),
                       ),
                     ),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+
                     Center(
                       child: TextButton(
                         onPressed: seconds == 0
@@ -170,49 +184,61 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       ),
     );
   }
-
-  Widget _otpBox(BuildContext context, TextEditingController controller) {
+  Widget buildOtp(BuildContext context, TextEditingController controller) {
     final theme = Theme.of(context);
 
-    return Container(
-      width: Constant.CONTAINER_SIZE_55,
-      height: Constant.CONTAINER_SIZE_55,
-      alignment: Alignment.center,
+    final defaultPinTheme = PinTheme(
+      width: 55,
+      height: 55,
+      textStyle: theme.textTheme.titleLarge?.copyWith(
+        fontSize: 18,
+        color: theme.textTheme.bodyLarge?.color,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: theme.primaryColor,
-          width: Constant.SIZE_02,
-        ),
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          inputDecorationTheme: const InputDecorationTheme(
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            focusedErrorBorder: InputBorder.none,
-            counterStyle: TextStyle(height: 0),
-          ),
-        ),
-        child: TextField(
-          controller: controller,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          maxLength: 1,
-          cursorColor: theme.primaryColor,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontSize: Constant.LABEL_TEXT_SIZE_18,
-            color: theme.textTheme.bodyLarge?.color,
-          ),
-          decoration: const InputDecoration(
-            counterText: "",
-          ),
+          width: 1,
         ),
       ),
     );
-  }
 
+    return Pinput(
+      length: 4, // Change to 6 if needed
+      controller: controller,
+      keyboardType: TextInputType.number,
+
+      defaultPinTheme: defaultPinTheme,
+
+      focusedPinTheme: defaultPinTheme.copyWith(
+        decoration: defaultPinTheme.decoration!.copyWith(
+          border: Border.all(
+            color: theme.primaryColor,
+            width: 2,
+          ),
+        ),
+      ),
+
+      submittedPinTheme: defaultPinTheme.copyWith(
+        decoration: defaultPinTheme.decoration!.copyWith(
+          border: Border.all(
+            color: theme.primaryColor,
+            width: 1.2,
+          ),
+        ),
+      ),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      showCursor: true,
+      cursor: Container(
+        width: 2,
+        height: 18,
+        margin: const EdgeInsets.only(bottom: 4),
+        color: theme.primaryColor,
+      ),
+
+      onCompleted: (value) {
+        print("OTP Entered: $value");
+      },
+    );
+  }
 }

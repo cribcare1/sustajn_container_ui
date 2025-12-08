@@ -33,6 +33,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         backgroundColor: const Color(0xfff4f5f4),
         appBar: AppBar(
           backgroundColor: const Color(0xff0E3A2F),
+          surfaceTintColor: const Color(0xff0E3A2F),
           leading: SizedBox.shrink(),
           title: const Text(
             "My Profile",
@@ -127,7 +128,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           icon: Icons.email_outlined,
                           title: "Email",
                           value: "hello597@gmail.com",
-                          w: w,
+                          w: w,isEdit: true
                         ),
                         const Divider(),
                         _detailItem(
@@ -224,6 +225,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     required String title,
     required String value,
     required double w,
+    bool isEdit = false,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +251,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-        Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+        !isEdit? Icon(Icons.edit, size: w * 0.045, color: Colors.green):const SizedBox(),
       ],
     );
   }
