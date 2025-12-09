@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../common_widgets/lottie_animation_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import 'dashboard_screen.dart';
 
 
 
@@ -382,7 +384,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
         ),
         onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => LottieMessageScreen(
+                animation: 'assets/animations/animation.json',
+                title: "Subscription Successful!",
+                subtitle: "Thank you for subscribing.Your account is now active",
+                nextScreen: const DashboardScreen(),
+              ),
+            ),
+          );
         },
+
         child: Text(
           Strings.SUBSCRIBE,
           style: theme.textTheme.titleMedium!.copyWith(
