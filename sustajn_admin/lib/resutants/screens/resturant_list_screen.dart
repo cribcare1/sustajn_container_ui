@@ -2,7 +2,6 @@ import 'package:container_tracking/resutants/screens/resturant_details_screen.da
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_app_bar.dart';
-import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../models/model.dart';
@@ -53,35 +52,37 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: Strings.RESTURANT_TITLE,
-        leading: CustomBackButton(),
+        leading: SizedBox.shrink(),
+        action: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+        ]
       ).getAppBar(context),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: Constant.TEXT_FIELD_HEIGHT,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_10,
-                  ),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
-                    hintText: Strings.SEARCH_RESTURANTS,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: Constant.CONTAINER_SIZE_16,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
+              // Container(
+              //   height: Constant.TEXT_FIELD_HEIGHT,
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey.shade100,
+              //     borderRadius: BorderRadius.circular(
+              //       Constant.CONTAINER_SIZE_10,
+              //     ),
+              //   ),
+              //   child: TextField(
+              //     decoration: InputDecoration(
+              //       prefixIcon: Icon(Icons.search, color: Colors.grey.shade600),
+              //       hintText: Strings.SEARCH_RESTURANTS,
+              //       border: InputBorder.none,
+              //       contentPadding: EdgeInsets.symmetric(
+              //         horizontal: Constant.CONTAINER_SIZE_16,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: Constant.CONTAINER_SIZE_16),
               // todo this may need in future
               // Total Count
               // Text(
@@ -94,8 +95,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               // ),
               // SizedBox(height: Constant.CONTAINER_SIZE_16),
               Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                   itemCount: restaurants.length,
+                  separatorBuilder: (context, index) =>SizedBox(height: Constant.CONTAINER_SIZE_10,),
                   itemBuilder: (context, index) {
                     return _buildRestaurantCard(restaurants[index]);
                   },
@@ -109,9 +111,22 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   }
 
   Widget _buildRestaurantCard(Restaurant restaurant) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: Constant.CONTAINER_SIZE_12,
+        horizontal: Constant.SIZE_008,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: ListTile(
         onTap: () {
           Navigator.push(
@@ -134,11 +149,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           ),
         ),
         title: Text(
-          restaurant.name,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: Constant.LABEL_TEXT_SIZE_14,
-            fontWeight: FontWeight.bold,
-          ),
+          restaurant.name,maxLines: 1,overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.titleMedium
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

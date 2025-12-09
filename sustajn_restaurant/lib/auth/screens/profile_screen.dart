@@ -93,24 +93,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final w = size.width;
     final h = size.height;
 
-    return Scaffold(
-      backgroundColor: const Color(0xfff4f5f4),
-
-      appBar: AppBar(
-        backgroundColor: const Color(0xff0E3A2F),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        ),
-        title: const Text(
-          "My Profile",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        backgroundColor: const Color(0xfff4f5f4),
+        appBar: AppBar(
+          backgroundColor: const Color(0xff0E3A2F),
+          surfaceTintColor: const Color(0xff0E3A2F),
+          leading: SizedBox.shrink(),
+          title: const Text(
+            "My Profile",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
           ),
         ),
-      ),
 
       body: SingleChildScrollView(
         child: Stack(

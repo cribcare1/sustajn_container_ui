@@ -27,7 +27,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
     final themeData = CustomTheme.getTheme(true);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Strings.RESTURANT_DETAILS_TITLE,
+        title:  restaurant.name,
         leading: CustomBackButton(),
       ).getAppBar(context),
       backgroundColor: Colors.white,
@@ -37,23 +37,23 @@ class RestaurantDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Text(
-                  restaurant.name,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              // Center(
+              //   child: Text(
+              //     restaurant.name,
+              //     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              //       fontSize: Constant.LABEL_TEXT_SIZE_16,
+              //       fontWeight: FontWeight.bold,
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: Constant.CONTAINER_SIZE_12),
               GridView.builder(
-                padding: EdgeInsets.all(0),
+                // padding: EdgeInsets.all(0),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: containerCards.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount:MediaQuery.of(context).size.width>600?3: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 1.6,
@@ -86,7 +86,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     Strings.VIEW_RESTURANT_DETAILS,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      color: Color(0xFF8daba0),
+                      color: themeData!.primaryColor,
                       decoration: TextDecoration.underline,
                     ),
                   ),
