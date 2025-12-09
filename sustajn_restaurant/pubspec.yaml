@@ -45,6 +45,9 @@ dependencies:
   google_maps_flutter: ^2.2.6
   geolocator: ^11.0.0
   geocoding: ^2.1.1
+  lottie: ^3.3.2
+  qr_code_scanner_plus: ^2.0.14
+  fl_chart: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -69,8 +72,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+     - assets/animations/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

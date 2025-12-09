@@ -108,6 +108,7 @@ class Constant {
   static late double CONTAINER_SIZE_350 = 350.0;
   static late double CONATAINER_SIZE_380 = 380.0;
   static late double CONATAINER_SIZE_400 = 400.0;
+  static late double CONTAINER_SIZE_500 = 500.0;
   static late double CONATAINER_SIZE_600 = 600.0;
   static late int CONATAINER_SIZE_1900 = 1900;
   static late double CONTAINER_SIZE_800= 800.0;

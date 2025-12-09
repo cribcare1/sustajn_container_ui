@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_profile_paint.dart';
-import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../edit_dialogs/business_information_screen.dart';
+import '../edit_dialogs/edit_bankdetails_dialog.dart';
+import '../edit_dialogs/edit_mobile_number.dart';
+import '../edit_dialogs/edit_resturantname_dialog.dart';
+import '../edit_dialogs/feedback_dialog.dart';
+import '../edit_dialogs/report_screen/reports_screen.dart';
+import '../edit_dialogs/subscription_dialog.dart';
+
 
 
 class MyProfileScreen extends StatefulWidget {
@@ -21,6 +28,64 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
   ];
+
+
+  void _handleItemTap(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        _showBankDetailsEdit(context);
+        break;
+      case 1:
+        _showBusinessEditScreen(context);
+        break;
+      case 2:
+        _showReportScreen(context);
+        break;
+      case 3:
+        _showFeedbackDialog(context);
+        break;
+      case 4:
+        _showSubscriptionDialog(context);
+        break;
+    }
+  }
+
+  void _showFeedbackDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const FeedbackBottomSheet(),
+    );
+  }
+
+  void _showSubscriptionDialog(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const UpgradeBottomSheet(),
+    );
+  }
+
+  void _showBankDetailsEdit(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const EditBankDetailsDialog(),
+    );
+  }
+
+  void _showBusinessEditScreen(BuildContext context) {
+    Navigator.push(context,
+    MaterialPageRoute(builder: (context)=>BusinessInformationScreen()));
+  }
+
+  void _showReportScreen(BuildContext context){
+    Navigator.push(context,
+    MaterialPageRoute(builder: (context)=> ReportScreen()));
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -109,7 +174,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                     SizedBox(width: w * 0.015),
-                    Icon(Icons.edit_outlined, size: w * 0.045, color:theme.primaryColor),
+                    GestureDetector(
+                      onTap: (){
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const EditRestaurantNameDialog(),
+                        );
+
+
+                      },
+                        child: Icon(Icons.edit_outlined,
+                            size: w * 0.045, color:theme.primaryColor)),
                   ],
                 ),
                 SizedBox(height: h * 0.03),
@@ -137,6 +214,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         title: "Email",
                         value: "hello597@gmail.com",
                         w: w,
+                        showEdit: false,
+                        theme: theme,
+                        ontap: (){}
                       ),
                       const Divider(),
                       _detailItem(
@@ -145,6 +225,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         value:
                         "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
                         w: w,
+                        showEdit: true,
+                        theme: theme,
+                        ontap: (){}
                       ),
                       const Divider(),
                       _detailItem(
@@ -152,6 +235,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         title: "Mobile Number",
                         value: "980765432",
                         w: w,
+                        showEdit: true,
+                        theme: theme,
+                        ontap: (){
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => const EditMobileNumberDialog(),
+                          );
+
+                        }
                       ),
                     ],
                   ),
@@ -160,7 +254,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: h*0.02),
                   child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(), // to use inside SingleChildScrollView
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: detailList.length,
                     separatorBuilder: (context, index) => Divider(height: 1),
@@ -170,9 +264,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         leading: Icon(item['icon'], size: w*0.054, color: Colors.black),
                         title: Text(item['name'], style: TextStyle(fontSize: 14)),
                         trailing: Icon(Icons.arrow_forward_ios, size: w*0.044),
-                        onTap: () {
-                          // Handle tap for each menu item
-                        },
+                        onTap: () => _handleItemTap(index, context),
                       );
                     },
                   ),
@@ -220,6 +312,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     required String title,
     required String value,
     required double w,
+    bool showEdit = true,
+    required VoidCallback ontap,
       ThemeData? theme
   }) {
     return Row(
@@ -246,7 +340,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ],
           ),
         ),
-        Icon(Icons.edit_outlined, size: w * 0.045, color: theme?.primaryColor),
+        if (showEdit)
+          GestureDetector(
+            onTap: ontap,
+              child: Icon(Icons.edit, size: w * 0.045, color: theme!.primaryColor)),
       ],
     );
   }

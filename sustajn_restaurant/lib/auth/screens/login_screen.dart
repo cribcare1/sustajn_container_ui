@@ -6,6 +6,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'dashboard_screen.dart';
 import 'forget_password.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=> HomeScreen()));
+                      MaterialPageRoute(builder: (context)=> DashboardScreen()));
                     },
                     child: Text(
                       Strings.LOGIN,
