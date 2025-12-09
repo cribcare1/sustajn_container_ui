@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BorrowedDetailsScreen extends StatelessWidget {
-  const BorrowedDetailsScreen({super.key});
+class ReturnedDetailScreen extends StatelessWidget {
+  const ReturnedDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

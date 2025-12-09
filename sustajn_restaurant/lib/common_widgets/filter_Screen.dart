@@ -44,7 +44,7 @@ class _ReusableFilterBottomSheetState
       width: width,
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
       decoration: BoxDecoration(
-        color: themeData!.secondaryHeaderColor,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Constant.CONTAINER_SIZE_20),
           topRight: Radius.circular(Constant.CONTAINER_SIZE_20),
@@ -59,7 +59,7 @@ class _ReusableFilterBottomSheetState
               children: [
                 Text(
                   widget.title,
-                  style: themeData.textTheme.titleLarge!.copyWith(
+                  style: themeData!.textTheme.titleLarge!.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -165,7 +165,7 @@ class _ReusableFilterBottomSheetState
                         vertical: Constant.CONTAINER_SIZE_18,
                       ),
                       side: BorderSide(
-                        color: themeData.primaryColor,
+                        color: Color(0xFFD9B649),
                         width: Constant.SIZE_01,
                       ),
                       shape: RoundedRectangleBorder(

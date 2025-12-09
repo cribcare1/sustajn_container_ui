@@ -3,28 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 
+import '../../borrowed/borrowed_home_screen.dart';
+import '../../common_widgets/container_count_details.dart';
 import '../../constants/number_constants.dart';
+import '../../containers/container_list.dart';
+import '../../returned_screen/returned_home_screen.dart';
 import '../../utils/theme_utils.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
-
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Container tracking',
-        theme: CustomTheme.getTheme(true),
-        home: const DashboardScreen(),
-      ),
-    );
-  }
-}
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -111,17 +96,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     _buildDashboardCard(context,
                         width: cardWidth, icon: Icons.rice_bowl_outlined,
-                        onTap: (){},
+                        onTap: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=>ContainerListScreen(title: 'Containers',)));
+                        },
                         label: 'Containers'),
                     _buildDashboardCard(context,
                         width: cardWidth,
                         icon: Icons.call_made_outlined,
-                        onTap: (){},
+                        onTap: (){
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=>BorrowedHomeScreen()));
+                        },
                         label: 'Borrowed'),
                     _buildDashboardCard(context,
                         width: cardWidth,
                         icon: Icons.call_received,
-                        onTap: (){},
+                        onTap: (){
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=>ReturnedHomeScreen()));
+                        },
                         label: 'Returned'),
                     _buildDashboardCard(context,
                         onTap: (){

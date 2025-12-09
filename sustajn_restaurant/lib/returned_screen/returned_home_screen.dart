@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/returned_screen/returned_details_screen.dart';
 
+import '../borrowed/borrowed_scan_screen.dart';
 import '../common_widgets/filter_Screen.dart';
 import '../constants/number_constants.dart';
-import 'borrowed_details_screen.dart';
-import 'borrowed_scan_screen.dart';
 
-class BorrowedHomeScreen extends StatefulWidget {
-  const BorrowedHomeScreen({super.key});
+class ReturnedHomeScreen extends StatefulWidget {
+  const ReturnedHomeScreen({super.key});
 
   @override
-  State<BorrowedHomeScreen> createState() => _BorrowedHomeScreenState();
+  State<ReturnedHomeScreen> createState() => _ReturnedHomeScreenState();
 }
 
-class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
+class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
   final List<Map<String, dynamic>> borrowedList = [
     {
       "monthYear": "November-2025",
@@ -36,11 +36,7 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
       ],
     },
   ];
-
-  List<Map<String, String>> filteredItems = [];
   TextEditingController searchController = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +77,7 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                 icon: Icon(Icons.filter_list))
           ],
           leading: CustomBackButton()).getAppBar(context),
-      body:
-
-      Padding(
+      body: Padding(
         padding:  EdgeInsets.all(Constant.SIZE_08),
         child: Column(
           children: [
@@ -157,7 +151,7 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                           return Flexible(
                             child: ListTile(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => BorrowedDetailsScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => ReturnedDetailScreen()));
                               },
                               title: Text(
                                 item["name"],

@@ -304,6 +304,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ],
         ),
       ),
+      )
     );
   }
 
