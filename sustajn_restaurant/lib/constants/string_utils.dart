@@ -152,6 +152,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String CHOOSE_PLAN = 'Choose Plan';
   static const String PROVE_DETAILS= 'Please prove the details below to create your account';
   static const String RESTURANT_NAME = 'Resturant Name';
+  static const String REPORTS = 'Reports';
   static const String RESTURANT_ADDRESS = 'Resturant Address';
 
 

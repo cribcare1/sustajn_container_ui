@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/auth/screens/bank_details_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -100,13 +101,15 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           ),
                         ),
                         onPressed: () {
-                          if(widget.previousScreen == "forgotPassword"){
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
-                          }else{
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context)=>LoginScreen()));
-                          }
+                          // if(widget.previousScreen == "forgotPassword"){
+                          //   Navigator.push(context,
+                          //       MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
+                          // }else{
+                          //   Navigator.pushReplacement(context,
+                          //       MaterialPageRoute(builder: (context)=>LoginScreen()));
+                          // }
+                          Navigator.push(context, 
+                          MaterialPageRoute(builder: (context)=>BankDetails()));
 
                         },
                         child: Padding(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/number_constants.dart';
+
 class CustomBackButton extends StatefulWidget {
   const CustomBackButton({super.key});
 
@@ -16,8 +18,9 @@ class _CustomBackButtonState extends State<CustomBackButton> {
           Navigator.pop(context);
         });
       },
-      child: const Icon(
-        Icons.arrow_back,
+      child:  Icon(
+        size: Constant.CONTAINER_SIZE_18,
+        Icons.arrow_back_ios,
         color: Colors.black,
       ),
     );

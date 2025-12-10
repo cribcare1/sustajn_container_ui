@@ -1,10 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/utility.dart';
 
 class SignUpScreen extends StatefulWidget {
   final int currentStep;
@@ -17,7 +19,6 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers
   final restaurantCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
   final mobileCtrl = TextEditingController();
@@ -29,12 +30,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool confirmPasswordVisible = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    restaurantCtrl.addListener(() => setState(() {}));
+    emailCtrl.addListener(() => setState(() {}));
+    mobileCtrl.addListener(() => setState(() {}));
+    passwordCtrl.addListener(() => setState(() {}));
+    confirmPasswordCtrl.addListener(() => setState(() {}));
+    addressCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
   void dispose() {
     restaurantCtrl.dispose();
     emailCtrl.dispose();
     mobileCtrl.dispose();
     passwordCtrl.dispose();
     confirmPasswordCtrl.dispose();
+    addressCtrl.dispose();
     super.dispose();
   }
 
@@ -49,6 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           padding: EdgeInsets.all(Constant.SIZE_15),
           child: Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -84,7 +99,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 SizedBox(height: Constant.SIZE_05),
-
                 Text(
                   Strings.PROVE_DETAILS,
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -97,8 +111,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   context,
                   controller: restaurantCtrl,
                   hint: Strings.RESTURANT_NAME,
-                  validator: (v) =>
-                  v!.isEmpty ? "Restaurant name required" : null,
+                  validator: (v) {
+                    if (v!.isEmpty) return "Restaurant name required";
+                    final valid = RegExp(r'^[a-zA-Z0-9 ]+$');
+                    if (!valid.hasMatch(v)) return "No special characters allowed";
+                    return null;
+                  },
                 ),
                 _buildTextField(
                   context,
@@ -107,7 +125,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboard: TextInputType.emailAddress,
                   validator: (v) {
                     if (v!.isEmpty) return "Email required";
-                    if (!v.contains("@")) return "Enter valid email";
+                    if (v[0] == v[0].toUpperCase()) return "Email should not start with capital letter";
+                    if (!RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$').hasMatch(v)) {
+                      return "Enter valid email";
+                    }
                     return null;
                   },
                 ),
@@ -118,9 +139,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboard: TextInputType.phone,
                   validator: (v) {
                     if (v!.isEmpty) return "Mobile number required";
-                    if (v.length < 10) return "Enter valid mobile number";
+                    if (v.length != 10) return "Enter valid 10-digit mobile number";
                     return null;
                   },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                 ),
                 _buildPasswordField(
                   context,
@@ -132,7 +157,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   validator: (v) {
                     if (v!.isEmpty) return "Password required";
-                    if (v.length < 6) return "Minimum 6 characters";
+                    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
+                      return "Password must be 8+ chars with letters, numbers & special char";
+                    }
                     return null;
                   },
                 ),
@@ -147,36 +174,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                   validator: (v) {
                     if (v!.isEmpty) return "Confirm password required";
-                    if (v != passwordCtrl.text) {
-                      return "Passwords do not match";
-                    }
+                    if (v != passwordCtrl.text) return "Passwords do not match";
                     return null;
                   },
                 ),
                 InkWell(
-                  onTap: (){},
+                  onTap: () {},
                   child: _buildTextField(
                     readOnly: true,
                     context,
                     controller: addressCtrl,
                     hint: Strings.RESTURANT_ADDRESS,
-                    validator: (v) =>
-                    v!.isEmpty ? "Restaurant address required" : null,
+                    // validator: (v) =>
+                    // v!.isEmpty ? "Restaurant address required" : null,
                   ),
                 ),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width,
-                  child: SubmitButton(
-                    onRightTap: () {
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD0A52C),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => VerifyEmailScreen(previousScreen: 'signUp',)),
+                            builder: (_) => const VerifyEmailScreen(previousScreen: 'signUp',),
+                          ),
                         );
                       }
                     },
-                    rightText: Strings.CONTINUE_VERIFICATION,
+                    child: Text(
+                      Strings.CONTINUE_VERIFICATION,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        color: theme.primaryColor,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
@@ -208,6 +246,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
+
               ],
             ),
           ),
@@ -215,6 +254,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   Widget _buildTextField(
       BuildContext context, {
         required TextEditingController controller,
@@ -222,7 +262,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         String? Function(String?)? validator,
         bool obscure = false,
         TextInputType keyboard = TextInputType.text,
-        bool? readOnly= false,
+        bool? readOnly = false,
+        List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
 
@@ -234,6 +275,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         obscureText: obscure,
         keyboardType: keyboard,
         validator: validator,
+        inputFormatters: inputFormatters, // apply formatters
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: theme.textTheme.bodyMedium?.copyWith(
@@ -254,6 +297,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+
   Widget _buildPasswordField(
       BuildContext context, {
         required TextEditingController controller,
@@ -270,6 +315,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         controller: controller,
         obscureText: !visible,
         validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: theme.textTheme.bodyMedium?.copyWith(
