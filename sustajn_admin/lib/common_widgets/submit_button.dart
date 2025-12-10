@@ -18,7 +18,7 @@ class SubmitButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFD1AE31), // Gold color
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(10),
         ),
         elevation: 0,
         padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),

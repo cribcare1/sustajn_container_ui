@@ -1,0 +1,13 @@
+class NetworkUrls {
+  static const int TIME_OUT_CODE = 408;
+  static const int NETWORK_CALL_FAILED_CODE = 409;
+  static const int EMPTY_RESPONSE_CODE = 406;
+  static const int UNAUTHORIZED_ERROR_CODE = 401;
+
+  static const BASE_URL = "http://35.154.182.218:9090/";
+  static const LOGIN_API = "auth/login";
+  static const REGISTER_USER = "auth/register-user";
+  static const FORGOT_PASSWORD = "notification/forgot-password";
+  static const VERIFY_OTP = "notification/verify-token";
+
+}

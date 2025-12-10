@@ -1,31 +1,35 @@
+import 'dart:io';
+
 import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
+import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../common_widgets/card_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../common_provider/network_provider.dart';
 import '../../constants/string_utils.dart';
-import 'map_selection_screen.dart';
+import '../../utils/utility.dart';
+import '../auth_provider.dart';
 
 enum UserType { user, restaurant, admin }
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  // final _locationController = TextEditingController();
-
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
@@ -33,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var themeData = CustomTheme.getTheme(true);
-
+    final authState = ref.watch(authNotifierProvider);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -215,29 +219,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   //   },
                   //   onTap: _navigateToMap,
                   // ),
-                  SizedBox(height: height * 0.03),
+                  SizedBox(height: height * 0.02),
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD0A52C),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> VerifyEmailScreen(previousScreen: 'signUp',)));
-
-                            },
-                      child: Text(
-                        Strings.CONTINUE_VERIFICATION,
-                        style: themeData.textTheme.titleMedium!.copyWith(
-                          color: themeData.primaryColor,
-                        ),
-                      ),
-                    ),
+                    child: SubmitButton(onRightTap: (){
+                      if(_formKey.currentState!.validate()){
+                        _getNetworkData(authState);
+                      }
+                    },rightText:  Strings.CONTINUE_VERIFICATION,)
                   ),
                   SizedBox(height: height * 0.02),
                   Center(
@@ -273,20 +262,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // void _navigateToMap() async {
-  //   final selectedLocation = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (_) => const MapSelectionScreen(),
-  //     ),
-  //   );
-  //
-  //   if (selectedLocation != null && mounted) {
-  //     setState(() {
-  //       _locationController.text = selectedLocation;
-  //     });
-  //   }
-  // }
+  _getNetworkData(var registrationState) async {
+    try {
+      ref.read(authNotifierProvider).loginData(
+          context, _emailController.text, _passwordController.text);
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              ref.read(registerDetailProvider({
+                "fullName":_nameController.text,
+                "role": "ADMIN",
+                "phoneNumber":_mobileController.text,
+                "userName":_emailController.text,
+                "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
+                "password":_passwordController.text}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
 
   @override
   void dispose() {
@@ -295,7 +307,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    // _locationController.dispose();
     super.dispose();
   }
 }

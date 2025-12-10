@@ -1,3 +1,5 @@
+import 'package:container_tracking/auth/screens/login_screen.dart';
+import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_profile_paint.dart';
@@ -25,6 +27,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       appBar: AppBar(
         backgroundColor: const Color(0xff0E3A2F),
+        surfaceTintColor: const Color(0xff0E3A2F),
         leading: InkWell(
           onTap: () {
             Navigator.pop(context);
@@ -147,7 +150,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         isRequired: false,
                       ),
                       const Divider(color: Colors.grey),
-                      //TODO:- address
                       _detailItem(
                         icon: Icons.location_on_outlined,
                         title: "Address",
@@ -168,7 +170,28 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                 ),
 
-                SizedBox(height: Constant.CONTAINER_SIZE_40),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedBackScreen(),
+                        ),
+                      );
+                    },
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("FeedBack",style: Theme.of(context).textTheme.titleMedium),
+                        Icon(Icons.arrow_forward_ios,size:20)
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
                 Center(
                   child: Container(
                     width: w * 0.55,
@@ -195,12 +218,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FeedBackScreen(),
-                          ),
-                        );
+                        SharedPreferenceUtils.deleteValueFromSF();
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
                       },
                     ),
                   ),
