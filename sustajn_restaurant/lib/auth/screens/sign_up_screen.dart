@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).padding.top +
-                      Constant.CONTAINER_SIZE_70,
+                      Constant.CONTAINER_SIZE_50,
                 ),
                 Row(
                   children: List.generate(4, (index) {
