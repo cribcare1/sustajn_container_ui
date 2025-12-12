@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/utils/app_permissons.dart';
 
 import 'auth/screens/login_screen.dart';
 
@@ -13,6 +14,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    AppPermissions.handleNotificationPermission();
+    AppPermissions.handleLocationPermission(context);
     Future.delayed(Duration(seconds: 2)).then((_){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
     });
