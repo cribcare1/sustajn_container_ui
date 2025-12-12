@@ -146,4 +146,5 @@ class Strings {
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS ="Logged in successfully";
+  static const ADDED_CONTAINER ="Container Added Successfully";
 }

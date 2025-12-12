@@ -173,14 +173,6 @@ class ApiHelper {
   }
 
 
-  /// @param url
-  ///       After getting url ,dataname  requestdata ,file and imgae file name.
-  ///       dataname will acts as key for the requestData and imagefile name will act as key for the file
-  ///       it will make actual call to api  by  POSTMULTIPART mapping
-  /// @return  future response
-  ///        the respone body of the api it will return
-  ///
-
   Future<http.Response> apiMultiPartPostRequest(
       String url, Map<String, dynamic> jsonMap, var image, String keyName) async {
 
@@ -365,6 +357,59 @@ class ApiHelper {
     } catch (exception) {
       Utils.printLog("Network call failed, exception==$exception");
       return http.Response('Network call failed', 500);
+    }
+  }
+
+  Future<http.Response> saveOrUpdateContainerType({
+    required String url,
+    required Map<String, dynamic> requestJson,
+    File? file,
+  }) async {
+    final token = Utils.authToken();
+    Utils.printLog("Multipart call started => URL: $url");
+
+    try {
+      var multipartRequest = http.MultipartRequest("POST", Uri.parse(url));
+
+      // Set headers
+      multipartRequest.headers['Content-Type'] = 'multipart/form-data';
+      if (token.isNotEmpty) {
+        multipartRequest.headers['Authorization'] = 'Bearer $token';
+      }
+
+      // Add JSON as string field -> "request"
+      multipartRequest.fields["request"] = jsonEncode(requestJson);
+
+      // Add file if exists
+      if (file != null) {
+        var stream = http.ByteStream(file.openRead());
+        var length = await file.length();
+        var multipartFile = http.MultipartFile(
+          'file', stream, length,
+          filename: file.path.split('/').last,
+        );
+
+        multipartRequest.files.add(multipartFile);
+      }
+
+      // Send request
+      final streamedResponse = await multipartRequest
+          .send()
+          .timeout(const Duration(seconds: 30));
+
+      // Convert stream to normal Response
+      final responseString = await streamedResponse.stream.bytesToString();
+      Utils.printLog("Status Code => ${streamedResponse.statusCode}");
+      Utils.printLog("Response => $responseString");
+
+      return http.Response(responseString, streamedResponse.statusCode);
+
+    } on TimeoutException {
+      Utils.printLog("⛔ Timeout Exception");
+      return http.Response("Request timed out", 408);
+    } catch (e) {
+      Utils.printLog("⛔ Error => $e");
+      return http.Response("Network call failed", 500);
     }
   }
 }

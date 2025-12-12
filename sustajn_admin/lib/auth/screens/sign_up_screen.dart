@@ -276,7 +276,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               registrationState.setIsLoading(true);
               ref.read(registerDetailProvider({
                 "fullName":_nameController.text,
-                "role": "ADMIN",
+                "userType": "ADMIN",
                 "phoneNumber":_mobileController.text,
                 "userName":_emailController.text,
                 "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",

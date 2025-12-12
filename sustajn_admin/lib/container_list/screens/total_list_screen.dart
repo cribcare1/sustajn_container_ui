@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../constants/number_constants.dart';
-import '../utils/theme_utils.dart';
+
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class TotalListScreen extends StatelessWidget {
   final String title;

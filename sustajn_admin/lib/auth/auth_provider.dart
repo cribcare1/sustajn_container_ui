@@ -74,15 +74,11 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final registrationState = ref.watch(authNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  print(url);
-  print(params);
   try {
  var   responseData = await apiService.registrationUser(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData != null) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.green);
       Navigator.pushReplacement(
             registrationState.context,
             MaterialPageRoute(
@@ -92,9 +88,8 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.red);
+          message: "Response is not success", color:Colors.red);
       registrationState.setIsLoading(false);
-      Utils.printLog('Login failed or response is not success');
     }
   } catch (e) {
     registrationState.setIsLoading(false);
@@ -113,7 +108,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
  var   responseData = await apiService.forgetPassword(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData != null) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,

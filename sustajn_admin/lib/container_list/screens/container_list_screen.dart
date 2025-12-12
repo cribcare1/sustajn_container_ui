@@ -1,28 +1,39 @@
 import 'dart:io';
 
+import 'package:container_tracking/container_list/container_provider.dart';
+import 'package:container_tracking/container_list/screens/container_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/filter_screen.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
+import '../../common_provider/network_provider.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/filter_screen.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 import 'add_new_container.dart';
-import 'container_details.dart';
 
-class ContainersScreen extends StatefulWidget {
+class ContainersScreen extends ConsumerStatefulWidget {
   const ContainersScreen({super.key});
 
   @override
-  State<ContainersScreen> createState() => _ContainersScreenState();
+  ConsumerState<ContainersScreen> createState() => _ContainersScreenState();
 }
 
-class _ContainersScreenState extends State<ContainersScreen> {
+class _ContainersScreenState extends ConsumerState<ContainersScreen> {
   List<Map<String, dynamic>> containerList = [];
-
+@override
+  void initState() {
+  WidgetsBinding.instance.addPostFrameCallback((_){
+    _getNetworkData(ref.read(containerNotifierProvider));
+  });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
+    final state = ref.watch(containerNotifierProvider);
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
@@ -45,7 +56,7 @@ class _ContainersScreenState extends State<ContainersScreen> {
           ),
         ],
       ).getAppBar(context),
-      body: SafeArea(
+      body: state.isSaving!?Center(child: CircularProgressIndicator(),): SafeArea(
         child: containerList.isEmpty
             ? _buildEmptyScreen()
             : _buildContainerList(themeData!),
@@ -290,5 +301,32 @@ class _ContainersScreenState extends State<ContainersScreen> {
       color: Colors.grey[200],
       child: Icon(Icons.image, color: Colors.grey[400]),
     );
+  }
+  _getNetworkData(var containerState) async {
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            containerState.setIsLoading(true);
+            ref.read(fetchContainerProvider(""));
+          } else {
+            containerState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          containerState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      containerState.setIsLoading(false);
+    }
   }
 }
