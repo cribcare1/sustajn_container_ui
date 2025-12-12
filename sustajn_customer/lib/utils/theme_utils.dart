@@ -8,8 +8,8 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xff180fd1),
-      secondaryHeaderColor: const Color(0xff00c4cc),
+      primaryColor: const Color(0xFF3f715e),
+      secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
         secondary: Color(0xff00c4cc),
@@ -21,21 +21,21 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xfffbfbfa),
-      appBarTheme: const AppBarTheme(color: Color(0xff7300e6)), //0xff7300e6  0xff180fd1
+      scaffoldBackgroundColor: const Color(0xFFeef6f3),
+      appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.openSans(),
-        titleSmall: GoogleFonts.roboto(
+        displayLarge: GoogleFonts.dmSans(),
+        titleSmall: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: const Color(0xff3e4042)),
-        titleMedium: GoogleFonts.roboto(
+        titleMedium: GoogleFonts.dmSans(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: const Color(0xff3e4042),
           textStyle: const TextStyle(overflow: TextOverflow.visible),
         ),
-        titleLarge: GoogleFonts.roboto(
+        titleLarge: GoogleFonts.dmSans(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             color: const Color(0xff3e4042),
@@ -44,7 +44,7 @@ class CustomTheme {
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: const TextStyle(
           // letterSpacing: 1,
-            fontFamily: 'OpenSans',
+            fontFamily: 'DM Sans',
             color: Colors.black,
             fontSize: 15,
             fontWeight: FontWeight.w600),
@@ -106,6 +106,8 @@ class CustomTheme {
       color: Colors.white,
     );
   }
+
+
 
 
 }

@@ -18,6 +18,8 @@ class Constant {
   static late int MAX_LINE_100 = 100;
   static late double SIZE_005 = 0.5;
   static late double SIZE_008 = 0.8;
+  static late double SIZE_065 = 0.65;
+  static late double SIZE_085 = 0.85;
   static late double SIZE_00 = 0;
   static late double SIZE_001 = 0.40;
   static late double SIZE_01 = 1.00;
@@ -55,14 +57,18 @@ class Constant {
   static late double CONTAINER_SIZE_16 = 16.0;
   static late double CONTAINER_SIZE_18 = 18.0;
   static late double CONTAINER_SIZE_20 = 20.0;
+  static late double CONTAINER_SIZE_22 = 22.0;
   static late double CONTAINER_SIZE_24=24.0;
   static late double CONTAINER_SIZE_25 = 25.0;
+  static late double CONTAINER_SIZE_26 = 26.0;
   static late double CONTAINER_SIZE_28 = 28.0;
   static late double CONTAINER_SIZE_30 = 30.0;
   static late double CONTAINER_SIZE_32 = 32.0;
   static late double CONTAINER_SIZE_33 = 33.0;
   static late double CONTAINER_SIZE_35 = 35.0;
+  static late double CONTAINER_SIZE_36= 36.0;
   static late double CONTAINER_SIZE_40 = 40.0;
+  static late double CONTAINER_SIZE_42 = 42.0;
   static late double CONTAINER_SIZE_45 = 45.0;
   static late double CONTAINER_SIZE_50 = 50.0;
   static late double CONTAINER_SIZE_55 = 55.0;
@@ -100,6 +106,7 @@ class Constant {
   static late double CONTAINER_SIZE_350 = 350.0;
   static late double CONATAINER_SIZE_380 = 380.0;
   static late double CONATAINER_SIZE_400 = 400.0;
+  static late double CONTAINER_SIZE_500 = 500.0;
   static late double CONATAINER_SIZE_600 = 600.0;
   static late int CONATAINER_SIZE_1900 = 1900;
   static late double CONTAINER_SIZE_800= 800.0;
