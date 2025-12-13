@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:container_tracking/container_list/total_list_screen.dart';
+import 'package:container_tracking/container_list/screens/total_list_screen.dart';
 import 'package:flutter/material.dart';
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../common_widgets/filter_screen_2.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
-import '../utils/utility.dart';
+
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../common_widgets/filter_screen_2.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 
 class ContainerDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> containerData;

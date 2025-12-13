@@ -2,11 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
-import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../utils/utility.dart';
 
 class SignUpScreen extends StatefulWidget {
   final int currentStep;
@@ -28,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
+  double lat = 0.0;
+  double long = 0.0;
 
   @override
   void initState() {
@@ -69,7 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).padding.top +
-                      Constant.CONTAINER_SIZE_70,
+                      Constant.CONTAINER_SIZE_50,
                 ),
                 Row(
                   children: List.generate(4, (index) {
@@ -179,14 +180,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 InkWell(
-                  onTap: () {},
-                  child: _buildTextField(
-                    readOnly: true,
-                    context,
-                    controller: addressCtrl,
-                    hint: Strings.RESTURANT_ADDRESS,
-                    // validator: (v) =>
-                    // v!.isEmpty ? "Restaurant address required" : null,
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                      if(value != null){
+                        addressCtrl.text = value['address'];
+                        lat=value['lat'];
+                        long=value['lng'];
+                      }
+
+                    });
+                  },
+                  child: IgnorePointer(
+                    child: _buildTextField(
+                      readOnly: true,
+                      context,
+                      controller: addressCtrl,
+                      hint: Strings.RESTURANT_ADDRESS,
+                      validator: (v) =>
+                      v!.isEmpty ? "Restaurant address required" : null,
+                    ),
                   ),
                 ),
                 SizedBox(

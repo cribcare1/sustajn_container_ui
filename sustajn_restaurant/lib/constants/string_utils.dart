@@ -154,6 +154,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String RESTURANT_NAME = 'Resturant Name';
   static const String REPORTS = 'Reports';
   static const String RESTURANT_ADDRESS = 'Resturant Address';
+  static const String G_MAP_API_KEY ="AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
 
 
 
