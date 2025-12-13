@@ -73,7 +73,6 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                /// HEADER
                 Row(
                   children: [
                     Expanded(
