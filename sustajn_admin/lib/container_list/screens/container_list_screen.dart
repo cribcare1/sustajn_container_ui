@@ -12,6 +12,8 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../container_state.dart';
+import '../model/container_list_model.dart';
 import 'add_new_container.dart';
 
 class ContainersScreen extends ConsumerStatefulWidget {
@@ -22,13 +24,13 @@ class ContainersScreen extends ConsumerStatefulWidget {
 }
 
 class _ContainersScreenState extends ConsumerState<ContainersScreen> {
-  List<Map<String, dynamic>> containerList = [];
 @override
   void initState() {
-  WidgetsBinding.instance.addPostFrameCallback((_){
     _getNetworkData(ref.read(containerNotifierProvider));
-  });
     super.initState();
+  }
+  Future<void> _refreshIndicator()async{
+    _getNetworkData(ref.read(containerNotifierProvider));
   }
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
             onPressed: () async {
               final result = await showContainerFilterBottomSheet(
                 context,
-                containerList,
+                state.containerList,
               );
 
               if (result != null) {
@@ -56,24 +58,43 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           ),
         ],
       ).getAppBar(context),
-      body: state.isSaving!?Center(child: CircularProgressIndicator(),): SafeArea(
-        child: containerList.isEmpty
+      body:  state.isSaving?Center(child: CircularProgressIndicator(),):
+      state.errorContainer != null?
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(state.errorContainer!,style: themeData!.textTheme.titleMedium,),
+                ElevatedButton(
+                    onPressed: (){
+                      _refreshIndicator();
+                    },
+                    child: Padding(
+                      padding:  EdgeInsets.all(Constant.SIZE_08),
+                      child: Text("Retry",style: themeData.textTheme.titleMedium!.copyWith(color: Colors.white),),
+                    ))
+              ],
+            ),
+          )
+          :
+      SafeArea(
+        child: state.containerList.isEmpty
             ? _buildEmptyScreen()
-            : _buildContainerList(themeData!),
+            : _buildContainerList(themeData!,state),
       ),
-      floatingActionButton: containerList.isNotEmpty
+      floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
               backgroundColor: const Color(0xFF2D8F6E),
-              onPressed: () async {
-                final result = await Navigator.push(
+              onPressed: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const AddContainerScreen()),
-                );
-                if (result != null) {
-                  setState(() {
-                    containerList.add(result);
-                  });
-                }
+                ).then((value){
+                  if(value = true){
+                    _refreshIndicator();
+                  }
+                });
               },
               child: Icon(
                 Icons.add,
@@ -128,9 +149,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 MaterialPageRoute(builder: (_) => const AddContainerScreen()),
               );
               if (result != null) {
-                setState(() {
-                  containerList.add(result);
-                });
+              _refreshIndicator();
               }
             },
             icon: Icon(Icons.add, color: Colors.white),
@@ -157,62 +176,36 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     );
   }
 
-  Widget _buildContainerList(ThemeData themeData) {
+  Widget _buildContainerList(ThemeData themeData, ContainerState state) {
     return Column(
       children: [
-        // Padding(
-        //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        //   child: TextField(
-        //     decoration: InputDecoration(
-        //       hintText: Strings.SEARCH_CONTAINER_NAME,
-        //       prefixIcon: const Icon(Icons.search),
-        //       filled: true,
-        //       fillColor: Colors.white,
-        //       contentPadding: const EdgeInsets.symmetric(vertical: 0),
-        //       border: OutlineInputBorder(
-        //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        //         borderSide: BorderSide.none,
-        //       ),
-        //       suffixIcon: GestureDetector(
-        //         onTap: () async {
-        //           final result = await showContainerFilterBottomSheet(
-        //             context,
-        //             containerList,
-        //           );
-        //
-        //           if (result != null) {
-        //             print("Selected: $result");
-        //           }
-        //
-        //         },
-        //           child: const Icon(Icons.filter_list)),
-        //     ),
-        //   ),
-        // ),
         Expanded(
-          child: ListView.separated(
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_16,
-              vertical: Constant.CONTAINER_SIZE_16,
+          child: RefreshIndicator(
+            onRefresh: () => _refreshIndicator(),
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constant.CONTAINER_SIZE_16,
+                vertical: Constant.CONTAINER_SIZE_16,
 
+              ),
+              itemCount: state.containerList.length,
+              separatorBuilder: (context, index) => Divider(
+                height: Constant.CONTAINER_SIZE_12,
+                thickness: 1,
+                color: Colors.grey[300],
+              ),
+              itemBuilder: (context, index) {
+                final item = state.containerList[index];
+                return _buildContainerTile(item, themeData);
+              },
             ),
-            itemCount: containerList.length,
-            separatorBuilder: (context, index) => Divider(
-              height: Constant.CONTAINER_SIZE_12,
-              thickness: 1,
-              color: Colors.grey[300],
-            ),
-            itemBuilder: (context, index) {
-              final item = containerList[index];
-              return _buildContainerTile(item, themeData);
-            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildContainerTile(Map<String, dynamic> item, ThemeData themeData) {
+  Widget _buildContainerTile(InventoryData item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -233,9 +226,9 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-              child: item["image"] != null
-                  ? Image.file(
-                      item["image"] as File,
+              child: item.imageUrl != ""
+                  ? Image.network(
+                      item.imageUrl,
                       width: Constant.CONTAINER_SIZE_55,
                       height: Constant.CONTAINER_SIZE_55,
                       fit: BoxFit.cover,
@@ -251,22 +244,20 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item["name"]?.toString() ?? 'Unnamed',
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    item.containerName,
+                      overflow: TextOverflow.ellipsis,
+                    style: themeData.textTheme.titleMedium
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item["id"]?.toString() ?? 'No ID',
+                    item.containerTypeId.toString(),
                     style: TextStyle(
                       fontSize: Constant.LABEL_TEXT_SIZE_14,
                       color: Colors.grey,
                     ),
                   ),
                   Text(
-                    "${item["volume"]?.toString() ?? '0'}ml",
+                    "${item.capacityMl}ml",
                     style: TextStyle(
                       fontSize: Constant.LABEL_TEXT_SIZE_14,
                       color: Colors.grey,
@@ -276,7 +267,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
               ),
             ),
             Text(
-              item["quantity"]?.toString() ?? '0',
+              item.totalContainers.toString(),
               style: TextStyle(
                 fontSize: Constant.LABEL_TEXT_SIZE_18,
                 fontWeight: FontWeight.bold,
@@ -310,23 +301,18 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           .then((isNetworkAvailable) async {
         try {
           if (isNetworkAvailable) {
-            containerState.setIsLoading(true);
-            ref.read(fetchContainerProvider(""));
+          ref.read(fetchContainerProvider(""));
           } else {
-            containerState.setIsLoading(false);
-            if(!mounted) return;
-            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            if(!mounted) return;showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
           }
         } catch (e) {
           Utils.printLog('Error on button onPressed: $e');
-          containerState.setIsLoading(false);
         }
         if(!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      containerState.setIsLoading(false);
     }
   }
 }

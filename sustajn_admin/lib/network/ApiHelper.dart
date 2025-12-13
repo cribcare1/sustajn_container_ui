@@ -378,14 +378,14 @@ class ApiHelper {
       }
 
       // Add JSON as string field -> "request"
-      multipartRequest.fields["request"] = jsonEncode(requestJson);
+      multipartRequest.fields["data"] = jsonEncode(requestJson);
 
       // Add file if exists
       if (file != null) {
         var stream = http.ByteStream(file.openRead());
         var length = await file.length();
         var multipartFile = http.MultipartFile(
-          'file', stream, length,
+          'image', stream, length,
           filename: file.path.split('/').last,
         );
 

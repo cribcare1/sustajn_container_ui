@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:container_tracking/container_list/screens/add_new_container.dart';
 import 'package:container_tracking/container_list/screens/total_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +10,10 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../model/container_list_model.dart';
 
 class ContainerDetailsScreen extends StatelessWidget {
-  final Map<String, dynamic> containerData;
+  final InventoryData containerData;
 
   ContainerDetailsScreen({
     super.key,
@@ -79,7 +81,8 @@ class ContainerDetailsScreen extends StatelessWidget {
             context: context,
             iconKey: _menuKey,
             onEdit: () {
-              print("Edit clicked");
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => AddContainerScreen(inventoryData: containerData,)));
             },
             onDelete: () {
               print("Delete clicked");
@@ -122,9 +125,9 @@ class ContainerDetailsScreen extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-            child: containerData["image"] != null
-                ? Image.file(
-              containerData["image"] as File,
+            child: containerData.imageUrl != ""
+                ? Image.network(
+              containerData.imageUrl,
               width: Constant.CONTAINER_SIZE_60,
               height: Constant.CONTAINER_SIZE_60,
               fit: BoxFit.cover,
@@ -140,7 +143,7 @@ class ContainerDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  containerData["name"]?.toString() ?? 'Unnamed Container',
+                  containerData.containerName,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -149,14 +152,14 @@ class ContainerDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  containerData["id"]?.toString() ?? 'No ID',
+                  containerData.containerTypeId.toString(),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: Colors.white70,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
                 Text(
-                  "${containerData["volume"]?.toString() ?? '0'}ml",
+                  "${containerData.capacityMl}ml",
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: Colors.white70,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -166,7 +169,7 @@ class ContainerDetailsScreen extends StatelessWidget {
             ),
           ),
           Text(
-            "₹${containerData["price"]?.toString() ?? "30"}",
+            "AED ${containerData.costPerUnit.toString()}",
             style: theme.textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -198,7 +201,7 @@ class ContainerDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_10),
           Text(
-            containerData["available"]?.toString() ?? containerData["quantity"]?.toString() ?? "0",
+            containerData.availableContainers.toString(),
             style: theme.textTheme.titleLarge?.copyWith(
               fontSize: Constant.LABEL_TEXT_SIZE_20,
               fontWeight: FontWeight.bold,
@@ -289,7 +292,7 @@ class ContainerDetailsScreen extends StatelessWidget {
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_12),
             Text(
-              containerData["issued"]?.toString() ?? "0",
+              containerData.totalContainers.toString(),
               style: theme.textTheme.titleLarge?.copyWith(
                 fontSize: Constant.LABEL_TEXT_SIZE_22,
                 fontWeight: FontWeight.bold,
@@ -371,7 +374,7 @@ class ContainerDetailsScreen extends StatelessWidget {
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_12),
             Text(
-              containerData["returned"]?.toString() ?? "0",
+              "0",
               style: theme.textTheme.titleLarge?.copyWith(
                 fontSize: Constant.LABEL_TEXT_SIZE_22,
                 fontWeight: FontWeight.bold,

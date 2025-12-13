@@ -11,8 +11,9 @@ class NetworkUrls {
   static const VERIFY_OTP = "notification/verify-token";
 
 /// Container ///
-static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
-static const CONTAINER_LIST = "inventory/getContainerTypes";
+static const ADD_CONTAINER = "inventory/addContainerByAdmin";
+static const CONTAINER_LIST = "inventory/getAllActiveInventory";
 static const DELETE_CONTAINER = "inventory/delete-container-type/123";
-
+/// Restaurant ///
+static const RESTAURANT_LIST = "auth/activeRestaurants?";
 }

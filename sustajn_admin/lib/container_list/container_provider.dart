@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../utils/utility.dart';
+import 'model/container_list_model.dart';
 
 final containerNotifierProvider = ChangeNotifierProvider((ref) => ContainerState());
 
@@ -17,18 +18,17 @@ final addContainerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
   final containerState = ref.watch(containerNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_CONTAINER}';
-  print(params);
-  print(containerState.image);
   Future.microtask((){
     containerState.setIsLoading(true);
   });
   try{
 
-var response = await apiService.addContainer(url, params, "Add Container", containerState.image??File(""));
+var response = await apiService.addContainer(url, params, "data", containerState.image??File(""));
 if(response != null){
   if(containerState.context.mounted) {
     showCustomSnackBar(context: containerState.context,
         message: Strings.ADDED_CONTAINER, color:Colors.green);
+    containerState.setImage(null);
     Navigator.of(containerState.context).pop(true);
   }
 }else{
@@ -61,15 +61,13 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LIST}';
 
   try {
-    var response = await apiService.fetchContainer(url);
 
-    if (containerState.context.mounted) {
-      print("=====$response");
-    }
-
+    ContainerListModel response = await apiService.fetchContainer(url);
+      containerState.setContainerList(response.inventoryData);
     return response;
 
   } catch (e) {
+    containerState.setContainerListError(e.toString());
     if (containerState.context.mounted) {
       showCustomSnackBar(
         context: containerState.context,
@@ -79,7 +77,7 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
     }
   } finally {
     Future.microtask(() {
-      containerState.setIsLoading(false); // ✔ Safe
+      containerState.setIsLoading(false);
     });
   }
 });
@@ -98,7 +96,6 @@ final deleteContainer = FutureProvider.family<dynamic, dynamic>((ref, params) as
     var response = await apiService.deleteContainer(url);
 
     if (containerState.context.mounted) {
-      print("=====$response");
     }
 
     return response;

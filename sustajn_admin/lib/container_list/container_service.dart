@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/network_urls.dart';
 import '../utils/utility.dart';
+import 'model/container_list_model.dart';
 
 class ContainerService {
   Future<dynamic> addContainer(String url, Map<String, dynamic> requestData, String requestType, File file) async {
@@ -12,7 +13,6 @@ class ContainerService {
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.postMultipartRequestAdmin(url,file, requestData,"",requestType);
       if (response != null) {
-        print("===========++=============$response");
         return response;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
@@ -27,12 +27,12 @@ class ContainerService {
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
-        return response;
+        var responseData = ContainerListModel.fromJson(response);
+        return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog("container add service::::$e");
       throw Exception(e);
     }
   }

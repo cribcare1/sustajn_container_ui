@@ -1,12 +1,13 @@
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
 import '../constants/number_constants.dart';
+import '../container_list/model/container_list_model.dart';
 
-Future<List<Map<String, dynamic>>?> showContainerFilterBottomSheet(
+Future<List<InventoryData>?> showContainerFilterBottomSheet(
     BuildContext context,
-    List<Map<String, dynamic>> containerList,
+    List<InventoryData> containerList,
     ) {
-  return showModalBottomSheet<List<Map<String, dynamic>>>(
+  return showModalBottomSheet<List<InventoryData>>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
@@ -17,7 +18,7 @@ Future<List<Map<String, dynamic>>?> showContainerFilterBottomSheet(
 }
 
 class _ContainerFilterSheet extends StatefulWidget {
-  final List<Map<String, dynamic>> containerList;
+  final List<InventoryData> containerList;
 
   const _ContainerFilterSheet({required this.containerList});
 
@@ -26,7 +27,7 @@ class _ContainerFilterSheet extends StatefulWidget {
 }
 
 class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
-  List<Map<String, dynamic>> filteredContainers = [];
+  List<InventoryData> filteredContainers = [];
   Set<String> selectedIds = {};
   TextEditingController searchController = TextEditingController();
 
@@ -158,8 +159,8 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
     );
   }
 
-  Widget _buildContainerTile(Map<String, dynamic> item, ThemeData theme) {
-    final isSelected = selectedIds.contains(item['id']);
+  Widget _buildContainerTile(InventoryData item, ThemeData theme) {
+    final isSelected = selectedIds.contains(item.containerTypeId.toString());
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_10),
@@ -170,7 +171,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name'],
+                  item.containerName,
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_16,
                     fontWeight: FontWeight.w600,
@@ -179,7 +180,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
                 ),
                 SizedBox(height: Constant.SIZE_06),
                 Text(
-                  item['id'],
+                  item.containerTypeId.toString(),
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                     color: Colors.grey[600],
@@ -200,8 +201,8 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
             onChanged: (value) {
               setState(() {
                 value == true
-                    ? selectedIds.add(item['id'])
-                    : selectedIds.remove(item['id']);
+                    ? selectedIds.add(item.containerTypeId.toString())
+                    : selectedIds.remove(item.containerTypeId.toString());
               });
             },
           )
@@ -220,7 +221,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
       }, onRightTap: (){
         setState(() {
           final selectedItems = widget.containerList
-              .where((e) => selectedIds.contains(e['id']))
+              .where((e) => selectedIds.contains(e.containerTypeId.toString()))
               .toList();
 
           Navigator.pop(context, selectedItems);
@@ -237,8 +238,8 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
     setState(() {
       filteredContainers = widget.containerList.where((item) {
         final searchLower = value.toLowerCase();
-        return item['name'].toLowerCase().contains(searchLower) ||
-            item['id'].toLowerCase().contains(searchLower);
+        return item.containerName.toLowerCase().contains(searchLower) ||
+            item.containerTypeId.toString().toLowerCase().contains(searchLower);
       }).toList();
     });
   }

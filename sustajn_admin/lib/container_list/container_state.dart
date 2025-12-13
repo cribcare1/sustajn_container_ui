@@ -2,13 +2,28 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
+import 'model/container_list_model.dart';
+
 class ContainerState extends ChangeNotifier{
   bool _isSaving = false;
   BuildContext? _context;
   File? _image;
-  bool? get isSaving => _isSaving;
+  bool get isSaving => _isSaving;
   File? get image => _image;
   BuildContext get context => _context!;
+  List<InventoryData> _containerList  = [];
+  List<InventoryData> get containerList  => _containerList;
+  void setContainerList(List<InventoryData>? list){
+    _containerList = list!;
+    notifyListeners();
+  }
+  String? _errorContainer;
+  String? get errorContainer => _errorContainer;
+  void setContainerListError(String? error){
+    _errorContainer = error;
+    notifyListeners();
+  }
+
   void setIsLoading(bool b){
     _isSaving = b;
     notifyListeners();
