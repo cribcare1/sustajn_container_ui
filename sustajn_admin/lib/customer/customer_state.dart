@@ -47,21 +47,21 @@ class CustomerState extends ChangeNotifier {
     _context = context;
     notifyListeners();
   }
-  void resetPagination() {
-    _page = 0;
-    _hasMore = true;
-    _customerList.clear();
-    notifyListeners();
-  }
+  // void resetPagination() {
+  //   _page = 0;
+  //   _hasMore = true;
+  //   _customerList.clear();
+  //   notifyListeners();
+  // }
 
   void incrementPage() {
     _page++;
   }
-  void addCustomers(List<CustomerData> data) {
-    if (data.length < _size) {
-      _hasMore = false;
-    }
-    _customerList.addAll(data);
-    notifyListeners();
-  }
+  // void addCustomers(List<CustomerData> data) {
+  //   if (data.length < _size) {
+  //     _hasMore = false;
+  //   }
+  //   _customerList.addAll(data);
+  //   notifyListeners();
+  // }
 }

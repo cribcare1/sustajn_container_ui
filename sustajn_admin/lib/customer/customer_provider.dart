@@ -16,9 +16,13 @@ final fetchCustomerProvider = FutureProvider.family<void, bool>((ref, isLoadMore
   final apiService = ref.read(customerApiProvider);
   final state = ref.read(customerNotifierProvider);
 
-  if (state.isLoading || state.isMoreLoading || !state.hasMore) return;
+  // if (state.isLoading || state.isMoreLoading || !state.hasMore) return;
+  //
+  // isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
 
-  isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
+  Future.microtask((){
+    state.setLoading(true);
+  });
 
   final url =
       '${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_LIST}'
@@ -27,7 +31,7 @@ final fetchCustomerProvider = FutureProvider.family<void, bool>((ref, isLoadMore
   try {
     CustomerListModel response = await apiService.fetchCustomer(url);
 
-    state.addCustomers(response.customersData);
+    state.setCustomer(response.customersData);
     state.incrementPage();
 
   } catch (e) {
@@ -41,8 +45,11 @@ final fetchCustomerProvider = FutureProvider.family<void, bool>((ref, isLoadMore
       );
     }
   } finally {
-    state.setLoading(false);
-    state.setMoreLoading(false);
+    Future.microtask((){
+      state.setLoading(false);
+      state.setMoreLoading(false);
+    });
+
   }
 });
 

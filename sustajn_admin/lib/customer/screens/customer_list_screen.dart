@@ -1,5 +1,6 @@
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/number_constants.dart';
+import 'package:container_tracking/customer/customer_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -423,14 +424,14 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
       ),
     );
   }
-  _getNetworkData(var customerState) async {
+  _getNetworkData(CustomerState customerState) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
           ) async {
         try {
           if (isNetworkAvailable) {
-            customerState.fetchCustomerProvider(true);
+           ref.read( fetchCustomerProvider(true));
           } else {
             if (!mounted) return;
             showCustomSnackBar(

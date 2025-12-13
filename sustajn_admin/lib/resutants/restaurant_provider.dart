@@ -16,10 +16,12 @@ final fetchRestaurantProvider = FutureProvider.family<void, bool>((ref, isLoadMo
   final apiService = ref.read(restaurantApiProvider);
   final state = ref.read(restaurantNotifierProvider);
 
-  if (state.isLoading || state.isMoreLoading || !state.hasMore) return;
-
-  isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
-
+  // if (state.isLoading || state.isMoreLoading || !state.hasMore) return;
+  //
+  // isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
+Future.microtask((){
+  state.setLoading(true);
+});
   final url =
       '${NetworkUrls.BASE_URL}${NetworkUrls.RESTAURANT_LIST}'
       'page=${state.page}&size=${state.size}';
@@ -41,8 +43,11 @@ final fetchRestaurantProvider = FutureProvider.family<void, bool>((ref, isLoadMo
       );
     }
   } finally {
-    state.setLoading(false);
-    state.setMoreLoading(false);
+    Future.microtask((){
+      state.setLoading(false);
+      state.setMoreLoading(false);
+    });
+
   }
 });
 
