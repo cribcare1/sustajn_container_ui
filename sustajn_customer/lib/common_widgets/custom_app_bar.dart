@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/theme_provider.dart';
@@ -9,21 +10,22 @@ class CustomAppBar {
   final List<Widget>? action;
   final PreferredSize? bottom;
   bool? centerTitle;
-  CustomAppBar({required this.title, this.action, this.bottom, this.centerTitle = false});
+  final Widget leading;
+  CustomAppBar({required this.title, this.action, this.bottom, this.centerTitle = false, required this.leading});
   PreferredSizeWidget getAppBar(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
     return AppBar(
-      backgroundColor: themeData!.primaryColor,
+      backgroundColor: Color(0xFFe7f7f1),
       centerTitle: true,
       elevation: 0,
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black),
       ),
       // leadingWidth: 30,
       actions: action,
       bottom: bottom,
-      leading:const CustomBackButton(),
+      leading:leading,
     );
   }
 }
