@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../common_widgets/custom_app_bar.dart';
-import '../../common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import '../auth_state/location_state.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -14,8 +14,7 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  Completer<GoogleMapController> mapController = Completer();
-  late BitmapDescriptor redMarker;
+  final Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
@@ -33,89 +32,94 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       top: false,bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
-            title: "Select Restaurant Address",
-            leading: CustomBackButton()).getAppBar(context),
-
+          title: "Select Restaurant Address",
+          leading: CustomBackButton()
+        ).getAppBar(context),
         body: state.loading || state.position == null
             ? const Center(child: CircularProgressIndicator())
             : Column(
           children: [
             Expanded(
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: state.position!,
-                  zoom: 16,
-                ),
-                myLocationEnabled: false,
-                myLocationButtonEnabled: true,
-
-                markers: {
-                  Marker(
-                    markerId: const MarkerId("selected"),
-                    position: state.position!,
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueRed,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: state.position!,
+                      zoom: 17,
                     ),
-                  )
-                },
-
-                onMapCreated: (controller) {
-                  mapController.complete(controller);
-                },
-
-                onTap: (LatLng newPos) {
-                  ref
-                      .read(locationProvider.notifier)
-                      .updatePosition(newPos);
-                },
-
-                onCameraIdle: () async {
-                  final controller = await mapController.future;
-                  LatLng center = await controller.getLatLng(
-                    const ScreenCoordinate(x: 200, y: 350),
-                  );
-                  ref.read(locationProvider.notifier).updatePosition(center);
-                },
-
-                onCameraMove: (cameraPos) {
-                  ref.read(locationProvider.notifier).updatePosition(
-                    cameraPos.target,
-                  );
-                },
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                    zoomControlsEnabled: false,
+                    compassEnabled: true,
+                    onMapCreated: (controller) {
+                      _controller.complete(controller);
+                    },
+                    onCameraIdle: () async {
+                      final controller = await _controller.future;
+                      final bounds =
+                      await controller.getVisibleRegion();
+      
+                      final center = LatLng(
+                        (bounds.northeast.latitude +
+                            bounds.southwest.latitude) /
+                            2,
+                        (bounds.northeast.longitude +
+                            bounds.southwest.longitude) /
+                            2,
+                      );
+      
+                      ref
+                          .read(locationProvider.notifier)
+                          .updatePosition(center);
+                    },
+                  ),
+      
+                  // 🔴 CENTER PIN (Google Maps Style)
+                  const Center(
+                    child: Icon(
+                      Icons.location_pin,
+                      size: 42,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            // Address Box
+      
+            // ADDRESS
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                    color: const Color(0xff225343),
-                    borderRadius: BorderRadius.circular(12)),
+                  color: const Color(0xff225343),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Row(
                   children: [
-                    const Icon(Icons.location_pin, color: Colors.white),
+                    const Icon(Icons.location_on,
+                        color: Colors.white),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         state.address,
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-
-            // Confirm Button
+      
+            // CONFIRM
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0xffe3b023),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

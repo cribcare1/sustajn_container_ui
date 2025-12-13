@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,7 +16,11 @@ class LocationState {
     this.address = "",
   });
 
-  LocationState copyWith({bool? loading, LatLng? position, String? address}) {
+  LocationState copyWith({
+    bool? loading,
+    LatLng? position,
+    String? address,
+  }) {
     return LocationState(
       loading: loading ?? this.loading,
       position: position ?? this.position,
@@ -30,50 +35,55 @@ class LocationNotifier extends StateNotifier<LocationState> {
   Future<void> initialize() async {
     state = state.copyWith(loading: true);
 
-    // Check permission
-    var permission = await Permission.location.request();
-    if (permission != PermissionStatus.granted) {
-      state = state.copyWith(loading: false, address: "Please enable location permission");
+    final permission = await Permission.locationWhenInUse.request();
+    if (!permission.isGranted) {
+      state = state.copyWith(
+        loading: false,
+        address: "Location permission required",
+      );
       return;
     }
 
-    final serviceEnabled = await Permission.location.serviceStatus.isEnabled;
-    if (!serviceEnabled) {
-      state = state.copyWith(loading: false, address: "Please turn ON location service");
-      return;
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      await Geolocator.openLocationSettings();
     }
 
-    // Get current location
-    final pos = await Geolocator.getCurrentPosition();
-    final currentLatLng = LatLng(pos.latitude, pos.longitude);
+    final position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+    );
 
-    state = state.copyWith(position: currentLatLng);
+    final latLng = LatLng(position.latitude, position.longitude);
 
-    await _updateAddress(currentLatLng);
+    state = state.copyWith(position: latLng);
+    await _updateAddress(latLng);
 
     state = state.copyWith(loading: false);
   }
 
-  Future<void> updatePosition(LatLng newPos) async {
-    state = state.copyWith(position: newPos);
-    await _updateAddress(newPos);
+  Future<void> updatePosition(LatLng latLng) async {
+    state = state.copyWith(position: latLng);
+    await _updateAddress(latLng);
   }
 
   Future<void> _updateAddress(LatLng pos) async {
     try {
-      final placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude);
+      final placemarks =
+      await placemarkFromCoordinates(pos.latitude, pos.longitude);
+
       final p = placemarks.first;
 
       final address =
-          "${p.name}, ${p.street}, ${p.locality}, ${p.administrativeArea}, ${p.country}";
+          "${p.name ?? ""}, ${p.street ?? ""}, ${p.locality ?? ""}, "
+          "${p.administrativeArea ?? ""},${p.postalCode ?? ""}, ${p.country ?? ""}";
 
       state = state.copyWith(address: address);
-    } catch (e) {
+    } catch (_) {
       state = state.copyWith(address: "Unable to fetch address");
     }
   }
 }
 
-final locationProvider = StateNotifierProvider<LocationNotifier, LocationState>(
+final locationProvider =
+StateNotifierProvider<LocationNotifier, LocationState>(
       (ref) => LocationNotifier(),
 );
