@@ -21,7 +21,7 @@ final fetchCustomerProvider = FutureProvider.family<void, bool>((ref, isLoadMore
   isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
 
   final url =
-      '${NetworkUrls.BASE_URL}${NetworkUrls.RESTAURANT_LIST}'
+      '${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_LIST}'
       'page=${state.page}&size=${state.size}';
 
   try {
