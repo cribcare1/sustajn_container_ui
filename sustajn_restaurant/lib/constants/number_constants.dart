@@ -108,6 +108,7 @@ class Constant {
   static late double CONTAINER_SIZE_350 = 350.0;
   static late double CONATAINER_SIZE_380 = 380.0;
   static late double CONATAINER_SIZE_400 = 400.0;
+  static late double CONTAINER_SIZE_500 = 500.0;
   static late double CONATAINER_SIZE_600 = 600.0;
   static late int CONATAINER_SIZE_1900 = 1900;
   static late double CONTAINER_SIZE_800= 800.0;
@@ -192,7 +193,7 @@ class Constant {
   static const Color greyshade100 = Color(0xFFE0E0E0); // Light grey shade
   static const Color indigoShade100 = Color(0xFFC5CAE9); // Light indigo shade
   static const Color tealshade100 = Color(0xFFB2DFDB); // Light teal shade
-  static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
+  static const Color lightblueS = Color(0xFFe1eee9); // Light teal shade
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
 

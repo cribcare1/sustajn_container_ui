@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
-import '../../../container_request/container_request_screen.dart';
 import '../../utils/theme_utils.dart';
 import '../screens/profile_screen.dart';
 
@@ -66,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return Container();
       case 1:
-        return ContainerRequestScreen();
+        return Container();
       case 2:
         return Container();
       case 3:

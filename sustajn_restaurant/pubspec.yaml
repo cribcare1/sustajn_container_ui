@@ -45,10 +45,11 @@ dependencies:
   google_maps_flutter: ^2.2.6
   geolocator: ^11.0.0
   geocoding: ^2.1.1
+  lottie: ^3.3.2
+  qr_code_scanner_plus: ^2.0.14
+  fl_chart: ^1.1.1
   pinput: ^6.0.1
   fluttertoast: ^8.2.4
-  shared_preferences: ^2.5.4
-  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
