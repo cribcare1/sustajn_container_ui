@@ -10,10 +10,10 @@ import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
-import 'auth_services/auth_services.dart';
-import 'auth_state.dart';
-import 'bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'model/login_model.dart';
+import '../service/login_service.dart';
+import '../notifier/login_notifier.dart';
+import '../auth/bottom_navigation_bar/bottom_navigation_bar.dart';
+import '../models/login_model.dart';
 
 final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
 

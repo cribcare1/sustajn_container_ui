@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
 import '../utils/utility.dart';
-import 'model/login_model.dart';
+import '../models/login_model.dart';
 
 class AuthState extends ChangeNotifier{
   String _name = '';

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../constants/network_urls.dart';
-import '../../network/ApiCallPresentator.dart';
-import '../../utils/utility.dart';
-import '../model/login_model.dart';
+import '../constants/network_urls.dart';
+import '../network/ApiCallPresentator.dart';
+import '../utils/utility.dart';
+import '../models/login_model.dart';
 
 class AuthServices {
   Future<dynamic> loginUser(String url, Map<String, dynamic> requestData, String requestType) async {
