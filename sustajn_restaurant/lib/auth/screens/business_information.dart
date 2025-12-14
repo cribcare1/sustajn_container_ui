@@ -4,12 +4,19 @@ import 'package:sustajn_restaurant/auth/screens/subscription_screen.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/registration_data.dart';
 import '../../utils/theme_utils.dart';
+import 'bank_details_screen.dart';
 import 'forget_password.dart';
 
 class BusinessScreen extends StatefulWidget {
   final int currentStep;
-  const BusinessScreen({super.key, this.currentStep=2});
+  final RegistrationData registrationData;
+
+
+  const BusinessScreen({super.key, this.currentStep=1,
+    required this.registrationData
+  });
 
   @override
   State<BusinessScreen> createState() => _BusinessScreenState();
@@ -39,7 +46,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
-                    children: List.generate(4, (index) {
+                    children: List.generate(3, (index) {
                       bool active = index <= widget.currentStep;
                       return Expanded(
                         child: Container(
@@ -135,9 +142,26 @@ class _BusinessScreenState extends State<BusinessScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=> SubscriptionScreen()));
+                        widget.registrationData.speciality = specialityController.text.isEmpty
+                            ? null
+                            : specialityController.text;
+                        widget.registrationData.cuisine = cuisineController.text.isEmpty
+                            ? null
+                            : cuisineController.text;
+                        // widget.registrationData.website = websiteController.text.isEmpty
+                        //     ? null
+                        //     : websiteController.text;
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BankDetails(
+                              registrationData: widget.registrationData,
+                            ),
+                          ),
+                        );
                       },
+
                       child: Text(
                         Strings.CONTINUE,
                         style: theme!.textTheme.titleMedium!.copyWith(
@@ -161,9 +185,16 @@ class _BusinessScreenState extends State<BusinessScreen> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> SubscriptionScreen()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BankDetails(
+                              registrationData: widget.registrationData,
+                            ),
+                          ),
+                        );
                       },
+
                       child: Text(
                         Strings.SKIP,
                         style: theme!.textTheme.titleMedium!.copyWith(
