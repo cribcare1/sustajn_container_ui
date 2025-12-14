@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/models/registration_data.dart';
+import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
+import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../provider/login_provider.dart';
@@ -34,6 +36,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
+  double lat = 0.0;
+  double long = 0.0;
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -41,6 +45,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   void initState() {
     super.initState();
+
     restaurantCtrl.addListener(() => setState(() {}));
     emailCtrl.addListener(() => setState(() {}));
     mobileCtrl.addListener(() => setState(() {}));
@@ -102,7 +107,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).padding.top +
-                      Constant.CONTAINER_SIZE_70,
+                      Constant.CONTAINER_SIZE_50,
                 ),
                 Row(
                   children: List.generate(3, (index) {
@@ -220,6 +225,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (v.length != 10) return "Enter valid 10-digit mobile number";
                     return null;
                   },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                 ),
 
                 _buildPasswordField(
@@ -232,6 +241,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   },
                   validator: (v) {
                     if (v!.isEmpty) return "Password required";
+                    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
+                      return "Password must be 8+ chars with letters, numbers & special char";
+                    }
                     return null;
                   },
                 ),
@@ -251,7 +263,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                      if(value != null){
+                        addressCtrl.text = value['address'];
+                        lat=value['lat'];
+                        long=value['lng'];
+                      }
 
+                    });
+                  },
+                  child: IgnorePointer(
+                    child: _buildTextField(
+                      readOnly: true,
+                      context,
+                      controller: addressCtrl,
+                      hint: Strings.RESTURANT_ADDRESS,
+                      validator: (v) =>
+                      v!.isEmpty ? "Restaurant address required" : null,
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -291,6 +324,36 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: Strings.ALREADY_HAVE_ACC,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.hintColor,
+                        fontSize: Constant.LABEL_TEXT_SIZE_14,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: Strings.LOGIN,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.primaryColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                              );
+                            },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+
               ],
             ),
           ),
@@ -299,13 +362,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-
   Widget _buildTextField(
       BuildContext context, {
         required TextEditingController controller,
         required String hint,
         String? Function(String?)? validator,
+        bool obscure = false,
         TextInputType keyboard = TextInputType.text,
+        bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
@@ -323,11 +387,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.SIZE_10),
+            borderSide: BorderSide(color: theme.dividerColor),
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildPasswordField(
       BuildContext context, {
@@ -337,6 +403,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         required VoidCallback toggleVisibility,
         String? Function(String?)? validator,
       }) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: TextFormField(
@@ -344,6 +412,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         obscureText: !visible,
         validator: validator,
         decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.SIZE_15,
+            vertical: Constant.SIZE_15,
+          ),
           filled: true,
           fillColor: Colors.white,
           labelText: hint,

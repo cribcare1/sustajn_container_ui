@@ -1,27 +1,49 @@
+import 'dart:convert';
+
+import 'package:container_tracking/auth/model/login_model.dart';
 import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/auth/screens/reset_password_screen.dart';
+import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pinput/pinput.dart';
+
+import '../../common_provider/network_provider.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import 'package:pinput/pinput.dart';
-class VerifyEmailScreen extends StatefulWidget {
+import '../../utils/utility.dart';
+import '../auth_provider.dart';
+
+class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
+
   const VerifyEmailScreen({super.key, required this.previousScreen});
 
   @override
-  State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+  ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
 }
 
-class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  final List<TextEditingController> controllers =
-  List.generate(4, (index) => TextEditingController());
+class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
+  final List<TextEditingController> controllers = List.generate(
+    4,
+    (index) => TextEditingController(),
+  );
 
   int seconds = 60;
 
   @override
   void initState() {
     super.initState();
+    _getUserData();
     _startTimer();
+  }
+LoginModel? loginModel;
+  _getUserData()async{
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+
+    if (jsonString != null && jsonString.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    }
   }
 
   void _startTimer() {
@@ -35,11 +57,13 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       return false;
     });
   }
-final _otpController = TextEditingController();
+
+  final _otpController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final authState = ref.watch(authNotifierProvider);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
 
@@ -51,8 +75,7 @@ final _otpController = TextEditingController();
             ),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: constraints.maxHeight -
-                    Constant.CONTAINER_SIZE_55,
+                minHeight: constraints.maxHeight - Constant.CONTAINER_SIZE_55,
               ),
               child: IntrinsicHeight(
                 child: Column(
@@ -66,32 +89,30 @@ final _otpController = TextEditingController();
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-        
+
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
-        
-        
+
                     Text(
                       Strings.SEND_CODE,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color!
-                            .withOpacity(Constant.SIZE_065),
+                        color: theme.textTheme.bodyMedium?.color!.withOpacity(
+                          Constant.SIZE_065,
+                        ),
                         fontSize: Constant.LABEL_TEXT_SIZE_15,
                       ),
                     ),
-        
+
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                    Center(child: buildOtp(context,_otpController)),
-        
+                    Center(child: buildOtp(context, _otpController)),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
-        
-        
+
                     SizedBox(
                       width: double.infinity,
-                      // height: Constant.CONTAINER_SIZE_50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:Color(0xFFD0A52C),
+                          backgroundColor: Color(0xFFD0A52C),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               Constant.CONTAINER_SIZE_12,
@@ -99,17 +120,26 @@ final _otpController = TextEditingController();
                           ),
                         ),
                         onPressed: () {
-                          if(widget.previousScreen == "forgotPassword"){
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
-                          }else{
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context)=>LoginScreen()));
+                          if (widget.previousScreen == "forgotPassword") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ResetPasswordScreen(),
+                              ),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
                           }
-
                         },
                         child: Padding(
-                          padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+                          padding: EdgeInsets.symmetric(
+                            vertical: Constant.SIZE_08,
+                          ),
                           child: Text(
                             Strings.VERIFY,
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -121,35 +151,32 @@ final _otpController = TextEditingController();
                         ),
                       ),
                     ),
-        
+
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
-        
-        
+
                     Center(
                       child: Text(
                         "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_15,
-                          color:Colors.black,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-        
+
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-        
-        
+
                     Center(
                       child: TextButton(
                         onPressed: seconds == 0
                             ? () {
-                          setState(() {
-                            seconds = 60;
-                            _startTimer();
-                          });
-                        }
+                                setState(() {
+                                  seconds = 60;
+                                  _startTimer();
+                                });
+                              }
                             : null,
-                        child:
-                        Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
@@ -165,14 +192,14 @@ final _otpController = TextEditingController();
                                 color: theme.primaryColor,
                                 decoration: TextDecoration.underline,
                                 fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                fontWeight: FontWeight.bold
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-        
+
                     const Spacer(),
                   ],
                 ),
@@ -183,6 +210,7 @@ final _otpController = TextEditingController();
       ),
     );
   }
+
   Widget buildOtp(BuildContext context, TextEditingController controller) {
     final theme = Theme.of(context);
 
@@ -195,15 +223,13 @@ final _otpController = TextEditingController();
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.primaryColor,
-          width: 1,
-        ),
+        border: Border.all(color: theme.primaryColor, width: 1),
       ),
     );
 
     return Pinput(
-      length: 4, // Change to 6 if needed
+      length: 4,
+      // Change to 6 if needed
       controller: controller,
       keyboardType: TextInputType.number,
 
@@ -211,19 +237,13 @@ final _otpController = TextEditingController();
 
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(
-            color: theme.primaryColor,
-            width: 2,
-          ),
+          border: Border.all(color: theme.primaryColor, width: 2),
         ),
       ),
 
       submittedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(
-            color: theme.primaryColor,
-            width: 1.2,
-          ),
+          border: Border.all(color: theme.primaryColor, width: 1.2),
         ),
       ),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -239,5 +259,35 @@ final _otpController = TextEditingController();
         print("OTP Entered: $value");
       },
     );
+  }
+
+  _getNetworkData(var registrationState) async {
+    try {
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              ref.read(forgotPasswordProvider({"email":loginModel!.userName,"token":_otpController.text}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }

@@ -177,6 +177,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS ="Logged in successfully";
+  static const String G_MAP_API_KEY ="AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
 
 
 

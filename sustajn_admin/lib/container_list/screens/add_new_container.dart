@@ -1,23 +1,27 @@
 import 'dart:io';
 
+import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../common_widgets/submit_button.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
+import '../../common_provider/network_provider.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../common_widgets/submit_button.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 
-class AddContainerScreen extends StatefulWidget {
+class AddContainerScreen extends ConsumerStatefulWidget {
   const AddContainerScreen({super.key});
 
   @override
-  State<AddContainerScreen> createState() => _AddContainerScreenState();
+  ConsumerState<AddContainerScreen> createState() => _AddContainerScreenState();
 }
 
-class _AddContainerScreenState extends State<AddContainerScreen> {
+class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _productController = TextEditingController();
@@ -26,7 +30,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  File? _selectedImage;
+  // File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -57,9 +61,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       );
 
       if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
+        ref.read(containerNotifierProvider).setImage( File(pickedFile.path));
       }
 
       if (Navigator.canPop(context)) {
@@ -80,13 +82,14 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       }
     }
   }
-
-  void _removeImage() {
-    setState(() {
-      _selectedImage = null;
+  
+@override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(containerNotifierProvider).setContext(context);
     });
+    super.initState();
   }
-
   String? _validateProduct(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
@@ -146,6 +149,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final themeData = CustomTheme.getTheme(true);
+    final containerState = ref.watch(containerNotifierProvider);
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
@@ -254,7 +258,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                             },
                             child: _buildDashedContainer(
                               height: screenWidth * 0.35,
-                              child: _selectedImage == null
+                              child: containerState.image == null ||  containerState.image == File("")
                                   ? _buildUploadUI()
                                   : _buildSelectedImageUI(),
                             ),
@@ -264,15 +268,24 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    SubmitButton(onRightTap: () {
+                  containerState.isSaving!?Center(child: CircularProgressIndicator(),):
+                  SubmitButton(onRightTap: () {
+                    Map<String, dynamic> body = {
+                      "name": _productController.text,
+                      "id": null,
+                      "capacity": _volumeController.text,
+                      "quantity": _quantityController.text,
+                      "active":true,
+                    };
                       if (_formKey.currentState!.validate()) {
-                                  Navigator.pop(context, {
-                                    "name": _productController.text,
-                                    "id": _productIdController.text,
-                                    "volume": _volumeController.text,
-                                    "quantity": _quantityController.text,
-                                    "image": _selectedImage,
-                                  });
+                                  // Navigator.pop(context, {
+                                  //   "name": _productController.text,
+                                  //   "id": _productIdController.text,
+                                  //   "volume": _volumeController.text,
+                                  //   "quantity": _quantityController.text,
+                                  //   "image": containerState.image,
+                                  // });
+                                  _getNetworkData(containerState,body);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Please complete required fields")),
@@ -454,12 +467,13 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   }
 
   Widget _buildSelectedImageUI() {
+    final state = ref.read(containerNotifierProvider);
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           child: Image.file(
-            _selectedImage!,
+            state.image!,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -469,7 +483,9 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
           top: Constant.SIZE_08,
           right: Constant.SIZE_08,
           child: GestureDetector(
-            onTap: _removeImage,
+            onTap: (){
+              state.setImage(null);
+            },
             child: Container(
               width: Constant.CONTAINER_SIZE_28,
               height: Constant.CONTAINER_SIZE_28,
@@ -513,5 +529,34 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
         ],
       ),
     );
+  }
+  _getNetworkData(var containerState, Map<String, dynamic> body) async {
+    try {
+      // if (containerState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              containerState.setIsLoading(true);
+              ref.read(addContainerProvider(body));
+            } else {
+              containerState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            containerState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      // }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      containerState.setIsLoading(false);
+    }
   }
 }
