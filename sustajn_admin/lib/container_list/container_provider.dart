@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../utils/strings_utility.dart';
 import '../utils/utility.dart';
 import 'model/container_list_model.dart';
 
@@ -53,8 +54,15 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
 
   try {
 
-    ContainerListModel response = await apiService.fetchContainer(url);
-      containerState.setContainerList(response.inventoryData);
+    var responseData = await apiService.fetchContainer(url);
+
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status! == StringsUtil.SUCCESS) {
+      containerState.setIsLoading(false);
+      containerState.setContainerList(responseData.inventoryData);
+    } else {
+      containerState.setIsLoading(false);
+      // Utils.showToast(responseData.message!);
+    }
   } catch (e) {
     containerState.setContainerListError(e.toString());
     if (containerState.context.mounted) {
