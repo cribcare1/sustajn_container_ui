@@ -225,10 +225,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (v.length != 10) return "Enter valid 10-digit mobile number";
                     return null;
                   },
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
                 ),
 
                 _buildPasswordField(
