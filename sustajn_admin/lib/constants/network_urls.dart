@@ -5,6 +5,7 @@ class NetworkUrls {
   static const int UNAUTHORIZED_ERROR_CODE = 401;
 
   static const BASE_URL = "http://35.154.182.218:9090/";
+  static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-user";
   static const FORGOT_PASSWORD = "notification/forgot-password";

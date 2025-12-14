@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:container_tracking/constants/network_urls.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:container_tracking/container_list/screens/container_details.dart';
 import 'package:flutter/material.dart';
@@ -208,6 +209,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
   Widget _buildContainerTile(InventoryData item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
+        print("${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}");
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -228,7 +230,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
               child: item.imageUrl != ""
                   ? Image.network(
-                      item.imageUrl,
+                      "${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}",
                       width: Constant.CONTAINER_SIZE_55,
                       height: Constant.CONTAINER_SIZE_55,
                       fit: BoxFit.cover,
