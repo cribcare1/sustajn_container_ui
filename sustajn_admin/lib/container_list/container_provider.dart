@@ -18,23 +18,19 @@ final addContainerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
   final containerState = ref.watch(containerNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_CONTAINER}';
-  Future.microtask((){
-    containerState.setIsLoading(true);
-  });
   try{
-
-var response = await apiService.addContainer(url, params, "data", containerState.image??File(""));
-if(response != null){
+var response = await apiService.addContainer(url, params, "data", (containerState.image!.path.contains("http:"))?null: containerState.image??File(""));
+if(response != null && response['status'] =="success"){
   if(containerState.context.mounted) {
     showCustomSnackBar(context: containerState.context,
-        message: Strings.ADDED_CONTAINER, color:Colors.green);
+        message: response['message'], color:Colors.green);
     containerState.setImage(null);
     Navigator.of(containerState.context).pop(true);
   }
 }else{
   if(containerState.context.mounted){
     showCustomSnackBar(context: containerState.context,
-        message: "Failed to add container", color:Colors.red);
+        message: response['message'], color:Colors.red);
   }
 }
    
@@ -44,9 +40,7 @@ if(response != null){
           message: e.toString(), color:Colors.red);
     }
   }finally{
-    Future.microtask((){
       containerState.setIsLoading(false);
-    });
   }
 });
 
@@ -54,9 +48,6 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
   final apiService = ref.watch(containerApiProvider);
   final containerState = ref.watch(containerNotifierProvider);
 
-  Future.microtask(() {
-    containerState.setIsLoading(true);
-  });
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LIST}';
 
@@ -76,9 +67,7 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
       );
     }
   } finally {
-    Future.microtask(() {
       containerState.setIsLoading(false);
-    });
   }
 });
 
@@ -86,9 +75,6 @@ final deleteContainer = FutureProvider.family<dynamic, dynamic>((ref, params) as
   final apiService = ref.watch(containerApiProvider);
   final containerState = ref.watch(containerNotifierProvider);
 
-  Future.microtask(() {
-    containerState.setIsLoading(true);
-  });
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.DELETE_CONTAINER}/$params';
 
@@ -109,8 +95,6 @@ final deleteContainer = FutureProvider.family<dynamic, dynamic>((ref, params) as
       );
     }
   } finally {
-    Future.microtask(() {
-      containerState.setIsLoading(false); // ✔ Safe
-    });
+      containerState.setIsLoading(false);
   }
 });

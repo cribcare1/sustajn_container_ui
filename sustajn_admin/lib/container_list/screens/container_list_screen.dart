@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:container_tracking/container_list/screens/container_details.dart';
@@ -25,14 +23,16 @@ class ContainersScreen extends ConsumerStatefulWidget {
 }
 
 class _ContainersScreenState extends ConsumerState<ContainersScreen> {
-@override
+  @override
   void initState() {
     _getNetworkData(ref.read(containerNotifierProvider));
     super.initState();
   }
-  Future<void> _refreshIndicator()async{
+
+  Future<void> _refreshIndicator() async {
     _getNetworkData(ref.read(containerNotifierProvider));
   }
+
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
@@ -59,31 +59,40 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           ),
         ],
       ).getAppBar(context),
-      body:  state.isSaving?Center(child: CircularProgressIndicator(),):
-      state.errorContainer != null?
-          Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(state.errorContainer!,style: themeData!.textTheme.titleMedium,),
-                ElevatedButton(
-                    onPressed: (){
+      body: state.isSaving
+          ? Center(child: CircularProgressIndicator())
+          : state.errorContainer != null
+          ? Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.errorContainer!,
+                    style: themeData!.textTheme.titleMedium,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
                       _refreshIndicator();
                     },
                     child: Padding(
-                      padding:  EdgeInsets.all(Constant.SIZE_08),
-                      child: Text("Retry",style: themeData.textTheme.titleMedium!.copyWith(color: Colors.white),),
-                    ))
-              ],
+                      padding: EdgeInsets.all(Constant.SIZE_08),
+                      child: Text(
+                        "Retry",
+                        style: themeData.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : SafeArea(
+              child: state.containerList.isEmpty
+                  ? _buildEmptyScreen()
+                  : _buildContainerList(themeData!, state),
             ),
-          )
-          :
-      SafeArea(
-        child: state.containerList.isEmpty
-            ? _buildEmptyScreen()
-            : _buildContainerList(themeData!,state),
-      ),
       floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
               backgroundColor: const Color(0xFF2D8F6E),
@@ -91,8 +100,8 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const AddContainerScreen()),
-                ).then((value){
-                  if(value = true){
+                ).then((value) {
+                  if (value = true) {
                     _refreshIndicator();
                   }
                 });
@@ -150,7 +159,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 MaterialPageRoute(builder: (_) => const AddContainerScreen()),
               );
               if (result != null) {
-              _refreshIndicator();
+                _refreshIndicator();
               }
             },
             icon: Icon(Icons.add, color: Colors.white),
@@ -187,7 +196,6 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
               padding: EdgeInsets.symmetric(
                 horizontal: Constant.CONTAINER_SIZE_16,
                 vertical: Constant.CONTAINER_SIZE_16,
-
               ),
               itemCount: state.containerList.length,
               separatorBuilder: (context, index) => Divider(
@@ -209,7 +217,6 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
   Widget _buildContainerTile(InventoryData item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
-        print("${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}");
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -247,12 +254,12 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 children: [
                   Text(
                     item.containerName,
-                      overflow: TextOverflow.ellipsis,
-                    style: themeData.textTheme.titleMedium
+                    overflow: TextOverflow.ellipsis,
+                    style: themeData.textTheme.titleMedium,
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item.containerTypeId.toString(),
+                    item.productId,
                     style: TextStyle(
                       fontSize: Constant.LABEL_TEXT_SIZE_14,
                       color: Colors.grey,
@@ -295,26 +302,35 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
       child: Icon(Icons.image, color: Colors.grey[400]),
     );
   }
+
   _getNetworkData(var containerState) async {
     try {
-      await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable()
-          .then((isNetworkAvailable) async {
+      ref.read(containerNotifierProvider).setIsLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
         try {
           if (isNetworkAvailable) {
-          ref.read(fetchContainerProvider(""));
+            containerState.setIsLoading(true);
+            ref.read(fetchContainerProvider(""));
           } else {
-            if(!mounted) return;showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
           }
         } catch (e) {
           Utils.printLog('Error on button onPressed: $e');
         }
-        if(!mounted) return;
+        if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
+    } finally {
+      ref.read(containerNotifierProvider).setIsLoading(false);
     }
   }
 }

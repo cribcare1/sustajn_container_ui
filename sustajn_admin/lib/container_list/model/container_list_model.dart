@@ -53,6 +53,7 @@ class InventoryData {
   double costPerUnit;
   int totalContainers;
   int availableContainers;
+  String productId;
 
   InventoryData({
     required this.inventoryId,
@@ -76,6 +77,7 @@ class InventoryData {
     required this.costPerUnit,
     required this.totalContainers,
     required this.availableContainers,
+    required this.productId,
   });
 
   factory InventoryData.fromJson(Map<String, dynamic> json) {
@@ -105,6 +107,7 @@ class InventoryData {
       costPerUnit: (json['costPerUnit'] ?? 0).toDouble(),
       totalContainers: json['totalContainers'] ?? 0,
       availableContainers: json['availableContainers'] ?? 0,
+      productId: json['productId']??"",
     );
   }
 
@@ -131,6 +134,7 @@ class InventoryData {
       "costPerUnit": costPerUnit,
       "totalContainers": totalContainers,
       "availableContainers": availableContainers,
+      "productId": productId,
     };
   }
 }

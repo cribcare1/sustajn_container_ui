@@ -367,49 +367,36 @@ class ApiHelper {
   }) async {
     final token = Utils.authToken();
     Utils.printLog("Multipart call started => URL: $url");
+    Utils.printLog("Multipart call started => URL: $requestJson");
 
     try {
-      var multipartRequest = http.MultipartRequest("POST", Uri.parse(url));
-
-      // Set headers
-      multipartRequest.headers['Content-Type'] = 'multipart/form-data';
+      var request = http.MultipartRequest("POST", Uri.parse(url));
       if (token.isNotEmpty) {
-        multipartRequest.headers['Authorization'] = 'Bearer $token';
+        request.headers['Authorization'] = 'Bearer $token';
       }
-
-      // Add JSON as string field -> "request"
-      multipartRequest.fields["data"] = jsonEncode(requestJson);
-
-      // Add file if exists
+      request.fields['data'] = jsonEncode(requestJson);
       if (file != null) {
-        var stream = http.ByteStream(file.openRead());
-        var length = await file.length();
-        var multipartFile = http.MultipartFile(
-          'image', stream, length,
-          filename: file.path.split('/').last,
-        );
+        final fileName = file.path.split('/').last;
 
-        multipartRequest.files.add(multipartFile);
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'image',
+            file.path,
+            filename: fileName,
+            contentType: http.MediaType('image', 'jpeg'), // or png
+          ),
+        );
       }
 
-      // Send request
-      final streamedResponse = await multipartRequest
-          .send()
-          .timeout(const Duration(seconds: 30));
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
-      // Convert stream to normal Response
-      final responseString = await streamedResponse.stream.bytesToString();
-      Utils.printLog("Status Code => ${streamedResponse.statusCode}");
-      Utils.printLog("Response => $responseString");
-
-      return http.Response(responseString, streamedResponse.statusCode);
-
-    } on TimeoutException {
-      Utils.printLog("⛔ Timeout Exception");
-      return http.Response("Request timed out", 408);
+      Utils.printLog("Response => ${response.body}");
+      return response;
     } catch (e) {
-      Utils.printLog("⛔ Error => $e");
-      return http.Response("Network call failed", 500);
+      Utils.printLog("Multipart error => $e");
+      rethrow;
     }
   }
+
 }

@@ -11,6 +11,7 @@ import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../common_widgets/submit_button.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/SharedPreferenceUtils.dart';
@@ -34,16 +35,20 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _volumeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _desController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
 _fetchData(){
   if(widget.inventoryData != null){
     _productController.text = widget.inventoryData!.containerName;
-    _productIdController.text = widget.inventoryData!.containerTypeId.toString();
+    _productIdController.text = widget.inventoryData!.productId;
+    _desController.text = widget.inventoryData!.containerDescription;
     _volumeController.text = widget.inventoryData!.capacityMl.toString();
     _quantityController.text = widget.inventoryData!.totalContainers.toString();
     _priceController.text = widget.inventoryData!.costPerUnit.toString();
-    ref.read(containerNotifierProvider).setImage(File(widget.inventoryData!.imageUrl));
+    if(widget.inventoryData!.imageUrl != ""){
+      ref.read(containerNotifierProvider).setImage(File("${NetworkUrls.IMAGE_BASE_URL}container/${widget.inventoryData!.imageUrl}"));
+    }
   }
 }
   @override
@@ -107,9 +112,11 @@ _fetchData(){
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_){
       ref.read(containerNotifierProvider).setContext(context);
+      ref.read(containerNotifierProvider).setImage(null);
+      _fetchData();
+      _getUserData();
     });
-    _fetchData();
-    _getUserData();
+
     super.initState();
   }
   String? _validateProduct(String? value) {
@@ -240,6 +247,14 @@ _fetchData(){
                                   validator: _validatePrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                                 ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  maxLine: 4,
+                                  controller: _desController,
+                                  hint: Strings.DESCRIPTION_TEXT,
+                                  keyboardType: TextInputType.text,
+                                  validator: (String? p1) {return null;  },
+                                ),
                               ],
                             ),
                           ),
@@ -282,7 +297,7 @@ _fetchData(){
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  containerState.isSaving!?Center(child: CircularProgressIndicator(),):
+                  containerState.isSaving?Center(child: CircularProgressIndicator(),):
                   SubmitButton(onRightTap: () {
                     Map<String, dynamic> body = (widget.inventoryData != null)?{
                       "containerName": _productController.text,
@@ -293,7 +308,9 @@ _fetchData(){
                       "foodSafe": true,
                       "dishwasherSafe": true,
                       "microwaveSafe": false,
-                      "userId": loginModel!.userId
+                      "userId": loginModel!.userId,
+                      "containerTypeId":widget.inventoryData!.containerTypeId,
+                      "description":_desController.text
                     }:{
                       "containerName": _productController.text,
                       "productId": _productIdController.text,
@@ -303,7 +320,8 @@ _fetchData(){
                       "foodSafe": true,
                       "dishwasherSafe": true,
                       "microwaveSafe": false,
-                      "userId": loginModel!.userId
+                      "userId": loginModel!.userId,
+                      "description":_desController.text
                     };
                       if (_formKey.currentState!.validate()) {
                                   _getNetworkData(containerState,body);
@@ -329,11 +347,13 @@ _fetchData(){
     required String? Function(String?) validator,
     required TextInputType keyboardType,
     IconData? suffix,
+    int? maxLine = 1,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
+      maxLines: maxLine,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
@@ -493,7 +513,11 @@ _fetchData(){
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          child: Image.file(
+          child:(state.image!.path.contains("http:"))?
+              Image.network(state.image!.path,width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,)
+              : Image.file(
             state.image!,
             width: double.infinity,
             height: double.infinity,

@@ -8,10 +8,10 @@ import '../utils/utility.dart';
 import 'model/container_list_model.dart';
 
 class ContainerService {
-  Future<dynamic> addContainer(String url, Map<String, dynamic> requestData, String requestType, File file) async {
+  Future<dynamic> addContainer(String url, Map<String, dynamic> requestData, String requestType, File? file) async {
     try {
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postMultipartRequestAdmin(url,file, requestData,"",requestType);
+      var response = await presenter.postMultipartRequestAdmin(url,file!, requestData,"",requestType);
       if (response != null) {
         return response;
       } else {
