@@ -197,12 +197,15 @@ class ApiHelper {
       if(image != null) {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
-        var multiport = http.MultipartFile('file', stream, length,
-            filename: image.path
-                .split('/')
-                .last);
+        var multiport = http.MultipartFile(
+          'file',
+          stream,
+          length,
+          filename: image.path.split('/').last,
+        );
         request.files.add(multiport);
       }
+
 
       final response = await request.send().timeout(const Duration(seconds: 30));
       final responseJson = await response.stream.bytesToString();

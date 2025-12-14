@@ -108,8 +108,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           //   Navigator.pushReplacement(context,
                           //       MaterialPageRoute(builder: (context)=>LoginScreen()));
                           // }
-                          Navigator.push(context, 
-                          MaterialPageRoute(builder: (context)=>BankDetails()));
+                          // Navigator.push(context,
+                          // MaterialPageRoute(builder: (context)=>BankDetails()));
 
                         },
                         child: Padding(

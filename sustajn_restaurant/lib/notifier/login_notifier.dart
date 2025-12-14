@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
@@ -12,6 +14,7 @@ class AuthState extends ChangeNotifier{
   LoginModel? _login;
   bool _isVisible = false;
   BuildContext? _context;
+  File? _image;
 
   String get name => _name;
 
@@ -22,6 +25,7 @@ class AuthState extends ChangeNotifier{
   LoginModel get login => _login!;
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
+  File? get image => _image;
 
   // Error messages
   String? _nameError;
@@ -56,6 +60,11 @@ class AuthState extends ChangeNotifier{
 
   void setIsLoading(bool isLoading){
     _isLoading = isLoading;
+    notifyListeners();
+  }
+
+  void setImage(File? file){
+    _image = file;
     notifyListeners();
   }
 
