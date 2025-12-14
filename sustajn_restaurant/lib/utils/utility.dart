@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 
+import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
-class Utility {
+class Utils {
 
 
   static  showProfilePhotoBottomSheet(BuildContext context) {
@@ -157,4 +160,91 @@ class Utility {
         toastLength: Toast.LENGTH_LONG);
   }
 
+  static isReqSuccess(var response) {
+    if ((response.statusCode < 200 || response.statusCode >= 300)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  static void printLog(String message) {
+    print(message);
+  }
+  static String? token = "";
+  static void getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString(Strings.JWT_TOKEN);
+    printLog("JUT Token ==== $token");
+  }
+
+  static String authToken() {
+    if (token == null || token!.isEmpty) {
+      getToken();
+    }
+    return (token != null && token!.isNotEmpty) ? token! : "";
+  }
+
+  static showNetworkErrorToast(BuildContext context, var errorCode) {
+    Utils.printLog("Exception:::: $errorCode");
+    const error = "Error:";
+    if (errorCode.contains(error)) {
+      final startIndex = errorCode.indexOf(error);
+      errorCode = errorCode
+          .substring(startIndex + error.length, errorCode.length)
+          .trim();
+      Utils.printLog("exception code:::: $errorCode");
+    }
+    switch (errorCode) {
+      case "${NetworkUrls.NETWORK_CALL_FAILED_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.TIME_OUT_CODE}":
+        showCustomSnackBar( context: context, message: Strings.TIME_OUT_ERROR_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.EMPTY_RESPONSE_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.UNAUTHORIZED_ERROR_CODE}":
+        showCustomSnackBar( context: context, message: Strings.SESSION_EXPIRED_MSG, color: Colors.red);
+        // sessionExpired(context);
+        break;
+      default:
+        showCustomSnackBar( context: context, message: Strings.API_ERROR_MSG_TEXT, color: Colors.red);
+        break;
+    }
+  }
+
+  static multipartParams(var partUrl, var data, var requestKey, var image) {
+    return {
+      NetworkUrls.PART_URL: partUrl,
+      NetworkUrls.DATA: data,
+      NetworkUrls.REQUEST_KEY: requestKey,
+      if (image != null) NetworkUrls.IMAGE: image,
+    };
+  }
+
 }
+void showCustomSnackBar({
+  required BuildContext context,
+  required String message,
+  required Color color,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style:  TextStyle(
+          color: Colors.white,
+          fontSize: Constant.CONTAINER_SIZE_14,
+        ),
+      ),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      // duration: const Duration(seconds: 2),
+    ),
+  );
+
+
+}
+

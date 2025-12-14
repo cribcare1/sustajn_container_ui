@@ -1,21 +1,30 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/models/registration_data.dart';
 import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../provider/login_provider.dart';
+import '../../utils/utility.dart';
+import 'business_information.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
   const SignUpScreen({super.key, this.currentStep = 0});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final restaurantCtrl = TextEditingController();
@@ -29,6 +38,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool confirmPasswordVisible = false;
   double lat = 0.0;
   double long = 0.0;
+
+  File? selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -53,6 +65,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(
+      source: source,
+      imageQuality: 70,
+    );
+
+    if (pickedFile != null) {
+      final imageFile = File(pickedFile.path);
+
+      setState(() {
+        selectedImage = imageFile;
+      });
+
+      ref.read(authNotifierProvider).setImage(imageFile);
+    }
+  }
+
+  bool _validateImage() {
+    if (selectedImage == null) {
+      Utils.showToast("Please select a profile image");
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -73,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Constant.CONTAINER_SIZE_50,
                 ),
                 Row(
-                  children: List.generate(4, (index) {
+                  children: List.generate(3, (index) {
                     bool active = index <= widget.currentStep;
                     return Expanded(
                       child: Container(
@@ -92,33 +129,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   }),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
-                Text(
-                  Strings.SIGN_UP,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_22,
-                    fontWeight: FontWeight.bold,
+
+                Center(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(60),
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        builder: (_) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.camera),
+                              title: const Text("Camera"),
+                              onTap: () {
+                                Navigator.pop(context);
+                                pickImage(ImageSource.camera);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.photo),
+                              title: const Text("Gallery"),
+                              onTap: () {
+                                Navigator.pop(context);
+                                pickImage(ImageSource.gallery);
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      backgroundImage:
+                      selectedImage != null ? FileImage(selectedImage!) : null,
+                      child: selectedImage == null
+                          ? Icon(
+                        Icons.person,
+                        size: 50,
+                        color: theme.primaryColor,
+                      )
+                          : null,
+                    ),
                   ),
                 ),
-                SizedBox(height: Constant.SIZE_05),
-                Text(
-                  Strings.PROVE_DETAILS,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.hintColor,
-                    fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  ),
-                ),
+
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
+
                 _buildTextField(
                   context,
                   controller: restaurantCtrl,
                   hint: Strings.RESTURANT_NAME,
                   validator: (v) {
                     if (v!.isEmpty) return "Restaurant name required";
-                    final valid = RegExp(r'^[a-zA-Z0-9 ]+$');
-                    if (!valid.hasMatch(v)) return "No special characters allowed";
+                    if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
+                      return "No special characters allowed";
+                    }
                     return null;
                   },
                 ),
+
                 _buildTextField(
                   context,
                   controller: emailCtrl,
@@ -126,28 +202,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboard: TextInputType.emailAddress,
                   validator: (v) {
                     if (v!.isEmpty) return "Email required";
-                    if (v[0] == v[0].toUpperCase()) return "Email should not start with capital letter";
-                    if (!RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$').hasMatch(v)) {
+                    if (!RegExp(
+                        r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
+                        .hasMatch(v)) {
                       return "Enter valid email";
                     }
                     return null;
                   },
                 ),
+
                 _buildTextField(
                   context,
                   controller: mobileCtrl,
                   hint: Strings.MOBILE_NUMBER,
                   keyboard: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   validator: (v) {
                     if (v!.isEmpty) return "Mobile number required";
                     if (v.length != 10) return "Enter valid 10-digit mobile number";
                     return null;
                   },
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
                 ),
+
                 _buildPasswordField(
                   context,
                   controller: passwordCtrl,
@@ -164,6 +243,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return null;
                   },
                 ),
+
                 _buildPasswordField(
                   context,
                   controller: confirmPasswordCtrl,
@@ -213,19 +293,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(
+                        if (!_validateImage()) return;
+
+                        final registrationData = RegistrationData(
+                          fullName: restaurantCtrl.text,
+                          email: emailCtrl.text,
+                          phoneNumber: mobileCtrl.text,
+                          password: passwordCtrl.text,
+                          profileImage: selectedImage,
+                        );
+
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const VerifyEmailScreen(previousScreen: 'signUp',),
+                            builder: (_) => BusinessScreen(
+                              registrationData: registrationData,
+                            ),
                           ),
                         );
                       }
                     },
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,
-                      style: theme.textTheme.titleMedium!.copyWith(
-                        color: theme.primaryColor,
-                      ),
+                      style: theme.textTheme.titleMedium!
+                          .copyWith(color: theme.primaryColor),
                     ),
                   ),
                 ),
@@ -282,23 +373,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: TextFormField(
-        readOnly: readOnly!,
         controller: controller,
-        obscureText: obscure,
         keyboardType: keyboard,
         validator: validator,
-        inputFormatters: inputFormatters, // apply formatters
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.hintColor,
-            fontSize: Constant.LABEL_TEXT_SIZE_15,
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: Constant.SIZE_15,
-            vertical: Constant.SIZE_15,
-          ),
+          labelText: hint,
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
@@ -327,7 +407,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         controller: controller,
         obscureText: !visible,
         validator: validator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: theme.textTheme.bodyMedium?.copyWith(
@@ -340,15 +419,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           filled: true,
           fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.SIZE_10),
-            borderSide: BorderSide(color: theme.dividerColor),
-          ),
+          labelText: hint,
           suffixIcon: IconButton(
-            icon: Icon(
-              visible ? Icons.visibility : Icons.visibility_off,
-              color: theme.iconTheme.color,
-            ),
+            icon:
+            Icon(visible ? Icons.visibility : Icons.visibility_off),
             onPressed: toggleVisibility,
           ),
         ),

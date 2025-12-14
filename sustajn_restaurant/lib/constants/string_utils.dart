@@ -1,4 +1,19 @@
 class Strings{
+  //Shared Preference Key
+  static const JWT_TOKEN = 'jwt_token';
+  static const IS_LOGGED_IN = 'isLoggedIn';
+  static const PROFILE_DATA = 'ProfileData';
+  //Network Message
+  static const EMPTY_DATA_SERVER_MSG =
+      'Something went wrong! Please try again after sometime.';
+  static const SESSION_EXPIRED_MSG =
+      'Session expired! Please login again after sometime.';
+  static const TIME_OUT_ERROR_MSG =
+      'Timed out from server! Please try again after sometime.';
+  static const NO_INTERNET_CONNECTION =
+      'Internet connection failed! Please try after sometime.';
+  static const API_ERROR_MSG_TEXT =
+      "Request is not successful. Please try again later!";
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
   static const String RESTURANT_TITLE = 'Resturants';
@@ -154,6 +169,14 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String RESTURANT_NAME = 'Resturant Name';
   static const String REPORTS = 'Reports';
   static const String RESTURANT_ADDRESS = 'Resturant Address';
+  static const MSG = 'message';
+  static const SUCCESS = 'success';
+  static const ERROR = 'Error';
+  static const EMAIL_REQUIRED_TXT = "Email is required.";
+  static const PASSWORD_REQUIRED_TXT = "Password is required";
+  static const INVALID_PASSWORD =
+      'Password must be at least 8 characters long and contain at least one letter and one number';
+  static const LOGGED_SUCCESS ="Logged in successfully";
   static const String G_MAP_API_KEY ="AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
 
 

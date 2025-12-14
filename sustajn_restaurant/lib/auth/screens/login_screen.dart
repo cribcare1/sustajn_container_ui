@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Utility.showToast('Logged in successfully');
+                        Utils.showToast('Logged in successfully');
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

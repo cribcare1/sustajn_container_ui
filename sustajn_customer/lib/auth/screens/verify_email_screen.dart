@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sustajn_restaurant/auth/screens/bank_details_screen.dart';
-import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
+import 'package:sustajn_customer/auth/screens/reset_password_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import 'package:pinput/pinput.dart';
 
-import 'login_screen.dart';
 class VerifyEmailScreen extends StatefulWidget {
-  final String previousScreen;
-  const VerifyEmailScreen({super.key, required this.previousScreen});
+  const VerifyEmailScreen({super.key});
 
   @override
   State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -37,7 +33,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       return false;
     });
   }
-  final _otpController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -83,14 +79,20 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                    Center(child: buildOtp(context,_otpController)),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(4, (index) {
+                        return _otpBox(context, controllers[index]);
+                      }),
+                    ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
 
 
                     SizedBox(
                       width: double.infinity,
-                      // height: Constant.CONTAINER_SIZE_50,
+                      height: Constant.CONTAINER_SIZE_50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor:Color(0xFFD0A52C),
@@ -101,26 +103,15 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                           ),
                         ),
                         onPressed: () {
-                          // if(widget.previousScreen == "forgotPassword"){
-                          //   Navigator.push(context,
-                          //       MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
-                          // }else{
-                          //   Navigator.pushReplacement(context,
-                          //       MaterialPageRoute(builder: (context)=>LoginScreen()));
-                          // }
-                          // Navigator.push(context,
-                          // MaterialPageRoute(builder: (context)=>BankDetails()));
-
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
                         },
-                        child: Padding(
-                          padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
-                          child: Text(
-                            Strings.VERIFY,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.primaryColor,
-                              fontSize: Constant.LABEL_TEXT_SIZE_16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        child: Text(
+                          Strings.VERIFY,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.primaryColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -187,61 +178,49 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       ),
     );
   }
-  Widget buildOtp(BuildContext context, TextEditingController controller) {
+
+  Widget _otpBox(BuildContext context, TextEditingController controller) {
     final theme = Theme.of(context);
 
-    final defaultPinTheme = PinTheme(
-      width: 55,
-      height: 55,
-      textStyle: theme.textTheme.titleLarge?.copyWith(
-        fontSize: 18,
-        color: theme.textTheme.bodyLarge?.color,
-      ),
+    return Container(
+      width: Constant.CONTAINER_SIZE_55,
+      height: Constant.CONTAINER_SIZE_55,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
         border: Border.all(
           color: theme.primaryColor,
-          width: 1,
+          width: Constant.SIZE_01,
         ),
       ),
-    );
-
-    return Pinput(
-      length: 4, // Change to 6 if needed
-      controller: controller,
-      keyboardType: TextInputType.number,
-
-      defaultPinTheme: defaultPinTheme,
-
-      focusedPinTheme: defaultPinTheme.copyWith(
-        decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(
-            color: theme.primaryColor,
-            width: 2,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            focusedErrorBorder: InputBorder.none,
+            counterStyle: TextStyle(height: 0),
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          maxLength: 1,
+          cursorColor: theme.primaryColor,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontSize: Constant.LABEL_TEXT_SIZE_18,
+            color: theme.textTheme.bodyLarge?.color,
+          ),
+          decoration: const InputDecoration(
+            counterText: "",
           ),
         ),
       ),
-
-      submittedPinTheme: defaultPinTheme.copyWith(
-        decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(
-            color: theme.primaryColor,
-            width: 1.2,
-          ),
-        ),
-      ),
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      showCursor: true,
-      cursor: Container(
-        width: 2,
-        height: 18,
-        margin: const EdgeInsets.only(bottom: 4),
-        color: theme.primaryColor,
-      ),
-
-      onCompleted: (value) {
-        print("OTP Entered: $value");
-      },
     );
   }
+
 }
