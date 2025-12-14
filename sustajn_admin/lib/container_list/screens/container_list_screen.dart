@@ -25,7 +25,10 @@ class ContainersScreen extends ConsumerStatefulWidget {
 class _ContainersScreenState extends ConsumerState<ContainersScreen> {
   @override
   void initState() {
-    _getNetworkData(ref.read(containerNotifierProvider));
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(containerNotifierProvider).setIsLoading(true);
+      _getNetworkData(ref.read(containerNotifierProvider));
+    });
     super.initState();
   }
 
@@ -33,85 +36,192 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     _getNetworkData(ref.read(containerNotifierProvider));
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   final themeData = CustomTheme.getTheme(true);
+  //   final state = ref.watch(containerNotifierProvider);
+  //   return Scaffold(
+  //     backgroundColor: themeData?.scaffoldBackgroundColor,
+  //     appBar: CustomAppBar(
+  //       title: Strings.CONTAINERS_TITLE,
+  //       leading: SizedBox.shrink(),
+  //       action: [
+  //         IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+  //         IconButton(
+  //           onPressed: () async {
+  //             final result = await showContainerFilterBottomSheet(
+  //               context,
+  //               state.containerList,
+  //             );
+  //
+  //             if (result != null) {
+  //               print("Selected: $result");
+  //             }
+  //           },
+  //           icon: Icon(Icons.filter_list),
+  //         ),
+  //       ],
+  //     ).getAppBar(context),
+  //     body: state.isLoading
+  //         ? Center(child: CircularProgressIndicator())
+  //         : state.errorContainer != null
+  //         ? Center(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 Text(
+  //                   state.errorContainer!,
+  //                   style: themeData!.textTheme.titleMedium,
+  //                 ),
+  //                 ElevatedButton(
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: Colors.green
+  //                   ),
+  //                   onPressed: () {
+  //                     _refreshIndicator();
+  //                   },
+  //                   child: Padding(
+  //                     padding: EdgeInsets.all(Constant.SIZE_08),
+  //                     child: Text(
+  //                       "Retry",
+  //                       style: themeData.textTheme.titleMedium!.copyWith(
+  //                         color: Colors.white,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           )
+  //         : SafeArea(
+  //             child: state.containerList.isEmpty && !state.isLoading
+  //                 ? _buildEmptyScreen()
+  //                 : _buildContainerList(themeData!, state),
+  //           ),
+  //     floatingActionButton: state.containerList.isNotEmpty
+  //         ? FloatingActionButton(
+  //             backgroundColor: const Color(0xFF2D8F6E),
+  //             onPressed: () {
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(builder: (_) => const AddContainerScreen()),
+  //               ).then((value) {
+  //                 if (value = true) {
+  //                   _refreshIndicator();
+  //                 }
+  //               });
+  //             },
+  //             child: Icon(
+  //               Icons.add,
+  //               color: Colors.white,
+  //               size: Constant.CONTAINER_SIZE_28,
+  //             ),
+  //           )
+  //         : null,
+  //
+  //     floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
     final state = ref.watch(containerNotifierProvider);
+
+    Widget body;
+
+    if (state.isLoading) {
+      body = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    else if (state.errorContainer != null) {
+      body = Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              state.errorContainer!,
+              style: themeData!.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              onPressed: _refreshIndicator,
+              child: Padding(
+                padding:  EdgeInsets.all(Constant.SIZE_08),
+                child: Text(
+                  "Retry",
+                  style: themeData.textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    else if (state.containerList.isEmpty) {
+      body = SafeArea(child: _buildEmptyScreen());
+    }
+    else {
+      body = SafeArea(
+        child: _buildContainerList(themeData!, state),
+      );
+    }
+
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: Strings.CONTAINERS_TITLE,
-        leading: SizedBox.shrink(),
+        leading: const SizedBox.shrink(),
         action: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
           IconButton(
             onPressed: () async {
               final result = await showContainerFilterBottomSheet(
                 context,
                 state.containerList,
               );
-
               if (result != null) {
-                print("Selected: $result");
+                debugPrint("Selected: $result");
               }
             },
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
           ),
         ],
       ).getAppBar(context),
-      body: state.isSaving
-          ? Center(child: CircularProgressIndicator())
-          : state.errorContainer != null
-          ? Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    state.errorContainer!,
-                    style: themeData!.textTheme.titleMedium,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _refreshIndicator();
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(Constant.SIZE_08),
-                      child: Text(
-                        "Retry",
-                        style: themeData.textTheme.titleMedium!.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : SafeArea(
-              child: state.containerList.isEmpty
-                  ? _buildEmptyScreen()
-                  : _buildContainerList(themeData!, state),
-            ),
+
+      body: body,
+
       floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
-              backgroundColor: const Color(0xFF2D8F6E),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AddContainerScreen()),
-                ).then((value) {
-                  if (value = true) {
-                    _refreshIndicator();
-                  }
-                });
-              },
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: Constant.CONTAINER_SIZE_28,
-              ),
-            )
+        backgroundColor: const Color(0xFF2D8F6E),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddContainerScreen(),
+            ),
+          ).then((value) {
+            if (value == true) { // ✅ FIXED
+              _refreshIndicator();
+            }
+          });
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: Constant.CONTAINER_SIZE_28,
+        ),
+      )
           : null,
 
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -305,7 +415,9 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
 
   _getNetworkData(var containerState) async {
     try {
+      print("get network data called");
       ref.read(containerNotifierProvider).setIsLoading(true);
+      print("is loading started");
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) async {

@@ -55,8 +55,6 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
 
     ContainerListModel response = await apiService.fetchContainer(url);
       containerState.setContainerList(response.inventoryData);
-    return response;
-
   } catch (e) {
     containerState.setContainerListError(e.toString());
     if (containerState.context.mounted) {

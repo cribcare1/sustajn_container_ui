@@ -297,7 +297,7 @@ _fetchData(){
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  containerState.isSaving?Center(child: CircularProgressIndicator(),):
+                  containerState.isLoading?Center(child: CircularProgressIndicator(),):
                   SubmitButton(onRightTap: () {
                     Map<String, dynamic> body = (widget.inventoryData != null)?{
                       "containerName": _productController.text,

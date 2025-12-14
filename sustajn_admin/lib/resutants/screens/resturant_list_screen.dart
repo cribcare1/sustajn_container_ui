@@ -57,6 +57,9 @@ class _RestaurantListScreenState extends ConsumerState<RestaurantListScreen> {
                     style: themeData!.textTheme.titleMedium,
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green
+                    ),
                     onPressed: () {
                       _refreshIndicator();
                     },
