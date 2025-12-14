@@ -1,34 +1,36 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:sustajn_restaurant/auth/screens/dashboard_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/sign_up_screen.dart';
 
+import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import 'forget_password.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _showPassword = false;
-  final RegExp _emailRegex =
-  RegExp(r'^[a-z][a-z0-9._%+-]*@[a-z0-9.-]+\.[a-z]{2,}$');
 
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var themeData = CustomTheme.getTheme(true);
+    final authState = ref.watch(authNotifierProvider);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -70,15 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       _formKey.currentState!.validate();
                     }
                   },
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Email is required";
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Enter your email';
                     }
-                    if (value[0].toUpperCase() == value[0]) {
-                      return "Email should not start with a capital letter";
-                    }
-                    if (!_emailRegex.hasMatch(value.trim())) {
-                      return "Enter a valid email address";
+                    if (!v.contains('@') || v.trim().length < 5) {
+                      return 'Enter a valid email';
                     }
                     return null;
                   },
@@ -150,34 +149,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: height * 0.02),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD0A52C),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
+
+                authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
+                    width: double.infinity,
+                    child:SubmitButton(onRightTap: (){
                       if (_formKey.currentState!.validate()) {
-                        Utils.showToast('Logged in successfully');
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const DashboardScreen(),
-                          ),
-                        );
+                        _getNetworkData(authState);
                       }
-                    },
-                    child: Text(
-                      Strings.LOGIN,
-                      style: themeData.textTheme.titleMedium!.copyWith(
-                        color: themeData.primaryColor,
-                      ),
-                    ),
-                  ),
+                    },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),
                 Center(
@@ -213,5 +192,37 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  _getNetworkData(var registrationState) async {
+    try {
+      ref.read(authNotifierProvider).loginData(
+          context, _emailController.text, _passwordController.text);
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }

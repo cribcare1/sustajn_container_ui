@@ -8,6 +8,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 
+import '../auth/screens/dashboard_screen.dart';
+import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../utils/sharedpreference_utils.dart';
@@ -46,7 +48,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
         Navigator.pushReplacement(
           registrationState.context,
           MaterialPageRoute(
-            builder: (_) => const HomeScreen(),
+            builder: (_) => const DashboardScreen(),
           ),
         );}
     } else {
@@ -125,7 +127,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       Navigator.pushReplacement(
         registrationState.context,
         MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(previousScreen: "forgotPassword"),
+          builder: (_) => const ResetPasswordScreen(),
         ),
       );
     } else {
