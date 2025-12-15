@@ -214,7 +214,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       ),
                       SizedBox(height: height * 0.02),
 
-                      SizedBox(
+                     authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
@@ -271,8 +271,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
         try {
           if (isNetworkAvailable) {
             containerState.setIsLoading(true);
+            final Map<String, dynamic> body =
+            Map<String, dynamic>.from(widget.registrationData.toApiBody());
+            body.remove('image');
             ref.read(registerProvider({
-              "data": widget.registrationData.toApiBody(),
+              "data": body,
               "image": widget.registrationData.profileImage,
             }));
           } else {

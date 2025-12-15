@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:container_tracking/container_list/container_provider.dart';
@@ -5,17 +6,22 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../auth/model/login_model.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../common_widgets/submit_button.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/SharedPreferenceUtils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../model/container_list_model.dart';
 
 class AddContainerScreen extends ConsumerStatefulWidget {
-  const AddContainerScreen({super.key});
+  final InventoryData? inventoryData;
+  const AddContainerScreen({super.key, this.inventoryData});
 
   @override
   ConsumerState<AddContainerScreen> createState() => _AddContainerScreenState();
@@ -29,10 +35,22 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _volumeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-
-  // File? _selectedImage;
+  final TextEditingController _desController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
+_fetchData(){
+  if(widget.inventoryData != null){
+    _productController.text = widget.inventoryData!.containerName;
+    _productIdController.text = widget.inventoryData!.productId;
+    _desController.text = widget.inventoryData!.containerDescription;
+    _volumeController.text = widget.inventoryData!.capacityMl.toString();
+    _quantityController.text = widget.inventoryData!.totalContainers.toString();
+    _priceController.text = widget.inventoryData!.costPerUnit.toString();
+    if(widget.inventoryData!.imageUrl != ""){
+      ref.read(containerNotifierProvider).setImage(File("${NetworkUrls.IMAGE_BASE_URL}container/${widget.inventoryData!.imageUrl}"));
+    }
+  }
+}
   @override
   void dispose() {
     _productController.dispose();
@@ -82,21 +100,28 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       }
     }
   }
-  
+  LoginModel? loginModel;
+  _getUserData()async{
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+
+    if (jsonString != null && jsonString.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    }
+  }
 @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_){
       ref.read(containerNotifierProvider).setContext(context);
+      ref.read(containerNotifierProvider).setImage(null);
+      _fetchData();
+      _getUserData();
     });
+
     super.initState();
   }
   String? _validateProduct(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
-    }
-    final regex = RegExp(r'^[a-zA-Z\s]+$');
-    if (!regex.hasMatch(value)) {
-      return "Only letters and spaces allowed";
     }
     return null;
   }
@@ -104,10 +129,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   String? _validateProductId(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
-    }
-    final regex = RegExp(r'^[a-zA-Z0-9]+$');
-    if (!regex.hasMatch(value)) {
-      return "Only letters and numbers allowed";
     }
     return null;
   }
@@ -208,7 +229,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                   controller: _volumeController,
                                   hint:Strings.ENTER_VOLUME,
                                   validator: _validateVolume,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.number,
                                 ),
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -225,6 +246,14 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                   hint: Strings.CONTAINER_PRICE,
                                   validator: _validatePrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  maxLine: 4,
+                                  controller: _desController,
+                                  hint: Strings.DESCRIPTION_TEXT,
+                                  keyboardType: TextInputType.text,
+                                  validator: (String? p1) {return null;  },
                                 ),
                               ],
                             ),
@@ -268,30 +297,40 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  containerState.isSaving!?Center(child: CircularProgressIndicator(),):
+                  containerState.isLoading?Center(child: CircularProgressIndicator(),):
                   SubmitButton(onRightTap: () {
-                    Map<String, dynamic> body = {
-                      "name": _productController.text,
-                      "id": null,
-                      "capacity": _volumeController.text,
+                    Map<String, dynamic> body = (widget.inventoryData != null)?{
+                      "containerName": _productController.text,
+                      "productId": _productIdController.text,
+                      "capacityMl": _volumeController.text,
                       "quantity": _quantityController.text,
-                      "active":true,
+                      "price":_priceController.text,
+                      "foodSafe": true,
+                      "dishwasherSafe": true,
+                      "microwaveSafe": false,
+                      "userId": loginModel!.userId,
+                      "containerTypeId":widget.inventoryData!.containerTypeId,
+                      "description":_desController.text
+                    }:{
+                      "containerName": _productController.text,
+                      "productId": _productIdController.text,
+                      "capacityMl": _volumeController.text,
+                      "quantity": _quantityController.text,
+                      "price":_priceController.text,
+                      "foodSafe": true,
+                      "dishwasherSafe": true,
+                      "microwaveSafe": false,
+                      "userId": loginModel!.userId,
+                      "description":_desController.text
                     };
                       if (_formKey.currentState!.validate()) {
-                                  // Navigator.pop(context, {
-                                  //   "name": _productController.text,
-                                  //   "id": _productIdController.text,
-                                  //   "volume": _volumeController.text,
-                                  //   "quantity": _quantityController.text,
-                                  //   "image": containerState.image,
-                                  // });
                                   _getNetworkData(containerState,body);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Please complete required fields")),
                                   );
                                 }
-                    },rightText: "Add Container",),
+                    },rightText:(widget.inventoryData != null)?"Edit Container": "Add Container",),
                   ],
                 ),
               ),
@@ -308,11 +347,13 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     required String? Function(String?) validator,
     required TextInputType keyboardType,
     IconData? suffix,
+    int? maxLine = 1,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
+      maxLines: maxLine,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
@@ -472,7 +513,11 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          child: Image.file(
+          child:(state.image!.path.contains("http:"))?
+              Image.network(state.image!.path,width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,)
+              : Image.file(
             state.image!,
             width: double.infinity,
             height: double.infinity,
@@ -532,7 +577,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   }
   _getNetworkData(var containerState, Map<String, dynamic> body) async {
     try {
-      // if (containerState.isValid) {
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
@@ -553,7 +597,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
           if(!mounted) return;
           FocusScope.of(context).unfocus();
         });
-      // }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       containerState.setIsLoading(false);

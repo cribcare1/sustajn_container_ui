@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:container_tracking/auth/auth_state.dart';
 import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:container_tracking/auth/screens/login_screen.dart';
+import 'package:container_tracking/auth/screens/reset_password_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +117,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       Navigator.pushReplacement(
             registrationState.context,
             MaterialPageRoute(
-              builder: (_) => const VerifyEmailScreen(previousScreen: "forgotPassword"),
+              builder: (_) => const ResetPasswordScreen(),
             ),
           );
     } else {

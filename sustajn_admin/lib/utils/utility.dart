@@ -1,4 +1,5 @@
 import 'package:container_tracking/constants/network_urls.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -224,6 +225,17 @@ class Utils {
   }
 
 }
+Dio getDio(){
+var  dio = Dio();
+final token = Utils.authToken();
+dio.options.headers = {
+  'Authorization': 'Bearer $token',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
+  return dio;
+}
+
 void showCustomSnackBar({
   required BuildContext context,
   required String message,

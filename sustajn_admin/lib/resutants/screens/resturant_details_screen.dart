@@ -8,10 +8,11 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../models/model.dart';
+import '../models/restaurant_list_model.dart';
 import 'container_count_details.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
-  final Restaurant restaurant;
+  final RestaurantData restaurant;
 
   RestaurantDetailsScreen({super.key, required this.restaurant});
 
@@ -292,7 +293,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
 
   void showRestaurantDetailsSheet(
     BuildContext context,
-    Restaurant restaurant,
+      RestaurantData restaurant,
     ThemeData themeData,
   ) {
     showModalBottomSheet(
@@ -326,7 +327,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                             Constant.CONTAINER_SIZE_12,
                           ),
                           child: Image.asset(
-                            restaurant.imageUrl,
+                            "assets/images/resturant.jpeg",
                             height: Constant.CONTAINER_SIZE_180,
                             width: double.infinity,
                             fit: BoxFit.cover,
@@ -376,7 +377,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                             ),
                             SizedBox(width: Constant.SIZE_06),
                             Text(
-                              "9875643212",
+                              restaurant.phoneNumber,
                               style: TextStyle(
                                 fontSize: Constant.CONTAINER_SIZE_14,
                                 color: Colors.grey.shade700,

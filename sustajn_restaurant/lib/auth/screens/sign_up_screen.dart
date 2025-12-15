@@ -97,6 +97,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
+        top: false,bottom: true,
         child: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.SIZE_15),
           child: Form(
@@ -136,6 +137,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
+                        useSafeArea: true,
                         shape: const RoundedRectangleBorder(
                           borderRadius:
                           BorderRadius.vertical(top: Radius.circular(16)),
@@ -158,9 +160,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 Navigator.pop(context);
                                 pickImage(ImageSource.gallery);
                               },
-                            ),
-                            const SizedBox(height: 10),
-                          ],
+                            ),],
                         ),
                       );
                     },
@@ -301,6 +301,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           phoneNumber: mobileCtrl.text,
                           password: passwordCtrl.text,
                           profileImage: selectedImage,
+                          address: addressCtrl.text,
+                          latitude: lat,
+                          longitude: long,
                         );
 
                         Navigator.push(

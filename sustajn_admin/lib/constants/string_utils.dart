@@ -49,6 +49,7 @@ class Strings {
   static const ENTER_VOLUME = 'Enter Volume in ml*';
   static const ENTER_QUANTITY = 'Quantity*';
   static const CONTAINER_PRICE = 'Price of the container*';
+  static const DESCRIPTION = 'Price of the container*';
   static const CONTAINER_IMAGE = 'Container Image';
   static const ADD_CONTAINER = 'Add Container';
   static const CHOOSE = 'Choose';
@@ -127,7 +128,7 @@ class Strings {
       'Are you sure you want to acknowledge this feedback?';
   static const APPROVE_TXT = 'Approve';
   static const IMAGES = 'Images';
-  static const DESCRIPTION = 'Description';
+  static const DESCRIPTION_TEXT = 'Description';
   static const SUBJECT = 'Subject';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
