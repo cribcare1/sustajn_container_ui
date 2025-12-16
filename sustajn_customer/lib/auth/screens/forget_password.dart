@@ -88,7 +88,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
+                            )));
                     },
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,

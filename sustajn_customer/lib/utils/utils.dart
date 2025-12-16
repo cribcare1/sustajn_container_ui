@@ -214,6 +214,13 @@ class Utils {
     }
   }
 
+  static void navigateToPushScreen(BuildContext context, screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
+
 }
 void showCustomSnackBar({
   required BuildContext context,

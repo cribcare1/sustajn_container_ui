@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
@@ -82,7 +83,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       Navigator.pushReplacement(
         registrationState.context,
         MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(),
+          builder: (_) => const LoginScreen()
         ),
       );
     } else {
@@ -116,7 +117,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       Navigator.pushReplacement(
         registrationState.context,
         MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(),
+          builder: (_) => const VerifyEmailScreen(previousScreen: '',),
         ),
       );
     } else {
@@ -142,21 +143,19 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
   try {
     var   responseData = await apiService.verifyOtp(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    final status = responseData['status'];
+    final message = responseData['message'];
+    if (status != null && status!.isNotEmpty  && status! == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.green);
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        ),
-      );
+      Fluttertoast.showToast(msg: message!,toastLength: Toast.LENGTH_LONG,
+      backgroundColor: Colors.black);
+
+
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.red);
+          message: message!, color:Colors.black);
       registrationState.setIsLoading(false);
     }
   } catch (e) {

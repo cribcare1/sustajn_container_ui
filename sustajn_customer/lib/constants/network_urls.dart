@@ -6,13 +6,14 @@ class NetworkUrls {
 
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const LOGIN_API = "auth/login";
-  static const REGISTER_USER = "auth/register-user";
+  static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
-  static const VERIFY_OTP = "notification/verify-token";
+  static const VERIFY_OTP = "notification/forgot-password";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";
   static const DELETE_CONTAINER = "inventory/delete-container-type/123";
+  static const SUCCESS = 'Success';
 
 }

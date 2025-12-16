@@ -137,7 +137,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(
+                            previousScreen: '')));
                     },
                     child: Text(
                       Strings.RESET,

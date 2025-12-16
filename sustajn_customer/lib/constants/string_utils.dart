@@ -147,4 +147,11 @@ class Strings {
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS ="Logged in successfully";
   static const ADDED_CONTAINER ="Container Added Successfully";
+  static const String BANK_DETAILS = 'Bank Details';
+  static const String ENTER_BANK_INFO = 'Enter your bank information';
+  static const String BANK_NAME = 'Bank Name';
+  static const String ACC_NO = 'Account Number';
+  static const String CONFIRM_ACC_NO = 'Confirm Account Number';
+  static const String TAX_NUMBER = 'Tax Number';
+  static const String CONTINUE= 'Continue';
 }
