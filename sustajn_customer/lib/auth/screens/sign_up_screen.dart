@@ -292,7 +292,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             latitude: lat,
                             longitude: long,
                           );
-                          // _getNetworkDataVerify(authState);
+                          _getNetworkDataVerify(authState);
                           Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
                           registrationData: registrationData,));
                         }
