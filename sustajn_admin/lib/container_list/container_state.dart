@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'model/container_list_model.dart';
 
 class ContainerState extends ChangeNotifier{
-  bool _isLoading = true;
+  bool _isLoading = false;
   BuildContext? _context;
   File? _image;
   bool get isLoading => _isLoading;

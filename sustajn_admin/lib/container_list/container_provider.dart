@@ -56,12 +56,11 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
 
     var responseData = await apiService.fetchContainer(url);
 
-    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status! == StringsUtil.SUCCESS) {
+    if (responseData != null) {
       containerState.setIsLoading(false);
       containerState.setContainerList(responseData.inventoryData);
     } else {
       containerState.setIsLoading(false);
-      // Utils.showToast(responseData.message!);
     }
   } catch (e) {
     containerState.setContainerListError(e.toString());

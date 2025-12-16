@@ -69,34 +69,38 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         ).getAppBar(context),
         body:customerState.isLoading
             ? Center(child: CircularProgressIndicator())
-            : customerState.error != ""
-            ? Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                customerState.error,
-                style: themeData!.textTheme.titleMedium,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _refreshIndicator();
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(Constant.SIZE_08),
-                  child: Text(
-                    "Retry",
-                    style: themeData.textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-            : ListView.separated(
+        //     :
+        // customerState.error != ""
+        //     ? Center(
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Text(
+        //         customerState.error,
+        //         style: themeData!.textTheme.titleMedium,
+        //       ),
+        //       ElevatedButton(
+        //         style: ElevatedButton.styleFrom(
+        //           backgroundColor: Colors.green
+        //         ),
+        //         onPressed: () {
+        //           _refreshIndicator();
+        //         },
+        //         child: Padding(
+        //           padding: EdgeInsets.all(Constant.SIZE_08),
+        //           child: Text(
+        //             "Retry",
+        //             style: themeData.textTheme.titleMedium!.copyWith(
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // )
+            :(customerState.customerList.isEmpty)?Center(child: Text("No data"),): ListView.separated(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           itemCount: customerState.customerList.length,
           separatorBuilder: (_, __) =>

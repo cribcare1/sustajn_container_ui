@@ -11,7 +11,6 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../container_state.dart';
 import '../model/container_list_model.dart';
 import 'add_new_container.dart';
 
@@ -95,9 +94,26 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
               ),
             )
           : SafeArea(
-              child: state.containerList.isEmpty && !state.isLoading
-                  ? _buildEmptyScreen()
-                  : _buildContainerList(themeData!, state),
+              child: state.containerList.isNotEmpty
+                  ? RefreshIndicator(
+                onRefresh: () => _refreshIndicator(),
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_16,
+                    vertical: Constant.CONTAINER_SIZE_16,
+                  ),
+                  itemCount: state.containerList.length,
+                  separatorBuilder: (context, index) => Divider(
+                    height: Constant.CONTAINER_SIZE_12,
+                    thickness: 1,
+                    color: Colors.grey[300],
+                  ),
+                  itemBuilder: (context, index) {
+                    final item = state.containerList[index];
+                    return _buildContainerTile(item, themeData!);
+                  },
+                ),
+              ): _buildEmptyScreen(),
             ),
       floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
@@ -193,33 +209,6 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     );
   }
 
-  Widget _buildContainerList(ThemeData themeData, ContainerState state) {
-    return Column(
-      children: [
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => _refreshIndicator(),
-            child: ListView.separated(
-              padding: EdgeInsets.symmetric(
-                horizontal: Constant.CONTAINER_SIZE_16,
-                vertical: Constant.CONTAINER_SIZE_16,
-              ),
-              itemCount: state.containerList.length,
-              separatorBuilder: (context, index) => Divider(
-                height: Constant.CONTAINER_SIZE_12,
-                thickness: 1,
-                color: Colors.grey[300],
-              ),
-              itemBuilder: (context, index) {
-                final item = state.containerList[index];
-                return _buildContainerTile(item, themeData);
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildContainerTile(InventoryData item, ThemeData themeData) {
     return GestureDetector(
