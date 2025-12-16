@@ -84,7 +84,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: bankNameController,
                         decoration: InputDecoration(
-                          labelText: Strings.BANK_NAME,
+                          hintText: Strings.BANK_NAME,
+                          hintStyle: theme!.textTheme.bodyMedium?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -110,7 +114,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           LengthLimitingTextInputFormatter(12),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.ACC_NO,
+                          hintText: Strings.ACC_NO,
+                          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           contentPadding: const EdgeInsets.symmetric(
@@ -139,7 +147,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           LengthLimitingTextInputFormatter(12),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.CONFIRM_ACC_NO,
+                          hintText: Strings.CONFIRM_ACC_NO,
+                          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(

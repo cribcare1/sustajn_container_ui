@@ -96,7 +96,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: Strings.CONFIRM_PASSWORD,
+                    hintText: Strings.CONFIRM_PASSWORD,
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.hintColor,
+                      fontSize: Constant.LABEL_TEXT_SIZE_15,
+                    ),
                     filled: true,
                     fillColor: Colors.white,
                     suffixIcon: IconButton(

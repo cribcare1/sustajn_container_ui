@@ -292,7 +292,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             latitude: lat,
                             longitude: long,
                           );
-                          _getNetworkDataVerify(authState);
+                          // _getNetworkDataVerify(authState);
                           Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
                           registrationData: registrationData,));
                         }
@@ -354,9 +354,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         required TextEditingController controller,
         required String hint,
         String? Function(String?)? validator,
-        bool obscure = false,
         TextInputType keyboard = TextInputType.text,
-        bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
@@ -369,7 +367,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
-          labelText: hint,
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
@@ -410,7 +412,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           ),
           filled: true,
           fillColor: Colors.white,
-          labelText: hint,
           suffixIcon: IconButton(
             icon:
             Icon(visible ? Icons.visibility : Icons.visibility_off),

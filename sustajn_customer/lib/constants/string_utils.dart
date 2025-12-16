@@ -154,4 +154,7 @@ class Strings {
   static const String CONFIRM_ACC_NO = 'Confirm Account Number';
   static const String TAX_NUMBER = 'Tax Number';
   static const String CONTINUE= 'Continue';
-}
+  static const String GO_BACK = 'Are you sure you want to go back ?';
+  static const String VERIFIED_EMAIL = 'You have already verified your email. Going back may interrupt account the account setup process';
+static const String STAY_ON_THIS_PAGE = 'Stay on this page';
+      }
