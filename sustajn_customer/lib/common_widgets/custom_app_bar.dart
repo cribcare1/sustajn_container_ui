@@ -1,9 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../provider/theme_provider.dart';
 import '../utils/theme_utils.dart';
-import 'custom_back_button.dart';
 
 class CustomAppBar {
   final String title;

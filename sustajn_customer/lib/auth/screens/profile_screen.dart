@@ -142,7 +142,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                         GestureDetector(
                           onTap: (){
-                            Utility.showProfilePhotoBottomSheet(context);
+                            Utils.showProfilePhotoBottomSheet(context);
                           },
                           child: Container(
                             height: w * 0.09,
