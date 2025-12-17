@@ -57,55 +57,56 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             Column(
               children: [
-                SizedBox(height: h * 0.035),
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      height: w * 0.28,
-                      width: w * 0.28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: w * 0.012,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-
-                            return Center(
-                              child: SizedBox(
-                                height: w * 0.08,
-                                width: w * 0.08,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.error, color: Colors.red),
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      height: w * 0.09,
-                      width: w * 0.09,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: Icon(Icons.edit, size: w * 0.045),
-                    ),
-                  ],
-                ),
+                SizedBox(height: h * 0.1),
+                //todo:- profile image
+                // Stack(
+                //   alignment: Alignment.bottomRight,
+                //   children: [
+                //     Container(
+                //       height: w * 0.28,
+                //       width: w * 0.28,
+                //       decoration: BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         border: Border.all(
+                //           color: Colors.white,
+                //           width: w * 0.012,
+                //         ),
+                //       ),
+                //       child: ClipOval(
+                //         child: Image.network(
+                //           "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                //           fit: BoxFit.cover,
+                //           loadingBuilder: (context, child, loadingProgress) {
+                //             if (loadingProgress == null) return child;
+                //
+                //             return Center(
+                //               child: SizedBox(
+                //                 height: w * 0.08,
+                //                 width: w * 0.08,
+                //                 child: const CircularProgressIndicator(
+                //                   strokeWidth: 2,
+                //                   color: Colors.green,
+                //                 ),
+                //               ),
+                //             );
+                //           },
+                //           errorBuilder: (context, error, stackTrace) =>
+                //               const Icon(Icons.error, color: Colors.red),
+                //         ),
+                //       ),
+                //     ),
+                //
+                //     Container(
+                //       height: w * 0.09,
+                //       width: w * 0.09,
+                //       decoration: const BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         color: Colors.white,
+                //       ),
+                //       child: Icon(Icons.edit, size: w * 0.045),
+                //     ),
+                //   ],
+                // ),
 
                 SizedBox(height: h * 0.015),
                 Row(

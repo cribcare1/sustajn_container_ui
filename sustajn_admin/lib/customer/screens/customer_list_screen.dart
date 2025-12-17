@@ -137,7 +137,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                   padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                   child: Row(
                     children: [
-                      // user["image"] == null?
+                      user.profileImage == ""?
                            const CircleAvatar(
                               radius: 22,
                               backgroundColor: Color(0xffE6F7EC),
@@ -145,12 +145,20 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                                 Icons.person_outline,
                                 color: Colors.green,
                               ),
+                            )
+                          : CircleAvatar(
+                              radius: 22,
+                        backgroundColor: Color(0xffE6F7EC),
+                              child: Image.network(user.profileImage,
+                                errorBuilder: (context,obj,s){
+                                return Icon(
+                                  Icons.person_outline,
+                                  color: Colors.green,
+                                );
+                                },
+
+                              ),
                             ),
-                          //TODO:- required
-                          // : CircleAvatar(
-                          //     radius: 22,
-                          //     backgroundImage: AssetImage(user["image"]),
-                          //   ),
                       SizedBox(width: Constant.SIZE_08),
                       Expanded(
                         child: Column(

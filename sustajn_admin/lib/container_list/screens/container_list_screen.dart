@@ -63,36 +63,36 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
       ).getAppBar(context),
       body: state.isLoading
           ? Center(child: CircularProgressIndicator())
-          : state.errorContainer != null
-          ? Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    state.errorContainer!,
-                    style: themeData!.textTheme.titleMedium,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green
-                    ),
-                    onPressed: () {
-                      _refreshIndicator();
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(Constant.SIZE_08),
-                      child: Text(
-                        "Retry",
-                        style: themeData.textTheme.titleMedium!.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
+          // : state.errorContainer != null
+          // ? Center(
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Text(
+          //           state.errorContainer!,
+          //           style: themeData!.textTheme.titleMedium,
+          //         ),
+          //         ElevatedButton(
+          //           style: ElevatedButton.styleFrom(
+          //             backgroundColor: Colors.green
+          //           ),
+          //           onPressed: () {
+          //             _refreshIndicator();
+          //           },
+          //           child: Padding(
+          //             padding: EdgeInsets.all(Constant.SIZE_08),
+          //             child: Text(
+          //               "Retry",
+          //               style: themeData.textTheme.titleMedium!.copyWith(
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   )
           : SafeArea(
               child: state.containerList.isNotEmpty
                   ? RefreshIndicator(

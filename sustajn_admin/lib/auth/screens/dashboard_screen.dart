@@ -1,10 +1,14 @@
 
+import 'dart:convert';
+
 import 'package:container_tracking/auth/screens/profile_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/SharedPreferenceUtils.dart';
+import '../model/login_model.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -28,6 +32,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     [3900, 1300, 100],
   ];
   final List<String> weekLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  @override
+  void initState() {
+    _getUserData();
+    super.initState();
+  }
+  LoginModel loginModel = LoginModel();
+  _getUserData()async{
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+
+    if (jsonString != null && jsonString.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -80,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
           SizedBox(height: 2),
-          Text('Lucky', style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
+          Text(loginModel!.fullName??"", style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
         ]),
         Spacer(),
         _iconCircle(theme, Icons.notifications_none),
