@@ -385,7 +385,7 @@ class ApiHelper {
         var stream = http.ByteStream(file.openRead());
         var length = await file.length();
         var multipartFile = http.MultipartFile(
-          'file', stream, length,
+          'profileImage', stream, length,
           filename: file.path.split('/').last,
         );
 

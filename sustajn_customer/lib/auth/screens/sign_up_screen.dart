@@ -288,7 +288,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             phoneNumber: mobileCtrl.text,
                             password: passwordCtrl.text,
                             profileImage: selectedImage,
-                            address: addressCtrl.text,
+                            dateOfBirth: null,
+                            address: null,
                             latitude: lat,
                             longitude: long,
                           );

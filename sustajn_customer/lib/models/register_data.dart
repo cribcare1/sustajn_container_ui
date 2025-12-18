@@ -6,6 +6,7 @@ class RegistrationData {
   String? phoneNumber;
   String? password;
   File? profileImage;
+  String? dateOfBirth;
 
   String? address;
   double? latitude;
@@ -30,6 +31,7 @@ class RegistrationData {
     this.bankName,
     this.accountNumber,
     this.taxNumber,
+    this.dateOfBirth
   }) {
   }
 
@@ -42,6 +44,7 @@ class RegistrationData {
       "address": address,
       "latitude": latitude,
       "longitude": longitude,
+      "dateOfBirth": dateOfBirth,
       "bankDetails": {
         "bankName": bankName,
         "accountNumber": accountNumber,

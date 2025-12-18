@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
@@ -41,12 +43,12 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){
-        // Navigator.pushReplacement(
-        //   registrationState.context,
-        //   MaterialPageRoute(
-        //     builder: (_) => const HomeScreen(),
-        //   ),
-        // );
+        Navigator.pushReplacement(
+          registrationState.context,
+          MaterialPageRoute(
+            builder: (_) => const DashboardScreen(),
+          ),
+        );
       }
     } else {
       if(registrationState.context.mounted){
@@ -69,36 +71,48 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
 ///Register
 
-final registerDetailProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params)async{
   final apiService = ref.watch(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  try {
-    var   responseData = await apiService.registrationUser(url, params, "");
-    if (responseData != null) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen()
-        ),
-      );
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: "Response is not success", color:Colors.red);
-      registrationState.setIsLoading(false);
+  final File? image = params["image"];
+  print(params);
+  // print(registrationState.image);
+  Future.microtask((){
+    registrationState.setIsLoading(true);
+  });
+  try{
+
+    var response = await apiService.registerUser(
+      url,
+      params["data"],
+      "data",
+      image!,
+    );
+    if(response != null){
+      if(registrationState.context.mounted) {
+        showCustomSnackBar(context: registrationState.context,
+            message: 'registered successfully', color:Colors.green);
+        Navigator.of(registrationState.context).pop(true);
+      }
+    }else{
+      if(registrationState.context.mounted){
+        showCustomSnackBar(context: registrationState.context,
+            message: "Failed to add container", color:Colors.red);
+      }
     }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+
+  }catch(e){
+    if(registrationState.context.mounted){
+      showCustomSnackBar(context: registrationState.context,
+          message: e.toString(), color:Colors.red);
+    }
   }finally{
-    registrationState.setIsLoading(false);
+    Future.microtask((){
+      registrationState.setIsLoading(false);
+    });
   }
-  return null;
 });
 
 final forgotPasswordProvider =

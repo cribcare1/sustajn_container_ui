@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/network_urls.dart';
@@ -24,17 +26,18 @@ class AuthServices {
       throw Exception(e);
     }
   }
-  Future<dynamic> registrationUser(String url, Map<String, dynamic> requestData, String requestType) async {
+  Future<dynamic> registerUser(String url, Map<String, dynamic> requestData, String requestType, File? file) async {
     try {
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.postMultipartRequestAdmin(url,file!, requestData,"",requestType);
       if (response != null) {
+        print("===========++=============$response");
         return response;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog("login service::::$e");
+      Utils.printLog("rgister resturant service::::$e");
       throw Exception(e);
     }
   }

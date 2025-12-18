@@ -120,7 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return "Enter your password";
                     }
-                    if (value.length < 8) {
+                    if (value.length < 3) {
                       return "Password must be at least 8 characters";
                     }
                     return null;

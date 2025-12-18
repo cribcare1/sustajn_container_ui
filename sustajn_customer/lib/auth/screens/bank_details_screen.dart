@@ -181,7 +181,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           LengthLimitingTextInputFormatter(10),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.TAX_NUMBER,
+                          hintText: Strings.TAX_NUMBER,
+                          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -257,8 +261,9 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
             final Map<String, dynamic> body =
             Map<String, dynamic>.from(widget.registrationData.toApiBody());
             body.remove('image');
-            ref.read(registerDetailProvider({
+            ref.read(registerProvider({
               "data": body,
+              "image": widget.registrationData.profileImage,
             }));
           } else {
             containerState.setIsLoading(false);

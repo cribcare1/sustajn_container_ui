@@ -142,7 +142,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ),
                           onPressed: ()async {
-                            await  _getNetworkData(authState);
+                            // await  _getNetworkData(authState);
                             if (widget.previousScreen == "forgotPassword") {
                               _getNetworkData(authState);
                             }
