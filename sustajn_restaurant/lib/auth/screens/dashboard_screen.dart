@@ -1,18 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 
 import '../../borrowed/borrowed_home_screen.dart';
-import '../../common_widgets/container_count_details.dart';
 import '../../constants/number_constants.dart';
 import '../../containers/container_list.dart';
 import '../../returned_screen/returned_home_screen.dart';
-import '../../utils/theme_utils.dart';
-
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -43,134 +39,180 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: LayoutBuilder(builder: (context, constraints) {
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
                 horizontal: cardHorizontalPadding,
-                vertical: Constant.PADDING_HEIGHT_10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Hi,',
-                              style: theme.textTheme.bodyMedium
-                                  ?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_14)),
-                          SizedBox(height: Constant.SIZE_05),
-                          Text('Marina Sky Dine',
+                vertical: Constant.PADDING_HEIGHT_10,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Hi,',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_14,
+                              ),
+                            ),
+                            SizedBox(height: Constant.SIZE_05),
+                            Text(
+                              'Marina Sky Dine',
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,
-                              )),
-                        ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: Constant.CONTAINER_SIZE_50,
-                      height: Constant.CONTAINER_SIZE_50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(100),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
-                            offset: const Offset(0, 4),
-                            blurRadius: 10,
-                          )
-                        ],
+                      Container(
+                        width: Constant.CONTAINER_SIZE_50,
+                        height: Constant.CONTAINER_SIZE_50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.06),
+                              offset: const Offset(0, 4),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.notifications_none,
+                          color: theme.primaryColor,
+                        ),
                       ),
-                      child:
-                      Icon(Icons.notifications_none, color: theme.primaryColor),
-                    )
-                  ],
-                ),
-                SizedBox(height: Constant.SIZE_15),
-                Wrap(
-                  spacing: cardSpacing,
-                  runSpacing: Constant.SIZE_06,
-                  children: [
-                    _buildDashboardCard(context,
-                        width: cardWidth, icon: Icons.rice_bowl_outlined,
-                        onTap: (){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context)=>ContainerListScreen(title: 'Containers',)));
+                    ],
+                  ),
+                  SizedBox(height: Constant.SIZE_15),
+                  Wrap(
+                    spacing: cardSpacing,
+                    runSpacing: Constant.SIZE_06,
+                    children: [
+                      _buildDashboardCard(
+                        context,
+                        width: cardWidth,
+                        icon: Icons.rice_bowl_outlined,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ContainerListScreen(title: 'Containers'),
+                            ),
+                          );
                         },
-                        label: 'Containers'),
-                    _buildDashboardCard(context,
+                        label: 'Containers',
+                      ),
+                      _buildDashboardCard(
+                        context,
                         width: cardWidth,
                         icon: Icons.call_made_outlined,
-                        onTap: (){
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=>BorrowedHomeScreen()));
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BorrowedHomeScreen(),
+                            ),
+                          );
                         },
-                        label: 'Borrowed'),
-                    _buildDashboardCard(context,
+                        label: 'Borrowed',
+                      ),
+                      _buildDashboardCard(
+                        context,
                         width: cardWidth,
                         icon: Icons.call_received,
-                        onTap: (){
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=>ReturnedHomeScreen()));
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReturnedHomeScreen(),
+                            ),
+                          );
                         },
-                        label: 'Returned'),
-                    _buildDashboardCard(context,
-                        onTap: (){
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=>MyProfileScreen()));
+                        label: 'Returned',
+                      ),
+                      _buildDashboardCard(
+                        context,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyProfileScreen(),
+                            ),
+                          );
                         },
-                        width: cardWidth, icon: Icons.person_outline, label: 'Profile'),
-                  ],
-                ),
-                SizedBox(height: Constant.SIZE_18),
-                Text('Inventory Status Overview',
+                        width: cardWidth,
+                        icon: Icons.person_outline,
+                        label: 'Profile',
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Constant.SIZE_18),
+                  Text(
+                    'Inventory Status Overview',
                     style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: Constant.LABEL_TEXT_SIZE_18,
-                        fontWeight: FontWeight.bold)),
-                SizedBox(height: Constant.SIZE_10),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: _buildDropdown(
-                        context,
-                        value: selectedDateRange,
-                        items: dateOptions,
-                        onChanged: (v) => setState(() => selectedDateRange = v!),
-                      ),
+                      fontSize: Constant.LABEL_TEXT_SIZE_18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(width: Constant.SIZE_10),
-                    Expanded(
-                      flex: 1,
-                      child: _buildDropdown(
-                        context,
-                        value: selectedContainer,
-                        items: containerOptions,
-                        onChanged: (v) => setState(() => selectedContainer = v!),
+                  ),
+                  SizedBox(height: Constant.SIZE_10),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: _buildDropdown(
+                          context,
+                          value: selectedDateRange,
+                          items: dateOptions,
+                          onChanged: (v) =>
+                              setState(() => selectedDateRange = v!),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: Constant.SIZE_15),
-                _buildLegendRow(context),
-                SizedBox(height: Constant.SIZE_15),
-                _buildChartRings(context, width, theme),
-                SizedBox(height: Constant.CONTAINER_SIZE_30),
-              ],
-            ),
-          );
-        }),
+                      SizedBox(width: Constant.SIZE_10),
+                      Expanded(
+                        flex: 1,
+                        child: _buildDropdown(
+                          context,
+                          value: selectedContainer,
+                          items: containerOptions,
+                          onChanged: (v) =>
+                              setState(() => selectedContainer = v!),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Constant.SIZE_15),
+                  _buildLegendRow(context),
+                  SizedBox(height: Constant.SIZE_15),
+                  _buildChartRings(context, width, theme),
+                  SizedBox(height: Constant.CONTAINER_SIZE_30),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-
-  Widget _buildDashboardCard(BuildContext context,
-      {required double width, required IconData icon, required String label,
-      required VoidCallback onTap}) {
+  Widget _buildDashboardCard(
+    BuildContext context, {
+    required double width,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     final theme = Theme.of(context);
     final cardHeight = width * 0.55;
 
@@ -192,7 +234,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: Colors.black.withOpacity(0.04),
               blurRadius: 10,
               offset: const Offset(0, 6),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -205,23 +247,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: theme.primaryColor,
                 shape: BoxShape.circle,
               ),
-              child:
-              Icon(icon, color: Colors.white, size: Constant.CONTAINER_SIZE_22),
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: Constant.CONTAINER_SIZE_22,
+              ),
             ),
             const Spacer(),
-            Text(label,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDropdown(BuildContext context,
-      {required String value,
-        required List<String> items,
-        required ValueChanged<String?> onChanged}) {
+  Widget _buildDropdown(
+    BuildContext context, {
+    required String value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
     final theme = Theme.of(context);
     return Container(
       height: Constant.TEXT_FIELD_HEIGHT,
@@ -231,9 +281,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 4))
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: DropdownButtonHideUnderline(
@@ -241,11 +292,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           value: value,
           onChanged: onChanged,
           isExpanded: true,
-          icon:
-          Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
+          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
           items: items
-              .map((e) => DropdownMenuItem(
-              value: e, child: Text(e, style: theme.textTheme.bodyMedium)))
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e, style: theme.textTheme.bodyMedium),
+                ),
+              )
               .toList(),
         ),
       ),
@@ -273,16 +327,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       children: [
         Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
         SizedBox(width: Constant.SIZE_06),
         Text(text, style: theme.textTheme.bodySmall),
       ],
     );
   }
 
-  Widget _buildChartRings(BuildContext context, double screenWidth, ThemeData theme) {
+  Widget _buildChartRings(
+    BuildContext context,
+    double screenWidth,
+    ThemeData theme,
+  ) {
     double chartSize;
     if (screenWidth < 350) {
       chartSize = screenWidth * 0.65;
@@ -324,7 +383,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     pieTouchData: PieTouchData(enabled: false),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -343,7 +401,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  List<PieChartSectionData> _buildChartSections(double ringThickness, ThemeData theme) {
+  List<PieChartSectionData> _buildChartSections(
+    double ringThickness,
+    ThemeData theme,
+  ) {
     return [
       PieChartSectionData(
         value: returnedCount,

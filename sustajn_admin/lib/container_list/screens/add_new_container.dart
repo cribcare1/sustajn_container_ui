@@ -1,23 +1,33 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../common_widgets/custom_app_bar.dart';
-import '../common_widgets/custom_back_button.dart';
-import '../common_widgets/submit_button.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../utils/theme_utils.dart';
+import '../../auth/model/login_model.dart';
+import '../../common_provider/network_provider.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../common_widgets/submit_button.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/SharedPreferenceUtils.dart';
+import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
+import '../model/container_list_model.dart';
 
-class AddContainerScreen extends StatefulWidget {
-  const AddContainerScreen({super.key});
+class AddContainerScreen extends ConsumerStatefulWidget {
+  final InventoryData? inventoryData;
+  const AddContainerScreen({super.key, this.inventoryData});
 
   @override
-  State<AddContainerScreen> createState() => _AddContainerScreenState();
+  ConsumerState<AddContainerScreen> createState() => _AddContainerScreenState();
 }
 
-class _AddContainerScreenState extends State<AddContainerScreen> {
+class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _productController = TextEditingController();
@@ -25,10 +35,22 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   final TextEditingController _volumeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-
-  File? _selectedImage;
+  final TextEditingController _desController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
+_fetchData(){
+  if(widget.inventoryData != null){
+    _productController.text = widget.inventoryData!.containerName;
+    _productIdController.text = widget.inventoryData!.productId;
+    _desController.text = widget.inventoryData!.containerDescription;
+    _volumeController.text = widget.inventoryData!.capacityMl.toString();
+    _quantityController.text = widget.inventoryData!.totalContainers.toString();
+    _priceController.text = widget.inventoryData!.costPerUnit.toString();
+    if(widget.inventoryData!.imageUrl != ""){
+      ref.read(containerNotifierProvider).setImage(File("${NetworkUrls.IMAGE_BASE_URL}container/${widget.inventoryData!.imageUrl}"));
+    }
+  }
+}
   @override
   void dispose() {
     _productController.dispose();
@@ -57,9 +79,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       );
 
       if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path);
-        });
+        ref.read(containerNotifierProvider).setImage( File(pickedFile.path));
       }
 
       if (Navigator.canPop(context)) {
@@ -80,20 +100,28 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       }
     }
   }
+  LoginModel? loginModel;
+  _getUserData()async{
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
 
-  void _removeImage() {
-    setState(() {
-      _selectedImage = null;
-    });
+    if (jsonString != null && jsonString.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    }
   }
+@override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(containerNotifierProvider).setContext(context);
+      ref.read(containerNotifierProvider).setImage(null);
+      _fetchData();
+      _getUserData();
+    });
 
+    super.initState();
+  }
   String? _validateProduct(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
-    }
-    final regex = RegExp(r'^[a-zA-Z\s]+$');
-    if (!regex.hasMatch(value)) {
-      return "Only letters and spaces allowed";
     }
     return null;
   }
@@ -101,10 +129,6 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   String? _validateProductId(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
-    }
-    final regex = RegExp(r'^[a-zA-Z0-9]+$');
-    if (!regex.hasMatch(value)) {
-      return "Only letters and numbers allowed";
     }
     return null;
   }
@@ -146,6 +170,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final themeData = CustomTheme.getTheme(true);
+    final containerState = ref.watch(containerNotifierProvider);
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
       appBar: CustomAppBar(
@@ -204,7 +229,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                                   controller: _volumeController,
                                   hint:Strings.ENTER_VOLUME,
                                   validator: _validateVolume,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.number,
                                 ),
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -221,6 +246,14 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                                   hint: Strings.CONTAINER_PRICE,
                                   validator: _validatePrice,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  maxLine: 4,
+                                  controller: _desController,
+                                  hint: Strings.DESCRIPTION_TEXT,
+                                  keyboardType: TextInputType.text,
+                                  validator: (String? p1) {return null;  },
                                 ),
                               ],
                             ),
@@ -254,7 +287,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                             },
                             child: _buildDashedContainer(
                               height: screenWidth * 0.35,
-                              child: _selectedImage == null
+                              child: containerState.image == null ||  containerState.image == File("")
                                   ? _buildUploadUI()
                                   : _buildSelectedImageUI(),
                             ),
@@ -264,21 +297,40 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    SubmitButton(onRightTap: () {
+                  containerState.isLoading?Center(child: CircularProgressIndicator(),):
+                  SubmitButton(onRightTap: () {
+                    Map<String, dynamic> body = (widget.inventoryData != null)?{
+                      "containerName": _productController.text,
+                      "productId": _productIdController.text,
+                      "capacityMl": _volumeController.text,
+                      "quantity": _quantityController.text,
+                      "price":_priceController.text,
+                      "foodSafe": true,
+                      "dishwasherSafe": true,
+                      "microwaveSafe": false,
+                      "userId": loginModel!.userId,
+                      "containerTypeId":widget.inventoryData!.containerTypeId,
+                      "description":_desController.text
+                    }:{
+                      "containerName": _productController.text,
+                      "productId": _productIdController.text,
+                      "capacityMl": _volumeController.text,
+                      "quantity": _quantityController.text,
+                      "price":_priceController.text,
+                      "foodSafe": true,
+                      "dishwasherSafe": true,
+                      "microwaveSafe": false,
+                      "userId": loginModel!.userId,
+                      "description":_desController.text
+                    };
                       if (_formKey.currentState!.validate()) {
-                                  Navigator.pop(context, {
-                                    "name": _productController.text,
-                                    "id": _productIdController.text,
-                                    "volume": _volumeController.text,
-                                    "quantity": _quantityController.text,
-                                    "image": _selectedImage,
-                                  });
+                                  _getNetworkData(containerState,body);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Please complete required fields")),
                                   );
                                 }
-                    },rightText: "Add Container",),
+                    },rightText:(widget.inventoryData != null)?"Edit Container": "Add Container",),
                   ],
                 ),
               ),
@@ -295,11 +347,13 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
     required String? Function(String?) validator,
     required TextInputType keyboardType,
     IconData? suffix,
+    int? maxLine = 1,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
+      maxLines: maxLine,
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
@@ -454,12 +508,17 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   }
 
   Widget _buildSelectedImageUI() {
+    final state = ref.read(containerNotifierProvider);
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          child: Image.file(
-            _selectedImage!,
+          child:(state.image!.path.contains("http:"))?
+              Image.network(state.image!.path,width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,)
+              : Image.file(
+            state.image!,
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -469,7 +528,9 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
           top: Constant.SIZE_08,
           right: Constant.SIZE_08,
           child: GestureDetector(
-            onTap: _removeImage,
+            onTap: (){
+              state.setImage(null);
+            },
             child: Container(
               width: Constant.CONTAINER_SIZE_28,
               height: Constant.CONTAINER_SIZE_28,
@@ -513,5 +574,32 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
         ],
       ),
     );
+  }
+  _getNetworkData(var containerState, Map<String, dynamic> body) async {
+    try {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              containerState.setIsLoading(true);
+              ref.read(addContainerProvider(body));
+            } else {
+              containerState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            containerState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      containerState.setIsLoading(false);
+    }
   }
 }

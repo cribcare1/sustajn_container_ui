@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:container_tracking/constants/network_urls.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
-import '../feedback_screen/model/feedback_details_model.dart';
 
 class Utils {
   static Future<void> showEditDeleteMenu({
@@ -32,6 +33,7 @@ class Utils {
         PopupMenuItem<void>(
           height: Constant.CONTAINER_SIZE_40,
           padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+          onTap: onEdit,
           child: Row(
             children:  [
               Icon(Icons.edit, size: Constant.LABEL_TEXT_SIZE_18),
@@ -39,12 +41,12 @@ class Utils {
               Text(Strings.EDIT),
             ],
           ),
-          onTap: onEdit,
         ),
         const PopupMenuDivider(),
         PopupMenuItem<void>(
           height: Constant.CONTAINER_SIZE_40,
           padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+          onTap: onDelete,
           child: Row(
             children:  [
               Icon(Icons.delete, size: Constant.CONTAINER_SIZE_18, color: Colors.red),
@@ -52,7 +54,6 @@ class Utils {
               Text(Strings.DELETE, style: TextStyle(color: Colors.red)),
             ],
           ),
-          onTap: onDelete,
         ),
       ],
     );
@@ -169,6 +170,90 @@ class Utils {
     );
   }
 
+  static isReqSuccess(var response) {
+    if ((response.statusCode < 200 || response.statusCode >= 300)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  static void printLog(String message) {
+    print(message);
+  }
+  static String? token = "";
+  static void getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString(Strings.JWT_TOKEN);
+    printLog("JUT Token ==== $token");
+  }
 
+  static String authToken() {
+    if (token == null || token!.isEmpty) {
+      getToken();
+    }
+    return (token != null && token!.isNotEmpty) ? token! : "";
+  }
 
+  static showNetworkErrorToast(BuildContext context, var errorCode) {
+    Utils.printLog("Exception:::: $errorCode");
+    const error = "Error:";
+    if (errorCode.contains(error)) {
+      final startIndex = errorCode.indexOf(error);
+      errorCode = errorCode
+          .substring(startIndex + error.length, errorCode.length)
+          .trim();
+      Utils.printLog("exception code:::: $errorCode");
+    }
+    switch (errorCode) {
+      case "${NetworkUrls.NETWORK_CALL_FAILED_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.TIME_OUT_CODE}":
+        showCustomSnackBar( context: context, message: Strings.TIME_OUT_ERROR_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.EMPTY_RESPONSE_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.UNAUTHORIZED_ERROR_CODE}":
+        showCustomSnackBar( context: context, message: Strings.SESSION_EXPIRED_MSG, color: Colors.red);
+        // sessionExpired(context);
+        break;
+      default:
+        showCustomSnackBar( context: context, message: Strings.API_ERROR_MSG_TEXT, color: Colors.red);
+        break;
+    }
+  }
+
+}
+Dio getDio(){
+var  dio = Dio();
+final token = Utils.authToken();
+dio.options.headers = {
+  'Authorization': 'Bearer $token',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
+  return dio;
+}
+
+void showCustomSnackBar({
+  required BuildContext context,
+  required String message,
+  required Color color,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style:  TextStyle(
+          color: Colors.white,
+          fontSize: Constant.CONTAINER_SIZE_14,
+        ),
+      ),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      // duration: const Duration(seconds: 2),
+    ),
+  );
 }

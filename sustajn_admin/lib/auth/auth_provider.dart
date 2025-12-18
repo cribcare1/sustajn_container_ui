@@ -1,18 +1,19 @@
 import 'dart:convert';
 
+import 'package:container_tracking/auth/auth_state.dart';
+import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:container_tracking/auth/screens/login_screen.dart';
+import 'package:container_tracking/auth/screens/reset_password_screen.dart';
+import 'package:container_tracking/auth/screens/verify_email_screen.dart';
+import 'package:container_tracking/constants/network_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
-import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 
-import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
-import '../utils/sharedpreference_utils.dart';
+import '../utils/SharedPreferenceUtils.dart';
 import '../utils/utility.dart';
 import 'auth_services/auth_services.dart';
-import 'auth_state.dart';
-import 'bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'model/login_model.dart';
 
 final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
@@ -27,7 +28,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var responseData = LoginModel();
   try {
     responseData = await apiService.loginUser(url, params, "");
-    if (responseData.userName != null) {
+     if (responseData.userName != null) {
       registrationState.setIsLoading(false);
       registrationState.setLoginData(responseData);
       if(registrationState.context.mounted) {
@@ -40,18 +41,18 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
           Strings.JWT_TOKEN, responseData.jwtToken!);
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
-      if(registrationState.context.mounted){
-        Navigator.pushReplacement(
-          registrationState.context,
-          MaterialPageRoute(
-            builder: (_) => const HomeScreen(),
-          ),
-        );}
+if(registrationState.context.mounted){
+      Navigator.pushReplacement(
+        registrationState.context,
+        MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+        ),
+      );}
     } else {
-      if(registrationState.context.mounted){
-        showCustomSnackBar(context: registrationState.context,
-            message: "Login failed or response is not success", color:Colors.red);
-      }
+       if(registrationState.context.mounted){
+         showCustomSnackBar(context: registrationState.context,
+             message: "Login failed or response is not success", color:Colors.red);
+       }
 
       registrationState.setIsLoading(false);
       Utils.printLog('Login failed or response is not success');
@@ -59,7 +60,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   } catch (e) {
     registrationState.setIsLoading(false);
     if(registrationState.context.mounted){
-      Utils.showNetworkErrorToast(registrationState.context, e.toString());}
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());}
   }finally{
     registrationState.setIsLoading(false);
   }
@@ -75,16 +76,16 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
   try {
-    var   responseData = await apiService.registrationUser(url, params, "");
+ var   responseData = await apiService.registrationUser(url, params, "");
     if (responseData != null) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
       Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(previousScreen: "signUp"),
-        ),
-      );
+            registrationState.context,
+            MaterialPageRoute(
+              builder: (_) => const VerifyEmailScreen(previousScreen: "signUp"),
+            ),
+          );
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
@@ -107,18 +108,18 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
-    var   responseData = await apiService.forgetPassword(url, params, "");
+ var   responseData = await apiService.forgetPassword(url, params, "");
     if (responseData != null) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
           message: responseData.message!, color:Colors.green);
       Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(previousScreen: "forgotPassword"),
-        ),
-      );
+            registrationState.context,
+            MaterialPageRoute(
+              builder: (_) => const ResetPasswordScreen(),
+            ),
+          );
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,

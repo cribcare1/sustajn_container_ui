@@ -214,6 +214,15 @@ class Utils {
     }
   }
 
+  static multipartParams(var partUrl, var data, var requestKey, var image) {
+    return {
+      NetworkUrls.PART_URL: partUrl,
+      NetworkUrls.DATA: data,
+      NetworkUrls.REQUEST_KEY: requestKey,
+      if (image != null) NetworkUrls.IMAGE: image,
+    };
+  }
+
 }
 void showCustomSnackBar({
   required BuildContext context,
@@ -235,5 +244,7 @@ void showCustomSnackBar({
       // duration: const Duration(seconds: 2),
     ),
   );
+
+
 }
 
