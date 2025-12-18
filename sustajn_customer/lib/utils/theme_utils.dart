@@ -21,7 +21,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xFFeef6f3),
+      scaffoldBackgroundColor: const Color(0xFF0E3A2F),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.dmSans(),

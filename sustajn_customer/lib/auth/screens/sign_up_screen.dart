@@ -1,208 +1,272 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
+import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/register_data.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 import 'login_screen.dart';
+import 'map_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  final int currentStep;
+  final RegistrationData? registrationData;
+  const SignUpScreen({super.key, this.currentStep = 0,
+  this.registrationData});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
+  final restaurantCtrl = TextEditingController();
+  final emailCtrl = TextEditingController();
+  final mobileCtrl = TextEditingController();
+  final passwordCtrl = TextEditingController();
+  final confirmPasswordCtrl = TextEditingController();
+  final addressCtrl = TextEditingController();
 
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
+  bool passwordVisible = false;
+  bool confirmPasswordVisible = false;
+  double lat = 0.0;
+  double long = 0.0;
 
-  void _revalidate() {
-    if (_formKey.currentState != null) {
-      _formKey.currentState!.validate();
+  File? selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+
+    restaurantCtrl.addListener(() => setState(() {}));
+    emailCtrl.addListener(() => setState(() {}));
+    mobileCtrl.addListener(() => setState(() {}));
+    passwordCtrl.addListener(() => setState(() {}));
+    confirmPasswordCtrl.addListener(() => setState(() {}));
+    addressCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    restaurantCtrl.dispose();
+    emailCtrl.dispose();
+    mobileCtrl.dispose();
+    passwordCtrl.dispose();
+    confirmPasswordCtrl.dispose();
+    addressCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(
+      source: source,
+      imageQuality: 70,
+    );
+
+    if (pickedFile != null) {
+      final imageFile = File(pickedFile.path);
+
+      setState(() {
+        selectedImage = imageFile;
+      });
+
     }
+  }
+
+  bool _validateImage() {
+    if (selectedImage == null) {
+      Utils.showToast("Please select a profile image");
+      return false;
+    }
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.sizeOf(context).height;
-    var themeData = CustomTheme.getTheme(true);
+    final theme = Theme.of(context);
+    final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: Stack(
+        children:[
+        SafeArea(
+          top: false,bottom: true,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(Constant.SIZE_15),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(Strings.SIGN_UP,
-                      style: themeData!.textTheme.titleLarge),
-                  SizedBox(height: height * 0.005),
-                  Text(Strings.FILL_DETAILS,
-                      style: themeData.textTheme.bodyMedium),
-                  SizedBox(height: height * 0.02),
-
-                  // NAME
-                  TextFormField(
-                    controller: _nameController,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (_) => _revalidate(),
-                    decoration: _inputDecoration(Strings.NAME),
-                    validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Enter your name' : null,
+                  SizedBox(
+                    height: MediaQuery.of(context).padding.top +
+                        Constant.CONTAINER_SIZE_50,
                   ),
-                  SizedBox(height: height * 0.02),
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                  TextFormField(
-                    controller: _mobileController,
-                    keyboardType: TextInputType.number,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (v) {
-                      if (v.length > 10) {
-                        _mobileController.text = v.substring(0, 10);
-                        _mobileController.selection = TextSelection.fromPosition(
-                          TextPosition(offset: 10),
+                  Center(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(60),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          useSafeArea: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16)),
+                          ),
+                          builder: (_) => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.camera),
+                                title: const Text("Camera"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  pickImage(ImageSource.camera);
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.photo),
+                                title: const Text("Gallery"),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  pickImage(ImageSource.gallery);
+                                },
+                              ),],
+                          ),
                         );
-                      }
-                      _revalidate();
-                    },
-                    decoration: _inputDecoration(Strings.MOBILE_NUMBER),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) {
-                        return 'Enter your mobile number';
-                      }
-                      if (v.length != 10) {
-                        return 'Enter a valid 10-digit number';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: height * 0.02),
-
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (_) => _revalidate(),
-                    decoration: _inputDecoration(Strings.EMAIL),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) {
-                        return 'Enter your email';
-                      }
-                      if (!v.contains('@')) {
-                        return 'Enter a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-
-
-
-                  SizedBox(height: height * 0.02),
-
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: !_isPasswordVisible,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (_) => _revalidate(),
-                    decoration: _inputDecoration(Strings.PASSWORD).copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.white,
+                        backgroundImage:
+                        selectedImage != null ? FileImage(selectedImage!) : null,
+                        child: selectedImage == null
+                            ? Icon(
+                          Icons.person,
+                          size: 50,
+                          color: theme.primaryColor,
+                        )
+                            : null,
                       ),
                     ),
-                    validator: (v) {
-                      if (v == null || v.isEmpty) return 'Enter your password';
-                      if (v.length < 8) return 'Password must be at least 8 characters';
-                      return null;
-                    },
                   ),
-                  SizedBox(height: height * 0.02),
 
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: !_isConfirmPasswordVisible,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (_) => _revalidate(),
-                    decoration:
-                    _inputDecoration(Strings.CONFIRM_PASSWORD).copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isConfirmPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.grey,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isConfirmPasswordVisible =
-                            !_isConfirmPasswordVisible;
-                          });
-                        },
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                  _buildTextField(
+                    context,
+                    controller: restaurantCtrl,
+                    hint: 'Full Name',
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Confirm your password';
-                      if (v != _passwordController.text) {
-                        return 'Passwords do not match';
+                      if (v!.isEmpty) return "Restaurant name required";
+                      if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
+                        return "No special characters allowed";
                       }
                       return null;
                     },
                   ),
-                  //TODO :- Required for google map
-                  // SizedBox(height: height * 0.02),
-                  // TextFormField(
-                  //   controller: _locationController,
-                  //   readOnly: true,
-                  //   decoration: InputDecoration(
-                  //     labelText:Strings.LOCATION,
-                  //     filled: true,
-                  //     fillColor: Colors.white,
-                  //     suffixIcon: IconButton(
-                  //       icon: const Icon(Icons.location_on, color: Colors.grey,),
-                  //       onPressed: _navigateToMap,
-                  //     ),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(10),
+
+                  _buildTextField(
+                    context,
+                    controller: emailCtrl,
+                    hint: Strings.EMAIL,
+                    keyboard: TextInputType.emailAddress,
+                    validator: (v) {
+                      if (v!.isEmpty) return "Email required";
+                      if (!RegExp(
+                          r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
+                          .hasMatch(v)) {
+                        return "Enter valid email";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  _buildTextField(
+                    context,
+                    controller: mobileCtrl,
+                    hint: Strings.MOBILE_NUMBER,
+                    keyboard: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
+                    ],
+                    validator: (v) {
+                      if (v!.isEmpty) return "Mobile number required";
+                      if (v.length != 10) return "Enter valid 10-digit mobile number";
+                      return null;
+                    },
+                  ),
+
+                  _buildPasswordField(
+                    context,
+                    controller: passwordCtrl,
+                    hint: Strings.PASSWORD,
+                    visible: passwordVisible,
+                    toggleVisibility: () {
+                      setState(() => passwordVisible = !passwordVisible);
+                    },
+                    validator: (v) {
+                      if (v!.isEmpty) return "Password required";
+                      if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
+                        return "Password must be 8+ chars with letters, numbers & special char";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  _buildPasswordField(
+                    context,
+                    controller: confirmPasswordCtrl,
+                    hint: Strings.CONFIRM_PASSWORD,
+                    visible: confirmPasswordVisible,
+                    toggleVisibility: () {
+                      setState(() =>
+                      confirmPasswordVisible = !confirmPasswordVisible);
+                    },
+                    validator: (v) {
+                      if (v!.isEmpty) return "Confirm password required";
+                      if (v != passwordCtrl.text) return "Passwords do not match";
+                      return null;
+                    },
+                  ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                  //       if(value != null){
+                  //         addressCtrl.text = value['address'];
+                  //         lat=value['lat'];
+                  //         long=value['lng'];
+                  //       }
+                  //
+                  //     });
+                  //   },
+                  //   child: IgnorePointer(
+                  //     child: _buildTextField(
+                  //       readOnly: true,
+                  //       context,
+                  //       controller: addressCtrl,
+                  //       hint: Strings.RESTURANT_ADDRESS,
+                  //       validator: (v) =>
+                  //       v!.isEmpty ? "Restaurant address required" : null,
                   //     ),
                   //   ),
-                  //   validator: (v) {
-                  //     if (v == null || v.trim().isEmpty) {
-                  //       return 'Please select your location';
-                  //     }
-                  //     return null;
-                  //   },
-                  //   onTap: _navigateToMap,
                   // ),
-                  SizedBox(height: height * 0.03),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -215,35 +279,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => VerifyEmailScreen(),
-                            ),
+                          if (!_validateImage()) return;
+
+                          final registrationData = RegistrationData(
+                            fullName: restaurantCtrl.text,
+                            email: emailCtrl.text,
+                            phoneNumber: mobileCtrl.text,
+                            password: passwordCtrl.text,
+                            profileImage: selectedImage,
+                            dateOfBirth: null,
+                            address: null,
+                            latitude: lat,
+                            longitude: long,
                           );
+                          _getNetworkDataVerify(authState);
+                          Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
+                          registrationData: registrationData,));
                         }
                       },
                       child: Text(
                         Strings.CONTINUE_VERIFICATION,
-                        style: themeData.textTheme.titleMedium!.copyWith(
-                          color: themeData.primaryColor,
-                        ),
+                        style: theme.textTheme.titleMedium!
+                            .copyWith(color: theme.primaryColor),
                       ),
                     ),
                   ),
-                  SizedBox(height: height * 0.02),
-
+                  SizedBox(height: Constant.CONTAINER_SIZE_16),
                   Center(
-                    child: Text.rich(
-                      TextSpan(
+                    child: RichText(
+                      text: TextSpan(
                         text: Strings.ALREADY_HAVE_ACC,
-                        style: themeData.textTheme.bodyMedium,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.hintColor,
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                        ),
                         children: [
                           TextSpan(
                             text: Strings.LOGIN,
-                            style: TextStyle(
-                              color: themeData.primaryColor,
-                              fontWeight: FontWeight.bold,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.primaryColor,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
@@ -251,45 +325,132 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const LoginScreen(),
-                                  ),
+                                      builder: (context) => LoginScreen()),
                                 );
                               },
-                          ),
+                          )
                         ],
                       ),
                     ),
                   ),
+
+
                 ],
               ),
             ),
+          ),
+        ),
+          if(authState.isLoading)
+          Center(
+            child: CircularProgressIndicator(),
+          )
+        ]
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+      BuildContext context, {
+        required TextEditingController controller,
+        required String hint,
+        String? Function(String?)? validator,
+        TextInputType keyboard = TextInputType.text,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboard,
+        validator: validator,
+        inputFormatters: inputFormatters,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.SIZE_10),
+            borderSide: BorderSide(color: theme.dividerColor),
           ),
         ),
       ),
     );
   }
 
-  InputDecoration _inputDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+
+  Widget _buildPasswordField(
+      BuildContext context, {
+        required TextEditingController controller,
+        required String hint,
+        required bool visible,
+        required VoidCallback toggleVisibility,
+        String? Function(String?)? validator,
+      }) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: TextFormField(
+        controller: controller,
+        obscureText: !visible,
+        validator: validator,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.SIZE_15,
+            vertical: Constant.SIZE_15,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          suffixIcon: IconButton(
+            icon:
+            Icon(visible ? Icons.visibility : Icons.visibility_off),
+            onPressed: toggleVisibility,
+          ),
+        ),
       ),
     );
   }
 
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _mobileController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _locationController.dispose();
-    super.dispose();
+  _getNetworkDataVerify(var registrationState) async {
+    try {
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              ref.read(verifyOtpProvider({"email": emailCtrl.text,}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }
 

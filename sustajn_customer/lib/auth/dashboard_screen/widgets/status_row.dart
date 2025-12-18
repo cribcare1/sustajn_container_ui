@@ -20,10 +20,11 @@ class StatusRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: Constant.CONTAINER_SIZE_72,
-            height: Constant.CONTAINER_SIZE_72,
+            width: Constant.CONTAINER_SIZE_110,
+            height: Constant.CONTAINER_SIZE_80,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(15),
               border: Border.all(
                 color: circleColor.withOpacity(0.18),
                 width: 1.5,
@@ -71,7 +72,7 @@ class StatusRow extends StatelessWidget {
             circleColor: Constant.statusCritical,
             textColor: Constant.statusCritical,
           ),
-           SizedBox(width: Constant.SIZE_08),
+          SizedBox(width: Constant.SIZE_08),
           _statusCircle(
             context: context,
             label: 'Urgent',
@@ -79,7 +80,7 @@ class StatusRow extends StatelessWidget {
             circleColor: Constant.statusUrgent,
             textColor: Constant.statusUrgent,
           ),
-           SizedBox(width: Constant.SIZE_08),
+          SizedBox(width: Constant.SIZE_08),
           _statusCircle(
             context: context,
             label: 'Upcoming',
