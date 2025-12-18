@@ -1,6 +1,8 @@
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/number_constants.dart';
+import '../container_list/container_provider.dart';
 import '../container_list/model/container_list_model.dart';
 
 Future<List<InventoryData>?> showContainerFilterBottomSheet(
@@ -17,20 +19,20 @@ Future<List<InventoryData>?> showContainerFilterBottomSheet(
   );
 }
 
-class _ContainerFilterSheet extends StatefulWidget {
+class _ContainerFilterSheet extends ConsumerStatefulWidget {
   final List<InventoryData> containerList;
 
   const _ContainerFilterSheet({required this.containerList});
 
   @override
-  State<_ContainerFilterSheet> createState() => _ContainerFilterSheetState();
+  ConsumerState<_ContainerFilterSheet> createState() => _ContainerFilterSheetState();
 }
 
-class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
-  List<InventoryData> filteredContainers = [];
+class _ContainerFilterSheetState extends ConsumerState<_ContainerFilterSheet> {
+
   Set<String> selectedIds = {};
   TextEditingController searchController = TextEditingController();
-
+List<InventoryData> filteredContainers = [];
   @override
   void initState() {
     super.initState();
@@ -40,7 +42,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final state = ref.watch(containerNotifierProvider);
     return SafeArea(
       bottom: true,top: false,
       child: DraggableScrollableSheet(
@@ -172,6 +174,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
               children: [
                 Text(
                   item.containerName,
+                  maxLines: 1,overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_16,
                     fontWeight: FontWeight.w600,
@@ -180,7 +183,7 @@ class _ContainerFilterSheetState extends State<_ContainerFilterSheet> {
                 ),
                 SizedBox(height: Constant.SIZE_06),
                 Text(
-                  item.containerTypeId.toString(),
+                  item.productId,maxLines: 1,overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                     color: Colors.grey[600],

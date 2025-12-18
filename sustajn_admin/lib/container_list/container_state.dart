@@ -12,9 +12,11 @@ class ContainerState extends ChangeNotifier{
   File? get image => _image;
   BuildContext get context => _context!;
   List<InventoryData> _containerList  = [];
+  List<InventoryData> filteredContainers = [];
   List<InventoryData> get containerList  => _containerList;
   void setContainerList(List<InventoryData>? list){
     _containerList = list!;
+    filteredContainers = _containerList;
     notifyListeners();
   }
   String? _errorContainer;
@@ -23,7 +25,14 @@ class ContainerState extends ChangeNotifier{
     _errorContainer = error;
     notifyListeners();
   }
-
+  void filterSearch(String value) {
+       filteredContainers = containerList.where((item) {
+        final searchLower = value.toLowerCase();
+        return item.containerName.toLowerCase().contains(searchLower) ||
+            item.productId.toString().toLowerCase().contains(searchLower);
+      }).toList();
+      notifyListeners();
+  }
   void setIsLoading(bool isLoading){
     _isLoading = isLoading;
     notifyListeners();

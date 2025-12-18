@@ -51,7 +51,11 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
               final result = await showContainerFilterBottomSheet(
                 context,
                 state.containerList,
-              );
+              ).then((value){
+                if(value!.isNotEmpty){
+                  state.filteredContainers = value;
+                }
+              });
 
               if (result != null) {
                 print("Selected: $result");
@@ -95,21 +99,21 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           //   )
           : SafeArea(
               child: state.containerList.isNotEmpty
-                  ? RefreshIndicator(
+                  ?  RefreshIndicator(
                 onRefresh: () => _refreshIndicator(),
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16,
                   ),
-                  itemCount: state.containerList.length,
+                  itemCount: state.filteredContainers.length,
                   separatorBuilder: (context, index) => Divider(
                     height: Constant.CONTAINER_SIZE_12,
                     thickness: 1,
                     color: Colors.grey[300],
                   ),
                   itemBuilder: (context, index) {
-                    final item = state.containerList[index];
+                    final item = state.filteredContainers[index];
                     return _buildContainerTile(item, themeData!);
                   },
                 ),

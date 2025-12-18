@@ -116,7 +116,9 @@ class _RestaurantListScreenState extends ConsumerState<RestaurantListScreen> {
                     Expanded(
                       child: RefreshIndicator(
                         onRefresh: () => _refreshIndicator(),
-                        child: ListView.separated(
+                        child: restaurantState.restaurantList.isEmpty?
+                        Center(child: Text("Restaurant List is not available",style: themeData!.textTheme.titleMedium,),):
+                        ListView.separated(
                           itemCount: restaurantState.restaurantList.length,
                           separatorBuilder: (context, index) =>
                               SizedBox(height: Constant.CONTAINER_SIZE_10),

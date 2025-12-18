@@ -6,6 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../auth/model/login_model.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
@@ -21,6 +22,7 @@ import '../model/container_list_model.dart';
 
 class AddContainerScreen extends ConsumerStatefulWidget {
   final InventoryData? inventoryData;
+
   const AddContainerScreen({super.key, this.inventoryData});
 
   @override
@@ -38,26 +40,35 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _desController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
-_fetchData(){
-  if(widget.inventoryData != null){
-    _productController.text = widget.inventoryData!.containerName;
-    _productIdController.text = widget.inventoryData!.productId;
-    _desController.text = widget.inventoryData!.containerDescription;
-    _volumeController.text = widget.inventoryData!.capacityMl.toString();
-    _quantityController.text = widget.inventoryData!.totalContainers.toString();
-    _priceController.text = widget.inventoryData!.costPerUnit.toString();
-    if(widget.inventoryData!.imageUrl != ""){
-      ref.read(containerNotifierProvider).setImage(File("${NetworkUrls.IMAGE_BASE_URL}container/${widget.inventoryData!.imageUrl}"));
+  _fetchData() {
+    if (widget.inventoryData != null) {
+      _productController.text = widget.inventoryData!.containerName;
+      _productIdController.text = widget.inventoryData!.productId;
+      _desController.text = widget.inventoryData!.containerDescription;
+      _volumeController.text = widget.inventoryData!.capacityMl.toString();
+      _quantityController.text = widget.inventoryData!.totalContainers
+          .toString();
+      _priceController.text = widget.inventoryData!.costPerUnit.toString();
+      if (widget.inventoryData!.imageUrl != "") {
+        ref
+            .read(containerNotifierProvider)
+            .setImage(
+              File(
+                "${NetworkUrls.IMAGE_BASE_URL}container/${widget.inventoryData!.imageUrl}",
+              ),
+            );
+      }
     }
   }
-}
+
   @override
   void dispose() {
     _productController.dispose();
-    _productIdController.dispose();
     _volumeController.dispose();
     _quantityController.dispose();
     _priceController.dispose();
+    _productIdController.dispose();
+    _desController.dispose();
     super.dispose();
   }
 
@@ -79,7 +90,7 @@ _fetchData(){
       );
 
       if (pickedFile != null) {
-        ref.read(containerNotifierProvider).setImage( File(pickedFile.path));
+        ref.read(containerNotifierProvider).setImage(File(pickedFile.path));
       }
 
       if (Navigator.canPop(context)) {
@@ -100,25 +111,59 @@ _fetchData(){
       }
     }
   }
+
   LoginModel? loginModel;
-  _getUserData()async{
-    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+
+  _getUserData() async {
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(
+      Strings.PROFILE_DATA,
+    );
 
     if (jsonString != null && jsonString.isNotEmpty) {
       loginModel = LoginModel.fromJson(jsonDecode(jsonString));
     }
   }
-@override
+
+  @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(containerNotifierProvider).setContext(context);
       ref.read(containerNotifierProvider).setImage(null);
       _fetchData();
       _getUserData();
+      _productController.addListener(updateProductId);
+      _volumeController.addListener(updateProductId);
     });
-
     super.initState();
   }
+
+  String generateProductId(String productName, String volume) {
+    if (productName.trim().isEmpty || volume.trim().isEmpty) {
+      return '';
+    }
+
+    final words = productName.trim().split(RegExp(r'\s+'));
+    String code = '';
+
+    if (words.length == 1) {
+      final word = words.first;
+      code = word.length >= 2 ? word.substring(0, 2) : word.substring(0, 1);
+    } else if (words.length == 2) {
+      code = words[0][0] + words[1][0];
+    } else {
+      code = words.first[0] + words.last[0];
+    }
+
+    return '${code.toUpperCase()}-$volume';
+  }
+
+  void updateProductId() {
+    final productName = _productController.text;
+    final volume = _volumeController.text;
+
+    _productIdController.text = generateProductId(productName, volume);
+  }
+
   String? _validateProduct(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
@@ -191,7 +236,9 @@ _fetchData(){
                       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_16,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,16 +265,8 @@ _fetchData(){
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                                 _buildTextField(
-                                  controller: _productIdController,
-                                  hint: Strings.ENTER_PRODUCT_ID,
-                                  validator: _validateProductId,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                                _buildTextField(
                                   controller: _volumeController,
-                                  hint:Strings.ENTER_VOLUME,
+                                  hint: Strings.ENTER_VOLUME,
                                   validator: _validateVolume,
                                   keyboardType: TextInputType.number,
                                 ),
@@ -245,7 +284,17 @@ _fetchData(){
                                   controller: _priceController,
                                   hint: Strings.CONTAINER_PRICE,
                                   validator: _validatePrice,
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  controller: _productIdController,
+                                  hint: Strings.ENTER_PRODUCT_ID,
+                                  validator: _validateProductId,
+                                  keyboardType: TextInputType.text,
+                                  isReadonly: true,
                                 ),
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
                                 _buildTextField(
@@ -253,7 +302,9 @@ _fetchData(){
                                   controller: _desController,
                                   hint: Strings.DESCRIPTION_TEXT,
                                   keyboardType: TextInputType.text,
-                                  validator: (String? p1) {return null;  },
+                                  validator: (String? p1) {
+                                    return null;
+                                  },
                                 ),
                               ],
                             ),
@@ -267,7 +318,9 @@ _fetchData(){
                       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_16,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,50 +340,72 @@ _fetchData(){
                             },
                             child: _buildDashedContainer(
                               height: screenWidth * 0.35,
-                              child: containerState.image == null ||  containerState.image == File("")
+                              child:
+                                  containerState.image == null ||
+                                      containerState.image == File("")
                                   ? _buildUploadUI()
                                   : _buildSelectedImageUI(),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  containerState.isLoading?Center(child: CircularProgressIndicator(),):
-                  SubmitButton(onRightTap: () {
-                    Map<String, dynamic> body = (widget.inventoryData != null)?{
-                      "containerName": _productController.text,
-                      "productId": _productIdController.text,
-                      "capacityMl": _volumeController.text,
-                      "quantity": _quantityController.text,
-                      "price":_priceController.text,
-                      "foodSafe": true,
-                      "dishwasherSafe": true,
-                      "microwaveSafe": false,
-                      "userId": loginModel!.userId,
-                      "containerTypeId":widget.inventoryData!.containerTypeId,
-                      "description":_desController.text
-                    }:{
-                      "containerName": _productController.text,
-                      "productId": _productIdController.text,
-                      "capacityMl": _volumeController.text,
-                      "quantity": _quantityController.text,
-                      "price":_priceController.text,
-                      "foodSafe": true,
-                      "dishwasherSafe": true,
-                      "microwaveSafe": false,
-                      "userId": loginModel!.userId,
-                      "description":_desController.text
-                    };
-                      if (_formKey.currentState!.validate()) {
-                                  _getNetworkData(containerState,body);
+                    containerState.isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : SubmitButton(
+                            onRightTap: () {
+                              Map<String, dynamic> body =
+                                  (widget.inventoryData != null)
+                                  ? {
+                                      "containerName": _productController.text,
+                                      "productId": _productIdController.text,
+                                      "capacityMl": _volumeController.text,
+                                      "quantity": _quantityController.text,
+                                      "price": _priceController.text,
+                                      "foodSafe": true,
+                                      "dishwasherSafe": true,
+                                      "microwaveSafe": false,
+                                      "userId": loginModel!.userId,
+                                      "containerTypeId":
+                                          widget.inventoryData!.containerTypeId,
+                                      "description": _desController.text,
+                                    }
+                                  : {
+                                      "containerName": _productController.text,
+                                      "productId": _productIdController.text,
+                                      "capacityMl": _volumeController.text,
+                                      "quantity": _quantityController.text,
+                                      "price": _priceController.text,
+                                      "foodSafe": true,
+                                      "dishwasherSafe": true,
+                                      "microwaveSafe": false,
+                                      "userId": loginModel!.userId,
+                                      "description": _desController.text,
+                                    };
+                              if (_formKey.currentState!.validate()) {
+                                if (containerState.image != null) {
+                                  _getNetworkData(containerState, body);
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Please complete required fields")),
+                                  showCustomSnackBar(
+                                    context: context,
+                                    message: "Please upload container image",
+                                    color: Colors.red,
                                   );
                                 }
-                    },rightText:(widget.inventoryData != null)?"Edit Container": "Add Container",),
+                              } else {
+                                showCustomSnackBar(
+                                  context: context,
+                                  message: "Please complete required fields",
+                                  color: Colors.red,
+                                );
+                              }
+                            },
+                            rightText: (widget.inventoryData != null)
+                                ? "Edit Container"
+                                : "Add Container",
+                          ),
                   ],
                 ),
               ),
@@ -348,8 +423,10 @@ _fetchData(){
     required TextInputType keyboardType,
     IconData? suffix,
     int? maxLine = 1,
+    bool isReadonly = false,
   }) {
     return TextFormField(
+      readOnly: isReadonly,
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
@@ -379,7 +456,10 @@ _fetchData(){
     );
   }
 
-  Widget _buildDashedContainer({required double height, required Widget child}) {
+  Widget _buildDashedContainer({
+    required double height,
+    required Widget child,
+  }) {
     return DottedBorder(
       color: const Color(0xFFBFDCCF),
       strokeWidth: Constant.SIZE_02,
@@ -395,11 +475,12 @@ _fetchData(){
     );
   }
 
-
   Widget _buildChooseDialog() {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_20),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_20,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -451,9 +532,13 @@ _fetchData(){
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child:  Icon(Icons.close, size: Constant.CONTAINER_SIZE_18, color: Colors.black),
+              child: Icon(
+                Icons.close,
+                size: Constant.CONTAINER_SIZE_18,
+                color: Colors.black,
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -464,7 +549,10 @@ _fetchData(){
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: Constant.SIZE_01, minHeight: Constant.SIZE_01),
+          constraints: BoxConstraints(
+            minWidth: Constant.SIZE_01,
+            minHeight: Constant.SIZE_01,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -473,7 +561,9 @@ _fetchData(){
                 height: Constant.CONTAINER_SIZE_45,
                 decoration: BoxDecoration(
                   color: const Color(0xFFEFF7F1),
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  borderRadius: BorderRadius.circular(
+                    Constant.CONTAINER_SIZE_12,
+                  ),
                 ),
                 child: Icon(
                   Icons.image,
@@ -513,22 +603,25 @@ _fetchData(){
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          child:(state.image!.path.contains("http:"))?
-              Image.network(state.image!.path,width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,)
+          child: (state.image!.path.contains("http:"))
+              ? Image.network(
+                  state.image!.path,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                )
               : Image.file(
-            state.image!,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
+                  state.image!,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
         ),
         Positioned(
           top: Constant.SIZE_08,
           right: Constant.SIZE_08,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               state.setImage(null);
             },
             child: Container(
@@ -538,14 +631,17 @@ _fetchData(){
                 color: Colors.white.withOpacity(0.9),
                 shape: BoxShape.circle,
               ),
-              child:  Icon(Icons.close, size: Constant.CONTAINER_SIZE_18, color: Colors.black),
+              child: Icon(
+                Icons.close,
+                size: Constant.CONTAINER_SIZE_18,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
       ],
     );
   }
-
 
   Widget _buildDialogOption({
     required String label,
@@ -564,39 +660,45 @@ _fetchData(){
               color: const Color(0xFFEEF7F1),
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             ),
-            child: Icon(icon, size: Constant.CONTAINER_SIZE_36, color: const Color(0xFF2D8F6E)),
+            child: Icon(
+              icon,
+              size: Constant.CONTAINER_SIZE_36,
+              color: const Color(0xFF2D8F6E),
+            ),
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_12),
-          Text(
-            label,
-            style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
-          ),
+          Text(label, style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14)),
         ],
       ),
     );
   }
+
   _getNetworkData(var containerState, Map<String, dynamic> body) async {
     try {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              containerState.setIsLoading(true);
-              ref.read(addContainerProvider(body));
-            } else {
-              containerState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
+      containerState.setIsLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
+        try {
+          if (isNetworkAvailable) {
+            containerState.setIsLoading(true);
+            ref.read(addContainerProvider(body));
+          } else {
             containerState.setIsLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
           }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          containerState.setIsLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       containerState.setIsLoading(false);

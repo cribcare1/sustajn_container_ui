@@ -100,7 +100,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         //     ],
         //   ),
         // )
-            :(customerState.customerList.isEmpty)?Center(child: Text("No data"),): ListView.separated(
+            :(customerState.customerList.isEmpty)?Center(child: Text("Customer List is not available",
+            style: themeData!.textTheme.titleMedium),): ListView.separated(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           itemCount: customerState.customerList.length,
           separatorBuilder: (_, __) =>
