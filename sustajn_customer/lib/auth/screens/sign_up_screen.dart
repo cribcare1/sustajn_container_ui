@@ -81,7 +81,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         selectedImage = imageFile;
       });
 
-      // ref.read(authNotifierProvider).setImage(imageFile);
     }
   }
 

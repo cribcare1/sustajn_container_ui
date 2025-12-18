@@ -108,7 +108,7 @@ class Strings {
   static const WELCOME = 'Welcome';
   static const LOGIN_YOUR_ACC = 'Login to your account';
   static const FORGOT_PASSWORD = 'Forgot Password?';
-  static const DONT_HAVE_ACC = "Don't have an account?";
+  static const DONT_HAVE_ACC = "Don't have an account ?";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE =
       'Please enter your email address to receive confirmation code';

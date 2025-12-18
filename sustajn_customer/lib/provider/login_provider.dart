@@ -29,7 +29,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var responseData = LoginModel();
   try {
     responseData = await apiService.loginUser(url, params, "");
-    if (responseData.userName != null) {
+    if (responseData.data!.userName != null) {
       registrationState.setIsLoading(false);
       registrationState.setLoginData(responseData);
       if(registrationState.context.mounted) {
@@ -39,7 +39,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(
-          Strings.JWT_TOKEN, responseData.jwtToken!);
+          Strings.JWT_TOKEN, responseData.data!.jwtToken!);
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){

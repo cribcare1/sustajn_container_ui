@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     var themeData = CustomTheme.getTheme(true);
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
+      backgroundColor: themeData!.scaffoldBackgroundColor,
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Center(
@@ -44,14 +47,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 Text(
                   Strings.WELCOME,
-                  style: themeData?.textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
+                  style: themeData.textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
                   ),
                 ),
                 SizedBox(height: height * 0.005),
                 Text(
-                  Strings.LOGIN_YOUR_ACC,
-                  style: themeData?.textTheme.bodyMedium,
+                    Strings.LOGIN_YOUR_ACC,
+                    style: themeData.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white70
+                    )
+
                 ),
                 SizedBox(height: height * 0.03),
                 TextFormField(
@@ -142,8 +150,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: Text(
                       Strings.FORGOT_PASSWORD,
-                      style: themeData!.textTheme.titleSmall!.copyWith(
-                        color: Colors.black87,
+                      style: themeData.textTheme.titleSmall!.copyWith(
+                        color: Colors.white70,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -164,7 +172,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Text.rich(
                     TextSpan(
                       text:Strings.DONT_HAVE_ACC ,
-                      style: themeData.textTheme.bodyMedium,
+                      style:  themeData.textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white70
+                      ),
                       children: [
                         TextSpan(
                           text: Strings.SIGN_UP,
@@ -194,6 +205,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
     );
   }
+
+
   _getNetworkData(var registrationState) async {
     try {
       ref.read(authNotifierProvider).loginData(
