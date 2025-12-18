@@ -326,6 +326,40 @@ class Utils {
     );
   }
 
+  static getParams(var partUrl, var requestType, var listener) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.REQUEST_TYPE: requestType,
+      Strings.LISTENER: listener,
+    };
+  }
+
+  static postParams(var partUrl, var data) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+    };
+  }
+
+  static multipartParams(var partUrl, var data, var requestKey, var image) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+      if (image != null) Strings.IMAGE: image,
+    };
+  }
+
+  static multipartParamsDocument(var partUrl, var data, var requestKey, var image, var document) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+      if (image != null) Strings.IMAGE: image,
+      if (document != null) Strings.DOCUMENT: document,
+    };
+  }
+
 }
 void showCustomSnackBar({
   required BuildContext context,

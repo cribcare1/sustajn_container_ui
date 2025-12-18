@@ -8,10 +8,10 @@ class UserRegistration {
       {this.message, this.userId, this.profileImageUrl, this.status});
 
   UserRegistration.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    userId = json['userId'];
-    profileImageUrl = json['profileImageUrl'];
-    status = json['status'];
+    message = json['message']??"";
+    userId = json['userId']??0;
+    profileImageUrl = json['profileImageUrl']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {

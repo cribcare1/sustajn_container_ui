@@ -70,50 +70,33 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 });
 
 ///Register
-
-final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params)async{
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
-
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  final File? image = params["image"];
-  print(params);
-  // print(registrationState.image);
-  Future.microtask((){
-    registrationState.setIsLoading(true);
-  });
-  try{
-
-    var response = await apiService.registerUser(
-      url,
-      params["data"],
-      "data",
-      image!,
-    );
-    if(response != null){
-      if(registrationState.context.mounted) {
-        showCustomSnackBar(context: registrationState.context,
-            message: 'registered successfully', color:Colors.green);
-        Navigator.of(registrationState.context).pop(true);
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
+      (ref, params) async {
+    final registrationState = ref.watch(authNotifierProvider);
+    try {
+      var serviceProvider = ref.read(loginApiProvider);
+      var partUrl = params[Strings.PART_URL];
+      var data = params[Strings.DATA];
+      var requestKey = params[Strings.REQUEST_KEY];
+      var image = params[Strings.IMAGE];
+      Utils.printLog("partUrl===$partUrl");
+      var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
+      if (responseData.status != null && responseData.status!.isNotEmpty) {
+        registrationState.setIsLoading(false);
+        Utils.navigateToPushScreen(registrationState.context,
+        LoginScreen());
+      }else{
+        Utils.showToast(responseData.message!);
       }
-    }else{
-      if(registrationState.context.mounted){
-        showCustomSnackBar(context: registrationState.context,
-            message: "Failed to add container", color:Colors.red);
-      }
-    }
-
-  }catch(e){
-    if(registrationState.context.mounted){
-      showCustomSnackBar(context: registrationState.context,
-          message: e.toString(), color:Colors.red);
-    }
-  }finally{
-    Future.microtask((){
+    } catch (e) {
+      Utils.printLog("Register provider error called: $e");
       registrationState.setIsLoading(false);
-    });
-  }
-});
+      Utils.showNetworkErrorToast(registrationState.context, e.toString());
+    }
+  },
+);
+
+
 
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
