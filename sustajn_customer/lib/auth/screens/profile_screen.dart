@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
+import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
@@ -19,11 +20,12 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Bank Details", "icon": Icons.account_balance_outlined},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Reports", "icon": Icons.bar_chart_outlined},
+    {"name": "History", "icon": Icons.history},
+    {"name": "Payment Type", "icon": Icons.currency_rupee},
+    {"name": "QR Code", "icon": Icons.qr_code},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us","icon": Icons.headset_mic_outlined }
   ];
 
   Data? loginResponse;
@@ -72,16 +74,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       builder: (_) => const FeedbackBottomSheet(),
     );
   }
-  //
-  // void _showSubscriptionDialog(BuildContext context){
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (context) => const UpgradeBottomSheet(),
-  //   );
-  // }
-  //
+
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -90,16 +83,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       builder: (_) => const EditBankDetailsDialog(),
     );
   }
-  //
-  // void _showBusinessEditScreen(BuildContext context) {
-  //   Navigator.push(context,
-  //       MaterialPageRoute(builder: (context)=>BusinessInformationScreen()));
-  // }
-  //
-  // void _showReportScreen(BuildContext context){
-  //   Navigator.push(context,
-  //       MaterialPageRoute(builder: (context)=> ReportScreen()));
-  // }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading || loginResponse == null) {
@@ -311,6 +295,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                           ),
                           onPressed: () {
+                            Utils.logOutDialog(
+                                context,
+                                Icons.logout,
+                                Strings.CONFIRM_LOGOUT,
+                                Strings.SURE_LOG_OUT,
+                                Strings.YES,
+                                Strings.NO
+                            );
                           },
                         ),
                       ),

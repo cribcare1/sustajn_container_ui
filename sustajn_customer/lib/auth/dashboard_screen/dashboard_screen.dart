@@ -6,6 +6,7 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
 import 'package:sustajn_customer/models/login_model.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/shared_preference_utils.dart';
+import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../bottom_navigationbar/bottom_navigation_bar.dart';
 
@@ -48,13 +49,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = CustomTheme.getTheme(true);
     if (isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
     return Scaffold(
-      backgroundColor: Constant.background,
+      backgroundColor: themeData!.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -67,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Text('Container Return Status',
                       style: Theme.of(context).textTheme.titleLarge?.
-                      copyWith(color: Constant.profileText,
+                      copyWith(color: Colors.black,
                           fontSize: Constant.LABEL_TEXT_SIZE_20, fontWeight: FontWeight.w700)),
                   SizedBox.shrink(),
                 ],
@@ -83,10 +85,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Container Returns List', style: Theme.of(context).textTheme.titleMedium?.
-                  copyWith(color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_18,
+                  copyWith(color: Colors.black, fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.w600)),
                   Text('View All', style: Theme.of(context).textTheme.bodySmall?.copyWith
-                    (color: Constant.statusUpcoming, fontSize: Constant.LABEL_TEXT_SIZE_14)),
+                    (color: themeData.primaryColor, fontSize: Constant.LABEL_TEXT_SIZE_14,
+                  fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

@@ -49,7 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Strings.WELCOME,
                   style: themeData.textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white
+                      color: Colors.black
                   ),
                 ),
                 SizedBox(height: height * 0.005),
@@ -57,7 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Strings.LOGIN_YOUR_ACC,
                     style: themeData.textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white70
+                        color: Colors.black
                     )
 
                 ),
@@ -151,7 +151,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Text(
                       Strings.FORGOT_PASSWORD,
                       style: themeData.textTheme.titleSmall!.copyWith(
-                        color: Colors.white70,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -174,7 +174,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       text:Strings.DONT_HAVE_ACC ,
                       style:  themeData.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white70
+                          color: Colors.black
                       ),
                       children: [
                         TextSpan(

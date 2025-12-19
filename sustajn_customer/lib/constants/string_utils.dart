@@ -165,4 +165,9 @@ class Strings {
   static const String GO_BACK = 'Are you sure you want to go back ?';
   static const String VERIFIED_EMAIL = 'You have already verified your email. Going back may interrupt account the account setup process';
 static const String STAY_ON_THIS_PAGE = 'Stay on this page';
+static const String CONFIRM_LOGOUT= 'Confirm Logout';
+static const String SURE_LOG_OUT = 'Are you sure you want to logout';
+static const String YES = 'Yes';
+static const String NO = 'No';
+
       }
