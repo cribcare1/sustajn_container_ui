@@ -16,8 +16,9 @@ import '../auth_provider.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
+  final String email;
 
-  const VerifyEmailScreen({super.key, required this.previousScreen});
+  const VerifyEmailScreen({super.key, required this.previousScreen, required this.email});
 
   @override
   ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -34,16 +35,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   @override
   void initState() {
     super.initState();
-    _getUserData();
     _startTimer();
-  }
-LoginModel? loginModel;
-  _getUserData()async{
-    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
-
-    if (jsonString != null && jsonString.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
-    }
   }
 
   void _startTimer() {
@@ -89,9 +81,7 @@ LoginModel? loginModel;
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
-
                     Text(
                       Strings.SEND_CODE,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -120,12 +110,7 @@ LoginModel? loginModel;
                           ),
                         ),
                         onPressed: ()async {
-                        await  _getNetworkData(authState);
-                          if (widget.previousScreen == "forgotPassword") {
-                            _getNetworkData(authState);
-                          } else {
-                            _getNetworkDataVerify(authState);
-                          }
+                          _getNetworkDataVerify(authState);
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(
@@ -177,13 +162,18 @@ LoginModel? loginModel;
                                 fontSize: Constant.LABEL_TEXT_SIZE_16,
                               ),
                             ),
-                            Text(
-                              Strings.RESEND,
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.primaryColor,
-                                decoration: TextDecoration.underline,
-                                fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                fontWeight: FontWeight.bold,
+                            InkWell(
+                              onTap: (){
+                                _resetOtp(authState);
+                              },
+                              child: Text(
+                                Strings.RESEND,
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.primaryColor,
+                                  decoration: TextDecoration.underline,
+                                  fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
@@ -219,8 +209,7 @@ LoginModel? loginModel;
     );
 
     return Pinput(
-      length: 4,
-      // Change to 6 if needed
+      length: 6,
       controller: controller,
       keyboardType: TextInputType.number,
 
@@ -252,9 +241,9 @@ LoginModel? loginModel;
     );
   }
 
-  _getNetworkData(var registrationState) async {
+  _getNetworkDataVerify(var registrationState) async {
     try {
-      if (registrationState.isValid) {
+      registrationState.setIsLoading(true);
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
@@ -262,7 +251,7 @@ LoginModel? loginModel;
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":loginModel!.userName,"token":_otpController.text}));
+              ref.read(verifyOtpProvider({"email":widget.email,"token":_otpController.text,"previous":widget.previousScreen}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
@@ -275,15 +264,15 @@ LoginModel? loginModel;
           if(!mounted) return;
           FocusScope.of(context).unfocus();
         });
-      }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);
     }
   }
-  _getNetworkDataVerify(var registrationState) async {
+
+  _resetOtp(var registrationState) async {
     try {
-      if (registrationState.isValid) {
+        registrationState.setIsLoading(true);
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
@@ -291,7 +280,7 @@ LoginModel? loginModel;
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(verifyOtpProvider({"email":loginModel!.userName,"token":_otpController.text}));
+              ref.read(validateEmail({"email":widget.email,"previous":widget.previousScreen}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
@@ -304,7 +293,6 @@ LoginModel? loginModel;
           if(!mounted) return;
           FocusScope.of(context).unfocus();
         });
-      }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);

@@ -4,6 +4,7 @@ import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
+import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -220,7 +221,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   //   onTap: _navigateToMap,
                   // ),
                   SizedBox(height: height * 0.02),
-                  SizedBox(
+                authState.isLoading?Center(child: CircularProgressIndicator(),):  SizedBox(
                     width: double.infinity,
                     child: SubmitButton(onRightTap: (){
                       if(_formKey.currentState!.validate()){
@@ -267,20 +268,24 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ref.read(authNotifierProvider).loginData(
           context, _emailController.text, _passwordController.text);
       if (registrationState.isValid) {
+        registrationState.setIsLoading(true);
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
             .then((isNetworkAvailable) async {
+Map<String, dynamic> mapData = {
+  "fullName":_nameController.text,
+  "userType": "ADMIN",
+  "email":_emailController.text,
+  "phoneNumber":_mobileController.text,
+  "userName":_emailController.text,
+  "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
+  "password":_passwordController.text};
+SharedPreferenceUtils.saveDataInSF("signUp", mapData);
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(registerDetailProvider({
-                "fullName":_nameController.text,
-                "userType": "ADMIN",
-                "phoneNumber":_mobileController.text,
-                "userName":_emailController.text,
-                "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
-                "password":_passwordController.text}));
+              validateEmail({"email":_emailController.text,"previous":"signUp"});
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

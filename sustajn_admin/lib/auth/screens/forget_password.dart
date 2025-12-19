@@ -105,7 +105,7 @@ backgroundColor: theme!.scaffoldBackgroundColor,
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":_emailController.text}));
+              ref.read(validateEmail({"email":_emailController.text,"previous":"forgotPassword"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
