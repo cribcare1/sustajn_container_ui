@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
@@ -27,7 +29,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var responseData = LoginModel();
   try {
     responseData = await apiService.loginUser(url, params, "");
-    if (responseData.userName != null) {
+    if (responseData.data!.userName != null) {
       registrationState.setIsLoading(false);
       registrationState.setLoginData(responseData);
       if(registrationState.context.mounted) {
@@ -37,16 +39,16 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(
-          Strings.JWT_TOKEN, responseData.jwtToken!);
+          Strings.JWT_TOKEN, responseData.data!.jwtToken!);
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){
-        // Navigator.pushReplacement(
-        //   registrationState.context,
-        //   MaterialPageRoute(
-        //     builder: (_) => const HomeScreen(),
-        //   ),
-        // );
+        Navigator.pushReplacement(
+          registrationState.context,
+          MaterialPageRoute(
+            builder: (_) => const DashboardScreen(),
+          ),
+        );
       }
     } else {
       if(registrationState.context.mounted){
@@ -68,38 +70,33 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 });
 
 ///Register
-
-final registerDetailProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
-
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  try {
-    var   responseData = await apiService.registrationUser(url, params, "");
-    if (responseData != null) {
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
+      (ref, params) async {
+    final registrationState = ref.watch(authNotifierProvider);
+    try {
+      var serviceProvider = ref.read(loginApiProvider);
+      var partUrl = params[Strings.PART_URL];
+      var data = params[Strings.DATA];
+      var requestKey = params[Strings.REQUEST_KEY];
+      var image = params[Strings.IMAGE];
+      Utils.printLog("partUrl===$partUrl");
+      var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
+      if (responseData.status != null && responseData.status!.isNotEmpty) {
+        registrationState.setIsLoading(false);
+        Utils.navigateToPushScreen(registrationState.context,
+        LoginScreen());
+      }else{
+        Utils.showToast(responseData.message!);
+      }
+    } catch (e) {
+      Utils.printLog("Register provider error called: $e");
       registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen()
-        ),
-      );
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: "Response is not success", color:Colors.red);
-      registrationState.setIsLoading(false);
+      Utils.showNetworkErrorToast(registrationState.context, e.toString());
     }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+  },
+);
+
+
 
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {

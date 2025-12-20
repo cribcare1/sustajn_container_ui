@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/login_model.dart';
 class SharedPreferenceUtils{
   static saveDataInSF(String key, dynamic value) async {
     final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
@@ -50,4 +54,7 @@ class SharedPreferenceUtils{
     final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     sharedPrefs.clear();
   }
+
+
+
 }

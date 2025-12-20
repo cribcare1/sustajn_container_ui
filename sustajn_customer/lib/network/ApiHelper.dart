@@ -194,14 +194,20 @@ class ApiHelper {
       }
 
       request.fields[keyName] = jsonEncode(jsonMap);
-      if(image != null) {
+
+
+      if (image != null) {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
-        var multiport = http.MultipartFile('file', stream, length,
-            filename: image.path
-                .split('/')
-                .last);
-        request.files.add(multiport);
+
+        var multipart = http.MultipartFile(
+          'profileImage',
+          stream,
+          length,
+          filename: image.path.split('/').last,
+          contentType: http.MediaType('image', 'jpeg'),);
+
+        request.files.add(multipart);
       }
 
       final response = await request.send().timeout(const Duration(seconds: 30));
@@ -385,7 +391,7 @@ class ApiHelper {
         var stream = http.ByteStream(file.openRead());
         var length = await file.length();
         var multipartFile = http.MultipartFile(
-          'file', stream, length,
+          'profileImage', stream, length,
           filename: file.path.split('/').last,
         );
 

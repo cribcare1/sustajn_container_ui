@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/register_data.dart';
@@ -181,7 +182,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           LengthLimitingTextInputFormatter(10),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.TAX_NUMBER,
+                          hintText: Strings.TAX_NUMBER,
+                          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -198,7 +203,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       ),
                       SizedBox(height: height * 0.02),
 
-                      authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
+                     SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
@@ -245,40 +250,31 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
   }
 
 
-  _getNetworkData(var containerState) async {
+  _getNetworkData(var registrationState) async {
     try {
-      await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable()
-          .then((isNetworkAvailable) async {
-        try {
-          if (isNetworkAvailable) {
-            containerState.setIsLoading(true);
-            final Map<String, dynamic> body =
-            Map<String, dynamic>.from(widget.registrationData.toApiBody());
-            body.remove('image');
-            ref.read(registerDetailProvider({
-              "data": body,
-            }));
-          } else {
-            containerState.setIsLoading(false);
-            if(!mounted) return;
-            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          containerState.setIsLoading(false);
-        }
-        if(!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
-      // }
+      if(registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          setState(() {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              final Map<String, dynamic> body =
+                        Map<String, dynamic>.from(widget.registrationData.toApiBody());
+              final params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER, body,
+                  Strings.DATA, widget.registrationData.profileImage);
+              ref.read(registerProvider(params));
+            } else {
+              registrationState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+        });
+      }
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      containerState.setIsLoading(false);
+      Utils.printLog('Error in registration button onPressed: $e');
     }
   }
-
 
 
 }

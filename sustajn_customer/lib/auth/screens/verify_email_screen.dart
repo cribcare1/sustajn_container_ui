@@ -142,7 +142,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ),
                           onPressed: ()async {
-                            await  _getNetworkData(authState);
+                            // await  _getNetworkData(authState);
                             if (widget.previousScreen == "forgotPassword") {
                               _getNetworkData(authState);
                             }
@@ -285,7 +285,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":loginModel!.userName,"token":_otpController.text}));
+              ref.read(forgotPasswordProvider({"email":loginModel!.data!.userName,"token":_otpController.text}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

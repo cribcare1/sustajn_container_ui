@@ -7,6 +7,7 @@ class LoginModel {
     String? fullName;
     String? jwtToken;
     String? tokenType;
+    String? mobileNo;
 
   LoginModel({
      this.userId,
@@ -17,6 +18,7 @@ class LoginModel {
      this.fullName,
      this.jwtToken,
      this.tokenType,
+     this.mobileNo,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class LoginModel {
       fullName: json['fullName'] ?? "",
       jwtToken: json['jwtToken'] ?? "",
       tokenType: json['tokenType'] ?? "",
+      mobileNo: json['mobileNo'] ?? "",
     );
   }
 
@@ -42,6 +45,7 @@ class LoginModel {
       'fullName': fullName,
       'jwtToken': jwtToken,
       'tokenType': tokenType,
+      'mobileNo': mobileNo,
     };
   }
 }

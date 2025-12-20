@@ -195,6 +195,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
   _getNetworkData(var registrationState) async {
     try {
+      registrationState.setIsLoading(true);
       ref.read(authNotifierProvider).loginData(
           context, _emailController.text, _passwordController.text);
       if (registrationState.isValid) {

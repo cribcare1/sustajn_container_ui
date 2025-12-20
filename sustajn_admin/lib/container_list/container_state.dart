@@ -5,16 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'model/container_list_model.dart';
 
 class ContainerState extends ChangeNotifier{
-  bool _isLoading = true;
+  bool _isLoading = false;
   BuildContext? _context;
   File? _image;
   bool get isLoading => _isLoading;
   File? get image => _image;
   BuildContext get context => _context!;
   List<InventoryData> _containerList  = [];
+  List<InventoryData> filteredContainers = [];
   List<InventoryData> get containerList  => _containerList;
   void setContainerList(List<InventoryData>? list){
     _containerList = list!;
+    filteredContainers = _containerList;
     notifyListeners();
   }
   String? _errorContainer;
@@ -23,7 +25,14 @@ class ContainerState extends ChangeNotifier{
     _errorContainer = error;
     notifyListeners();
   }
-
+  void filterSearch(String value) {
+       filteredContainers = containerList.where((item) {
+        final searchLower = value.toLowerCase();
+        return item.containerName.toLowerCase().contains(searchLower) ||
+            item.productId.toString().toLowerCase().contains(searchLower);
+      }).toList();
+      notifyListeners();
+  }
   void setIsLoading(bool isLoading){
     _isLoading = isLoading;
     notifyListeners();

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +9,7 @@ import 'package:sustajn_customer/utils/theme_utils.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../models/login_model.dart';
 
 class Utils {
 
@@ -324,6 +327,56 @@ class Utils {
       context,
       MaterialPageRoute(builder: (context) => screen),
     );
+  }
+
+  static getParams(var partUrl, var requestType, var listener) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.REQUEST_TYPE: requestType,
+      Strings.LISTENER: listener,
+    };
+  }
+
+  static postParams(var partUrl, var data) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+    };
+  }
+
+  static multipartParams(var partUrl, var data, var requestKey, var image) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+      if (image != null) Strings.IMAGE: image,
+    };
+  }
+
+  static multipartParamsDocument(var partUrl, var data, var requestKey, var image, var document) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+      if (image != null) Strings.IMAGE: image,
+      if (document != null) Strings.DOCUMENT: document,
+    };
+  }
+
+  static LoginModel? loginData;
+  static int? societyId = 0;
+  static int? userId = 0;
+
+  static Future<Data?> getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString(Strings.PROFILE_DATA);
+    printLog("Profile Data ==== $data");
+    if (data != null) {
+      var response = json.decode(data);
+      loginData = LoginModel.fromJson(response);
+      userId = loginData!.data!.userId;
+    }
+    return null;
   }
 
 }

@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: 'Containers',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.set_meal_outlined),
                 label: 'Restaurants',
               ),
               BottomNavigationBarItem(icon: Icon(Icons.group),

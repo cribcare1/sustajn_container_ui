@@ -1,8 +1,11 @@
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/network_urls.dart';
 import '../models/login_model.dart';
+import '../models/user_register_model.dart';
 import '../network/ApiCallPresentator.dart';
 import '../utils/utils.dart';
 
@@ -24,17 +27,21 @@ class AuthServices {
       throw Exception(e);
     }
   }
-  Future<dynamic> registrationUser(String url, Map<String, dynamic> requestData, String requestType) async {
+  Future<UserRegistration> registerUser(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
     try {
+      Utils.printLog("requestData::::::: $requestData");
+      String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.putMultipartApiRequest(url, requestData, requestKey, image);
       if (response != null) {
-        return response;
+        var responseData = UserRegistration.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog("login service::::$e");
+      Utils.printLog(" Register service::::$e");
       throw Exception(e);
     }
   }

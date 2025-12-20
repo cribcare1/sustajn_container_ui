@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/auth/screens/profile_screen.dart';
 import '../../../constants/number_constants.dart';
+import '../../screens/map_screen.dart';
 
 
 class HeaderWidget extends StatelessWidget {
@@ -17,12 +19,18 @@ class HeaderWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: Constant.CONTAINER_SIZE_26,
-            backgroundColor: Constant.card,
-            child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: Constant.profileText),
-          ),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
+          InkWell(
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context)=> MyProfileScreen()));
+            },
+            child: CircleAvatar(
+              radius: Constant.CONTAINER_SIZE_26,
+              backgroundColor: Constant.card,
+              child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: Constant.profileText),
+            ),
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

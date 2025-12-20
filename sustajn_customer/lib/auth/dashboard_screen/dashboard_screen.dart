@@ -3,10 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/header.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/return_card.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
+import 'package:sustajn_customer/models/login_model.dart';
 import '../../constants/number_constants.dart';
+import '../../utils/shared_preference_utils.dart';
+import '../../utils/utils.dart';
+import '../bottom_navigationbar/bottom_navigation_bar.dart';
 
-class ContainerReturnScreen extends StatelessWidget {
-  const ContainerReturnScreen({Key? key}) : super(key: key);
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+class _DashboardScreenState extends State<DashboardScreen> {
 
   List<Map<String, dynamic>> _sampleData() {
     return [
@@ -16,14 +25,40 @@ class ContainerReturnScreen extends StatelessWidget {
     ];
   }
 
+  String userName = "";
+  Data? loginResponse;
+  bool isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       backgroundColor: Constant.background,
       body: SafeArea(
         child: Column(
           children: [
-            HeaderWidget(name: 'John Dee'),
+            HeaderWidget(name: loginResponse!.fullName??""),
             SizedBox(height: Constant.SIZE_08),
             Padding(
               padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
@@ -78,6 +113,7 @@ class ContainerReturnScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNav(currentIndex: 0),
     );
   }
 }

@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:container_tracking/auth/model/login_model.dart';
 import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:flutter/material.dart';
 
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../feedback_screen/feedback_list_screen.dart';
 import '../../utils/theme_utils.dart';
 
@@ -15,16 +19,29 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+
+  @override
+  void initState() {
+    _getUserData();
+    super.initState();
+  }
+
+  LoginModel loginModel = LoginModel();
+  _getUserData()async{
+    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+
+    if (jsonString != null && jsonString.isNotEmpty) {
+      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
     final h = size.height;
-
     return Scaffold(
       backgroundColor: const Color(0xfff4f5f4),
-
       appBar: AppBar(
         backgroundColor: const Color(0xff0E3A2F),
         surfaceTintColor: const Color(0xff0E3A2F),
@@ -57,62 +74,63 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             Column(
               children: [
-                SizedBox(height: h * 0.035),
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      height: w * 0.28,
-                      width: w * 0.28,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: w * 0.012,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-
-                            return Center(
-                              child: SizedBox(
-                                height: w * 0.08,
-                                width: w * 0.08,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.error, color: Colors.red),
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      height: w * 0.09,
-                      width: w * 0.09,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: Icon(Icons.edit, size: w * 0.045),
-                    ),
-                  ],
-                ),
+                SizedBox(height: h * 0.1),
+                //todo:- profile image
+                // Stack(
+                //   alignment: Alignment.bottomRight,
+                //   children: [
+                //     Container(
+                //       height: w * 0.28,
+                //       width: w * 0.28,
+                //       decoration: BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         border: Border.all(
+                //           color: Colors.white,
+                //           width: w * 0.012,
+                //         ),
+                //       ),
+                //       child: ClipOval(
+                //         child: Image.network(
+                //           "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                //           fit: BoxFit.cover,
+                //           loadingBuilder: (context, child, loadingProgress) {
+                //             if (loadingProgress == null) return child;
+                //
+                //             return Center(
+                //               child: SizedBox(
+                //                 height: w * 0.08,
+                //                 width: w * 0.08,
+                //                 child: const CircularProgressIndicator(
+                //                   strokeWidth: 2,
+                //                   color: Colors.green,
+                //                 ),
+                //               ),
+                //             );
+                //           },
+                //           errorBuilder: (context, error, stackTrace) =>
+                //               const Icon(Icons.error, color: Colors.red),
+                //         ),
+                //       ),
+                //     ),
+                //
+                //     Container(
+                //       height: w * 0.09,
+                //       width: w * 0.09,
+                //       decoration: const BoxDecoration(
+                //         shape: BoxShape.circle,
+                //         color: Colors.white,
+                //       ),
+                //       child: Icon(Icons.edit, size: w * 0.045),
+                //     ),
+                //   ],
+                // ),
 
                 SizedBox(height: h * 0.015),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Marina Sky Dine",
+                     loginModel.fullName??"Marina Sky Dine",
                       style: TextStyle(
                         fontSize: w * 0.055,
                         fontWeight: FontWeight.w700,
@@ -145,24 +163,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.email_outlined,
                         title: "Email",
-                        value: "hello597@gmail.com",
+                        value: loginModel.userName??"hello597@gmail.com",
                         w: w,
                         isRequired: false,
                       ),
                       const Divider(color: Colors.grey),
-                      _detailItem(
-                        icon: Icons.location_on_outlined,
-                        title: "Address",
-                        value:
-                            "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
-                        w: w,
-                        isRequired: false,
-                      ),
-                      const Divider(color: Colors.grey),
+                      // _detailItem(
+                      //   icon: Icons.location_on_outlined,
+                      //   title: "Address",
+                      //   value:
+                      //       "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                      //   w: w,
+                      //   isRequired: false,
+                      // ),
+                      // const Divider(color: Colors.grey),
                       _detailItem(
                         icon: Icons.phone_outlined,
                         title: "Mobile Number",
-                        value: "980765432",
+                        value: loginModel.mobileNo??"980765432",
                         w: w,
                         isRequired: true,
                       ),

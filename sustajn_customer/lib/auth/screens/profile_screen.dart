@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
+import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../edit_dialogs/edit_bank_details.dart';
@@ -24,6 +25,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
   ];
+
+  Data? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
 
 
   void _handleItemTap(int index, BuildContext context) {
@@ -84,6 +102,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   // }
   @override
   Widget build(BuildContext context) {
+    if (isLoading || loginResponse == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
@@ -163,7 +186,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "John doe",
+                          loginResponse!.fullName ?? "",
                           style: TextStyle(
                             fontSize: w * 0.055,
                             fontWeight: FontWeight.w700,
@@ -208,7 +231,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           _detailItem(
                               icon: Icons.email_outlined,
                               title: "Email",
-                              value: "hello597@gmail.com",
+                              value: loginResponse!.userName?? "",
                               w: w,
                               showEdit: false,
                               theme: theme,

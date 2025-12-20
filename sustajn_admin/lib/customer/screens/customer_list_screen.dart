@@ -69,34 +69,39 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         ).getAppBar(context),
         body:customerState.isLoading
             ? Center(child: CircularProgressIndicator())
-            : customerState.error != ""
-            ? Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                customerState.error,
-                style: themeData!.textTheme.titleMedium,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _refreshIndicator();
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(Constant.SIZE_08),
-                  child: Text(
-                    "Retry",
-                    style: themeData.textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-            : ListView.separated(
+        //     :
+        // customerState.error != ""
+        //     ? Center(
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Text(
+        //         customerState.error,
+        //         style: themeData!.textTheme.titleMedium,
+        //       ),
+        //       ElevatedButton(
+        //         style: ElevatedButton.styleFrom(
+        //           backgroundColor: Colors.green
+        //         ),
+        //         onPressed: () {
+        //           _refreshIndicator();
+        //         },
+        //         child: Padding(
+        //           padding: EdgeInsets.all(Constant.SIZE_08),
+        //           child: Text(
+        //             "Retry",
+        //             style: themeData.textTheme.titleMedium!.copyWith(
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // )
+            :(customerState.customerList.isEmpty)?Center(child: Text("Customer List is not available",
+            style: themeData!.textTheme.titleMedium),): ListView.separated(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           itemCount: customerState.customerList.length,
           separatorBuilder: (_, __) =>
@@ -133,7 +138,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                   padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                   child: Row(
                     children: [
-                      // user["image"] == null?
+                      user.profileImage == ""?
                            const CircleAvatar(
                               radius: 22,
                               backgroundColor: Color(0xffE6F7EC),
@@ -141,12 +146,20 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                                 Icons.person_outline,
                                 color: Colors.green,
                               ),
+                            )
+                          : CircleAvatar(
+                              radius: 22,
+                        backgroundColor: Color(0xffE6F7EC),
+                              child: Image.network(user.profileImage,
+                                errorBuilder: (context,obj,s){
+                                return Icon(
+                                  Icons.person_outline,
+                                  color: Colors.green,
+                                );
+                                },
+
+                              ),
                             ),
-                          //TODO:- required
-                          // : CircleAvatar(
-                          //     radius: 22,
-                          //     backgroundImage: AssetImage(user["image"]),
-                          //   ),
                       SizedBox(width: Constant.SIZE_08),
                       Expanded(
                         child: Column(
