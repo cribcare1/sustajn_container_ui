@@ -77,15 +77,17 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
   try {
  var   responseData = await apiService.registrationUser(url, params, "");
-    if (responseData != null) {
-      registrationState.setIsLoading(false);
+    if (responseData['status'] != null && responseData['status'].toString().toLowerCase() ==Strings.SUCCESS) {
       if(!registrationState.context.mounted) return;
+      showCustomSnackBar(context: registrationState.context, message: responseData['message'], color: Colors.green);
       Navigator.pushReplacement(
             registrationState.context,
             MaterialPageRoute(
               builder: (_) => const LoginScreen(),
             ),
           );
+
+      registrationState.setIsLoading(false);
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
@@ -95,8 +97,6 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   } catch (e) {
     registrationState.setIsLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
   }
   return null;
 });
@@ -115,7 +115,6 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
       "",
     );
     if (responseData != null) {
-      registrationState.setIsLoading(false);
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
@@ -128,6 +127,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
             builder: (_) =>  VerifyEmailScreen(previousScreen: previous,email: email,),
           ),
         );
+      registrationState.setIsLoading(false);
     } else {
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
@@ -135,13 +135,13 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
         message: responseData?['message'] ?? "Something went wrong",
         color: Colors.red,
       );
+      registrationState.setIsLoading(false);
     }
   } catch (e) {
     Utils.showNetworkErrorToast(
       registrationState.context,
       e.toString(),
     );
-  } finally {
     registrationState.setIsLoading(false);
   }
 
@@ -150,41 +150,20 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
 
 
 final verifyOtpProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
+FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
+        (ref, params) async {
+      final apiService = ref.watch(loginApiProvider);
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
-  final String previous = params['previous'];
-  params.remove("previous");
-  try {
-    var   responseData = await apiService.verifyOtp(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData['message'], color:Colors.green);
-      if(previous == "forgotPassword"){
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const ResetPasswordScreen(),
-        ),
-      );} else{
-       var data = await SharedPreferenceUtils.getStringValuesSF("signUp");
-        registerDetailProvider(data);
-      }
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData['message'], color:Colors.red);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+      final String previous = params['previous'];
+      params.remove("previous");
+
+      final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+
+      final responseData = await apiService.verifyOtp(url, params, "");
+
+      return {
+        "response": responseData,
+        "previous": previous,
+      };
+    });
+

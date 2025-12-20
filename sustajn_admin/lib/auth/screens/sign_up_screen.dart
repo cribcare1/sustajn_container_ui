@@ -9,6 +9,7 @@ import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common_provider/network_provider.dart';
@@ -84,6 +85,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   TextFormField(
                     controller: _mobileController,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(10)
+                    ],
                     decoration: InputDecoration(
                       labelText: Strings.MOBILE_NUMBER,
                       filled: true,
@@ -264,47 +268,55 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  _getNetworkData(var registrationState) async {
+  Future<void> _getNetworkData(var registrationState) async {
     try {
+      FocusScope.of(context).unfocus();
       ref.read(authNotifierProvider).loginData(
-          context, _emailController.text, _passwordController.text);
-      if (registrationState.isValid) {
-        registrationState.setIsLoading(true);
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-Map<String, dynamic> mapData = {
-  "fullName":_nameController.text,
-  "userType": "ADMIN",
-  "email":_emailController.text,
-  "phoneNumber":_mobileController.text,
-  "userName":_emailController.text,
-  "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
-  "password":_passwordController.text};
-SharedPreferenceUtils.saveDataInSF("signUp", jsonEncode(mapData));
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              validateEmail({"email":_emailController.text,"previous":"signUp"});
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
-          }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+        context,
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (!registrationState.isValid) return;
+
+      registrationState.setIsLoading(true);
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+      if (!isNetworkAvailable) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
       }
+      Map<String, dynamic> mapData = {
+        "fullName": _nameController.text,
+        "userType": "ADMIN",
+        "email": _emailController.text,
+        "phoneNumber": _mobileController.text,
+        "userName": _emailController.text,
+        "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
+        "password": _passwordController.text,
+      };
+      await SharedPreferenceUtils.saveDataInSF(
+        "signUp",
+        jsonEncode(mapData),
+      );
+      ref.read(
+        validateEmail({
+          "email": _emailController.text,
+          "previous": "signUp",
+        }),
+      );
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
+      Utils.printLog('Error in Login button: $e');
+    } finally {
       registrationState.setIsLoading(false);
     }
   }
+
 
   @override
   void dispose() {

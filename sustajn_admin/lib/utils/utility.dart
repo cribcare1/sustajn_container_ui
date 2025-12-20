@@ -253,7 +253,7 @@ void showCustomSnackBar({
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     ),
   );
 }

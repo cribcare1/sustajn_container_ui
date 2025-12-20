@@ -236,7 +236,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
-                        SharedPreferenceUtils.deleteValueFromSF();
+                        SharedPreferenceUtils.clearAll();
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
                       },
                     ),
