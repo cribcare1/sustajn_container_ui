@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
-import '../../../container_request/container_request_screen.dart';
+import '../../utils/theme_utils.dart';
 import '../screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
     return Scaffold(
       body: _getCurrentScreen(),
       bottomNavigationBar: Container(
@@ -31,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xffb3dbff),
-          selectedItemColor: Color(0xff6eac9e),
+          backgroundColor: theme!.scaffoldBackgroundColor,
+          selectedItemColor: theme.primaryColor,
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
           unselectedLabelStyle: TextStyle(
@@ -64,11 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return Container();
       case 1:
-        return ContainerRequestScreen();
+        return Container();
       case 2:
         return Container();
       case 3:
-        return ProfileScreen();
+        return MyProfileScreen();
       default:
         return Container();
     }

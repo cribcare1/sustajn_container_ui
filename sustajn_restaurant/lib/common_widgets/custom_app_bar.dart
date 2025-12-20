@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../provider/theme_provider.dart';
 import '../utils/theme_utils.dart';
 import 'custom_back_button.dart';
 
@@ -14,12 +13,12 @@ class CustomAppBar {
   PreferredSizeWidget getAppBar(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
     return AppBar(
-      backgroundColor: themeData!.primaryColor,
+      backgroundColor: Color(0xFFe7f7f1),
       centerTitle: true,
       elevation: 0,
       title: Text(
         title,
-        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.black),
       ),
       // leadingWidth: 30,
       actions: action,

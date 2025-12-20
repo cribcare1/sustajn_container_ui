@@ -18,6 +18,8 @@ class Constant {
   static late int MAX_LINE_100 = 100;
   static late double SIZE_005 = 0.5;
   static late double SIZE_008 = 0.8;
+  static late double SIZE_065 = 0.65;
+  static late double SIZE_085 = 0.85;
   static late double SIZE_00 = 0;
   static late double SIZE_001 = 0.40;
   static late double SIZE_01 = 1.00;
@@ -55,15 +57,21 @@ class Constant {
   static late double CONTAINER_SIZE_16 = 16.0;
   static late double CONTAINER_SIZE_18 = 18.0;
   static late double CONTAINER_SIZE_20 = 20.0;
+  static late double CONTAINER_SIZE_22 = 22.0;
   static late double CONTAINER_SIZE_24=24.0;
   static late double CONTAINER_SIZE_25 = 25.0;
+  static late double CONTAINER_SIZE_26 = 26.0;
   static late double CONTAINER_SIZE_28 = 28.0;
   static late double CONTAINER_SIZE_30 = 30.0;
   static late double CONTAINER_SIZE_32 = 32.0;
   static late double CONTAINER_SIZE_33 = 33.0;
   static late double CONTAINER_SIZE_35 = 35.0;
+  static late double CONTAINER_SIZE_36= 36.0;
   static late double CONTAINER_SIZE_40 = 40.0;
+  static late double CONTAINER_SIZE_42 = 42.0;
+  static late double CONTAINER_SIZE_44 = 44.0;
   static late double CONTAINER_SIZE_45 = 45.0;
+  static late double CONTAINER_SIZE_48 = 48.0;
   static late double CONTAINER_SIZE_50 = 50.0;
   static late double CONTAINER_SIZE_55 = 55.0;
   static late double CONTAINER_SIZE_60 = 60.0;
@@ -100,6 +108,7 @@ class Constant {
   static late double CONTAINER_SIZE_350 = 350.0;
   static late double CONATAINER_SIZE_380 = 380.0;
   static late double CONATAINER_SIZE_400 = 400.0;
+  static late double CONTAINER_SIZE_500 = 500.0;
   static late double CONATAINER_SIZE_600 = 600.0;
   static late int CONATAINER_SIZE_1900 = 1900;
   static late double CONTAINER_SIZE_800= 800.0;
@@ -184,7 +193,7 @@ class Constant {
   static const Color greyshade100 = Color(0xFFE0E0E0); // Light grey shade
   static const Color indigoShade100 = Color(0xFFC5CAE9); // Light indigo shade
   static const Color tealshade100 = Color(0xFFB2DFDB); // Light teal shade
-  static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
+  static const Color lightblueS = Color(0xFFe1eee9); // Light teal shade
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
 
@@ -196,6 +205,13 @@ class Constant {
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color onSurface = Color(0xFF212121);
+  static const Color bgLight =  Color(0xFFF2F4F3);
+  static const Color bgTint =  Color(0xFFE0E5E2);
+  static const Color cardDarkGreen =  Color(0xFF40876B);
+  static const Color cardLightGreen =  Color(0xFF699D89);
+  static const Color tagYellow =  Color(0xFFCBAC3C);
+  static const Color borderLight =  Color(0xFFCDD1C4);
+  static const Color textGrey =  Color(0xFF6D6D6D);
 
 
 
