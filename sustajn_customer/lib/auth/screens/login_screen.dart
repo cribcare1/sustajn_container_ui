@@ -5,6 +5,10 @@ import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../containers/active_return_screen.dart';
+import '../../containers/customer_profile.dart';
+import '../../containers/history_screen.dart';
+import '../../containers/nortification_screen.dart';
 import '../../utils/theme_utils.dart';
 import 'forget_password.dart';
 
@@ -110,7 +114,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=>MyProfileScreen()));
+                    },
                     child: Text(
                       'Login',
                       style: themeData.textTheme.titleMedium!.copyWith(
