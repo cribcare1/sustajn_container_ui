@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:container_tracking/auth/screens/login_screen.dart';
@@ -281,7 +282,7 @@ Map<String, dynamic> mapData = {
   "userName":_emailController.text,
   "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
   "password":_passwordController.text};
-SharedPreferenceUtils.saveDataInSF("signUp", mapData);
+SharedPreferenceUtils.saveDataInSF("signUp", jsonEncode(mapData));
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
