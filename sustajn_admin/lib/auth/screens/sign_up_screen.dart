@@ -250,7 +250,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                              Navigator.push(context,
+                              Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context)=> LoginScreen()));
 
                               },
