@@ -9,8 +9,8 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF3f715e),
-      secondaryHeaderColor: const Color(0xFFe7f7f1),
+      primaryColor: const Color(0xFF0F3727),
+      secondaryHeaderColor: const Color(0xFFD4AE37),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
         secondary: Color(0xff00c4cc),
@@ -22,31 +22,32 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xFFeef6f3),
-      appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
+      scaffoldBackgroundColor: const Color(0xFF0F3727),
+      appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF0F3727),
+        iconTheme: IconThemeData(color: Colors.white),), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.dmSans(),
         titleSmall: GoogleFonts.dmSans(
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            color:  Colors.black),
+            color:  Colors.white),
         titleMedium: GoogleFonts.dmSans(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color:  Colors.black,
+          color:  Colors.white,
           textStyle: const TextStyle(overflow: TextOverflow.visible),
         ),
         titleLarge: GoogleFonts.dmSans(
             fontSize: 22,
             fontWeight: FontWeight.w700,
-            color: Colors.black,
+            color: Colors.white,
             textStyle: const TextStyle(overflow: TextOverflow.visible)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: const TextStyle(
           // letterSpacing: 1,
             fontFamily: 'DM Sans',
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w600),
         border: getAllBorder(),
@@ -56,9 +57,9 @@ class CustomTheme {
     )
         : ThemeData(
       textTheme: const TextTheme(
-        titleSmall: TextStyle(color: Colors.black, fontSize: 14),
-        titleMedium: TextStyle(color: Colors.black, fontSize: 16),
-        titleLarge: TextStyle(color: Colors.black, fontSize: 22),
+        titleSmall: TextStyle(color: Colors.white, fontSize: 14),
+        titleMedium: TextStyle(color: Colors.white, fontSize: 16),
+        titleLarge: TextStyle(color: Colors.white, fontSize: 22),
       ),
     );
   }
@@ -66,13 +67,13 @@ class CustomTheme {
   static OutlineInputBorder getBorder() {
     return OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.purple));
+        borderSide: const BorderSide(color: Colors.orangeAccent));
   }
 
   static OutlineInputBorder getAllBorder() {
     return OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.grey));
+        borderSide: const BorderSide(color: Colors.white));
   }
 
   static TextStyle getButtonBoldBlackStyle() {

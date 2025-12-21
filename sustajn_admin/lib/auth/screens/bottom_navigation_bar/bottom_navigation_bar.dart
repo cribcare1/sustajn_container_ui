@@ -1,3 +1,4 @@
+import 'package:container_tracking/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -47,6 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return false;
+  }
+  @override
+  void initState() {
+    Utils.getToken();
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {

@@ -25,22 +25,22 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final registrationState = ref.watch(authNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
-  var responseData = LoginModel();
+  LoginModel? responseData;
   try {
     responseData = await apiService.loginUser(url, params, "");
-     if (responseData.userName != null) {
+     if (responseData!.status != '' && responseData.status.toLowerCase() == Strings.SUCCESS) {
       registrationState.setIsLoading(false);
       registrationState.setLoginData(responseData);
       if(registrationState.context.mounted) {
         showCustomSnackBar(context: registrationState.context,
-            message: Strings.LOGGED_SUCCESS, color:Colors.green);
+            message: responseData.message, color:Colors.green);
       }
 
-      String json = jsonEncode(responseData.toJson());
-      SharedPreferenceUtils.saveDataInSF(
-          Strings.JWT_TOKEN, responseData.jwtToken!);
-      SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
-      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      String json = jsonEncode(responseData.data.toJson());
+     await SharedPreferenceUtils.saveDataInSF(
+          Strings.JWT_TOKEN, responseData.data.jwtToken);
+    await  SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
+     await SharedPreferenceUtils.saveMapInSF(Strings.PROFILE_DATA, responseData.data.toJson());
 if(registrationState.context.mounted){
       Navigator.pushReplacement(
         registrationState.context,

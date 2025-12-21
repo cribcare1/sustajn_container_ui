@@ -51,7 +51,6 @@ class _RestaurantTransactionHistoryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title: Strings.RESTURANT_TRANSACTION_HISTORY_TITLE,
         leading: CustomBackButton(),

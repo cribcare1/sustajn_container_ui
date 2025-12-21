@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common_provider/network_provider.dart';
+import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
@@ -117,22 +118,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                   MaterialPageRoute(builder: (_) => CustomerDetailsScreen()),
                 );
               },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: Constant.CONTAINER_SIZE_12,
-                  horizontal: Constant.SIZE_008,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
+              child: GlassSummaryCard(
 
                 child: Padding(
                   padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
@@ -223,7 +209,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         Flexible(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 12,color: Colors.white),
             overflow: TextOverflow.visible,
             softWrap: true,
           ),

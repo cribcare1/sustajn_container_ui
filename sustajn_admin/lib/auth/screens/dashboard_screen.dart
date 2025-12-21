@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/SharedPreferenceUtils.dart';
+import '../../utils/global_utils.dart';
 import '../model/login_model.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -37,12 +38,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _getUserData();
     super.initState();
   }
-  LoginModel loginModel = LoginModel();
-  _getUserData()async{
-    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+  LoginModel? loginModel;
+  Future<void> _getUserData() async {
+    final Map<String, dynamic>? json =
+    await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
 
-    if (jsonString != null && jsonString.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    if (json != null) {
+      loginModel = LoginModel.fromJson(json);
+      setState(() {});
     }
   }
   @override
@@ -97,7 +100,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
           SizedBox(height: 2),
-          Text(loginModel!.fullName??"", style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
+          Text(loginModel == null?"":loginModel!.data.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
         ]),
         Spacer(),
         _iconCircle(theme, Icons.notifications_none),
@@ -376,8 +379,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(children: [
         SizedBox(height: 6),
         _chartLegendRow(theme),
-        SizedBox(height: 10),
-        SizedBox(height: MediaQuery.of(context).size.width * 0.70, child: _barChart(theme)),
+        SizedBox(height: Constant.CONTAINER_SIZE_10),
+        SizedBox(height: MediaQuery.of(context).size.height*0.4,
+            child: _barChart(theme)),
       ]),
     );
   }
@@ -509,9 +513,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
 
-    final monthYearLabel = "December - 2025";
+    final monthYearLabel = "${months[DateTime.now().month-1]} - ${DateTime.now().year}";
 
-    return SizedBox(height: MediaQuery.of(context).size.width * 0.70,
+    return SizedBox(height: MediaQuery.of(context).size.height * 0.4,
+      width: MediaQuery.sizeOf(context).width,
       child: BarChart(
         BarChartData(
           maxY: maxY,
@@ -523,22 +528,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 40,
-                interval: maxY / 5,
+                reservedSize: 25,
+                interval: maxY / 6,
                 getTitlesWidget: (val, meta) {
                   return Text(val.toInt().toString(), style: TextStyle(fontSize: 10));
                 },
               ),
-              axisNameWidget: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  Strings.CONTAINERS_TITLE,
-                  // monthYearLabel,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
+              axisNameWidget: Text(
+                Strings.CONTAINERS_TITLE,
+                // monthYearLabel,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
               axisNameSize: 20,
             ),
+
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -551,12 +554,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 },
               ),
-              axisNameWidget: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  monthYearLabel,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
+              axisNameWidget: Text(
+                monthYearLabel,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
               axisNameSize: 20,
             ),

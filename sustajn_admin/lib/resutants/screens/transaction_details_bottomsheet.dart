@@ -15,7 +15,7 @@ void showTransactionDetailsBottomSheet(
   required int count,
 }) {
   Color statusColor = status == Strings.APPROVED_STATUS
-      ? Colors.green
+      ? Colors.blue
       : status == Strings.PENDING_STATUS
       ? Colors.orange
       : Colors.red;
@@ -31,13 +31,14 @@ void showTransactionDetailsBottomSheet(
         maxChildSize: 0.9,
         expand: false,
         builder: (_, controller) {
+          final theme = Theme.of(context);
           return Container(
             padding: EdgeInsets.symmetric(
               horizontal: Constant.CONTAINER_SIZE_20,
               vertical: Constant.CONTAINER_SIZE_18,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(Constant.CONTAINER_SIZE_26),
               ),
@@ -62,10 +63,7 @@ void showTransactionDetailsBottomSheet(
                       Center(
                         child: Text(
                           Strings.TRANSACTION_DETAILS_TITLE,
-                          style: TextStyle(
-                            fontSize: Constant.CONTAINER_SIZE_18,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
                         ),
                       ),
                       Positioned(
@@ -101,10 +99,7 @@ void showTransactionDetailsBottomSheet(
                               children: [
                                 Text(
                                   count.toString(),
-                                  style: TextStyle(
-                                    fontSize: Constant.CONTAINER_SIZE_26,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: theme.textTheme.titleLarge
                                 ),
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
                                 Container(
@@ -133,48 +128,36 @@ void showTransactionDetailsBottomSheet(
 
                           SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                          _rowTitle(Strings.REQUESTED_CONTAINER_TYPES),
+                          _rowTitle(Strings.REQUESTED_CONTAINER_TYPES,context),
                           Text(
                             "${Strings.LARGE} - $large  |  ${Strings.MEDIUM} - $medium  |  ${Strings.SMALL} - $small",
-                            style: TextStyle(
-                              fontSize: Constant.CONTAINER_SIZE_14,
-                              color: Colors.black87,
-                            ),
+                            style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400),
                           ),
 
                           SizedBox(height: Constant.CONTAINER_SIZE_16),
                           Divider(color: Colors.grey.shade300),
 
-                          _rowTitle(Strings.REQUESTED_ON),
+                          _rowTitle(Strings.REQUESTED_ON,context),
                           Text(
                             requestedDate,
-                            style: TextStyle(
-                              fontSize: Constant.CONTAINER_SIZE_14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400)
                           ),
 
                           SizedBox(height: Constant.CONTAINER_SIZE_16),
                           Divider(color: Colors.grey.shade300),
 
                           if (status != Strings.PENDING_STATUS) ...[
-                            _rowTitle(Strings.APPROVED_CONTAINER),
+                            _rowTitle(Strings.APPROVED_CONTAINER,context),
                             Text(
                               "${Strings.LARGE} - $large  |  ${Strings.MEDIUM} - $medium  |  ${Strings.SMALL} - $small",
-                              style: TextStyle(
-                                fontSize: Constant.CONTAINER_SIZE_14,
-                                color: Colors.black87,
-                              ),
+                              style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400)
                             ),
                             SizedBox(height: Constant.CONTAINER_SIZE_16),
 
-                            _rowTitle(Strings.APPROVED_ON),
+                            _rowTitle(Strings.APPROVED_ON,context),
                             Text(
                               approvedDate,
-                              style: TextStyle(
-                                fontSize: Constant.CONTAINER_SIZE_14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400)
                             ),
                             SizedBox(height: Constant.CONTAINER_SIZE_16),
                             // Divider(color: Colors.grey.shade300),
@@ -195,16 +178,12 @@ void showTransactionDetailsBottomSheet(
   );
 }
 
-Widget _rowTitle(String title) {
+Widget _rowTitle(String title, BuildContext context) {
   return Padding(
     padding: EdgeInsets.only(bottom: Constant.SIZE_04),
     child: Text(
       title,
-      style: TextStyle(
-        fontSize: Constant.CONTAINER_SIZE_14,
-        fontWeight: FontWeight.w600,
-        color: Colors.black87,
-      ),
+      style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w600)
     ),
   );
 }
