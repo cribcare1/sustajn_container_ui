@@ -12,7 +12,7 @@ class CustomTheme {
       primaryColor: const Color(0xFF0F3727),
       secondaryHeaderColor: const Color(0xFFD4AE37),
       colorScheme: const ColorScheme(
-        primary: Color(0xff7300e6),
+        primary: Color(0xFFD4AE37),
         secondary: Color(0xff00c4cc),
         brightness: Brightness.light,
         onPrimary: Color(0xff8b3dff),
@@ -20,7 +20,7 @@ class CustomTheme {
         error: Color(0xffdb1436),
         onError: Color(0xffff4757),
         surface: Color(0xffffffff),
-        onSurface: Color(0xff0e0e0e),
+        onSurface: Color(0xffffffff),
       ),
       scaffoldBackgroundColor: const Color(0xFF0F3727),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF0F3727),

@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:container_tracking/auth/screens/profile_screen.dart';
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -126,18 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildEarningsCard(ThemeData theme, double radius) {
     final cardH = MediaQuery.of(context).size.width * 0.22;
-    return Container(
-      height: cardH,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.85)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(radius),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12)],
-      ),
-      padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_20, vertical: Constant.CONTAINER_SIZE_12),
+    return GlassSummaryCard(
       child: Row(
         children: [
           Expanded(
@@ -232,18 +222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bool showArrow = false,
       }) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-            ),
-          ],
-        ),
+      child: GlassSummaryCard(
         child: Stack(
           children: [
             Column(
@@ -341,7 +320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Text(label,
             style: theme.textTheme.titleMedium?.copyWith(
-                color: selected ? theme.primaryColor : Colors.black54,
+                color: selected ? theme.primaryColor : Colors.white,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
       ),
     );
@@ -360,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               isExpanded: true,
               value: filterValue,
               items: <String>['All containers', 'Container A', 'Container B'].map((e) =>
-                  DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  DropdownMenuItem(value: e, child: Text(e,style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.black),))).toList(),
               onChanged: (v) => setState(() => filterValue = v ?? filterValue),
             ),
           ),
@@ -371,11 +350,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   Widget _chartCard(ThemeData theme, double radius) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.white,
-          borderRadius: BorderRadius.circular(radius), boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)]),
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+    return GlassSummaryCard(
+      // decoration: BoxDecoration(color: Colors.white,
+      //     borderRadius: BorderRadius.circular(radius), boxShadow: [
+      //       BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)]),
+      // padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       child: Column(children: [
         SizedBox(height: 6),
         _chartLegendRow(theme),
@@ -389,7 +368,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _chartLegendRow(ThemeData theme) {
     return Column(children: [
       Row(children: [
-        _legendChip(Strings.BORROWED, theme.primaryColor),
+        _legendChip(Strings.BORROWED, Colors.blue),
         SizedBox(width: Constant.CONTAINER_SIZE_12),
         _legendChip(Strings.RETURNED, Colors.black87),
         SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -410,7 +389,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _metricsRow(ThemeData theme) {
     return Row(
       children: [
-        Expanded(child: _metricCard(Strings.BORROWED, '3,993', theme.primaryColor)),
+        Expanded(child: _metricCard(Strings.BORROWED, '3,993', Colors.blue)),
         SizedBox(width: Constant.SIZE_10),
         Expanded(child: _metricCard(Strings.RETURNED, '1,087', Colors.green)),
         SizedBox(width: Constant.SIZE_10),
@@ -421,16 +400,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   Widget _metricCard(String label, String value, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: Constant.SIZE_08,               // reduced for safety
-        horizontal: Constant.SIZE_08,             // reduced to prevent overflow
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.12)),
-      ),
+    return GlassSummaryCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -491,14 +461,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               toY: borrowed,
               width: 6,
               borderRadius: BorderRadius.circular(6),
-              color: theme.primaryColor,
+              color: Colors.blue,
               backDrawRodData: BackgroundBarChartRodData(show: false),
             ),
             BarChartRodData(
               toY: returned,
               width: 6,
               borderRadius: BorderRadius.circular(6),
-              color: Colors.black87,
+              color: Colors.white,
               backDrawRodData: BackgroundBarChartRodData(show: false),
             ),
             BarChartRodData(
@@ -529,15 +499,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 25,
-                interval: maxY / 6,
+                interval: maxY/6,
                 getTitlesWidget: (val, meta) {
-                  return Text(val.toInt().toString(), style: TextStyle(fontSize: 10));
+                  return Text(val.toInt().toString(),maxLines: 1, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12));
                 },
               ),
               axisNameWidget: Text(
                 Strings.CONTAINERS_TITLE,
                 // monthYearLabel,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600)
               ),
               axisNameSize: 20,
             ),
@@ -550,13 +520,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   final label = (idx >= 0 && idx < weekLabels.length) ? weekLabels[idx] : '';
                   return Padding(
                     padding: EdgeInsets.only(top: 6),
-                    child: Text(label, style: TextStyle(fontSize: 11)),
+                    child: Text(label, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600)),
                   );
                 },
               ),
               axisNameWidget: Text(
                 monthYearLabel,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600),
               ),
               axisNameSize: 20,
             ),

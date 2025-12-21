@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/resutants/screens/resturant_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,22 +137,7 @@ class _RestaurantListScreenState extends ConsumerState<RestaurantListScreen> {
   }
 
   Widget _buildRestaurantCard(RestaurantData restaurant) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: Constant.CONTAINER_SIZE_12,
-        horizontal: Constant.SIZE_008,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return GlassSummaryCard(
       child: ListTile(
         onTap: () {
           Navigator.push(

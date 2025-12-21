@@ -1,3 +1,5 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
+import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
 import '../constants/number_constants.dart';
 import '../utils/theme_utils.dart';
@@ -39,27 +41,27 @@ class _ReusableFilterBottomSheetState
     final height = MediaQuery.of(context).size.height * 0.92;
     final width = MediaQuery.of(context).size.width;
 
-    return Container(
-      height: height,
-      width: width,
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-      decoration: BoxDecoration(
-        color: themeData!.secondaryHeaderColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(Constant.CONTAINER_SIZE_20),
-          topRight: Radius.circular(Constant.CONTAINER_SIZE_20),
-        ),
-      ),
+    return GlassSummaryCard(
+      // height: height,
+      // width: width,
+      // padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+      // decoration: BoxDecoration(
+      //   color: themeData!.primaryColor,
+      //   borderRadius: BorderRadius.only(
+      //     topLeft: Radius.circular(Constant.CONTAINER_SIZE_20),
+      //     topRight: Radius.circular(Constant.CONTAINER_SIZE_20),
+      //   ),
+      // ),
       child: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   widget.title,
-                  style: themeData.textTheme.titleLarge!.copyWith(
+                  style: themeData!.textTheme.titleLarge!.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -70,11 +72,11 @@ class _ReusableFilterBottomSheetState
                     padding: EdgeInsets.all(Constant.SIZE_02),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: themeData.colorScheme.onSurface.withOpacity(0.06),
+                      color: themeData.secondaryHeaderColor,
                     ),
                     child: Icon(
                       Icons.close,
-                      size: Constant.CONTAINER_SIZE_25,
+                      size: Constant.SIZE_HEIGHT_20,
                       color: themeData.colorScheme.onSurface,
                     ),
                   ),
@@ -85,10 +87,10 @@ class _ReusableFilterBottomSheetState
             SizedBox(height: Constant.CONTAINER_SIZE_20),
 
 
-            Expanded(
+            SizedBox(
+              height: height*0.6,
               child: Row(
                 children: [
-
                   Container(
                     width: width * 0.25,
                     decoration: BoxDecoration(
@@ -104,11 +106,7 @@ class _ReusableFilterBottomSheetState
                       children: [
                         Text(
                           widget.leftTabTitle,
-                          style: themeData.textTheme.bodyLarge?.copyWith(
-                            color: themeData.primaryColor,
-                            fontSize: Constant.LABEL_TEXT_SIZE_18,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: themeData.textTheme.titleMedium,
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
                       ],
@@ -123,7 +121,7 @@ class _ReusableFilterBottomSheetState
                           widget.options.length,
                               (index) => RadioListTile(
                             value: widget.options[index],
-                            activeColor: themeData.primaryColor,
+                            activeColor: themeData.secondaryHeaderColor,
                             groupValue: selectedOption,
                             onChanged: (val) {
                               setState(() {
@@ -150,69 +148,11 @@ class _ReusableFilterBottomSheetState
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_20),
+            SubmitClearButton(onLeftTap: (){
+              setState(() => selectedOption = null);
+            }, onRightTap: (){  widget.onApply(selectedOption);
+            Navigator.pop(context);})
 
-
-            Row(
-              children: [
-
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => selectedOption = null);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_18,
-                      ),
-                      side: BorderSide(
-                        color: themeData.primaryColor,
-                        width: Constant.SIZE_01,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-                      ),
-                    ),
-                    child: Text(
-                      "Clear",
-                      style: themeData.textTheme.labelLarge?.copyWith(
-                        color: themeData.primaryColor,
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(width: Constant.CONTAINER_SIZE_20),
-
-
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onApply(selectedOption);
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_18,
-                      ),
-                      backgroundColor: Color(0xFFD9B649),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-                      ),
-                    ),
-                    child: Text(
-                      "Apply",
-                      style: themeData.textTheme.labelLarge?.copyWith(
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                        color: themeData.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

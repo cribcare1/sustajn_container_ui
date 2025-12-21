@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:container_tracking/container_list/screens/container_details.dart';
@@ -107,11 +108,8 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                     vertical: Constant.CONTAINER_SIZE_16,
                   ),
                   itemCount: state.filteredContainers.length,
-                  separatorBuilder: (context, index) => Divider(
-                    height: Constant.CONTAINER_SIZE_12,
-                    thickness: 1,
-                    color: Colors.grey[300],
-                  ),
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: Constant.CONTAINER_SIZE_12),
                   itemBuilder: (context, index) {
                     final item = state.filteredContainers[index];
                     return _buildContainerTile(item, themeData!);
@@ -121,7 +119,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
             ),
       floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
-              backgroundColor: const Color(0xFF2D8F6E),
+              backgroundColor: themeData!.secondaryHeaderColor,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -160,11 +158,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           SizedBox(height: Constant.CONTAINER_SIZE_20),
           Text(
             Strings.NO_CONTAINERS,
-            style: TextStyle(
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.titleMedium
           ),
 
           SizedBox(height: Constant.SIZE_08),
@@ -224,28 +218,28 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           ),
         );
       },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        ),
+      child: GlassSummaryCard(
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-              child: item.imageUrl != ""
-                  ? Image.network(
-                      "${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}",
-                      width: Constant.CONTAINER_SIZE_55,
-                      height: Constant.CONTAINER_SIZE_55,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildPlaceholderImage();
-                      },
-                    )
-                  : _buildPlaceholderImage(),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                border: Border.all(color: Colors.white),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                child: item.imageUrl != ""
+                    ? Image.network(
+                        "${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}",
+                        width: Constant.CONTAINER_SIZE_55,
+                        height: Constant.CONTAINER_SIZE_55,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildPlaceholderImage();
+                        },
+                      )
+                    : _buildPlaceholderImage(),
+              ),
             ),
             SizedBox(width: Constant.CONTAINER_SIZE_14),
             Expanded(
@@ -260,33 +254,24 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                   SizedBox(height: Constant.SIZE_04),
                   Text(
                     item.productId,
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.grey,
-                    ),
+                    style: themeData.textTheme.titleSmall
                   ),
                   Text(
                     "${item.capacityMl}ml",
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.grey,
-                    ),
+                    style: themeData.textTheme.titleSmall
                   ),
                 ],
               ),
             ),
             Text(
               item.totalContainers.toString(),
-              style: TextStyle(
-                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: themeData.textTheme.titleMedium
             ),
             SizedBox(width: Constant.SIZE_10),
             Icon(
               Icons.arrow_forward_ios,
               size: Constant.CONTAINER_SIZE_16,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ],
         ),

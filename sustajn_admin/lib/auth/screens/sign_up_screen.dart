@@ -68,7 +68,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.NAME,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -91,7 +91,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.MOBILE_NUMBER,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -114,7 +114,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText:Strings.EMAIL,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor:themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -140,7 +140,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.PASSWORD,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -174,7 +174,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.CONFIRM_PASSWORD,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -244,7 +244,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           TextSpan(
                             text: Strings.LOGIN,
                             style: TextStyle(
-                              color: themeData.primaryColor,
+                              color: themeData.secondaryHeaderColor,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),

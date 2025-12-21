@@ -1,4 +1,5 @@
 import 'package:container_tracking/auth/screens/reset_password_screen.dart';
+import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
@@ -58,7 +59,6 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(
@@ -102,32 +102,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                         ? Center(child: CircularProgressIndicator())
                         : SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFD0A52C),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    Constant.CONTAINER_SIZE_12,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () async {
-                                _getNetworkDataVerify(authState);
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: Constant.SIZE_08,
-                                ),
-                                child: Text(
-                                  Strings.VERIFY,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: theme.primaryColor,
-                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            child: SubmitButton(
+                                rightText:  Strings.VERIFY,
+                                onRightTap: (){_getNetworkDataVerify(authState);})
                           ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
@@ -137,7 +114,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                         "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_15,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -160,7 +137,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             Text(
                               Strings.DIDNT_RECV_CODE,
                               style: theme.textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: Constant.LABEL_TEXT_SIZE_16,
                               ),
                             ),

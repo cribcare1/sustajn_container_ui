@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final shouldExit = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text("Exit App"),
         content: const Text("Do you want to exit the app?"),
         actions: [
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             type: BottomNavigationBarType.fixed,
             backgroundColor: themeData!.secondaryHeaderColor,
             selectedItemColor: themeData.primaryColor,
-            unselectedItemColor: Colors.grey,
+            unselectedItemColor: Colors.white,
             selectedLabelStyle: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
             unselectedLabelStyle: TextStyle(
               fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -89,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: 'Containers',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.set_meal_outlined),
+                icon: Icon(Icons.local_restaurant_outlined),
                 label: 'Restaurants',
               ),
               BottomNavigationBarItem(icon: Icon(Icons.group),

@@ -228,7 +228,7 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      color: Colors.grey.shade200,
+      color: Theme.of(context).secondaryHeaderColor,
       child: Text(
         'December - 2025',
         style: theme.textTheme.bodyLarge?.copyWith(

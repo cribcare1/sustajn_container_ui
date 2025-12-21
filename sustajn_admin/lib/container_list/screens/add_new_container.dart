@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -232,26 +233,15 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_16,
-                        ),
-                      ),
+                    GlassSummaryCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             Strings.CONTAINER_INFORMATION,
-                            style: TextStyle(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: themeData!.textTheme.titleMedium
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
-
                           Form(
                             key: _formKey,
                             child: Column(
@@ -315,12 +305,22 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
                     Container(
-                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
+                      width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_16,
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.white.withOpacity(0.01),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.25),
+                          width: 0.8,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.01),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +329,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                             Strings.CONTAINER_IMAGE,
                             style: TextStyle(
                               fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
@@ -426,6 +426,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     bool isReadonly = false,
   }) {
     return TextFormField(
+      style: Theme.of(context).textTheme.titleSmall,
       readOnly: isReadonly,
       controller: controller,
       validator: validator,
@@ -434,7 +435,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
-        fillColor: const Color(0xFFF8F9F7),
+        fillColor: Theme.of(context).primaryColor,
         hintStyle: TextStyle(
           color: Colors.grey,
           fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -487,7 +488,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
           Container(
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).secondaryHeaderColor,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
             ),
             child: Column(
@@ -528,14 +529,14 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             child: Container(
               width: Constant.CONTAINER_SIZE_28,
               height: Constant.CONTAINER_SIZE_28,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration:  BoxDecoration(
+                color: Theme.of(context).secondaryHeaderColor,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.close,
                 size: Constant.CONTAINER_SIZE_18,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
