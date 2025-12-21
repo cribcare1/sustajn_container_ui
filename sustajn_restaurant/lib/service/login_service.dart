@@ -26,18 +26,21 @@ class AuthServices {
       throw Exception(e);
     }
   }
-  Future<dynamic> registerUser(String url, Map<String, dynamic> requestData, String requestType, File file) async {
+  Future<Register> registerUser(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
     try {
+      Utils.printLog("requestData::::::: $requestData");
+      String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postMultipartRequestAdmin(url,file, requestData,"",requestType);
+      var response = await presenter.putMultipartApiRequest(url, requestData, requestKey, image);
       if (response != null) {
-        print("===========++=============$response");
-        return response;
+        var responseData = Register.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog("rgister resturant service::::$e");
+      Utils.printLog(" Register service::::$e");
       throw Exception(e);
     }
   }

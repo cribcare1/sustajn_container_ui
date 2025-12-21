@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +9,7 @@ import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../models/login_model.dart';
 
 class Utils {
 
@@ -440,6 +443,13 @@ class Utils {
     }
   }
 
+  static void navigateToPushScreen(BuildContext context, screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
+
   static multipartParams(var partUrl, var data, var requestKey, var image) {
     return {
       NetworkUrls.PART_URL: partUrl,
@@ -447,6 +457,22 @@ class Utils {
       NetworkUrls.REQUEST_KEY: requestKey,
       if (image != null) NetworkUrls.IMAGE: image,
     };
+  }
+
+  static LoginModel? loginData;
+  static int? societyId = 0;
+  static int? userId = 0;
+
+  static Future<Data?> getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString(Strings.PROFILE_DATA);
+    printLog("Profile Data ==== $data");
+    if (data != null) {
+      var response = json.decode(data);
+      loginData = LoginModel.fromJson(response);
+      userId = loginData!.data!.userId;
+    }
+    return null;
   }
 
 }

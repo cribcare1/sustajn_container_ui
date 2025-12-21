@@ -31,7 +31,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   var responseData = LoginModel();
   try {
     responseData = await apiService.loginUser(url, params, "");
-    if (responseData.userName != null) {
+    if (responseData.data!.userName != null) {
       registrationState.setIsLoading(false);
       registrationState.setLoginData(responseData);
       if(registrationState.context.mounted) {
@@ -41,7 +41,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(
-          Strings.JWT_TOKEN, responseData.jwtToken!);
+          Strings.JWT_TOKEN, responseData.data!.jwtToken!);
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){
@@ -72,43 +72,35 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
 ///Register
 
-final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params)async{
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
-
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  print(params);
-  // print(registrationState.image);
-  Future.microtask((){
-    registrationState.setIsLoading(true);
-  });
-  try{
-
-    var response = await apiService.registerUser(url, params, "data", registrationState.image!);
-    if(response != null){
-      if(registrationState.context.mounted) {
-        showCustomSnackBar(context: registrationState.context,
-            message: 'registered successfully', color:Colors.green);
-        Navigator.of(registrationState.context).pop(true);
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
+      (ref, params) async {
+    final registrationState = ref.watch(authNotifierProvider);
+    try {
+      var serviceProvider = ref.read(loginApiProvider);
+      var partUrl = params[Strings.PART_URL];
+      var data = params[Strings.DATA];
+      var requestKey = params[Strings.REQUEST_KEY];
+      var image = params[Strings.IMAGE];
+      Utils.printLog("partUrl===$partUrl");
+      var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
+      if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status == Strings.SUCCESS) {
+        registrationState.setIsLoading(false);
+        if(registrationState.context.mounted) {
+          showCustomSnackBar(context: registrationState.context,
+              message: Strings.USER_REGISTERED_SUCCESS, color:Colors.green);
+        }
+        Utils.navigateToPushScreen(registrationState.context,
+            LoginScreen());
+      }else{
+        Utils.showToast(responseData.message!);
       }
-    }else{
-      if(registrationState.context.mounted){
-        showCustomSnackBar(context: registrationState.context,
-            message: "Failed to add container", color:Colors.red);
-      }
-    }
-
-  }catch(e){
-    if(registrationState.context.mounted){
-      showCustomSnackBar(context: registrationState.context,
-          message: e.toString(), color:Colors.red);
-    }
-  }finally{
-    Future.microtask((){
+    } catch (e) {
+      Utils.printLog("Register provider error called: $e");
       registrationState.setIsLoading(false);
-    });
-  }
-});
+      Utils.showNetworkErrorToast(registrationState.context, e.toString());
+    }
+  },
+);
 
 
 final forgotPasswordProvider =
@@ -151,23 +143,26 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final registrationState = ref.watch(authNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+
   try {
     var   responseData = await apiService.verifyOtp(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    final status = responseData['status'];
+    final message = responseData['message'];
+    if (status != null && status!.isNotEmpty  && status! == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
       if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.green);
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        ),
-      );
+      Fluttertoast.showToast(msg: message!,toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.black);
+      // Navigator.pushReplacement(
+      //   registrationState.context,
+      //   MaterialPageRoute(
+      //     builder: (_) => const LoginScreen(),
+      //   ),
+      // );
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.red);
+          message: message!, color:Colors.black);
       registrationState.setIsLoading(false);
     }
   } catch (e) {

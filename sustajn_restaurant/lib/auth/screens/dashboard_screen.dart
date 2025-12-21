@@ -5,15 +5,16 @@ import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import '../../borrowed/borrowed_home_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../containers/container_list.dart';
+import '../../models/login_model.dart';
 import '../../returned_screen/returned_home_screen.dart';
+import '../../utils/utility.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
-
 class _DashboardScreenState extends State<DashboardScreen> {
   final double borrowed = 300;
   final double returnedCount = 100;
@@ -26,6 +27,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<String> dateOptions = ['Today', 'This Week', 'This Month'];
   List<String> containerOptions = ['Container', 'Box', 'Pallet'];
 
+
+  String userName = "";
+  Data? loginResponse;
+  bool isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -35,6 +56,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final cardHorizontalPadding = width * 0.04;
     final cardSpacing = width * 0.03;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -65,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             SizedBox(height: Constant.SIZE_05),
                             Text(
-                              'Marina Sky Dine',
+                              loginResponse!.fullName??"",
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,

@@ -12,6 +12,7 @@ import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -19,8 +20,9 @@ import 'business_information.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
+  final RegistrationData? registrationData;
 
-  const SignUpScreen({super.key, this.currentStep = 0});
+  const SignUpScreen({super.key, this.currentStep = 0, this.registrationData});
 
   @override
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
@@ -96,6 +98,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     double height = MediaQuery.sizeOf(context).height;
+    final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -304,11 +307,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           password: passwordCtrl.text,
                           profileImage: selectedImage,
                         );
+                        _getNetworkDataVerify(authState);
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BusinessScreen(
+                            builder: (_) => VerifyEmailScreen(previousScreen: '',
                               registrationData: registrationData,
                             ),
                           ),
@@ -436,5 +440,35 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  _getNetworkDataVerify(var registrationState) async {
+    try {
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              ref.read(verifyOtpProvider({"email":emailCtrl.text}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }

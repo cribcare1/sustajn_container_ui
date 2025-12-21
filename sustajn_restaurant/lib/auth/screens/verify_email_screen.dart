@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
 import 'package:sustajn_restaurant/auth/screens/sign_up_screen.dart';
+import 'package:sustajn_restaurant/models/registration_data.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import 'package:pinput/pinput.dart';
@@ -13,11 +14,15 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/sharedpreference_utils.dart';
 import '../../utils/utility.dart';
+import 'bank_details_screen.dart';
+import 'business_information.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
+  final RegistrationData? registrationData;
 
-  const VerifyEmailScreen({super.key, required this.previousScreen});
+  const VerifyEmailScreen({super.key, required this.previousScreen,
+   this.registrationData});
 
   @override
   ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -29,7 +34,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         (index) => TextEditingController(),
   );
 
-  int seconds = 60;
+  int seconds = 120;
 
   @override
   void initState() {
@@ -135,15 +140,39 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                               ),
                             ),
                           ),
-                          onPressed: ()async {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ResetPasswordScreen()));
-                            // await  _getNetworkData(authState);
-                            // if (widget.previousScreen == "forgotPassword") {
-                            //   _getNetworkData(authState);
-                            // } else {
-                            //   _getNetworkDataVerify(authState);
-                            // }
+                          onPressed: () async {
+                            if (_otpController.text.trim().isEmpty) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please enter OTP",
+                                color: Colors.red,
+                              );
+                              return;
+                            }
+
+                            if (_otpController.text.trim().length < 6) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please enter a valid 6-digit OTP",
+                                color: Colors.red,
+                              );
+                              return;
+                            }
+
+                            if (widget.previousScreen == "forgotPassword") {
+                              _getNetworkData(authState);
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BusinessScreen(
+                                    registrationData: widget.registrationData!,
+                                  ),
+                                ),
+                              );
+                            }
                           },
+
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: Constant.SIZE_08,
@@ -164,7 +193,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                       Center(
                         child: Text(
-                          "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
+                          "Resend Code in ${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}",
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
                             color: Colors.white,
@@ -179,7 +208,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                           onPressed: seconds == 0
                               ? () {
                             setState(() {
-                              seconds = 60;
+                              seconds = 120;
                               _startTimer();
                             });
                           }
@@ -281,7 +310,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":loginModel!.userName,"token":_otpController.text}));
+              ref.read(forgotPasswordProvider({"email":loginModel!.data!.userName,"token":_otpController.text}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
@@ -310,7 +339,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(verifyOtpProvider({"email":loginModel!.userName,"token":_otpController.text}));
+              ref.read(verifyOtpProvider({"email":widget.registrationData!.email,"token":_otpController.text}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

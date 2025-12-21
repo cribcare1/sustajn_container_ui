@@ -168,9 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: double.infinity,
                     child:SubmitButton(onRightTap: (){
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> DashboardScreen()));
-                        // _getNetworkData(authState);
+                        _getNetworkData(authState);
                       }
                     },rightText: Strings.LOGIN)
                 ),
