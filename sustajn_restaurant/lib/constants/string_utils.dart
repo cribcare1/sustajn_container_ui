@@ -82,11 +82,11 @@ class Strings{
   static const FILL_DETAILS = 'Please fill the below details to create your account';
   static const NAME = 'Name';
   static const MOBILE_NUMBER = 'Mobile Number';
-  static const EMAIL = 'Email';
+  static const EMAIL = 'Email ID ';
   static const PASSWORD = 'Password';
   static const CONFIRM_PASSWORD = 'Confirm Password';
   static const LOCATION = 'Location';
-  static const CONTINUE_VERIFICATION = 'Continue to verification';
+  static const CONTINUE_VERIFICATION = 'Continue to verify';
   static const ALREADY_HAVE_ACC = 'Already have an account?';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD= 'Please set your new password';
@@ -94,7 +94,7 @@ class Strings{
   static const WELCOME = 'Welcome';
   static const LOGIN_YOUR_ACC = 'Login to your account';
   static const FORGOT_PASSWORD = 'Forgot Password?';
-  static const DONT_HAVE_ACC = "Don't have an account?";
+  static const DONT_HAVE_ACC = "Don't have an account ?";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
@@ -178,6 +178,15 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS ="Logged in successfully";
   static const String G_MAP_API_KEY ="AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
+  static const GO_BACK = 'Are you sure you want to go back?';
+  static const VERIFIED_MAIL = 'You have already verified your email.Going back may interrupt the account setup process';
+  static const STAY_THIS_PAGE = 'Stay on this page';
+  static const LEAVE_RESET_PASSWORD= 'Leave Reset Password?';
+  static const GO_BACK_RESET_PASSWORD = 'If you go back now, your password reset process will be canceled.Do you still want to go back?';
+  static const String CONFIRM_LOGOUT= 'Confirm Logout';
+  static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
+  static const String YES = 'Yes';
+  static const String NO = 'No';
 
 
 

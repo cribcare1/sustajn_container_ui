@@ -8,7 +8,7 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF3f715e),
+      primaryColor: const Color(0xFF1d4129),
       secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
@@ -21,7 +21,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xFFeef6f3),
+      scaffoldBackgroundColor: const Color(0xFF0f3727),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),
@@ -73,6 +73,15 @@ class CustomTheme {
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.grey));
   }
+
+
+  static OutlineInputBorder roundedBorder(Color color) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: color),
+    );
+  }
+
 
   static TextStyle getButtonBoldBlackStyle() {
     return TextStyle(

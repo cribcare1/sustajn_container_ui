@@ -59,7 +59,7 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
           width: double.infinity,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
-            color: theme.dialogBackgroundColor,
+            color: theme.scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
               topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
@@ -81,6 +81,7 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -91,7 +92,7 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
                       child: Icon(
                         Icons.close,
                         size: Constant.CONTAINER_SIZE_20,
-                        color: theme.iconTheme.color,
+                        color: Colors.white70,
                       ),
                     ),
                   ],
@@ -106,9 +107,13 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
                   validator: _validateName,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
-                  style: theme.textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white70
+                  ),
+                  cursorColor: Colors.white70,
                   decoration: InputDecoration(
                     labelText: 'Restaurant Name',
+                    labelStyle: TextStyle(color: Colors.white70),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: Constant.CONTAINER_SIZE_16,
@@ -116,22 +121,23 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
                     ),
                     border: OutlineInputBorder(
                       borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey)
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      borderSide: BorderSide(color: theme.dividerColor),
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color:Constant.grey),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                       borderSide:
-                      BorderSide(color: theme.colorScheme.primary),
+                      BorderSide(color: Constant.grey),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                       borderSide:
                       BorderSide(color: theme.colorScheme.error),
                     ),

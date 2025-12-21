@@ -18,6 +18,7 @@ class SubmitClearButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
@@ -33,7 +34,7 @@ class SubmitClearButton extends StatelessWidget {
             child: Text(
               leftText!,
               style: const TextStyle(
-                color: Colors.green,
+                color: Constant.gold,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -57,8 +58,8 @@ class SubmitClearButton extends StatelessWidget {
             ),
             child: Text(
               rightText!,
-              style: const TextStyle(
-                color: Colors.white,
+              style:  TextStyle(
+                color: theme.scaffoldBackgroundColor,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),

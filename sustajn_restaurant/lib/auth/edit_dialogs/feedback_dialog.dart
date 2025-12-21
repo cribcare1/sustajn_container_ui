@@ -31,7 +31,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         child: Container(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
-            color: theme.dialogBackgroundColor,
+            color: theme.scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
               topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
@@ -50,6 +50,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontSize: Constant.LABEL_TEXT_SIZE_18,
                         fontWeight: FontWeight.w600,
+                        color: Colors.white
                       ),
                     ),
                   ),
@@ -58,7 +59,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                     child: Icon(
                       Icons.close,
                       size: Constant.CONTAINER_SIZE_20,
-                      color: theme.iconTheme.color,
+                      color: Colors.white,
                     ),
                   )
                 ],
@@ -84,8 +85,8 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: _selectedIndex == index
-                                  ? theme.colorScheme.primary.withOpacity(0.15)
-                                  : theme.dividerColor.withOpacity(0.1),
+                                  ? Colors.white.withOpacity(0.15)
+                                  : Colors.white.withOpacity(0.1),
                             ),
                             child: Text(
                               feedbackOptions[index]['emoji']!,
@@ -99,6 +100,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                             feedbackOptions[index]['label']!,
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: Constant.CONTAINER_SIZE_12,
+                              color: Colors.white
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -115,11 +117,14 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 child: TextFormField(
                   controller: _controller,
                   maxLines: Constant.MAX_LINE_5,
+                  style: TextStyle(color: Colors.white70),
                   maxLength: Constant.CONATAINER_SIZE_255.toInt(),
                   decoration: InputDecoration(
                     hintText: 'Your Comment',
+                    fillColor: theme.primaryColor,
+                    filled: true,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.hintColor,
+                      color: Colors.white70,
                     ),
                     contentPadding: EdgeInsets.all(
                       Constant.CONTAINER_SIZE_14,
@@ -127,23 +132,25 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                     border: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                       borderSide: BorderSide(
-                        color: theme.dividerColor,
+                        color: Constant.grey,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                       borderSide: BorderSide(
-                        color: theme.colorScheme.primary,
+                        color: Constant.grey,
                       ),
                     ),
                     counterText:
                     '${_controller.text.length}/${Constant.CONTAINER_SIZE_500.toInt()}',
+                    counterStyle: TextStyle(color: Colors.white70)
                   ),
                   onChanged: (_) => setState(() {}),
                 ),

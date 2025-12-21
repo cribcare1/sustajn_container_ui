@@ -17,7 +17,7 @@ class UpgradeBottomSheet extends StatelessWidget {
         ),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         decoration: BoxDecoration(
-          color: theme.cardColor,
+          color: theme.scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_24),
         ),
         child: Column(
@@ -27,7 +27,7 @@ class UpgradeBottomSheet extends StatelessWidget {
               width: Constant.CONTAINER_SIZE_40,
               height: Constant.SIZE_04,
               decoration: BoxDecoration(
-                color: theme.dividerColor,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(
                   Constant.CONTAINER_SIZE_10,
                 ),
@@ -41,7 +41,7 @@ class UpgradeBottomSheet extends StatelessWidget {
               child: InkWell(
                 onTap: () => Navigator.pop(context),
                 child: Icon(Icons.close,
-                    color: theme.iconTheme.color),
+                    color: Colors.white),
               ),
             ),
 
@@ -54,7 +54,7 @@ class UpgradeBottomSheet extends StatelessWidget {
                   width: double.infinity,
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                   decoration: BoxDecoration(
-                    color: theme.primaryColor,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(
                       Constant.CONTAINER_SIZE_16,
                     ),
@@ -65,7 +65,7 @@ class UpgradeBottomSheet extends StatelessWidget {
                       Text(
                         "Popular",
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -160,12 +160,12 @@ class UpgradeBottomSheet extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.check, size: Constant.CONTAINER_SIZE_16, color: Color(0xFFC8B531)),
+        Icon(Icons.check, size: Constant.CONTAINER_SIZE_16, color: theme.scaffoldBackgroundColor),
         SizedBox(width: Constant.CONTAINER_SIZE_10),
         Expanded(
           child: Text(
             text,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.black),
           ),
         ),
       ],
@@ -180,18 +180,22 @@ class UpgradeBottomSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: theme.textTheme.labelMedium),
+        Text(title, style: theme.textTheme.labelMedium?.copyWith(
+          color: Colors.white
+        )),
         SizedBox(height: Constant.SIZE_06),
         Row(
           children: [
             Icon(Icons.calendar_today_outlined,
-                size: Constant.CONTAINER_SIZE_18),
+                size: Constant.CONTAINER_SIZE_18,
+            color: Colors.white,),
             SizedBox(width: Constant.SIZE_06),
             Flexible(
               child: Text(
                 value,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Colors.white
                 ),
               ),
             ),

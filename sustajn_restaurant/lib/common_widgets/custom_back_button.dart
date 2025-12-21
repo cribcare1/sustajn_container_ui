@@ -21,7 +21,7 @@ class _CustomBackButtonState extends State<CustomBackButton> {
       child:  Icon(
         size: Constant.CONTAINER_SIZE_18,
         Icons.arrow_back_ios,
-        color: Colors.black,
+        color: Colors.white,
       ),
     );
   }

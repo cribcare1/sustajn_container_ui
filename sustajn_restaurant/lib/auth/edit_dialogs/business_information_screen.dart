@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class BusinessInformationScreen extends StatelessWidget {
   const BusinessInformationScreen({super.key});
@@ -26,7 +27,7 @@ class BusinessInformationScreen extends StatelessWidget {
                     icon: Icon(
                       Icons.arrow_back_ios,
                       size: Constant.CONTAINER_SIZE_20,
-                      color: theme.iconTheme.color,
+                      color: Colors.white,
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -36,6 +37,7 @@ class BusinessInformationScreen extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white
                     ),
                   ),
                 ],
@@ -73,14 +75,14 @@ class BusinessInformationScreen extends StatelessWidget {
                         Icon(
                           Icons.add,
                           size: Constant.CONTAINER_SIZE_18,
-                          color: theme.primaryColor,
+                          color: Constant.gold,
                         ),
                         SizedBox(width: Constant.SIZE_06),
                         Text(
                           'Add Social Media',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            color: theme.primaryColor,
+                            color: Constant.gold,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -135,17 +137,22 @@ class BusinessInformationScreen extends StatelessWidget {
     return TextField(
       maxLines: Constant.MAX_LINE_1,
       style: theme.textTheme.bodyMedium?.copyWith(
-        fontSize: Constant.LABEL_TEXT_SIZE_14,
+       color: Colors.white70
       ),
+      cursorColor: Colors.white70,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: theme.primaryColor,
         hintText: hint,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(
           fontSize: Constant.LABEL_TEXT_SIZE_14,
-          color: theme.hintColor,
+          color: Colors.white70,
         ),
-        border: InputBorder.none,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+        ),
+        enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+        focusedBorder: CustomTheme.roundedBorder(Constant.grey),
         isDense: true,
       ),
     );

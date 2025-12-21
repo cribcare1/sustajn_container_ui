@@ -43,6 +43,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                 Text(
                   Strings.FORGOT_PASSWORD_TXT,
                   style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -52,8 +53,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                 Text(
                   Strings.ENTER_EMAIL_TORCV_CODE,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color!
-                        .withOpacity(Constant.SIZE_065),
+                    color: Colors.white,
                     fontSize: Constant.LABEL_TEXT_SIZE_15,
                   ),
                 ),
@@ -61,13 +61,22 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                 SizedBox(height: Constant.CONTAINER_SIZE_40),
                 TextFormField(
                   controller: _emailController,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    hintText: Strings.EMAIL,
+                    hintStyle: TextStyle(color: Colors.white70),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: theme.primaryColor,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    enabledBorder: CustomTheme.roundedBorder(
+                      Constant.grey,
+                    ),
+                    focusedBorder: CustomTheme.roundedBorder(
+                      Constant.grey,
                     ),
                   ),
                   validator: (v) {
@@ -81,12 +90,13 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                   },
                 ),
                 SizedBox(height: height * 0.02),
-                authState.isLoading?Center(child: CircularProgressIndicator(),):  SizedBox(
+                // authState.isLoading?Center(child: CircularProgressIndicator(),):
+                SizedBox(
                     width: double.infinity,
                     child: SubmitButton(onRightTap: (){if(_formKey.currentState!.validate()){
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword',)));
-                      _getNetworkData(authState);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword',)));
+                      // _getNetworkData(authState);
                     }},rightText: Strings.CONTINUE_VERIFICATION,)
                 ),
               ],

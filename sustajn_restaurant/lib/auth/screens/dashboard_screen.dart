@@ -60,6 +60,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'Hi,',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_14,
+                                color: Colors.white
                               ),
                             ),
                             SizedBox(height: Constant.SIZE_05),
@@ -68,6 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white
                               ),
                             ),
                           ],
@@ -77,19 +79,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: Constant.CONTAINER_SIZE_50,
                         height: Constant.CONTAINER_SIZE_50,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: theme.primaryColor,
                           borderRadius: BorderRadius.circular(100),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
-                            ),
-                          ],
+                          border: Border.all(
+                            color: Constant.grey,
+                            width: 0.3
+                          ),
+
                         ),
                         child: Icon(
                           Icons.notifications_none,
-                          color: theme.primaryColor,
+                          color: Colors.white70,
                         ),
                       ),
                     ],
@@ -164,6 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_10),
@@ -223,12 +224,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         height: cardHeight,
         padding: EdgeInsets.all(Constant.SIZE_10),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFFFFF), Color(0xFFF6F6F6)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: theme.primaryColor,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Constant.grey,
+            width: 0.3
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
@@ -238,18 +239,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: Constant.CONTAINER_SIZE_48,
               height: Constant.CONTAINER_SIZE_48,
               decoration: BoxDecoration(
-                color: theme.primaryColor,
+                color: Constant.gold,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: Colors.white,
+                color: theme.scaffoldBackgroundColor,
                 size: Constant.CONTAINER_SIZE_22,
               ),
             ),
@@ -258,6 +259,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
+                color: Colors.white
               ),
             ),
           ],
@@ -277,27 +279,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
       height: Constant.TEXT_FIELD_HEIGHT,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.primaryColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: Constant.grey,
+          width: 0.3
+        )
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           onChanged: onChanged,
           isExpanded: true,
+          dropdownColor: Colors.white,
           icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
+          selectedItemBuilder: (BuildContext context) {
+            return items.map((String item) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            }).toList();
+          },
           items: items
               .map(
                 (e) => DropdownMenuItem(
                   value: e,
-                  child: Text(e, style: theme.textTheme.bodyMedium),
+                  child: Text(e, style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.black
+                  )),
                 ),
               )
               .toList(),
@@ -312,11 +327,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _legendItem('Total Container', Colors.green.shade700, theme),
+        _legendItem('Total', Colors.greenAccent, theme),
         SizedBox(width: Constant.SIZE_10),
-        _legendItem('Barrowed', Colors.black87, theme),
+        _legendItem('Lease', Colors.yellowAccent, theme),
         SizedBox(width: Constant.SIZE_10),
-        _legendItem('Returned', Colors.blue.shade400, theme),
+        _legendItem('Receive', Colors.lightBlueAccent, theme),
         SizedBox(width: Constant.SIZE_10),
         _legendItem('Available', Colors.amber.shade700, theme),
       ],
@@ -332,7 +347,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         SizedBox(width: Constant.SIZE_06),
-        Text(text, style: theme.textTheme.bodySmall),
+        Text(text, style: theme.textTheme.bodySmall?.copyWith(
+          color: Colors.white
+        )),
       ],
     );
   }
@@ -392,7 +409,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               'November-2025',
               style: TextStyle(
                 fontSize: screenWidth < 350 ? 11 : 13,
-                color: Colors.grey.shade600,
+                color: Colors.white,
               ),
             ),
           ),
@@ -416,7 +433,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       PieChartSectionData(
         value: borrowed,
-        color: theme.primaryColor,
+        color: Colors.lightGreenAccent,
         radius: ringThickness,
         showTitle: false,
         titleStyle: const TextStyle(fontSize: 12),
@@ -431,7 +448,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       PieChartSectionData(
         value: total,
-        color: Colors.black87,
+        color: Colors.yellowAccent,
         radius: ringThickness,
         showTitle: false,
         titleStyle: const TextStyle(fontSize: 12),

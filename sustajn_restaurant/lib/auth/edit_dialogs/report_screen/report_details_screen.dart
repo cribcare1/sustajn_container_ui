@@ -250,7 +250,7 @@ class ReportDetailsScreen extends StatelessWidget {
         horizontal: Constant.CONTAINER_SIZE_14,
       ),
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+        color: theme.primaryColor,
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
       ),
       child: Row(
@@ -258,7 +258,7 @@ class ReportDetailsScreen extends StatelessWidget {
           Icon(
             Icons.image_outlined,
             size: Constant.CONTAINER_SIZE_22,
-            color: theme.iconTheme.color,
+            color: Colors.white,
           ),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Expanded(
@@ -266,7 +266,9 @@ class ReportDetailsScreen extends StatelessWidget {
               'Container image.jpg',
               maxLines: Constant.MAX_LINE_1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white
+              ),
             ),
           ),
         ],

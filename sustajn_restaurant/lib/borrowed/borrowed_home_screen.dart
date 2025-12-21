@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 
 import '../common_widgets/filter_Screen.dart';
 import '../constants/number_constants.dart';
+import '../utils/theme_utils.dart';
 import 'borrowed_details_screen.dart';
 import 'borrowed_scan_screen.dart';
 
@@ -44,9 +45,10 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0xfff4f5f4),
+      backgroundColor: theme!.scaffoldBackgroundColor,
       appBar: CustomAppBar(title: 'Borrowed',
           action: [
             IconButton(onPressed: (){
@@ -78,7 +80,8 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                 ),
               );
             },
-                icon: Icon(Icons.filter_list))
+                icon: Icon(Icons.filter_list,
+                color: Colors.white,))
           ],
           leading: CustomBackButton()).getAppBar(context),
       body:
@@ -150,14 +153,14 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                         itemCount: monthBlock["data"].length,
                         separatorBuilder: (context, _) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Divider(height: 1, color: Colors.grey.shade300),
+                          child: Divider(height: 1, color: Colors.grey.shade700),
                         ),
                         itemBuilder: (context, i) {
                           final item = monthBlock["data"][i];
                           return Flexible(
                             child: ListTile(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => BorrowedDetailsScreen()));
+                                // Navigator.push(context, MaterialPageRoute(builder: (_) => BorrowedDetailsScreen()));
                               },
                               title: Text(
                                 item["name"],
@@ -165,11 +168,12 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                                   fontSize: 16,
                                   overflow: TextOverflow.ellipsis,
                                   fontWeight: FontWeight.w500,
+                                  color: Colors.white
                                 ),
                               ),
                               subtitle: Text(
                                 item["date"],
-                                style: TextStyle(color: Colors.grey.shade700),
+                                style: TextStyle(color: Colors.white),
                               ),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -179,10 +183,12 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
+                                  const Icon(Icons.arrow_forward_ios, size: 16,
+                                  color: Colors.white,),
                                 ],
                               ),
                             ),
@@ -205,10 +211,10 @@ class _BorrowedHomeScreenState extends State<BorrowedHomeScreen> {
           height: 60,
           width: 60,
           decoration: const BoxDecoration(
-            color: Color(0xff0E3A2F),
+            color: Constant.gold,
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 30),
+          child:  Icon(Icons.qr_code_scanner, color: theme.scaffoldBackgroundColor, size: 30),
         ),
       ),
     );

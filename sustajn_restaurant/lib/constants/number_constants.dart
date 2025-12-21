@@ -212,6 +212,7 @@ class Constant {
   static const Color tagYellow =  Color(0xFFCBAC3C);
   static const Color borderLight =  Color(0xFFCDD1C4);
   static const Color textGrey =  Color(0xFF6D6D6D);
+  static const Color gold = Color(0xFFD1AE31);
 
 
 
