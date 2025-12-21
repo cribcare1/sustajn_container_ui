@@ -6,7 +6,6 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../models/transaction_record.dart';
 
-
 class RestaurantTransactionHistoryScreen extends StatefulWidget {
   const RestaurantTransactionHistoryScreen({super.key});
 
@@ -65,28 +64,55 @@ class _RestaurantTransactionHistoryScreenState
           children: [
             Row(
               children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    style: Theme.of(context).textTheme.titleSmall,
-                    value: selectedStatus,
-                    items:
-                        [
-                              Strings.STATUS,
-                              Strings.APPROVED_STATUS,
-                              Strings.REJECTED_STATUS,
-                              Strings.PENDING_STATUS,
-                            ]
-                            .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
-                            )
-                            .toList(),
-                    onChanged: (v) => setState(() => selectedStatus = v!),
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
+        Expanded(
+        child: DropdownButtonFormField<String>(
+          initialValue: selectedStatus,
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall!
+              .copyWith(),
+
+          items: [
+            Strings.STATUS,
+            Strings.APPROVED_STATUS,
+            Strings.REJECTED_STATUS,
+            Strings.PENDING_STATUS,
+          ].map(
+                (e) => DropdownMenuItem<String>(
+              value: e,
+              child: Text(
+                e,
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+          ).toList(),
+
+          selectedItemBuilder: (context) {
+            return [
+              Strings.STATUS,
+              Strings.APPROVED_STATUS,
+              Strings.REJECTED_STATUS,
+              Strings.PENDING_STATUS,
+            ].map(
+                  (e) => Text(
+                e,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: Colors.black), // ✅ selected text
+              ),
+            ).toList();
+          },
+
+          onChanged: (v) => setState(() => selectedStatus = v!),
+
+          decoration: const InputDecoration(
+            isDense: true,
+            border: OutlineInputBorder(),
+          ),
+        ),
+      )
+      ,
                 SizedBox(width: Constant.SIZE_08),
                 Expanded(
                   child: DropdownButtonFormField<String>(
@@ -109,7 +135,7 @@ class _RestaurantTransactionHistoryScreenState
                               "December",
                             ]
                             .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)),
+                              (e) => DropdownMenuItem(value: e, child: Text(e,style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.black))),
                             )
                             .toList(),
                     onChanged: (v) => setState(() => selectedMonth = v!),
@@ -129,11 +155,11 @@ class _RestaurantTransactionHistoryScreenState
                 padding: EdgeInsets.zero,
                 itemCount: transactionsList.length,
                 separatorBuilder: (_, __) => Padding(
-                  padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
-                  child: Divider(height: 0.4,color: Colors.grey.shade300,),
+                  padding: EdgeInsets.symmetric(vertical: Constant.SIZE_06),
+                  child: Divider(height: 0.4, color: Colors.grey.shade300),
                 ),
                 itemBuilder: (context, index) {
-                  return buildHistoryItem( transactionsList[index]);
+                  return buildHistoryItem(transactionsList[index]);
                 },
               ),
             ),
@@ -142,6 +168,7 @@ class _RestaurantTransactionHistoryScreenState
       ),
     );
   }
+
   Widget buildHistoryItem(TransactionItem item) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,6 +214,7 @@ class _RestaurantTransactionHistoryScreenState
       ],
     );
   }
+
   final List<TransactionItem> transactionsList = [
     TransactionItem(
       icon: Icons.call_made,
@@ -222,6 +250,7 @@ class _RestaurantTransactionHistoryScreenState
     ),
   ];
 }
+
 class TransactionItem {
   final IconData icon;
   final Color iconColor;

@@ -71,14 +71,14 @@ void showTransactionDetailsBottomSheet(
                         child: GestureDetector(
                           onTap: () => Navigator.pop(context),
                           child: Container(
-                            padding: const EdgeInsets.all(0),
+                            padding: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).secondaryHeaderColor,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              Icons.close,
-                              size: Constant.CONTAINER_SIZE_22,
+                              Icons.close,color: Colors.white,
+                              size: Constant.CONTAINER_SIZE_20,
                             ),
                           ),
                         ),
@@ -160,7 +160,6 @@ void showTransactionDetailsBottomSheet(
                               style: theme.textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400)
                             ),
                             SizedBox(height: Constant.CONTAINER_SIZE_16),
-                            // Divider(color: Colors.grey.shade300),
                           ],
 
                           SizedBox(height: Constant.SIZE_10),

@@ -39,15 +39,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _getUserData();
     super.initState();
   }
-  LoginModel? loginModel;
+  LoginData? loginModel;
   Future<void> _getUserData() async {
     final Map<String, dynamic>? json =
     await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
-
+print("json    ===============+++++ $json");
     if (json != null) {
-      loginModel = LoginModel.fromJson(json);
-      setState(() {});
+      loginModel = LoginData.fromJson(json);
     }
+    print("loginModel    ===============+++++ ${loginModel!.fullName}");
   }
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
           SizedBox(height: 2),
-          Text(loginModel == null?"":loginModel!.data.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
+          Text(loginModel!.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
         ]),
         Spacer(),
         _iconCircle(theme, Icons.notifications_none),

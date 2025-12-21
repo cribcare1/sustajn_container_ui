@@ -113,14 +113,14 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     }
   }
 
-  LoginModel? loginModel;
+  LoginData? loginModel;
 
   Future<void> _getUserData() async {
     final Map<String, dynamic>? json =
     await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
 
     if (json != null) {
-      loginModel = LoginModel.fromJson(json);
+      loginModel = LoginData.fromJson(json);
       setState(() {});
     }
   }
@@ -367,7 +367,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                       "foodSafe": true,
                                       "dishwasherSafe": true,
                                       "microwaveSafe": false,
-                                      "userId": loginModel!.data.userId,
+                                      "userId": loginModel!.userId,
                                       "containerTypeId":
                                           widget.inventoryData!.containerTypeId,
                                       "description": _desController.text,
@@ -381,7 +381,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                       "foodSafe": true,
                                       "dishwasherSafe": true,
                                       "microwaveSafe": false,
-                                      "userId": loginModel!.data.userId,
+                                      "userId": loginModel!.userId,
                                       "description": _desController.text,
                                     };
                               if (_formKey.currentState!.validate()) {

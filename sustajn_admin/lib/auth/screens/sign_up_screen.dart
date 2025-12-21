@@ -270,16 +270,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Future<void> _getNetworkData(var registrationState) async {
     try {
+      if (!registrationState.isValid) return;
+      registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
       ref.read(authNotifierProvider).loginData(
         context,
         _emailController.text,
         _passwordController.text,
       );
-
-      if (!registrationState.isValid) return;
-
-      registrationState.setIsLoading(true);
       final isNetworkAvailable =
       await ref.read(networkProvider.notifier).isNetworkAvailable();
       if (!isNetworkAvailable) {
@@ -298,7 +296,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         "phoneNumber": _mobileController.text,
         "userName": _emailController.text,
         "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
-        "password": _passwordController.text,
+        "passwordHash": _passwordController.text,
       };
       await SharedPreferenceUtils.saveDataInSF(
         "signUp",
@@ -312,8 +310,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       );
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
-    } finally {
-      registrationState.setIsLoading(false);
     }
   }
 

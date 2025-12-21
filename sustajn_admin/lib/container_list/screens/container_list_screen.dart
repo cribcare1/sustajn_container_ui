@@ -12,6 +12,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../container_state.dart';
 import '../model/container_list_model.dart';
 import 'add_new_container.dart';
 
@@ -26,7 +27,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_){
-      ref.read(containerNotifierProvider).setIsLoading(true);
+      ref.read(containerNotifierProvider).setContext(context);
       _getNetworkData(ref.read(containerNotifierProvider));
     });
     super.initState();
@@ -288,36 +289,29 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     );
   }
 
-  _getNetworkData(var containerState) async {
+   _getNetworkData(ContainerState containerState) async {
     try {
-      print("get network data called");
-      ref.read(containerNotifierProvider).setIsLoading(true);
-      print("is loading started");
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
-        try {
-          if (isNetworkAvailable) {
-            containerState.setIsLoading(true);
-            ref.read(fetchContainerProvider(""));
-          } else {
-            if (!mounted) return;
-            showCustomSnackBar(
-              context: context,
-              message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
-            );
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-        }
+      containerState.setIsLoading(true);
+
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        containerState.setIsLoading(false);
         if (!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
+
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+      await ref.read(fetchContainerProvider("").future);
+
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-    } finally {
-      ref.read(containerNotifierProvider).setIsLoading(false);
+      Utils.printLog('Error: $e');
     }
   }
+
 }

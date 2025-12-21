@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'models/restaurant_list_model.dart';
 
 class RestaurantState extends ChangeNotifier {
+  RestaurantState(){
+    _isLoading = true;
+  }
   bool _isLoading = false;
   bool _isMoreLoading = false;
   bool _hasMore = true;

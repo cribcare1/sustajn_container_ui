@@ -20,9 +20,6 @@ final fetchCustomerProvider = FutureProvider.family<void, bool>((ref, isLoadMore
   //
   // isLoadMore ? state.setMoreLoading(true) : state.setLoading(true);
 
-  Future.microtask((){
-    state.setLoading(true);
-  });
 
   final url =
       '${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_LIST}'

@@ -38,7 +38,7 @@ class Utils {
             children:  [
               Icon(Icons.edit, size: Constant.LABEL_TEXT_SIZE_18),
               SizedBox(width: Constant.SIZE_10),
-              Text(Strings.EDIT),
+              Text(Strings.EDIT,style: TextStyle(color: Colors.black),),
             ],
           ),
         ),

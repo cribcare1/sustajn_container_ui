@@ -427,12 +427,12 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
   }
   _getNetworkData(CustomerState customerState) async {
     try {
+      ref.read( fetchCustomerProvider(true));
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
           ) async {
         try {
           if (isNetworkAvailable) {
-           ref.read( fetchCustomerProvider(true));
           } else {
             if (!mounted) return;
             showCustomSnackBar(

@@ -98,13 +98,14 @@ backgroundColor: theme!.scaffoldBackgroundColor,
   _getNetworkData(var registrationState) async {
     try {
       if (registrationState.isValid) {
+        registrationState.setIsLoading(true);
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
             .then((isNetworkAvailable) async {
           try {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
+
               ref.read(validateEmail({"email":_emailController.text,"previous":"forgotPassword"}));
             } else {
               registrationState.setIsLoading(false);
@@ -121,7 +122,6 @@ backgroundColor: theme!.scaffoldBackgroundColor,
       }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
     }
   }
 }

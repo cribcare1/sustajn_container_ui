@@ -26,15 +26,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     super.initState();
   }
 
-  LoginModel? loginModel;
+  LoginData? loginModel;
+  bool _isLoading  = false;
   Future<void> _getUserData() async {
+    _isLoading = true;
     final Map<String, dynamic>? json =
     await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
 
     if (json != null) {
-      loginModel = LoginModel.fromJson(json);
-      setState(() {});
+      loginModel = LoginData.fromJson(json);
+
     }
+    _isLoading = false;
   }
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ),
       ),
 
-      body: SingleChildScrollView(
+      body:_isLoading?Center(child: CircularProgressIndicator(),): SingleChildScrollView(
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -132,7 +135,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                     loginModel!.data.fullName,
+                     loginModel!.fullName,
                       style: theme.textTheme.titleMedium
                     ),
                     SizedBox(width: w * 0.015),
@@ -148,7 +151,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         _detailItem(
                           icon: Icons.email_outlined,
                           title: "Email",
-                          value: loginModel!.data.userName,
+                          value: loginModel!.userName,
                           w: w,
                           isRequired: false,
                         ),
@@ -165,7 +168,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         _detailItem(
                           icon: Icons.phone_outlined,
                           title: "Mobile Number",
-                          value: loginModel!.data.mobileNo??"980765432",
+                          value: loginModel!.mobileNo,
                           w: w,
                           isRequired: true,
                         ),

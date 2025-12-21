@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/resutants/screens/resturant_transaction_history.dart';
 import 'package:container_tracking/resutants/screens/transaction_details_bottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
-import '../models/model.dart';
 import '../models/restaurant_list_model.dart';
 import 'container_count_details.dart';
 
@@ -31,25 +31,13 @@ class RestaurantDetailsScreen extends StatelessWidget {
         title:  restaurant.name,
         leading: CustomBackButton(),
       ).getAppBar(context),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Center(
-              //   child: Text(
-              //     restaurant.name,
-              //     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              //       fontSize: Constant.LABEL_TEXT_SIZE_16,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: Constant.CONTAINER_SIZE_12),
               GridView.builder(
-                // padding: EdgeInsets.all(0),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: containerCards.length,
@@ -106,29 +94,19 @@ class RestaurantDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContainersInfo(BuildContext context, Map<String, dynamic> item) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(Constant.SIZE_08),
-      ),
+    return GlassSummaryCard(
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             item['title'],
-            style: TextStyle(
-              fontSize: Constant.CONTAINER_SIZE_14,
-              color: Colors.grey.shade700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall
           ),
           SizedBox(height: Constant.SIZE_04),
           Text(
             item['value'].toString(),
-            style: TextStyle(
-              fontSize: Constant.CONTAINER_SIZE_18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleMedium
           ),
         ],
       ),
