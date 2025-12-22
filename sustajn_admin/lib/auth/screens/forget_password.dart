@@ -62,9 +62,10 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    hintText: Strings.EMAIL,
+                    hintStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: theme.scaffoldBackgroundColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
