@@ -58,7 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    hintText: Strings.EMAIL,
                     filled: true,
                     fillColor: themeData!.primaryColor,
                     hintStyle: TextStyle(color: Colors.grey),
