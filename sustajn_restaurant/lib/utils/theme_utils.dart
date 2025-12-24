@@ -116,6 +116,31 @@ class CustomTheme {
     );
   }
 
+  static TextField searchField(TextEditingController controller, String text){
+    return  TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: text,
+        hintStyle: TextStyle(color: Colors.white70),
+        prefixIcon: const Icon(Icons.search, color: Colors.white70,),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        fillColor: Constant.grey.withOpacity(0.1),
+        filled: true,
+      ),
+    );
+  }
+
 
 
 }

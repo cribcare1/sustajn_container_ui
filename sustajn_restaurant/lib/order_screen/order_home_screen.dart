@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
+
+import '../constants/number_constants.dart';
+import '../main.dart';
+import '../utils/theme_utils.dart';
+import 'container_screen/add_container_screen.dart';
+
+void main() async {
+
+  runApp(const ProviderScope(child: MyApp()));
+}
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Container tracking',
+      theme: CustomTheme.getTheme(true),
+      home: const OrderHomeScreen(),
+    );
+  }
+}
+
+class OrderHomeScreen extends StatefulWidget {
+  const OrderHomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<OrderHomeScreen> createState() => _OrderHomeScreenState();
+}
+
+class _OrderHomeScreenState extends State<OrderHomeScreen>
+    with SingleTickerProviderStateMixin {
+
+  late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
+    return Scaffold(
+      backgroundColor: const Color(0xFF0E3B2E),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0E3B2E),
+        elevation: 0,
+        centerTitle: true,
+        leading: CustomBackButton(),
+        title: Text(
+          'Order',
+          style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: Colors.amber,
+          indicatorWeight: 3,
+          labelColor: Colors.amber,
+          unselectedLabelColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.label,
+          tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ImageIcon(
+                    const AssetImage('assets/images/img.png'),
+                    size: Constant.CONTAINER_SIZE_16,
+                  ),
+                  const SizedBox(width: 6),
+                  const Text('Containers'),
+                ],
+              ),
+            ),
+            const Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.history, size: 18),
+                  SizedBox(width: 6),
+                  Text('History'),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+      ),
+
+      body: Column(
+        children: [
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                AddContainerScreen(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+}

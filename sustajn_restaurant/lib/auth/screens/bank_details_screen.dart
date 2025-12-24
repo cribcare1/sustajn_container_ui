@@ -293,44 +293,6 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     );
   }
 
-  // _getNetworkData(var containerState) async {
-  //   try {
-  //     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-  //       isNetworkAvailable,
-  //     ) async {
-  //       try {
-  //         if (isNetworkAvailable) {
-  //           containerState.setIsLoading(true);
-  //           ref.read(
-  //             registerProvider({
-  //               "data": widget.registrationData.toApiBody(),
-  //               "image": widget.registrationData.profileImage,
-  //             }),
-  //           );
-  //         } else {
-  //           containerState.setIsLoading(false);
-  //           if (!mounted) return;
-  //           showCustomSnackBar(
-  //             context: context,
-  //             message: Strings.NO_INTERNET_CONNECTION,
-  //             color: Colors.red,
-  //           );
-  //         }
-  //       } catch (e) {
-  //         Utils.printLog('Error on button onPressed: $e');
-  //         containerState.setIsLoading(false);
-  //       }
-  //       if (!mounted) return;
-  //       FocusScope.of(context).unfocus();
-  //     });
-  //     // }
-  //   } catch (e) {
-  //     Utils.printLog('Error in Login button onPressed: $e');
-  //     containerState.setIsLoading(false);
-  //   }
-  // }
-
-
   _getNetworkData(var registrationState) async {
     try {
       if(registrationState.isValid) {
