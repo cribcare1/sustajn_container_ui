@@ -109,6 +109,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_20,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white
                         ),
                       ),
 
@@ -117,9 +118,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                       Text(
                         Strings.SEND_CODE,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color!.withOpacity(
-                            Constant.SIZE_065,
-                          ),
+                          color: Colors.white,
                           fontSize: Constant.LABEL_TEXT_SIZE_15,
                         ),
                       ),
@@ -172,7 +171,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                           "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -195,14 +194,14 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                               Text(
                                 Strings.DIDNT_RECV_CODE,
                                 style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: Constant.LABEL_TEXT_SIZE_16,
                                 ),
                               ),
                               Text(
                                 Strings.RESEND,
                                 style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: theme.primaryColor,
+                                  color: Constant.gold,
                                   decoration: TextDecoration.underline,
                                   fontSize: Constant.LABEL_TEXT_SIZE_16,
                                   fontWeight: FontWeight.bold,
@@ -233,11 +232,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       height: 55,
       textStyle: theme.textTheme.titleLarge?.copyWith(
         fontSize: 18,
-        color: theme.textTheme.bodyLarge?.color,
+        color: Colors.white70,
       ),
       decoration: BoxDecoration(
+        color: theme.primaryColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.primaryColor, width: 1),
+        border: Border.all(color: Constant.grey, width: 1),
       ),
     );
 
@@ -251,13 +251,13 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: theme.primaryColor, width: 2),
+          border: Border.all(color: Constant.grey, width: 2),
         ),
       ),
 
       submittedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: theme.primaryColor, width: 1.2),
+          border: Border.all(color: Constant.grey, width: 1.2),
         ),
       ),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,7 +266,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         width: 2,
         height: 18,
         margin: const EdgeInsets.only(bottom: 4),
-        color: theme.primaryColor,
+        color: Colors.white70,
       ),
 
       onCompleted: (value) {

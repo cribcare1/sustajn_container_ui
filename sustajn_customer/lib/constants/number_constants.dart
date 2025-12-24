@@ -189,6 +189,7 @@ class Constant {
   static const Color badgePink = Color(0xFFFF6A6A);
   static const Color greenCircle = Color(0xFF4CAF50);
   static const Color orangeCircle = Color(0xFFFFA04B);
+  static const Color gold = Color(0xFFD1AE31);
 
 
 
