@@ -35,7 +35,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     var themeData = CustomTheme.getTheme(true);
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
-      backgroundColor: themeData!.scaffoldBackgroundColor,
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Center(
@@ -47,34 +46,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 Text(
                   Strings.WELCOME,
-                  style: themeData.textTheme.titleLarge!.copyWith(
+                  style: themeData?.textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black
+                      color: Colors.white
                   ),
                 ),
                 SizedBox(height: height * 0.005),
                 Text(
-                    Strings.LOGIN_YOUR_ACC,
-                    style: themeData.textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                    )
-
+                  Strings.LOGIN_YOUR_ACC,
+                  style: themeData?.textTheme.bodyMedium!.copyWith(
+                      color: Colors.white
+                  ),
                 ),
                 SizedBox(height: height * 0.03),
                 TextFormField(
                   controller: _emailController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   decoration: InputDecoration(
-                    hintText: Strings.EMAIL,
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
+                      hintText: Strings.EMAIL,
+                      filled: true,
+                      fillColor: themeData!.primaryColor,
+                      hintStyle: TextStyle(color: Colors.white70),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                        borderSide: BorderSide(color: Constant.grey),
+
+                      ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey)
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -95,29 +97,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
-                    hintText: Strings.PASSWORD,
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 12),
-                    hintStyle: TextStyle(color: Colors.grey),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _showPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                      hintText: Strings.PASSWORD,
+                      filled: true,
+                      fillColor: themeData!.primaryColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 12),
+                      hintStyle: TextStyle(color: Colors.white70),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _showPassword = !_showPassword;
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey)
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -128,7 +135,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return "Enter your password";
                     }
-                    if (value.length < 3) {
+                    if (value.length < 8) {
                       return "Password must be at least 8 characters";
                     }
                     return null;
@@ -150,8 +157,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: Text(
                       Strings.FORGOT_PASSWORD,
-                      style: themeData.textTheme.titleSmall!.copyWith(
-                        color: Colors.black,
+                      style: themeData!.textTheme.titleSmall!.copyWith(
+                        color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -172,15 +179,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Text.rich(
                     TextSpan(
                       text:Strings.DONT_HAVE_ACC ,
-                      style:  themeData.textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
+                      style: themeData.textTheme.bodyMedium!.copyWith(
+                          color: Colors.white
                       ),
                       children: [
                         TextSpan(
                           text: Strings.SIGN_UP,
                           style: TextStyle(
-                            color: themeData.primaryColor,
+                            color: Constant.gold,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),
