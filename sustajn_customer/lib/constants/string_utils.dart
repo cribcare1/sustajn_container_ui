@@ -14,7 +14,7 @@ class Strings {
       'Internet connection failed! Please try after sometime.';
   static const API_ERROR_MSG_TEXT =
       "Request is not successful. Please try again later!";
-
+static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const PART_URL = 'part_url';
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
