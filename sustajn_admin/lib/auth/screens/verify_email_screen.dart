@@ -259,7 +259,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       final response = result["response"];
       final previous = result["previous"];
 
-      if (response["status"] == Strings.SUCCESS) {
+      if (response["status"] == Strings.SUCCESS.toUpperCase()) {
         if (!mounted) return;
 
         showCustomSnackBar(

@@ -47,7 +47,7 @@ print("json    ===============+++++ $json");
     if (json != null) {
       loginModel = LoginData.fromJson(json);
     }
-    print("loginModel    ===============+++++ ${loginModel!.fullName}");
+   setState(() {});
   }
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ print("json    ===============+++++ $json");
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
           SizedBox(height: 2),
-          Text(loginModel!.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
+          Text( (loginModel == null)?"":loginModel!.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
         ]),
         Spacer(),
         _iconCircle(theme, Icons.notifications_none),

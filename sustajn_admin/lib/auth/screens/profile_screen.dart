@@ -35,7 +35,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     if (json != null) {
       loginModel = LoginData.fromJson(json);
-
+setState(() {});
     }
     _isLoading = false;
   }
@@ -68,7 +68,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ),
       ),
 
-      body:_isLoading?Center(child: CircularProgressIndicator(),): SingleChildScrollView(
+      body:SingleChildScrollView(
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
