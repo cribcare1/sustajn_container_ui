@@ -103,6 +103,8 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
 );
 
 
+
+
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final apiService = ref.watch(loginApiProvider);
@@ -137,39 +139,68 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   return null;
 });
 
-final verifyOtpProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    args,
+    ) async {
   final apiService = ref.watch(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
-
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
-
+  final String email = args['email'];
+  final String previous = args['previous'];
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
-    var   responseData = await apiService.verifyOtp(url, params, "");
-    final status = responseData['status'];
-    final message = responseData['message'];
-    if (status != null && status!.isNotEmpty  && status! == NetworkUrls.SUCCESS) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      Fluttertoast.showToast(msg: message!,toastLength: Toast.LENGTH_LONG,
-          backgroundColor: Colors.black);
-      // Navigator.pushReplacement(
-      //   registrationState.context,
-      //   MaterialPageRoute(
-      //     builder: (_) => const LoginScreen(),
-      //   ),
-      // );
+    final responseData = await apiService.forgetPassword(url, {
+      "email": email,
+    }, "");
+    if (responseData != null && responseData.isNotEmpty) {
+      if (!registrationState.context.mounted) return null;
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData["message"],
+        color: Colors.green,
+      );
+      Navigator.pushReplacement(
+        registrationState.context,
+        MaterialPageRoute(
+          builder: (_) =>
+              VerifyEmailScreen(previousScreen: previous, email: email),
+        ),
+      );
     } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: message!, color:Colors.black);
-      registrationState.setIsLoading(false);
+      if (!registrationState.context.mounted) return null;
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData?['message'] ?? "Something went wrong",
+        color: Colors.red,
+      );
     }
   } catch (e) {
-    registrationState.setIsLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
+  } finally {
     registrationState.setIsLoading(false);
   }
+
   return null;
+});
+
+final verifyOtpProvider =
+FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.watch(loginApiProvider);
+  final registrationState = ref.watch(authNotifierProvider);
+  final String previous = params['previous'];
+  params.remove("previous");
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+  try {
+    final responseData = await apiService.verifyOtp(url, params, "");
+
+    return {"response": responseData, "previous": previous};
+  } catch (e) {
+    throw Exception(e.toString());
+  } finally {
+    registrationState.setIsOTPVerify(false);
+  }
 });

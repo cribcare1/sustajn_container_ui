@@ -304,9 +304,26 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
               registrationState.setContext(context);
               final Map<String, dynamic> body =
               Map<String, dynamic>.from(widget.registrationData.toApiBody());
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, widget.registrationData.profileImage);
+              Map<String, dynamic> params;
+
+              if (widget.registrationData.profileImage != null) {
+                params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER,
+                  body,
+                  Strings.DATA,
+                  widget.registrationData.profileImage!,
+                );
+              } else {
+                params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER,
+                  body,
+                  Strings.DATA,
+                  null,
+                );
+              }
+              // final params = Utils.multipartParams(
+              //     NetworkUrls.REGISTER_USER, body,
+              //     Strings.DATA, widget.registrationData.profileImage);
               ref.read(registerProvider(params));
             } else {
               registrationState.setIsLoading(false);

@@ -92,7 +92,7 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
         borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
         border: Border.all(
           color: Constant.grey.withOpacity(0.3),
         ),

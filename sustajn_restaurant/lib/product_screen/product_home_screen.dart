@@ -9,23 +9,6 @@ import '../utils/theme_utils.dart';
 import 'inventory_screen.dart';
 import 'lease_screen/lease_screen.dart';
 
-void main() async {
-
-  runApp(const ProviderScope(child: MyApp()));
-}
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Container tracking',
-      theme: CustomTheme.getTheme(true),
-      home: const ProductsScreen(),
-    );
-  }
-}
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({Key? key}) : super(key: key);
@@ -71,6 +54,7 @@ class _ProductsScreenState extends State<ProductsScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
+          dividerColor: Constant.grey.withOpacity(0.3),
           indicatorColor: Colors.amber,
           indicatorWeight: 3,
           labelColor: Colors.amber,

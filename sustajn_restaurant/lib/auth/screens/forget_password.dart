@@ -95,7 +95,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                     width: double.infinity,
                     child: SubmitButton(onRightTap: (){if(_formKey.currentState!.validate()){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword',)));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword', email: '',)));
                       // _getNetworkData(authState);
                     }},rightText: Strings.CONTINUE_VERIFICATION,)
                 ),

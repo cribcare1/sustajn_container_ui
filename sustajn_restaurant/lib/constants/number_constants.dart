@@ -143,7 +143,6 @@ class Constant {
   static const Color black12 = Colors.black12;
   static const Color black38 = Colors.black38;
   static const Color black26 = Colors.black26;
-  static const Color lightBlue = Colors.lightBlue;
   static const Color transparent = Colors.transparent;
   static const Color grey = Colors.grey;
   static const Color grey200 = Color(0xFFF5F5F5);
@@ -215,6 +214,10 @@ class Constant {
   static const Color borderLight =  Color(0xFFCDD1C4);
   static const Color textGrey =  Color(0xFF6D6D6D);
   static const Color gold = Color(0xFFD1AE31);
+  static const Color lightYellow = Color(0xFFffdf99);
+  static const Color lightGreen = Color(0xFFa5ff99);
+  static const Color lightBlue = Color(0xFFafddfe);
+  static const Color lightPink = Color(0xFFffb2ba);
 
 
 

@@ -66,7 +66,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const UpgradeBottomSheet(),
+      builder: (context) => const SubscriptionPlanBottomSheet(),
     );
   }
 

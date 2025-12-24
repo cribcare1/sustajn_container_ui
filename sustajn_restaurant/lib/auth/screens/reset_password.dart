@@ -43,7 +43,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
           if (shouldGoBack) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context)=> VerifyEmailScreen(previousScreen: '')));
+                MaterialPageRoute(builder: (context)=> VerifyEmailScreen(previousScreen: '', email: '',)));
           }
 
           return false;

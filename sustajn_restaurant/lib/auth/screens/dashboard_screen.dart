@@ -1,11 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
+import 'package:sustajn_restaurant/order_screen/order_screen/order_screen.dart';
 
 import '../../borrowed/borrowed_home_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../containers/container_list.dart';
 import '../../models/login_model.dart';
+import '../../order_screen/order_home_screen.dart';
+import '../../product_screen/product_home_screen.dart';
 import '../../returned_screen/returned_home_screen.dart';
 import '../../utils/utility.dart';
 
@@ -134,11 +137,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ContainerListScreen(title: 'Containers'),
+                                  ProductsScreen(),
                             ),
                           );
                         },
-                        label: 'Containers',
+                        label: 'Products',
                       ),
                       _buildDashboardCard(
                         context,
@@ -148,25 +151,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BorrowedHomeScreen(),
+                              builder: (context) => OrderHomeScreen(),
                             ),
                           );
                         },
-                        label: 'Borrowed',
+                        label: 'Orders',
                       ),
                       _buildDashboardCard(
                         context,
                         width: cardWidth,
-                        icon: Icons.call_received,
+                        icon: Icons.search,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReturnedHomeScreen(),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => ReturnedHomeScreen(),
+                          //   ),
+                          // );
                         },
-                        label: 'Returned',
+                        label: 'Search',
                       ),
                       _buildDashboardCard(
                         context,
@@ -234,12 +237,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDashboardCard(
-    BuildContext context, {
-    required double width,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required double width,
+        required IconData icon,
+        required String label,
+        required VoidCallback onTap,
+      }) {
     final theme = Theme.of(context);
     final cardHeight = width * 0.55;
 
@@ -254,7 +257,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: Constant.grey,
-            width: 0.3
+            width: 0.3,
           ),
           boxShadow: [
             BoxShadow(
@@ -265,27 +268,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: Constant.CONTAINER_SIZE_48,
-              height: Constant.CONTAINER_SIZE_48,
-              decoration: BoxDecoration(
-                color: Constant.gold,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                color: theme.scaffoldBackgroundColor,
-                size: Constant.CONTAINER_SIZE_22,
+            Flexible(
+              flex: 3,
+              child: Center(
+                child: Container(
+                  width: Constant.CONTAINER_SIZE_48,
+                  height: Constant.CONTAINER_SIZE_48,
+                  decoration: BoxDecoration(
+                    color: Constant.gold,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: theme.scaffoldBackgroundColor,
+                    size: Constant.CONTAINER_SIZE_22,
+                  ),
+                ),
               ),
             ),
-            const Spacer(),
-            Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white
+
+            Flexible(
+              flex: 1,
+              child: Center(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -293,6 +307,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
 
   Widget _buildDropdown(
     BuildContext context, {

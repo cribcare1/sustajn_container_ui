@@ -7,24 +7,8 @@ import '../constants/number_constants.dart';
 import '../main.dart';
 import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
+import 'order_screen/order_screen.dart';
 
-void main() async {
-
-  runApp(const ProviderScope(child: MyApp()));
-}
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Container tracking',
-      theme: CustomTheme.getTheme(true),
-      home: const OrderHomeScreen(),
-    );
-  }
-}
 
 class OrderHomeScreen extends StatefulWidget {
   const OrderHomeScreen({Key? key}) : super(key: key);
@@ -70,6 +54,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
+          dividerColor: Constant.grey.withOpacity(0.3),
           indicatorColor: Colors.amber,
           indicatorWeight: 3,
           labelColor: Colors.amber,
@@ -111,6 +96,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               controller: _tabController,
               children: [
                 AddContainerScreen(),
+                OrdersScreen()
               ],
             ),
           ),

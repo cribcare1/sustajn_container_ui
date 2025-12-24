@@ -16,13 +16,15 @@ import '../../utils/sharedpreference_utils.dart';
 import '../../utils/utility.dart';
 import 'bank_details_screen.dart';
 import 'business_information.dart';
+import 'login_screen.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
   final RegistrationData? registrationData;
+  final String email;
 
   const VerifyEmailScreen({super.key, required this.previousScreen,
-   this.registrationData});
+   this.registrationData, required this.email});
 
   @override
   ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -69,6 +71,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    final emailToShow = widget.registrationData?.email ?? widget.email;
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
 
@@ -116,7 +120,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                       SizedBox(height: Constant.CONTAINER_SIZE_10),
 
                       Text(
-                        Strings.SEND_CODE,
+                        "We've sent you a code to verify your email id on\n$emailToShow",
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: Constant.LABEL_TEXT_SIZE_15,
@@ -129,7 +133,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                       SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                      SizedBox(
+                      authState.isVerifying
+                          ? Center(child: CircularProgressIndicator())
+                          : SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -147,7 +153,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                 message: "Please enter OTP",
                                 color: Colors.red,
                               );
-                              return;
+                              _getNetworkDataVerify(authState);
                             }
 
                             if (_otpController.text.trim().length < 6) {
@@ -158,10 +164,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                               );
                               return;
                             }
-
-                            if (widget.previousScreen == "forgotPassword") {
-                              _getNetworkData(authState);
-                            } else {
+                            else {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -203,40 +206,43 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                       SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                      Center(
-                        child: TextButton(
-                          onPressed: seconds == 0
-                              ? () {
-                            setState(() {
-                              seconds = 120;
-                              _startTimer();
-                            });
-                          }
-                              : null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                Strings.DIDNT_RECV_CODE,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontSize: Constant.LABEL_TEXT_SIZE_16,
+                      if (seconds == 0)
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                seconds = 120;
+                                _startTimer();
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  Strings.DIDNT_RECV_CODE,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                Strings.RESEND,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Constant.gold,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                  fontWeight: FontWeight.bold,
+                                InkWell(
+                                  onTap:(){
+                                    _resetOtp(authState);
+                                  },
+                                  child: Text(
+                                    Strings.RESEND,
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                      color: Constant.gold,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-
                       const Spacer(),
                     ],
                   ),
@@ -300,59 +306,112 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     );
   }
 
-  _getNetworkData(var registrationState) async {
+  Future<void> _getNetworkDataVerify(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":loginModel!.data!.userName,"token":_otpController.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
+      registrationState.setIsOTPVerify(true);
+
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        registrationState.setIsOTPVerify(false);
+        if (!mounted) return;
+
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+
+      final result = await ref.read(
+        verifyOtpProvider({
+          "email": widget.registrationData!.email,
+          "token": _otpController.text,
+          "previous": widget.previousScreen,
+        }).future,
+      );
+
+      final response = result["response"];
+      final previous = result["previous"];
+
+      if (response["status"] == Strings.SUCCESS) {
+        if (!mounted) return;
+
+        showCustomSnackBar(
+          context: context,
+          message: "Email Verification Successful",
+          color: Colors.green,
+        );
+
+        if (previous == "forgotPassword") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
+          );
+        } else {
+          final Map<String, dynamic>? data =
+          await SharedPreferenceUtils.getMapFromSF("signUp");
+
+          if (data != null) {
+            ref.read(registerProvider(data).future).then((value){
+              if(value.isNotEmpty){
+                showCustomSnackBar(context: context, message: value['message'], color: Colors.green);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+              }
+            });
           }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+        }
+      } else {
+        if (!mounted) return;
+
+        showCustomSnackBar(
+          context: context,
+          message: response["message"],
+          color: Colors.red,
+        );
       }
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog("OTP Verify Error: $e");
+    }finally{
+      registrationState.setIsOTPVerify(false);
     }
   }
-  _getNetworkDataVerify(var registrationState) async {
+
+
+
+  _resetOtp(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(verifyOtpProvider({"email":widget.registrationData!.email,"token":_otpController.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
+      registrationState.setIsLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            ref.read(
+              validateEmail({
+                "email": widget.email,
+                "previous": widget.previousScreen,
+              }),
+            );
+          } else {
             registrationState.setIsLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
           }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
-      }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);

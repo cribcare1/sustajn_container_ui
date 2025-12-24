@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
@@ -14,6 +15,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../utils/sharedpreference_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import 'business_information.dart';
@@ -82,7 +84,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         selectedImage = imageFile;
       });
 
-      ref.read(authNotifierProvider).setImage(imageFile);
+      // ref.read(authNotifierProvider).setImage(imageFile);
     }
   }
 
@@ -293,12 +295,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 //   ),
                 // ),
 
-                SizedBox(
+                authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                   width: double.infinity,
                   child: SubmitButton(
                     onRightTap: () {
                       if (_formKey.currentState!.validate()) {
-                        if (!_validateImage()) return;
 
                         final registrationData = RegistrationData(
                           fullName: restaurantCtrl.text,
@@ -307,16 +308,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           password: passwordCtrl.text,
                           profileImage: selectedImage,
                         );
-                        _getNetworkDataVerify(authState);
+                        _getNetworkData(authState);
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => VerifyEmailScreen(previousScreen: '',
-                              registrationData: registrationData,
-                            ),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => VerifyEmailScreen(previousScreen: '',
+                        //       registrationData: registrationData, email: emailCtrl.text,
+                        //     ),
+                        //   ),
+                        // );
                       }
                     },
                     rightText: Strings.CONTINUE_VERIFICATION,
@@ -442,33 +443,78 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  _getNetworkDataVerify(var registrationState) async {
+  Future<void> _getNetworkData(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(verifyOtpProvider({"email":emailCtrl.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
-          }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+      if (!registrationState.isValid) return;
+      registrationState.setIsLoading(true);
+      FocusScope.of(context).unfocus();
+      ref.read(authNotifierProvider).loginData(
+        context,
+        emailCtrl.text,
+        passwordCtrl.text,
+      );
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+      if (!isNetworkAvailable) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
       }
+      Map<String, dynamic> mapData = {
+        "fullName": restaurantCtrl.text,
+        "userType": "RESTURANT",
+        "email": emailCtrl.text,
+        "phoneNumber": mobileCtrl.text,
+        "userName": emailCtrl.text,
+        "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
+        "passwordHash": passwordCtrl.text,
+      };
+      await SharedPreferenceUtils.saveDataInSF(
+        "signUp",
+        jsonEncode(mapData),
+      );
+      ref.read(
+        validateEmail({
+          "email": emailCtrl.text,
+          "previous": "signUp",
+        }),
+      );
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog('Error in Login button: $e');
     }
   }
+
+  // _getNetworkDataVerify(var registrationState) async {
+  //   try {
+  //     if (registrationState.isValid) {
+  //       await ref
+  //           .read(networkProvider.notifier)
+  //           .isNetworkAvailable()
+  //           .then((isNetworkAvailable) async {
+  //         try {
+  //           if (isNetworkAvailable) {
+  //             registrationState.setIsLoading(true);
+  //             ref.read(verifyOtpProvider({"email":emailCtrl.text}));
+  //           } else {
+  //             registrationState.setIsLoading(false);
+  //             if(!mounted) return;
+  //             showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+  //           }
+  //         } catch (e) {
+  //           Utils.printLog('Error on button onPressed: $e');
+  //           registrationState.setIsLoading(false);
+  //         }
+  //         if(!mounted) return;
+  //         FocusScope.of(context).unfocus();
+  //       });
+  //     }
+  //   } catch (e) {
+  //     Utils.printLog('Error in Login button onPressed: $e');
+  //     registrationState.setIsLoading(false);
+  //   }
+  // }
 }

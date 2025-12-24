@@ -167,9 +167,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                     width: double.infinity,
                     child:SubmitButton(onRightTap: (){
-                      if (_formKey.currentState!.validate()) {
-                        _getNetworkData(authState);
-                      }
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=> DashboardScreen()));
+                      // if (_formKey.currentState!.validate()) {
+                      //   _getNetworkData(authState);
+                      // }
                     },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),

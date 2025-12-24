@@ -44,7 +44,7 @@ class ReportDetailsScreen extends StatelessWidget {
     if(status == 'New'){
       return [
         IconButton(onPressed: (){},
-            icon: Icon(Icons.more_vert))
+            icon: Icon(Icons.more_vert, color: Colors.white,))
       ];
     }
     return [];
@@ -81,6 +81,7 @@ class ReportDetailsScreen extends StatelessWidget {
                               'Basic Info',
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: Colors.white
                               ),
                             ),
                           ),
@@ -93,12 +94,16 @@ class ReportDetailsScreen extends StatelessWidget {
 
                       Text(
                         'Subject',
-                        style: theme.textTheme.bodySmall,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
                       SizedBox(height: Constant.SIZE_04),
                       Text(
                         'Broken Container',
-                        style: theme.textTheme.bodyMedium,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
 
                       SizedBox(height: Constant.CONTAINER_SIZE_12),
@@ -109,12 +114,16 @@ class ReportDetailsScreen extends StatelessWidget {
 
                       Text(
                         'Reported Date',
-                        style: theme.textTheme.bodySmall,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
                       SizedBox(height: Constant.SIZE_04),
                       Text(
                         '28/11/2025',
-                        style: theme.textTheme.bodyMedium,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
 
                       if (_getSecondaryDateLabel() != null) ...[
@@ -124,12 +133,16 @@ class ReportDetailsScreen extends StatelessWidget {
                         SizedBox(height: Constant.CONTAINER_SIZE_12),
                         Text(
                           _getSecondaryDateLabel()!,
-                          style: theme.textTheme.bodySmall,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white
+                          ),
                         ),
                         SizedBox(height: Constant.SIZE_04),
                         Text(
                           '28/11/2025',
-                          style: theme.textTheme.bodyMedium,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white
+                          ),
                         ),
                       ],
                     ],
@@ -155,7 +168,9 @@ class ReportDetailsScreen extends StatelessWidget {
                             'sealed pots, and our tandoori specialties are marinated '
                             'for 24 hours. The colorful, inviting decor and attentive '
                             'service make every meal a celebration',
-                        style: theme.textTheme.bodySmall,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
                     ],
                   ),
@@ -205,7 +220,9 @@ class ReportDetailsScreen extends StatelessWidget {
                           'sealed pots, and our tandoori specialties are marinated '
                           'for 24 hours. The colorful, inviting decor and attentive '
                         'service make every meal a celebration',
-                          style: theme.textTheme.bodySmall,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white
+                          ),
                         ),
                       ],
                     ),
@@ -227,7 +244,7 @@ class ReportDetailsScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
-        color: theme.cardColor,
+        color: Constant.grey.withOpacity(0.3),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
       ),
       child: child,
@@ -239,6 +256,7 @@ class ReportDetailsScreen extends StatelessWidget {
       title,
       style: theme.textTheme.titleLarge?.copyWith(
         fontWeight: FontWeight.w600,
+        color: Colors.white
       ),
     );
   }

@@ -143,12 +143,13 @@ class _ReportScreenState extends State<ReportScreen> {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      color: Colors.grey.shade200,
+      color:Constant.grey.withOpacity(0.2),
       child: Text(
         'December - 2025',
         style: theme.textTheme.bodyLarge?.copyWith(
           fontSize: Constant.LABEL_TEXT_SIZE_16,
           fontWeight: FontWeight.w600,
+          color: Colors.white
         ),
       ),
     );
