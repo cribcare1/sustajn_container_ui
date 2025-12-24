@@ -199,7 +199,7 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
       ),
       floatingActionButton: InkWell(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) => QrScannerScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => QrCodeScanner()));
         },
         child: Container(
           height: 60,
