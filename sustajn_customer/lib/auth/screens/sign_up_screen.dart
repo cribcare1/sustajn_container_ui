@@ -152,7 +152,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.white,
+                        backgroundColor: Constant.gold,
                         backgroundImage:
                         selectedImage != null ? FileImage(selectedImage!) : null,
                         child: selectedImage == null
@@ -310,14 +310,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       text: TextSpan(
                         text: Strings.ALREADY_HAVE_ACC,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.hintColor,
+                          color: Colors.white,
                           fontSize: Constant.LABEL_TEXT_SIZE_14,
                         ),
                         children: [
                           TextSpan(
                             text: Strings.LOGIN,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.primaryColor,
+                              color:Constant.gold,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
@@ -354,7 +354,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         required TextEditingController controller,
         required String hint,
         String? Function(String?)? validator,
+        bool obscure = false,
         TextInputType keyboard = TextInputType.text,
+        bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
@@ -364,25 +366,25 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
+        style: TextStyle(color: Colors.white70),
+        cursorColor: Colors.white70,
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.hintColor,
-            fontSize: Constant.LABEL_TEXT_SIZE_15,
-          ),
+          hintStyle: TextStyle(color: Colors.white70),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: theme.primaryColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.SIZE_10),
-            borderSide: BorderSide(color: theme.dividerColor),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderSide: BorderSide(color: Constant.grey),
           ),
+          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
         ),
       ),
     );
   }
-
 
   Widget _buildPasswordField(
       BuildContext context, {
@@ -400,21 +402,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         controller: controller,
         obscureText: !visible,
         validator: validator,
+        style: TextStyle(color: Colors.white70),
+        cursorColor: Colors.white70,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.hintColor,
-            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          hintStyle: TextStyle(color: Colors.white70),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderSide: BorderSide(color: Constant.grey),
           ),
+          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
           contentPadding: EdgeInsets.symmetric(
             horizontal: Constant.SIZE_15,
             vertical: Constant.SIZE_15,
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: theme.primaryColor,
           suffixIcon: IconButton(
-            icon:
-            Icon(visible ? Icons.visibility : Icons.visibility_off),
+            icon: Icon(
+              visible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.white70,
+            ),
             onPressed: toggleVisibility,
           ),
         ),

@@ -13,20 +13,19 @@ class StatusRow extends StatelessWidget {
     required Color circleColor,
     required Color textColor,
   }) {
-    final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: Constant.CONTAINER_SIZE_110,
-            height: Constant.CONTAINER_SIZE_80,
+            width: Constant.CONTAINER_SIZE_72,
+            height: Constant.CONTAINER_SIZE_72,
             decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(15),
+              shape: BoxShape.circle,
               border: Border.all(
-                color: theme.primaryColor.withOpacity(0.2),
+                color: circleColor.withOpacity(0.18),
                 width: 1.5,
               ),
             ),
@@ -36,7 +35,7 @@ class StatusRow extends StatelessWidget {
                 children: [
                   Text(
                     count,
-                    style:theme. textTheme.titleLarge?.copyWith(
+                    style: textTheme.titleLarge?.copyWith(
                       color: textColor,
                       fontSize: Constant.LABEL_TEXT_SIZE_20,
                       fontWeight: FontWeight.bold,
@@ -45,8 +44,8 @@ class StatusRow extends StatelessWidget {
                   SizedBox(height: Constant.SIZE_04),
                   Text(
                     label,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: textColor,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: Constant.subtitleText,
                       fontSize: Constant.LABEL_TEXT_SIZE_14,
                     ),
                   ),

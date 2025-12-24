@@ -20,13 +20,13 @@ class ReturnCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16, vertical: Constant.SIZE_08),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Constant.card,
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
         ),
         child: Padding(
@@ -44,12 +44,11 @@ class ReturnCard extends StatelessWidget {
                     width: Constant.CONTAINER_SIZE_56,
                     height: Constant.CONTAINER_SIZE_56,
                     decoration: BoxDecoration(
-                      color: theme.scaffoldBackgroundColor,
+                      color: Colors.white24,
                       borderRadius: BorderRadius.circular(Constant.SIZE_08),
                     ),
                     child: Center(
-                      child: Icon(Icons.inbox,
-                          size: Constant.CONTAINER_SIZE_30, color: theme.primaryColor),
+                      child: Icon(Icons.inbox, size: Constant.CONTAINER_SIZE_30, color: Constant.profileText),
                     ),
                   ),
                 ],
@@ -61,17 +60,17 @@ class ReturnCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.black, fontSize: Constant.LABEL_TEXT_SIZE_16,
+                    Text(title, style: textTheme.titleMedium?.copyWith(
+                        color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_16,
                         fontWeight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
                     SizedBox(height: Constant.SIZE_04),
                     Text(subTitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.black, fontSize: Constant.LABEL_TEXT_SIZE_14),
+                        style: textTheme.bodySmall?.copyWith(
+                            color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
                     Text(volume,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.black, fontSize: Constant.LABEL_TEXT_SIZE_14),
+                        style: textTheme.bodySmall?.copyWith(
+                            color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
                   ],
                 ),
@@ -82,14 +81,22 @@ class ReturnCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.inventory_2,
-                          size: Constant.CONTAINER_SIZE_14, color: theme.primaryColor),
-                      SizedBox(width: Constant.SIZE_06),
-                      Text(qty.toString(), style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.primaryColor, fontSize: Constant.LABEL_TEXT_SIZE_16)),
-                    ],
+                  Container(
+                    padding: EdgeInsets.all(Constant.SIZE_06),
+                    decoration: BoxDecoration(
+                      color: Constant.card.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(radius: Constant.CONTAINER_SIZE_12,
+                            backgroundColor: Constant.greenCircle, child: Icon(Icons.inventory_2,
+                                size: Constant.CONTAINER_SIZE_14, color: Colors.white)),
+                        SizedBox(width: Constant.SIZE_06),
+                        Text(qty.toString(), style: textTheme.titleMedium?.copyWith(
+                            color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_16)),
+                      ],
+                    ),
                   ),
                   SizedBox(height: Constant.SIZE_08),
                   Container(
@@ -98,7 +105,7 @@ class ReturnCard extends StatelessWidget {
                       color: daysBadgeColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(daysLeft, style: theme.textTheme.bodySmall?.copyWith(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12)),
+                    child: Text(daysLeft, style: textTheme.bodySmall?.copyWith(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12)),
                   ),
                 ],
               )

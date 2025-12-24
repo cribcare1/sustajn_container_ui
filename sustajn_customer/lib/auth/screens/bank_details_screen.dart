@@ -73,28 +73,35 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         Strings.BANK_DETAILS,
                         style: theme?.textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                       SizedBox(height: height * 0.005),
                       Text(
                         Strings.ENTER_BANK_INFO,
-                        style: theme?.textTheme.bodyMedium,
+                        style: theme?.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white
+                        ),
                       ),
                       SizedBox(height: height * 0.03),
 
                       TextFormField(
                         controller: bankNameController,
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: Strings.BANK_NAME,
                           hintStyle: theme!.textTheme.bodyMedium?.copyWith(
-                            color: theme.hintColor,
+                            color: Colors.white,
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            borderSide: BorderSide(color: Constant.grey),
                           ),
+                          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                         ),
                         validator: (v) {
                           if (v!.isEmpty) return "Bank name required";
@@ -110,6 +117,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: accNoController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(12),
@@ -117,18 +125,21 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         decoration: InputDecoration(
                           hintText: Strings.ACC_NO,
                           hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.hintColor,
+                            color: Colors.white,
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor:theme.primaryColor,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 14,
                             horizontal: 12,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            borderSide: BorderSide(color: Constant.grey),
                           ),
+                          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                         ),
                         validator: (v) {
                           if (v!.isEmpty) return "Account number required";
@@ -143,6 +154,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: confirmAccController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(12),
@@ -150,14 +162,17 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         decoration: InputDecoration(
                           hintText: Strings.CONFIRM_ACC_NO,
                           hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.hintColor,
+                            color: Colors.white,
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            borderSide: BorderSide(color: Constant.grey),
                           ),
+                          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                         ),
                         validator: (v) {
                           if (v!.isEmpty) {
@@ -177,6 +192,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: taxController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(10),
@@ -184,14 +200,17 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         decoration: InputDecoration(
                           hintText: Strings.TAX_NUMBER,
                           hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.hintColor,
+                            color: Colors.white,
                             fontSize: Constant.LABEL_TEXT_SIZE_15,
                           ),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            borderSide: BorderSide(color: Constant.grey),
                           ),
+                          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                         ),
                         validator: (v) {
                           if (v!.isEmpty) return "Tax number required";
