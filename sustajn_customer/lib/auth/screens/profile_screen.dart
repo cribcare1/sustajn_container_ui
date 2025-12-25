@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
+import '../../constants/string_utils.dart';
+import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../edit_dialogs/edit_bank_details.dart';
@@ -18,12 +20,30 @@ class MyProfileScreen extends StatefulWidget {
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Bank Details", "icon": Icons.account_balance_outlined},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Reports", "icon": Icons.bar_chart_outlined},
+    {"name": "History", "icon": Icons.history},
+    {"name": "Payment Type", "icon": Icons.currency_rupee},
+    {"name": "QR Code", "icon": Icons.qr_code},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us","icon": Icons.headset_mic_outlined }
   ];
+
+  Data? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
 
 
   void _handleItemTap(int index, BuildContext context) {
@@ -54,16 +74,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       builder: (_) => const FeedbackBottomSheet(),
     );
   }
-  //
-  // void _showSubscriptionDialog(BuildContext context){
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (context) => const UpgradeBottomSheet(),
-  //   );
-  // }
-  //
+
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -72,18 +83,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       builder: (_) => const EditBankDetailsDialog(),
     );
   }
-  //
-  // void _showBusinessEditScreen(BuildContext context) {
-  //   Navigator.push(context,
-  //       MaterialPageRoute(builder: (context)=>BusinessInformationScreen()));
-  // }
-  //
-  // void _showReportScreen(BuildContext context){
-  //   Navigator.push(context,
-  //       MaterialPageRoute(builder: (context)=> ReportScreen()));
-  // }
+
   @override
   Widget build(BuildContext context) {
+    if (isLoading || loginResponse == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
@@ -142,7 +149,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                         GestureDetector(
                           onTap: (){
-                            Utility.showProfilePhotoBottomSheet(context);
+                            Utils.showProfilePhotoBottomSheet(context);
                           },
                           child: Container(
                             height: w * 0.09,
@@ -163,7 +170,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "John doe",
+                          loginResponse!.fullName ?? "",
                           style: TextStyle(
                             fontSize: w * 0.055,
                             fontWeight: FontWeight.w700,
@@ -208,7 +215,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           _detailItem(
                               icon: Icons.email_outlined,
                               title: "Email",
-                              value: "hello597@gmail.com",
+                              value: loginResponse!.userName?? "",
                               w: w,
                               showEdit: false,
                               theme: theme,
@@ -288,6 +295,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             ),
                           ),
                           onPressed: () {
+                            Utils.logOutDialog(
+                                context,
+                                Icons.logout,
+                                Strings.CONFIRM_LOGOUT,
+                                Strings.SURE_LOG_OUT,
+                                Strings.YES,
+                                Strings.NO
+                            );
                           },
                         ),
                       ),

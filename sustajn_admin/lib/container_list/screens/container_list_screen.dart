@@ -1,5 +1,5 @@
-import 'dart:io';
-
+import 'package:container_tracking/common_widgets/card_widget.dart';
+import 'package:container_tracking/constants/network_urls.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:container_tracking/container_list/screens/container_details.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,8 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../container_state.dart';
+import '../model/container_list_model.dart';
 import 'add_new_container.dart';
 
 class ContainersScreen extends ConsumerStatefulWidget {
@@ -22,14 +24,19 @@ class ContainersScreen extends ConsumerStatefulWidget {
 }
 
 class _ContainersScreenState extends ConsumerState<ContainersScreen> {
-  List<Map<String, dynamic>> containerList = [];
-@override
+  @override
   void initState() {
-  WidgetsBinding.instance.addPostFrameCallback((_){
-    _getNetworkData(ref.read(containerNotifierProvider));
-  });
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(containerNotifierProvider).setContext(context);
+      _getNetworkData(ref.read(containerNotifierProvider));
+    });
     super.initState();
   }
+
+  Future<void> _refreshIndicator() async {
+    _getNetworkData(ref.read(containerNotifierProvider));
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
@@ -45,8 +52,12 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
             onPressed: () async {
               final result = await showContainerFilterBottomSheet(
                 context,
-                containerList,
-              );
+                state.containerList,
+              ).then((value){
+                if(value!.isNotEmpty){
+                  state.filteredContainers = value;
+                }
+              });
 
               if (result != null) {
                 print("Selected: $result");
@@ -56,24 +67,69 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           ),
         ],
       ).getAppBar(context),
-      body: state.isSaving!?Center(child: CircularProgressIndicator(),): SafeArea(
-        child: containerList.isEmpty
-            ? _buildEmptyScreen()
-            : _buildContainerList(themeData!),
-      ),
-      floatingActionButton: containerList.isNotEmpty
+      body: state.isLoading
+          ? Center(child: CircularProgressIndicator())
+          // : state.errorContainer != null
+          // ? Center(
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Text(
+          //           state.errorContainer!,
+          //           style: themeData!.textTheme.titleMedium,
+          //         ),
+          //         ElevatedButton(
+          //           style: ElevatedButton.styleFrom(
+          //             backgroundColor: Colors.green
+          //           ),
+          //           onPressed: () {
+          //             _refreshIndicator();
+          //           },
+          //           child: Padding(
+          //             padding: EdgeInsets.all(Constant.SIZE_08),
+          //             child: Text(
+          //               "Retry",
+          //               style: themeData.textTheme.titleMedium!.copyWith(
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   )
+          : SafeArea(
+              child: state.containerList.isNotEmpty
+                  ?  RefreshIndicator(
+                onRefresh: () => _refreshIndicator(),
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_16,
+                    vertical: Constant.CONTAINER_SIZE_16,
+                  ),
+                  itemCount: state.filteredContainers.length,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: Constant.CONTAINER_SIZE_12),
+                  itemBuilder: (context, index) {
+                    final item = state.filteredContainers[index];
+                    return _buildContainerTile(item, themeData!);
+                  },
+                ),
+              ): _buildEmptyScreen(),
+            ),
+      floatingActionButton: state.containerList.isNotEmpty
           ? FloatingActionButton(
-              backgroundColor: const Color(0xFF2D8F6E),
-              onPressed: () async {
-                final result = await Navigator.push(
+              backgroundColor: themeData!.secondaryHeaderColor,
+              onPressed: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const AddContainerScreen()),
-                );
-                if (result != null) {
-                  setState(() {
-                    containerList.add(result);
-                  });
-                }
+                ).then((value) {
+                  if (value = true) {
+                    _refreshIndicator();
+                  }
+                });
               },
               child: Icon(
                 Icons.add,
@@ -86,6 +142,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
+
 
   Widget _buildEmptyScreen() {
     return Center(
@@ -102,11 +159,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           SizedBox(height: Constant.CONTAINER_SIZE_20),
           Text(
             Strings.NO_CONTAINERS,
-            style: TextStyle(
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.titleMedium
           ),
 
           SizedBox(height: Constant.SIZE_08),
@@ -128,9 +181,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 MaterialPageRoute(builder: (_) => const AddContainerScreen()),
               );
               if (result != null) {
-                setState(() {
-                  containerList.add(result);
-                });
+                _refreshIndicator();
               }
             },
             icon: Icon(Icons.add, color: Colors.white),
@@ -157,62 +208,8 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     );
   }
 
-  Widget _buildContainerList(ThemeData themeData) {
-    return Column(
-      children: [
-        // Padding(
-        //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        //   child: TextField(
-        //     decoration: InputDecoration(
-        //       hintText: Strings.SEARCH_CONTAINER_NAME,
-        //       prefixIcon: const Icon(Icons.search),
-        //       filled: true,
-        //       fillColor: Colors.white,
-        //       contentPadding: const EdgeInsets.symmetric(vertical: 0),
-        //       border: OutlineInputBorder(
-        //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        //         borderSide: BorderSide.none,
-        //       ),
-        //       suffixIcon: GestureDetector(
-        //         onTap: () async {
-        //           final result = await showContainerFilterBottomSheet(
-        //             context,
-        //             containerList,
-        //           );
-        //
-        //           if (result != null) {
-        //             print("Selected: $result");
-        //           }
-        //
-        //         },
-        //           child: const Icon(Icons.filter_list)),
-        //     ),
-        //   ),
-        // ),
-        Expanded(
-          child: ListView.separated(
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_16,
-              vertical: Constant.CONTAINER_SIZE_16,
 
-            ),
-            itemCount: containerList.length,
-            separatorBuilder: (context, index) => Divider(
-              height: Constant.CONTAINER_SIZE_12,
-              thickness: 1,
-              color: Colors.grey[300],
-            ),
-            itemBuilder: (context, index) {
-              final item = containerList[index];
-              return _buildContainerTile(item, themeData);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContainerTile(Map<String, dynamic> item, ThemeData themeData) {
+  Widget _buildContainerTile(InventoryData item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -222,28 +219,28 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
           ),
         );
       },
-      child: Container(
-        margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        ),
+      child: GlassSummaryCard(
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-              child: item["image"] != null
-                  ? Image.file(
-                      item["image"] as File,
-                      width: Constant.CONTAINER_SIZE_55,
-                      height: Constant.CONTAINER_SIZE_55,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildPlaceholderImage();
-                      },
-                    )
-                  : _buildPlaceholderImage(),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                border: Border.all(color: Colors.white),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                child: item.imageUrl != ""
+                    ? Image.network(
+                        "${NetworkUrls.IMAGE_BASE_URL}container/${item.imageUrl}",
+                        width: Constant.CONTAINER_SIZE_55,
+                        height: Constant.CONTAINER_SIZE_55,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildPlaceholderImage();
+                        },
+                      )
+                    : _buildPlaceholderImage(),
+              ),
             ),
             SizedBox(width: Constant.CONTAINER_SIZE_14),
             Expanded(
@@ -251,42 +248,31 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item["name"]?.toString() ?? 'Unnamed',
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    item.containerName,
+                    overflow: TextOverflow.ellipsis,
+                    style: themeData.textTheme.titleMedium,
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item["id"]?.toString() ?? 'No ID',
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.grey,
-                    ),
+                    item.productId,
+                    style: themeData.textTheme.titleSmall
                   ),
                   Text(
-                    "${item["volume"]?.toString() ?? '0'}ml",
-                    style: TextStyle(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.grey,
-                    ),
+                    "${item.capacityMl}ml",
+                    style: themeData.textTheme.titleSmall
                   ),
                 ],
               ),
             ),
             Text(
-              item["quantity"]?.toString() ?? '0',
-              style: TextStyle(
-                fontSize: Constant.LABEL_TEXT_SIZE_18,
-                fontWeight: FontWeight.bold,
-              ),
+              item.totalContainers.toString(),
+              style: themeData.textTheme.titleMedium
             ),
             SizedBox(width: Constant.SIZE_10),
             Icon(
               Icons.arrow_forward_ios,
               size: Constant.CONTAINER_SIZE_16,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ],
         ),
@@ -302,31 +288,30 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
       child: Icon(Icons.image, color: Colors.grey[400]),
     );
   }
-  _getNetworkData(var containerState) async {
+
+   _getNetworkData(ContainerState containerState) async {
     try {
-      await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable()
-          .then((isNetworkAvailable) async {
-        try {
-          if (isNetworkAvailable) {
-            containerState.setIsLoading(true);
-            ref.read(fetchContainerProvider(""));
-          } else {
-            containerState.setIsLoading(false);
-            if(!mounted) return;
-            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          containerState.setIsLoading(false);
-        }
-        if(!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
+      containerState.setIsLoading(true);
+
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        containerState.setIsLoading(false);
+        if (!mounted) return;
+
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+      await ref.read(fetchContainerProvider("").future);
+
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      containerState.setIsLoading(false);
+      Utils.printLog('Error: $e');
     }
   }
+
 }

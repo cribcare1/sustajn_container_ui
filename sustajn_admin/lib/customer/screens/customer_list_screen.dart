@@ -1,9 +1,16 @@
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/number_constants.dart';
+import 'package:container_tracking/customer/customer_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../common_provider/network_provider.dart';
+import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_clear_button.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
+import '../customer_provider.dart';
 import 'customer_details_screen.dart';
 
 class CustomerListScreen extends ConsumerStatefulWidget {
@@ -15,58 +22,6 @@ class CustomerListScreen extends ConsumerStatefulWidget {
 
 class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
   bool isTabChange = true;
-
-  final List<Map<String, dynamic>> users = [
-    {
-      "name": "Jackson",
-      "image": "assets/images/user.png",
-      "borrowed": 10,
-      "returned": 20,
-      "pending": 0,
-    },
-    {
-      "name": "Liam Anderson",
-      "image": null, // no image → show placeholder circle icon
-      "borrowed": 5,
-      "returned": 10,
-      "pending": 0,
-    },
-    {
-      "name": "Noah Carter",
-      "image": "assets/images/user.png",
-      "borrowed": 0,
-      "returned": 0,
-      "pending": 2,
-    },
-    {
-      "name": "Mason Walker",
-      "image": "assets/images/user.png",
-      "borrowed": 3,
-      "returned": 15,
-      "pending": 0,
-    },
-    {
-      "name": "Jackson Hayes",
-      "image": null,
-      "borrowed": 7,
-      "returned": 6,
-      "pending": 4,
-    },
-    {
-      "name": "Aiden Cooper",
-      "image": null,
-      "borrowed": 12,
-      "returned": 6,
-      "pending": 5,
-    },
-    {
-      "name": "Kiran Kumar",
-      "image": "assets/images/user.png",
-      "borrowed": 4,
-      "returned": 0,
-      "pending": 0,
-    },
-  ];
   List<String> statusList = ["Active Customer", "In Active Customer"];
   String? selectedStatus;
   List<String> subscriptionType = [
@@ -76,11 +31,25 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
     "Yearly-Pay-Per-Use",
   ];
   String? selectedSubscriptionType;
+@override
+  void initState() {
+  WidgetsBinding.instance.addPostFrameCallback((_){
+    ref.read(customerNotifierProvider).setContext(context);
+    _getNetworkData(ref.read(customerNotifierProvider));
+  });
+    super.initState();
+  }
 
+
+  Future<void> _refreshIndicator() async {
+    _getNetworkData(ref.read(customerNotifierProvider));
+  }
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.sizeOf(context).width;
+    // double w = MediaQuery.sizeOf(context).width;
     double h = MediaQuery.sizeOf(context).height;
+    final customerState = ref.watch(customerNotifierProvider);
+    final themeData = CustomTheme.getTheme(true);
     return SafeArea(
       top: false,
       bottom: true,
@@ -99,14 +68,48 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
             ),
           ],
         ).getAppBar(context),
-        body: ListView.separated(
+        body:customerState.isLoading
+            ? Center(child: CircularProgressIndicator())
+        //     :
+        // customerState.error != ""
+        //     ? Center(
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.center,
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Text(
+        //         customerState.error,
+        //         style: themeData!.textTheme.titleMedium,
+        //       ),
+        //       ElevatedButton(
+        //         style: ElevatedButton.styleFrom(
+        //           backgroundColor: Colors.green
+        //         ),
+        //         onPressed: () {
+        //           _refreshIndicator();
+        //         },
+        //         child: Padding(
+        //           padding: EdgeInsets.all(Constant.SIZE_08),
+        //           child: Text(
+        //             "Retry",
+        //             style: themeData.textTheme.titleMedium!.copyWith(
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // )
+            :(customerState.customerList.isEmpty)?Center(child: Text("Customer List is not available",
+            style: themeData!.textTheme.titleMedium),): ListView.separated(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          itemCount: users.length,
+          itemCount: customerState.customerList.length,
           separatorBuilder: (_, __) =>
               SizedBox(height: Constant.CONTAINER_SIZE_10),
 
           itemBuilder: (context, index) {
-            final user = users[index];
+            final user = customerState.customerList[index];
 
             return InkWell(
               onTap: () {
@@ -115,29 +118,14 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                   MaterialPageRoute(builder: (_) => CustomerDetailsScreen()),
                 );
               },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: Constant.CONTAINER_SIZE_12,
-                  horizontal: Constant.SIZE_008,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
+              child: GlassSummaryCard(
 
                 child: Padding(
                   padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                   child: Row(
                     children: [
-                      user["image"] == null
-                          ? const CircleAvatar(
+                      user.profileImage == ""?
+                           const CircleAvatar(
                               radius: 22,
                               backgroundColor: Color(0xffE6F7EC),
                               child: Icon(
@@ -147,7 +135,16 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                             )
                           : CircleAvatar(
                               radius: 22,
-                              backgroundImage: AssetImage(user["image"]),
+                        backgroundColor: Color(0xffE6F7EC),
+                              child: Image.network(user.profileImage,
+                                errorBuilder: (context,obj,s){
+                                return Icon(
+                                  Icons.person_outline,
+                                  color: Colors.green,
+                                );
+                                },
+
+                              ),
                             ),
                       SizedBox(width: Constant.SIZE_08),
                       Expanded(
@@ -155,7 +152,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${user["name"]}",
+                              user.fullName,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: Theme.of(context).textTheme.titleMedium,
@@ -169,15 +166,15 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                               children: [
                                 _buildStatusItem(
                                   Colors.orange,
-                                  "Borrowed - ${user["borrowed"]}",
+                                  "Borrowed - ${user.borrowedCount}",
                                 ),
                                 _buildStatusItem(
                                   Colors.green,
-                                  "Returned - ${user["returned"]}",
+                                  "Returned - ${user.returnedCount}",
                                 ),
                                 _buildStatusItem(
                                   Colors.red,
-                                  "Pending - ${user["pending"]}",
+                                  "Pending - ${user.pendingCount}",
                                 ),
                               ],
                             ),
@@ -212,7 +209,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         Flexible(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 12,color: Colors.white),
             overflow: TextOverflow.visible,
             softWrap: true,
           ),
@@ -243,90 +240,88 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                     child: Container(
                       margin: const EdgeInsets.all(10),
                       padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: Theme.of(context).secondaryHeaderColor,
                       ),
-                      child: const Icon(Icons.close, size: 22),
+                      child: const Icon(Icons.close, size: 20,color: Colors.white,),
                     ),
                   ),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.55,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                       Padding(
-                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Filters",
-                            style: Theme.of(context).textTheme.titleLarge
+                SizedBox( height: MediaQuery.of(context).size.height * 0.55,
+                  child: GlassSummaryCard(
+
+                    child: Column(
+                      children: [
+                         Padding(
+                          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Filters",
+                              style: Theme.of(context).textTheme.titleMedium
+                            ),
                           ),
                         ),
-                      ),
 
-                      Expanded(
-                        child: Row(
-                          children: [
-                            // Left Tabs
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _selectorTab(
-                                    label: "Status",
-                                    isSelected: isTabChange,
-                                    onTap: () {
-                                      setSheetState(() {
-                                        isTabChange = true;
-                                      });
-                                    },
-                                  ),
-                                   SizedBox(height: Constant.SIZE_HEIGHT_20),
-                                  _selectorTab(
-                                    label: "Subscription Type",
-                                    isSelected: !isTabChange,
-                                    onTap: () {
-                                      setSheetState(() {
-                                        isTabChange = false;
-                                      });
-                                    },
-                                  ),
-                                ],
+                        Expanded(
+                          child: Row(
+                            children: [
+                              // Left Tabs
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _selectorTab(
+                                      label: "Status",
+                                      isSelected: isTabChange,
+                                      onTap: () {
+                                        setSheetState(() {
+                                          isTabChange = true;
+                                        });
+                                      },
+                                    ),
+                                     SizedBox(height: Constant.SIZE_HEIGHT_20),
+                                    _selectorTab(
+                                      label: "Subscription Type",
+                                      isSelected: !isTabChange,
+                                      onTap: () {
+                                        setSheetState(() {
+                                          isTabChange = false;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            const VerticalDivider(width: 20, thickness: 1),
+                              const VerticalDivider(width: 20, thickness: 1),
 
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: isTabChange
-                                    ? _buildStatusView(setSheetState)
-                                    : _buildSubscriptionView(setSheetState),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: isTabChange
+                                      ? _buildStatusView(setSheetState)
+                                      : _buildSubscriptionView(setSheetState),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child:SubmitClearButton(
-                            onLeftTap: () {
-                              selectedStatus = null;
-                              selectedSubscriptionType = null;
-                              Navigator.pop(context); },
-                            onRightTap: () {  },),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child:SubmitClearButton(
+                              onLeftTap: () {
+                                selectedStatus = null;
+                                selectedSubscriptionType = null;
+                                Navigator.pop(context); },
+                              onRightTap: () {  },),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -348,14 +343,17 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
             Flexible(flex: 1,
               child: Text(
                 item,
-                style: Theme.of(context).textTheme.titleMedium!,
+                style: Theme.of(context).textTheme.titleSmall!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Checkbox(
               checkColor: Colors.white,
-              activeColor: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(4)
+              ),
+              activeColor: Theme.of(context).secondaryHeaderColor,
               value: selectedStatus == item,
               onChanged: (value) {
                 setSheetState(() {
@@ -380,7 +378,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
             Flexible(
               child: Text(
                 item,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.titleSmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -388,7 +386,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
 
             Checkbox(
               checkColor: Colors.white,
-              activeColor: Theme.of(context).primaryColor,
+              activeColor: Theme.of(context).secondaryHeaderColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(4)),
               value: selectedSubscriptionType == item,
               visualDensity: VisualDensity(vertical: 0, horizontal: 0),
               onChanged: (value) {
@@ -415,8 +414,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
           Text(
             label,
             style: TextStyle(
-              fontSize: 16,
-              color: isSelected ? Colors.black : Colors.grey,
+              fontSize: 14,
+              color: isSelected ? Colors.white : Colors.grey,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -425,5 +424,29 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         ],
       ),
     );
+  }
+  _getNetworkData(CustomerState customerState) async {
+    try {
+      ref.read( fetchCustomerProvider(true));
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+          } else {
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+    }
   }
 }

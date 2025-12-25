@@ -1,47 +1,70 @@
 class LoginModel {
-    int? userId;
-    String? image;
-    String? role;
-    String? userName;
-    String? address;
-    String? fullName;
-    String? jwtToken;
-    String? tokenType;
+  final String message;
+  final LoginData data;
+  final String status;
 
   LoginModel({
-     this.userId,
-     this.image,
-     this.role,
-     this.userName,
-     this.address,
-     this.fullName,
-     this.jwtToken,
-     this.tokenType,
+    required this.message,
+    required this.data,
+    required this.status,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      userId: json['userId'] ?? 0,
-      image: json['image'] ?? "",
-      role: json['role'] ?? "",
-      userName: json['userName'] ?? "",
-      address: json['address'] ?? "",
-      fullName: json['fullName'] ?? "",
-      jwtToken: json['jwtToken'] ?? "",
-      tokenType: json['tokenType'] ?? "",
+      message: json['message'] ?? '',
+      status: json['status'] ?? '',
+      data: LoginData.fromJson(json['data'] ?? {}),
     );
   }
+}
 
+class LoginData {
+  final int userId;
+  final String image;
+  final String role;
+  final String userName;
+  final String address;
+  final String fullName;
+  final String jwtToken;
+  final String tokenType;
+  final String mobileNo;
+
+  LoginData({
+    required this.userId,
+    required this.image,
+    required this.role,
+    required this.userName,
+    required this.address,
+    required this.fullName,
+    required this.jwtToken,
+    required this.tokenType,
+    required this.mobileNo,
+  });
+
+  factory LoginData.fromJson(Map<String, dynamic> json) {
+    return LoginData(
+      userId: json['userId'] ?? 0,
+      image: json['image'] ?? '',
+      role: json['role'] ?? '',
+      userName: json['userName'] ?? 'Unknown',
+      address: json['address'] ?? '',
+      fullName: json['fullName'] ?? 'Unknown', // handles null
+      jwtToken: json['jwtToken'] ?? '',
+      tokenType: json['tokenType'] ?? '',
+      mobileNo: json['mobileNo'] ?? '**********',
+    );
+  }
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'image': image,
-      'role': role,
-      'userName': userName,
-      'address': address,
-      'fullName': fullName,
-      'jwtToken': jwtToken,
-      'tokenType': tokenType,
+      "userId": userId,
+      "image": image,
+      "role": role,
+      "userName": userName,
+      "address": address,
+      "fullName": fullName,
+      "jwtToken": jwtToken,
+      "tokenType": tokenType,
+      "mobileNo": mobileNo,
     };
   }
 }

@@ -8,7 +8,7 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xFF3f715e),
+      primaryColor: const Color(0xFF0f3727),
       secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
@@ -21,21 +21,21 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xFFeef6f3),
+      scaffoldBackgroundColor: const Color(0xFF0f3727),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.dmSans(),
-        titleSmall: GoogleFonts.dmSans(
+        displayLarge: GoogleFonts.openSans(),
+        titleSmall: GoogleFonts.roboto(
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: const Color(0xff3e4042)),
-        titleMedium: GoogleFonts.dmSans(
+        titleMedium: GoogleFonts.roboto(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: const Color(0xff3e4042),
           textStyle: const TextStyle(overflow: TextOverflow.visible),
         ),
-        titleLarge: GoogleFonts.dmSans(
+        titleLarge: GoogleFonts.roboto(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             color: const Color(0xff3e4042),
@@ -44,7 +44,7 @@ class CustomTheme {
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: const TextStyle(
           // letterSpacing: 1,
-            fontFamily: 'DM Sans',
+            fontFamily: 'OpenSans',
             color: Colors.black,
             fontSize: 15,
             fontWeight: FontWeight.w600),
@@ -73,6 +73,15 @@ class CustomTheme {
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.grey));
   }
+
+
+  static OutlineInputBorder roundedBorder(Color color) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: color),
+    );
+  }
+
 
   static TextStyle getButtonBoldBlackStyle() {
     return TextStyle(
@@ -107,6 +116,30 @@ class CustomTheme {
     );
   }
 
+  static TextField searchField(TextEditingController controller, String text){
+    return  TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: text,
+        hintStyle: TextStyle(color: Colors.white70),
+        prefixIcon: const Icon(Icons.search, color: Colors.white70,),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        fillColor: Constant.grey.withOpacity(0.1),
+        filled: true,
+      ),
+    );
+  }
 
 
 

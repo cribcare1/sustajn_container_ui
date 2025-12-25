@@ -7,69 +7,78 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../constants/network_urls.dart';
-import '../constants/string_utils.dart';
 import '../utils/utility.dart';
+import 'model/container_list_model.dart';
 
-final containerNotifierProvider = ChangeNotifierProvider((ref) => ContainerState());
+final containerNotifierProvider = ChangeNotifierProvider(
+  (ref) => ContainerState(),
+);
 
-final addContainerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params)async{
-  final apiService = ref.watch(containerApiProvider);
-  final containerState = ref.watch(containerNotifierProvider);
+final addContainerProvider =
+    FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+      final apiService = ref.watch(containerApiProvider);
+      final containerState = ref.watch(containerNotifierProvider);
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_CONTAINER}';
-  print(params);
-  print(containerState.image);
-  Future.microtask((){
-    containerState.setIsLoading(true);
-  });
-  try{
-
-var response = await apiService.addContainer(url, params, "Add Container", containerState.image??File(""));
-if(response != null){
-  if(containerState.context.mounted) {
-    showCustomSnackBar(context: containerState.context,
-        message: Strings.ADDED_CONTAINER, color:Colors.green);
-    Navigator.of(containerState.context).pop(true);
-  }
-}else{
-  if(containerState.context.mounted){
-    showCustomSnackBar(context: containerState.context,
-        message: "Failed to add container", color:Colors.red);
-  }
-}
-   
-  }catch(e){
-    if(containerState.context.mounted){
-      showCustomSnackBar(context: containerState.context,
-          message: e.toString(), color:Colors.red);
-    }
-  }finally{
-    Future.microtask((){
-      containerState.setIsLoading(false);
+      var url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_CONTAINER}';
+      try {
+        var response = await apiService.addContainer(
+          url,
+          params,
+          "data",
+          (containerState.image!.path.contains("http:"))
+              ? null
+              : containerState.image ?? File(""),
+        );
+        if (response != null && response['status'] == "success") {
+          if (containerState.context.mounted) {
+            showCustomSnackBar(
+              context: containerState.context,
+              message: response['message'],
+              color: Colors.green,
+            );
+            containerState.setImage(null);
+            Navigator.of(containerState.context).pop(true);
+          }
+        } else {
+          if (containerState.context.mounted) {
+            showCustomSnackBar(
+              context: containerState.context,
+              message: response['message'],
+              color: Colors.red,
+            );
+          }
+        }
+      } catch (e) {
+        if (containerState.context.mounted) {
+          showCustomSnackBar(
+            context: containerState.context,
+            message: e.toString(),
+            color: Colors.red,
+          );
+        }
+      } finally {
+        containerState.setIsLoading(false);
+      }
     });
-  }
-});
 
-final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, params) async {
+final fetchContainerProvider = FutureProvider.family<InventoryData?, dynamic>((
+  ref,
+  params,
+) async {
   final apiService = ref.watch(containerApiProvider);
   final containerState = ref.watch(containerNotifierProvider);
-
-  Future.microtask(() {
-    containerState.setIsLoading(true);
-  });
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LIST}';
 
   try {
-    var response = await apiService.fetchContainer(url);
-
-    if (containerState.context.mounted) {
-      print("=====$response");
+    // containerState.setIsLoading(true);
+    var responseData = await apiService.fetchContainer(url);
+    if (responseData != null) {
+      containerState.setContainerList(responseData.inventoryData);
+      // containerState.setIsLoading(false);
     }
-
-    return response;
-
   } catch (e) {
+    containerState.setContainerListError(e.toString());
     if (containerState.context.mounted) {
       showCustomSnackBar(
         context: containerState.context,
@@ -78,31 +87,26 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((ref, par
       );
     }
   } finally {
-    Future.microtask(() {
-      containerState.setIsLoading(false); // ✔ Safe
-    });
+    containerState.setIsLoading(false);
   }
+  return null;
 });
 
-final deleteContainer = FutureProvider.family<dynamic, dynamic>((ref, params) async {
+final deleteContainer = FutureProvider.family<dynamic, dynamic>((
+  ref,
+  params,
+) async {
   final apiService = ref.watch(containerApiProvider);
   final containerState = ref.watch(containerNotifierProvider);
-
-  Future.microtask(() {
-    containerState.setIsLoading(true);
-  });
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.DELETE_CONTAINER}/$params';
 
   try {
     var response = await apiService.deleteContainer(url);
 
-    if (containerState.context.mounted) {
-      print("=====$response");
-    }
+    if (containerState.context.mounted) {}
 
     return response;
-
   } catch (e) {
     if (containerState.context.mounted) {
       showCustomSnackBar(
@@ -112,8 +116,6 @@ final deleteContainer = FutureProvider.family<dynamic, dynamic>((ref, params) as
       );
     }
   } finally {
-    Future.microtask(() {
-      containerState.setIsLoading(false); // ✔ Safe
-    });
+    containerState.setIsLoading(false);
   }
 });

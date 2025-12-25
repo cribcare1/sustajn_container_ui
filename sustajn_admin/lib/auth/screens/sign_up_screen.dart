@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
+import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common_provider/network_provider.dart';
@@ -65,7 +68,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.NAME,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -82,10 +85,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   TextFormField(
                     controller: _mobileController,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(10)
+                    ],
                     decoration: InputDecoration(
                       labelText: Strings.MOBILE_NUMBER,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -108,7 +114,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText:Strings.EMAIL,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor:themeData.primaryColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -134,7 +140,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.PASSWORD,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -168,7 +174,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     decoration: InputDecoration(
                       labelText: Strings.CONFIRM_PASSWORD,
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: themeData.primaryColor,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -220,7 +226,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   //   onTap: _navigateToMap,
                   // ),
                   SizedBox(height: height * 0.02),
-                  SizedBox(
+                authState.isLoading?Center(child: CircularProgressIndicator(),):  SizedBox(
                     width: double.infinity,
                     child: SubmitButton(onRightTap: (){
                       if(_formKey.currentState!.validate()){
@@ -238,13 +244,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           TextSpan(
                             text: Strings.LOGIN,
                             style: TextStyle(
-                              color: themeData.primaryColor,
+                              color: themeData.secondaryHeaderColor,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                              Navigator.push(context,
+                              Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context)=> LoginScreen()));
 
                               },
@@ -262,43 +268,51 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  _getNetworkData(var registrationState) async {
+  Future<void> _getNetworkData(var registrationState) async {
     try {
+      if (!registrationState.isValid) return;
+      registrationState.setIsLoading(true);
+      FocusScope.of(context).unfocus();
       ref.read(authNotifierProvider).loginData(
-          context, _emailController.text, _passwordController.text);
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(registerDetailProvider({
-                "fullName":_nameController.text,
-                "userType": "ADMIN",
-                "phoneNumber":_mobileController.text,
-                "userName":_emailController.text,
-                "deviceOs":(Platform.isAndroid == true)?"ANDROID":"IOS",
-                "password":_passwordController.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
-          }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+        context,
+        _emailController.text,
+        _passwordController.text,
+      );
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+      if (!isNetworkAvailable) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
       }
+      Map<String, dynamic> mapData = {
+        "fullName": _nameController.text,
+        "userType": "ADMIN",
+        "email": _emailController.text,
+        "phoneNumber": _mobileController.text,
+        "userName": _emailController.text,
+        "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
+        "passwordHash": _passwordController.text,
+      };
+      await SharedPreferenceUtils.saveDataInSF(
+        "signUp",
+        jsonEncode(mapData),
+      );
+      ref.read(
+        validateEmail({
+          "email": _emailController.text,
+          "previous": "signUp",
+        }),
+      );
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog('Error in Login button: $e');
     }
   }
+
 
   @override
   void dispose() {

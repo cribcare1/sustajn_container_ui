@@ -69,12 +69,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: Theme.of(context).secondaryHeaderColor,
                   ),
                   padding: const EdgeInsets.all(4),
                   margin: const EdgeInsets.all(8),
                   child: InkWell(
-                    child: const Icon(Icons.close, size: 20),
+                    child: const Icon(Icons.close, size: 20,color: Colors.white,),
                     onTap: () => Navigator.pop(context),
                   ),
                 ),
@@ -85,7 +85,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                  color: Colors.white,
+                  color:Theme.of(context).primaryColor,
                 ),
                 child: Column(
                   children: [

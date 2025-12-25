@@ -186,7 +186,7 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
-  Future<dynamic> postMultipartRequestAdmin(String url, File image, Map<String, dynamic> jsonMap, String keyName, String responseType,) async {
+  Future<dynamic> postMultipartRequestAdmin(String url, File? image, Map<String, dynamic> jsonMap, String keyName, String responseType,) async {
     try {
       var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image);
 

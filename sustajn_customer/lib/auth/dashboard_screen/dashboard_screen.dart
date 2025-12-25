@@ -5,8 +5,8 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/return_card.dart'
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
 import '../../constants/number_constants.dart';
 
-class ContainerReturnScreen extends StatelessWidget {
-  const ContainerReturnScreen({Key? key}) : super(key: key);
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
 
   List<Map<String, dynamic>> _sampleData() {
     return [

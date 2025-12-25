@@ -71,7 +71,7 @@ class StatusRow extends StatelessWidget {
             circleColor: Constant.statusCritical,
             textColor: Constant.statusCritical,
           ),
-           SizedBox(width: Constant.SIZE_08),
+          SizedBox(width: Constant.SIZE_08),
           _statusCircle(
             context: context,
             label: 'Urgent',
@@ -79,7 +79,7 @@ class StatusRow extends StatelessWidget {
             circleColor: Constant.statusUrgent,
             textColor: Constant.statusUrgent,
           ),
-           SizedBox(width: Constant.SIZE_08),
+          SizedBox(width: Constant.SIZE_08),
           _statusCircle(
             context: context,
             label: 'Upcoming',

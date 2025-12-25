@@ -1,4 +1,5 @@
 import 'package:container_tracking/constants/network_urls.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,7 +38,7 @@ class Utils {
             children:  [
               Icon(Icons.edit, size: Constant.LABEL_TEXT_SIZE_18),
               SizedBox(width: Constant.SIZE_10),
-              Text(Strings.EDIT),
+              Text(Strings.EDIT,style: TextStyle(color: Colors.black),),
             ],
           ),
         ),
@@ -224,6 +225,17 @@ class Utils {
   }
 
 }
+Dio getDio(){
+var  dio = Dio();
+final token = Utils.authToken();
+dio.options.headers = {
+  'Authorization': 'Bearer $token',
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+};
+  return dio;
+}
+
 void showCustomSnackBar({
   required BuildContext context,
   required String message,
@@ -241,7 +253,7 @@ void showCustomSnackBar({
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     ),
   );
 }

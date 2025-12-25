@@ -62,9 +62,10 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    hintText: Strings.EMAIL,
+                    hintStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: theme.scaffoldBackgroundColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -98,14 +99,15 @@ backgroundColor: theme!.scaffoldBackgroundColor,
   _getNetworkData(var registrationState) async {
     try {
       if (registrationState.isValid) {
+        registrationState.setIsLoading(true);
         await ref
             .read(networkProvider.notifier)
             .isNetworkAvailable()
             .then((isNetworkAvailable) async {
           try {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":_emailController.text}));
+
+              ref.read(validateEmail({"email":_emailController.text,"previous":"forgotPassword"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
@@ -121,7 +123,6 @@ backgroundColor: theme!.scaffoldBackgroundColor,
       }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
     }
   }
 }

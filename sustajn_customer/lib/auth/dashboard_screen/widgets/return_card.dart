@@ -16,7 +16,7 @@ class ReturnCard extends StatelessWidget {
     required this.date, required this.title,
     required this.subTitle, required this.qty,
     required this.daysLeft, required this.daysBadgeColor,
-  required this.volume}) : super(key: key);
+    required this.volume}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,9 @@ class ReturnCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(date, style: textTheme.bodySmall?.copyWith(
-                      color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14)),
-                  SizedBox(height: Constant.SIZE_08),
+                  // Text(date, style: textTheme.bodySmall?.copyWith(
+                  //     color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14)),
+                  // SizedBox(height: Constant.SIZE_08),
                   Container(
                     width: Constant.CONTAINER_SIZE_56,
                     height: Constant.CONTAINER_SIZE_56,
@@ -68,15 +68,10 @@ class ReturnCard extends StatelessWidget {
                         style: textTheme.bodySmall?.copyWith(
                             color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
-                    SizedBox(height: Constant.SIZE_08),
                     Text(volume,
                         style: textTheme.bodySmall?.copyWith(
                             color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14),
                         maxLines: 2, overflow: TextOverflow.ellipsis),
-                    SizedBox(height: Constant.SIZE_08),
-                    Text('Al Marsa Street 57, Dubai Marina, PO Box 32923, Dubai',
-                        style: textTheme.bodySmall?.copyWith(
-                            color: Constant.subtitleText, fontSize: Constant.CONTAINER_SIZE_12), maxLines: 2, overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),

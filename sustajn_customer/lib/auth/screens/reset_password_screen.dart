@@ -44,6 +44,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white
                   ),
                 ),
 
@@ -51,8 +52,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 Text(
                   Strings.SET_NEW_PASSWORD,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color!
-                        .withOpacity(Constant.SIZE_065),
+                    color: Colors.white,
                     fontSize: Constant.LABEL_TEXT_SIZE_15,
                   ),
                 ),
@@ -61,10 +61,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
+                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: Strings.PASSWORD,
+                    hintText: Strings.PASSWORD,
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color:Colors.white,
+                      fontSize: Constant.LABEL_TEXT_SIZE_15,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor:theme.primaryColor,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -77,8 +82,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
+                    enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   validator: (v) {
                     if (v == null || v.isEmpty) {
@@ -95,10 +103,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
+                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: Strings.CONFIRM_PASSWORD,
+                    hintText: Strings.CONFIRM_PASSWORD,
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color:Colors.white,
+                      fontSize: Constant.LABEL_TEXT_SIZE_15,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor:theme.primaryColor,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -111,8 +124,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
+                    enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   validator: (v) {
                     if (v == null || v.isEmpty) {
@@ -137,7 +153,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(
+                            previousScreen: '')));
                     },
                     child: Text(
                       Strings.RESET,

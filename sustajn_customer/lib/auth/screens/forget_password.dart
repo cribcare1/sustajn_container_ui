@@ -57,13 +57,21 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    hintText: Strings.EMAIL,
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: Constant.LABEL_TEXT_SIZE_15,
                     ),
+                    filled: true,
+                    fillColor: theme.primaryColor,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                        borderSide: BorderSide(color: Constant.grey),
+                      ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
@@ -88,7 +96,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     ),
                     onPressed: (){
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen()));
+                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
+                            )));
                     },
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,

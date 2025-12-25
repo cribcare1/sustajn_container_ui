@@ -375,24 +375,30 @@ class ApiHelper {
       var multipartRequest = http.MultipartRequest("POST", Uri.parse(url));
 
       // Set headers
-      multipartRequest.headers['Content-Type'] = 'multipart/form-data';
+      // multipartRequest.headers['Content-Type'] = 'multipart/form-data';
       if (token.isNotEmpty) {
         multipartRequest.headers['Authorization'] = 'Bearer $token';
       }
 
       // Add JSON as string field -> "request"
-      multipartRequest.fields["request"] = jsonEncode(requestJson);
+      multipartRequest.fields["data"] = jsonEncode(requestJson);
 
       // Add file if exists
       if (file != null) {
-        var stream = http.ByteStream(file.openRead());
-        var length = await file.length();
-        var multipartFile = http.MultipartFile(
-          'file', stream, length,
-          filename: file.path.split('/').last,
-        );
+        // var stream = http.ByteStream(file.openRead());
+        // var length = await file.length();
+        // var multipartFile = http.MultipartFile(
+        //   'profileImage', file.path, length,
+        //   filename: file.path.split('/').last,
+        // );
+        final fileName = file.path.split('/').last;
 
-        multipartRequest.files.add(multipartFile);
+        multipartRequest.files.add( await http.MultipartFile.fromPath(
+          'profileImage',
+          file.path,
+          filename: fileName,
+          contentType: http.MediaType('image', 'jpeg'), // or png
+        ),);
       }
 
       // Send request
