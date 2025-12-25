@@ -81,7 +81,7 @@ class Strings {
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE =
-      "We've sent you a code to verify your email id on\nabc***@gmail.com";
+      "We've sent you a code to verify your email id on\n";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';

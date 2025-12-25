@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:container_tracking/auth/auth_state.dart';
 import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'package:container_tracking/auth/screens/login_screen.dart';
-import 'package:container_tracking/auth/screens/reset_password_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:flutter/material.dart';
@@ -18,116 +16,108 @@ import 'model/login_model.dart';
 
 final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
 
-
 final loginDetailProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
+    FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+      final apiService = ref.watch(loginApiProvider);
+      final registrationState = ref.watch(authNotifierProvider);
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
-  var responseData = LoginModel();
-  try {
-    responseData = await apiService.loginUser(url, params, "");
-     if (responseData.userName != null) {
-      registrationState.setIsLoading(false);
-      registrationState.setLoginData(responseData);
-      if(registrationState.context.mounted) {
-        showCustomSnackBar(context: registrationState.context,
-            message: Strings.LOGGED_SUCCESS, color:Colors.green);
+      var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
+      LoginModel? responseData;
+      try {
+        responseData = await apiService.loginUser(url, params, "");
+        if (responseData!.status != '' &&
+            responseData.status.toLowerCase() == Strings.SUCCESS) {
+          registrationState.setIsLoading(false);
+          registrationState.setLoginData(responseData);
+          if (registrationState.context.mounted) {
+            showCustomSnackBar(
+              context: registrationState.context,
+              message: responseData.message,
+              color: Colors.green,
+            );
+          }
+
+          String json = jsonEncode(responseData.data.toJson());
+          await SharedPreferenceUtils.saveDataInSF(
+            Strings.JWT_TOKEN,
+            responseData.data.jwtToken,
+          );
+          await SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
+          await SharedPreferenceUtils.saveMapInSF(
+            Strings.PROFILE_DATA,
+            responseData.data.toJson(),
+          );
+          if (registrationState.context.mounted) {
+            Navigator.pushReplacement(
+              registrationState.context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
+          }
+        } else {
+          if (registrationState.context.mounted) {
+            showCustomSnackBar(
+              context: registrationState.context,
+              message: "Login failed or response is not success",
+              color: Colors.red,
+            );
+          }
+
+          registrationState.setIsLoading(false);
+          Utils.printLog('Login failed or response is not success');
+        }
+      } catch (e) {
+        registrationState.setIsLoading(false);
+        if (registrationState.context.mounted) {
+          Utils.showNetworkErrorToast(registrationState.context, e.toString());
+        }
+      } finally {
+        registrationState.setIsLoading(false);
       }
-
-      String json = jsonEncode(responseData.toJson());
-      SharedPreferenceUtils.saveDataInSF(
-          Strings.JWT_TOKEN, responseData.jwtToken!);
-      SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
-      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
-if(registrationState.context.mounted){
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const HomeScreen(),
-        ),
-      );}
-    } else {
-       if(registrationState.context.mounted){
-         showCustomSnackBar(context: registrationState.context,
-             message: "Login failed or response is not success", color:Colors.red);
-       }
-
-      registrationState.setIsLoading(false);
-      Utils.printLog('Login failed or response is not success');
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    if(registrationState.context.mounted){
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());}
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return responseData;
-});
+      return responseData;
+    });
 
 ///Register
 
 final registerDetailProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
+    FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
+      ref,
+      params,
+    ) async {
+      final apiService = ref.watch(loginApiProvider);
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
-  try {
- var   responseData = await apiService.registrationUser(url, params, "");
-    if (responseData != null) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      Navigator.pushReplacement(
-            registrationState.context,
-            MaterialPageRoute(
-              builder: (_) => const LoginScreen(),
-            ),
-          );
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: "Response is not success", color:Colors.red);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+      final url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
+      final response = await apiService.registrationUser(url, params, "");
 
-final validateEmail =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
+      return response;
+    });
+
+final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
+  ref,
+  args,
+) async {
   final apiService = ref.watch(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   final String email = args['email'];
   final String previous = args['previous'];
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
-    final responseData = await apiService.forgetPassword(
-      url,
-      {"email": email},
-      "",
-    );
-    if (responseData != null) {
-      registrationState.setIsLoading(false);
+    final responseData = await apiService.forgetPassword(url, {
+      "email": email,
+    }, "");
+    if (responseData != null && responseData.isNotEmpty) {
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
         message: responseData["message"],
         color: Colors.green,
       );
-       Navigator.pushReplacement(
-          registrationState.context,
-          MaterialPageRoute(
-            builder: (_) =>  VerifyEmailScreen(previousScreen: previous,email: email,),
-          ),
-        );
+      Navigator.pushReplacement(
+        registrationState.context,
+        MaterialPageRoute(
+          builder: (_) =>
+              VerifyEmailScreen(previousScreen: previous, email: email),
+        ),
+      );
     } else {
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
@@ -137,10 +127,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
       );
     }
   } catch (e) {
-    Utils.showNetworkErrorToast(
-      registrationState.context,
-      e.toString(),
-    );
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
   } finally {
     registrationState.setIsLoading(false);
   }
@@ -148,43 +135,24 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
   return null;
 });
 
-
 final verifyOtpProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
+    FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
+      ref,
+      params,
+    ) async {
+      final apiService = ref.watch(loginApiProvider);
+      final registrationState = ref.watch(authNotifierProvider);
+      final String previous = params['previous'];
+      params.remove("previous");
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
-  final String previous = params['previous'];
-  params.remove("previous");
-  try {
-    var   responseData = await apiService.verifyOtp(url, params, "");
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData['message'], color:Colors.green);
-      if(previous == "forgotPassword"){
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const ResetPasswordScreen(),
-        ),
-      );} else{
-       var data = await SharedPreferenceUtils.getStringValuesSF("signUp");
-        registerDetailProvider(data);
+      final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+      try {
+        final responseData = await apiService.verifyOtp(url, params, "");
+
+        return {"response": responseData, "previous": previous};
+      } catch (e) {
+        throw Exception(e.toString());
+      } finally {
+        registrationState.setIsOTPVerify(false);
       }
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData['message'], color:Colors.red);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+    });

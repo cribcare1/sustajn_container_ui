@@ -18,7 +18,7 @@ class _CustomBackButtonState extends State<CustomBackButton> {
       },
       child: const Icon(
         Icons.keyboard_arrow_left,
-        color: Colors.black,
+        color: Colors.white,
       ),
     );
   }

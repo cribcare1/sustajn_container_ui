@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/container_list/screens/add_new_container.dart';
 import 'package:container_tracking/container_list/screens/total_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -116,12 +117,7 @@ class ContainerDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContainerHeader(BuildContext context, ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF256C51),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
+    return GlassSummaryCard(
       child: Row(
         children: [
           ClipRRect(
@@ -154,13 +150,13 @@ class ContainerDetailsScreen extends StatelessWidget {
                 SizedBox(height: Constant.SIZE_04),
                 Text(
                   containerData.productId,
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.titleSmall?.copyWith(
                     color: Colors.white70,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
                 Text(
-                  "${containerData.capacityMl}ml",
+                  "${containerData.capacityMl}ML",
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: Colors.white70,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -183,30 +179,20 @@ class ContainerDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildAvailableContainerCard(BuildContext context, ThemeData theme) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
+    return GlassSummaryCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             Strings.AVAILABLE_CONTAINERS,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
+            style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_10),
           Text(
             containerData.availableContainers.toString(),
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontSize: Constant.LABEL_TEXT_SIZE_20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: theme.textTheme.titleMedium
           ),
         ],
       ),
@@ -268,12 +254,8 @@ class ContainerDetailsScreen extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        ),
+      child: GlassSummaryCard(
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -349,12 +331,7 @@ class ContainerDetailsScreen extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        ),
+      child: GlassSummaryCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

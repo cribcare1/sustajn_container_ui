@@ -3,6 +3,7 @@ import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:flutter/material.dart';
 
+import '../../common_widgets/card_widget.dart';
 import '../../constants/string_utils.dart';
 import '../../resutants/screens/container_count_details.dart';
 import '../../resutants/screens/resturant_transaction_history.dart';
@@ -72,30 +73,19 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
   }
 
   Widget _buildContainersInfo(BuildContext context, Map<String, dynamic> item) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(Constant.SIZE_08),
-        color: Colors.white
-      ),
+    return GlassSummaryCard(
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             item['title'],
-            style: TextStyle(
-              fontSize: Constant.CONTAINER_SIZE_14,
-              color: Colors.grey.shade700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall,
           ),
           SizedBox(height: Constant.SIZE_04),
           Text(
             item['value'].toString(),
-            style: TextStyle(
-              fontSize: Constant.CONTAINER_SIZE_18,
-              fontWeight: FontWeight.bold,
-            ),
+            style:Theme.of(context).textTheme.titleMedium
           ),
         ],
       ),
@@ -111,7 +101,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
           children: [
             Text(
               Strings.TRANSACTION_HISTORY,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             GestureDetector(
               onTap: () {
@@ -136,11 +126,11 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
         ),
 
         SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
-            color: Colors.white
-          ),
+        GlassSummaryCard(
+          // decoration: BoxDecoration(
+          //  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+          //   color: Colors.white
+          // ),
           child: ListView.separated(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -191,7 +181,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
               SizedBox(height: 4),
               Text(
                 item.restaurant,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.titleSmall,
               ),
               SizedBox(height: 4),
               Text(
@@ -207,7 +197,7 @@ class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
           children: [
             Text(
               item.count,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ],
         ),

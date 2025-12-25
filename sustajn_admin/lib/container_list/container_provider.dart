@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../constants/network_urls.dart';
 import '../utils/utility.dart';
+import 'model/container_list_model.dart';
 
 final containerNotifierProvider = ChangeNotifierProvider(
   (ref) => ContainerState(),
@@ -60,7 +61,7 @@ final addContainerProvider =
       }
     });
 
-final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((
+final fetchContainerProvider = FutureProvider.family<InventoryData?, dynamic>((
   ref,
   params,
 ) async {
@@ -70,13 +71,11 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LIST}';
 
   try {
+    // containerState.setIsLoading(true);
     var responseData = await apiService.fetchContainer(url);
-
     if (responseData != null) {
-      containerState.setIsLoading(false);
       containerState.setContainerList(responseData.inventoryData);
-    } else {
-      containerState.setIsLoading(false);
+      // containerState.setIsLoading(false);
     }
   } catch (e) {
     containerState.setContainerListError(e.toString());
@@ -90,6 +89,7 @@ final fetchContainerProvider = FutureProvider.family<dynamic, dynamic>((
   } finally {
     containerState.setIsLoading(false);
   }
+  return null;
 });
 
 final deleteContainer = FutureProvider.family<dynamic, dynamic>((

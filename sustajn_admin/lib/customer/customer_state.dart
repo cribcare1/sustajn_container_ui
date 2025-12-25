@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'model/customer_list_model.dart';
 
 class CustomerState extends ChangeNotifier {
+  CustomerState(){
+    _isLoading = true;
+  }
   bool _isLoading = false;
   bool _isMoreLoading = false;
   bool _hasMore = true;

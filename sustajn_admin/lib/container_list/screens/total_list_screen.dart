@@ -65,11 +65,11 @@ class TotalListScreen extends StatelessWidget {
             color: Colors.grey.shade600,
           ),
           filled: true,
-          fillColor: Colors.white,
-          prefixIcon: Icon(Icons.search, color: theme.primaryColor),
+          fillColor: Theme.of(context).primaryColor,
+          prefixIcon: Icon(Icons.search, color: Colors.white),
           suffixIcon: GestureDetector(
             onTap: onTap,
-              child: Icon(Icons.filter_list, color: theme.primaryColor)),
+              child: Icon(Icons.filter_list, color: Colors.white)),
           contentPadding: EdgeInsets.symmetric(
             vertical: Constant.CONTAINER_SIZE_14,
           ),
@@ -89,7 +89,7 @@ class TotalListScreen extends StatelessWidget {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      color: Colors.grey.shade200,
+      color: Theme.of(context).secondaryHeaderColor,
       child: Row(
         children: [
           Expanded(
