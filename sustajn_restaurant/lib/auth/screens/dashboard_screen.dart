@@ -11,6 +11,7 @@ import '../../order_screen/order_home_screen.dart';
 import '../../product_screen/product_home_screen.dart';
 import '../../returned_screen/returned_home_screen.dart';
 import '../../utils/utility.dart';
+import 'map_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -94,11 +95,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             SizedBox(height: Constant.SIZE_05),
                             Text(
-                              loginResponse!.fullName??"",
+                              loginResponse?.fullName?.isNotEmpty == true
+                                  ? loginResponse!.fullName!
+                                  : "User",
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white
+                                color: Colors.white,
                               ),
                             ),
                           ],
@@ -162,12 +165,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: cardWidth,
                         icon: Icons.search,
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => ReturnedHomeScreen(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapScreen(),
+                            ),
+                          );
                         },
                         label: 'Search',
                       ),
