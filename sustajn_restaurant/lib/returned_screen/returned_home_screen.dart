@@ -6,6 +6,7 @@ import 'package:sustajn_restaurant/returned_screen/returned_details_screen.dart'
 import '../borrowed/borrowed_scan_screen.dart';
 import '../common_widgets/filter_Screen.dart';
 import '../constants/number_constants.dart';
+import '../utils/theme_utils.dart';
 
 class ReturnedHomeScreen extends StatefulWidget {
   const ReturnedHomeScreen({super.key});
@@ -40,10 +41,11 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
     final w = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0xfff4f5f4),
-      appBar: CustomAppBar(title: 'Borrowed',
+      backgroundColor: theme!.scaffoldBackgroundColor,
+      appBar: CustomAppBar(title: 'Returned',
           action: [
             IconButton(onPressed: (){
               showModalBottomSheet(
@@ -74,7 +76,8 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
                 ),
               );
             },
-                icon: Icon(Icons.filter_list))
+                icon: Icon(Icons.filter_list,
+                color: Colors.white,))
           ],
           leading: CustomBackButton()).getAppBar(context),
       body: Padding(
@@ -144,14 +147,14 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
                         itemCount: monthBlock["data"].length,
                         separatorBuilder: (context, _) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Divider(height: 1, color: Colors.grey.shade300),
+                          child: Divider(height: 1, color: Colors.grey.shade700),
                         ),
                         itemBuilder: (context, i) {
                           final item = monthBlock["data"][i];
                           return Flexible(
                             child: ListTile(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => ReturnedDetailScreen()));
+                                // Navigator.push(context, MaterialPageRoute(builder: (_) => ReturnedDetailScreen()));
                               },
                               title: Text(
                                 item["name"],
@@ -159,11 +162,12 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
                                   fontSize: 16,
                                   overflow: TextOverflow.ellipsis,
                                   fontWeight: FontWeight.w500,
+                                  color: Colors.white
                                 ),
                               ),
                               subtitle: Text(
                                 item["date"],
-                                style: TextStyle(color: Colors.grey.shade700),
+                                style: TextStyle(color: Colors.white),
                               ),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -173,10 +177,12 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Icon(Icons.arrow_forward_ios, size: 16),
+                                  const Icon(Icons.arrow_forward_ios, size: 16,
+                                  color: Colors.white,),
                                 ],
                               ),
                             ),
@@ -193,16 +199,16 @@ class _ReturnedHomeScreenState extends State<ReturnedHomeScreen> {
       ),
       floatingActionButton: InkWell(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) => QrScannerScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => QrCodeScanner()));
         },
         child: Container(
           height: 60,
           width: 60,
           decoration: const BoxDecoration(
-            color: Color(0xff0E3A2F),
+            color: Constant.gold,
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 30),
+          child:  Icon(Icons.qr_code_scanner, color: theme.scaffoldBackgroundColor, size: 30),
         ),
       ),
     );

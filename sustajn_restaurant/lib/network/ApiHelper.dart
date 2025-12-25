@@ -198,7 +198,7 @@ class ApiHelper {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
         var multiport = http.MultipartFile(
-          'file',
+          'profile',
           stream,
           length,
           filename: image.path.split('/').last,

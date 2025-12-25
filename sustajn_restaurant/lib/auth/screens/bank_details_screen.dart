@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../../common_widgets/submit_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -12,6 +13,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import 'dashboard_screen.dart';
 import 'login_screen.dart';
 
 class BankDetails extends ConsumerStatefulWidget {
@@ -85,11 +87,10 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                                 right: index == 3 ? 0 : Constant.SIZE_10,
                               ),
                               decoration: BoxDecoration(
-                                color: active
-                                    ? theme!.primaryColor
-                                    : theme!.primaryColor.withOpacity(0.3),
-                                borderRadius:
-                                BorderRadius.circular(Constant.SIZE_10),
+                                color: active ? Constant.gold : Colors.white,
+                                borderRadius: BorderRadius.circular(
+                                  Constant.SIZE_10,
+                                ),
                               ),
                             ),
                           );
@@ -100,23 +101,35 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         Strings.BANK_DETAILS,
                         style: theme?.textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                       SizedBox(height: height * 0.005),
                       Text(
                         Strings.ENTER_BANK_INFO,
-                        style: theme?.textTheme.bodyMedium,
+                        style: theme?.textTheme.bodyMedium!.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                       SizedBox(height: height * 0.03),
 
                       TextFormField(
                         controller: bankNameController,
+                        style: TextStyle(color: Colors.white70),
+                        cursorColor: Colors.white70,
                         decoration: InputDecoration(
-                          labelText: Strings.BANK_NAME,
+                          hintText: Strings.BANK_NAME,
+                          hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme!.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          enabledBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
+                          ),
+                          focusedBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
                           ),
                         ),
                         validator: (v) {
@@ -133,20 +146,29 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: accNoController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white70),
+                        cursorColor: Colors.white70,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(12),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.ACC_NO,
+                          hintText: Strings.ACC_NO,
+                          hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 14,
                             horizontal: 12,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          enabledBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
+                          ),
+                          focusedBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
                           ),
                         ),
                         validator: (v) {
@@ -162,16 +184,25 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: confirmAccController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white70),
+                        cursorColor: Colors.white70,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(12),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.CONFIRM_ACC_NO,
+                          hintText: Strings.CONFIRM_ACC_NO,
+                          hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          enabledBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
+                          ),
+                          focusedBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
                           ),
                         ),
                         validator: (v) {
@@ -192,16 +223,25 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       TextFormField(
                         controller: taxController,
                         keyboardType: TextInputType.number,
+                        style: TextStyle(color: Colors.white70),
+                        cursorColor: Colors.white70,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(10),
                         ],
                         decoration: InputDecoration(
-                          labelText: Strings.TAX_NUMBER,
+                          hintText: Strings.TAX_NUMBER,
+                          hintStyle: TextStyle(color: Colors.grey),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: theme.primaryColor,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          enabledBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
+                          ),
+                          focusedBorder: CustomTheme.roundedBorder(
+                            Constant.grey,
                           ),
                         ),
                         validator: (v) {
@@ -213,36 +253,30 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                         },
                       ),
                       SizedBox(height: height * 0.02),
-
-                     authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
+                      SizedBox(
                         width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFD0A52C),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
+                        child: SubmitButton(
+                          onRightTap: () {
+                            // Navigator.push(context,
+                            // MaterialPageRoute(builder: (context)=> DashboardScreen()));
+
                             if (_formKey.currentState!.validate()) {
-                              widget.registrationData.bankName = bankNameController.text.trim();
-                              widget.registrationData.accountNumber = accNoController.text.trim();
-                              widget.registrationData.taxNumber = taxController.text.trim();
+                              widget.registrationData.bankName =
+                                  bankNameController.text.trim();
+                              widget.registrationData.accountNumber =
+                                  accNoController.text.trim();
+                              widget.registrationData.taxNumber = taxController
+                                  .text
+                                  .trim();
 
                               _getNetworkData(authState);
                             }
-
                           },
-                          child: Text(
-                            Strings.CONTINUE,
-                            style:
-                            theme!.textTheme.titleMedium!.copyWith(
-                              color: theme.primaryColor,
-                            ),
-                          ),
+                          rightText: Strings.CONTINUE,
                         ),
                       ),
+
+
                     ],
                   ),
                 ),
@@ -252,51 +286,54 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
           if (authState.isLoading)
             Container(
               color: Colors.black26,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
     );
   }
 
-
-  _getNetworkData(var containerState) async {
+  _getNetworkData(var registrationState) async {
     try {
-      await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable()
-          .then((isNetworkAvailable) async {
-        try {
-          if (isNetworkAvailable) {
-            containerState.setIsLoading(true);
-            final Map<String, dynamic> body =
-            Map<String, dynamic>.from(widget.registrationData.toApiBody());
-            body.remove('image');
-            ref.read(registerProvider({
-              "data": body,
-              "image": widget.registrationData.profileImage,
-            }));
-          } else {
-            containerState.setIsLoading(false);
-            if(!mounted) return;
-            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          containerState.setIsLoading(false);
-        }
-        if(!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
-      // }
+      if(registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          setState(() {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              final Map<String, dynamic> body =
+              Map<String, dynamic>.from(widget.registrationData.toApiBody());
+              Map<String, dynamic> params;
+
+              if (widget.registrationData.profileImage != null) {
+                params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER,
+                  body,
+                  Strings.DATA,
+                  widget.registrationData.profileImage!,
+                );
+              } else {
+                params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER,
+                  body,
+                  Strings.DATA,
+                  null,
+                );
+              }
+              // final params = Utils.multipartParams(
+              //     NetworkUrls.REGISTER_USER, body,
+              //     Strings.DATA, widget.registrationData.profileImage);
+              ref.read(registerProvider(params));
+            } else {
+              registrationState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+        });
+      }
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      containerState.setIsLoading(false);
+      Utils.printLog('Error in registration button onPressed: $e');
     }
   }
-
-
-
 }

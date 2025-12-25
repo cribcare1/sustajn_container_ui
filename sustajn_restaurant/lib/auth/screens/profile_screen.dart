@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_profile_paint.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
@@ -64,7 +66,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const UpgradeBottomSheet(),
+      builder: (context) => const SubscriptionPlanBottomSheet(),
     );
   }
 
@@ -97,17 +99,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       top: false,
       bottom: true,
       child: Scaffold(
-        backgroundColor: const Color(0xfff4f5f4),
+        backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: const Color(0xff0E3A2F),
-          surfaceTintColor: const Color(0xff0E3A2F),
+          centerTitle: true,
+          backgroundColor: const Color(0xFFD1AE31),
+          surfaceTintColor: const Color(0xFFD1AE31),
           leading: SizedBox.shrink(),
-          title: const Text(
+          title:  Text(
             "My Profile",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
-              color: Colors.white,
+              color: theme!.scaffoldBackgroundColor,
             ),
           ),
         ),
@@ -171,6 +174,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       style: TextStyle(
                         fontSize: w * 0.055,
                         fontWeight: FontWeight.w700,
+                        color: Colors.white
                       ),
                     ),
                     SizedBox(width: w * 0.015),
@@ -186,7 +190,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
                       },
                         child: Icon(Icons.edit_outlined,
-                            size: w * 0.045, color:theme.primaryColor)),
+                            size: w * 0.045, color:Colors.white)),
                   ],
                 ),
                 SizedBox(height: h * 0.03),
@@ -198,8 +202,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     vertical: h * 0.02,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(w * 0.04),
+                    border: Border.all(
+                      color: Colors.grey
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.08),
@@ -218,7 +225,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         theme: theme,
                         ontap: (){}
                       ),
-                      const Divider(),
+                       Divider(color: Colors.grey.shade700,),
                       _detailItem(
                         icon: Icons.location_on_outlined,
                         title: "Address",
@@ -229,7 +236,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         theme: theme,
                         ontap: (){}
                       ),
-                      const Divider(),
+                       Divider(color: Colors.grey.shade700,),
                       _detailItem(
                         icon: Icons.phone_outlined,
                         title: "Mobile Number",
@@ -257,13 +264,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: detailList.length,
-                    separatorBuilder: (context, index) => Divider(height: 1),
+                    separatorBuilder: (context, index) => Divider(height: 1,color: Colors.grey.shade700,),
                     itemBuilder: (context, index) {
                       final item = detailList[index];
                       return ListTile(
-                        leading: Icon(item['icon'], size: w*0.054, color: Colors.black),
-                        title: Text(item['name'], style: TextStyle(fontSize: 14)),
-                        trailing: Icon(Icons.arrow_forward_ios, size: w*0.044),
+                        leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
+                        title: Text(item['name'], style: TextStyle(fontSize: 14,
+                        color: Colors.white)),
+                        trailing: Icon(Icons.arrow_forward_ios, size: w*0.044,
+                        color: Colors.white,),
                         onTap: () => _handleItemTap(index, context),
                       );
                     },
@@ -292,6 +301,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
+                        Utils.logOutDialog(
+                            context,
+                            Icons.logout,
+                            Strings.CONFIRM_LOGOUT,
+                            Strings.SURE_LOG_OUT,
+                            Strings.YES,
+                            Strings.NO
+                        );
                       },
                     ),
                   ),
@@ -320,7 +337,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.grey[700], size: w * 0.06),
+        Icon(icon, color:Constant.gold, size: w * 0.06),
         SizedBox(width: w * 0.03),
         Expanded(
           child: Column(
@@ -328,7 +345,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: w * 0.034, color: Colors.grey),
+                style: TextStyle(fontSize: w * 0.034, color:Colors.white),
               ),
               SizedBox(height: w * 0.01),
               Text(
@@ -336,6 +353,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 style: TextStyle(
                   fontSize: w * 0.040,
                   fontWeight: FontWeight.w500,
+                  color: Colors.white
                 ),
               ),
             ],
@@ -344,7 +362,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         if (showEdit)
           GestureDetector(
             onTap: ontap,
-              child: Icon(Icons.edit, size: w * 0.045, color: theme!.primaryColor)),
+              child: Icon(Icons.edit, size: w * 0.045, color: Colors.white)),
       ],
     );
   }

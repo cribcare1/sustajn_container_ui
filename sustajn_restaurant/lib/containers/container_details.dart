@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
-import 'package:sustajn_restaurant/containers/total_borrowed.dart';
-import 'package:sustajn_restaurant/containers/total_returned.dart';
 import '../constants/number_constants.dart';
-import 'assigned_container.dart';
+import '../product_screen/containers_list_screen.dart';
+import '../product_screen/models/assigned_container_list.dart';
 
 class ContainersDetailsScreen extends StatelessWidget {
-  const ContainersDetailsScreen({super.key});
+  const ContainersDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,21 +14,21 @@ class ContainersDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar:CustomAppBar(title: "Container Details",
-          leading:CustomBackButton() ).getAppBar(context),
+      appBar: CustomAppBar(title:'Container Details',
+          leading: CustomBackButton()).getAppBar(context),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
+          child: ListView(
             children: [
-              _productCard(theme),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              Expanded(
-                child: _statsGrid(theme),
+              Center(
+                child: _productCard(theme),
               ),
-
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
+              _statsList(theme),
             ],
           ),
+
         ),
       ),
     );
@@ -37,57 +36,62 @@ class ContainersDetailsScreen extends StatelessWidget {
 
   Widget _productCard(ThemeData theme) {
     return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
+      height: Constant.CONTAINER_SIZE_250,
+      width: Constant.CONTAINER_SIZE_210,
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
-        color: theme.primaryColor,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+        border: Border.all(color: Constant.gold, width: Constant.SIZE_01),
+        gradient: LinearGradient(
+          colors: [
+            Constant.grey.withOpacity(0.2),
+            theme.primaryColor.withOpacity(0.4),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
-      child: Row(
+      child: Column(
         children: [
           Container(
-            height: Constant.CONTAINER_SIZE_64,
-            width: Constant.CONTAINER_SIZE_64,
+            height: Constant.CONTAINER_SIZE_100,
+            width: Constant.CONTAINER_SIZE_100,
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surface,
+              color: Colors.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             ),
-            child: Padding(
-              padding: EdgeInsets.all(Constant.SIZE_08),
-              child: Image.asset(
-                "assets/images/cups.png",
-                fit: BoxFit.contain,
-              ),
+            child: Image.asset(
+              "assets/images/cups.png",
+              fit: BoxFit.contain,
             ),
           ),
-          SizedBox(width: Constant.CONTAINER_SIZE_14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Dip Cups",
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                  ),
-                  maxLines: Constant.MAX_LINE_1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: Constant.SIZE_04),
-                Text(
-                  "ST-DC-50",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white,
-                  ),
-                  maxLines: Constant.MAX_LINE_1,
-                ),
-                SizedBox(height: Constant.SIZE_02),
-                Text(
-                  "50ml",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+
+          SizedBox(height: Constant.SIZE_10),
+
+          Text(
+            "Dip Cup",
+            maxLines: Constant.MAX_LINE_1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: Constant.SIZE_04),
+          Text(
+            "ST-DC-50",
+            maxLines: Constant.MAX_LINE_1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: Colors.white70,
+            ),
+          ),
+          SizedBox(height: Constant.SIZE_02),
+          Text(
+            "50ml",
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: Colors.white70,
             ),
           ),
         ],
@@ -95,41 +99,34 @@ class ContainersDetailsScreen extends StatelessWidget {
     );
   }
 
-
-  Widget _statsGrid(ThemeData theme) {
+  Widget _statsList(ThemeData theme) {
     final stats = [
-      {"title": "Available", "value": "1,268"},
-      {"title": "Assigned Containers", "value": "5,000"},
-      {"title": "Total Borrowed", "value": "3,986"},
-      {"title": "Total Returned", "value": "254"},
+      {"title": "Assigned Containers", "value": "5,000", "arrow": true},
+      {"title": "Total Leased", "value": "3,986", "arrow": true},
+      {"title": "Total Received", "value": "254", "arrow": true},
+      {"title": "Available", "value": "1268", "arrow": false},
     ];
 
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+    return ListView.builder(
       itemCount: stats.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-        childAspectRatio: 1.6,
-      ),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final title = stats[index]["title"] as String;
         return _statCard(
           theme,
-          title: title,
+          title: stats[index]["title"] as String,
           value: stats[index]["value"] as String,
-          showArrow:title != 'Available',
+          showArrow: stats[index]["arrow"] as bool,
           onTap: (){
             if(title == 'Assigned Containers'){
               _navigateAssignedContainer(context);
             }
-            else if (title == 'Total Borrowed'){
-              _navigateTotalBorrowed(context);
+            else if (title == 'Total Leased'){
+              _navigateTotalLeased(context);
             }
-            else if (title == 'Total Returned'){
-              _navigateTotalReturned(context);
+            else if (title == 'Total Received'){
+              _navigateTotalReceived(context);
             }
           }
         );
@@ -138,72 +135,134 @@ class ContainersDetailsScreen extends StatelessWidget {
   }
 
   void _navigateAssignedContainer(BuildContext context){
-    Navigator.push(context,
-    MaterialPageRoute(builder: (context)=> AssignedContainersScreen()));
-  }
-  void _navigateTotalBorrowed(BuildContext context){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context)=> TotalBorrowedScreen()));
-  }
-  void _navigateTotalReturned(BuildContext context){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context)=> TotalReturnedScreen()));
-  }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AssignedContainerListScreen(
+          title: "Assigned Containers",
+          items: [
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 25, 10, 0),
+                quantity: 350),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 15, 11, 23),
+                quantity: 400),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+          ],
+        ),
+      ),
+    );
 
-
-
+  }
+  void _navigateTotalLeased(BuildContext context){
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
+          title: "Total Leased",
+          items: [
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 25, 10, 0),
+                quantity: 350),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 15, 11, 23),
+                quantity: 400),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+          ],
+        ),));
+  }
+  void _navigateTotalReceived(BuildContext context){
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
+          title: "Total Received",
+          items: [
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 25, 10, 0),
+                quantity: 350),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 15, 11, 23),
+                quantity: 400),
+            AssignedContainerItem(
+                dateTime: DateTime(2025, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+            AssignedContainerItem(
+                dateTime: DateTime(2024, 11, 1, 23, 21),
+                quantity: 800),
+          ],
+        ),));
+  }
 
   Widget _statCard(
       ThemeData theme, {
         required String title,
         required String value,
-        bool showArrow = false,
+        required bool showArrow,
         required VoidCallback onTap
       }) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Container(
+        margin: EdgeInsets.only(bottom: Constant.SIZE_10),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          border: Border.all(color: Colors.white24),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (showArrow)
-                  Icon(
-                    Icons.call_made_outlined,
-                    size: Constant.CONTAINER_SIZE_16,
-                    color: theme.iconTheme.color,
-                  ),
-              ],
-            ),
-            SizedBox(height: Constant.SIZE_08),
             Expanded(
-              child: Text(
-                value,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    maxLines: Constant.MAX_LINE_2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_06),
+                  Text(
+                    value,
+                    maxLines: Constant.MAX_LINE_1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
+
+            if (showArrow) ...[
+              SizedBox(width: Constant.SIZE_08),
+              Icon(
+                Icons.call_made_outlined,
+                size: Constant.CONTAINER_SIZE_18,
+                color: Colors.white70,
+              ),
+            ],
           ],
         ),
       ),

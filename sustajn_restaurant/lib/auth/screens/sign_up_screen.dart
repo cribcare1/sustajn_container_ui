@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
@@ -12,13 +13,18 @@ import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../utils/sharedpreference_utils.dart';
+import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import 'business_information.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
-  const SignUpScreen({super.key, this.currentStep = 0});
+  final RegistrationData? registrationData;
+
+  const SignUpScreen({super.key, this.currentStep = 0, this.registrationData});
 
   @override
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
@@ -78,7 +84,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         selectedImage = imageFile;
       });
 
-      ref.read(authNotifierProvider).setImage(imageFile);
+      // ref.read(authNotifierProvider).setImage(imageFile);
     }
   }
 
@@ -93,6 +99,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    double height = MediaQuery.sizeOf(context).height;
+    final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -107,7 +115,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).padding.top +
+                  height:
+                      MediaQuery.of(context).padding.top +
                       Constant.CONTAINER_SIZE_50,
                 ),
                 Row(
@@ -117,20 +126,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       child: Container(
                         height: Constant.SIZE_05,
                         margin: EdgeInsets.only(
-                            right: index == 3 ? 0 : Constant.SIZE_10),
+                          right: index == 3 ? 0 : Constant.SIZE_10,
+                        ),
                         decoration: BoxDecoration(
-                          color: active
-                              ? theme.primaryColor
-                              : theme.primaryColor.withOpacity(0.3),
-                          borderRadius:
-                          BorderRadius.circular(Constant.SIZE_10),
+                          color: active ? Constant.gold : Colors.white,
+                          borderRadius: BorderRadius.circular(Constant.SIZE_10),
                         ),
                       ),
                     );
                   }),
                 ),
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
 
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
                 Center(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(60),
@@ -139,8 +146,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         context: context,
                         useSafeArea: true,
                         shape: const RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(16)),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
                         ),
                         builder: (_) => Column(
                           mainAxisSize: MainAxisSize.min,
@@ -166,15 +174,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     },
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                      selectedImage != null ? FileImage(selectedImage!) : null,
+                      backgroundColor: Constant.gold,
+                      backgroundImage: selectedImage != null
+                          ? FileImage(selectedImage!)
+                          : null,
                       child: selectedImage == null
                           ? Icon(
-                        Icons.person,
-                        size: 50,
-                        color: theme.primaryColor,
-                      )
+                              Icons.person,
+                              size: 50,
+                              color: theme.primaryColor,
+                            )
                           : null,
                     ),
                   ),
@@ -203,8 +212,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   validator: (v) {
                     if (v!.isEmpty) return "Email required";
                     if (!RegExp(
-                        r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
-                        .hasMatch(v)) {
+                      r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$',
+                    ).hasMatch(v)) {
                       return "Enter valid email";
                     }
                     return null;
@@ -222,7 +231,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ],
                   validator: (v) {
                     if (v!.isEmpty) return "Mobile number required";
-                    if (v.length != 10) return "Enter valid 10-digit mobile number";
+                    if (v.length != 10)
+                      return "Enter valid 10-digit mobile number";
                     return null;
                   },
                 ),
@@ -237,7 +247,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   },
                   validator: (v) {
                     if (v!.isEmpty) return "Password required";
-                    if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
+                    if (!RegExp(
+                      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$',
+                    ).hasMatch(v)) {
                       return "Password must be 8+ chars with letters, numbers & special char";
                     }
                     return null;
@@ -250,8 +262,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   hint: Strings.CONFIRM_PASSWORD,
                   visible: confirmPasswordVisible,
                   toggleVisibility: () {
-                    setState(() =>
-                    confirmPasswordVisible = !confirmPasswordVisible);
+                    setState(
+                      () => confirmPasswordVisible = !confirmPasswordVisible,
+                    );
                   },
                   validator: (v) {
                     if (v!.isEmpty) return "Confirm password required";
@@ -259,41 +272,34 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                      if(value != null){
-                        addressCtrl.text = value['address'];
-                        lat=value['lat'];
-                        long=value['lng'];
-                      }
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                //       if(value != null){
+                //         addressCtrl.text = value['address'];
+                //         lat=value['lat'];
+                //         long=value['lng'];
+                //       }
+                //
+                //     });
+                //   },
+                //   child: IgnorePointer(
+                //     child: _buildTextField(
+                //       readOnly: true,
+                //       context,
+                //       controller: addressCtrl,
+                //       hint: Strings.RESTURANT_ADDRESS,
+                //       validator: (v) =>
+                //       v!.isEmpty ? "Restaurant address required" : null,
+                //     ),
+                //   ),
+                // ),
 
-                    });
-                  },
-                  child: IgnorePointer(
-                    child: _buildTextField(
-                      readOnly: true,
-                      context,
-                      controller: addressCtrl,
-                      hint: Strings.RESTURANT_ADDRESS,
-                      validator: (v) =>
-                      v!.isEmpty ? "Restaurant address required" : null,
-                    ),
-                  ),
-                ),
-                SizedBox(
+                authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                   width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD0A52C),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
+                  child: SubmitButton(
+                    onRightTap: () async {
                       if (_formKey.currentState!.validate()) {
-                        if (!_validateImage()) return;
 
                         final registrationData = RegistrationData(
                           fullName: restaurantCtrl.text,
@@ -306,21 +312,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           longitude: long,
                         );
 
+                        await _getNetworkData(authState);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BusinessScreen(
-                              registrationData: registrationData,
+                            builder: (_) => VerifyEmailScreen(
+                              previousScreen: "signUp",
+                              registrationData: registrationData, // ✅ PASS DATA
+                              email: emailCtrl.text,
                             ),
                           ),
                         );
                       }
                     },
-                    child: Text(
-                      Strings.CONTINUE_VERIFICATION,
-                      style: theme.textTheme.titleMedium!
-                          .copyWith(color: theme.primaryColor),
-                    ),
+
+                    rightText: Strings.CONTINUE_VERIFICATION,
                   ),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
@@ -329,14 +336,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     text: TextSpan(
                       text: Strings.ALREADY_HAVE_ACC,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.hintColor,
+                        color: Colors.white,
                         fontSize: Constant.LABEL_TEXT_SIZE_14,
                       ),
                       children: [
                         TextSpan(
                           text: Strings.LOGIN,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.primaryColor,
+                            color: Constant.gold,
                             decoration: TextDecoration.underline,
                           ),
                           recognizer: TapGestureRecognizer()
@@ -344,15 +351,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
+                                  builder: (context) => LoginScreen(),
+                                ),
                               );
                             },
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -362,15 +369,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget _buildTextField(
-      BuildContext context, {
-        required TextEditingController controller,
-        required String hint,
-        String? Function(String?)? validator,
-        bool obscure = false,
-        TextInputType keyboard = TextInputType.text,
-        bool? readOnly = false,
-        List<TextInputFormatter>? inputFormatters,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String hint,
+    String? Function(String?)? validator,
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+    bool? readOnly = false,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -378,30 +385,34 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
+        style: TextStyle(color: Colors.white70),
+        cursorColor: Colors.white70,
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
-          labelText: hint,
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.white70),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: theme.primaryColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.SIZE_10),
-            borderSide: BorderSide(color: theme.dividerColor),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderSide: BorderSide(color: Constant.grey),
           ),
+          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
         ),
       ),
     );
   }
 
-
   Widget _buildPasswordField(
-      BuildContext context, {
-        required TextEditingController controller,
-        required String hint,
-        required bool visible,
-        required VoidCallback toggleVisibility,
-        String? Function(String?)? validator,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String hint,
+    required bool visible,
+    required VoidCallback toggleVisibility,
+    String? Function(String?)? validator,
+  }) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -410,26 +421,79 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         controller: controller,
         obscureText: !visible,
         validator: validator,
+        style: TextStyle(color: Colors.white70),
+        cursorColor: Colors.white70,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.hintColor,
-            fontSize: Constant.LABEL_TEXT_SIZE_15,
+          hintStyle: TextStyle(color: Colors.white70),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderSide: BorderSide(color: Constant.grey),
           ),
+          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
           contentPadding: EdgeInsets.symmetric(
             horizontal: Constant.SIZE_15,
             vertical: Constant.SIZE_15,
           ),
           filled: true,
-          fillColor: Colors.white,
-          labelText: hint,
+          fillColor: theme.primaryColor,
           suffixIcon: IconButton(
-            icon:
-            Icon(visible ? Icons.visibility : Icons.visibility_off),
+            icon: Icon(
+              visible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.white70,
+            ),
             onPressed: toggleVisibility,
           ),
         ),
       ),
     );
   }
+
+  Future<void> _getNetworkData(var registrationState) async {
+    try {
+      if (!registrationState.isValid) return;
+      registrationState.setIsLoading(true);
+      FocusScope.of(context).unfocus();
+      ref.read(authNotifierProvider).loginData(
+        context,
+        emailCtrl.text,
+        passwordCtrl.text,
+      );
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+      if (!isNetworkAvailable) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+      Map<String, dynamic> mapData = {
+        "fullName": restaurantCtrl.text,
+        "userType": "RESTURANT",
+        "email": emailCtrl.text,
+        "phoneNumber": mobileCtrl.text,
+        "userName": emailCtrl.text,
+        "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
+        "passwordHash": passwordCtrl.text,
+      };
+      await SharedPreferenceUtils.saveDataInSF(
+        "signUp",
+        jsonEncode(mapData),
+      );
+      ref.read(
+        validateEmail({
+          "email": emailCtrl.text,
+          "previous": "signUp",
+        }),
+      );
+    } catch (e) {
+      Utils.printLog('Error in Login button: $e');
+    }
+  }
+
+
 }

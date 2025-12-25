@@ -1,19 +1,23 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
+import 'package:sustajn_restaurant/order_screen/order_screen/order_screen.dart';
 
 import '../../borrowed/borrowed_home_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../containers/container_list.dart';
+import '../../models/login_model.dart';
+import '../../order_screen/order_home_screen.dart';
+import '../../product_screen/product_home_screen.dart';
 import '../../returned_screen/returned_home_screen.dart';
+import '../../utils/utility.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
-
 class _DashboardScreenState extends State<DashboardScreen> {
   final double borrowed = 300;
   final double returnedCount = 100;
@@ -26,6 +30,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<String> dateOptions = ['Today', 'This Week', 'This Month'];
   List<String> containerOptions = ['Container', 'Box', 'Pallet'];
 
+
+  String userName = "";
+  Data? loginResponse;
+  bool isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -35,6 +59,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final cardHorizontalPadding = width * 0.04;
     final cardSpacing = width * 0.03;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -60,14 +89,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'Hi,',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_14,
+                                color: Colors.white
                               ),
                             ),
                             SizedBox(height: Constant.SIZE_05),
                             Text(
-                              'Marina Sky Dine',
+                              loginResponse!.fullName??"",
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white
                               ),
                             ),
                           ],
@@ -77,19 +108,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: Constant.CONTAINER_SIZE_50,
                         height: Constant.CONTAINER_SIZE_50,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: theme.primaryColor,
                           borderRadius: BorderRadius.circular(100),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.06),
-                              offset: const Offset(0, 4),
-                              blurRadius: 10,
-                            ),
-                          ],
+                          border: Border.all(
+                            color: Constant.grey,
+                            width: 0.3
+                          ),
+
                         ),
                         child: Icon(
                           Icons.notifications_none,
-                          color: theme.primaryColor,
+                          color: Colors.white70,
                         ),
                       ),
                     ],
@@ -108,11 +137,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ContainerListScreen(title: 'Containers'),
+                                  ProductsScreen(),
                             ),
                           );
                         },
-                        label: 'Containers',
+                        label: 'Products',
                       ),
                       _buildDashboardCard(
                         context,
@@ -122,25 +151,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BorrowedHomeScreen(),
+                              builder: (context) => OrderHomeScreen(),
                             ),
                           );
                         },
-                        label: 'Borrowed',
+                        label: 'Orders',
                       ),
                       _buildDashboardCard(
                         context,
                         width: cardWidth,
-                        icon: Icons.call_received,
+                        icon: Icons.search,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReturnedHomeScreen(),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => ReturnedHomeScreen(),
+                          //   ),
+                          // );
                         },
-                        label: 'Returned',
+                        label: 'Search',
                       ),
                       _buildDashboardCard(
                         context,
@@ -164,6 +193,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_10),
@@ -207,12 +237,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDashboardCard(
-    BuildContext context, {
-    required double width,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required double width,
+        required IconData icon,
+        required String label,
+        required VoidCallback onTap,
+      }) {
     final theme = Theme.of(context);
     final cardHeight = width * 0.55;
 
@@ -223,12 +253,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         height: cardHeight,
         padding: EdgeInsets.all(Constant.SIZE_10),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFFFFF), Color(0xFFF6F6F6)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: theme.primaryColor,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Constant.grey,
+            width: 0.3,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
@@ -238,26 +268,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: Constant.CONTAINER_SIZE_48,
-              height: Constant.CONTAINER_SIZE_48,
-              decoration: BoxDecoration(
-                color: theme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: Constant.CONTAINER_SIZE_22,
+            Flexible(
+              flex: 3,
+              child: Center(
+                child: Container(
+                  width: Constant.CONTAINER_SIZE_48,
+                  height: Constant.CONTAINER_SIZE_48,
+                  decoration: BoxDecoration(
+                    color: Constant.gold,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: theme.scaffoldBackgroundColor,
+                    size: Constant.CONTAINER_SIZE_22,
+                  ),
+                ),
               ),
             ),
-            const Spacer(),
-            Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
+
+            Flexible(
+              flex: 1,
+              child: Center(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -265,6 +307,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
 
   Widget _buildDropdown(
     BuildContext context, {
@@ -277,27 +320,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
       height: Constant.TEXT_FIELD_HEIGHT,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.primaryColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: Constant.grey,
+          width: 0.3
+        )
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           onChanged: onChanged,
           isExpanded: true,
+          dropdownColor: Colors.white,
           icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
+          selectedItemBuilder: (BuildContext context) {
+            return items.map((String item) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+              );
+            }).toList();
+          },
           items: items
               .map(
                 (e) => DropdownMenuItem(
                   value: e,
-                  child: Text(e, style: theme.textTheme.bodyMedium),
+                  child: Text(e, style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.black
+                  )),
                 ),
               )
               .toList(),
@@ -312,11 +368,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _legendItem('Total Container', Colors.green.shade700, theme),
+        _legendItem('Total', Colors.greenAccent, theme),
         SizedBox(width: Constant.SIZE_10),
-        _legendItem('Barrowed', Colors.black87, theme),
+        _legendItem('Lease', Colors.yellowAccent, theme),
         SizedBox(width: Constant.SIZE_10),
-        _legendItem('Returned', Colors.blue.shade400, theme),
+        _legendItem('Receive', Colors.lightBlueAccent, theme),
         SizedBox(width: Constant.SIZE_10),
         _legendItem('Available', Colors.amber.shade700, theme),
       ],
@@ -332,7 +388,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         SizedBox(width: Constant.SIZE_06),
-        Text(text, style: theme.textTheme.bodySmall),
+        Text(text, style: theme.textTheme.bodySmall?.copyWith(
+          color: Colors.white
+        )),
       ],
     );
   }
@@ -392,7 +450,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               'November-2025',
               style: TextStyle(
                 fontSize: screenWidth < 350 ? 11 : 13,
-                color: Colors.grey.shade600,
+                color: Colors.white,
               ),
             ),
           ),
@@ -416,7 +474,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       PieChartSectionData(
         value: borrowed,
-        color: theme.primaryColor,
+        color: Colors.lightGreenAccent,
         radius: ringThickness,
         showTitle: false,
         titleStyle: const TextStyle(fontSize: 12),
@@ -431,7 +489,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       PieChartSectionData(
         value: total,
-        color: Colors.black87,
+        color: Colors.yellowAccent,
         radius: ringThickness,
         showTitle: false,
         titleStyle: const TextStyle(fontSize: 12),

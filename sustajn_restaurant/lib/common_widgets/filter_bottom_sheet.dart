@@ -55,6 +55,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final years = List.generate(6, (i) => DateTime.now().year - i);
     return SafeArea(
       top: false,
@@ -86,7 +87,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                  color: Colors.white,
+                  color: theme.scaffoldBackgroundColor,
                 ),
                 child: Column(
                   children: [
@@ -96,7 +97,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Containers",
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.white
+                          ),
                         ),
                       ),
                     ),
@@ -189,9 +192,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               style: Theme.of(context).textTheme.titleSmall,
               decoration: InputDecoration(
                 hintText: "Search name or ID",
-                hintStyle: Theme.of(context).textTheme.titleSmall,
+                hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Colors.white
+                ),
                 border: InputBorder.none,
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: Icon(Icons.search,
+                color: Colors.white,),
               ),
             ),
           ),
@@ -209,20 +215,29 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name, style: Theme.of(context).textTheme.titleSmall),
+                        Text(name, style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Colors.white
+                        )),
                         const SizedBox(height: 3),
                         Text(
                           id,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color: Colors.white,
                           ),
                         ),
                       ],
                     ),
                     Checkbox(
-                      activeColor: Theme.of(context).primaryColor,
-                      checkColor: Colors.white,
+                      activeColor: Colors.white,
+                      checkColor: Colors.black,
+
+                      side: MaterialStateBorderSide.resolveWith(
+                            (states) => BorderSide(
+                          color: Constant.gold,
+                          width: 1.5,
+                        ),
+                      ),
                       value: selectedContainers[id],
                       onChanged: (value) {
                         setState(() {
@@ -230,6 +245,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         });
                       },
                     ),
+
                   ],
                 );
               },
@@ -240,28 +256,5 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _selectorTab({
-    required String label,
-    required bool isSelected,
-    required Function() onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 16,
-              color: isSelected ? Colors.black : Colors.grey,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-          const SizedBox(height: 4),
-          if (isSelected) Container(width: 80, height: 2, color: Colors.green),
-        ],
-      ),
-    );
-  }
+
 }

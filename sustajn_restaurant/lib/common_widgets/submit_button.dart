@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants/number_constants.dart';
+import '../utils/theme_utils.dart';
 
 class SubmitButton extends StatelessWidget {
   final String? rightText;
@@ -14,22 +15,22 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = CustomTheme.getTheme(true);
     return ElevatedButton(
       onPressed: onRightTap,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFD1AE31), // Gold color
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(16),
         ),
         elevation: 0,
         padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
       ),
       child: Text(
         rightText!,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color:themeData!.scaffoldBackgroundColor ,
           fontSize: 15,
-          fontWeight: FontWeight.w600,
         ),
       ),
     );
