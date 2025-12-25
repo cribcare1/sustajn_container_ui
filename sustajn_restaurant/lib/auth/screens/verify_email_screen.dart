@@ -147,16 +147,18 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ),
                           onPressed: () async {
-                            if (_otpController.text.trim().isEmpty) {
+                            final otp = _otpController.text.trim();
+
+                            if (otp.isEmpty) {
                               showCustomSnackBar(
                                 context: context,
                                 message: "Please enter OTP",
                                 color: Colors.red,
                               );
-                              _getNetworkDataVerify(authState);
+                              return;
                             }
 
-                            if (_otpController.text.trim().length < 6) {
+                            if (otp.length < 6) {
                               showCustomSnackBar(
                                 context: context,
                                 message: "Please enter a valid 6-digit OTP",
@@ -164,17 +166,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                               );
                               return;
                             }
-                            else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BusinessScreen(
-                                    registrationData: widget.registrationData!,
-                                  ),
-                                ),
-                              );
-                            }
+
+                            await _getNetworkDataVerify(authState);
                           },
+
 
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -327,7 +322,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
       final result = await ref.read(
         verifyOtpProvider({
-          "email": widget.registrationData!.email,
+          "email": widget.registrationData?.email ?? widget.email,
           "token": _otpController.text,
           "previous": widget.previousScreen,
         }).future,

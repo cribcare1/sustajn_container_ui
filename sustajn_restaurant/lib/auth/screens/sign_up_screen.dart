@@ -298,7 +298,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                   width: double.infinity,
                   child: SubmitButton(
-                    onRightTap: () {
+                    onRightTap: () async {
                       if (_formKey.currentState!.validate()) {
 
                         final registrationData = RegistrationData(
@@ -308,18 +308,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           password: passwordCtrl.text,
                           profileImage: selectedImage,
                         );
-                        _getNetworkData(authState);
 
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (_) => VerifyEmailScreen(previousScreen: '',
-                        //       registrationData: registrationData, email: emailCtrl.text,
-                        //     ),
-                        //   ),
-                        // );
+                        await _getNetworkData(authState);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VerifyEmailScreen(
+                              previousScreen: "signUp",
+                              registrationData: registrationData, // ✅ PASS DATA
+                              email: emailCtrl.text,
+                            ),
+                          ),
+                        );
                       }
                     },
+
                     rightText: Strings.CONTINUE_VERIFICATION,
                   ),
                 ),
@@ -488,33 +492,5 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  // _getNetworkDataVerify(var registrationState) async {
-  //   try {
-  //     if (registrationState.isValid) {
-  //       await ref
-  //           .read(networkProvider.notifier)
-  //           .isNetworkAvailable()
-  //           .then((isNetworkAvailable) async {
-  //         try {
-  //           if (isNetworkAvailable) {
-  //             registrationState.setIsLoading(true);
-  //             ref.read(verifyOtpProvider({"email":emailCtrl.text}));
-  //           } else {
-  //             registrationState.setIsLoading(false);
-  //             if(!mounted) return;
-  //             showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-  //           }
-  //         } catch (e) {
-  //           Utils.printLog('Error on button onPressed: $e');
-  //           registrationState.setIsLoading(false);
-  //         }
-  //         if(!mounted) return;
-  //         FocusScope.of(context).unfocus();
-  //       });
-  //     }
-  //   } catch (e) {
-  //     Utils.printLog('Error in Login button onPressed: $e');
-  //     registrationState.setIsLoading(false);
-  //   }
-  // }
+
 }
