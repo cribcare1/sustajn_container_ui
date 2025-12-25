@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/auth/screens/profile_screen.dart';
 import '../../../constants/number_constants.dart';
+import '../../../containers/customer_profile.dart';
 import '../../screens/map_screen.dart';
 
 
