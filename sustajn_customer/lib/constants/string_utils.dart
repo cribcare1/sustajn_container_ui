@@ -1,8 +1,16 @@
 class Strings {
+
+  static String get CONTAINERS => "Containers";
+
+  static String get ACTIVE => "Active";
+
+  static String get RETURNED => "Returned";
+
   //Shared Preference Key
   static const JWT_TOKEN = 'jwt_token';
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
+
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
       'Something went wrong! Please try again after sometime.';
@@ -14,7 +22,7 @@ class Strings {
       'Internet connection failed! Please try after sometime.';
   static const API_ERROR_MSG_TEXT =
       "Request is not successful. Please try again later!";
-static const RESTAURANT_ADDRESS = "Restaurant Address";
+  static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const PART_URL = 'part_url';
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
@@ -22,6 +30,7 @@ static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
+
   ///
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
@@ -72,7 +81,8 @@ static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const SEARCH_BY_RESTURANT = 'Search by resturant';
   static const TOTAL_RETURNED = 'Total Returned';
   static const OVERDUE = 'Overdue';
-  static const RETURNED = 'Returned';
+
+  // static const RETURNED = 'Returned';
   static const BORROWED = 'Borrowed';
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
@@ -153,21 +163,21 @@ static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const PASSWORD_REQUIRED_TXT = "Password is required";
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
-  static const LOGGED_SUCCESS ="Logged in successfully";
-  static const ADDED_CONTAINER ="Container Added Successfully";
+  static const LOGGED_SUCCESS = "Logged in successfully";
+  static const ADDED_CONTAINER = "Container Added Successfully";
   static const String BANK_DETAILS = 'Bank Details';
   static const String ENTER_BANK_INFO = 'Enter your bank information';
   static const String BANK_NAME = 'Bank Name';
   static const String ACC_NO = 'Account Number';
   static const String CONFIRM_ACC_NO = 'Confirm Account Number';
   static const String TAX_NUMBER = 'Tax Number';
-  static const String CONTINUE= 'Continue';
+  static const String CONTINUE = 'Continue';
   static const String GO_BACK = 'Are you sure you want to go back ?';
-  static const String VERIFIED_EMAIL = 'You have already verified your email. Going back may interrupt account the account setup process';
-static const String STAY_ON_THIS_PAGE = 'Stay on this page';
-static const String CONFIRM_LOGOUT= 'Confirm Logout';
-static const String SURE_LOG_OUT = 'Are you sure you want to logout';
-static const String YES = 'Yes';
-static const String NO = 'No';
-
-      }
+  static const String VERIFIED_EMAIL =
+      'You have already verified your email. Going back may interrupt account the account setup process';
+  static const String STAY_ON_THIS_PAGE = 'Stay on this page';
+  static const String CONFIRM_LOGOUT = 'Confirm Logout';
+  static const String SURE_LOG_OUT = 'Are you sure you want to logout';
+  static const String YES = 'Yes';
+  static const String NO = 'No';
+}

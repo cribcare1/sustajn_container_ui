@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
-import '../../constants/string_utils.dart';
+import '../../constants/number_constants.dart';
+import '../../containers/history_screen.dart';
 import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
@@ -19,13 +20,13 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  final List<Map<String, dynamic>> detailList = [
-    {"name": "History", "icon": Icons.history},
-    {"name": "Payment Type", "icon": Icons.currency_rupee},
-    {"name": "QR Code", "icon": Icons.qr_code},
-    {"name": "Feedback", "icon": Icons.feedback_outlined},
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
-    {"name": "Contact Us","icon": Icons.headset_mic_outlined }
+  final List<Map<String, dynamic>> menuList = [
+    {"title": "History", "icon": Icons.history},
+    {"title": "Payment Type", "icon": Icons.currency_rupee},
+    {"title": "QR Code", "icon": Icons.qr_code},
+    {"title": "Feedback", "icon": Icons.star_border},
+    {"title": "Subscription Plan", "icon": Icons.credit_card},
+    {"title": "Contact us", "icon": Icons.headset_mic},
   ];
 
   Data? loginResponse;
@@ -49,7 +50,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   void _handleItemTap(int index, BuildContext context) {
     switch (index) {
       case 0:
-        _showBankDetailsEdit(context);
+        _showHistoryScreen(context);
         break;
       case 1:
         // _showBusinessEditScreen(context);
@@ -58,7 +59,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         // _showReportScreen(context);
         break;
       case 3:
-        _showFeedbackDialog(context);
+        _showFeedBackScreen(context);
         break;
       case 4:
         // _showSubscriptionDialog(context);
@@ -66,298 +67,253 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  void _showFeedbackDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const FeedbackBottomSheet(),
-    );
+  void _showHistoryScreen(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>HistoryScreen()));
   }
-
-  void _showBankDetailsEdit(BuildContext context) {
+  void _showFeedBackScreen(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const EditBankDetailsDialog(),
+      isScrollControlled: true,
+      builder: (_) => const FeedbackBottomSheet(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading || loginResponse == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-    final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
-    final w = size.width;
-    final h = size.height;
+    final w = MediaQuery.of(context).size.width;
 
-    return SafeArea(
-        top: false,
-        bottom: true,
-        child: Scaffold(
-          backgroundColor: const Color(0xfff4f5f4),
-          appBar: AppBar(
-            backgroundColor: const Color(0xff0E3A2F),
-            surfaceTintColor: const Color(0xff0E3A2F),
-            leading: SizedBox.shrink(),
-            title: const Text(
-              "My Profile",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
+    return Scaffold(
+      backgroundColor: const Color(0xff0E3A2F),
+
+      /// APP BAR
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFD4AE37),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "My Profile",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Constant.LABEL_TEXT_SIZE_20,
+            fontWeight: FontWeight.w500,
           ),
+        ),
+      ),
 
-          body: SingleChildScrollView(
-            child: Stack(
-              alignment: Alignment.topCenter,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+            /// PROFILE IMAGE
+            const SizedBox(height: 20),
+            Stack(
+              alignment: Alignment.bottomRight,
               children: [
-                SizedBox(
-                  width: w - (w * 0.34),
-                  height: h * 0.30,
-                  child: CustomPaint(painter: TopCirclePainter()),
+                CircleAvatar(
+                  radius: w * 0.14,
+                  backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                    radius: w * 0.13,
+                    backgroundImage: const NetworkImage(
+                      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                    ),
+                  ),
                 ),
-                Column(
-                  children: [
-                    SizedBox(height: h * 0.035),
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        Container(
-                          height: w * 0.28,
-                          width: w * 0.28,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: w * 0.012,
-                            ),
-                            image: const DecorationImage(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                            Utils.showProfilePhotoBottomSheet(context);
-                          },
-                          child: Container(
-                            height: w * 0.09,
-                            width: w * 0.09,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child:
-                            Icon(Icons.edit_outlined, size: w * 0.045, color: theme!.primaryColor,),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: h * 0.015),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          loginResponse!.fullName ?? "",
-                          style: TextStyle(
-                            fontSize: w * 0.055,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(width: w * 0.015),
-                        GestureDetector(
-                            onTap: (){
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => const EditUserNameDialog(),
-                              );
-
-
-                            },
-                            child: Icon(Icons.edit_outlined,
-                                size: w * 0.045, color:theme.primaryColor)),
-                      ],
-                    ),
-                    SizedBox(height: h * 0.03),
-                    Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: w * 0.04,
-                        vertical: h * 0.02,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(w * 0.04),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _detailItem(
-                              icon: Icons.email_outlined,
-                              title: "Email",
-                              value: loginResponse!.userName?? "",
-                              w: w,
-                              showEdit: false,
-                              theme: theme,
-                              ontap: (){}
-                          ),
-                          const Divider(),
-                          _detailItem(
-                              icon: Icons.location_on_outlined,
-                              title: "Address",
-                              value:
-                              "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
-                              w: w,
-                              showEdit: true,
-                              theme: theme,
-                              ontap: (){}
-                          ),
-                          const Divider(),
-                          _detailItem(
-                              icon: Icons.phone_outlined,
-                              title: "Mobile Number",
-                              value: "980765432",
-                              w: w,
-                              showEdit: true,
-                              theme: theme,
-                              ontap: (){
-                                // showModalBottomSheet(
-                                //   context: context,
-                                //   isScrollControlled: true,
-                                //   backgroundColor: Colors.transparent,
-                                //   builder: (context) => const EditMobileNumberDialog(),
-                                // );
-
-                              }
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: h*0.02),
-                      child: ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: detailList.length,
-                        separatorBuilder: (context, index) => Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final item = detailList[index];
-                          return ListTile(
-                            leading: Icon(item['icon'], size: w*0.054, color: Colors.black),
-                            title: Text(item['name'], style: TextStyle(fontSize: 14)),
-                            trailing: Icon(Icons.arrow_forward_ios, size: w*0.044),
-                            onTap: () => _handleItemTap(index, context),
-                          );
-                        },
-                      ),
-                    ),
-
-                    Center(
-                      child: Container(
-                        width: w * 0.55,
-                        margin: EdgeInsets.only(top: h * 0.02),
-                        child: ElevatedButton.icon(
-                          icon: Icon(Icons.logout, color: theme!.primaryColor, size: w * 0.05),
-                          label: Text(
-                            "Log Out",
-                            style: TextStyle(
-                              color: theme.primaryColor,
-                              fontSize: w * 0.045,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFC8B531),
-                            padding: EdgeInsets.symmetric(vertical: h * 0.018),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(w * 0.04),
-                            ),
-                          ),
-                          onPressed: () {
-                            Utils.logOutDialog(
-                                context,
-                                Icons.logout,
-                                Strings.CONFIRM_LOGOUT,
-                                Strings.SURE_LOG_OUT,
-                                Strings.YES,
-                                Strings.NO
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-
-
-
-                  ],
-                ),
+                CircleAvatar(
+                  radius: w * 0.045,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.edit,
+                    size: w * 0.045,
+                    color: theme!.primaryColor,
+                  ),
+                )
               ],
             ),
-          ),
-        )
+
+            const SizedBox(height: 12),
+
+            /// NAME
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "John Dee",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constant.LABEL_TEXT_SIZE_22,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: Constant.CONTAINER_WIDTH_SIZE),
+                Icon(Icons.edit, size: 18, color: theme!.primaryColor),
+              ],
+            ),
+
+            const SizedBox(height: 25),
+
+            /// PROFILE DETAILS CARD
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: const Color(0xff144A3A),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  _infoRow(Icons.email, "Email", "hello597@gmail.com"),
+                  const Divider(color: Colors.white24),
+                  _infoRow(
+                    Icons.location_on,
+                    "Address",
+                    "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                    editable: true,
+                  ),
+                  const Divider(color: Colors.white24),
+                  _infoRow(
+                    Icons.phone,
+                    "Mobile Number",
+                    "980765432",
+                    editable: true,
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+            /// MENU LIST
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: List.generate(menuList.length, (index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap:(){
+                          if(menuList[index]['title']=='Feedback') {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true,
+                              builder: (_) => const FeedbackBottomSheet(),
+                            );
+                          }
+                  },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          child: Row(
+                            children: [
+                              Icon(
+                                menuList[index]['icon'],
+                                color: const Color(0xFFD4AE37),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Text(
+                                  menuList[index]['title'],
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap:() => _handleItemTap(index, context),
+
+                          child: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Divider(color: Colors.white24),
+                    ],
+                  );
+                }),
+              ),
+            ),
+
+            SizedBox(height: Constant.CONTAINER_SIZE_30),
+
+            /// LOGOUT BUTTON
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.logout, color: theme.primaryColor),
+              label: Text(
+                "Log out",
+                style: TextStyle(
+                  color: theme.primaryColor,
+                  fontSize: Constant.LABEL_TEXT_SIZE_16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: theme.primaryColor),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 14,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+
+            SizedBox(height: Constant.CONTAINER_SIZE_30),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _detailItem({
-    required IconData icon,
-    required String title,
-    required String value,
-    required double w,
-    bool showEdit = true,
-    required VoidCallback ontap,
-    ThemeData? theme
-  }) {
+  /// INFO ROW WIDGET
+  Widget _infoRow(
+      IconData icon,
+      String title,
+      String value, {
+        bool editable = false,
+      }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.grey[700], size: w * 0.06),
-        SizedBox(width: w * 0.03),
+        Icon(icon, color: const Color(0xFFD4AE37)),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: w * 0.034, color: Colors.grey),
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: Constant.LABEL_TEXT_SIZE_14,
+                ),
               ),
-              SizedBox(height: w * 0.01),
+              SizedBox(height: Constant.SIZE_04),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: w * 0.040,
-                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                  fontSize: Constant.LABEL_TEXT_SIZE_15,
                 ),
               ),
             ],
           ),
         ),
-        if (showEdit)
-          GestureDetector(
-              onTap: ontap,
-              child: Icon(Icons.edit, size: w * 0.045, color: theme!.primaryColor)),
+        if (editable)
+          const Icon(Icons.edit, color: Color(0xFFD4AE37), size: 18),
       ],
     );
   }
-
 }
