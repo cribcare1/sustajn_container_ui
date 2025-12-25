@@ -169,9 +169,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child:SubmitButton(onRightTap: (){
                       Navigator.push(context,
                       MaterialPageRoute(builder: (context)=> DashboardScreen()));
-                      // if (_formKey.currentState!.validate()) {
-                      //   _getNetworkData(authState);
-                      // }
+                      if (_formKey.currentState!.validate()) {
+                        _getNetworkData(authState);
+                      }
                     },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),
