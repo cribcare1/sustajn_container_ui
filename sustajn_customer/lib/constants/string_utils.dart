@@ -22,7 +22,7 @@ class Strings {
       'Internet connection failed! Please try after sometime.';
   static const API_ERROR_MSG_TEXT =
       "Request is not successful. Please try again later!";
-
+static const RESTAURANT_ADDRESS = "Restaurant Address";
   static const PART_URL = 'part_url';
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
@@ -30,7 +30,6 @@ class Strings {
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
-
   ///
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
@@ -81,7 +80,7 @@ class Strings {
   static const SEARCH_BY_RESTURANT = 'Search by resturant';
   static const TOTAL_RETURNED = 'Total Returned';
   static const OVERDUE = 'Overdue';
-  // static const RETURNED = 'Returned';
+  static const RETURNED = 'Returned';
   static const BORROWED = 'Borrowed';
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
@@ -176,3 +175,12 @@ class Strings {
       'You have already verified your email. Going back may interrupt account the account setup process';
   static const String STAY_ON_THIS_PAGE = 'Stay on this page';
 }
+
+  static const String VERIFIED_EMAIL = 'You have already verified your email. Going back may interrupt account the account setup process';
+static const String STAY_ON_THIS_PAGE = 'Stay on this page';
+static const String CONFIRM_LOGOUT= 'Confirm Logout';
+static const String SURE_LOG_OUT = 'Are you sure you want to logout';
+static const String YES = 'Yes';
+static const String NO = 'No';
+
+      }

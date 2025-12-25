@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/containers/history_screen.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
 import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../edit_dialogs/edit_bank_details.dart';
-import '../edit_dialogs/edit_mobile_number.dart';
 import '../edit_dialogs/edit_user_name.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 
@@ -28,6 +26,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     {"title": "Subscription Plan", "icon": Icons.credit_card},
     {"title": "Contact us", "icon": Icons.headset_mic},
   ];
+
+  Data? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
+
   void _handleItemTap(int index, BuildContext context) {
     switch (index) {
       case 0:

@@ -58,9 +58,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: Strings.EMAIL,
+                    hintText: Strings.EMAIL,
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: themeData!.primaryColor,
                     hintStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -90,7 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   decoration: InputDecoration(
                     hintText: Strings.PASSWORD,
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: themeData.primaryColor,
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 14, horizontal: 12),
                     hintStyle: TextStyle(color: Colors.grey),
@@ -141,9 +141,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: Text(
                       Strings.FORGOT_PASSWORD,
-                      style: themeData!.textTheme.titleSmall!.copyWith(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
+                      style: themeData.textTheme.titleSmall!.copyWith(
+                        color:themeData.secondaryHeaderColor,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -168,7 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     TextSpan(
                       text: Strings.SIGN_UP,
                       style: TextStyle(
-                        color: themeData.primaryColor,
+                        color: themeData.secondaryHeaderColor,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                       ),

@@ -57,7 +57,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
           width: double.infinity,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
-            color: theme.dialogBackgroundColor,
+            color: theme.scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
               topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
@@ -70,7 +70,6 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                /// HEADER
                 Row(
                   children: [
                     Expanded(
@@ -79,6 +78,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -89,7 +89,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
                       child: Icon(
                         Icons.close,
                         size: Constant.CONTAINER_SIZE_20,
-                        color: theme.iconTheme.color,
+                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -105,12 +105,15 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
                   validator: _validateMobileNumber,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
-                  style: theme.textTheme.bodyMedium,
+                  cursorColor: Colors.white,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Mobile Number',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.hintColor,
+                    labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: Constant.CONTAINER_SIZE_16,
@@ -123,13 +126,13 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
                     enabledBorder: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      borderSide: BorderSide(color: theme.dividerColor),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius:
                       BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                       borderSide:
-                      BorderSide(color: theme.colorScheme.primary),
+                      BorderSide(color: Constant.grey),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius:

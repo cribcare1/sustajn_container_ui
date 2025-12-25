@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +9,7 @@ import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../models/login_model.dart';
 
 class Utils {
 
@@ -16,7 +19,7 @@ class Utils {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
-      backgroundColor: Colors.white,
+      backgroundColor: theme!.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -37,10 +40,11 @@ class Utils {
                   children: [
                     Expanded(
                       child: Text(
-                        "Profile Photo",
+                        "Choose",
                         style: TextStyle(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -52,13 +56,13 @@ class Utils {
                         height: Constant.CONTAINER_SIZE_36,
                         width: Constant.CONTAINER_SIZE_36,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.white,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.clear,
                           size: Constant.CONTAINER_SIZE_20,
-                          color: Colors.black54,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -75,7 +79,7 @@ class Utils {
                       context,
                       icon: Icons.camera_alt_outlined,
                       label: "Camera",
-                      color: theme!.primaryColor.withOpacity(0.10),
+                      color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () {
                         Navigator.pop(context);
@@ -86,7 +90,7 @@ class Utils {
                       context,
                       icon: Icons.image_outlined,
                       label: "Gallery",
-                      color: theme.primaryColor.withOpacity(0.10),
+                      color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () {
                         Navigator.pop(context);
@@ -97,7 +101,7 @@ class Utils {
                       context,
                       icon: Icons.delete_outline,
                       label: "Remove",
-                      color: Colors.red.withOpacity(0.10),
+                      color: Colors.white70,
                       iconColor: Colors.red,
                       onTap: () {
                         Navigator.pop(context);
@@ -113,6 +117,230 @@ class Utils {
         );
       },
     );
+  }
+
+  static  logOutDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      String noButton
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color:Colors.grey.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(14)
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white
+              )),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        noButton,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ?? false;
+  }
+
+  static Future<bool> displayDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  // fontWeight: FontWeight.w600,
+                ),),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  // GO BACK
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        "Go back",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.scaffoldBackgroundColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ?? false;
   }
 
  static  Widget _optionButton(
@@ -146,7 +374,8 @@ class Utils {
            SizedBox(height: Constant.CONTAINER_SIZE_10),
            Text(
              label,
-             style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
+             style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
+             color: Colors.white),
            )
          ],
        ),
@@ -214,6 +443,13 @@ class Utils {
     }
   }
 
+  static void navigateToPushScreen(BuildContext context, screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
+
   static multipartParams(var partUrl, var data, var requestKey, var image) {
     return {
       NetworkUrls.PART_URL: partUrl,
@@ -221,6 +457,22 @@ class Utils {
       NetworkUrls.REQUEST_KEY: requestKey,
       if (image != null) NetworkUrls.IMAGE: image,
     };
+  }
+
+  static LoginModel? loginData;
+  static int? societyId = 0;
+  static int? userId = 0;
+
+  static Future<Data?> getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString(Strings.PROFILE_DATA);
+    printLog("Profile Data ==== $data");
+    if (data != null) {
+      var response = json.decode(data);
+      loginData = LoginModel.fromJson(response);
+      userId = loginData!.data!.userId;
+    }
+    return null;
   }
 
 }

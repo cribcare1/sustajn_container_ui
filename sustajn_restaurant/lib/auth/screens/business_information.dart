@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/auth/screens/subscription_screen.dart';
 
+import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/registration_data.dart';
@@ -54,8 +55,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
                           margin: EdgeInsets.only(right: index == 3 ? 0 : Constant.SIZE_10),
                           decoration: BoxDecoration(
                             color: active
-                                ? theme!.primaryColor
-                                : theme!.primaryColor.withOpacity(0.3),
+                                ? Constant.gold
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(Constant.SIZE_10),
                           ),
                         ),
@@ -67,56 +68,73 @@ class _BusinessScreenState extends State<BusinessScreen> {
                     Strings.BUSINESS_INFO,
                     style: theme?.textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
                   SizedBox(height: height * 0.005),
                   Text(
                     Strings.PROVIDE_INFOR,
-                    style: theme?.textTheme.bodyMedium,
+                    style: theme?.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
                   ),
                   SizedBox(height: height * 0.03),
                   TextFormField(
                     controller: specialityController,
+                    style: TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: Strings.SPECIALITY,
+                      hintText: Strings.SPECIALITY,
                       filled: true,
-                      fillColor: Colors.white,
-                      hintStyle: TextStyle(color: Colors.grey),
+                      fillColor: theme!.primaryColor,
+                      hintStyle: TextStyle(color: Colors.white70),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide(color: Colors.grey),
                       ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                     ),
 
                   ),
                   SizedBox(height: height * 0.02),
                   TextFormField(
                     controller: cuisineController,
+                    style: TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
                     decoration: InputDecoration(
-                      labelText: Strings.CUISINE,
+                      hintText: Strings.CUISINE,
+                      hintStyle: TextStyle(color: Colors.white70),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: theme.primaryColor,
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 14, horizontal: 12),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                     ),
                   ),
                   SizedBox(height: height * 0.03),
                   TextFormField(
                     controller: websiteController,
+                    style: TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: Strings.WEBSITE,
+                      hintText: Strings.WEBSITE,
                       filled: true,
-                      fillColor: Colors.white,
-                      hintStyle: TextStyle(color: Colors.grey),
+                      fillColor: theme.primaryColor,
+                      hintStyle: TextStyle(color: Colors.white70),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide(color: Colors.grey),
                       ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                     ),
 
                   ),
@@ -124,56 +142,43 @@ class _BusinessScreenState extends State<BusinessScreen> {
                   Center(
                     child: Text(
                       Strings.ADD_SOCIAL_MEDIA,
-                      style: theme!.textTheme.titleMedium!.copyWith(
-                        color: theme.primaryColor,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        color: Constant.gold,
                       ),
                     ),
                   ),
                   SizedBox(height: height * 0.03),
-
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD0A52C),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        widget.registrationData.speciality = specialityController.text.isEmpty
-                            ? null
-                            : specialityController.text;
-                        widget.registrationData.cuisine = cuisineController.text.isEmpty
-                            ? null
-                            : cuisineController.text;
-                        // widget.registrationData.website = websiteController.text.isEmpty
-                        //     ? null
-                        //     : websiteController.text;
+                    child: SubmitButton(
+                      onRightTap: () {
+                              widget.registrationData.speciality = specialityController.text.isEmpty
+                                  ? null
+                                  : specialityController.text;
+                              widget.registrationData.cuisine = cuisineController.text.isEmpty
+                                  ? null
+                                  : cuisineController.text;
+                              widget.registrationData.websiteDetails = websiteController.text.isEmpty
+                                  ? null
+                                  : websiteController.text;
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => BankDetails(
-                              registrationData: widget.registrationData,
-                            ),
-                          ),
-                        );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BankDetails(
+                                    registrationData: widget.registrationData,
+                                  ),
+                                ),
+                              );
                       },
-
-                      child: Text(
-                        Strings.CONTINUE,
-                        style: theme!.textTheme.titleMedium!.copyWith(
-                          color: theme.primaryColor,
-                        ),
-                      ),
+                      rightText: Strings.CONTINUE,
                     ),
                   ),
+
+
                   SizedBox(height: height * 0.02),
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         side: BorderSide(
@@ -183,6 +188,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
+                        elevation: 0,
+                        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -197,8 +204,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
                       child: Text(
                         Strings.SKIP,
-                        style: theme!.textTheme.titleMedium!.copyWith(
-                          color: theme.primaryColor,
+                        style: theme.textTheme.titleMedium!.copyWith(
+                          color: Constant.gold
                         ),
                       ),
                     ),

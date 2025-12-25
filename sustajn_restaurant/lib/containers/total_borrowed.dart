@@ -44,7 +44,8 @@ class TotalBorrowedScreen extends StatelessWidget {
                 ),
               );
             },
-                icon: Icon(Icons.filter_list))
+                icon: Icon(Icons.filter_list,
+                color: Colors.white,))
           ],
           leading: CustomBackButton()).getAppBar(context),
       body: ListView(
@@ -149,6 +150,7 @@ class TotalBorrowedScreen extends StatelessWidget {
                       date,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: Colors.white
                       ),
                     ),
                   ],
@@ -159,6 +161,7 @@ class TotalBorrowedScreen extends StatelessWidget {
                   value,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: Colors.white
                   ),
                 ),
               )
@@ -168,8 +171,8 @@ class TotalBorrowedScreen extends StatelessWidget {
         Padding(
           padding:EdgeInsets.only(left: Constant.SIZE_08, right: Constant.SIZE_08),
           child: Divider(
-            height: Constant.SIZE_01,
-            color: Colors.grey.shade300,
+            height: 0,
+            color: Colors.grey.shade700,
           ),
         )
       ],

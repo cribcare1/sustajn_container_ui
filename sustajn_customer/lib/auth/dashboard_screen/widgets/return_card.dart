@@ -89,8 +89,9 @@ class ReturnCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.inventory_2,
-                            size: Constant.CONTAINER_SIZE_14, color: Colors.white),
+                        CircleAvatar(radius: Constant.CONTAINER_SIZE_12,
+                            backgroundColor: Constant.greenCircle, child: Icon(Icons.inventory_2,
+                                size: Constant.CONTAINER_SIZE_14, color: Colors.white)),
                         SizedBox(width: Constant.SIZE_06),
                         Text(qty.toString(), style: textTheme.titleMedium?.copyWith(
                             color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_16)),

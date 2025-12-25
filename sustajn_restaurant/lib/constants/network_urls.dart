@@ -19,7 +19,7 @@ class NetworkUrls {
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
-  static const VERIFY_OTP = "notification/verify-token";
+  static const VERIFY_OTP = "notification/forgot-password";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";

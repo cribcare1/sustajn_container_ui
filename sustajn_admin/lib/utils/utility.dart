@@ -38,7 +38,7 @@ class Utils {
             children:  [
               Icon(Icons.edit, size: Constant.LABEL_TEXT_SIZE_18),
               SizedBox(width: Constant.SIZE_10),
-              Text(Strings.EDIT),
+              Text(Strings.EDIT,style: TextStyle(color: Colors.black),),
             ],
           ),
         ),
@@ -253,7 +253,7 @@ void showCustomSnackBar({
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
       margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     ),
   );
 }

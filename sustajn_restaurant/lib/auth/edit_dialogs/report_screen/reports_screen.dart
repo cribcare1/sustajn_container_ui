@@ -26,14 +26,14 @@ class _ReportScreenState extends State<ReportScreen> {
       "address": "2345678965 ",
       "date": "28/11/2025",
       "status": "New ",
-      "statusColor": Colors.black,
+      "statusColor": Colors.white,
     },
     {
       "name": " Al-Aman Restaurant",
       "address": "7663526332 ",
       "date": "28/11/2025",
       "status": "New",
-      "statusColor": Colors.black,
+      "statusColor": Colors.white,
     },
     {
       "name": "Royal Biryani House",
@@ -124,13 +124,12 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             );
           },
-              icon: Icon(Icons.filter_list))
+              icon: Icon(Icons.filter_list,
+              color: Colors.white,))
         ]
       ).getAppBar(context),
       body: Column(
         children: [
-          // _buildSegmentedToggle(themeData!),
-          // _buildSearchBar(context, themeData!),
           _buildMonthHeader(context, themeData!),
           Expanded(child: _buildList(context, themeData, items)),
         ],
@@ -144,12 +143,13 @@ class _ReportScreenState extends State<ReportScreen> {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      color: Colors.grey.shade200,
+      color:Constant.grey.withOpacity(0.2),
       child: Text(
         'December - 2025',
         style: theme.textTheme.bodyLarge?.copyWith(
           fontSize: Constant.LABEL_TEXT_SIZE_16,
           fontWeight: FontWeight.w600,
+          color: Colors.white
         ),
       ),
     );
@@ -167,20 +167,6 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  FeedbackStatus _convertStatus(String status) {
-    switch (status.toLowerCase()) {
-      case Strings.NEW_UNREAD:
-        return FeedbackStatus.newUnread;
-      case Strings.INPROGRESS_TXT:
-        return FeedbackStatus.inProgress;
-      case Strings.RESOLVED_TXT:
-        return FeedbackStatus.resolved;
-      case Strings.REJECT_TXT:
-        return FeedbackStatus.rejected;
-      default:
-        return FeedbackStatus.newUnread;
-    }
-  }
 
 
   Widget _buildListTile(
@@ -214,6 +200,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.CONTAINER_SIZE_16,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white
                     ),
                   ),
                 ),
@@ -226,7 +213,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   ),
                 ),
                 SizedBox(width: Constant.SIZE_06),
-                Icon(Icons.arrow_forward_ios, size: Constant.LABEL_TEXT_SIZE_14, color: Colors.grey),
+                Icon(Icons.arrow_forward_ios, size: Constant.LABEL_TEXT_SIZE_14, color: Colors.white),
               ],
             ),
 
@@ -239,7 +226,7 @@ class _ReportScreenState extends State<ReportScreen> {
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.grey.shade600,
+                color: Colors.white,
               ),
             ),
 
@@ -250,11 +237,11 @@ class _ReportScreenState extends State<ReportScreen> {
               item["date"],
               style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.grey.shade700,
+                color: Colors.white,
               ),
             ),
 
-            Divider(color: Colors.grey.shade300, height: Constant.CONTAINER_SIZE_20),
+            Divider(color: Colors.grey.shade700, height: Constant.CONTAINER_SIZE_20),
           ],
         ),
       ),

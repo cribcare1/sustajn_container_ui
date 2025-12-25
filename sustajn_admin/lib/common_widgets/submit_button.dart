@@ -16,7 +16,7 @@ class SubmitButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onRightTap,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFD1AE31), // Gold color
+        backgroundColor: Theme.of(context).secondaryHeaderColor, // Gold color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -25,11 +25,7 @@ class SubmitButton extends StatelessWidget {
       ),
       child: Text(
         rightText!,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-        ),
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Theme.of(context).primaryColor)
       ),
     );
   }

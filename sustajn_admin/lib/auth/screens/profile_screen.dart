@@ -1,10 +1,10 @@
-import 'dart:convert';
 
 import 'package:container_tracking/auth/model/login_model.dart';
 import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:flutter/material.dart';
 
+import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -26,13 +26,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     super.initState();
   }
 
-  LoginModel loginModel = LoginModel();
-  _getUserData()async{
-    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+  LoginData? loginModel;
+  bool _isLoading  = false;
+  Future<void> _getUserData() async {
+    _isLoading = true;
+    final Map<String, dynamic>? json =
+    await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
 
-    if (jsonString != null && jsonString.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
+    if (json != null) {
+      loginModel = LoginData.fromJson(json);
+setState(() {});
     }
+    _isLoading = false;
   }
   @override
   Widget build(BuildContext context) {
@@ -41,10 +46,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final w = size.width;
     final h = size.height;
     return Scaffold(
-      backgroundColor: const Color(0xfff4f5f4),
+      backgroundColor: theme!.primaryColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xff0E3A2F),
-        surfaceTintColor: const Color(0xff0E3A2F),
+        backgroundColor: theme.secondaryHeaderColor,
+        surfaceTintColor: theme.secondaryHeaderColor,
         leading: InkWell(
           onTap: () {
             Navigator.pop(context);
@@ -63,13 +68,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ),
       ),
 
-      body: SingleChildScrollView(
+      body:SingleChildScrollView(
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
             SizedBox(
               width: w - (w * 0.34),
-              height: h * 0.30,
+              height: h * 0.45,
               child: CustomPaint(painter: TopCirclePainter()),
             ),
             Column(
@@ -130,61 +135,45 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                     loginModel.fullName??"Marina Sky Dine",
-                      style: TextStyle(
-                        fontSize: w * 0.055,
-                        fontWeight: FontWeight.w700,
-                      ),
+                     loginModel!.fullName,
+                      style: theme.textTheme.titleMedium
                     ),
                     SizedBox(width: w * 0.015),
-                    Icon(Icons.edit, size: w * 0.045, color: Colors.green),
+                    Icon(Icons.edit, size: w * 0.045, color: Colors.white),
                   ],
                 ),
                 SizedBox(height: h * 0.03),
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: w * 0.04,
-                    vertical: h * 0.02,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(w * 0.04),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      _detailItem(
-                        icon: Icons.email_outlined,
-                        title: "Email",
-                        value: loginModel.userName??"hello597@gmail.com",
-                        w: w,
-                        isRequired: false,
-                      ),
-                      const Divider(color: Colors.grey),
-                      // _detailItem(
-                      //   icon: Icons.location_on_outlined,
-                      //   title: "Address",
-                      //   value:
-                      //       "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
-                      //   w: w,
-                      //   isRequired: false,
-                      // ),
-                      // const Divider(color: Colors.grey),
-                      _detailItem(
-                        icon: Icons.phone_outlined,
-                        title: "Mobile Number",
-                        value: loginModel.mobileNo??"980765432",
-                        w: w,
-                        isRequired: true,
-                      ),
-                    ],
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+                  child: GlassSummaryCard(
+                    child: Column(
+                      children: [
+                        _detailItem(
+                          icon: Icons.email_outlined,
+                          title: "Email",
+                          value: loginModel!.userName,
+                          w: w,
+                          isRequired: false,
+                        ),
+                        const Divider(color: Colors.grey),
+                        // _detailItem(
+                        //   icon: Icons.location_on_outlined,
+                        //   title: "Address",
+                        //   value:
+                        //       "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                        //   w: w,
+                        //   isRequired: false,
+                        // ),
+                        // const Divider(color: Colors.grey),
+                        _detailItem(
+                          icon: Icons.phone_outlined,
+                          title: "Mobile Number",
+                          value: loginModel!.mobileNo,
+                          w: w,
+                          isRequired: true,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -204,7 +193,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("FeedBack",style: Theme.of(context).textTheme.titleMedium),
-                        Icon(Icons.arrow_forward_ios,size:20)
+                        Icon(Icons.arrow_forward_ios,size:20,color: Colors.white,)
                       ],
                     ),
                   ),
@@ -217,7 +206,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     child: ElevatedButton.icon(
                       icon: Icon(
                         Icons.logout,
-                        color: theme!.primaryColor,
+                        color: theme.primaryColor,
                         size: w * 0.05,
                       ),
                       label: Text(
@@ -236,7 +225,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                       onPressed: () {
-                        SharedPreferenceUtils.deleteValueFromSF();
+                        SharedPreferenceUtils.clearAll();
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
                       },
                     ),
@@ -260,7 +249,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.grey[700], size: w * 0.06),
+        Icon(icon, color: Colors.white, size: w * 0.06),
         SizedBox(width: w * 0.03),
         Expanded(
           child: Column(
@@ -268,7 +257,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: w * 0.034, color: Colors.grey),
+                style: TextStyle(fontSize: w * 0.034, color: Colors.white),
               ),
               SizedBox(height: w * 0.01),
               Text(
@@ -282,7 +271,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ),
         ),
         isRequired
-            ? Icon(Icons.edit, size: w * 0.045, color: Colors.green)
+            ? Icon(Icons.edit, size: w * 0.045, color: Colors.white)
             : const SizedBox(),
       ],
     );

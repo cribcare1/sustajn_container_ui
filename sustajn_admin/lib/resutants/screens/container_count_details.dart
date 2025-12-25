@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
@@ -108,12 +109,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
     required String size,
     required String qty,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
+    return GlassSummaryCard(
 
       child: Row(
         children: [
@@ -128,8 +124,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.titleMedium
                 ),
                 const SizedBox(height: 2),
                 Text(code,
@@ -144,11 +139,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerCountDetails> {
 
           Text(
             qty,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.black,
-            ),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700)
           )
         ],
       ),

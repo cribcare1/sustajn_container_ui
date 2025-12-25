@@ -101,7 +101,8 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerListScreen> {
         action: [
           IconButton(onPressed: () {
             showFilterSheet(context);
-          }, icon: Icon(Icons.filter_list)),
+          }, icon: Icon(Icons.filter_list,
+          color: Colors.white,)),
         ],
       ).getAppBar(context),
 
@@ -130,7 +131,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerListScreen> {
                 separatorBuilder: (context, index) =>
                     Divider(
                       height: Constant.SIZE_00,
-                      thickness: 1,
+                      thickness: 0.2,
                       color: Colors.grey[300],
                     ),
                 itemBuilder: (context, index) {
@@ -177,18 +178,19 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerListScreen> {
                     style: TextStyle(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white70
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
                     item["code"]?.toString() ?? 'No ID',
                     style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        color: Colors.grey),
+                        color: Colors.white70),
                   ),
                   Text(
                     "${item["size"]?.toString() ?? '0'}",
                     style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        color: Colors.grey),
+                        color: Colors.white70),
                   ),
                 ],
               ),
@@ -198,6 +200,7 @@ class _ContainerCountDetailsState extends ConsumerState<ContainerListScreen> {
               style: TextStyle(
                 fontSize: Constant.LABEL_TEXT_SIZE_18,
                 fontWeight: FontWeight.bold,
+                color: Colors.white70
               ),
             ),
             SizedBox(width: Constant.SIZE_10),

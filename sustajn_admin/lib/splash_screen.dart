@@ -1,4 +1,5 @@
 import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:container_tracking/auth/screens/login_screen.dart';
 import 'package:container_tracking/utils/SharedPreferenceUtils.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLoggedIn == true ? HomeScreen() : WelcomeScreen(),
+        builder: (_) => isLoggedIn == true ? HomeScreen() : LoginScreen(),
       ),
     );
   }

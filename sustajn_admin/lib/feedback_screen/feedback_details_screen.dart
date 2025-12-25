@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/common_widgets/custom_back_button.dart';
@@ -11,7 +12,7 @@ import 'model/feedback_details_model.dart';
 class FeedbackDetailsScreen extends StatelessWidget {
   final FeedbackModel data;
 
-   FeedbackDetailsScreen({
+   const FeedbackDetailsScreen({
     super.key, required this.data
 
   });
@@ -55,15 +56,16 @@ class FeedbackDetailsScreen extends StatelessWidget {
     final badgeColor = CustomTheme.badgeColor(context, data.status);
     final remarksTitle = _remarksTitle();
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: Strings.FEEDBACK_DETAILS,
-        leading: const CustomBackButton(),
-      ).getAppBar(context),
+    return SafeArea(
+      top: false,bottom: true,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: CustomAppBar(
+          title: Strings.FEEDBACK_DETAILS,
+          leading: const CustomBackButton(),
+        ).getAppBar(context),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
+        body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.PADDING_HEIGHT_10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,17 +73,7 @@ class FeedbackDetailsScreen extends StatelessWidget {
               if (badgeText != null && badgeColor != null)
                 Align(
                   alignment: Alignment.center,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Constant.CONTAINER_SIZE_16,
-                      vertical: Constant.SIZE_01 + 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: badgeColor,
-                      borderRadius: BorderRadius.circular(
-                        Constant.SIZE_10,
-                      ),
-                    ),
+                  child: GlassSummaryCard(
                     child: Text(
                       badgeText,
                       style: theme.textTheme.labelLarge?.copyWith(
@@ -93,16 +85,7 @@ class FeedbackDetailsScreen extends StatelessWidget {
                 ),
 
               SizedBox(height: Constant.PADDING_HEIGHT_10),
-
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_16,
-                  ),
-                ),
+              GlassSummaryCard(
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -239,25 +222,25 @@ class FeedbackDetailsScreen extends StatelessWidget {
             ],
           ),
         ),
+
+        bottomSheet: _showBottomButtons
+            ? Container(
+          height: Constant.CONTAINER_SIZE_100,
+          padding: EdgeInsets.symmetric(horizontal: Constant.PADDING_HEIGHT_10),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: Constant.SIZE_05,
+              ),
+            ],
+          ),
+          child: _buildBottomButtons(context),
+        )
+            : const SizedBox.shrink(),
+
       ),
-
-      bottomSheet: _showBottomButtons
-          ? Container(
-        height: Constant.CONTAINER_SIZE_100,
-        padding: EdgeInsets.symmetric(horizontal: Constant.PADDING_HEIGHT_10),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: Constant.SIZE_05,
-            ),
-          ],
-        ),
-        child: _buildBottomButtons(context),
-      )
-          : const SizedBox.shrink(),
-
     );
   }
 
@@ -275,17 +258,9 @@ class FeedbackDetailsScreen extends StatelessWidget {
   Widget _whiteCard(
     BuildContext context, {
     required Widget child,
-    EdgeInsets? padding,
   }) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.only(top: Constant.SIZE_05),
-      padding: padding ?? EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
+    final _ = Theme.of(context);
+    return GlassSummaryCard(
       child: child,
     );
   }

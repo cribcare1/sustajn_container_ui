@@ -12,6 +12,9 @@ class AuthState extends ChangeNotifier{
   LoginModel? _login;
   bool _isVisible = false;
   BuildContext? _context;
+  bool _isVerifying = false;
+
+  bool get isVerifying => _isVerifying;
 
   String get name => _name;
 
@@ -34,6 +37,10 @@ class AuthState extends ChangeNotifier{
   void setName(String value) {
     _name = value;
     _validateName();
+    notifyListeners();
+  }
+  void setIsOTPVerify(bool isVerifying){
+    _isVerifying = isVerifying;
     notifyListeners();
   }
 

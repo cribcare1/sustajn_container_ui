@@ -1,14 +1,15 @@
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../constants/number_constants.dart';
 import '../container_list/container_provider.dart';
 import '../container_list/model/container_list_model.dart';
 
 Future<List<InventoryData>?> showContainerFilterBottomSheet(
-    BuildContext context,
-    List<InventoryData> containerList,
-    ) {
+  BuildContext context,
+  List<InventoryData> containerList,
+) {
   return showModalBottomSheet<List<InventoryData>>(
     context: context,
     isScrollControlled: true,
@@ -25,14 +26,15 @@ class _ContainerFilterSheet extends ConsumerStatefulWidget {
   const _ContainerFilterSheet({required this.containerList});
 
   @override
-  ConsumerState<_ContainerFilterSheet> createState() => _ContainerFilterSheetState();
+  ConsumerState<_ContainerFilterSheet> createState() =>
+      _ContainerFilterSheetState();
 }
 
 class _ContainerFilterSheetState extends ConsumerState<_ContainerFilterSheet> {
-
   Set<String> selectedIds = {};
   TextEditingController searchController = TextEditingController();
-List<InventoryData> filteredContainers = [];
+  List<InventoryData> filteredContainers = [];
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +46,8 @@ List<InventoryData> filteredContainers = [];
     final theme = Theme.of(context);
     final state = ref.watch(containerNotifierProvider);
     return SafeArea(
-      bottom: true,top: false,
+      bottom: true,
+      top: false,
       child: DraggableScrollableSheet(
         initialChildSize: 0.80,
         minChildSize: 0.50,
@@ -84,7 +87,6 @@ List<InventoryData> filteredContainers = [];
     );
   }
 
-
   Widget _buildTopHandle() {
     return Padding(
       padding: EdgeInsets.only(
@@ -110,24 +112,21 @@ List<InventoryData> filteredContainers = [];
       ),
       child: Row(
         children: [
-          Text(
-            "Containers",
-            style: TextStyle(
-              fontSize: Constant.LABEL_TEXT_SIZE_18,
-              fontWeight: FontWeight.bold,
-              color: theme.textTheme.bodyMedium?.color,
-            ),
-          ),
+          Text("Containers", style: Theme.of(context).textTheme.titleMedium),
           const Spacer(),
           InkWell(
             onTap: () => Navigator.pop(context),
             child: Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
+              padding: EdgeInsets.all(Constant.SIZE_08),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.grey[200],
+                color: Theme.of(context).secondaryHeaderColor,
               ),
-              child: Icon(Icons.close, size: Constant.CONTAINER_SIZE_18),
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+                size: Constant.CONTAINER_SIZE_18,
+              ),
             ),
           ),
         ],
@@ -148,10 +147,10 @@ List<InventoryData> filteredContainers = [];
         decoration: InputDecoration(
           hintText: "Search by container name",
           hintStyle: Theme.of(context).textTheme.titleSmall,
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: Icon(Icons.search, color: Colors.white),
           contentPadding: EdgeInsets.zero,
           filled: true,
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).primaryColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
@@ -174,16 +173,15 @@ List<InventoryData> filteredContainers = [];
               children: [
                 Text(
                   item.containerName,
-                  maxLines: 1,overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: Constant.LABEL_TEXT_SIZE_16,
-                    fontWeight: FontWeight.w600,
-                    color: theme.textTheme.bodyMedium?.color,
-                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: Constant.SIZE_06),
                 Text(
-                  item.productId,maxLines: 1,overflow: TextOverflow.ellipsis,
+                  item.productId,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                     color: Colors.grey[600],
@@ -193,22 +191,39 @@ List<InventoryData> filteredContainers = [];
             ),
           ),
 
-          Checkbox(
-            value: isSelected,
-            activeColor: Theme.of(context).primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(Constant.SIZE_06),
+          Theme(
+            data: ThemeData(
+              checkboxTheme: CheckboxThemeData(
+                side: MaterialStateBorderSide.resolveWith((states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return BorderSide(
+                      color: Theme.of(context).primaryColor,
+                      width: 2,
+                    );
+                  }
+                  return const BorderSide(
+                    color: Colors.blue,
+                    width: 2,
+                  );
+                }),
+              ),
             ),
-            checkColor: Colors.white,
-
-            onChanged: (value) {
-              setState(() {
-                value == true
-                    ? selectedIds.add(item.containerTypeId.toString())
-                    : selectedIds.remove(item.containerTypeId.toString());
-              });
-            },
-          )
+            child: Checkbox(
+              value: isSelected,
+              activeColor: Colors.white,
+              checkColor: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constant.SIZE_06),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  value == true
+                      ? selectedIds.add(item.containerTypeId.toString())
+                      : selectedIds.remove(item.containerTypeId.toString());
+                });
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -217,25 +232,26 @@ List<InventoryData> filteredContainers = [];
   Widget _buildBottomButtons(ThemeData theme) {
     return Padding(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: SubmitClearButton(onLeftTap: (){
-        setState(() {
-          selectedIds.clear();
-        });
-      }, onRightTap: (){
-        setState(() {
-          final selectedItems = widget.containerList
-              .where((e) => selectedIds.contains(e.containerTypeId.toString()))
-              .toList();
+      child: SubmitClearButton(
+        onLeftTap: () {
+          setState(() {
+            selectedIds.clear();
+          });
+        },
+        onRightTap: () {
+          setState(() {
+            final selectedItems = widget.containerList
+                .where(
+                  (e) => selectedIds.contains(e.containerTypeId.toString()),
+                )
+                .toList();
 
-          Navigator.pop(context, selectedItems);
-        });
-      })
-
+            Navigator.pop(context, selectedItems);
+          });
+        },
+      ),
     );
   }
-
-
-
 
   void _filterSearch(String value) {
     setState(() {

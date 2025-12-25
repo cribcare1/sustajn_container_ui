@@ -20,11 +20,10 @@ class StatusRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: Constant.CONTAINER_SIZE_110,
-            height: Constant.CONTAINER_SIZE_80,
+            width: Constant.CONTAINER_SIZE_72,
+            height: Constant.CONTAINER_SIZE_72,
             decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(15),
+              shape: BoxShape.circle,
               border: Border.all(
                 color: circleColor.withOpacity(0.18),
                 width: 1.5,
