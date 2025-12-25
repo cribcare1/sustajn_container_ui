@@ -1,6 +1,6 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/constants/assets_utils.dart';
+
+import 'constants/imports_util.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -76,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen>
             SlideTransition(
               position: _logoMoveUpAnimation,
               child: Image.asset(
-                'assets/images/Sustajn_logo.gif',
-                height: 200,
+                AppAssets.sustajnLogoGif,
+                height: Constant.CONTAINER_SIZE_200,
                 fit: BoxFit.contain,
               ),
             ),
@@ -88,8 +88,8 @@ class _SplashScreenState extends State<SplashScreen>
               child: SlideTransition(
                 position: _nameSlideAnimation,
                 child: Image.asset(
-                  'assets/images/Sustajn - logo_name.png',
-                  height: 68,
+                  AppAssets.sustajnLogoName,
+                  height: Constant.CONTAINER_SIZE_70,
                 ),
               ),
             ),
