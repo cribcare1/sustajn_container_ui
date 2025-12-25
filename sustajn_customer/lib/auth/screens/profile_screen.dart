@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/custom_cricle_painter.dart';
+import '../../constants/number_constants.dart';
 import '../../containers/history_screen.dart';
 import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
@@ -94,11 +95,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           "My Profile",
           style: TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: Constant.LABEL_TEXT_SIZE_20,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -141,15 +142,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "John Dee",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: Constant.LABEL_TEXT_SIZE_22,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: Constant.CONTAINER_WIDTH_SIZE),
                 Icon(Icons.edit, size: 18, color: theme!.primaryColor),
               ],
             ),
@@ -185,7 +186,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: Constant.CONTAINER_SIZE_20),
 
             /// MENU LIST
             Container(
@@ -217,9 +218,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               Expanded(
                                 child: Text(
                                   menuList[index]['title'],
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
                                   ),
                                 ),
                               ),
@@ -243,7 +244,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: Constant.CONTAINER_SIZE_30),
 
             /// LOGOUT BUTTON
             OutlinedButton.icon(
@@ -253,7 +254,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 "Log out",
                 style: TextStyle(
                   color: theme.primaryColor,
-                  fontSize: 16,
+                  fontSize: Constant.LABEL_TEXT_SIZE_16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -269,7 +270,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: Constant.CONTAINER_SIZE_30),
           ],
         ),
       ),
@@ -294,17 +295,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white70,
-                  fontSize: 13,
+                  fontSize: Constant.LABEL_TEXT_SIZE_14,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: Constant.SIZE_04),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: Constant.LABEL_TEXT_SIZE_15,
                 ),
               ),
             ],
