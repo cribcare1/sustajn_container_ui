@@ -193,7 +193,7 @@ FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
   final String previous = params['previous'];
   params.remove("previous");
 
-  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.OTP_VERIFICATION}';
   try {
     final responseData = await apiService.verifyOtp(url, params, "");
 

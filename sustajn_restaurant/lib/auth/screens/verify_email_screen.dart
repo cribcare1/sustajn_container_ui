@@ -14,6 +14,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/sharedpreference_utils.dart';
 import '../../utils/utility.dart';
+import '../edit_dialogs/business_information_screen.dart';
 import 'bank_details_screen.dart';
 import 'business_information.dart';
 import 'login_screen.dart';
@@ -304,6 +305,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   Future<void> _getNetworkDataVerify(var registrationState) async {
     try {
       registrationState.setIsOTPVerify(true);
+      registrationState.setContext(context);
 
       final isNetworkAvailable =
       await ref.read(networkProvider.notifier).isNetworkAvailable();
@@ -350,14 +352,38 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           await SharedPreferenceUtils.getMapFromSF("signUp");
 
           if (data != null) {
-            ref.read(registerProvider(data).future).then((value){
-              if(value.isNotEmpty){
-                showCustomSnackBar(context: context, message: value['message'], color: Colors.green);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
-              }
-            });
+            final registerResponse =
+            await ref.read(registerProvider(data).future);
+
+            if (!mounted) return;
+
+            if (registerResponse.isNotEmpty &&
+                registerResponse["status"] == Strings.SUCCESS) {
+
+              showCustomSnackBar(
+                context: context,
+                message: registerResponse["message"] ?? "Registration successful",
+                color: Colors.green,
+              );
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BusinessInformationScreen(
+                    registrationData: widget.registrationData!,
+                  ),
+                ),
+              );
+            } else {
+              showCustomSnackBar(
+                context: context,
+                message: registerResponse["message"] ?? "Registration failed",
+                color: Colors.red,
+              );
+            }
           }
         }
+
       } else {
         if (!mounted) return;
 

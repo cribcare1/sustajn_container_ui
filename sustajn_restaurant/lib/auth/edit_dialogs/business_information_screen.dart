@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/models/registration_data.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
 class BusinessInformationScreen extends StatelessWidget {
-  const BusinessInformationScreen({super.key});
+  final RegistrationData? registrationData;
+  const BusinessInformationScreen({super.key,  this.registrationData});
 
   @override
   Widget build(BuildContext context) {

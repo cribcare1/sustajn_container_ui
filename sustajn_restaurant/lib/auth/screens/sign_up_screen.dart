@@ -300,7 +300,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   child: SubmitButton(
                     onRightTap: () async {
                       if (_formKey.currentState!.validate()) {
-
                         final registrationData = RegistrationData(
                           fullName: restaurantCtrl.text,
                           email: emailCtrl.text,
@@ -312,20 +311,23 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           longitude: long,
                         );
 
-                        await _getNetworkData(authState);
+                        final isOtpSent = await _getNetworkData(authState);
+
+                        if (!isOtpSent) return;
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => VerifyEmailScreen(
                               previousScreen: "signUp",
-                              registrationData: registrationData, // ✅ PASS DATA
+                              registrationData: registrationData,
                               email: emailCtrl.text,
                             ),
                           ),
                         );
                       }
                     },
+
 
                     rightText: Strings.CONTINUE_VERIFICATION,
                   ),
@@ -450,27 +452,25 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  Future<void> _getNetworkData(var registrationState) async {
+  Future<bool> _getNetworkData(var registrationState) async {
     try {
-      if (!registrationState.isValid) return;
       registrationState.setIsLoading(true);
+      registrationState.setContext(context);
       FocusScope.of(context).unfocus();
-      ref.read(authNotifierProvider).loginData(
-        context,
-        emailCtrl.text,
-        passwordCtrl.text,
-      );
+
       final isNetworkAvailable =
       await ref.read(networkProvider.notifier).isNetworkAvailable();
+
       if (!isNetworkAvailable) {
-        if (!mounted) return;
+        if (!mounted) return false;
         showCustomSnackBar(
           context: context,
           message: Strings.NO_INTERNET_CONNECTION,
           color: Colors.red,
         );
-        return;
+        return false;
       }
+
       Map<String, dynamic> mapData = {
         "fullName": restaurantCtrl.text,
         "userType": "RESTURANT",
@@ -480,20 +480,42 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
         "passwordHash": passwordCtrl.text,
       };
+
       await SharedPreferenceUtils.saveDataInSF(
         "signUp",
         jsonEncode(mapData),
       );
-      ref.read(
+
+      final response = await ref.read(
         validateEmail({
           "email": emailCtrl.text,
           "previous": "signUp",
-        }),
+        }).future,
       );
+
+      if (response["status"] == Strings.SUCCESS) {
+        showCustomSnackBar(
+          context: context,
+          message: response["message"] ?? "OTP sent successfully",
+          color: Colors.green,
+        );
+        return true;
+      } else {
+        showCustomSnackBar(
+          context: context,
+          message: response["message"] ?? "Failed to send OTP",
+          color: Colors.red,
+        );
+        return false;
+      }
     } catch (e) {
-      Utils.printLog('Error in Login button: $e');
+      Utils.printLog('SignUp OTP Error: $e');
+      return false;
+    } finally {
+      registrationState.setIsLoading(false);
     }
   }
+
 
 
 }
