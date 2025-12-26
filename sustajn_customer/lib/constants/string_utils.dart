@@ -102,6 +102,7 @@ class Strings {
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
+  static const USER_ID = 'userId';
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
@@ -182,4 +183,6 @@ class Strings {
   static const String NO = 'No';
   static const String DASHBOARD_TEXT = 'Welcome! Ready to start reusing?';
   static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
+
+  static const String MY_QR_CODE = 'My QR Code';
 }

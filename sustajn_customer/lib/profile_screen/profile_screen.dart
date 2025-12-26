@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
+import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
+import '../auth/dashboard_screen/generate_qr_screen.dart';
 import '../common_widgets/custom_cricle_painter.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
@@ -57,13 +59,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // _showBusinessEditScreen(context);
         break;
       case 2:
-      // _showReportScreen(context);
+        _showQRDialog(context);
         break;
       case 3:
         _showFeedbackDialog(context);
         break;
       case 4:
       // _showSubscriptionDialog(context);
+        break;
+      case 5:
+        _showContactDialog(context);
         break;
     }
   }
@@ -74,6 +79,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => const FeedbackBottomSheet(),
+    );
+  }
+
+  void _showContactDialog(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const ContactUsDialog(),
+    );
+  }
+
+  void _showQRDialog(BuildContext context){
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) =>  QrDialog(),
     );
   }
 

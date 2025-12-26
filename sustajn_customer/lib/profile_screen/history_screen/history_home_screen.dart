@@ -44,7 +44,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
         centerTitle: true,
         leading: CustomBackButton(),
         title: Text(
-          'Products',
+          'History',
           style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(

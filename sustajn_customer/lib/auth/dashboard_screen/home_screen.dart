@@ -1,7 +1,8 @@
 import '../../constants/imports_util.dart';
 import '../bottom_navigationbar/bottom_navigation_bar.dart';
-import '../dashboard_screen/dashboard.dart';
-import '../dashboard_screen/products_screen.dart';
+import 'dashboard.dart';
+import 'generate_qr_screen.dart';
+import 'products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,6 +15,15 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   void _onTabChange(int index) {
+    if (index == 2) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) =>  QrDialog(),
+      );
+      return;
+    }
+
     setState(() {
       _currentIndex = index;
     });
@@ -28,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _onTabChange(0);
         },
       ),
-      const Scaffold(),
+      const SizedBox(),
     ];
 
     return Scaffold(

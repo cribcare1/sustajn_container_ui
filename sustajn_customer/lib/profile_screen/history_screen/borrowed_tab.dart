@@ -1,3 +1,4 @@
+import '../../common_widgets/filter_screen.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import 'details_dialog.dart';
@@ -73,8 +74,35 @@ class BorrowedTabScreen extends StatelessWidget {
               ),
               fillColor: Constant.grey.withOpacity(0.1),
               filled: true,
-              suffixIcon: IconButton(
-                onPressed: () {},
+              suffixIcon:  IconButton(onPressed: (){
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ReusableFilterBottomSheet(
+                    title: "Filters",
+                    leftTabTitle: "Month",
+                    options: [
+                      "December–2024",
+                      "January–2025",
+                      "February–2024",
+                      "March–2024",
+                      "Apiral–2024",
+                      "May–2024",
+                      "June–2024",
+                      "July–2024",
+                      "August–2024",
+                      "September–2025",
+                      "October–2025",
+                      "November–2025",
+                    ],
+                    selectedValue: "January–2025",
+                    onApply: (value) {
+                      print("Selected Month = $value");
+                    },
+                  ),
+                );
+              },
                 icon: Icon(Icons.filter_list, color: Colors.white),
               ),
             ),

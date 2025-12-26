@@ -1,3 +1,4 @@
+import '../../common_widgets/filter_screen.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import 'details_dialog.dart';
@@ -74,7 +75,35 @@ class ReturnedTabScreen extends StatelessWidget {
               fillColor: Constant.grey.withOpacity(0.1),
               filled: true,
               suffixIcon: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => ReusableFilterBottomSheet(
+                      title: "Filters",
+                      leftTabTitle: "Month",
+                      options: [
+                        "December–2024",
+                        "January–2025",
+                        "February–2024",
+                        "March–2024",
+                        "Apiral–2024",
+                        "May–2024",
+                        "June–2024",
+                        "July–2024",
+                        "August–2024",
+                        "September–2025",
+                        "October–2025",
+                        "November–2025",
+                      ],
+                      selectedValue: "January–2025",
+                      onApply: (value) {
+                        print("Selected Month = $value");
+                      },
+                    ),
+                  );
+                },
                 icon: Icon(Icons.filter_list, color: Colors.white),
               ),
             ),
@@ -95,17 +124,13 @@ class ReturnedTabScreen extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   ...items.map(
-                        (item) => _historyCard(
-                      item: item,
-                      context: context,
-                    ),
+                    (item) => _historyCard(item: item, context: context),
                   ),
                 ],
               );
             }).toList(),
           ),
         ),
-
       ],
     );
   }
@@ -118,8 +143,18 @@ class ReturnedTabScreen extends StatelessWidget {
     final year = dateParts[2];
 
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
 
     return '${months[month - 1]} $year';
@@ -139,8 +174,6 @@ class ReturnedTabScreen extends StatelessWidget {
 
     return grouped;
   }
-
-
 
   Widget _monthHeader(String title, int count) {
     return Padding(
@@ -254,14 +287,20 @@ class ReturnedTabScreen extends StatelessWidget {
     );
   }
 
-  void _openDetailDialog(BuildContext context, String dateTime, BorrowedDetails item) {
+  void _openDetailDialog(
+    BuildContext context,
+    String dateTime,
+    BorrowedDetails item,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          ReceiveDetailsDialog(dateTime: dateTime, title: 'Borrowed Details',
-              item:[item]),
+      builder: (_) => ReceiveDetailsDialog(
+        dateTime: dateTime,
+        title: 'Borrowed Details',
+        item: [item],
+      ),
     );
   }
 }
