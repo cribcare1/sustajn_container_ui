@@ -11,6 +11,7 @@ import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
+import 'edit_dialogs/freemium_bottom_sheet.dart';
 import 'history_screen/history_home_screen.dart';
 
 
@@ -56,7 +57,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showHistoryScreen(context);
         break;
       case 1:
-      // _showBusinessEditScreen(context);
         break;
       case 2:
         _showQRDialog(context);
@@ -65,7 +65,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showFeedbackDialog(context);
         break;
       case 4:
-      // _showSubscriptionDialog(context);
+        // _showFreemiumSheet(context);
         break;
       case 5:
         _showContactDialog(context);
@@ -90,6 +90,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       builder: (_) => const ContactUsDialog(),
     );
   }
+
+  // void _showFreemiumSheet(BuildContext context){
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     isScrollControlled: true,
+  //     builder: (_) => Padding(
+  //       padding: EdgeInsets.only(
+  //         bottom: MediaQuery.of(context).viewInsets.bottom,
+  //       ),
+  //       child: FreemiumCardContent(),
+  //     ),
+  //   );
+  // }
 
   void _showQRDialog(BuildContext context){
     showDialog(
@@ -304,19 +318,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         width: w * 0.55,
                         margin: EdgeInsets.only(top: h * 0.02),
                         child: ElevatedButton.icon(
-                          icon: Icon(Icons.logout, color: theme!.primaryColor, size: w * 0.05),
+                          icon: Icon(Icons.logout, color: Constant.gold, size: w * 0.05),
                           label: Text(
                             "Log Out",
                             style: TextStyle(
-                              color: theme.primaryColor,
+                              color: Constant.gold,
                               fontSize: w * 0.045,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFC8B531),
+                            backgroundColor: theme.primaryColor,
                             padding: EdgeInsets.symmetric(vertical: h * 0.018),
                             shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Constant.gold
+                              ),
                               borderRadius: BorderRadius.circular(w * 0.04),
                             ),
                           ),
