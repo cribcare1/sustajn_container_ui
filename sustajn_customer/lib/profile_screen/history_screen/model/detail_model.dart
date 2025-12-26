@@ -7,6 +7,7 @@ class BorrowedDetails {
   final int qty;
   final String image;
   final String date;
+  final String? price;
 
   BorrowedDetails({
     required this.resturantName,
@@ -15,6 +16,7 @@ class BorrowedDetails {
     required this.volume,
     required this.qty,
     required this.image,
-    required this.date
+    required this.date,
+    this.price
   });
 }

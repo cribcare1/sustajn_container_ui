@@ -19,24 +19,26 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor:theme!.scaffoldBackgroundColor ,
       body: SafeArea(
-        child: Column(
-          children: [
-            HeaderWidget(name: 'John Dee'),
-            SizedBox(height: Constant.SIZE_08),
-            Image.asset('assets/images/img_1.png',
-            height: Constant.CONATAINER_SIZE_380,
-            width: Constant.CONATAINER_SIZE_380,),
-            Text(Strings.DASHBOARD_TEXT,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: Constant.gold
-            ),),
-            SizedBox(height: Constant.CONTAINER_SIZE_12,),
-            Text(Strings.BORROW_REUSABLE_CONTAINERS,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white
-            ),)
-
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              HeaderWidget(name: 'John Dee'),
+              SizedBox(height: Constant.SIZE_08),
+              Image.asset('assets/images/img_1.png',
+              height: Constant.CONATAINER_SIZE_380,
+              width: Constant.CONATAINER_SIZE_380,),
+              Text(Strings.DASHBOARD_TEXT,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Constant.gold
+              ),),
+              SizedBox(height: Constant.CONTAINER_SIZE_12,),
+              Text(Strings.BORROW_REUSABLE_CONTAINERS,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white
+              ),)
+          
+            ],
+          ),
         ),
       ),
     );
