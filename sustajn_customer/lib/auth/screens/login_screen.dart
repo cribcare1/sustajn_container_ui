@@ -3,7 +3,8 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/auth/screens/profile_screen.dart';
+import 'package:sustajn_customer/auth/dashboard_screen/dashboard_screen.dart';
+import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/submit_button.dart';
@@ -11,6 +12,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import 'forget_password.dart';

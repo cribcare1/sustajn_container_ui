@@ -98,7 +98,7 @@ class Strings {
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE =
-      "We've sent you a code to verify your email id on\nabc***@gmail.com";
+      "We've sent you a code to verify your email id on\n";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -177,7 +177,9 @@ class Strings {
       'You have already verified your email. Going back may interrupt account the account setup process';
   static const String STAY_ON_THIS_PAGE = 'Stay on this page';
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
-  static const String SURE_LOG_OUT = 'Are you sure you want to logout';
+  static const String SURE_LOG_OUT = 'Are you sure you want to log out?';
   static const String YES = 'Yes';
   static const String NO = 'No';
+  static const String DASHBOARD_TEXT = 'Welcome! Ready to start reusing?';
+  static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
 }

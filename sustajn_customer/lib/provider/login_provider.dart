@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../auth/dashboard_screen/dashboard_screen.dart';
+import '../auth/screens/home_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
@@ -46,7 +47,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
         Navigator.pushReplacement(
           registrationState.context,
           MaterialPageRoute(
-            builder: (_) => const DashboardScreen(),
+            builder: (_) => const HomeScreen(),
           ),
         );
       }

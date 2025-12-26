@@ -18,9 +18,10 @@ import 'bank_details_screen.dart';
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
   final RegistrationData? registrationData;
+  final String? email;
 
   const VerifyEmailScreen({super.key, required this.previousScreen,
-  this.registrationData});
+  this.registrationData, this.email});
 
   @override
   ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
@@ -114,9 +115,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                       ),
 
                       SizedBox(height: Constant.CONTAINER_SIZE_10),
-
                       Text(
-                        Strings.SEND_CODE,
+                        "${Strings.SEND_CODE}${widget.email}",
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                           fontSize: Constant.LABEL_TEXT_SIZE_15,

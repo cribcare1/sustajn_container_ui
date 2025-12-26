@@ -72,7 +72,9 @@ class Constant {
   static late double CONTAINER_SIZE_36= 36.0;
   static late double CONTAINER_SIZE_40 = 40.0;
   static late double CONTAINER_SIZE_42 = 42.0;
+  static late double CONTAINER_SIZE_44=44.0;
   static late double CONTAINER_SIZE_45 = 45.0;
+  static late double CONTAINER_SIZE_48= 48.0;
   static late double CONTAINER_SIZE_50 = 50.0;
   static late double CONTAINER_SIZE_55 = 55.0;
   static late double CONTAINER_SIZE_56=56.0;
@@ -144,12 +146,10 @@ class Constant {
   static const Color black12 = Colors.black12;
   static const Color black38 = Colors.black38;
   static const Color black26 = Colors.black26;
-  static const Color lightBlue = Colors.lightBlue;
   static const Color transparent = Colors.transparent;
   static const Color grey = Colors.grey;
   static const Color grey200 = Color(0xFFF5F5F5);
   static const Color blueGrey = Colors.blueGrey;
-  static const Color lightBlueAccent = Colors.lightBlueAccent;
   static const Color blueAccent = Colors.blueAccent;
   static const Color teal = Colors.teal;
 
@@ -182,8 +182,8 @@ class Constant {
   static const Color heading1 = Color(0xFFFF61D2);
   static const Color heading2 = Color(0xFFEA8D8D);
 
-  static const Color background = Color(0xFF0E2F28);
-  static const Color card = Color(0xFF1D3A33);
+  // static const Color background = Color(0xFF0E2F28);
+  // static const Color card = Color(0xFF1D3A33);
   static const Color profileText = Colors.white;
   static const Color statusCritical = Color(0xFFF8C53B);
   static const Color statusUrgent = Color(0xFFE2703A);
@@ -193,6 +193,10 @@ class Constant {
   static const Color greenCircle = Color(0xFF4CAF50);
   static const Color orangeCircle = Color(0xFFFFA04B);
   static const Color gold = Color(0xFFD1AE31);
+  static const Color lightPink = Color(0xFFFFB2BA);
+  static const Color lightBlue = Color(0xFFb2c9ff);
+  static const Color lightYellow = Color(0xFFffdf99);
+  static const Color lightGreen = Color(0xFFa5ff99);
 
 
 

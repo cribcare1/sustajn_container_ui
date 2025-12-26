@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/utils/theme_utils.dart';
 
 import '../constants/number_constants.dart';
 
@@ -15,6 +16,7 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
     return ElevatedButton(
       onPressed: onRightTap,
       style: ElevatedButton.styleFrom(
@@ -27,8 +29,8 @@ class SubmitButton extends StatelessWidget {
       ),
       child: Text(
         rightText!,
-        style: const TextStyle(
-          color: Colors.white,
+        style:  TextStyle(
+          color: theme!.primaryColor,
           fontSize: 15,
           fontWeight: FontWeight.w600,
         ),
