@@ -28,6 +28,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
 
   @override
+  void initState() {
+    super.initState();
+    getDevice();
+   }
+ 
+  Future<void> getDevice() async {
+    final deviceToken = await Utils.getDeviceToken();
+ 
+    setState(() {
+     });
+  }
+
+  @override
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var themeData = CustomTheme.getTheme(true);
