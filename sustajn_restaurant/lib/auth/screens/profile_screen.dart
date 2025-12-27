@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/constants/network_urls.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -130,7 +131,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
-              color: theme!.scaffoldBackgroundColor,
+              color: theme.scaffoldBackgroundColor,
             ),
           ),
         ),
@@ -159,9 +160,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           color: Colors.white,
                           width: w * 0.012,
                         ),
-                        image: const DecorationImage(
+                        image:  DecorationImage(
                           image: NetworkImage(
-                            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                            "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -179,7 +180,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           color: Colors.white,
                         ),
                         child:
-                        Icon(Icons.edit_outlined, size: w * 0.045, color: theme!.primaryColor,),
+                        Icon(Icons.edit_outlined, size: w * 0.045, color: theme.primaryColor,),
                       ),
                     ),
                   ],
@@ -304,7 +305,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     width: w * 0.55,
                     margin: EdgeInsets.only(top: h * 0.02),
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.logout, color: theme!.primaryColor, size: w * 0.05),
+                      icon: Icon(Icons.logout, color: theme.primaryColor, size: w * 0.05),
                       label: Text(
                         "Log Out",
                         style: TextStyle(

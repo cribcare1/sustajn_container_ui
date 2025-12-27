@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
-import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
+import 'package:sustajn_restaurant/utils/global_utils.dart';
 
+import '../../common_widgets/card_widget.dart';
 import '../../constants/number_constants.dart';
 import '../../models/login_model.dart';
 import '../../order_screen/order_home_screen.dart';
@@ -53,7 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final width = mq.size.width;
 
     final cardHorizontalPadding = width * 0.04;
-    final cardSpacing = width * 0.03;
+    final cardSpacing = width * 0.04;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -75,28 +77,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Utils.navigateToPushScreen(
-                            context,
-                            MyProfileScreen(),
-                          );
-                        },
-                        child: Container(
-                          width: Constant.CONTAINER_SIZE_35,
-                          height: Constant.CONTAINER_SIZE_35,
-                          decoration: BoxDecoration(
-                            color: theme.primaryColor,
-                            borderRadius: BorderRadius.circular(100),
-                            border: Border.all(
-                              color: Constant.grey,
-                              width: 0.3,
-                            ),
-                          ),
-                          child: Icon(Icons.restaurant, color: Colors.white70),
-                        ),
-                      ),
-                      SizedBox(width: Constant.SIZE_06),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(height: Constant.SIZE_15),
                   Wrap(
                     spacing: cardSpacing,
-                    runSpacing: Constant.SIZE_06,
+                    runSpacing: Constant.SIZE_10,
                     children: [
                       _buildDashboardCard(
                         context,
@@ -170,16 +150,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       _buildDashboardCard(
                         context,
                         width: cardWidth,
-                        icon: Icons.search,
+                        icon: Icons.qr_code_scanner_rounded,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SearchRestaurantScreen(),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => SearchRestaurantScreen(),
+                          //   ),
+                          // );
+                          _showFilterPopup(context);
                         },
-                        label: 'Search',
+                        label: 'Scan',
                       ),
                       _buildDashboardCard(
                         context,
@@ -197,9 +178,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: Constant.SIZE_18),
+                  SizedBox(height: Constant.SIZE_15),
                   Text(
-                    'Inventory Status Overview',
+                    'Container Status Overview',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.bold,
@@ -207,36 +188,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_10),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: _buildDropdown(
-                          context,
-                          value: selectedDateRange,
-                          items: dateOptions,
-                          onChanged: (v) =>
-                              setState(() => selectedDateRange = v!),
+                  GlassSummaryCard(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: _buildDropdown(
+                                context,
+                                value: selectedDateRange,
+                                items: dateOptions,
+                                onChanged: (v) =>
+                                    setState(() => selectedDateRange = v!),
+                              ),
+                            ),
+                            SizedBox(width: Constant.SIZE_10),
+                            Expanded(
+                              flex: 1,
+                              child: _buildDropdown(
+                                context,
+                                value: selectedContainer,
+                                items: containerOptions,
+                                onChanged: (v) =>
+                                    setState(() => selectedContainer = v!),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(width: Constant.SIZE_10),
-                      Expanded(
-                        flex: 1,
-                        child: _buildDropdown(
-                          context,
-                          value: selectedContainer,
-                          items: containerOptions,
-                          onChanged: (v) =>
-                              setState(() => selectedContainer = v!),
-                        ),
-                      ),
-                    ],
+                        SizedBox(height: Constant.SIZE_15),
+                        _buildLegendRow(context),
+                        SizedBox(height: Constant.SIZE_15),
+                        _buildChartRings(context, width, theme),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: Constant.SIZE_15),
-                  _buildLegendRow(context),
-                  SizedBox(height: Constant.SIZE_15),
-                  _buildChartRings(context, width, theme),
-                  SizedBox(height: Constant.CONTAINER_SIZE_30),
+
+                  // SizedBox(height: Constant.CONTAINER_SIZE_30),
                 ],
               ),
             );
@@ -258,58 +246,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: width,
         height: cardHeight,
-        padding: EdgeInsets.all(Constant.SIZE_10),
-        decoration: BoxDecoration(
-          color: theme.primaryColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Constant.grey, width: 0.3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Flexible(
-              flex: 3,
-              child: Center(
-                child: Container(
-                  width: Constant.CONTAINER_SIZE_48,
-                  height: Constant.CONTAINER_SIZE_48,
-                  decoration: BoxDecoration(
-                    color: Constant.gold,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    icon,
-                    color: theme.scaffoldBackgroundColor,
-                    size: Constant.CONTAINER_SIZE_22,
+        child: GlassSummaryCard(
+          child: Column(
+            children: [
+              Flexible(
+                flex: 3,
+                child: Center(
+                  child: Container(
+                    width: Constant.CONTAINER_SIZE_48,
+                    height: Constant.CONTAINER_SIZE_48,
+                    decoration: BoxDecoration(
+                      color: Constant.gold,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      icon,
+                      color: theme.scaffoldBackgroundColor,
+                      size: Constant.CONTAINER_SIZE_22,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            Flexible(
-              flex: 1,
-              child: Center(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+              Flexible(
+                flex: 1,
+                child: Center(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -444,8 +421,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     sectionsSpace: 2,
                     centerSpaceRadius: holeRadius,
                     startDegreeOffset: -90,
+                    titleSunbeamLayout: true,
                     sections: _buildChartSections(ringThickness, theme),
-                    pieTouchData: PieTouchData(enabled: false),
+                    pieTouchData: PieTouchData(enabled: true),
                   ),
                 ),
               ],
@@ -454,7 +432,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              'November-2025',
+              '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
               style: TextStyle(
                 fontSize: screenWidth < 350 ? 11 : 13,
                 color: Colors.white,
@@ -502,5 +480,258 @@ class _DashboardScreenState extends State<DashboardScreen> {
         titleStyle: const TextStyle(fontSize: 12),
       ),
     ];
+  }
+
+  void _showFilterPopup(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      useSafeArea: true,
+      isDismissible: true,
+      builder: (_) {
+        return const _FilterPopupWidget();
+      },
+    );
+  }
+}
+
+class _FilterPopupWidget extends StatefulWidget {
+  const _FilterPopupWidget();
+
+  @override
+  State<_FilterPopupWidget> createState() => _FilterPopupWidgetState();
+}
+
+class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
+  String? selectedType;
+  String? selectedValue;
+  List<String> valueList = ["Customer Return", "Restaurant Damage"];
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: const CircleAvatar(
+                  radius: 16,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.clear, color: Colors.black, size: 18),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomLeft,
+                  colors: [Color(0xff0C794E), Color(0xff0F3727)],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Scan',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  const Icon(
+                    Icons.qr_code_scanner,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _OptionTile(
+                          title: 'Lease',
+                          icon: Icons.north_east,
+                          isSelected: selectedType == 'LEASE',
+                          onTap: () {
+                            setState(() {
+                              selectedType = 'LEASE';
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _OptionTile(
+                          title: 'Receive',
+                          icon: Icons.south_west,
+                          isSelected: selectedType == 'RECEIVE',
+                          onTap: () {
+                            setState(() {
+                              selectedType = 'RECEIVE';
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(valueList.length, (index) {
+                        final value = valueList[index];
+                        return Expanded(flex: 1,
+                          child: Row(
+                            children: [
+                              Theme(
+                                data: Theme.of(context).copyWith(
+                                  radioTheme: RadioThemeData(
+                                    fillColor: MaterialStateProperty.resolveWith<Color>(
+                                          (states) {
+                                        return Theme.of(context).secondaryHeaderColor;
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                child: Radio<String>(
+                                  value: value,
+                                  groupValue: selectedValue,
+                                  activeColor: Theme.of(
+                                    context,
+                                  ).secondaryHeaderColor,
+                                  visualDensity: const VisualDensity(
+                                    horizontal: -4,
+                                    vertical: -4,
+                                  ),
+
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedValue = val;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  value,overflow: TextOverflow.ellipsis,maxLines:1,
+                                  style: Theme.of(context).textTheme.titleSmall!
+                                      .copyWith(color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                  SizedBox(
+                    width: double.infinity,
+                    height: 46,
+                    child: ElevatedButton(
+                      onPressed: selectedType == null
+                          ? null
+                          : () {
+                              if (selectedValue == null) {
+                                Fluttertoast.showToast(msg: "Select Type");
+                              } else {
+                                Navigator.pop(context, selectedType);
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedType == null
+                            ? Colors.grey.shade300
+                            : Theme.of(context).secondaryHeaderColor,
+                        foregroundColor: Colors.black,
+                        disabledBackgroundColor: Colors.grey.shade300,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      child: Text(
+                        'Confirm',
+                        style: Theme.of(context).textTheme.titleMedium!
+                            .copyWith(
+                              color: selectedType == null
+                                  ? Colors.grey
+                                  : Theme.of(context).primaryColor,
+                            ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionTile extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _OptionTile({
+    required this.title,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        height: 130,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).secondaryHeaderColor
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: isSelected ? Colors.black : Colors.white,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.black : Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
