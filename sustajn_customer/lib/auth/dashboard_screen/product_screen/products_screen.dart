@@ -5,8 +5,9 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/return_card.dart'
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
-import '../../constants/number_constants.dart';
-import '../../utils/theme_utils.dart';
+import '../../../constants/number_constants.dart';
+import '../../../utils/theme_utils.dart';
+import 'filter_dialog.dart';
 
 class ProductScreen extends StatelessWidget {
   final VoidCallback onBack;
@@ -41,7 +42,15 @@ class ProductScreen extends StatelessWidget {
         backgroundColor:theme!.scaffoldBackgroundColor,
         appBar: CustomAppBar(title: 'Products',
             action: [
-              IconButton(onPressed: (){},
+              IconButton(onPressed: (){
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (_) => const SortFilterDialog(),
+                );
+
+              },
                   icon: Icon(Icons.filter_list,
                   color: Colors.white,))
             ],
