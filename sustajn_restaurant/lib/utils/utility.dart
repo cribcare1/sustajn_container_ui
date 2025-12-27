@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
@@ -472,6 +473,19 @@ class Utils {
       loginData = LoginModel.fromJson(response);
       userId = loginData!.data!.userId;
     }
+    return null;
+  }
+
+  static Future<String?> getDeviceToken() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
+    final token = await fcm.getToken();
+    if (token != null && token.isNotEmpty) {
+      printLog("DEVICE TOKEN: $token");
+      return token;
+    }
+    printLog("DEVICE TOKEN NOT FOUND");
+
     return null;
   }
 
