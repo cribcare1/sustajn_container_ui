@@ -2,7 +2,7 @@ import '../../constants/imports_util.dart';
 import '../bottom_navigationbar/bottom_navigation_bar.dart';
 import 'dashboard.dart';
 import 'generate_qr_screen.dart';
-import 'products_screen.dart';
+import 'product_screen/products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

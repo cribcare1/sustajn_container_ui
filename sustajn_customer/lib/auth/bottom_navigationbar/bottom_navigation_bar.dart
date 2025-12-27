@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/number_constants.dart';
+
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTabChange;
@@ -17,7 +19,7 @@ class CustomBottomNav extends StatelessWidget {
     return SafeArea(
       top: false,
       child: SizedBox(
-        height: 90,
+        height: Constant.CONTAINER_SIZE_90,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -26,12 +28,12 @@ class CustomBottomNav extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                height: 65,
-                decoration: const BoxDecoration(
+                height: Constant.CONTAINER_SIZE_65,
+                decoration:  BoxDecoration(
                   color: Color(0xFFD6B24C),
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(22),
-                    topRight: Radius.circular(22),
+                    topLeft: Radius.circular(Constant.CONTAINER_SIZE_22),
+                    topRight: Radius.circular(Constant.CONTAINER_SIZE_22),
                   ),
                 ),
                 child: Row(
@@ -63,12 +65,12 @@ class CustomBottomNav extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => onTabChange(2),
                 child: Container(
-                  height: 60,
-                  width: 60,
+                  height: Constant.CONTAINER_SIZE_60,
+                  width: Constant.CONTAINER_SIZE_60,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD6B24C),
+                    color:  Color(0xFFD6B24C),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 4),
+                    border: Border.all(color: Colors.white, width: Constant.SIZE_04),
                   ),
                   child: const Icon(
                     Icons.qr_code_scanner,
@@ -108,7 +110,7 @@ class _NavItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_14, vertical: Constant.SIZE_08),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isSelected
@@ -118,17 +120,17 @@ class _NavItem extends StatelessWidget {
             child: imageAsset != null
                 ? Image.asset(
               imageAsset!,
-              height: 22,
-              width: 22,
+              height: Constant.CONTAINER_SIZE_22,
+              width: Constant.CONTAINER_SIZE_22,
               color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
             )
                 : Icon(
               icon,
-              size: 22,
+              size: Constant.CONTAINER_SIZE_22,
               color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
             ),
           ),
-          const SizedBox(height: 2),
+           SizedBox(height: Constant.SIZE_02),
           Text(
             label,
             style: TextStyle(

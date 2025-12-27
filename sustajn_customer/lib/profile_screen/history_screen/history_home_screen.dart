@@ -23,7 +23,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: Constant.MAX_LINE_3, vsync: this);
   }
 
   @override
@@ -51,7 +51,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
           indicatorColor: Colors.amber,
-          indicatorWeight: 3,
+          indicatorWeight: Constant.SIZE_03,
           labelColor: Colors.amber,
           unselectedLabelColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.label,
@@ -60,18 +60,18 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_made_outlined, size: 18,),
-                  const SizedBox(width: 6),
+                  Icon(Icons.call_made_outlined, size: Constant.CONTAINER_SIZE_18,),
+                   SizedBox(width: Constant.SIZE_06),
                   const Text('Borrowed'),
                 ],
               ),
             ),
-            const Tab(
+             Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_received, size: 18),
-                  SizedBox(width: 6),
+                  Icon(Icons.call_received, size: Constant.CONTAINER_SIZE_18),
+                  SizedBox(width: Constant.SIZE_06),
                   Text('Returned'),
                 ],
               ),
@@ -84,7 +84,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
                     const AssetImage('assets/images/img.png'),
                     size: Constant.CONTAINER_SIZE_16,
                   ),
-                  SizedBox(width: 6),
+                  SizedBox(width: Constant.SIZE_06),
                   Text('Sold'),
                 ],
               ),
