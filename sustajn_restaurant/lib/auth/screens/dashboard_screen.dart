@@ -115,116 +115,121 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                   SizedBox(height: Constant.SIZE_15),
-                  Wrap(
-                    spacing: cardSpacing,
-                    runSpacing: Constant.SIZE_10,
-                    children: [
-                      _buildDashboardCard(
-                        context,
-                        width: cardWidth,
-                        icon: Icons.rice_bowl_outlined,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductsScreen(),
-                            ),
-                          );
-                        },
-                        label: 'Products',
-                      ),
-                      _buildDashboardCard(
-                        context,
-                        width: cardWidth,
-                        icon: Icons.call_made_outlined,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderHomeScreen(),
-                            ),
-                          );
-                        },
-                        label: 'Orders',
-                      ),
-                      _buildDashboardCard(
-                        context,
-                        width: cardWidth,
-                        icon: Icons.qr_code_scanner_rounded,
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SearchRestaurantScreen(),
-                          //   ),
-                          // );
-                          _showFilterPopup(context);
-                        },
-                        label: 'Scan',
-                      ),
-                      _buildDashboardCard(
-                        context,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyProfileScreen(),
-                            ),
-                          );
-                        },
-                        width: cardWidth,
-                        icon: Icons.person_outline,
-                        label: 'Profile',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Constant.SIZE_15),
-                  Text(
-                    'Container Status Overview',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: Constant.SIZE_10),
-                  GlassSummaryCard(
+                  SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Wrap(
+                          spacing: cardSpacing,
+                          runSpacing: Constant.CONTAINER_SIZE_12,
                           children: [
-                            Expanded(
-                              flex: 1,
-                              child: _buildDropdown(
-                                context,
-                                value: selectedDateRange,
-                                items: dateOptions,
-                                onChanged: (v) =>
-                                    setState(() => selectedDateRange = v!),
-                              ),
+                            _buildDashboardCard(
+                              context,
+                              width: cardWidth,
+                              icon: Icons.rice_bowl_outlined,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProductsScreen(),
+                                  ),
+                                );
+                              },
+                              label: 'Products',
                             ),
-                            SizedBox(width: Constant.SIZE_10),
-                            Expanded(
-                              flex: 1,
-                              child: _buildDropdown(
-                                context,
-                                value: selectedContainer,
-                                items: containerOptions,
-                                onChanged: (v) =>
-                                    setState(() => selectedContainer = v!),
-                              ),
+                            _buildDashboardCard(
+                              context,
+                              width: cardWidth,
+                              icon: Icons.call_made_outlined,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderHomeScreen(),
+                                  ),
+                                );
+                              },
+                              label: 'Orders',
+                            ),
+                            _buildDashboardCard(
+                              context,
+                              width: cardWidth,
+                              icon: Icons.qr_code_scanner_rounded,
+                              onTap: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => SearchRestaurantScreen(),
+                                //   ),
+                                // );
+                                _showFilterPopup(context);
+                              },
+                              label: 'Scan',
+                            ),
+                            _buildDashboardCard(
+                              context,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyProfileScreen(),
+                                  ),
+                                );
+                              },
+                              width: cardWidth,
+                              icon: Icons.person_outline,
+                              label: 'Profile',
                             ),
                           ],
                         ),
                         SizedBox(height: Constant.SIZE_15),
-                        _buildLegendRow(context),
-                        SizedBox(height: Constant.SIZE_15),
-                        _buildChartRings(context, width, theme),
+                        Text(
+                          'Container Status Overview',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: Constant.LABEL_TEXT_SIZE_18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: Constant.SIZE_10),
+                        GlassSummaryCard(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: _buildDropdown(
+                                      context,
+                                      value: selectedDateRange,
+                                      items: dateOptions,
+                                      onChanged: (v) =>
+                                          setState(() => selectedDateRange = v!),
+                                    ),
+                                  ),
+                                  SizedBox(width: Constant.SIZE_10),
+                                  Expanded(
+                                    flex: 1,
+                                    child: _buildDropdown(
+                                      context,
+                                      value: selectedContainer,
+                                      items: containerOptions,
+                                      onChanged: (v) =>
+                                          setState(() => selectedContainer = v!),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: Constant.SIZE_15),
+                              _buildLegendRow(context),
+                              SizedBox(height: Constant.SIZE_15),
+                              _buildChartRings(context, width, theme),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-
-                  // SizedBox(height: Constant.CONTAINER_SIZE_30),
                 ],
               ),
             );
