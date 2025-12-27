@@ -12,6 +12,7 @@ import '../auth/screens/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../models/register.dart';
 import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 import '../service/login_service.dart';
@@ -38,11 +39,10 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
         showCustomSnackBar(context: registrationState.context,
             message: Strings.LOGGED_SUCCESS, color:Colors.green);
       }
-
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(
           Strings.JWT_TOKEN, responseData.data!.jwtToken!);
-      SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
+      SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){
         Navigator.pushReplacement(
@@ -72,35 +72,26 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
 ///Register
 
-final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
+final registerProvider =
+FutureProvider.family<Register, Map<String, dynamic>>(
       (ref, params) async {
-    final registrationState = ref.watch(authNotifierProvider);
-    try {
-      var serviceProvider = ref.read(loginApiProvider);
-      var partUrl = params[Strings.PART_URL];
-      var data = params[Strings.DATA];
-      var requestKey = params[Strings.REQUEST_KEY];
-      var image = params[Strings.IMAGE];
-      Utils.printLog("partUrl===$partUrl");
-      var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
-      if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status == Strings.SUCCESS) {
-        registrationState.setIsLoading(false);
-        if(registrationState.context.mounted) {
-          showCustomSnackBar(context: registrationState.context,
-              message: Strings.USER_REGISTERED_SUCCESS, color:Colors.green);
-        }
-        Utils.navigateToPushScreen(registrationState.context,
-            LoginScreen());
-      }else{
-        Utils.showToast(responseData.message!);
-      }
-    } catch (e) {
-      Utils.printLog("Register provider error called: $e");
-      registrationState.setIsLoading(false);
-      Utils.showNetworkErrorToast(registrationState.context, e.toString());
-    }
+    final serviceProvider = ref.read(loginApiProvider);
+    final image = params[Strings.IMAGE];
+    params.remove(Strings.IMAGE);
+    final Map<String, dynamic> data = Map<String, dynamic>.from(params);
+
+    final response = await serviceProvider.registerUser(
+      NetworkUrls.REGISTER_USER,
+      data,
+      "data",
+      image,
+    );
+print(response);
+    return response;
   },
 );
+
+
 
 
 
@@ -184,23 +175,28 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
 });
 
 final verifyOtpProvider =
-FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
-    ref,
-    params,
-    ) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
-  final String previous = params['previous'];
-  params.remove("previous");
+FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
+      (ref, params) async {
+    final apiService = ref.read(loginApiProvider);
 
-  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
-  try {
-    final responseData = await apiService.verifyOtp(url, params, "");
+    final String previous = params['previous'];
+    params.remove("previous");
 
-    return {"response": responseData, "previous": previous};
-  } catch (e) {
-    throw Exception(e.toString());
-  } finally {
-    registrationState.setIsOTPVerify(false);
-  }
-});
+    final url =
+        '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
+
+    try {
+      final responseData =
+      await apiService.verifyOtp(url, params, "");
+
+      print("VERIFY OTP RESPONSE =====> $responseData");
+
+      return {
+        "response": responseData,
+        "previous": previous,
+      };
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  },
+);

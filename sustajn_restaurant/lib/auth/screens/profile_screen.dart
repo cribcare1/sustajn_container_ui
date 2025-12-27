@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/constants/network_urls.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
@@ -88,6 +91,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     Navigator.push(context,
     MaterialPageRoute(builder: (context)=> ReportScreen()));
   }
+
+  LoginData? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -104,18 +124,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           centerTitle: true,
           backgroundColor: const Color(0xFFD1AE31),
           surfaceTintColor: const Color(0xFFD1AE31),
-          leading: SizedBox.shrink(),
+          leading: IconButton(onPressed: (){Navigator.pop(context);},
+              icon: Icon(Icons.keyboard_arrow_left)),
           title:  Text(
             "My Profile",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
-              color: theme!.scaffoldBackgroundColor,
+              color: theme.scaffoldBackgroundColor,
             ),
           ),
         ),
 
-      body: SingleChildScrollView(
+      body:isLoading?Center(child: CircularProgressIndicator(),):  SingleChildScrollView(
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -139,9 +160,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           color: Colors.white,
                           width: w * 0.012,
                         ),
-                        image: const DecorationImage(
+                        image:  DecorationImage(
                           image: NetworkImage(
-                            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                            "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -159,7 +180,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           color: Colors.white,
                         ),
                         child:
-                        Icon(Icons.edit_outlined, size: w * 0.045, color: theme!.primaryColor,),
+                        Icon(Icons.edit_outlined, size: w * 0.045, color: theme.primaryColor,),
                       ),
                     ),
                   ],
@@ -170,7 +191,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Marina Sky Dine",
+                      loginResponse!.fullName!,
                       style: TextStyle(
                         fontSize: w * 0.055,
                         fontWeight: FontWeight.w700,
@@ -219,7 +240,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.email_outlined,
                         title: "Email",
-                        value: "hello597@gmail.com",
+                        value: loginResponse!.userName!,
                         w: w,
                         showEdit: false,
                         theme: theme,
@@ -230,7 +251,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         icon: Icons.location_on_outlined,
                         title: "Address",
                         value:
-                        "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                        loginResponse!.address!,
                         w: w,
                         showEdit: true,
                         theme: theme,
@@ -284,7 +305,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     width: w * 0.55,
                     margin: EdgeInsets.only(top: h * 0.02),
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.logout, color: theme!.primaryColor, size: w * 0.05),
+                      icon: Icon(Icons.logout, color: theme.primaryColor, size: w * 0.05),
                       label: Text(
                         "Log Out",
                         style: TextStyle(
@@ -313,9 +334,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                   ),
                 ),
-
-
-
+                SizedBox(height: h * 0.035),
               ],
             ),
           ],

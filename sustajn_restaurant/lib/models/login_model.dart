@@ -1,68 +1,73 @@
 class LoginModel {
-  String? message;
-  Data? data;
-  String? status;
+  final LoginData? data;
+  final String? message;
+  final String? status;
 
-  LoginModel({this.message, this.data, this.status});
+  LoginModel({
+    this.data,
+    this.message,
+    this.status,
+  });
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    status = json['status'];
+  factory LoginModel.fromJson(Map<String, dynamic> json) {
+    return LoginModel(
+      data: json['data'] != null ? LoginData.fromJson(json['data']) : null,
+      message: json['message'] ?? '',
+      status: json['status'] ?? '',
+    );
   }
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['status'] = this.status;
-    return data;
+    return {
+      'data':data,
+      'message': message,
+      'status': status,
+    };
   }
 }
 
-class Data {
-  int? userId;
-  Null? image;
-  String? role;
-  String? userName;
-  Null? address;
-  String? fullName;
-  String? jwtToken;
-  String? tokenType;
+class LoginData {
+  final int? userId;
+  final String? image;
+  final String? role;
+  final String? userName;
+  final String? address;
+  final String? fullName;
+  final String? jwtToken;
+  final String? tokenType;
 
-  Data(
-      {this.userId,
-        this.image,
-        this.role,
-        this.userName,
-        this.address,
-        this.fullName,
-        this.jwtToken,
-        this.tokenType});
+  LoginData({
+    this.userId,
+    this.image,
+    this.role,
+    this.userName,
+    this.address,
+    this.fullName,
+    this.jwtToken,
+    this.tokenType,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'];
-    image = json['image'];
-    role = json['role'];
-    userName = json['userName'];
-    address = json['address'];
-    fullName = json['fullName'];
-    jwtToken = json['jwtToken'];
-    tokenType = json['tokenType'];
+  factory LoginData.fromJson(Map<String, dynamic> json) {
+    return LoginData(
+      userId: json['userId'] ?? 0,
+      image: json['image'] ?? '',
+      role: json['role'] ?? '',
+      userName: json['userName'] ?? '',
+      address: json['address'] ?? '',
+      fullName: json['fullName'] ?? '',
+      jwtToken: json['jwtToken'] ?? '',
+      tokenType: json['tokenType'] ?? '',
+    );
   }
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userId'] = this.userId;
-    data['image'] = this.image;
-    data['role'] = this.role;
-    data['userName'] = this.userName;
-    data['address'] = this.address;
-    data['fullName'] = this.fullName;
-    data['jwtToken'] = this.jwtToken;
-    data['tokenType'] = this.tokenType;
-    return data;
+    return {
+      'userId': userId ?? 0,
+      'image': image ?? '',
+      'role': role ?? '',
+      'userName': userName ?? '',
+      'address': address ?? '',
+      'fullName': fullName ?? '',
+      'jwtToken': jwtToken ?? '',
+      'tokenType': tokenType ?? '',
+    };
   }
 }

@@ -211,6 +211,30 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
       throw Exception('An error occurred: $e'); // Handle other exceptions
     }
   }
-
+  // Future<dynamic> postMultipartRequestAdmin(String url, File? image, Map<String, dynamic> jsonMap, String keyName, String responseType,) async {
+  //   try {
+  //     var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image);
+  //
+  //     if (Utils.isReqSuccess(response)) {
+  //       try {
+  //         final jsonData = json.decode(response.body);
+  //         Utils.printLog('Response status: $jsonData');
+  //         return jsonData;
+  //       } catch (e) {
+  //         Utils.printLog('Error decoding JSON: $e');
+  //         throw Exception('Error decoding JSON: $e');
+  //       }
+  //     } else {
+  //       Utils.printLog('Error response status code: ${response.statusCode}');
+  //       throw Exception('Error: ${response.statusCode}');
+  //     }
+  //   } on TimeoutException catch (_) {
+  //     Utils.printLog('Timeout occurred in postMultipartRequest');
+  //     throw Exception('Request timed out'); // Handle timeout specifically
+  //   } catch (e) {
+  //     Utils.printLog('Unhandled exception in postMultipartRequest: $e');
+  //     throw Exception('An error occurred: $e'); // Handle other exceptions
+  //   }
+  // }
 
 }

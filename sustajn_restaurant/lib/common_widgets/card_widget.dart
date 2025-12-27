@@ -1,32 +1,42 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class SummaryCard extends StatelessWidget {
-  final String? title;
+class GlassSummaryCard extends StatelessWidget {
   final Widget child;
 
-  const SummaryCard({
+  const GlassSummaryCard({
     super.key,
-    this.title,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-      decoration: BoxDecoration(
-          color: Color(0xffFFFFFF),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade300),
-          boxShadow: [
-            BoxShadow(
-                offset: Offset(0, 5),
-                blurRadius: 9,
-                color: Colors.grey.shade200,
-                spreadRadius: 0),
-          ]),
-      child: child,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), // stronger blur
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white.withOpacity(0.01),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.25),
+              width: 0.8,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.01),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: child,
+        ),
+      ),
     );
   }
 }
+
