@@ -78,8 +78,8 @@ class ReceiveDetailsDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/img.png',
-              height: 40,
-              width: 40,
+              height: Constant.CONTAINER_SIZE_40,
+              width: Constant.CONTAINER_SIZE_40,
               color: Constant.gold,
             ),
             SizedBox(width: Constant.SIZE_08),
@@ -186,7 +186,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
                 Row(
                   children: [
                     Icon(Icons.location_on, color: Colors.white,size: Constant.SIZE_15,),
-                    SizedBox(width: 5,),
+                    SizedBox(width: Constant.SIZE_05,),
                     Expanded(
                       child: Text('Bangalore,Karnataka',
                           maxLines: 1,

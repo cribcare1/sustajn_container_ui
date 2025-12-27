@@ -109,9 +109,9 @@ class QrDialog extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: Constant.CONTAINER_SIZE_8),
-                            const Icon(
+                             Icon(
                               Icons.copy,
-                              size: 16,
+                              size: Constant.CONTAINER_SIZE_16,
                               color: Colors.black,
                             ),
                           ],
@@ -128,7 +128,7 @@ class QrDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.share, color: Colors.white, size: 18),
+                       Icon(Icons.share, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
                       SizedBox(width: Constant.CONTAINER_SIZE_8),
                       Text(
                         "Share QR",

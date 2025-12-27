@@ -56,7 +56,7 @@ class SoldTab extends StatelessWidget {
       children: [
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.all(12),
+            padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_12),
             children: _groupByMonth().entries.map((entry) {
               final month = entry.key;
               final items = entry.value;
@@ -65,7 +65,7 @@ class SoldTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _monthHeader(month, items.length),
-                  const SizedBox(height: 6),
+                   SizedBox(height: Constant.SIZE_06),
 
                   ...items.map(
                         (item) => _soldItemCard(
@@ -115,12 +115,12 @@ class SoldTab extends StatelessWidget {
     required BorrowedDetails item,
     }) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(10),
+      margin:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+      padding:  EdgeInsets.all(Constant.SIZE_10),
 
       decoration: BoxDecoration(
           color: Constant.grey.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           border: Border.all(
               color: Constant.grey.withOpacity(0.2)
           )
@@ -132,29 +132,29 @@ class SoldTab extends StatelessWidget {
 
           Text(
             item.date,
-            style: const TextStyle(
+            style:  TextStyle(
               color: Colors.white70,
-              fontSize: 12,
+              fontSize: Constant.CONTAINER_SIZE_12,
             ),
           ),
 
-          const SizedBox(height: 10),
+           SizedBox(height: Constant.SIZE_10),
 
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                 child: Image.asset(
                   item.image,
-                  height: 60,
-                  width: 60,
+                  height: Constant.CONTAINER_SIZE_60,
+                  width: Constant.CONTAINER_SIZE_60,
                   fit: BoxFit.cover,
                 ),
               ),
 
-              const SizedBox(width: 14),
+               SizedBox(width: Constant.CONTAINER_SIZE_14),
 
               Expanded(
                 child: Column(
@@ -163,30 +163,28 @@ class SoldTab extends StatelessWidget {
                   children: [
                     Text(
                       item.containerName,
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: Constant.CONTAINER_SIZE_15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
 
-                    // const SizedBox(height: 4),
 
                     Text(
                       item.code,
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.white70,
-                        fontSize: 13,
+                        fontSize: Constant.CONTAINER_SIZE_13,
                       ),
                     ),
 
-                    // const SizedBox(height: 2),
 
                     Text(
                       item.qty.toString(),
-                      style: const TextStyle(
+                      style:  TextStyle(
                         color: Colors.white60,
-                        fontSize: 12,
+                        fontSize: Constant.CONTAINER_SIZE_12,
                       ),
                     ),
                   ],
@@ -201,13 +199,13 @@ class SoldTab extends StatelessWidget {
                       Image.asset('assets/images/img.png',
                         height: Constant.CONTAINER_SIZE_16,
                         width: Constant.CONTAINER_SIZE_16,),
-                      const SizedBox(width: 4),
+                       SizedBox(width: Constant.SIZE_04),
 
                       Text(
                        item.qty.toString(),
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: Constant.CONTAINER_SIZE_14,
                         ),
                       ),
                     ],
@@ -217,9 +215,9 @@ class SoldTab extends StatelessWidget {
                       Icon(Icons.currency_rupee, size: Constant.CONTAINER_SIZE_18, color: Colors.white,),
                       Text(
                         item.price!,
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: Constant.CONTAINER_SIZE_18,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -236,15 +234,15 @@ class SoldTab extends StatelessWidget {
 
   Widget _monthHeader(String title, int count) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -254,7 +252,7 @@ class SoldTab extends StatelessWidget {
               Image.asset('assets/images/img.png',
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,),
-              const SizedBox(width: 6),
+               SizedBox(width: Constant.SIZE_06),
               Text(
                 "$count",
                 style: const TextStyle(color: Colors.white),
