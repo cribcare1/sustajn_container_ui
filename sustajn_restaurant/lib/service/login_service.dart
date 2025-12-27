@@ -31,7 +31,7 @@ class AuthServices {
       Utils.printLog("requestData::::::: $requestData");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.putMultipartApiRequest(url, requestData, requestKey, image);
+      var response = await presenter.postMultipartRequestAdmin(url,File(image), requestData, requestKey,"");
       if (response != null) {
         var responseData = Register.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");

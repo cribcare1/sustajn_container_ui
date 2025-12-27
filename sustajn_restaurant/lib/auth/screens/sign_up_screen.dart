@@ -102,11 +102,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     double height = MediaQuery.sizeOf(context).height;
     final authState = ref.watch(authNotifierProvider);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
-        top: false,bottom: true,
-        child: SingleChildScrollView(
+    return SafeArea(
+      top: false,bottom: true,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.SIZE_15),
           child: Form(
             key: _formKey,
@@ -145,30 +145,36 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,
+                        isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(16),
                           ),
                         ),
-                        builder: (_) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(Icons.camera),
-                              title: const Text("Camera"),
-                              onTap: () {
-                                Navigator.pop(context);
-                                pickImage(ImageSource.camera);
-                              },
+                        builder: (_) => SafeArea(
+                          child: Padding(
+                            padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.camera),
+                                  title: const Text("Camera"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    pickImage(ImageSource.camera);
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.photo),
+                                  title: const Text("Gallery"),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    pickImage(ImageSource.gallery);
+                                  },
+                                ),],
                             ),
-                            ListTile(
-                              leading: const Icon(Icons.photo),
-                              title: const Text("Gallery"),
-                              onTap: () {
-                                Navigator.pop(context);
-                                pickImage(ImageSource.gallery);
-                              },
-                            ),],
+                          ),
                         ),
                       );
                     },
@@ -272,28 +278,29 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                //       if(value != null){
-                //         addressCtrl.text = value['address'];
-                //         lat=value['lat'];
-                //         long=value['lng'];
-                //       }
-                //
-                //     });
-                //   },
-                //   child: IgnorePointer(
-                //     child: _buildTextField(
-                //       readOnly: true,
-                //       context,
-                //       controller: addressCtrl,
-                //       hint: Strings.RESTURANT_ADDRESS,
-                //       validator: (v) =>
-                //       v!.isEmpty ? "Restaurant address required" : null,
-                //     ),
-                //   ),
-                // ),
+                InkWell(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                      if(value != null){
+                        addressCtrl.text = value['address'];
+                        lat=value['lat'];
+                        long=value['lng'];
+                      }
+
+                    });
+                  },
+                  child: IgnorePointer(
+                    child: _buildTextField(
+                      readOnly: true,
+                      context,
+                      controller: addressCtrl,
+                      hint: Strings.RESTURANT_ADDRESS,
+                      validator: (v) =>
+                      v!.isEmpty ? "Restaurant address required" : null,
+                    ),
+                  ),
+                ),
 
                 authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                   width: double.infinity,
@@ -473,12 +480,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
       Map<String, dynamic> mapData = {
         "fullName": restaurantCtrl.text,
-        "userType": "RESTURANT",
         "email": emailCtrl.text,
         "phoneNumber": mobileCtrl.text,
-        "userName": emailCtrl.text,
-        "deviceOs": Platform.isAndroid ? "ANDROID" : "IOS",
-        "passwordHash": passwordCtrl.text,
+        "password": passwordCtrl.text,
+        "address":addressCtrl.text,
+        "socialMediaList":[],
+        "bankDetails":{},
+        "basicDetails":{},
+        "longitude":long,
+        "latitude":lat,
+        "image":(selectedImage== null)?null: selectedImage!.path
       };
       await SharedPreferenceUtils.saveDataInSF(
         "signUp",

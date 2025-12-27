@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
 import 'package:sustajn_restaurant/auth/screens/sign_up_screen.dart';
 import 'package:sustajn_restaurant/models/registration_data.dart';
+import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import 'package:pinput/pinput.dart';
@@ -301,15 +302,17 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     );
   }
 
-  Future<void> _getNetworkDataVerify(var registrationState) async {
+  Future<void> _getNetworkDataVerify(
+      AuthState registrationState,
+      ) async {
     try {
       registrationState.setIsOTPVerify(true);
 
+      /// 1️⃣ Network check
       final isNetworkAvailable =
       await ref.read(networkProvider.notifier).isNetworkAvailable();
 
       if (!isNetworkAvailable) {
-        registrationState.setIsOTPVerify(false);
         if (!mounted) return;
 
         showCustomSnackBar(
@@ -320,6 +323,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         return;
       }
 
+      /// 2️⃣ Verify OTP
       final result = await ref.read(
         verifyOtpProvider({
           "email": widget.registrationData?.email ?? widget.email,
@@ -328,9 +332,13 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         }).future,
       );
 
-      final response = result["response"];
-      final previous = result["previous"];
+      print("OTP VERIFY RESULT =====> $result");
 
+      final Map<String, dynamic> response =
+      result["response"] as Map<String, dynamic>;
+      final String previous = result["previous"] as String;
+
+      /// 3️⃣ OTP SUCCESS
       if (response["status"] == Strings.SUCCESS) {
         if (!mounted) return;
 
@@ -340,39 +348,81 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           color: Colors.green,
         );
 
+        /// 🔹 Forgot Password Flow
         if (previous == "forgotPassword") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
+            MaterialPageRoute(
+              builder: (_) => const ResetPasswordScreen(),
+            ),
           );
-        } else {
-          final Map<String, dynamic>? data =
-          await SharedPreferenceUtils.getMapFromSF("signUp");
-
-          if (data != null) {
-            ref.read(registerProvider(data).future).then((value){
-              if(value.isNotEmpty){
-                showCustomSnackBar(context: context, message: value['message'], color: Colors.green);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
-              }
-            });
-          }
+          return;
         }
-      } else {
+
+        /// 🔹 Signup Flow
+        final Map<String, dynamic>? data =
+        await SharedPreferenceUtils.getMapFromSF("signUp");
+
+        print("SIGNUP DATA FROM SF =====> $data");
+
+        if (data == null) {
+          showCustomSnackBar(
+            context: context,
+            message: "Signup data not found",
+            color: Colors.red,
+          );
+          return;
+        }
+
+        /// Show loading before register API
+        registrationState.setIsLoading(true);
+
+        ref.read(registerProvider(data).future).then((registerResponse) {
+          registrationState.setIsLoading(false);
+
+          if (!mounted) return;
+
+          if (registerResponse.status != null &&
+              registerResponse.status?.toLowerCase() == Strings.SUCCESS) {
+            showCustomSnackBar(
+              context: context,
+              message: Strings.USER_REGISTERED_SUCCESS,
+              color: Colors.green,
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => LoginScreen()),
+            );
+          } else {
+            Utils.showToast(
+              registerResponse.message ?? "Registration failed",
+            );
+          }
+        }).catchError((e) {
+          registrationState.setIsLoading(false);
+          Utils.showNetworkErrorToast(context, e.toString());
+        });
+      }
+
+      /// 4️⃣ OTP FAILED
+      else {
         if (!mounted) return;
 
         showCustomSnackBar(
           context: context,
-          message: response["message"],
+          message: response["message"] ?? "OTP verification failed",
           color: Colors.red,
         );
       }
     } catch (e) {
       Utils.printLog("OTP Verify Error: $e");
-    }finally{
+    } finally {
       registrationState.setIsOTPVerify(false);
     }
   }
+
+
 
 
 
@@ -389,6 +439,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               validateEmail({
                 "email": widget.email,
                 "previous": widget.previousScreen,
+                "token":_otpController.text
               }),
             );
           } else {
