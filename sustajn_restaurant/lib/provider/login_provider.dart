@@ -39,11 +39,10 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
         showCustomSnackBar(context: registrationState.context,
             message: Strings.LOGGED_SUCCESS, color:Colors.green);
       }
-
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(
           Strings.JWT_TOKEN, responseData.data!.jwtToken!);
-      SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
+      SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(registrationState.context.mounted){
         Navigator.pushReplacement(
@@ -80,8 +79,6 @@ FutureProvider.family<Register, Map<String, dynamic>>(
     final image = params[Strings.IMAGE];
     params.remove(Strings.IMAGE);
     final Map<String, dynamic> data = Map<String, dynamic>.from(params);
-    print("REGISTER DATA ==> $data");
-    print("REGISTER Image ==> $image");
 
     final response = await serviceProvider.registerUser(
       NetworkUrls.REGISTER_USER,

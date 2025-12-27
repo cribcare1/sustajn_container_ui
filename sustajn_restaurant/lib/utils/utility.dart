@@ -464,7 +464,7 @@ class Utils {
   static int? societyId = 0;
   static int? userId = 0;
 
-  static Future<Data?> getProfile() async {
+  static Future<LoginModel?> getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = prefs.getString(Strings.PROFILE_DATA);
     printLog("Profile Data ==== $data");

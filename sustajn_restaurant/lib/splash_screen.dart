@@ -53,14 +53,6 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) _controller.forward();
     });
-
-    /// Navigate after splash
-    // Timer(const Duration(seconds: 3), () {
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => const LoginScreen()),
-    //   );
-    // });
     _checkLoginAndNavigate();
   }
   Future<void> _checkLoginAndNavigate() async {

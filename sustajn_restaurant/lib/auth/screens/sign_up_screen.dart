@@ -478,19 +478,53 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
         return;
       }
-      Map<String, dynamic> mapData = {
+      Map<String, dynamic> mapData =
+      {
         "fullName": restaurantCtrl.text,
         "email": emailCtrl.text,
         "phoneNumber": mobileCtrl.text,
         "password": passwordCtrl.text,
-        "address":addressCtrl.text,
-        "socialMediaList":[],
-        "bankDetails":{},
-        "basicDetails":{},
-        "longitude":long,
-        "latitude":lat,
-        "image":(selectedImage== null)?null: selectedImage!.path
+        "dateOfBirth": "",
+        "address": addressCtrl.text,
+        "latitude": lat,
+        "longitude": long,
+        "image":(selectedImage== null)?null: selectedImage!.path,
+        "basicDetails": {
+          "speciality": "Indian & Arabic Cuisine",
+          "websiteDetails": "https://spicehub.ae",
+          "cuisine": "Indian"
+        },
+        "bankDetails": {
+          "bankName": "Dubai Islamic Bank",
+          "taxNumber": "TXN-987654321",
+          "accountNumber": "123456789001",
+          "iBanNumber": "AE45026000123456789001"
+        },
+        "socialMediaList": [
+          {
+            "socialMediaType": "INSTAGRAM",
+            "link": "https://instagram.com/spicehubuae"
+          },
+          {
+            "socialMediaType": "FACEBOOK",
+            "link": "https://facebook.com/spicehubuae"
+          }
+        ]
       };
+      // {
+      //
+      //   "fullName": restaurantCtrl.text,
+      //   "email": emailCtrl.text,
+      //   "phoneNumber": mobileCtrl.text,
+      //   "password": passwordCtrl.text,
+      //   "address":addressCtrl.text,
+      //   "socialMediaList":[],
+      //   "bankDetails":{},
+      //   "basicDetails":{},
+      //   "longitude":long,
+      //   "latitude":lat,
+      //   "image":(selectedImage== null)?null: selectedImage!.path
+      // };
       await SharedPreferenceUtils.saveDataInSF(
         "signUp",
         jsonEncode(mapData),
