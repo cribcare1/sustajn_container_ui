@@ -19,7 +19,7 @@ class Utils {
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
-      backgroundColor: Colors.white,
+      backgroundColor: theme!.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -40,10 +40,11 @@ class Utils {
                   children: [
                     Expanded(
                       child: Text(
-                        "Profile Photo",
+                        "Choose",
                         style: TextStyle(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -61,7 +62,7 @@ class Utils {
                         child: Icon(
                           Icons.clear,
                           size: Constant.CONTAINER_SIZE_20,
-                          color: Colors.black54,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -71,15 +72,15 @@ class Utils {
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
 
                     _optionButton(
                       context,
                       icon: Icons.camera_alt_outlined,
                       label: "Camera",
-                      color: theme!.primaryColor.withOpacity(0.10),
-                      iconColor: theme.primaryColor,
+                      color: Constant.grey.withOpacity(0.3),
+                      iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -89,23 +90,23 @@ class Utils {
                       context,
                       icon: Icons.image_outlined,
                       label: "Gallery",
-                      color: theme.primaryColor.withOpacity(0.10),
-                      iconColor: theme.primaryColor,
+                      color:Constant.grey.withOpacity(0.3),
+                      iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
                       },
                     ),
-
-                    _optionButton(
-                      context,
-                      icon: Icons.delete_outline,
-                      label: "Remove",
-                      color: Colors.red.withOpacity(0.10),
-                      iconColor: Colors.red,
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                       // todo this may need in future
+                    // _optionButton(
+                    //   context,
+                    //   icon: Icons.delete_outline,
+                    //   label: "Remove",
+                    //   color: Colors.red.withOpacity(0.10),
+                    //   iconColor: Colors.red,
+                    //   onTap: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    // ),
                   ],
                 ),
 
@@ -131,6 +132,7 @@ class Utils {
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
         insetPadding: EdgeInsets.symmetric(
           horizontal: Constant.PADDING_HEIGHT_10,
         ),
@@ -145,22 +147,30 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1)
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
                 ),
                 child: Icon(
                   icon,
                   size: Constant.CONTAINER_SIZE_40,
-                  color: theme.primaryColor,
+                  color: Constant.gold,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white
+              )),
               SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white
+                ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -183,7 +193,7 @@ class Utils {
                       child: Text(
                         "Go back",
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.primaryColor,
+                          color: Constant.gold,
                         ),
                       ),
                     ),
@@ -198,7 +208,7 @@ class Utils {
                         Navigator.pop(context, false);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
+                        backgroundColor: Constant.gold,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
@@ -208,7 +218,7 @@ class Utils {
                       child: Text(
                         stayButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
+                          color: theme.primaryColor,
                         ),
                       ),
                     ),
@@ -236,6 +246,7 @@ class Utils {
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
         insetPadding: EdgeInsets.symmetric(
           horizontal: Constant.PADDING_HEIGHT_10,
         ),
@@ -250,22 +261,30 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
-                  shape: BoxShape.circle,
+                  color: Constant.grey.withOpacity(0.2),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1)
+                  )
                 ),
                 child: Icon(
                   icon,
                   size: Constant.CONTAINER_SIZE_40,
-                  color: theme.primaryColor,
+                  color: Constant.gold,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white
+              )),
               SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white
+                ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -274,10 +293,11 @@ class Utils {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
+                        Navigator.pop(context);
 
                       },
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        side: const BorderSide(color: Constant.gold),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
@@ -287,7 +307,7 @@ class Utils {
                       child: Text(
                        noButton,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.primaryColor,
+                          color: Constant.gold,
                         ),
                       ),
                     ),
@@ -299,10 +319,11 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        Navigator.pop(context);
 
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
+                        backgroundColor: Constant.gold,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
@@ -312,7 +333,7 @@ class Utils {
                       child: Text(
                         stayButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
+                          color: theme.primaryColor,
                         ),
                       ),
                     ),
@@ -358,7 +379,8 @@ class Utils {
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Text(
               label,
-              style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14),
+              style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
+              color: Colors.white),
             )
           ],
         ),

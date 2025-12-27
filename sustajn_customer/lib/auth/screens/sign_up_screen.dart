@@ -252,28 +252,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         return null;
                       },
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                          if(value != null){
-                            addressCtrl.text = value['address'];
-                            lat=value['lat'];
-                            long=value['lng'];
-                          }
-
-                        });
-                      },
-                      child: IgnorePointer(
-                        child: _buildTextField(
-                          readOnly: true,
-                          context,
-                          controller: addressCtrl,
-                          hint: Strings.RESTAURANT_ADDRESS,
-                          validator: (v) =>
-                          v!.isEmpty ? "Restaurant address required" : null,
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                    //       if(value != null){
+                    //         addressCtrl.text = value['address'];
+                    //         lat=value['lat'];
+                    //         long=value['lng'];
+                    //       }
+                    //
+                    //     });
+                    //   },
+                    //   child: IgnorePointer(
+                    //     child: _buildTextField(
+                    //       readOnly: true,
+                    //       context,
+                    //       controller: addressCtrl,
+                    //       hint: Strings.RESTAURANT_ADDRESS,
+                    //       validator: (v) =>
+                    //       v!.isEmpty ? "Restaurant address required" : null,
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(
                       width: double.infinity,
                       height: 48,

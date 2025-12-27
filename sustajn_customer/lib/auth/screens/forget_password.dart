@@ -40,6 +40,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white
                   ),
                 ),
 
@@ -47,8 +48,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 Text(
                   Strings.ENTER_EMAIL_TORCV_CODE,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color!
-                        .withOpacity(Constant.SIZE_065),
+                    color: Colors.white,
                     fontSize: Constant.LABEL_TEXT_SIZE_15,
                   ),
                 ),
@@ -56,12 +56,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 SizedBox(height: Constant.CONTAINER_SIZE_40),
                 TextFormField(
                   controller: _emailController,
+                  cursorColor: Colors.white,
                   keyboardType: TextInputType.emailAddress,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white70),
                   decoration: InputDecoration(
                     hintText: Strings.EMAIL,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white,
+                      color: Colors.white70,
                       fontSize: Constant.LABEL_TEXT_SIZE_15,
                     ),
                     filled: true,
@@ -97,6 +98,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     onPressed: (){
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
+                            email: _emailController.text,
                             )));
                     },
                     child: Text(

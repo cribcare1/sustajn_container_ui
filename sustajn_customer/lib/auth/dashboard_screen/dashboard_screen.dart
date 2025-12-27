@@ -4,9 +4,10 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/header.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/return_card.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
 import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+class DashboardScreenTest extends StatelessWidget {
+  const DashboardScreenTest({Key? key}) : super(key: key);
 
   List<Map<String, dynamic>> _sampleData() {
     return [
@@ -18,8 +19,9 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = CustomTheme.getTheme(true);
     return Scaffold(
-      backgroundColor: Constant.background,
+      backgroundColor:theme!.scaffoldBackgroundColor ,
       body: SafeArea(
         child: Column(
           children: [
