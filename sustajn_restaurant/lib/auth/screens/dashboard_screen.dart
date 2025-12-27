@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/order_screen/order_screen/order_screen.dart';
+import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 
 import '../../borrowed/borrowed_home_screen.dart';
 import '../../constants/number_constants.dart';
@@ -94,7 +95,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             SizedBox(height: Constant.SIZE_05),
                             Text(
-                              loginResponse!.fullName??"",
+                              loginResponse?.fullName??"",
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.bold,
@@ -162,12 +163,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         width: cardWidth,
                         icon: Icons.search,
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => ReturnedHomeScreen(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchRestaurantScreen(),
+                            ),
+                          );
                         },
                         label: 'Search',
                       ),
