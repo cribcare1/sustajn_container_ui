@@ -2,12 +2,15 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
+import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/circle_card_widget.dart';
 import '../../constants/number_constants.dart';
+import '../../lease_receive/screens/lease_scan_screen.dart';
+import '../../lease_receive/screens/receive_product_list_screen.dart';
 import '../../models/login_model.dart';
 import '../../order_screen/order_home_screen.dart';
 import '../../product_screen/product_home_screen.dart';
@@ -56,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
     final width = mq.size.width;
-final w  = MediaQuery.sizeOf(context).width;
+    final w = MediaQuery.sizeOf(context).width;
     final cardHorizontalPadding = width * 0.04;
     final cardSpacing = width * 0.04;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
@@ -80,7 +83,8 @@ final w  = MediaQuery.sizeOf(context).width;
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(flex: 7,
+                      Expanded(
+                        flex: 7,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -103,28 +107,36 @@ final w  = MediaQuery.sizeOf(context).width;
                         ),
                       ),
 
-                      Expanded(flex: 3,
+                      Expanded(
+                        flex: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Expanded(
                               child: InkWell(
-                                onTap: (){Utils.navigateToPushScreen(context, SearchRestaurantScreen());},
+                                onTap: () {
+                                  Utils.navigateToPushScreen(
+                                    context,
+                                    SearchRestaurantScreen(),
+                                  );
+                                },
                                 child: CircleCardWidget(
                                   child: Icon(
                                     Icons.search,
-                                    color: Colors.white70,size: Constant.CONTAINER_SIZE_20,
+                                    color: Colors.white70,
+                                    size: Constant.CONTAINER_SIZE_20,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: w*0.02),
+                            SizedBox(width: w * 0.02),
                             Expanded(
                               child: CircleCardWidget(
                                 child: Icon(
                                   Icons.notifications_none,
-                                  color: Colors.white70,size: Constant.CONTAINER_SIZE_20,
+                                  color: Colors.white70,
+                                  size: Constant.CONTAINER_SIZE_20,
                                 ),
                               ),
                             ),
@@ -175,12 +187,6 @@ final w  = MediaQuery.sizeOf(context).width;
                               width: cardWidth,
                               icon: Icons.qr_code_scanner_rounded,
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => SearchRestaurantScreen(),
-                                //   ),
-                                // );
                                 _showFilterPopup(context);
                               },
                               label: 'Scan',
@@ -222,8 +228,9 @@ final w  = MediaQuery.sizeOf(context).width;
                                       context,
                                       value: selectedDateRange,
                                       items: dateOptions,
-                                      onChanged: (v) =>
-                                          setState(() => selectedDateRange = v!),
+                                      onChanged: (v) => setState(
+                                        () => selectedDateRange = v!,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(width: Constant.SIZE_10),
@@ -233,8 +240,9 @@ final w  = MediaQuery.sizeOf(context).width;
                                       context,
                                       value: selectedContainer,
                                       items: containerOptions,
-                                      onChanged: (v) =>
-                                          setState(() => selectedContainer = v!),
+                                      onChanged: (v) => setState(
+                                        () => selectedContainer = v!,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -323,7 +331,8 @@ final w  = MediaQuery.sizeOf(context).width;
     required ValueChanged<String?> onChanged,
   }) {
     final theme = Theme.of(context);
-    return SizedBox( height: Constant.CONTAINER_WIDTH_SIZE,
+    return SizedBox(
+      height: Constant.CONTAINER_WIDTH_SIZE,
       child: GlassSummaryCard(
         child: DropdownButtonHideUnderline(
           child: DropdownButton<String>(
@@ -401,10 +410,10 @@ final w  = MediaQuery.sizeOf(context).width;
   }
 
   Widget _buildChartRings(
-      BuildContext context,
-      double screenWidth,
-      ThemeData theme,
-      ) {
+    BuildContext context,
+    double screenWidth,
+    ThemeData theme,
+  ) {
     double chartSize = screenWidth * 0.55;
     chartSize = chartSize.clamp(220.0, 320.0);
 
@@ -427,8 +436,7 @@ final w  = MediaQuery.sizeOf(context).width;
                     sectionsSpace: 2,
                     centerSpaceRadius: holeRadius,
                     startDegreeOffset: -90,
-                    sections:
-                    _buildChartSections(ringThickness, theme),
+                    sections: _buildChartSections(ringThickness, theme),
                   ),
                 ),
                 _chartLabel(
@@ -489,6 +497,7 @@ final w  = MediaQuery.sizeOf(context).width;
       ),
     );
   }
+
   Widget _chartLabel({
     double? left,
     double? right,
@@ -505,15 +514,13 @@ final w  = MediaQuery.sizeOf(context).width;
       top: top,
       bottom: bottom,
       child: Column(
-        crossAxisAlignment:
-        alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: alignEnd
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
-              color: Colors.redAccent,
-              fontSize: 11,
-            ),
+            style: const TextStyle(color: Colors.redAccent, fontSize: 11),
           ),
           Text(
             value,
@@ -527,7 +534,6 @@ final w  = MediaQuery.sizeOf(context).width;
       ),
     );
   }
-
 
   List<PieChartSectionData> _buildChartSections(
     double ringThickness,
@@ -677,23 +683,27 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                       ),
                     ],
                   ),
-                  if(selectedType == 'RECEIVE')...[
+                  if (selectedType == 'RECEIVE') ...[
                     SizedBox(height: Constant.CONTAINER_SIZE_12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(valueList.length, (index) {
                         final value = valueList[index];
-                        return Expanded(flex: 1,
+                        return Expanded(
+                          flex: 1,
                           child: Row(
                             children: [
                               Theme(
                                 data: Theme.of(context).copyWith(
                                   radioTheme: RadioThemeData(
-                                    fillColor: MaterialStateProperty.resolveWith<Color>(
-                                          (states) {
-                                        return Theme.of(context).secondaryHeaderColor;
-                                      },
-                                    ),
+                                    fillColor:
+                                        MaterialStateProperty.resolveWith<
+                                          Color
+                                        >((states) {
+                                          return Theme.of(
+                                            context,
+                                          ).secondaryHeaderColor;
+                                        }),
                                   ),
                                 ),
                                 child: Radio<String>(
@@ -708,7 +718,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                   ),
 
                                   materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
+                                      MaterialTapTargetSize.shrinkWrap,
                                   onChanged: (val) {
                                     setState(() {
                                       selectedValue = val;
@@ -718,7 +728,9 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                               ),
                               Expanded(
                                 child: Text(
-                                  value,overflow: TextOverflow.ellipsis,maxLines:1,
+                                  value,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                   style: Theme.of(context).textTheme.titleSmall!
                                       .copyWith(color: Colors.white),
                                 ),
@@ -734,15 +746,30 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
 
                   SizedBox(
                     width: double.infinity,
-                    height: 46,
                     child: ElevatedButton(
                       onPressed: selectedType == null
                           ? null
                           : () {
-                              if (selectedType == 'RECEIVE' && selectedValue == null) {
-                                Fluttertoast.showToast(msg: "Select Type");
-                              } else {
-                                Navigator.pop(context, selectedType);
+                              if (selectedType == "RECEIVE" &&
+                                  selectedValue != null) {
+                                Navigator.pop(context);
+                                Utils.navigateToPushScreen(
+                                  context,
+                                  ReceiveProductListScreen(
+                                    type: selectedType ?? "",
+                                    damage: selectedValue,
+                                  ),
+                                );
+                              }
+                             else if (selectedType == 'LEASE') {
+                                Navigator.pop(context);
+                                Utils.navigateToPushScreen(
+                                  context,
+                                  LeaseScanScreen(
+                                    type: selectedType ?? "",
+                                    damage: selectedValue,
+                                  ),
+                                );
                               }
                             },
                       style: ElevatedButton.styleFrom(

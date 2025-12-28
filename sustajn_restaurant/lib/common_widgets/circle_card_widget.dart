@@ -16,7 +16,6 @@ class CircleCardWidget extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), // stronger blur
         child: Container(
-          width: double.infinity,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
            shape: BoxShape.circle,
