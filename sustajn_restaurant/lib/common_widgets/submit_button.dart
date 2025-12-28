@@ -25,7 +25,7 @@ class SubmitButton extends StatelessWidget {
           side: BorderSide(color: Colors.white)
         ),
         elevation: 0,
-        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
+        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12,horizontal: Constant.CONTAINER_SIZE_10),
       ),
       child: Text(
         rightText!,

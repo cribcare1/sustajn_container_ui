@@ -114,11 +114,6 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                 itemBuilder: (context, index) {
                   return _containerCard(
                     item: assignedContainers[index],
-                    onRemove: () {
-                      setState(() {
-                        assignedContainers.removeAt(index);
-                      });
-                    },
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -141,12 +136,11 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
         ),
         ),
         bottomSheet: Container(
-          width: double.infinity,
+          // width: double.infinity,
           color: theme.primaryColor,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: SubmitButton(
             onRightTap: () {
-              // showConfirmIssuePopup(context);
             },
             rightText: "Confirm Receive",
           ),
@@ -157,7 +151,6 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
 
   Widget _containerCard({
     required AssignedContainerModel item,
-    required VoidCallback onRemove,
   }) {
     return GlassSummaryCard(
       child: Row(
@@ -177,13 +170,20 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+
+                  ],
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -212,15 +212,6 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                   color: Colors.amber,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              InkWell(
-                onTap: onRemove,
-                child: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                  size: 20,
                 ),
               ),
             ],

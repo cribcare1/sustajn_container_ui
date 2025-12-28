@@ -17,7 +17,7 @@ import '../../product_screen/product_home_screen.dart';
 import '../../utils/utility.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();

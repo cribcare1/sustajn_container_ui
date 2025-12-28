@@ -321,16 +321,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
                         await _getNetworkData(authState);
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => VerifyEmailScreen(
-                              previousScreen: "signUp",
-                              registrationData: registrationData, // ✅ PASS DATA
-                              email: emailCtrl.text,
-                            ),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => VerifyEmailScreen(
+                        //       previousScreen: "signUp",
+                        //       registrationData: registrationData, // ✅ PASS DATA
+                        //       email: emailCtrl.text,
+                        //     ),
+                        //   ),
+                        // );
                       }
                     },
 
@@ -511,20 +511,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           }
         ]
       };
-      // {
-      //
-      //   "fullName": restaurantCtrl.text,
-      //   "email": emailCtrl.text,
-      //   "phoneNumber": mobileCtrl.text,
-      //   "password": passwordCtrl.text,
-      //   "address":addressCtrl.text,
-      //   "socialMediaList":[],
-      //   "bankDetails":{},
-      //   "basicDetails":{},
-      //   "longitude":long,
-      //   "latitude":lat,
-      //   "image":(selectedImage== null)?null: selectedImage!.path
-      // };
+
       await SharedPreferenceUtils.saveDataInSF(
         "signUp",
         jsonEncode(mapData),
