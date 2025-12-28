@@ -112,7 +112,7 @@ class ReturnedTabScreen extends StatelessWidget {
 
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.all(12),
+            padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_12),
             children: _groupByMonth().entries.map((entry) {
               final month = entry.key;
               final items = entry.value;
@@ -121,7 +121,7 @@ class ReturnedTabScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _monthHeader(month, items.length),
-                  const SizedBox(height: 6),
+                   SizedBox(height: Constant.SIZE_06),
 
                   ...items.map(
                     (item) => _historyCard(item: item, context: context),
@@ -177,15 +177,15 @@ class ReturnedTabScreen extends StatelessWidget {
 
   Widget _monthHeader(String title, int count) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -196,7 +196,7 @@ class ReturnedTabScreen extends StatelessWidget {
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
-              const SizedBox(width: 6),
+               SizedBox(width: Constant.SIZE_06),
               Text("$count", style: const TextStyle(color: Colors.white)),
             ],
           ),
@@ -214,11 +214,11 @@ class ReturnedTabScreen extends StatelessWidget {
         _openDetailDialog(context, item.date, item);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(10),
+        margin:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+        padding:  EdgeInsets.all(Constant.SIZE_10),
         decoration: BoxDecoration(
           color: Constant.grey.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           border: Border.all(color: Constant.grey.withOpacity(0.2)),
         ),
 
@@ -234,9 +234,9 @@ class ReturnedTabScreen extends StatelessWidget {
                     item.resturantName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: Constant.CONTAINER_SIZE_16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -248,27 +248,27 @@ class ReturnedTabScreen extends StatelessWidget {
                           item.containerName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.white70,
-                            fontSize: 13,
+                            fontSize: Constant.CONTAINER_SIZE_13,
                           ),
                         ),
                       ),
 
                       Text(
                         item.qty.toString(),
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: Color(0xFFFFC727),
-                          fontSize: 18,
+                          fontSize: Constant.CONTAINER_SIZE_18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                      const SizedBox(width: 6),
+                       SizedBox(width: Constant.SIZE_06),
 
-                      const Icon(
+                       Icon(
                         Icons.arrow_forward_ios,
-                        size: 14,
+                        size: Constant.CONTAINER_SIZE_14,
                         color: Colors.white70,
                       ),
                     ],
@@ -276,7 +276,7 @@ class ReturnedTabScreen extends StatelessWidget {
 
                   Text(
                     item.date,
-                    style: const TextStyle(color: Colors.white60, fontSize: 12),
+                    style:  TextStyle(color: Colors.white60, fontSize: Constant.CONTAINER_SIZE_12),
                   ),
                 ],
               ),

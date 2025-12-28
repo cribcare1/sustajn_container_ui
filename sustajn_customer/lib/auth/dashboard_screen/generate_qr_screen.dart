@@ -43,104 +43,106 @@ class QrDialog extends StatelessWidget {
               color: theme.scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      Strings.MY_QR_CODE,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.close, color: Colors.white),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                RepaintBoundary(
-                  key: _qrKey,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(
-                      Constant.CONTAINER_SIZE_10,
-                      Constant.CONTAINER_SIZE_10,
-                      Constant.CONTAINER_SIZE_10,
-                      Constant.CONTAINER_SIZE_24,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Constant.gold,
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding:
-                          EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                                Constant.CONTAINER_SIZE_12),
-                          ),
-                          child: QrImageView(
-                            data: userId,
-                            size: Constant.CONTAINER_SIZE_200,
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-
-                        SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              userId,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            SizedBox(width: Constant.CONTAINER_SIZE_8),
-                            const Icon(
-                              Icons.copy,
-                              size: 16,
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                InkWell(
-                  onTap: () => _shareQrImage(),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.share, color: Colors.white, size: 18),
-                      SizedBox(width: Constant.CONTAINER_SIZE_8),
                       Text(
-                        "Share QR",
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        Strings.MY_QR_CODE,
+                        style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.close, color: Colors.white),
+                      ),
                     ],
                   ),
-                ),
-              ],
+              
+                  SizedBox(height: Constant.CONTAINER_SIZE_24),
+              
+                  RepaintBoundary(
+                    key: _qrKey,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_24,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Constant.gold,
+                        borderRadius:
+                        BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding:
+                            EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_12),
+                            ),
+                            child: QrImageView(
+                              data: userId,
+                              size: Constant.CONTAINER_SIZE_200,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+              
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+              
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                userId,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(width: Constant.CONTAINER_SIZE_8),
+                               Icon(
+                                Icons.copy,
+                                size: Constant.CONTAINER_SIZE_16,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+              
+                  InkWell(
+                    onTap: () => _shareQrImage(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                         Icon(Icons.share, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
+                        SizedBox(width: Constant.CONTAINER_SIZE_8),
+                        Text(
+                          "Share QR",
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

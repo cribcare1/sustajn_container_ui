@@ -65,7 +65,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showFeedbackDialog(context);
         break;
       case 4:
-        // _showFreemiumSheet(context);
+        _showFreemiumSheet(context);
         break;
       case 5:
         _showContactDialog(context);
@@ -91,19 +91,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  // void _showFreemiumSheet(BuildContext context){
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     isScrollControlled: true,
-  //     builder: (_) => Padding(
-  //       padding: EdgeInsets.only(
-  //         bottom: MediaQuery.of(context).viewInsets.bottom,
-  //       ),
-  //       child: FreemiumCardContent(),
-  //     ),
-  //   );
-  // }
+  void _showFreemiumSheet(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => const FreemiumBottomSheet(),
+    );
+
+  }
 
   void _showQRDialog(BuildContext context){
     showDialog(
