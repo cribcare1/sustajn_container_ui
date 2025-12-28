@@ -52,10 +52,11 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Padding(
+    return SafeArea(
+      bottom: true,top: false,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        body: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             children: [
@@ -196,7 +197,11 @@ class _AddContainerScreenState extends State<AddContainerScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => AddContainerDialog(item: item),
+      useSafeArea: true,
+      builder: (_) => Padding(
+        padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: AddContainerDialog(item: item),
+      ),
     );
 
     if (result != null && result > 0) {

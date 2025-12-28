@@ -2,9 +2,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
+import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 
 import '../../common_widgets/card_widget.dart';
+import '../../common_widgets/circle_card_widget.dart';
 import '../../constants/number_constants.dart';
 import '../../models/login_model.dart';
 import '../../order_screen/order_home_screen.dart';
@@ -23,6 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final double returnedCount = 100;
   final double available = 800;
   final double total = 1000;
+  final double damage = 2;
 
   String selectedDateRange = 'Today';
   String selectedContainer = 'Container';
@@ -53,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
     final width = mq.size.width;
-
+final w  = MediaQuery.sizeOf(context).width;
     final cardHorizontalPadding = width * 0.04;
     final cardSpacing = width * 0.04;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
@@ -77,7 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(
+                      Expanded(flex: 7,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -99,17 +102,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        width: Constant.CONTAINER_SIZE_35,
-                        height: Constant.CONTAINER_SIZE_35,
-                        decoration: BoxDecoration(
-                          color: theme.primaryColor,
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: Constant.grey, width: 0.3),
-                        ),
-                        child: Icon(
-                          Icons.notifications_none,
-                          color: Colors.white70,
+
+                      Expanded(flex: 3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: (){Utils.navigateToPushScreen(context, SearchRestaurantScreen());},
+                                child: CircleCardWidget(
+                                  child: Icon(
+                                    Icons.search,
+                                    color: Colors.white70,size: Constant.CONTAINER_SIZE_20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: w*0.02),
+                            Expanded(
+                              child: CircleCardWidget(
+                                child: Icon(
+                                  Icons.notifications_none,
+                                  color: Colors.white70,size: Constant.CONTAINER_SIZE_20,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -304,47 +323,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required ValueChanged<String?> onChanged,
   }) {
     final theme = Theme.of(context);
-    return Container(
-      height: Constant.TEXT_FIELD_HEIGHT,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: theme.primaryColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Constant.grey, width: 0.3),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          onChanged: onChanged,
-          isExpanded: true,
-          dropdownColor: Colors.white,
-          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600),
-          selectedItemBuilder: (BuildContext context) {
-            return items.map((String item) {
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  item,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              );
-            }).toList();
-          },
-          items: items
-              .map(
-                (e) => DropdownMenuItem(
-                  value: e,
+    return SizedBox( height: Constant.CONTAINER_WIDTH_SIZE,
+      child: GlassSummaryCard(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: value,
+            onChanged: onChanged,
+            isExpanded: true,
+            isDense: true,
+            icon: Icon(Icons.keyboard_arrow_down, color: Colors.white),
+            selectedItemBuilder: (BuildContext context) {
+              return items.map((String item) {
+                return Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    e,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.black,
+                    item,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: Colors.white,
                     ),
                   ),
-                ),
-              )
-              .toList(),
+                );
+              }).toList();
+            },
+            items: items
+                .map(
+                  (e) => DropdownMenuItem(
+                    value: e,
+                    child: Text(
+                      e,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
@@ -363,6 +377,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _legendItem('Receive', Colors.lightBlueAccent, theme),
         SizedBox(width: Constant.SIZE_10),
         _legendItem('Available', Colors.amber.shade700, theme),
+        SizedBox(width: Constant.SIZE_10),
+        _legendItem('Damage', Colors.redAccent.shade700, theme),
       ],
     );
   }
@@ -385,34 +401,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildChartRings(
-    BuildContext context,
-    double screenWidth,
-    ThemeData theme,
-  ) {
-    double chartSize;
-    if (screenWidth < 350) {
-      chartSize = screenWidth * 0.65;
-    } else if (screenWidth < 400) {
-      chartSize = screenWidth * 0.6;
-    } else if (screenWidth < 500) {
-      chartSize = screenWidth * 0.55;
-    } else if (screenWidth < 600) {
-      chartSize = screenWidth * 0.5;
-    } else {
-      chartSize = screenWidth * 0.4;
-    }
+      BuildContext context,
+      double screenWidth,
+      ThemeData theme,
+      ) {
+    double chartSize = screenWidth * 0.55;
+    chartSize = chartSize.clamp(220.0, 320.0);
 
-    chartSize = chartSize.clamp(200.0, 350.0);
-
-    final holeRadius = chartSize * 0.3;
+    final holeRadius = chartSize * 0.32;
     final ringThickness = chartSize * 0.2;
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.02,
-        vertical: 16,
-      ),
       child: Column(
         children: [
           SizedBox(
@@ -421,33 +421,113 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Stack(
               alignment: Alignment.center,
               children: [
+                /// Pie Chart
                 PieChart(
                   PieChartData(
                     sectionsSpace: 2,
                     centerSpaceRadius: holeRadius,
                     startDegreeOffset: -90,
-                    titleSunbeamLayout: true,
-                    sections: _buildChartSections(ringThickness, theme),
-                    pieTouchData: PieTouchData(enabled: true),
+                    sections:
+                    _buildChartSections(ringThickness, theme),
                   ),
+                ),
+                _chartLabel(
+                  left: 0,
+                  top: chartSize * 0.18,
+                  title: 'Damage',
+                  value: damage.toString(),
+                  color: Colors.redAccent,
+                ),
+
+                /// Receive (Top Right)
+                _chartLabel(
+                  right: 0,
+                  top: chartSize * 0.12,
+                  title: 'Receive',
+                  value: returnedCount.toString(),
+                  color: const Color(0xFF4AA6FF),
+                  alignEnd: true,
+                ),
+
+                /// Lease (Left)
+                _chartLabel(
+                  left: 0,
+                  top: chartSize * 0.45,
+                  title: 'Lease',
+                  value: borrowed.toString(),
+                  color: Colors.yellowAccent,
+                ),
+
+                /// Available (Bottom Left)
+                _chartLabel(
+                  left: 0,
+                  bottom: 0,
+                  title: 'Available',
+                  value: available.toString(),
+                  color: const Color(0xFFD0A52C),
+                ),
+
+                _chartLabel(
+                  right: 0,
+                  bottom: 0,
+                  title: 'Total',
+                  value: total.toString(),
+                  color: Colors.lightGreenAccent,
+                  alignEnd: true,
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
-              style: TextStyle(
-                fontSize: screenWidth < 350 ? 11 : 13,
-                color: Colors.white,
-              ),
+
+          const SizedBox(height: 8),
+
+          Text(
+            '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _chartLabel({
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+    required String title,
+    required String value,
+    required Color color,
+    bool alignEnd = false,
+  }) {
+    return Positioned(
+      left: left,
+      right: right,
+      top: top,
+      bottom: bottom,
+      child: Column(
+        crossAxisAlignment:
+        alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.redAccent,
+              fontSize: 11,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
     );
   }
+
 
   List<PieChartSectionData> _buildChartSections(
     double ringThickness,
@@ -483,6 +563,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         radius: ringThickness,
         showTitle: false,
         titleStyle: const TextStyle(fontSize: 12),
+      ),
+      PieChartSectionData(
+        value: damage.toDouble(),
+        color: Colors.redAccent,
+        radius: ringThickness,
+        showTitle: false,
       ),
     ];
   }
@@ -591,7 +677,8 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  if(selectedType == 'RECEIVE')...[
+                    SizedBox(height: Constant.CONTAINER_SIZE_12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(valueList.length, (index) {
@@ -621,7 +708,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                   ),
 
                                   materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                  MaterialTapTargetSize.shrinkWrap,
                                   onChanged: (val) {
                                     setState(() {
                                       selectedValue = val;
@@ -642,7 +729,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                         );
                       }),
                     ),
-
+                  ],
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                   SizedBox(
@@ -652,7 +739,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                       onPressed: selectedType == null
                           ? null
                           : () {
-                              if (selectedValue == null) {
+                              if (selectedType == 'RECEIVE' && selectedValue == null) {
                                 Fluttertoast.showToast(msg: "Select Type");
                               } else {
                                 Navigator.pop(context, selectedType);
