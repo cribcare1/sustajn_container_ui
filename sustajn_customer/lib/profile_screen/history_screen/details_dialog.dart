@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import 'model/borrowed_items.dart';
 import 'model/detail_model.dart';
 
 class ReceiveDetailsDialog extends StatelessWidget {
-  final String dateTime;
   final String title;
-  List<BorrowedDetails> item;
+  List<BorrowedUiItem> item;
 
-  ReceiveDetailsDialog({super.key, required this.dateTime, required this.title,
+  ReceiveDetailsDialog({super.key, required this.title,
   required this.item});
 
 
@@ -53,9 +54,9 @@ class ReceiveDetailsDialog extends StatelessWidget {
               ],
             ),
             SizedBox(height: Constant.SIZE_15,),
-            _viewResturantDetails(theme),
+            _viewResturantDetails(theme, item.first),
             SizedBox(height: Constant.SIZE_08,),
-            _header(theme, context),
+            _header(theme, context, item.first),
             SizedBox(height: Constant.SIZE_15),
             ListView.separated(
               shrinkWrap: true,
@@ -71,7 +72,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _header(ThemeData theme, BuildContext context) {
+  Widget _header(ThemeData theme, BuildContext context, BorrowedUiItem item) {
     return Column(
       children: [
         Row(
@@ -84,7 +85,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
             ),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              "3",
+              item.containerCount.toString(),
               style: theme.textTheme.headlineLarge?.copyWith(
                   color: Constant.gold
               ),
@@ -92,7 +93,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
           ],
         ),
         Text(
-          dateTime,
+          '${item.date} | ${item.time}',
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -105,7 +106,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
   }
 
   Widget _containerCard(
-      BorrowedDetails item, ThemeData theme) {
+      BorrowedUiItem item, ThemeData theme) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -118,32 +119,57 @@ class ReceiveDetailsDialog extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: Constant.CONTAINER_SIZE_50,
-            height: Constant.CONTAINER_SIZE_50,
-            decoration: BoxDecoration(
-              borderRadius:
-              BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-              color: Constant.grey,
+          item.imageUrl != null && item.imageUrl.isNotEmpty
+              ? ClipOval(
+            child: Image.network(
+              NetworkUrls.BASE_IMAGE_URL + item.imageUrl,
+              fit: BoxFit.cover,
+              width: Constant.CONTAINER_SIZE_40 * 2,
+              height: Constant.CONTAINER_SIZE_40 * 2,
+              errorBuilder: (context, o, s) {
+                return Container(
+                  width: Constant.CONTAINER_SIZE_50,
+                  height: Constant.CONTAINER_SIZE_50,
+                  decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                    color: Constant.grey,
+                  ),
+                  child: Image.asset('assets/images/cups.png',
+                  fit: BoxFit.contain,)
+                );
+              },
             ),
-            child: Image.asset(item.image, fit: BoxFit.contain),
+          )
+              : Container(
+              width: Constant.CONTAINER_SIZE_50,
+              height: Constant.CONTAINER_SIZE_50,
+              decoration: BoxDecoration(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                color: Constant.grey,
+              ),
+              child: Image.asset('assets/images/cups.png',
+                fit: BoxFit.contain,)
           ),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.resturantName,
+                Text(item.restaurantName,
                     style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white
                     )),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.code,
+                Text(item.productId.toString(),
                     style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white
                     )),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.volume,
+                Text(
+                  '${item.capacity}ml',
+                    // item.capacity.toString(),
                     style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white
                     )),
@@ -151,7 +177,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
             ),
           ),
           Text(
-            item.qty.toString(),
+            item.containerCount.toString(),
             style: theme.textTheme.titleLarge?.copyWith(
               color: Constant.gold,
             ),
@@ -161,7 +187,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _viewResturantDetails(ThemeData theme) {
+  Widget _viewResturantDetails(ThemeData theme, BorrowedUiItem item) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -178,7 +204,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    item.first.resturantName,
+                   item.restaurantName ,
                     style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white
                     )),
@@ -188,7 +214,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
                     Icon(Icons.location_on, color: Colors.white,size: Constant.SIZE_15,),
                     SizedBox(width: Constant.SIZE_05,),
                     Expanded(
-                      child: Text('Bangalore,Karnataka',
+                      child: Text(item.resturantAddress,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(

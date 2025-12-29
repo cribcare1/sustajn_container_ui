@@ -9,7 +9,9 @@ import '../../utils/theme_utils.dart';
 import 'borrowed_tab.dart';
 
 class HistoryHomeScreen extends StatefulWidget {
-  const HistoryHomeScreen({Key? key}) : super(key: key);
+  final int userId;
+
+  const HistoryHomeScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<HistoryHomeScreen> createState() => _ProductsScreenState();
@@ -60,13 +62,16 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_made_outlined, size: Constant.CONTAINER_SIZE_18,),
-                   SizedBox(width: Constant.SIZE_06),
+                  Icon(
+                    Icons.call_made_outlined,
+                    size: Constant.CONTAINER_SIZE_18,
+                  ),
+                  SizedBox(width: Constant.SIZE_06),
                   const Text('Borrowed'),
                 ],
               ),
             ),
-             Tab(
+            Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -91,7 +96,6 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
             ),
           ],
         ),
-
       ),
 
       body: Column(
@@ -99,9 +103,9 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children:  [
-                BorrowedTabScreen(),
-                ReturnedTabScreen(),
+              children: [
+                BorrowedTabScreen(userId: widget.userId),
+                ReturnedTabScreen(userId: widget.userId),
                 SoldTab(),
               ],
             ),
@@ -110,12 +114,4 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
       ),
     );
   }
-
 }
-
-
-
-
-
-
-

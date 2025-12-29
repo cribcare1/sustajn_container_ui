@@ -119,7 +119,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
 
   void _showHistoryScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, HistoryHomeScreen());
+    NavUtil.navigateToPushScreen(context, HistoryHomeScreen(userId: loginResponse!.userId!,));
   }
 
   @override
@@ -392,6 +392,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               SizedBox(height: w * 0.01),
               Text(
                 value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: w * 0.040,
                   fontWeight: FontWeight.w500,

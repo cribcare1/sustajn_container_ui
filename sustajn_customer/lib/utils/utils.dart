@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
@@ -489,6 +490,8 @@ class Utils {
     };
   }
 
+
+
   static LoginModel? loginData;
   static int? societyId = 0;
   static int? userId = 0;
@@ -505,7 +508,44 @@ class Utils {
     return null;
   }
 
+
+
+  // this method is used for showing the error text
+  static Widget getErrorText(String msg) {
+    return Center(
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: Constant.LABEL_TEXT_SIZE_18,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
+
+ static  Future<void> callPhone(String phone) async {
+    final Uri uri = Uri(scheme: 'tel', path: phone);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  static Future<void> sendEmail(String email) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+
 }
+
+
 void showCustomSnackBar({
   required BuildContext context,
   required String message,

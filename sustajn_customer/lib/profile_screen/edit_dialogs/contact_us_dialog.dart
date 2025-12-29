@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
+import '../../utils/utils.dart';
 
 class ContactUsDialog extends StatefulWidget {
   const ContactUsDialog({Key? key}) : super(key: key);
@@ -64,31 +65,53 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                 ],
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_16,),
-              Row(
-                children: [
-                  Icon(Icons.phone, size: Constant.CONTAINER_SIZE_18,color: Colors.white,),
-                  SizedBox(width: Constant.SIZE_10,),
-                  Text(
-                    '7865432134',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white
+              InkWell(
+                onTap: () => Utils.callPhone('7865432134'),
+                child: Row(
+                  children: [
+                    Icon(Icons.phone,
+                        size: Constant.CONTAINER_SIZE_18, color: Colors.white),
+                    SizedBox(width: Constant.SIZE_10),
+                    Expanded(
+                      child: Text(
+                        '7865432134',
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(color: Colors.white),
+                      ),
                     ),
-                  ),
-                ],
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: Constant.CONTAINER_SIZE_14,
+                      color: Colors.white70,
+                    ),
+                  ],
+                ),
               ),
+
               SizedBox(height: Constant.CONTAINER_SIZE_20,),
-              Row(
-                children: [
-                  Icon(Icons.email, size: Constant.CONTAINER_SIZE_18,color: Colors.white,),
-                  SizedBox(width: Constant.SIZE_10,),
-                  Text(
-                    'example@gmail.com',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white
+              InkWell(
+                onTap: () => Utils.sendEmail('example@gmail.com'),
+                child: Row(
+                  children: [
+                    Icon(Icons.email,
+                        size: Constant.CONTAINER_SIZE_18, color: Colors.white),
+                    SizedBox(width: Constant.SIZE_10),
+                    Expanded(
+                      child: Text(
+                        'example@gmail.com',
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(color: Colors.white),
+                      ),
                     ),
-                  ),
-                ],
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: Constant.CONTAINER_SIZE_14,
+                      color: Colors.white70,
+                    ),
+                  ],
+                ),
               ),
+
 
 
 

@@ -1,167 +1,201 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/provider/history_provider/history_provider.dart';
+
 import '../../common_widgets/filter_screen.dart';
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../utils/DateMonthUtils.dart';
+import '../../utils/utils.dart';
 import 'details_dialog.dart';
+import 'model/borrowed_data.dart';
+import 'model/borrowed_items.dart';
 import 'model/detail_model.dart';
 
-class BorrowedTabScreen extends StatelessWidget {
-  BorrowedTabScreen({super.key});
+class BorrowedTabScreen extends ConsumerStatefulWidget {
+  final int userId;
+
+  BorrowedTabScreen({super.key, required this.userId});
+
+  @override
+  ConsumerState<BorrowedTabScreen> createState() => _BorrowedTabScreenState();
+}
+
+class _BorrowedTabScreenState extends ConsumerState<BorrowedTabScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Utils.getToken();
+    _getBorrowedData();
+  }
+
+  List<BorrowedUiItem> filteredList = [];
 
   final searchController = TextEditingController();
 
-  final List<BorrowedDetails> containers = [
-    BorrowedDetails(
-      resturantName: "Sfumato Gastro Atelier",
-      containerName: "Dip Cups",
-      code: "ST-DC-50",
-      volume: "50ml",
-      qty: 3,
-      image: "assets/images/cups.png",
-      date: "22/11/2025 | 10:00am",
-    ),
-    BorrowedDetails(
-      resturantName: "Ancora Mediterranean",
-      containerName: "Round Container",
-      code: "ST-RDC-500",
-      volume: "500ml",
-      qty: 5,
-      image: "assets/images/cups.png",
-      date: "01/12/2025 | 10:00am",
-    ),
-    BorrowedDetails(
-      resturantName: "Ancora Mediterranean",
-      containerName: 'Rectangular Container',
-      code: "ST-RC-600",
-      volume: "900ml",
-      qty: 2,
-      image: "assets/images/cups.png",
-      date: "27/11/2025 | 04:11pm",
-    ),
-    BorrowedDetails(
-      resturantName: " Kimura-ya Authentic Japanese Resta",
-      containerName: "Dip Cup | Round container",
-      code: "ST-RC-600",
-      volume: '600kl',
-      qty: 5,
-      image: 'assets/images/cups.png',
-      date: "27/11/2025 | 04:11pm",
-    ),
-  ];
+  String? selectedMonthYear;
+  int selectedYear = DateTime.now().year;
+
+  String _searchQuery = '';
+
+
+  void applySearchAndFilter(List<BorrowedUiItem> sourceList) {
+    filteredList = sourceList;
+
+    if (_searchQuery.isNotEmpty) {
+      filteredList = filteredList.where((item) {
+        return item.restaurantName
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase());
+      }).toList();
+    }
+    if(_searchQuery.isEmpty) {
+      if (selectedMonthYear != null) {
+        final selectedMonthName = selectedMonthYear!.split('–')[0];
+        final selectedMonthIndex = DateMonthUtils.getMonthIndex(selectedMonthName);
+
+        filteredList = filteredList.where((item) {
+          final itemMonth = DateTime
+              .parse(item.date)
+              .month;
+          return itemMonth == selectedMonthIndex;
+        }).toList();
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final historyState = ref.watch(historyProvider);
+    final list = historyState.borrowedList;
+    if (filteredList.isEmpty && historyState.borrowedList.isNotEmpty) {
+      applySearchAndFilter(historyState.borrowedList);
+    }
+
+    final groupedData = _groupByMonth(filteredList);
+    return Stack(
       children: [
-        Padding(
-          padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-          child: TextField(
-            controller: searchController,
-            decoration: InputDecoration(
-              hintText: "Search by Resturant Name",
-              hintStyle: const TextStyle(color: Colors.white70),
-              prefixIcon: const Icon(Icons.search, color: Colors.white70),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                borderSide: BorderSide(color: Constant.grey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                borderSide: BorderSide(color: Constant.grey),
-              ),
-              fillColor: Constant.grey.withOpacity(0.1),
-              filled: true,
-              suffixIcon:  IconButton(onPressed: (){
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (_) => ReusableFilterBottomSheet(
-                    title: "Filters",
-                    leftTabTitle: "Month",
-                    options: [
-                      "December–2024",
-                      "January–2025",
-                      "February–2024",
-                      "March–2024",
-                      "Apiral–2024",
-                      "May–2024",
-                      "June–2024",
-                      "July–2024",
-                      "August–2024",
-                      "September–2025",
-                      "October–2025",
-                      "November–2025",
-                    ],
-                    selectedValue: "January–2025",
-                    onApply: (value) {
-                      print("Selected Month = $value");
-                    },
-                  ),
-                );
-              },
-                icon: Icon(Icons.filter_list, color: Colors.white),
-              ),
-            ),
-          ),
-        ),
+        Column(
+          children: [
+            _searchBar(),
 
-        Expanded(
-          child: ListView(
-            padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-            children: _groupByMonth().entries.map((entry) {
-              final month = entry.key;
-              final items = entry.value;
+            Expanded(
+              child: list.isEmpty && !historyState.isLoading
+                  ? Center(
+                      child: Utils.getErrorText('No borrowed containers found'),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                      itemCount: groupedData.keys.length,
+                      itemBuilder: (context, index) {
+                        final month = groupedData.keys.elementAt(index);
+                        final items = groupedData[month]!;
+                        final totalContainers = _getTotalContainerCount(items);
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _monthHeader(month, items.length),
-                   SizedBox(height: Constant.SIZE_06),
-
-                  ...items.map(
-                        (item) => _historyCard(
-                      item: item,
-                      context: context,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _monthHeader(month, totalContainers),
+                            SizedBox(height: Constant.SIZE_06),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: items.length,
+                              itemBuilder: (_, i) => _historyCard(
+                                context: context,
+                                item: items[i],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
+            ),
+          ],
         ),
 
+        if (historyState.isLoading)
+          const Center(child: CircularProgressIndicator()),
       ],
     );
   }
 
-  String _getMonthYear(String date) {
-    final parts = date.split('|').first.trim();
-    final dateParts = parts.split('/');
+  Widget _searchBar() {
+    return Padding(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      child: TextField(
+        controller: searchController,
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value;
+            applySearchAndFilter(ref.read(historyProvider).borrowedList);
+          });
+        },
+        cursorColor: Colors.white,
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: "Search by Resturant Name",
+          hintStyle: const TextStyle(color: Colors.white70),
+          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          fillColor: Constant.grey.withOpacity(0.1),
+          filled: true,
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.filter_list, color: Colors.white),
+            onPressed: () {
+              final months = DateMonthUtils.getCurrentYearMonths();
 
-    final month = int.parse(dateParts[1]);
-    final year = dateParts[2];
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => ReusableFilterBottomSheet(
+                  title: "Filters",
+                  leftTabTitle: "Month",
+                  options: months,
+                  selectedValue: selectedMonthYear,
+                  onApply: (value) {
+                    if (value == null) return;
 
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+                    setState(() {
+                      selectedMonthYear = value;
+                      applySearchAndFilter(ref.read(historyProvider).borrowedList);
+                    });
 
-    return '${months[month - 1]} $year';
+                  },
+
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 
-  Map<String, List<BorrowedDetails>> _groupByMonth() {
-    final Map<String, List<BorrowedDetails>> grouped = {};
 
-    for (final item in containers) {
-      final monthKey = _getMonthYear(item.date);
+  Map<String, List<BorrowedUiItem>> _groupByMonth(List<BorrowedUiItem> list) {
+    final Map<String, List<BorrowedUiItem>> grouped = {};
 
-      if (!grouped.containsKey(monthKey)) {
-        grouped[monthKey] = [];
-      }
+    for (final item in list) {
+      final monthKey = DateMonthUtils.getMonthYear(item.date);
+
+      grouped.putIfAbsent(monthKey, () => []);
       grouped[monthKey]!.add(item);
     }
 
@@ -169,16 +203,23 @@ class BorrowedTabScreen extends StatelessWidget {
   }
 
 
+  int _getTotalContainerCount(List<BorrowedUiItem> items) {
+    int total = 0;
+    for (final item in items) {
+      total += item.containerCount;
+    }
+    return total;
+  }
 
   Widget _monthHeader(String title, int count) {
     return Padding(
-      padding:  EdgeInsets.symmetric(vertical: Constant.SIZE_06),
+      padding: EdgeInsets.symmetric(vertical: Constant.SIZE_06),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style:  TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
@@ -191,7 +232,7 @@ class BorrowedTabScreen extends StatelessWidget {
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
-               SizedBox(width: Constant.SIZE_06),
+              SizedBox(width: Constant.SIZE_06),
               Text("$count", style: const TextStyle(color: Colors.white)),
             ],
           ),
@@ -201,16 +242,16 @@ class BorrowedTabScreen extends StatelessWidget {
   }
 
   Widget _historyCard({
-    required BorrowedDetails item,
     required BuildContext context,
+    required BorrowedUiItem item,
   }) {
     return InkWell(
       onTap: () {
-        _openDetailDialog(context, item.date, item);
+        _openDetailDialog(context, item);
       },
       child: Container(
-        margin:  EdgeInsets.symmetric(vertical: Constant.SIZE_08),
-        padding:  EdgeInsets.all(Constant.SIZE_10),
+        margin: EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+        padding: EdgeInsets.all(Constant.SIZE_10),
         decoration: BoxDecoration(
           color: Constant.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -226,10 +267,10 @@ class BorrowedTabScreen extends StatelessWidget {
 
                 children: [
                   Text(
-                    item.resturantName,
+                    item.restaurantName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:  TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: Constant.CONTAINER_SIZE_16,
                       fontWeight: FontWeight.w600,
@@ -240,10 +281,10 @@ class BorrowedTabScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          item.containerName,
+                          item.productName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style:  TextStyle(
+                          style: TextStyle(
                             color: Colors.white70,
                             fontSize: Constant.CONTAINER_SIZE_13,
                           ),
@@ -251,17 +292,17 @@ class BorrowedTabScreen extends StatelessWidget {
                       ),
 
                       Text(
-                        item.qty.toString(),
-                        style:  TextStyle(
+                        item.containerCount.toString(),
+                        style: TextStyle(
                           color: Color(0xFFFFC727),
                           fontSize: Constant.CONTAINER_SIZE_18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
 
-                       SizedBox(width: Constant.SIZE_06),
+                      SizedBox(width: Constant.SIZE_06),
 
-                       Icon(
+                      Icon(
                         Icons.arrow_forward_ios,
                         size: Constant.CONTAINER_SIZE_14,
                         color: Colors.white70,
@@ -270,9 +311,11 @@ class BorrowedTabScreen extends StatelessWidget {
                   ),
 
                   Text(
-                    item.date,
-                    style:
-                    TextStyle(color: Colors.white60, fontSize: Constant.CONTAINER_SIZE_12),
+                    '${item.date} | ${item.time}',
+                    style: TextStyle(
+                      color: Colors.white60,
+                      fontSize: Constant.CONTAINER_SIZE_12,
+                    ),
                   ),
                 ],
               ),
@@ -283,14 +326,38 @@ class BorrowedTabScreen extends StatelessWidget {
     );
   }
 
-  void _openDetailDialog(BuildContext context, String dateTime, BorrowedDetails item) {
+  void _openDetailDialog(BuildContext context, BorrowedUiItem item) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) =>
-          ReceiveDetailsDialog(dateTime: dateTime, title: 'Borrowed Details',
-            item:[item]),
+          ReceiveDetailsDialog(title: 'Borrowed Details', item: [item]),
     );
+  }
+
+  _getBorrowedData() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        if (isNetworkAvailable) {
+          ref.read(historyProvider).clearBorrowedList();
+          ref.read(historyProvider).setIsLoading(true);
+          final int year = DateTime.now().year;
+
+          final url = '${NetworkUrls.BORROWED_DATA}userId=1&year=$year';
+          Utils.printLog("Fetching URL: $url");
+          ref.read(borrowedProvider(url));
+        } else {
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      ref.read(historyProvider).setIsLoading(false);
+      Utils.showToast(e.toString());
+    }
+    FocusScope.of(context).unfocus();
   }
 }

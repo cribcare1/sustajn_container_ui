@@ -3,21 +3,53 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/header.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+
+  String userName = "";
+  Data? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
 
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            HeaderWidget(name: 'John Dee'),
+            HeaderWidget(name:loginResponse?.fullName??"",),
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
