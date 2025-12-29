@@ -97,26 +97,26 @@ class QrDialog extends StatelessWidget {
                             ),
                           ),
               
-                          SizedBox(height: Constant.CONTAINER_SIZE_12),
-              
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                userId,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(width: Constant.CONTAINER_SIZE_8),
-                               Icon(
-                                Icons.copy,
-                                size: Constant.CONTAINER_SIZE_16,
-                                color: Colors.black,
-                              ),
-                            ],
-                          ),
+                          // SizedBox(height: Constant.CONTAINER_SIZE_12),
+                          //
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Text(
+                          //       userId,
+                          //       style: theme.textTheme.bodyMedium?.copyWith(
+                          //         fontWeight: FontWeight.w600,
+                          //         color: Colors.black,
+                          //       ),
+                          //     ),
+                          //     SizedBox(width: Constant.CONTAINER_SIZE_8),
+                          //      Icon(
+                          //       Icons.copy,
+                          //       size: Constant.CONTAINER_SIZE_16,
+                          //       color: Colors.black,
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),

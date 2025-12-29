@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/auth/screens/map_screen.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
 import '../auth/dashboard_screen/generate_qr_screen.dart';
+import '../auth/payment_type/payment_screen.dart';
 import '../common_widgets/custom_cricle_painter.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
@@ -57,6 +59,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showHistoryScreen(context);
         break;
       case 1:
+        _showPaymentScreen(context);
         break;
       case 2:
         _showQRDialog(context);
@@ -80,6 +83,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       backgroundColor: Colors.transparent,
       builder: (_) => const FeedbackBottomSheet(),
     );
+  }
+
+  void _showPaymentScreen(BuildContext context){
+    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
   }
 
   void _showContactDialog(BuildContext context){
@@ -266,7 +273,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               w: w,
                               showEdit: true,
                               theme: theme,
-                              ontap: (){}
+                              ontap: (){
+                                NavUtil.navigateToPushScreen(context, MapScreen());
+                              }
                           ),
                            Divider(color: Constant.grey.withOpacity(0.3),),
                           _detailItem(
