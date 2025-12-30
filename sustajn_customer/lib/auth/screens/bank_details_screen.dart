@@ -238,8 +238,9 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                               widget.registrationData?.accountNumber = accNoController.text.trim();
                               widget.registrationData?.taxNumber = taxController.text.trim();
 
-                              _getNetworkData(authState);
+
                             }
+                            _getNetworkData(authState);
 
                           },
                           child: Text(
@@ -268,6 +269,29 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     );
   }
 
+  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
+    final cleanedMap = <String, dynamic>{};
+
+    map.forEach((key, value) {
+      if (value == null) return;
+
+      if (value is Map) {
+        final nested = removeNullAndEmpty(
+          Map<String, dynamic>.from(value),
+        );
+        if (nested.isNotEmpty) {
+          cleanedMap[key] = nested;
+        }
+      } else if (value.toString().trim().isNotEmpty) {
+        cleanedMap[key] = value;
+      }
+    });
+
+    return cleanedMap;
+  }
+
+
+
 
   _getNetworkData(var registrationState) async {
     try {
@@ -277,8 +301,12 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
           setState(() {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              final Map<String, dynamic> body =
-                        Map<String, dynamic>.from(widget.registrationData!.toApiBody());
+              final rawBody =
+              Map<String, dynamic>.from(widget.registrationData!.toApiBody());
+
+              final body = removeNullAndEmpty(rawBody);
+              // final Map<String, dynamic> body =
+              //           Map<String, dynamic>.from(widget.registrationData!.toApiBody());
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
                   Strings.DATA, widget.registrationData?.profileImage);

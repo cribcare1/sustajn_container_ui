@@ -11,6 +11,7 @@ import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
+import 'edit_dialogs/edit_payment.dart';
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
 import 'edit_dialogs/freemium_bottom_sheet.dart';
@@ -86,7 +87,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   void _showPaymentScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
+    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
   }
 
   void _showContactDialog(BuildContext context){

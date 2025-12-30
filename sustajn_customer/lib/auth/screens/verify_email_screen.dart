@@ -13,6 +13,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/shared_preference_utils.dart';
 import '../../utils/utils.dart';
+import '../payment_type/payment_screen.dart';
 import 'bank_details_screen.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
@@ -54,6 +55,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
       if (!mounted) return false;
+
       if (seconds > 0) {
         setState(() => seconds--);
         return true;
@@ -61,6 +63,14 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       return false;
     });
   }
+
+
+  String get formattedTime {
+    final minutes = seconds ~/ 60;
+    final secs = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
 
   bool _validateOtp() {
     if (_otpController.text.trim().isEmpty) {
@@ -116,8 +126,6 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
             return false;
           },
-
-
           child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) =>
@@ -197,53 +205,45 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ),
 
-                          SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                          Center(
-                            child: Text(
-                              "Resend Code in 0:${seconds.toString()
-                                  .padLeft(2, '0')}",
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: Constant.LABEL_TEXT_SIZE_15,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
 
                           SizedBox(height: Constant.CONTAINER_SIZE_20),
 
                           Center(
-                            child: TextButton(
-                              onPressed: seconds == 0
-                                  ? () {
+                            child: seconds > 0
+                                ? Text(
+                              "Resend code in $formattedTime",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_15,
+                                color: Colors.white,
+                              ),
+                            )
+
+                                : TextButton(
+                              onPressed: () {
                                 setState(() {
                                   seconds = 120;
-                                  _startTimer();
                                 });
-                              }
-                                  : null,
+                                _startTimer();
+                                _resetOtp(authState);
+                              },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     Strings.DIDNT_RECV_CODE,
-                                    style: theme.textTheme.bodyLarge
-                                        ?.copyWith(
+                                    style: theme.textTheme.bodyLarge?.copyWith(
                                       color: Colors.white,
-                                      fontSize: Constant
-                                          .LABEL_TEXT_SIZE_16,
+                                      fontSize: Constant.LABEL_TEXT_SIZE_16,
                                     ),
                                   ),
+                                  const SizedBox(width: 4),
                                   Text(
                                     Strings.RESEND,
-                                    style: theme.textTheme.bodyLarge
-                                        ?.copyWith(
+                                    style: theme.textTheme.bodyLarge?.copyWith(
                                       color: Constant.gold,
-                                      decoration: TextDecoration
-                                          .underline,
-                                      fontSize: Constant
-                                          .LABEL_TEXT_SIZE_16,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: Constant.LABEL_TEXT_SIZE_16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -251,7 +251,6 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                               ),
                             ),
                           ),
-
                           const Spacer(),
                         ],
                       ),
@@ -462,14 +461,29 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           color: Colors.green,
         );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BankDetails(
-              registrationData: widget.registrationData!,
+        if (widget.previousScreen == "signUp") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => PaymentTypeScreen(
+                registrationData: widget.registrationData!,
+              ),
             ),
-          ),
-        );
+          );
+        }
+
+        else if (widget.previousScreen == "forgotPassword") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ResetPasswordScreen(
+               token: _otpController.text,
+              ),
+            ),
+          );
+        }
+
+
       } else {
         showCustomSnackBar(
           context: context,

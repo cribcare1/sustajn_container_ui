@@ -185,4 +185,7 @@ class Strings {
   static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
 
   static const String MY_QR_CODE = 'My QR Code';
+  static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
+  static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
+
 }

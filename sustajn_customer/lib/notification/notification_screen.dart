@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 import 'models/notice_model.dart';
@@ -41,37 +43,38 @@ class NotificationScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Notifications',
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Colors.white),),
+        backgroundColor: theme.scaffoldBackgroundColor,
+        leading: Icon(Icons.arrow_back_ios,
+        color: Colors.white,
+        size: Constant.CONTAINER_SIZE_20,),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(
+              right: Constant.CONTAINER_SIZE_16,
+            ),
+            child: Center(
+              child: Text(
+                'Mark all as read',
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: Constant.gold,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Constant.gold,
+                  decorationThickness: 1.5,
+                ),
+              ),
+            ),
+          ),
+        ],
+
+      ),
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            SizedBox(height: Constant.SIZE_18),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Notifications",
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontFamily: "DMSans",
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  "Mark all as read",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontFamily: "DMSans",
-                    color: Constant.gold,
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: Constant.SIZE_15),
-
             Expanded(
               child: ListView.builder(
                 itemCount: notifications.length,
@@ -138,7 +141,7 @@ class NotificationScreen extends StatelessWidget {
                   Text(
                     item.subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white70,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -151,7 +154,7 @@ class NotificationScreen extends StatelessWidget {
 
                       Expanded(
                         child: Container(
-                          height: Constant.CONTAINER_SIZE_44,
+                          height: Constant.CONTAINER_SIZE_30,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
                             border: Border.all(color: Constant.gold),
@@ -172,7 +175,7 @@ class NotificationScreen extends StatelessWidget {
 
                       Expanded(
                         child: Container(
-                          height: Constant.CONTAINER_SIZE_44,
+                          height: Constant.CONTAINER_SIZE_30,
                           decoration: BoxDecoration(
                             color: Constant.gold,
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),

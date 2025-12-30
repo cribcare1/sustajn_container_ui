@@ -176,41 +176,6 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
 
 
 
-
-final forgotPasswordProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
-
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
-  try {
-    var   responseData = await apiService.forgetPassword(url, params, "");
-    if (responseData != null) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.green);
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const ResetPasswordScreen(),
-        ),
-      );
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: responseData.message!, color:Colors.red);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
-
 final verifyOtpProvider =
 FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
       (ref, params) async {

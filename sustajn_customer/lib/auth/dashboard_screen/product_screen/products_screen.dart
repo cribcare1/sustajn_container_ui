@@ -200,7 +200,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'days left ${data.daysLeft}',
+                      ' ${data.daysLeft} Days Left',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.black,
                         fontSize: Constant.CONTAINER_SIZE_12,

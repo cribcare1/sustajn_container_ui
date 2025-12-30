@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/notification/notification_screen.dart';
 import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/search_resturant_screen/search_resturant_screen.dart';
 import '../../../constants/number_constants.dart';
@@ -68,6 +69,7 @@ class HeaderWidget extends StatelessWidget {
             InkWell(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
               onTap: () {
+                NavUtil.navigateToPushScreen(context, NotificationScreen());
               },
               child: Container(
                 padding: EdgeInsets.all(Constant.SIZE_08),
