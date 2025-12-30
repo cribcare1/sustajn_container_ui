@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
+import '../screens/subscription_screen.dart';
 import 'add_card_dialog.dart';
 
 class PaymentTypeScreen extends StatelessWidget {
   const PaymentTypeScreen({super.key});
+
+  BuildContext? get context => null;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class PaymentTypeScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: _bottomButtons(theme),
+          child: _bottomButtons(theme, context),
         ),
       ),
     );
@@ -224,12 +228,20 @@ class PaymentTypeScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomButtons(ThemeData theme) {
+  Widget _bottomButtons(ThemeData theme,BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              // Navigator.push(
+              //   context!,
+              //   MaterialPageRoute(
+              //     builder: (_) => SubscriptionScreen(),
+              //   ),
+              // );
+              NavUtil.navigateToWithReplacement(context, SubscriptionScreen());
+            },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(
@@ -256,6 +268,7 @@ class PaymentTypeScreen extends StatelessWidget {
             ),
             child: Text(
               'Verify & Continue',
+
               style: theme.textTheme.labelLarge?.copyWith(
                 color: theme.primaryColor,
               ),
