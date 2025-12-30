@@ -55,6 +55,15 @@ class SharedPreferenceUtils{
     sharedPrefs.clear();
   }
 
+  static Future<Map<String, dynamic>?> getMapFromSF(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? value = prefs.getString(key);
+
+    if (value == null || value.isEmpty) return null;
+
+    return jsonDecode(value) as Map<String, dynamic>;
+  }
+
 
 
 }

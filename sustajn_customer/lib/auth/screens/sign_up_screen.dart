@@ -5,17 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
-import '../../common_widgets/submit_button.dart';
+
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../main.dart';
 import '../../models/register_data.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import 'login_screen.dart';
-import 'map_screen.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
@@ -27,7 +26,7 @@ class SignUpScreen extends ConsumerStatefulWidget {
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final _formKey = GlobalKey<FormState>();
 
   final restaurantCtrl = TextEditingController();
@@ -59,6 +58,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
+
     restaurantCtrl.dispose();
     emailCtrl.dispose();
     mobileCtrl.dispose();
@@ -66,6 +67,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     confirmPasswordCtrl.dispose();
     addressCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -274,7 +286,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     //     ),
                     //   ),
                     // ),
-                    SizedBox(
+                    authState.isLoading?
+                    Center(
+                      child: CircularProgressIndicator(),)
+                        : SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
@@ -288,20 +303,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           if (_formKey.currentState!.validate()) {
                             if (!_validateImage()) return;
 
-                            final registrationData = RegistrationData(
-                              fullName: restaurantCtrl.text,
-                              email: emailCtrl.text,
-                              phoneNumber: mobileCtrl.text,
-                              password: passwordCtrl.text,
-                              profileImage: selectedImage,
-                              dateOfBirth: null,
-                              address: addressCtrl.text,
-                              latitude: lat,
-                              longitude: long,
-                            );
-                            _getNetworkDataVerify(authState);
-                            Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
-                            registrationData: registrationData,));
+                            _getNetworkData(authState);
                           }
                         },
                         child: Text(
@@ -346,10 +348,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
               ),
             ),
-            if(authState.isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            )
           ]
         ),
       ),
@@ -438,35 +436,50 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  _getNetworkDataVerify(var registrationState) async {
+  Future<void> _getNetworkData(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              registrationState.setContext(context);
-              ref.read(verifyOtpProvider({"email": emailCtrl.text,}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
-          }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+      if (!registrationState.isValid) return;
+      registrationState.setIsLoading(true);
+      FocusScope.of(context).unfocus();
+      ref.read(authNotifierProvider).loginData(
+        context,
+        emailCtrl.text,
+        passwordCtrl.text,
+      );
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+      if (!isNetworkAvailable) {
+        if (!mounted) return;
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
       }
+
+      final registrationData = RegistrationData(
+        fullName: restaurantCtrl.text.trim(),
+        email: emailCtrl.text.trim(),
+        phoneNumber: mobileCtrl.text.trim(),
+        password: passwordCtrl.text,
+        profileImage: selectedImage,
+        dateOfBirth: null,
+        address: addressCtrl.text,
+        latitude: lat,
+        longitude: long,
+      );
+      ref.read(
+        validateEmail({
+          "email": emailCtrl.text,
+          "previous": "signUp",
+          "registrationData": registrationData,
+        }),
+      );
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog('Error in Login button: $e');
     }
   }
 }
+
 

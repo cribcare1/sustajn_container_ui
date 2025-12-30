@@ -33,7 +33,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         (index) => TextEditingController(),
   );
 
-  int seconds = 60;
+  int seconds = 120;
 
   @override
   void initState() {
@@ -62,6 +62,29 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     });
   }
 
+  bool _validateOtp() {
+    if (_otpController.text.trim().isEmpty) {
+      showCustomSnackBar(
+        context: context,
+        message: "Please enter OTP",
+        color: Colors.red,
+      );
+      return false;
+    }
+
+    if (_otpController.text.trim().length != 6) {
+      showCustomSnackBar(
+        context: context,
+        message: "Please enter valid OTP",
+        color: Colors.red,
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+
   final _otpController = TextEditingController();
 
   @override
@@ -71,157 +94,289 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
 
-      body: WillPopScope(
+        body: WillPopScope(
+          onWillPop: () async {
+            final shouldGoBack = await displayDialog(
+              context,
+              Icons.warning_amber,
+              Strings.GO_BACK,
+              Strings.VERIFIED_EMAIL,
+              Strings.STAY_ON_THIS_PAGE,
+            );
 
-        onWillPop: () async {
-          final shouldGoBack = await Utils.displayDialog(
-            context,
-            Icons.warning_amber,
-            Strings.GO_BACK,
-            Strings.VERIFIED_EMAIL,
-            Strings.STAY_ON_THIS_PAGE,
-          );
+            if (shouldGoBack) {
+              if (widget.previousScreen == "signUp") {
+                Navigator.pop(context, widget.registrationData);
+              }
 
-          if (shouldGoBack) {
-            Utils.navigateToPushScreen(context,
-            SignUpScreen());
-          }
+              else if (widget.previousScreen == "forgotPassword") {
+                Navigator.pop(context, widget.email);
+              }
+            }
 
-          return false;
-        },
+            return false;
+          },
 
-        child: SafeArea(
+
+          child: SafeArea(
           child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: Constant.CONTAINER_SIZE_24,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - Constant.CONTAINER_SIZE_55,
-                ),
-                child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: Constant.CONTAINER_SIZE_140),
-                      Text(
-                        Strings.VERIFY_EMAIL,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white
-                        ),
-                      ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_10),
-                      Text(
-                        "${Strings.SEND_CODE}${widget.email}",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: Constant.LABEL_TEXT_SIZE_15,
-                        ),
-                      ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
-
-                      Center(child: buildOtp(context, _otpController)),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFD0A52C),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                Constant.CONTAINER_SIZE_12,
-                              ),
-                            ),
-                          ),
-                          onPressed: ()async {
-                            // await  _getNetworkData(authState);
-                            if (widget.previousScreen == "forgotPassword") {
-                              _getNetworkData(authState);
-                            }
-                            Navigator.push(context,
-                            MaterialPageRoute(builder: (context)=> BankDetails(registrationData: widget.registrationData!,)));
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.SIZE_08,
-                            ),
-                            child: Text(
-                              Strings.VERIFY,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: theme.primaryColor,
-                                fontSize: Constant.LABEL_TEXT_SIZE_16,
+            builder: (context, constraints) =>
+                SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_24,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight -
+                          Constant.CONTAINER_SIZE_55,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: Constant.CONTAINER_SIZE_140),
+                          Text(
+                            Strings.VERIFY_EMAIL,
+                            style: theme.textTheme.headlineSmall
+                                ?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_20,
                                 fontWeight: FontWeight.w600,
+                                color: Colors.white
+                            ),
+                          ),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                          Text(
+                            "${Strings.SEND_CODE}${widget.email}",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                              fontSize: Constant.LABEL_TEXT_SIZE_15,
+                            ),
+                          ),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                          Center(
+                              child: buildOtp(context, _otpController)),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                          authState.isLoading || authState.isVerifying
+                              ? const Center(
+                              child: CircularProgressIndicator())
+                              : SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFD0A52C),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    Constant.CONTAINER_SIZE_12,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (!_validateOtp()) return;
+                                _getNetworkData(authState);
+                              },
+
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Constant.SIZE_08,
+                                ),
+                                child: Text(
+                                  Strings.VERIFY,
+                                  style: theme.textTheme.titleMedium
+                                      ?.copyWith(
+                                    color: theme.primaryColor,
+                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
 
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                      Center(
-                        child: Text(
-                          "Resend Code in 0:${seconds.toString().padLeft(2, '0')}",
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_15,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                      Center(
-                        child: TextButton(
-                          onPressed: seconds == 0
-                              ? () {
-                            setState(() {
-                              seconds = 60;
-                              _startTimer();
-                            });
-                          }
-                              : null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                Strings.DIDNT_RECV_CODE,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.white,
-                                  fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                ),
+                          Center(
+                            child: Text(
+                              "Resend Code in 0:${seconds.toString()
+                                  .padLeft(2, '0')}",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_15,
+                                color: Colors.white,
                               ),
-                              Text(
-                                Strings.RESEND,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Constant.gold,
-                                  decoration: TextDecoration.underline,
-                                  fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
 
-                      const Spacer(),
-                    ],
+                          SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                          Center(
+                            child: TextButton(
+                              onPressed: seconds == 0
+                                  ? () {
+                                setState(() {
+                                  seconds = 120;
+                                  _startTimer();
+                                });
+                              }
+                                  : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .center,
+                                children: [
+                                  Text(
+                                    Strings.DIDNT_RECV_CODE,
+                                    style: theme.textTheme.bodyLarge
+                                        ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: Constant
+                                          .LABEL_TEXT_SIZE_16,
+                                    ),
+                                  ),
+                                  Text(
+                                    Strings.RESEND,
+                                    style: theme.textTheme.bodyLarge
+                                        ?.copyWith(
+                                      color: Constant.gold,
+                                      decoration: TextDecoration
+                                          .underline,
+                                      fontSize: Constant
+                                          .LABEL_TEXT_SIZE_16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
+          ),
+        ),
+                    )
+    );
+  }
+
+
+   Future<bool> displayDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                      color: Constant.grey.withOpacity(0.1)
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
               ),
-            ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white
+              )),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  // GO BACK
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        "Go back",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        maxLines: 1,
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
-    );
+    ) ?? false;
   }
 
   Widget buildOtp(BuildContext context, TextEditingController controller) {
@@ -243,7 +398,6 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
     return Pinput(
       length: 6,
-      // Change to 6 if needed
       controller: controller,
       keyboardType: TextInputType.number,
 
@@ -275,59 +429,96 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     );
   }
 
-  _getNetworkData(var registrationState) async {
+
+  Future<void> _getNetworkData(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":loginModel!.data!.userName,"token":_otpController.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
-          }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
+      registrationState.setIsOTPVerify(true);
+
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+
+      final response = await ref.read(
+        verifyOtpProvider({
+          "email": widget.email,
+          "token": _otpController.text.trim(),
+        }).future,
+      );
+
+      if (!mounted) return;
+
+      if (response["status"] == "success") {
+        showCustomSnackBar(
+          context: context,
+          message: 'Otp verified successfully',
+          color: Colors.green,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BankDetails(
+              registrationData: widget.registrationData!,
+            ),
+          ),
+        );
+      } else {
+        showCustomSnackBar(
+          context: context,
+          message: response["message"] ?? "Invalid OTP",
+          color: Colors.red,
+        );
       }
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      showCustomSnackBar(
+        context: context,
+        message: "Something went wrong",
+        color: Colors.red,
+      );
+    } finally {
+      registrationState.setIsOTPVerify(false);
     }
   }
-  _getNetworkDataVerify(var registrationState) async {
+
+  _resetOtp(var registrationState) async {
     try {
-      if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              ref.read(verifyOtpProvider({"email": widget.registrationData?.email,"token":_otpController.text}));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
+      registrationState.setIsLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            ref.read(
+              validateEmail({
+                "email": widget.email,
+                "previous": widget.previousScreen,
+              }),
+            );
+          } else {
             registrationState.setIsLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
           }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
-      }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);

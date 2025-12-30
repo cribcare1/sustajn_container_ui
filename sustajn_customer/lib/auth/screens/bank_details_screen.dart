@@ -11,11 +11,11 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
 class BankDetails extends ConsumerStatefulWidget {
-  final RegistrationData registrationData;
+  final RegistrationData? registrationData;
 
   const BankDetails({
     super.key,
-    required this.registrationData,
+     this.registrationData,
   });
 
   @override
@@ -234,9 +234,9 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              widget.registrationData.bankName = bankNameController.text.trim();
-                              widget.registrationData.accountNumber = accNoController.text.trim();
-                              widget.registrationData.taxNumber = taxController.text.trim();
+                              widget.registrationData?.bankName = bankNameController.text.trim();
+                              widget.registrationData?.accountNumber = accNoController.text.trim();
+                              widget.registrationData?.taxNumber = taxController.text.trim();
 
                               _getNetworkData(authState);
                             }
@@ -278,10 +278,10 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               final Map<String, dynamic> body =
-                        Map<String, dynamic>.from(widget.registrationData.toApiBody());
+                        Map<String, dynamic>.from(widget.registrationData!.toApiBody());
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, widget.registrationData.profileImage);
+                  Strings.DATA, widget.registrationData?.profileImage);
               ref.read(registerProvider(params));
             } else {
               registrationState.setIsLoading(false);

@@ -9,7 +9,7 @@ class NetworkUrls {
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
-  static const VERIFY_OTP = "notification/forgot-password";
+  static const VERIFY_OTP = "notification/verify-token";
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
   static const PRODUCT_DATA = 'orders/productsSummary/';

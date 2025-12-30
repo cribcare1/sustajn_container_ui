@@ -5,16 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sustajn_customer/auth/screens/bank_details_screen.dart';
 
 import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/screens/login_screen.dart';
+import '../auth/screens/reset_password_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/register_data.dart';
 import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
+import '../utils/nav_utils.dart';
 import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
 
@@ -99,6 +103,78 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
   },
 );
 
+final validateEmail =
+FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args) async {
+  final apiService = ref.watch(loginApiProvider);
+  final registrationState = ref.watch(authNotifierProvider);
+
+  final String email = args['email'];
+  final String previous = args['previous'];
+
+  final RegistrationData? registrationData =
+  args['registrationData'] as RegistrationData?;
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
+
+  try {
+    final responseData = await apiService.forgetPassword(
+      url,
+      {"email": email},
+      "",
+    );
+
+    if (responseData != null && responseData.isNotEmpty) {
+      if (!registrationState.context.mounted) return null;
+
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData["message"],
+        color: Colors.green,
+      );
+
+      if (previous == "signUp" && registrationData != null) {
+        Navigator.push(
+          registrationState.context,
+          MaterialPageRoute(
+            builder: (_) => VerifyEmailScreen(
+              previousScreen: "signUp",
+              email: email,
+              registrationData: registrationData,
+            ),
+          ),
+        );
+      }
+
+      if (previous == "forgotPassword") {
+        Navigator.push(
+          registrationState.context,
+          MaterialPageRoute(
+            builder: (_) => VerifyEmailScreen(
+              previousScreen: "forgotPassword",
+              email: email,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (!registrationState.context.mounted) return null;
+
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData?['message'] ?? "Something went wrong",
+        color: Colors.red,
+      );
+    }
+  } catch (e) {
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  } finally {
+    registrationState.setIsLoading(false);
+  }
+
+  return null;
+});
+
+
 
 
 final forgotPasswordProvider =
@@ -117,7 +193,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       Navigator.pushReplacement(
         registrationState.context,
         MaterialPageRoute(
-          builder: (_) => const VerifyEmailScreen(previousScreen: '',),
+          builder: (_) => const ResetPasswordScreen(),
         ),
       );
     } else {
@@ -136,33 +212,15 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 });
 
 final verifyOtpProvider =
-FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
-  final registrationState = ref.watch(authNotifierProvider);
+FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
+      (ref, params) async {
+    final apiService = ref.watch(loginApiProvider);
+    final url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
 
-  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
-  try {
-    var   responseData = await apiService.verifyOtp(url, params, "");
-    final status = responseData['status'];
-    final message = responseData['message'];
-    if (status != null && status!.isNotEmpty  && status! == NetworkUrls.SUCCESS) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.context.mounted) return;
-      Fluttertoast.showToast(msg: message!,toastLength: Toast.LENGTH_LONG,
-      backgroundColor: Colors.black);
+    final responseData = await apiService.verifyOtp(url, params, "");
+
+    return responseData;
+  },
+);
 
 
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: message!, color:Colors.black);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
