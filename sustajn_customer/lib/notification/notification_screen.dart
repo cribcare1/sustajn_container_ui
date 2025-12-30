@@ -117,7 +117,7 @@ class NotificationScreen extends StatelessWidget {
               ),
               child: Image.asset(item.icon),
             ),
-            SizedBox(width: 8),
+            SizedBox(width: Constant.SIZE_05),
           ],
 
           Expanded(
