@@ -106,8 +106,8 @@ class NotificationScreen extends StatelessWidget {
         children: [
           if(item.icon != "")...[
             Container(
-              height: 30,
-              width: 30,
+              height: Constant.CONTAINER_SIZE_30,
+              width: Constant.CONTAINER_SIZE_30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Theme
@@ -151,7 +151,7 @@ class NotificationScreen extends StatelessWidget {
 
                       Expanded(
                         child: Container(
-                          height: 44,
+                          height: Constant.CONTAINER_SIZE_44,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
                             border: Border.all(color: Constant.gold),
@@ -172,7 +172,7 @@ class NotificationScreen extends StatelessWidget {
 
                       Expanded(
                         child: Container(
-                          height: 44,
+                          height: Constant.CONTAINER_SIZE_44,
                           decoration: BoxDecoration(
                             color: Constant.gold,
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
