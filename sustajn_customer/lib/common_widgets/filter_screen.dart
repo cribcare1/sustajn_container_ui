@@ -44,7 +44,7 @@ class _ReusableFilterBottomSheetState
       width: width,
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: themeData!.scaffoldBackgroundColor,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Constant.CONTAINER_SIZE_20),
           topRight: Radius.circular(Constant.CONTAINER_SIZE_20),
@@ -59,9 +59,10 @@ class _ReusableFilterBottomSheetState
               children: [
                 Text(
                   widget.title,
-                  style: themeData!.textTheme.titleLarge!.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_20,
-                    fontWeight: FontWeight.w600,
+                  style: themeData.textTheme.titleLarge!.copyWith(
+                      fontSize: Constant.LABEL_TEXT_SIZE_20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white
                   ),
                 ),
                 GestureDetector(
@@ -70,12 +71,12 @@ class _ReusableFilterBottomSheetState
                     padding: EdgeInsets.all(Constant.SIZE_02),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: themeData.colorScheme.onSurface.withOpacity(0.06),
+                      color: Colors.white,
                     ),
                     child: Icon(
                       Icons.close,
                       size: Constant.CONTAINER_SIZE_25,
-                      color: themeData.colorScheme.onSurface,
+                      color:Colors.black ,
                     ),
                   ),
                 )
@@ -94,7 +95,7 @@ class _ReusableFilterBottomSheetState
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: themeData.dividerColor.withOpacity(0.4),
+                          color: Colors.grey,
                           width: Constant.SIZE_01,
                         ),
                       ),
@@ -105,7 +106,7 @@ class _ReusableFilterBottomSheetState
                         Text(
                           widget.leftTabTitle,
                           style: themeData.textTheme.bodyLarge?.copyWith(
-                            color: themeData.primaryColor,
+                            color: Constant.gold,
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -123,7 +124,13 @@ class _ReusableFilterBottomSheetState
                           widget.options.length,
                               (index) => RadioListTile(
                             value: widget.options[index],
-                            activeColor: themeData.primaryColor,
+                            activeColor: Colors.white,
+                            fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+                              if (states.contains(MaterialState.selected)) {
+                                return Constant.gold;
+                              }
+                              return Constant.gold;
+                            }),
                             groupValue: selectedOption,
                             onChanged: (val) {
                               setState(() {
@@ -136,7 +143,7 @@ class _ReusableFilterBottomSheetState
                               widget.options[index],
                               style: themeData.textTheme.bodyMedium?.copyWith(
                                 fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                color: themeData.colorScheme.onSurface,
+                                color: Colors.white,
                               ),
                             ),
                             controlAffinity: ListTileControlAffinity.leading,
@@ -176,7 +183,7 @@ class _ReusableFilterBottomSheetState
                     child: Text(
                       "Clear",
                       style: themeData.textTheme.labelLarge?.copyWith(
-                        color: themeData.primaryColor,
+                        color: Constant.gold,
                         fontSize: Constant.LABEL_TEXT_SIZE_16,
                       ),
                     ),

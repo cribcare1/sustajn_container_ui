@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sustajn_customer/constants/number_constants.dart';
 
 class TopCirclePainter extends CustomPainter {
   final Color color;
 
-  TopCirclePainter({this.color = const Color(0xff0E3A2F)});
+  TopCirclePainter({this.color = Constant.gold});
 
   @override
   void paint(Canvas canvas, Size size) {

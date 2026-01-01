@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import '../../../constants/number_constants.dart';
 // import '../../../containers/customer_profile.dart';
+import '../../../utils/nav_utils.dart';
+import '../../payment_type/payment_screen.dart';
 import '../../screens/map_screen.dart';
+import '../dashboard.dart';
 
 
 class HeaderWidget extends StatelessWidget {
@@ -11,7 +15,7 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
 
 
     return Padding(
@@ -23,22 +27,22 @@ class HeaderWidget extends StatelessWidget {
           InkWell(
             onTap: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> MapScreen()));
+                  MaterialPageRoute(builder: (context)=> MyProfileScreen()));
             },
             child: CircleAvatar(
-              radius: Constant.CONTAINER_SIZE_26,
-              backgroundColor: Constant.card,
-              child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: Constant.profileText),
+              radius: Constant.CONTAINER_SIZE_20,
+              backgroundColor: Constant.grey,
+              child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: theme.primaryColor),
             ),
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Hi,', style: textTheme.titleMedium?.copyWith(
+                Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(
                     color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14)),
                 SizedBox(height: Constant.SIZE_02),
-                Text(name, style: textTheme.titleLarge?.copyWith(
+                Text(name, style: theme.textTheme.titleLarge?.copyWith(
                     color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600)),
               ],
@@ -48,12 +52,13 @@ class HeaderWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
-              onTap: () {},
+              onTap: () {
+              },
               child: Container(
                 padding: EdgeInsets.all(Constant.SIZE_08),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Constant.card.withOpacity(0.3)),
+                  border: Border.all(color:theme.scaffoldBackgroundColor.withOpacity(0.3)),
                 ),
                 child: Icon(Icons.notifications_none, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
               ),
