@@ -240,7 +240,7 @@ class PaymentTypeScreen extends StatelessWidget {
               //     builder: (_) => SubscriptionScreen(),
               //   ),
               // );
-              NavUtil.navigateToWithReplacement(context, SubscriptionScreen());
+              // NavUtil.navigateToWithReplacement(context, SubscriptionScreen());
             },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),

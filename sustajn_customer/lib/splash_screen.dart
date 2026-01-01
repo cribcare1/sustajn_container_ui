@@ -3,6 +3,7 @@ import 'package:sustajn_customer/utils/app_permissions.dart';
 import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 
 import 'auth/dashboard_screen/dashboard_screen.dart';
+import 'auth/dashboard_screen/home_screen.dart';
 import 'auth/screens/login_screen.dart';
 import 'constants/assets_utils.dart';
 import 'constants/number_constants.dart';
@@ -66,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>   with SingleTickerProvider
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLoggedIn == true ? DashboardScreen() : LoginScreen(),
+        builder: (_) => isLoggedIn == true ? HomeScreen() : LoginScreen(),
       ),
     );
   }
