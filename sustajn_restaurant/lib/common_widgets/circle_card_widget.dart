@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class GlassSummaryCard extends StatelessWidget {
+class CircleCardWidget extends StatelessWidget {
   final Widget child;
 
-  const GlassSummaryCard({
+  const CircleCardWidget({
     super.key,
     required this.child,
   });
@@ -16,10 +16,9 @@ class GlassSummaryCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), // stronger blur
         child: Container(
-          width: double.infinity,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+           shape: BoxShape.circle,
             color: Colors.white.withOpacity(0.01),
             border: Border.all(
               color: Colors.white.withOpacity(0.25),

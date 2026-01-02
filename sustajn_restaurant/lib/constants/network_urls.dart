@@ -16,10 +16,11 @@ class NetworkUrls {
   static const REGISTER_USER_KEY = 'data';
 
   static const BASE_URL = "http://35.154.182.218:9090/";
+  static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
-  static const VERIFY_OTP = "notification/forgot-password";
+  static const VERIFY_OTP = "notification/verify-token";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";

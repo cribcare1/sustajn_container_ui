@@ -5,7 +5,6 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import '../common_widgets/filter_Screen.dart';
 import '../constants/number_constants.dart';
 import '../utils/theme_utils.dart';
-import 'borrowed_details_screen.dart';
 import 'borrowed_scan_screen.dart';
 
 class BorrowedHomeScreen extends StatefulWidget {

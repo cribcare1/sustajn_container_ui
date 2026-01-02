@@ -8,7 +8,7 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
             visualDensity: VisualDensity.adaptivePlatformDensity,
-            primaryColor: const Color(0xFF1d4129),
+            primaryColor: const Color(0xFF0f3727),
             secondaryHeaderColor: const Color(0xFFD4AE37),
             //TODO 
             // secondaryHeaderColor: const Color(0xFFe7f7f1),

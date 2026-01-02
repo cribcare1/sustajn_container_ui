@@ -1,6 +1,10 @@
 import 'package:sustajn_restaurant/constants/assets_utils.dart';
+import 'package:sustajn_restaurant/utils/app_permissons.dart';
+import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 
+import 'auth/screens/dashboard_screen.dart';
 import 'constants/imports_util.dart';
+import 'constants/string_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +24,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
+    AppPermissions.handleNotificationPermission();
+    AppPermissions.handleLocationPermission(context);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -48,16 +53,21 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) _controller.forward();
     });
-
-    /// Navigate after splash
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-    });
+    _checkLoginAndNavigate();
   }
-
+  Future<void> _checkLoginAndNavigate() async {
+    bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
+      Strings.IS_LOGGED_IN,
+    );
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => isLoggedIn == true ? DashboardScreen() : LoginScreen(),
+      ),
+    );
+  }
   @override
   void dispose() {
     _controller.dispose();

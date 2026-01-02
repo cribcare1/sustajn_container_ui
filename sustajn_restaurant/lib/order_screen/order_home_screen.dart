@@ -11,7 +11,7 @@ import 'order_screen/order_screen.dart';
 
 
 class OrderHomeScreen extends StatefulWidget {
-  const OrderHomeScreen({Key? key}) : super(key: key);
+  const OrderHomeScreen({super.key});
 
   @override
   State<OrderHomeScreen> createState() => _OrderHomeScreenState();

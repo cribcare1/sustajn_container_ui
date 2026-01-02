@@ -44,6 +44,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
+  var themeData = CustomTheme.getTheme(true);
 
   @override
   void initState() {
@@ -96,6 +97,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    double height = MediaQuery.sizeOf(context).height;
 
     return SafeArea(
       top: false,bottom: true,
@@ -117,68 +119,82 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                    Center(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(60),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            useSafeArea: true,
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(16),
-                              ),
-                            ),
-                            builder: (_) => SafeArea(
-                              child: Padding(
-                                padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.camera),
-                                      title: const Text("Camera"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        pickImage(ImageSource.camera);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("Gallery"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        pickImage(ImageSource.gallery);
-                                      },
-                                    ),],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Constant.gold,
-                          backgroundImage:
-                          selectedImage != null ? FileImage(selectedImage!) : null,
-                          child: selectedImage == null
-                              ? Icon(
-                            Icons.person,
-                            size: 50,
-                            color: theme.primaryColor,
-                          )
-                              : null,
-                        ),
+                    // Center(
+                    //   child: InkWell(
+                    //     borderRadius: BorderRadius.circular(60),
+                    //     onTap: () {
+                    //       showModalBottomSheet(
+                    //         context: context,
+                    //         useSafeArea: true,
+                    //         isScrollControlled: true,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //           BorderRadius.vertical(top: Radius.circular(16),
+                    //           ),
+                    //         ),
+                    //         builder: (_) => SafeArea(
+                    //           child: Padding(
+                    //             padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                    //             child: Column(
+                    //               mainAxisSize: MainAxisSize.min,
+                    //               children: [
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.camera),
+                    //                   title: const Text("Camera"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.camera);
+                    //                   },
+                    //                 ),
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.photo),
+                    //                   title: const Text("Gallery"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.gallery);
+                    //                   },
+                    //                 ),],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: CircleAvatar(
+                    //       radius: 50,
+                    //       backgroundColor: Constant.gold,
+                    //       backgroundImage:
+                    //       selectedImage != null ? FileImage(selectedImage!) : null,
+                    //       child: selectedImage == null
+                    //           ? Icon(
+                    //         Icons.person,
+                    //         size: 50,
+                    //         color: theme.primaryColor,
+                    //       )
+                    //           : null,
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    Text(
+                      Strings.SIGN_UP,
+                      style: themeData?.textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: Constant.CONTAINER_SIZE_22,
+                          color: Colors.white
                       ),
                     ),
-
+                    SizedBox(height: height * 0.005),
+                    Text(
+                      Strings.SIGN_UP_TTITLE,
+                      style: themeData?.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                      ),
+                    ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
-
                     _buildTextField(
                       context,
                       controller: restaurantCtrl,
-                      hint: 'Full Name',
+                      hint: Strings.FULL_NAME,
                       validator: (v) {
                         if (v!.isEmpty) return "Restaurant name required";
                         if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
@@ -193,6 +209,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       controller: emailCtrl,
                       hint: Strings.EMAIL,
                       keyboard: TextInputType.emailAddress,
+
                       validator: (v) {
                         if (v!.isEmpty) return "Email required";
                         if (!RegExp(
@@ -286,7 +303,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            if (!_validateImage()) return;
+                            // if (!_validateImage()) return;
 
                             final registrationData = RegistrationData(
                               fullName: restaurantCtrl.text,
