@@ -273,7 +273,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              _getNetworkData(authState);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(

@@ -88,9 +88,13 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
       var image = params[Strings.IMAGE];
       Utils.printLog("partUrl===$partUrl");
       var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
-      if (responseData.status != null && responseData.status!.isNotEmpty) {
+      if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status == Strings.SUCCESS) {
         registrationState.setIsLoading(false);
-        Utils.navigateToPushScreen(registrationState.context,
+        if(registrationState.context.mounted) {
+          showCustomSnackBar(context: registrationState.context,
+              message: 'Account created successfully', color:Colors.green);
+        }
+        NavUtil.pushAndRemoveAll(
         LoginScreen());
       }else{
         Utils.showToast(responseData.message!);

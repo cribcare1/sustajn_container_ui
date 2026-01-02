@@ -98,7 +98,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
 
   bool _validateImage() {
     if (selectedImage == null) {
-      Utils.showToast("Please select a profile image");
+      showCustomSnackBar(
+        context: context,
+        message: 'Please select a porfile image',
+        color: Colors.green,
+      );
       return false;
     }
     return true;
