@@ -1,12 +1,13 @@
-
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sustajn_customer/utils/app_permissions.dart';
+import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 
+import 'auth/dashboard_screen/dashboard_screen.dart';
+import 'auth/dashboard_screen/home_screen.dart';
 import 'auth/screens/login_screen.dart';
-import 'constants/app_utils.dart';
+import 'constants/assets_utils.dart';
 import 'constants/number_constants.dart';
+import 'constants/string_utils.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,8 +16,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>   with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   late Animation<Offset> _logoMoveUpAnimation;
@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
+    AppPermissions.handleNotificationPermission();
+    AppPermissions.handleLocationPermission(context);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -54,22 +55,27 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) _controller.forward();
     });
-
-    /// Navigate after splash
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-    });
+    _checkLoginAndNavigate();
   }
 
+  Future<void> _checkLoginAndNavigate() async {
+    bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
+      Strings.IS_LOGGED_IN,
+    );
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => isLoggedIn == true ? HomeScreen() : LoginScreen(),
+      ),
+    );
+  }
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../constants/number_constants.dart';
+
 class QrCodeScanner extends StatefulWidget {
   const QrCodeScanner({super.key});
 
@@ -71,12 +73,12 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){Navigator.pop(context);}
-            , icon: Icon(Icons.arrow_back,color: Colors.white)),
-        backgroundColor: Colors.green,
+            , icon: Icon(Icons.keyboard_arrow_left,color: Colors.white)),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           "QR Scanner",
-          style: TextStyle(color: Colors.white),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -133,10 +135,17 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        onPressed: () => controller.switchCamera(),
-        child: const Icon(Icons.flip_camera_android,color: Colors.white,),
+      floatingActionButton: InkWell(
+        onTap: () => controller.switchCamera(),
+        child:Container(
+          height: 60,
+          width: 60,
+          decoration: const BoxDecoration(
+            color: Constant.gold,
+            shape: BoxShape.circle,
+          ),
+          child:  Icon(Icons.flip_camera_android, color: Theme.of(context).scaffoldBackgroundColor, size: 30),
+        ),
       ),
     );
   }

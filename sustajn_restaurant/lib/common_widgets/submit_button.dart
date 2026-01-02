@@ -22,9 +22,10 @@ class SubmitButton extends StatelessWidget {
         backgroundColor: const Color(0xFFD1AE31), // Gold color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.white)
         ),
         elevation: 0,
-        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
+        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12,horizontal: Constant.CONTAINER_SIZE_10),
       ),
       child: Text(
         rightText!,

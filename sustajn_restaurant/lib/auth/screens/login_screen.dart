@@ -168,7 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     },
                     child: Text(
                       Strings.FORGOT_PASSWORD,
-                      style: themeData!.textTheme.titleSmall!.copyWith(
+                      style: themeData.textTheme.titleSmall!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
@@ -176,15 +176,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: height * 0.02),
-
                 authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                     width: double.infinity,
                     child:SubmitButton(onRightTap: (){
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=> DashboardScreen()));
-                      // if (_formKey.currentState!.validate()) {
-                      //   _getNetworkData(authState);
-                      // }
+                      if (_formKey.currentState!.validate()) {
+                        _getNetworkData(authState);
+                      }
                     },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),

@@ -46,135 +46,162 @@ class _SearchRestaurantScreenState
           style: theme!.textTheme.titleMedium!.copyWith(color: Constant.white),
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: CustomTheme.searchField(
-                searchController,
-                'Search by restaurant name',
-              ),
-            ),
-
-            Container(
-              height: 260,
-              width: double.infinity,
-              color: Colors.grey.shade300,
-              alignment: Alignment.center,
-              child: Stack(
-                children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: state.position!,
-                      zoom: 17,
-                    ),
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                    zoomControlsEnabled: false,
-                    compassEnabled: true,
-                    onMapCreated: (controller) {
-                      _controller.complete(controller);
-                    },
-                    onCameraIdle: () async {
-                      final controller = await _controller.future;
-                      final bounds = await controller.getVisibleRegion();
-
-                      final center = LatLng(
-                        (bounds.northeast.latitude +
-                                bounds.southwest.latitude) /
-                            2,
-                        (bounds.northeast.longitude +
-                                bounds.southwest.longitude) /
-                            2,
-                      );
-
-                      ref
-                          .read(locationProvider.notifier)
-                          .updatePosition(center);
-                    },
+      body: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                keyboardDismissBehavior:
+                ScrollViewKeyboardDismissBehavior.onDrag,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
                   ),
-
-                   const Center(
-                    child: Icon(
-                      Icons.location_pin,
-                      size: 42,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: theme!.secondaryHeaderColor),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 14,
-                  ),
-                ),
-                icon: Icon(
-                  Icons.my_location,
-                  color: theme!.secondaryHeaderColor,
-                ),
-                label: Text(
-                  'Use Current Location',
-                  style: TextStyle(
-                    color: theme!.secondaryHeaderColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                onPressed: () {},
-              ),
-            ),
-
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 8),
-                      Text(
-                        'Nearby Restaurants',
-                        style: theme!.textTheme.titleLarge!.copyWith(
-                          color: Constant.white,
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          child: CustomTheme.searchField(
+                            searchController,
+                            'Search by restaurant name',
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 12),
 
-                      RestaurantTile(
-                        name: 'Dragonfly Dubai',
-                        distance: '1km',
-                        address:
-                            'The Lana Promenade, Dorchester Collection, Marasi...',
-                      ),
-                      RestaurantTile(
-                        name: 'Firelake Grill House',
-                        distance: '5km',
-                        address:
-                            'Radisson Blu Hotel Dubai Waterfront, Marasi Drive...',
-                      ),
-                      RestaurantTile(
-                        name: 'Hakoora Dubai',
-                        distance: '9km',
-                        address: 'Yansoon 9, Downtown Dubai, Dubai',
-                      ),
-                    ],
+                        /// Map
+                        Container(
+                          height: 260,
+                          width: double.infinity,
+                          color: Colors.grey.shade300,
+                          alignment: Alignment.center,
+                          child: Stack(
+                            children: [
+                              GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: state.position!,
+                                  zoom: 17,
+                                ),
+                                myLocationEnabled: true,
+                                myLocationButtonEnabled: true,
+                                zoomControlsEnabled: false,
+                                compassEnabled: true,
+                                onMapCreated: (controller) {
+                                  _controller.complete(controller);
+                                },
+                                onCameraIdle: () async {
+                                  final controller =
+                                  await _controller.future;
+                                  final bounds =
+                                  await controller.getVisibleRegion();
+
+                                  final center = LatLng(
+                                    (bounds.northeast.latitude +
+                                        bounds.southwest.latitude) /
+                                        2,
+                                    (bounds.northeast.longitude +
+                                        bounds.southwest.longitude) /
+                                        2,
+                                  );
+
+                                  ref
+                                      .read(locationProvider.notifier)
+                                      .updatePosition(center);
+                                },
+                              ),
+                              const Center(
+                                child: Icon(
+                                  Icons.location_pin,
+                                  size: 42,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// Use current location
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.all(16),
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                  color: theme!.secondaryHeaderColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 14,
+                              ),
+                            ),
+                            icon: Icon(
+                              Icons.my_location,
+                              color: theme!.secondaryHeaderColor,
+                            ),
+                            label: Text(
+                              'Use Current Location',
+                              style: TextStyle(
+                                color: theme!.secondaryHeaderColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            onPressed: () {},
+                          ),
+                        ),
+
+                        /// Restaurant list
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Nearby Restaurants',
+                                    style: theme!.textTheme.titleLarge!
+                                        .copyWith(
+                                      color: Constant.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  RestaurantTile(
+                                    name: 'Dragonfly Dubai',
+                                    distance: '1km',
+                                    address:
+                                    'The Lana Promenade...',
+                                  ),
+                                  RestaurantTile(
+                                    name: 'Firelake Grill House',
+                                    distance: '5km',
+                                    address:
+                                    'Radisson Blu...',
+                                  ),
+                                  RestaurantTile(
+                                    name: 'Hakoora Dubai',
+                                    distance: '9km',
+                                    address:
+                                    'Yansoon 9...',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
       ),
     );

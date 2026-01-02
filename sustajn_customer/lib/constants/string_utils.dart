@@ -31,9 +31,11 @@ class Strings {
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
 
-  ///
+  //Sign Up & Login
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
+  static const String FULL_NAME = "Full Name*";
+
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
   static const String APPROVED_STATUS = 'Approved';
@@ -118,6 +120,7 @@ class Strings {
   static const RESET_PASSWORD = 'Reset Password';
   static const WELCOME = 'Welcome';
   static const LOGIN_YOUR_ACC = 'Login to your account';
+  static const String SIGN_UP_TTITLE = "Please provide your details below";
   static const FORGOT_PASSWORD = 'Forgot Password?';
   static const DONT_HAVE_ACC = "Don't have an account ?";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
