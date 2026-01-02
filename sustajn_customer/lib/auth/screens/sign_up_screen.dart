@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
+import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -96,7 +97,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final signUpState = ref.watch(signUpNotifier);
     double height = MediaQuery.sizeOf(context).height;
 
     return SafeArea(
@@ -269,28 +270,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         return null;
                       },
                     ),
-                    // InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                    //       if(value != null){
-                    //         addressCtrl.text = value['address'];
-                    //         lat=value['lat'];
-                    //         long=value['lng'];
-                    //       }
-                    //
-                    //     });
-                    //   },
-                    //   child: IgnorePointer(
-                    //     child: _buildTextField(
-                    //       readOnly: true,
-                    //       context,
-                    //       controller: addressCtrl,
-                    //       hint: Strings.RESTAURANT_ADDRESS,
-                    //       validator: (v) =>
-                    //       v!.isEmpty ? "Restaurant address required" : null,
-                    //     ),
-                    //   ),
-                    // ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                          if(value != null){
+                            addressCtrl.text = value['address'];
+                            lat=value['lat'];
+                            long=value['lng'];
+                          }
+
+                        });
+                      },
+                      child: IgnorePointer(
+                        child: _buildTextField(
+                          readOnly: true,
+                          context,
+                          controller: addressCtrl,
+                          hint: Strings.RESTAURANT_ADDRESS,
+                          validator: (v) =>
+                          v!.isEmpty ? "Restaurant address required" : null,
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: double.infinity,
                       height: 48,
@@ -316,9 +317,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               latitude: lat,
                               longitude: long,
                             );
-                            _getNetworkDataVerify(authState);
-                            Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
-                            registrationData: registrationData,));
+                            signUpState.setRegistrationData(registrationData);
+                            _getNetworkDataVerify(signUpState);
+                            // Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
+                            // registrationData: registrationData, email: emailCtrl.text));
                           }
                         },
                         child: Text(
@@ -363,7 +365,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
               ),
             ),
-            if(authState.isLoading)
+            if(signUpState.isLoading)
             Center(
               child: CircularProgressIndicator(),
             )
@@ -466,7 +468,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-              ref.read(verifyOtpProvider({"email": emailCtrl.text,}));
+              registrationState.setEmail(emailCtrl.text);
+              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text,}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
