@@ -185,4 +185,9 @@ class Strings {
   static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
 
   static const String MY_QR_CODE = 'My QR Code';
+
+  static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
+  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your\n account with the Freemium plan.";
+  static const String CANCEL = "Cancel";
+  static const String CREATE = "Create";
 }

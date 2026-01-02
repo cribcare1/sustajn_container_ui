@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/profile_screen/profile_screen.dart';
+import 'package:sustajn_customer/utils/utils.dart';
 import '../../../constants/number_constants.dart';
 // import '../../../containers/customer_profile.dart';
+import '../../../notification/notification_screen.dart';
 import '../../../utils/nav_utils.dart';
 import '../../payment_type/payment_screen.dart';
 import '../../screens/map_screen.dart';
@@ -53,6 +55,7 @@ class HeaderWidget extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
               onTap: () {
+                Utils.navigateToPushScreen(context, NotificationScreen());
               },
               child: Container(
                 padding: EdgeInsets.all(Constant.SIZE_08),
