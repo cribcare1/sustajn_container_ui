@@ -12,6 +12,7 @@ import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
 import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
+import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
@@ -193,7 +194,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
       if(registrationState.isForgotPassword){
         Utils.navigateToPushScreen(registrationState.context, ResetPasswordScreen());
       }else {
-        Utils.navigateToPushScreen(registrationState.context, BankDetails());
+        Utils.navigateToPushScreen(registrationState.context, PaymentTypeScreen());
       }
     } else {
       if(!registrationState.context.mounted) return;
