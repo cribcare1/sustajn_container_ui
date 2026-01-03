@@ -8,15 +8,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../common_widgets/submit_button.dart';
+
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../main.dart';
 import '../../models/register_data.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import 'login_screen.dart';
-import 'map_screen.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
@@ -28,7 +29,7 @@ class SignUpScreen extends ConsumerStatefulWidget {
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final _formKey = GlobalKey<FormState>();
 
   final restaurantCtrl = TextEditingController();
@@ -61,6 +62,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
+
     restaurantCtrl.dispose();
     emailCtrl.dispose();
     mobileCtrl.dispose();
@@ -68,6 +71,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     confirmPasswordCtrl.dispose();
     addressCtrl.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void didPopNext() {
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -88,7 +102,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   bool _validateImage() {
     if (selectedImage == null) {
-      Utils.showToast("Please select a profile image");
+      showCustomSnackBar(
+        context: context,
+        message: 'Please select a porfile image',
+        color: Colors.green,
+      );
       return false;
     }
     return true;
@@ -191,7 +209,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           color: Colors.white,
                       ),
                     ),
+
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
+
                     _buildTextField(
                       context,
                       controller: restaurantCtrl,

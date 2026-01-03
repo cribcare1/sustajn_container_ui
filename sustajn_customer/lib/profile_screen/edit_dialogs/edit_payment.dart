@@ -5,24 +5,23 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/models/register_data.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
+import '../../auth/payment_type/add_card_dialog.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
-import '../screens/subscription_screen.dart';
-import 'add_card_dialog.dart';
 
-class PaymentTypeScreen extends ConsumerStatefulWidget {
+class EditPaymentTypeScreen extends ConsumerStatefulWidget {
   final RegistrationData? registrationData;
-  const PaymentTypeScreen({super.key, this.registrationData});
+  const EditPaymentTypeScreen({super.key, this.registrationData});
 
   @override
-  ConsumerState<PaymentTypeScreen> createState() => _PaymentTypeScreenState();
+  ConsumerState<EditPaymentTypeScreen> createState() => _PaymentTypeScreenState();
 }
 
-class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
+class _PaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +74,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   }
 
-
   Widget _sectionTitle(
       ThemeData theme, {
         String? title,
@@ -118,9 +116,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-
-
-
   Widget _addCardButton(BuildContext context, ThemeData theme) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -136,7 +131,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
+              color: Constant.grey.withOpacity(0.3)
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           color: Constant.grey.withOpacity(0.1),
@@ -185,7 +180,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Constant.grey.withOpacity(0.3)
+            color: Constant.grey.withOpacity(0.3)
         ),
         color:Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -231,12 +226,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
-          ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+        ),
+        enabledBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        focusedBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
       ),
     );
   }
@@ -246,18 +241,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       BuildContext context,
       var authState,
       ) {
-    if (authState.isLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateToPushScreen(context, SubscriptinonScreen());
-              _getNetworkData(authState);
             },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
@@ -278,9 +267,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {
-              _getNetworkData(authState);
-            },
+            onPressed: () {},
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
@@ -291,7 +278,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             ),
             child: Text(
               'Verify & Continue',
-
               style: theme.textTheme.labelLarge?.copyWith(
                 color: theme.primaryColor,
               ),
@@ -303,54 +289,4 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
 
-  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
-    final cleanedMap = <String, dynamic>{};
-
-    map.forEach((key, value) {
-      if (value == null) return;
-
-      if (value is Map) {
-        final nested = removeNullAndEmpty(
-          Map<String, dynamic>.from(value),
-        );
-        if (nested.isNotEmpty) {
-          cleanedMap[key] = nested;
-        }
-      } else if (value.toString().trim().isNotEmpty) {
-        cleanedMap[key] = value;
-      }
-    });
-
-    return cleanedMap;
-  }
-
-  _getNetworkData(var registrationState) async {
-    try {
-      if(registrationState.isValid) {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              final rawBody =
-              Map<String, dynamic>.from(widget.registrationData!.toApiBody());
-
-              final body = removeNullAndEmpty(rawBody);
-              // final Map<String, dynamic> body =
-              //           Map<String, dynamic>.from(widget.registrationData!.toApiBody());
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, widget.registrationData?.profileImage);
-              ref.read(registerProvider(params));
-            } else {
-              registrationState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
-        });
-      }
-    } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
-    }
-  }
 }

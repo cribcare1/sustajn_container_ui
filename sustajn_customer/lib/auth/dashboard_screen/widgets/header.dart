@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/utils/utils.dart';
+import 'package:sustajn_customer/search_resturant_screen/search_resturant_screen.dart';
 import '../../../constants/number_constants.dart';
 // import '../../../containers/customer_profile.dart';
 import '../../../notification/notification_screen.dart';
@@ -50,9 +51,23 @@ class HeaderWidget extends StatelessWidget {
               ],
             ),
           ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
+          InkWell(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
+            onTap: () {
+              NavUtil.navigateToPushScreen(context, SearchRestaurantScreen());
+            },
+            child: Container(
+              padding: EdgeInsets.all(Constant.SIZE_08),
+              decoration: BoxDecoration(
+                color: Constant.grey.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(color: Constant.grey.withOpacity(0.2)),
+              ),
+              child: Icon(Icons.search, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
+            ),
+          ),
+            SizedBox(width: Constant.SIZE_10,),
+            InkWell(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
               onTap: () {
                 Utils.navigateToPushScreen(context, NotificationScreen());
@@ -60,8 +75,9 @@ class HeaderWidget extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(Constant.SIZE_08),
                 decoration: BoxDecoration(
+                  color: Constant.grey.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  border: Border.all(color:theme.scaffoldBackgroundColor.withOpacity(0.3)),
+                  border: Border.all(color: Constant.grey.withOpacity(0.2)),
                 ),
                 child: Icon(Icons.notifications_none, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
               ),

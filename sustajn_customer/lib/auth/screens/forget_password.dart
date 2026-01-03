@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
 
+import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
@@ -16,9 +16,27 @@ class ForgetPasswordScreen extends ConsumerStatefulWidget {
   ConsumerState<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
 
 
   @override
@@ -60,29 +78,26 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                 SizedBox(height: Constant.CONTAINER_SIZE_40),
                 TextFormField(
                   controller: _emailController,
-                  cursorColor: Colors.white,
-                  keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    hintText: Strings.EMAIL_ID,
-                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70,
-                      fontSize: Constant.LABEL_TEXT_SIZE_15,
-                    ),
+                    hintText: Strings.EMAIL,
+                    hintStyle: TextStyle(color: Colors.white70),
                     filled: true,
                     fillColor: theme.primaryColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        borderSide: BorderSide(color: Constant.grey),
-                      ),
-                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey),
+                    ),
+                    enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
                       return 'Enter your email ID';
                     }
-                    if (!v.contains('@gmail.com')) {
+                    if (!v.contains('@')) {
                       return 'Enter a valid Gmail ID';
                     }
                     return null;

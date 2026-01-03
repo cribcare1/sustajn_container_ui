@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -12,11 +11,11 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
 class BankDetails extends ConsumerStatefulWidget {
-  // final RegistrationData registrationData;
+  final RegistrationData? registrationData;
 
   const BankDetails({
     super.key,
-    // required this.registrationData,
+     this.registrationData,
   });
 
   @override
@@ -30,7 +29,6 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
   final confirmAccController = TextEditingController();
   final taxController = TextEditingController();
   bool isLoading = false;
-
 
   @override
   void initState() {
@@ -54,8 +52,8 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var theme = CustomTheme.getTheme(true);
-    final signUpState = ref.watch(signUpNotifier);
-    RegistrationData? registrationData = signUpState.registrationData;
+    final authState = ref.watch(authNotifierProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
@@ -236,12 +234,13 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              signUpState.registrationData?.bankName = bankNameController.text.trim();
-                              signUpState.registrationData?.accountNumber = accNoController.text.trim();
-                              signUpState.registrationData?.taxNumber = taxController.text.trim();
+                              widget.registrationData?.bankName = bankNameController.text.trim();
+                              widget.registrationData?.accountNumber = accNoController.text.trim();
+                              widget.registrationData?.taxNumber = taxController.text.trim();
 
-                              _getNetworkData(signUpState);
+
                             }
+                            _getNetworkData(authState);
 
                           },
                           child: Text(
@@ -270,6 +269,29 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     );
   }
 
+  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
+    final cleanedMap = <String, dynamic>{};
+
+    map.forEach((key, value) {
+      if (value == null) return;
+
+      if (value is Map) {
+        final nested = removeNullAndEmpty(
+          Map<String, dynamic>.from(value),
+        );
+        if (nested.isNotEmpty) {
+          cleanedMap[key] = nested;
+        }
+      } else if (value.toString().trim().isNotEmpty) {
+        cleanedMap[key] = value;
+      }
+    });
+
+    return cleanedMap;
+  }
+
+
+
 
   _getNetworkData(var registrationState) async {
     try {
@@ -279,10 +301,17 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
           setState(() {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
+              final rawBody =
+              Map<String, dynamic>.from(widget.registrationData!.toApiBody());
+
+              final body = removeNullAndEmpty(rawBody);
+              // final Map<String, dynamic> body =
+              //           Map<String, dynamic>.from(widget.registrationData!.toApiBody());
               final Map<String, dynamic> body =
                         Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
+                  Strings.DATA, widget.registrationData?.profileImage);
                   Strings.DATA, registrationState.registrationData.profileImage);
               ref.read(registerProvider(params));
             } else {

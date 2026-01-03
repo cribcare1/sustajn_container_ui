@@ -170,7 +170,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               visible ? Icons.visibility : Icons.visibility_off,
               color: Colors.white70,
             ),
-            onPressed: toggleVisibility,
           ),
         ),
       ),

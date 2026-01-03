@@ -19,7 +19,7 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
   void initState() {
     super.initState();
 
-    final String restaurantName = 'Marina Sky Dine';
+    final String restaurantName = 'User';
 
     _controller.text = restaurantName;
 
@@ -37,7 +37,7 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Restaurant name cannot be empty';
+      return 'User name cannot be empty';
     }
 
     final RegExp regex = RegExp(r'^[a-zA-Z0-9 ]+$');
@@ -73,12 +73,11 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                /// HEADER
                 Row(
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Restaurant Name',
+                        'Edit Name',
                         style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.w600,
@@ -113,7 +112,7 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
                   ),
                   cursorColor: Colors.white70,
                   decoration: InputDecoration(
-                    labelText: 'Restaurant Name',
+                    labelText: 'Full Name',
                     labelStyle: TextStyle(color: Colors.white70),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: EdgeInsets.symmetric(

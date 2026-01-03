@@ -14,6 +14,7 @@ import '../../provider/login_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/shared_preference_utils.dart';
 import '../../utils/utils.dart';
+import '../payment_type/payment_screen.dart';
 import 'bank_details_screen.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
@@ -30,6 +31,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     4,
         (index) => TextEditingController(),
   );
+
+  int seconds = 120;
 
   @override
   void initState() {
@@ -72,20 +75,28 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
 
-      body: WillPopScope(
-
-        onWillPop: () async {
-          final shouldGoBack = await Utils.displayDialog(
-            context,
-            Icons.warning_amber,
-            Strings.GO_BACK,
-            Strings.VERIFIED_EMAIL,
-            Strings.STAY_ON_THIS_PAGE,
-          );
+        body: WillPopScope(
+          onWillPop: () async {
+            final shouldGoBack = await displayDialog(
+              context,
+              Icons.warning_amber,
+              Strings.GO_BACK,
+              Strings.VERIFIED_EMAIL,
+              Strings.STAY_ON_THIS_PAGE,
+            );
 
           if (shouldGoBack) {
             Navigator.pop(context);
           }
+            if (shouldGoBack) {
+              if (widget.previousScreen == "signUp") {
+                Navigator.pop(context, widget.registrationData);
+              }
+
+              else if (widget.previousScreen == "forgotPassword") {
+                Navigator.pop(context, widget.email);
+              }
+            }
 
           return false;
         },

@@ -11,10 +11,13 @@ import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
+import 'edit_dialogs/edit_payment.dart';
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
 import 'edit_dialogs/freemium_bottom_sheet.dart';
 import 'history_screen/history_home_screen.dart';
+
+
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -49,6 +52,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       isLoading = false;
     });
   }
+
 
   void _handleItemTap(int index, BuildContext context) {
     switch (index) {
@@ -87,6 +91,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   void _showContactDialog(BuildContext context) {
+  void _showPaymentScreen(BuildContext context){
+    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+  }
+
+  void _showContactDialog(BuildContext context){
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -102,6 +111,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       isScrollControlled: true,
       builder: (_) => const FreemiumBottomSheet(),
     );
+
   }
 
   void _showQRDialog(BuildContext context) {
@@ -123,7 +133,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
@@ -210,9 +219,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             color: theme.primaryColor,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
                   SizedBox(height: h * 0.015),
 
@@ -318,6 +326,100 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ],
                     ),
                   ),
+                    SizedBox(height: h * 0.015),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          loginResponse!.fullName ?? "",
+                          style: TextStyle(
+                            fontSize: w * 0.055,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white
+                          ),
+                        ),
+                        SizedBox(width: w * 0.015),
+                        GestureDetector(
+                            onTap: (){
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const EditUserNameDialog(),
+                              );
+
+
+                            },
+                            child: Icon(Icons.edit_outlined,
+                                size: w * 0.045, color: Colors.white)),
+                      ],
+                    ),
+                    SizedBox(height: h * 0.03),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(horizontal: w * 0.05),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: w * 0.04,
+                        vertical: h * 0.02,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Constant.grey.withOpacity(0.2),
+                        border: Border.all(
+                          color: Constant.grey.withOpacity(0.1)
+                        ),
+                        borderRadius: BorderRadius.circular(w * 0.04),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _detailItem(
+                              icon: Icons.email_outlined,
+                              title: "Email",
+                              value: loginResponse!.userName?? "",
+                              w: w,
+                              showEdit: false,
+                              theme: theme,
+                              ontap: (){}
+                          ),
+                           Divider(color: Colors.grey.withOpacity(0.3)),
+                          _detailItem(
+                              icon: Icons.location_on_outlined,
+                              title: "Address",
+                              value:
+                              "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
+                              w: w,
+                              showEdit: true,
+                              theme: theme,
+                              ontap: (){
+                                NavUtil.navigateToPushScreen(context, MapScreen());
+                              }
+                          ),
+                           Divider(color: Constant.grey.withOpacity(0.3),),
+                          _detailItem(
+                              icon: Icons.phone_outlined,
+                              title: "Mobile Number",
+                              value: "980765432",
+                              w: w,
+                              showEdit: true,
+                              theme: theme,
+                              ontap: (){
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) => const EditMobileNumberDialog(),
+                                );
+
+                              }
+                          ),
+                        ],
+                      ),
+                    ),
 
                   /// Menu List
                   Container(
@@ -396,6 +498,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                     ),
+
+
+
                   ],
                 ),
               ],
@@ -430,6 +535,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               SizedBox(height: w * 0.01),
               Text(
                 value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: w * 0.040,
                   fontWeight: FontWeight.w500,
@@ -446,4 +553,5 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ],
     );
   }
+
 }
