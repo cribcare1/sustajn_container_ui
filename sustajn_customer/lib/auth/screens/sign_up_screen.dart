@@ -178,7 +178,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       _buildTextField(
                         context,
                         controller: restaurantCtrl,
-                        hint: 'Full Name',
+                        hint: Strings.FULL_NAME,
                         validator: (v) {
                           if (v!.isEmpty) return "Restaurant name required";
                           if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
@@ -191,7 +191,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       _buildTextField(
                         context,
                         controller: emailCtrl,
-                        hint: Strings.EMAIL,
+                        hint: Strings.EMAIL_ID,
                         keyboard: TextInputType.emailAddress,
                         validator: (v) {
                           if (v!.isEmpty) return "Email required";

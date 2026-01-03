@@ -60,7 +60,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white70),
                   decoration: InputDecoration(
-                    hintText: Strings.EMAIL,
+                    hintText: Strings.EMAIL_ID,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
                       fontSize: Constant.LABEL_TEXT_SIZE_15,

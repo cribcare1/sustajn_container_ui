@@ -69,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     style: TextStyle(color: Colors.white70),
                     cursorColor: Colors.white70,
                     decoration: InputDecoration(
-                        hintText: Strings.EMAIL,
+                        hintText: Strings.EMAIL_ID,
                         filled: true,
                         fillColor: themeData!.primaryColor,
                         hintStyle: TextStyle(color: Colors.white70),
