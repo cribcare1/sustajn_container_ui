@@ -205,22 +205,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       },
                     ),
 
-                    _buildTextField(
-                      context,
-                      controller: emailCtrl,
-                      hint: Strings.EMAIL,
-                      keyboard: TextInputType.emailAddress,
-
-                      validator: (v) {
-                        if (v!.isEmpty) return "Email required";
-                        if (!RegExp(
-                            r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
-                            .hasMatch(v)) {
-                          return "Enter valid email";
-                        }
-                        return null;
-                      },
-                    ),
+                      _buildTextField(
+                        context,
+                        controller: emailCtrl,
+                        hint: Strings.EMAIL_ID,
+                        keyboard: TextInputType.emailAddress,
+                        validator: (v) {
+                          if (v!.isEmpty) return "Email required";
+                          if (!RegExp(
+                              r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
+                              .hasMatch(v)) {
+                            return "Enter valid email";
+                          }
+                          return null;
+                        },
+                      ),
 
                     _buildTextField(
                       context,

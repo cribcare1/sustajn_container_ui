@@ -234,14 +234,9 @@ class PaymentTypeScreen extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              // Navigator.push(
-              //   context!,
-              //   MaterialPageRoute(
-              //     builder: (_) => SubscriptionScreen(),
-              //   ),
-              // );
-              // NavUtil.navigateToWithReplacement(context, SubscriptionScreen());
+              NavUtil.navigateToPushScreen(context, SubscriptinonScreen());
             },
+
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(

@@ -56,7 +56,7 @@ class PlandetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> TermsconditionScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> TermsconditionScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Constant.gold,

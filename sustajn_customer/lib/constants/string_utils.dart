@@ -108,10 +108,10 @@ class Strings {
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number';
-  static const EMAIL = 'Email';
-  static const PASSWORD = 'Password';
-  static const CONFIRM_PASSWORD = 'Confirm Password';
+  static const MOBILE_NUMBER = 'Mobile Number*';
+  static const EMAIL_ID = 'Email ID*';
+  static const PASSWORD = 'Password*';
+  static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verification';
   static const ALREADY_HAVE_ACC = 'Already have an account?';
@@ -188,4 +188,9 @@ class Strings {
   static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
 
   static const String MY_QR_CODE = 'My QR Code';
+
+  static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
+  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your\n account with the Freemium plan.";
+  static const String CANCEL = "Cancel";
+  static const String CREATE = "Create";
 }
