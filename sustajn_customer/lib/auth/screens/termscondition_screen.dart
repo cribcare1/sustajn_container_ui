@@ -1,12 +1,33 @@
-import 'package:sustajn_customer/constants/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:sustajn_customer/constants/string_utils.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/utils.dart';
 
-
-class TermsconditionScreen extends StatelessWidget {
+class TermsconditionScreen extends StatefulWidget {
   const TermsconditionScreen({super.key});
+
+  @override
+  State<TermsconditionScreen> createState() =>
+      _TermsconditionScreenState();
+}
+
+class _TermsconditionScreenState extends State<TermsconditionScreen> {
+
+  late Future<String> _termsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsFuture = _loadTermsFromAssets();
+  }
+
+  Future<String> _loadTermsFromAssets() async {
+    return await rootBundle
+        .loadString('assets/note/terms_condition.txt');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +68,35 @@ class TermsconditionScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                   horizontal: Constant.CONTAINER_SIZE_20,
                 ),
-                child: Text(
-                  _termsText,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    height: Constant.CONTAINER_SIZE_1,
-                  ),
+                child: FutureBuilder<String>(
+                  future: _termsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return const Text(
+                        "Failed to load terms & conditions",
+                        style: TextStyle(color: Colors.red),
+                      );
+                    }
+
+                    return Text(
+                      snapshot.data ?? '',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                        height: Constant.CONTAINER_SIZE_1,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
+
 
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -99,31 +140,3 @@ class TermsconditionScreen extends StatelessWidget {
     );
   }
 }
-
-const String _termsText =
-    "Lorem ipsum dolor sit amet consectetur. Lacus augue "
-    "suspendisse rhoncus hendrerit ut velit semper. Dignissim sed "
-    "id magna sit varius dui enim lectus. Congue id id duis "
-    "scelerisque. At non sed posuere sem orci. Ipsum et arcu "
-    "lectus vitae ut magna. Risus vitae tellus vivamus mauris"
-    "fringilla eget eu ipsum nisl. Id eget morbi interdum tellus "
-    "egestas aliquam. Dui tempus leo sem habitant. Pulvinar sit "
-    "suscipit aliquet nisl laoreet est."
-    "Ultricies proin amet sagittis mollis. Velit blandit vel eleifend et "
-    "gravida. Varius accumsan pellentesque nam eu. Tincidunt sem"
-    "odio lobortis bibendum fames scelerisque bibendum. Vitae"
-    "porttitor turpis lacus suspendisse est mollis. Id magna aliquet "
-    "pellentesque amet et convallis quis. "
-    "Hac vitae enim orci nunc. Amet amet rutrum a ut nec purus "
-    "tristique ultrices tincidunt. Consequat neque nisl sed laoreet "
-    "cursus diam. Rutrum commodo pellentesque lectus tempor."
-    "Auctor vel aliquam risus cras donec mattis pellentesque. Sed "
-    "sed arcu sollicitudin sem. Etiam tristique fames sagittis"
-    "feugiat a ut rhoncus massa congue. Diam volutpat tincidunt"
-    "rhoncus faucibus condimentum ullamcorper laoreet. Sem"
-    "ipsum risus neque nisi arcu pharetra velit pulvinar maecenas. "
-    "Ac vulputate ultrices amet facilisi ut. Convallis convallis eget "
-    "diam rhoncus nisl in porttitor. Mauris molestie dolor turpis at "
-    "diam. Ac a eget maecenas nibh arcu sit. Sed vel viverra"
-    "vulputate quam purus proin. Id fermentum mauris tellus tellus. "
-    "Tincidunt dui eget.";

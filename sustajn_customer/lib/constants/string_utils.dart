@@ -108,10 +108,10 @@ class Strings {
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number';
-  static const EMAIL = 'Email';
-  static const PASSWORD = 'Password';
-  static const CONFIRM_PASSWORD = 'Confirm Password';
+  static const MOBILE_NUMBER = 'Mobile Number*';
+  static const EMAIL_ID = 'Email ID*';
+  static const PASSWORD = 'Password*';
+  static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verification';
   static const ALREADY_HAVE_ACC = 'Already have an account?';
