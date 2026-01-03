@@ -345,7 +345,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
           ref.read(historyProvider).setIsLoading(true);
           final int year = DateTime.now().year;
 
-          final url = '${NetworkUrls.RETURNED_DATA}userId=1&year=$year';
+          final url = '${NetworkUrls.RETURNED_DATA}userId=${widget.userId}&year=$year';
           Utils.printLog("Fetching URL: $url");
           ref.read(borrowedProvider(url));
         } else {

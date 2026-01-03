@@ -19,10 +19,7 @@ class _CustomBackButtonState extends State<CustomBackButton> {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: () {
-
-          widget.onTap ?? () => Navigator.pop(context);
-      },
+      onTap: widget.onTap ?? () => Navigator.pop(context),
       child: Container(
         width: Constant.CONTAINER_SIZE_50,
         height: Constant.CONTAINER_SIZE_50,

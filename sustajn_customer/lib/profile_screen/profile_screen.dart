@@ -180,7 +180,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               width: 2,
                             ),
                             image: const DecorationImage(
-                              image: NetworkImage(
+                              image:
+                              NetworkImage(
                                 "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
                               ),
                               fit: BoxFit.cover,
