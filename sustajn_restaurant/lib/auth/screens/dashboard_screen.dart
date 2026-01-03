@@ -1,8 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
-import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
+import 'package:sustajn_restaurant/notification/notification_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -133,11 +131,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             SizedBox(width: w * 0.02),
                             Expanded(
-                              child: CircleCardWidget(
-                                child: Icon(
-                                  Icons.notifications_none,
-                                  color: Colors.white70,
-                                  size: Constant.CONTAINER_SIZE_20,
+                              child: InkWell(
+                                onTap: () {
+                                  Utils.navigateToPushScreen(
+                                    context,
+                                    NotificationScreen(),
+                                  );
+                                },
+                                child: CircleCardWidget(
+                                  child: Icon(
+                                    Icons.notifications_none,
+                                    color: Colors.white70,
+                                    size: Constant.CONTAINER_SIZE_20,
+                                  ),
                                 ),
                               ),
                             ),
@@ -409,6 +415,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ],
     );
   }
+
   final List<ChartData> chartData = [
     ChartData('Total', 1000, Colors.greenAccent),
     ChartData('Available', 800, Colors.yellowAccent),
@@ -447,8 +454,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       strokeWidth: 4,
                       // explode: true,
                       explodeOffset: '4%',
-                      dataLabelSettings:
-                      const DataLabelSettings(isVisible: false),
+                      dataLabelSettings: const DataLabelSettings(
+                        isVisible: false,
+                      ),
                     ),
                   ],
                 ),
@@ -530,7 +538,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Text(
             title,
-            style:  TextStyle(color: Colors.white, fontSize: 12,fontWeight: FontWeight.w500),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           Text(
             value,
@@ -544,7 +556,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
 
   void _showFilterPopup(BuildContext context) {
     showModalBottomSheet(
@@ -727,8 +738,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                     damage: selectedValue,
                                   ),
                                 );
-                              }
-                             else if (selectedType == 'LEASE') {
+                              } else if (selectedType == 'LEASE') {
                                 Navigator.pop(context);
                                 Utils.navigateToPushScreen(
                                   context,
@@ -829,4 +839,3 @@ class ChartData {
 
   ChartData(this.label, this.value, this.color);
 }
-
