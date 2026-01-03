@@ -234,7 +234,7 @@ class PaymentTypeScreen extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateToPushScreen(context, SubscriptinonScreen());
+              NavUtil.navigateToPushScreen(context, SubscriptionScreen());
             },
 
             style: OutlinedButton.styleFrom(
