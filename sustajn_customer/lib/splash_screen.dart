@@ -62,12 +62,15 @@ class _SplashScreenState extends State<SplashScreen>   with SingleTickerProvider
     bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
       Strings.IS_LOGGED_IN,
     );
+    int? userId = await SharedPreferenceUtils.getIntValuesSF(
+      Strings.USER_ID,
+    );
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => isLoggedIn == true ? HomeScreen() : LoginScreen(),
+        builder: (_) => isLoggedIn == true ? HomeScreen(userId: userId,) : LoginScreen(),
       ),
     );
   }

@@ -33,7 +33,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     {"name": "QR Code", "icon": Icons.qr_code},
     {"name": "Feedback", "icon": Icons.star_border},
     {"name": "Subscription Plan", "icon": Icons.credit_card},
-    {"name": "Contact Us", "icon": Icons.headset_mic},
+    {"name": "Contact Us","icon": Icons.headset_mic }
   ];
 
   Data? loginResponse;
@@ -86,11 +86,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  void _showPaymentScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
-  }
-
-  void _showContactDialog(BuildContext context) {
   void _showPaymentScreen(BuildContext context){
     NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
   }
@@ -104,7 +99,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  void _showFreemiumSheet(BuildContext context) {
+  void _showFreemiumSheet(BuildContext context){
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -114,16 +109,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   }
 
-  void _showQRDialog(BuildContext context) {
+  void _showQRDialog(BuildContext context){
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => QrDialog(),
+      builder: (_) =>  QrDialog(),
     );
   }
 
-  void _showHistoryScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, HistoryHomeScreen());
+
+
+  void _showHistoryScreen(BuildContext context){
+    NavUtil.navigateToPushScreen(context, HistoryHomeScreen(userId: loginResponse!.userId!,));
   }
 
   @override
@@ -139,193 +136,75 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     final h = size.height;
 
     return SafeArea(
-      top: false,
-      bottom: true,
-      child: Scaffold(
-        backgroundColor: theme?.scaffoldBackgroundColor,
-
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Constant.gold,
-          surfaceTintColor: Constant.gold,
-
-          // ✅ BACK BUTTON ADDED HERE
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            color: theme!.primaryColor,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-
-          title: Text(
-            "My Profile",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: theme.primaryColor,
+        top: false,
+        bottom: true,
+        child: Scaffold(
+          backgroundColor: theme?.scaffoldBackgroundColor,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: Constant.gold,
+            surfaceTintColor: Constant.gold,
+            leading: SizedBox.shrink(),
+            title:  Text(
+              "My Profile",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: theme!.primaryColor,
+              ),
             ),
           ),
-        ),
 
-        body: SingleChildScrollView(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              SizedBox(
-                width: w - (w * 0.34),
-                height: h * 0.30,
-                child: CustomPaint(painter: TopCirclePainter()),
-              ),
-
-              Column(
-                children: [
-                  SizedBox(height: h * 0.035),
-
-                  /// Profile Image
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Container(
-                        height: w * 0.28,
-                        width: w * 0.28,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Constant.gold,
-                            width: 2,
-                          ),
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                                "https://images.unsplash.com/photo-1414235077428-338989a2e8c0"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Utils.showProfilePhotoBottomSheet(context);
-                        },
-                        child: Container(
-                          height: w * 0.09,
-                          width: w * 0.09,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Icon(
-                            Icons.edit_outlined,
-                            size: w * 0.045,
-                            color: theme.primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                  SizedBox(height: h * 0.015),
-
-                  /// Name Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        loginResponse!.fullName ?? "",
-                        style: TextStyle(
-                          fontSize: w * 0.055,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(width: w * 0.015),
-                      GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) =>
-                            const EditUserNameDialog(),
-                          );
-                        },
-                        child: Icon(
-                          Icons.edit_outlined,
-                          size: w * 0.045,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: h * 0.03),
-
-                  /// Details Card
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: w * 0.04,
-                      vertical: h * 0.02,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Constant.grey.withOpacity(0.2),
-                      border: Border.all(
-                        color: Constant.grey.withOpacity(0.1),
-                      ),
-                      borderRadius: BorderRadius.circular(w * 0.04),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: Column(
+          body: SingleChildScrollView(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                SizedBox(
+                  width: w - (w * 0.34),
+                  height: h * 0.30,
+                  child: CustomPaint(painter: TopCirclePainter()),
+                ),
+                Column(
+                  children: [
+                    SizedBox(height: h * 0.035),
+                    Stack(
+                      alignment: Alignment.bottomRight,
                       children: [
-                        _detailItem(
-                          icon: Icons.email_outlined,
-                          title: "Email",
-                          value: loginResponse!.userName ?? "",
-                          w: w,
-                          showEdit: false,
-                          ontap: () {},
+                        Container(
+                          height: w * 0.28,
+                          width: w * 0.28,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Constant.gold,
+                              width: 2,
+                            ),
+                            image: const DecorationImage(
+                              image: NetworkImage(
+                                "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-
-                        Divider(color: Colors.grey.withOpacity(0.3)),
-
-                        _detailItem(
-                          icon: Icons.location_on_outlined,
-                          title: "Address",
-                          value:
-                          "Al Marsa Street 57, Dubai Marina,\nPO Box 32923, Dubai",
-                          w: w,
-                          showEdit: true,
-                          ontap: () {
-                            NavUtil.navigateToPushScreen(
-                                context, MapScreen());
+                        GestureDetector(
+                          onTap: (){
+                            Utils.showProfilePhotoBottomSheet(context);
                           },
-                        ),
-
-                        Divider(color: Constant.grey.withOpacity(0.3)),
-
-                        _detailItem(
-                          icon: Icons.phone_outlined,
-                          title: "Mobile Number",
-                          value: "980765432",
-                          w: w,
-                          showEdit: true,
-                          ontap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) =>
-                              const EditMobileNumberDialog(),
-                            );
-                          },
+                          child: Container(
+                            height: w * 0.09,
+                            width: w * 0.09,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child:
+                            Icon(Icons.edit_outlined, size: w * 0.045, color: theme.primaryColor,),
+                          ),
                         ),
                       ],
                     ),
-                  ),
+
                     SizedBox(height: h * 0.015),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -333,9 +212,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         Text(
                           loginResponse!.fullName ?? "",
                           style: TextStyle(
-                            fontSize: w * 0.055,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white
+                              fontSize: w * 0.055,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white
                           ),
                         ),
                         SizedBox(width: w * 0.015),
@@ -365,7 +244,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       decoration: BoxDecoration(
                         color: Constant.grey.withOpacity(0.2),
                         border: Border.all(
-                          color: Constant.grey.withOpacity(0.1)
+                            color: Constant.grey.withOpacity(0.1)
                         ),
                         borderRadius: BorderRadius.circular(w * 0.04),
                         boxShadow: [
@@ -386,7 +265,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               theme: theme,
                               ontap: (){}
                           ),
-                           Divider(color: Colors.grey.withOpacity(0.3)),
+                          Divider(color: Colors.grey.withOpacity(0.3)),
                           _detailItem(
                               icon: Icons.location_on_outlined,
                               title: "Address",
@@ -399,7 +278,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 NavUtil.navigateToPushScreen(context, MapScreen());
                               }
                           ),
-                           Divider(color: Constant.grey.withOpacity(0.3),),
+                          Divider(color: Constant.grey.withOpacity(0.3),),
                           _detailItem(
                               icon: Icons.phone_outlined,
                               title: "Mobile Number",
@@ -421,45 +300,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
 
-                  /// Menu List
-                  Container(
-                    margin:
-                    EdgeInsets.symmetric(horizontal: h * 0.02),
-                    child: ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: detailList.length,
-                      separatorBuilder: (context, index) =>
-                          Divider(
-                            height: 1,
-                            color: Constant.grey.withOpacity(0.3),
-                          ),
-                      itemBuilder: (context, index) {
-                        final item = detailList[index];
-                        return ListTile(
-                          leading: Icon(
-                            item['icon'],
-                            size: w * 0.054,
-                            color: Constant.gold,
-                          ),
-                          title: Text(
-                            item['name'],
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios,
-                            size: w * 0.044,
-                            color: Constant.grey,
-                          ),
-                          onTap: () =>
-                              _handleItemTap(index, context),
-                        );
-                      },
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: h*0.02),
+                      child: ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: detailList.length,
+                        separatorBuilder: (context, index) => Divider(height: 1, color: Constant.grey.withOpacity(0.3),),
+                        itemBuilder: (context, index) {
+                          final item = detailList[index];
+                          return ListTile(
+                            leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
+                            title: Text(item['name'], style: TextStyle(fontSize: 14, color: Colors.white)),
+                            trailing: Icon(Icons.arrow_forward_ios, size: w*0.044, color: Constant.grey,),
+                            onTap: () => _handleItemTap(index, context),
+                          );
+                        },
+                      ),
                     ),
-                  ),
 
                     Center(
                       child: Container(
@@ -480,7 +338,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             padding: EdgeInsets.symmetric(vertical: h * 0.018),
                             shape: RoundedRectangleBorder(
                               side: BorderSide(
-                                color: Constant.gold
+                                  color: Constant.gold
                               ),
                               borderRadius: BorderRadius.circular(w * 0.04),
                             ),
@@ -538,9 +396,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: w * 0.040,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white
+                    fontSize: w * 0.040,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white
                 ),
               ),
             ],

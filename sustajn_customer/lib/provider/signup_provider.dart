@@ -12,10 +12,12 @@ import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
 import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
+import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lottie_animations/account_create_animation.dart';
 import '../models/login_model.dart';
 import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
@@ -90,8 +92,12 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
       var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
       if (responseData.status != null && responseData.status!.isNotEmpty) {
         registrationState.setIsLoading(false);
-        Utils.navigateToPushScreen(registrationState.context,
-            LoginScreen());
+        if(registrationState.context.mounted) {
+          showCustomSnackBar(context: registrationState.context,
+              message: 'Account created successfully', color:Colors.green);
+        }
+        NavUtil.navigateWithReplacement(
+            AccountSuccessScreen());
       }else{
         Utils.showToast(responseData.message!);
       }
@@ -150,8 +156,13 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
 
     if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
-      registrationState.setSeconds(60);
+      registrationState.setSeconds(120);
       registrationState.startTimer();
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData["message"],
+        color: Colors.green,
+      );
       if(!registrationState.isResend) {
         Utils.navigateToPushScreen(
             registrationState.context, VerifyEmailScreen(previousScreen: ''));
@@ -159,7 +170,7 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
         registrationState.setResend(false);
       }
     } else {
-      registrationState.setSeconds(60);
+      registrationState.setSeconds(120);
       registrationState.startTimer();
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
@@ -190,10 +201,15 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
 
     if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: message ?? "OTP verified successfully",
+        color: Colors.green,
+      );
       if(registrationState.isForgotPassword){
         Utils.navigateToPushScreen(registrationState.context, ResetPasswordScreen());
       }else {
-        Utils.navigateToPushScreen(registrationState.context, BankDetails());
+        Utils.navigateToPushScreen(registrationState.context, PaymentTypeScreen());
       }
     } else {
       if(!registrationState.context.mounted) return;
@@ -223,6 +239,11 @@ final resetPasswordProvider = FutureProvider.family<dynamic, Map<String, dynamic
 
     if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: message ?? "Password reset successfully",
+        color: Colors.green,
+      );
       NavUtil.navigationToWithReplacement(
           registrationState.context, LoginScreen());
     } else {

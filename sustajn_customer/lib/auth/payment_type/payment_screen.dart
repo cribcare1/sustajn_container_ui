@@ -9,6 +9,7 @@ import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../screens/subscription_screen.dart';
@@ -246,18 +247,13 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       BuildContext context,
       var authState,
       ) {
-    if (authState.isLoading) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateToPushScreen(context, SubscriptinonScreen());
-              _getNetworkData(authState);
+              NavUtil.navigateWithReplacement( SubscriptinonScreen());
+              // _getNetworkData(authState);
             },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
@@ -279,7 +275,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              _getNetworkData(authState);
+              NavUtil.navigateWithReplacement(SubscriptinonScreen());
+              // _getNetworkData(authState);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
@@ -332,15 +329,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           setState(() {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              final rawBody =
-              Map<String, dynamic>.from(widget.registrationData!.toApiBody());
-
+              final Map<String, dynamic> rawBody =
+              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
               final body = removeNullAndEmpty(rawBody);
-              // final Map<String, dynamic> body =
-              //           Map<String, dynamic>.from(widget.registrationData!.toApiBody());
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, widget.registrationData?.profileImage);
+                  Strings.DATA, registrationState.registrationData.profileImage);
               ref.read(registerProvider(params));
             } else {
               registrationState.setIsLoading(false);

@@ -26,7 +26,6 @@ class HeaderWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
           InkWell(
             onTap: (){
               Navigator.push(context,
@@ -38,13 +37,13 @@ class HeaderWidget extends StatelessWidget {
               child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: theme.primaryColor),
             ),
           ),
+          SizedBox(width: Constant.SIZE_10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(
                     color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14)),
-                SizedBox(height: Constant.SIZE_02),
                 Text(name, style: theme.textTheme.titleLarge?.copyWith(
                     color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600)),
@@ -82,7 +81,6 @@ class HeaderWidget extends StatelessWidget {
                 child: Icon(Icons.notifications_none, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
               ),
             ),
-          )
         ],
       ),
     );

@@ -5,8 +5,8 @@ import 'generate_qr_screen.dart';
 import 'product_screen/products_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final int userId;
-  const HomeScreen({Key? key, required this.userId}) : super(key: key);
+  final int? userId;
+  const HomeScreen({Key? key,  this.userId}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> screens = [
       const DashboardScreen(),
       ProductScreen(
-        userId: widget.userId,
+        userId: widget.userId!,
         onBack: () {
           _onTabChange(0);
         },

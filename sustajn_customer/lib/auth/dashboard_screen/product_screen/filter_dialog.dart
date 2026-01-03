@@ -89,15 +89,16 @@ class _SortFilterDialogState extends State<SortFilterDialog> {
       children: [
         _radioTile(
           theme: theme,
-          title: 'Borrow date — Newest first',
+          title: 'Newest first to oldest',
           value: Constant.MAX_LINE_0,
         ),
-        SizedBox(height: Constant.SIZE_15),
-        _radioTile(
-          theme: theme,
-          title: 'Borrow date — Oldest first',
-          value: Constant.MAX_LINE_1,
-        ),
+        //todo this may needed
+        // SizedBox(height: Constant.SIZE_15),
+        // _radioTile(
+        //   theme: theme,
+        //   title: 'Borrow date — Oldest first',
+        //   value: Constant.MAX_LINE_1,
+        // ),
       ],
     );
   }

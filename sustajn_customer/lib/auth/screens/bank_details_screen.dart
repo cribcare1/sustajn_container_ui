@@ -7,15 +7,16 @@ import '../../constants/string_utils.dart';
 import '../../models/register_data.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
 class BankDetails extends ConsumerStatefulWidget {
-  final RegistrationData? registrationData;
+  // final RegistrationData registrationData;
 
   const BankDetails({
     super.key,
-     this.registrationData,
+    // required this.registrationData,
   });
 
   @override
@@ -29,6 +30,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
   final confirmAccController = TextEditingController();
   final taxController = TextEditingController();
   bool isLoading = false;
+
 
   @override
   void initState() {
@@ -52,8 +54,8 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var theme = CustomTheme.getTheme(true);
-    final authState = ref.watch(authNotifierProvider);
-
+    final signUpState = ref.watch(signUpNotifier);
+    RegistrationData? registrationData = signUpState.registrationData;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
@@ -72,15 +74,15 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       Text(
                         Strings.BANK_DETAILS,
                         style: theme?.textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                         ),
                       ),
                       SizedBox(height: height * 0.005),
                       Text(
                         Strings.ENTER_BANK_INFO,
                         style: theme?.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white
+                            color: Colors.white
                         ),
                       ),
                       SizedBox(height: height * 0.03),
@@ -222,7 +224,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       ),
                       SizedBox(height: height * 0.02),
 
-                     SizedBox(
+                      SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
@@ -234,13 +236,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              widget.registrationData?.bankName = bankNameController.text.trim();
-                              widget.registrationData?.accountNumber = accNoController.text.trim();
-                              widget.registrationData?.taxNumber = taxController.text.trim();
-
-
+                              signUpState.registrationData?.bankName = bankNameController.text.trim();
+                              signUpState.registrationData?.accountNumber = accNoController.text.trim();
+                              signUpState.registrationData?.taxNumber = taxController.text.trim();
                             }
-                            _getNetworkData(authState);
+                            _getNetworkData(signUpState);
 
                           },
                           child: Text(
@@ -290,9 +290,6 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     return cleanedMap;
   }
 
-
-
-
   _getNetworkData(var registrationState) async {
     try {
       if(registrationState.isValid) {
@@ -301,17 +298,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
           setState(() {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              final rawBody =
-              Map<String, dynamic>.from(widget.registrationData!.toApiBody());
-
+              final Map<String, dynamic> rawBody =
+              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
               final body = removeNullAndEmpty(rawBody);
-              // final Map<String, dynamic> body =
-              //           Map<String, dynamic>.from(widget.registrationData!.toApiBody());
-              final Map<String, dynamic> body =
-                        Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, widget.registrationData?.profileImage);
                   Strings.DATA, registrationState.registrationData.profileImage);
               ref.read(registerProvider(params));
             } else {

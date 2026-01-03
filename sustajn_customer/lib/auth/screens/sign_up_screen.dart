@@ -18,6 +18,7 @@ import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import 'login_screen.dart';
+import 'map_screen.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
@@ -311,7 +312,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    signUpState.isLoading?Center(child: CircularProgressIndicator(),):SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
@@ -384,10 +385,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                 ),
               ),
             ),
-            if(signUpState.isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            )
           ]
         ),
       ),

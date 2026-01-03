@@ -1,4 +1,5 @@
 import 'package:sustajn_customer/auth/screens/plandetails_screen.dart';
+import 'package:sustajn_customer/auth/screens/termscondition_screen.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
@@ -86,7 +87,9 @@ class SubscriptinonScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    NavUtil.navigateWithReplacement( TermsconditionScreen());
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Constant.gold,
                     shape: RoundedRectangleBorder(

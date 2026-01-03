@@ -19,7 +19,7 @@ class SignupNotifier extends ChangeNotifier{
   LoginModel? _login;
   bool _isVisible = false;
   bool _isDisposed = false;
-  int _seconds = 60;
+  int _seconds = 120;
   BuildContext? _context;
   File? _image;
   RegistrationData? _registrationData;

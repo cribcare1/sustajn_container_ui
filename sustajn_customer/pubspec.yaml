@@ -59,6 +59,7 @@ dependencies:
   share_plus: ^7.2.1
   carousel_slider: ^5.0.0
   url_launcher: ^6.3.0
+  lottie: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -85,7 +86,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/images/
-     - assets/logo/
+     - assets/icons/
+     - assets/note/
+     - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

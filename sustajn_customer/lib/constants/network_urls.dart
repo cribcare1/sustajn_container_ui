@@ -12,7 +12,6 @@ class NetworkUrls {
   static const GET_OTP = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
   static const RESET_PASSWORD = "auth/change-password";
-  static const VERIFY_OTP = "notification/verify-token";
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
   static const PRODUCT_DATA = 'orders/productsSummary/';

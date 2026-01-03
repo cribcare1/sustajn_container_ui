@@ -169,7 +169,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             icon: Icon(
               visible ? Icons.visibility : Icons.visibility_off,
               color: Colors.white70,
-            ),
+            ), onPressed: () {  },
           ),
         ),
       ),

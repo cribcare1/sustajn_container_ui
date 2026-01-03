@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../main.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
@@ -16,7 +17,7 @@ class ForgetPasswordScreen extends ConsumerStatefulWidget {
   ConsumerState<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> with RouteAware{
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
@@ -115,10 +116,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       ),
                     ),
                     onPressed: (){
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
-                      //       email: _emailController.text,
-                      //       )));
                       _getNetworkData();
                     },
                     child: Text(
