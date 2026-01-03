@@ -27,5 +27,8 @@ class NetworkUrls {
   static const CONTAINER_LIST = "inventory/getContainerTypes";
   static const DELETE_CONTAINER = "inventory/delete-container-type/123";
 
+  /// Search Restaurant ///
+
+ static const SEARCH_RESTAURANT ="auth/searchRestaurant";
 
 }
