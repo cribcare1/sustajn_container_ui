@@ -62,8 +62,8 @@ class SubscriptinonScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: 8,
-                    width: 28,
+                    height: Constant.SIZE_08,
+                    width: Constant.CONTAINER_SIZE_28,
                     decoration: BoxDecoration(
                       color: Constant.gold,
                       borderRadius: BorderRadius.circular(20),
@@ -71,8 +71,8 @@ class SubscriptinonScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   Container(
-                    height: 8,
-                    width: 8,
+                    height: Constant.SIZE_08,
+                    width: Constant.SIZE_08,
                     decoration: BoxDecoration(
                       color: Colors.white24,
                       shape: BoxShape.circle,
