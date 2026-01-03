@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
+import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -21,7 +22,7 @@ class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;
   final RegistrationData? registrationData;
   const SignUpScreen({super.key, this.currentStep = 0,
-    this.registrationData});
+  this.registrationData});
 
   @override
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
@@ -44,6 +45,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
+  var themeData = CustomTheme.getTheme(true);
 
   @override
   void initState() {
@@ -95,98 +97,113 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final signUpState = ref.watch(signUpNotifier);
+    double height = MediaQuery.sizeOf(context).height;
 
     return SafeArea(
       top: false,bottom: true,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         body: Stack(
-            children:[
-              SingleChildScrollView(
-                padding: EdgeInsets.all(Constant.SIZE_15),
-                child: Form(
-                  key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).padding.top +
-                            Constant.CONTAINER_SIZE_50,
-                      ),
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
+          children:[
+             SingleChildScrollView(
+              padding: EdgeInsets.all(Constant.SIZE_15),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.top +
+                          Constant.CONTAINER_SIZE_50,
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                      Center(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(60),
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              useSafeArea: true,
-                              isScrollControlled: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(16),
-                                ),
-                              ),
-                              builder: (_) => SafeArea(
-                                child: Padding(
-                                  padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.camera),
-                                        title: const Text("Camera"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          pickImage(ImageSource.camera);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.photo),
-                                        title: const Text("Gallery"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          pickImage(ImageSource.gallery);
-                                        },
-                                      ),],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Constant.gold,
-                            backgroundImage:
-                            selectedImage != null ? FileImage(selectedImage!) : null,
-                            child: selectedImage == null
-                                ? Icon(
-                              Icons.person,
-                              size: 50,
-                              color: theme.primaryColor,
-                            )
-                                : null,
-                          ),
-                        ),
-                      ),
+                    // Center(
+                    //   child: InkWell(
+                    //     borderRadius: BorderRadius.circular(60),
+                    //     onTap: () {
+                    //       showModalBottomSheet(
+                    //         context: context,
+                    //         useSafeArea: true,
+                    //         isScrollControlled: true,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //           BorderRadius.vertical(top: Radius.circular(16),
+                    //           ),
+                    //         ),
+                    //         builder: (_) => SafeArea(
+                    //           child: Padding(
+                    //             padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                    //             child: Column(
+                    //               mainAxisSize: MainAxisSize.min,
+                    //               children: [
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.camera),
+                    //                   title: const Text("Camera"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.camera);
+                    //                   },
+                    //                 ),
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.photo),
+                    //                   title: const Text("Gallery"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.gallery);
+                    //                   },
+                    //                 ),],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: CircleAvatar(
+                    //       radius: 50,
+                    //       backgroundColor: Constant.gold,
+                    //       backgroundImage:
+                    //       selectedImage != null ? FileImage(selectedImage!) : null,
+                    //       child: selectedImage == null
+                    //           ? Icon(
+                    //         Icons.person,
+                    //         size: 50,
+                    //         color: theme.primaryColor,
+                    //       )
+                    //           : null,
+                    //     ),
+                    //   ),
+                    // ),
 
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-                      _buildTextField(
-                        context,
-                        controller: restaurantCtrl,
-                        hint: Strings.FULL_NAME,
-                        validator: (v) {
-                          if (v!.isEmpty) return "Restaurant name required";
-                          if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
-                            return "No special characters allowed";
-                          }
-                          return null;
-                        },
+                    // SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    Text(
+                      Strings.SIGN_UP,
+                      style: themeData?.textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: Constant.CONTAINER_SIZE_22,
+                          color: Colors.white
                       ),
+                    ),
+                    SizedBox(height: height * 0.005),
+                    Text(
+                      Strings.SIGN_UP_TTITLE,
+                      style: themeData?.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    _buildTextField(
+                      context,
+                      controller: restaurantCtrl,
+                      hint: Strings.FULL_NAME,
+                      validator: (v) {
+                        if (v!.isEmpty) return "Restaurant name required";
+                        if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
+                          return "No special characters allowed";
+                        }
+                        return null;
+                      },
+                    ),
 
                       _buildTextField(
                         context,
@@ -204,157 +221,154 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         },
                       ),
 
-                      _buildTextField(
-                        context,
-                        controller: mobileCtrl,
-                        hint: Strings.MOBILE_NUMBER,
-                        keyboard: TextInputType.phone,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        validator: (v) {
-                          if (v!.isEmpty) return "Mobile number required";
-                          if (v.length != 10) return "Enter valid 10-digit mobile number";
-                          return null;
-                        },
-                      ),
+                    _buildTextField(
+                      context,
+                      controller: mobileCtrl,
+                      hint: Strings.MOBILE_NUMBER,
+                      keyboard: TextInputType.phone,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(10),
+                      ],
+                      validator: (v) {
+                        if (v!.isEmpty) return "Mobile number required";
+                        if (v.length != 10) return "Enter valid 10-digit mobile number";
+                        return null;
+                      },
+                    ),
 
-                      _buildPasswordField(
-                        context,
-                        controller: passwordCtrl,
-                        hint: Strings.PASSWORD,
-                        visible: passwordVisible,
-                        toggleVisibility: () {
-                          setState(() => passwordVisible = !passwordVisible);
-                        },
-                        validator: (v) {
-                          if (v!.isEmpty) return "Password required";
-                          if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
-                            return "Password must be 8+ chars with letters, numbers & special char";
+                    _buildPasswordField(
+                      context,
+                      controller: passwordCtrl,
+                      hint: Strings.PASSWORD,
+                      visible: passwordVisible,
+                      toggleVisibility: () {
+                        setState(() => passwordVisible = !passwordVisible);
+                      },
+                      validator: (v) {
+                        if (v!.isEmpty) return "Password required";
+                        if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
+                          return "Password must be 8+ chars with letters, numbers & special char";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    _buildPasswordField(
+                      context,
+                      controller: confirmPasswordCtrl,
+                      hint: Strings.CONFIRM_PASSWORD,
+                      visible: confirmPasswordVisible,
+                      toggleVisibility: () {
+                        setState(() =>
+                        confirmPasswordVisible = !confirmPasswordVisible);
+                      },
+                      validator: (v) {
+                        if (v!.isEmpty) return "Confirm password required";
+                        if (v != passwordCtrl.text) return "Passwords do not match";
+                        return null;
+                      },
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                          if(value != null){
+                            addressCtrl.text = value['address'];
+                            lat=value['lat'];
+                            long=value['lng'];
                           }
-                          return null;
-                        },
-                      ),
 
-                      _buildPasswordField(
-                        context,
-                        controller: confirmPasswordCtrl,
-                        hint: Strings.CONFIRM_PASSWORD,
-                        visible: confirmPasswordVisible,
-                        toggleVisibility: () {
-                          setState(() =>
-                          confirmPasswordVisible = !confirmPasswordVisible);
-                        },
-                        validator: (v) {
-                          if (v!.isEmpty) return "Confirm password required";
-                          if (v != passwordCtrl.text) return "Passwords do not match";
-                          return null;
-                        },
-                      ),
-
-
-
-
-                      // InkWell(
-                      //   onTap: () {
-                      //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                      //       if(value != null){
-                      //         addressCtrl.text = value['address'];
-                      //         lat=value['lat'];
-                      //         long=value['lng'];
-                      //       }
-                      //
-                      //     });
-                      //   },
-                      //   child: IgnorePointer(
-                      //     child: _buildTextField(
-                      //       readOnly: true,
-                      //       context,
-                      //       controller: addressCtrl,
-                      //       hint: Strings.RESTAURANT_ADDRESS,
-                      //       validator: (v) =>
-                      //       v!.isEmpty ? "Restaurant address required" : null,
-                      //     ),
-                      //   ),
-                      // ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFD0A52C),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              if (!_validateImage()) return;
-
-                              final registrationData = RegistrationData(
-                                fullName: restaurantCtrl.text,
-                                email: emailCtrl.text,
-                                phoneNumber: mobileCtrl.text,
-                                password: passwordCtrl.text,
-                                profileImage: selectedImage,
-                                dateOfBirth: null,
-                                address: addressCtrl.text,
-                                latitude: lat,
-                                longitude: long,
-                              );
-                              _getNetworkDataVerify(authState);
-                              Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
-                                registrationData: registrationData,));
-                            }
-                          },
-                          child: Text(
-                            Strings.CONTINUE_VERIFICATION,
-                            style: theme.textTheme.titleMedium!
-                                .copyWith(color: theme.primaryColor),
-                          ),
+                        });
+                      },
+                      child: IgnorePointer(
+                        child: _buildTextField(
+                          readOnly: true,
+                          context,
+                          controller: addressCtrl,
+                          hint: Strings.RESTAURANT_ADDRESS,
+                          validator: (v) =>
+                          v!.isEmpty ? "Restaurant address required" : null,
                         ),
                       ),
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                            text: Strings.ALREADY_HAVE_ACC,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: Strings.LOGIN,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color:Constant.gold,
-                                  decoration: TextDecoration.underline,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginScreen()),
-                                    );
-                                  },
-                              )
-                            ],
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD0A52C),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            // if (!_validateImage()) return;
+
+                            final registrationData = RegistrationData(
+                              fullName: restaurantCtrl.text,
+                              email: emailCtrl.text,
+                              phoneNumber: mobileCtrl.text,
+                              password: passwordCtrl.text,
+                              profileImage: selectedImage,
+                              dateOfBirth: null,
+                              address: addressCtrl.text,
+                              latitude: lat,
+                              longitude: long,
+                            );
+                            signUpState.setRegistrationData(registrationData);
+                            _getNetworkDataVerify(signUpState);
+                            // Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
+                            // registrationData: registrationData, email: emailCtrl.text));
+                          }
+                        },
+                        child: Text(
+                          Strings.CONTINUE_VERIFICATION,
+                          style: theme.textTheme.titleMedium!
+                              .copyWith(color: theme.primaryColor),
+                        ),
                       ),
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: Strings.ALREADY_HAVE_ACC,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontSize: Constant.LABEL_TEXT_SIZE_14,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: Strings.LOGIN,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color:Constant.gold,
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()),
+                                  );
+                                },
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
 
 
-                    ],
-                  ),
+                  ],
                 ),
               ),
-              if(authState.isLoading)
-                Center(
-                  child: CircularProgressIndicator(),
-                )
-            ]
+            ),
+            if(signUpState.isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            )
+          ]
         ),
       ),
     );
@@ -453,7 +467,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-              ref.read(verifyOtpProvider({"email": emailCtrl.text,}));
+              registrationState.setEmail(emailCtrl.text);
+              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text,}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

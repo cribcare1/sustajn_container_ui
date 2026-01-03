@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_customer/auth/screens/login_screen.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
+import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
 
 import '../constants/network_urls.dart';
@@ -319,8 +322,9 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
 
+                        SharedPreferenceUtils.deleteValueFromSF();
+                        NavUtil.navigationToWithReplacement(context, LoginScreen());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,

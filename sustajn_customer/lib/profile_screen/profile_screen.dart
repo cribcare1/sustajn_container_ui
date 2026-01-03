@@ -359,54 +359,49 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                   ),
 
-                  /// Logout Button
-                  Center(
-                    child: Container(
-                      width: w * 0.55,
-                      margin: EdgeInsets.only(top: h * 0.02),
-                      child: ElevatedButton.icon(
-                        icon: Icon(
-                          Icons.logout,
-                          color: Constant.gold,
-                          size: w * 0.05,
-                        ),
-                        label: Text(
-                          "Log Out",
-                          style: TextStyle(
-                            color: Constant.gold,
-                            fontSize: w * 0.045,
-                            fontWeight: FontWeight.w600,
+                    Center(
+                      child: Container(
+                        width: w * 0.55,
+                        margin: EdgeInsets.only(top: h * 0.02),
+                        child: ElevatedButton.icon(
+                          icon: Icon(Icons.logout, color: Constant.gold, size: w * 0.05),
+                          label: Text(
+                            "Log Out",
+                            style: TextStyle(
+                              color: Constant.gold,
+                              fontSize: w * 0.045,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              vertical: h * 0.018),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Constant.gold),
-                            borderRadius:
-                            BorderRadius.circular(w * 0.04),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.primaryColor,
+                            padding: EdgeInsets.symmetric(vertical: h * 0.018),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Constant.gold
+                              ),
+                              borderRadius: BorderRadius.circular(w * 0.04),
+                            ),
                           ),
+                          onPressed: () {
+                            Utils.logOutDialog(
+                                context,
+                                Icons.logout,
+                                Strings.CONFIRM_LOGOUT,
+                                Strings.SURE_LOG_OUT,
+                                Strings.YES,
+                                Strings.NO
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          Utils.logOutDialog(
-                            context,
-                            Icons.logout,
-                            Strings.CONFIRM_LOGOUT,
-                            Strings.SURE_LOG_OUT,
-                            Strings.YES,
-                            Strings.NO,
-                          );
-                        },
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        )
     );
   }
 
@@ -417,6 +412,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     required double w,
     bool showEdit = true,
     required VoidCallback ontap,
+    ThemeData? theme
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,10 +425,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(
-                  fontSize: w * 0.034,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: w * 0.034, color: Colors.white),
               ),
               SizedBox(height: w * 0.01),
               Text(
@@ -440,7 +433,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 style: TextStyle(
                   fontSize: w * 0.040,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white,
+                  color: Colors.white
                 ),
               ),
             ],
@@ -448,13 +441,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ),
         if (showEdit)
           GestureDetector(
-            onTap: ontap,
-            child: Icon(
-              Icons.edit_outlined,
-              size: w * 0.045,
-              color: Colors.white,
-            ),
-          ),
+              onTap: ontap,
+              child: Icon(Icons.edit_outlined, size: w * 0.045, color: Colors.white)),
       ],
     );
   }

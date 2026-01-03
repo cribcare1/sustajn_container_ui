@@ -8,12 +8,13 @@ class NetworkUrls {
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
-  static const VERIFY_OTP = "notification/forgot-password";
-
+  static const GET_OTP = "notification/forgot-password";
+  static const VERIFY_OTP = "notification/verify-token";
+  static const RESET_PASSWORD = "auth/change-password";
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";
   static const DELETE_CONTAINER = "inventory/delete-container-type/123";
-  static const SUCCESS = 'Success';
+  static const SUCCESS = 'success';
 
 }
