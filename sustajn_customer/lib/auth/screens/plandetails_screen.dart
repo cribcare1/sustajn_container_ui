@@ -1,4 +1,5 @@
 import 'package:sustajn_customer/auth/screens/termscondition_screen.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
@@ -57,6 +58,7 @@ class PlandetailsScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     // Navigator.push(context, MaterialPageRoute(builder: (context)=> TermsconditionScreen()));
+                    NavUtil.navigateToPushScreen(context, TermsconditionScreen());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Constant.gold,

@@ -57,6 +57,7 @@ dependencies:
   firebase_messaging: ^16.1.0
   qr_flutter: ^4.1.0
   share_plus: ^7.2.1
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
   assets:
      - assets/images/
      - assets/icons/
+     - assets/note/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_customer/auth/screens/login_screen.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
+import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
 
 import '../constants/network_urls.dart';
@@ -306,6 +309,121 @@ class Utils {
                       ),
                       child: Text(
                        noButton,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                        SharedPreferenceUtils.deleteValueFromSF();
+                        NavUtil.navigationToWithReplacement(context, LoginScreen());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ?? false;
+  }
+  static  termsDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      String noButton
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                    color: Constant.grey.withOpacity(0.2),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: Constant.grey.withOpacity(0.1)
+                    )
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white
+              )),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Constant.gold),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        noButton,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),

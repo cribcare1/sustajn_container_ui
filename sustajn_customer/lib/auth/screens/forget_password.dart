@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 
-class ForgetPasswordScreen extends StatefulWidget {
+class ForgetPasswordScreen extends ConsumerStatefulWidget {
   const ForgetPasswordScreen({super.key});
 
   @override
-  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+  ConsumerState<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
 }
 
-class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
@@ -21,7 +25,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var theme = CustomTheme.getTheme(true);
-
+    final registrationState = ref.watch(signUpNotifier);
     return Scaffold(
 
       backgroundColor: theme!.scaffoldBackgroundColor,
@@ -29,7 +33,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
+          child: Stack(children: [SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +64,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white70),
                   decoration: InputDecoration(
-                    hintText: Strings.EMAIL,
+                    hintText: Strings.EMAIL_ID,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white70,
                       fontSize: Constant.LABEL_TEXT_SIZE_15,
@@ -96,10 +100,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       ),
                     ),
                     onPressed: (){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
-                            email: _emailController.text,
-                            )));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: '',
+                      //       email: _emailController.text,
+                      //       )));
+                      _getNetworkData();
                     },
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,
@@ -113,8 +118,48 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               ],
             ),
           ),
+            if(registrationState.isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              )
+          ],
+          ),
         ),
       ),
     );
+  }
+
+  _getNetworkData() async {
+      final registrationState = ref.watch(signUpNotifier);
+    try {
+      if (registrationState.isValid) {
+        await ref
+            .read(networkProvider.notifier)
+            .isNetworkAvailable()
+            .then((isNetworkAvailable) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              registrationState.setIsForgotPassword(true);
+              registrationState.setEmail(_emailController.text);
+              ref.read(getOtpToVerifyProvider({"email":_emailController.text}));
+            } else {
+              registrationState.setIsLoading(false);
+              if(!mounted) return;
+              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if(!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }

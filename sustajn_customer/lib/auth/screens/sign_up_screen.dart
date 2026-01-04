@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
+import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -44,6 +45,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
+  var themeData = CustomTheme.getTheme(true);
 
   @override
   void initState() {
@@ -95,7 +97,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final signUpState = ref.watch(signUpNotifier);
+    double height = MediaQuery.sizeOf(context).height;
 
     return SafeArea(
       top: false,bottom: true,
@@ -117,68 +120,82 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                    Center(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(60),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            useSafeArea: true,
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(16),
-                              ),
-                            ),
-                            builder: (_) => SafeArea(
-                              child: Padding(
-                                padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.camera),
-                                      title: const Text("Camera"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        pickImage(ImageSource.camera);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.photo),
-                                      title: const Text("Gallery"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        pickImage(ImageSource.gallery);
-                                      },
-                                    ),],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Constant.gold,
-                          backgroundImage:
-                          selectedImage != null ? FileImage(selectedImage!) : null,
-                          child: selectedImage == null
-                              ? Icon(
-                            Icons.person,
-                            size: 50,
-                            color: theme.primaryColor,
-                          )
-                              : null,
-                        ),
+                    // Center(
+                    //   child: InkWell(
+                    //     borderRadius: BorderRadius.circular(60),
+                    //     onTap: () {
+                    //       showModalBottomSheet(
+                    //         context: context,
+                    //         useSafeArea: true,
+                    //         isScrollControlled: true,
+                    //         shape: const RoundedRectangleBorder(
+                    //           borderRadius:
+                    //           BorderRadius.vertical(top: Radius.circular(16),
+                    //           ),
+                    //         ),
+                    //         builder: (_) => SafeArea(
+                    //           child: Padding(
+                    //             padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                    //             child: Column(
+                    //               mainAxisSize: MainAxisSize.min,
+                    //               children: [
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.camera),
+                    //                   title: const Text("Camera"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.camera);
+                    //                   },
+                    //                 ),
+                    //                 ListTile(
+                    //                   leading: const Icon(Icons.photo),
+                    //                   title: const Text("Gallery"),
+                    //                   onTap: () {
+                    //                     Navigator.pop(context);
+                    //                     pickImage(ImageSource.gallery);
+                    //                   },
+                    //                 ),],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     child: CircleAvatar(
+                    //       radius: 50,
+                    //       backgroundColor: Constant.gold,
+                    //       backgroundImage:
+                    //       selectedImage != null ? FileImage(selectedImage!) : null,
+                    //       child: selectedImage == null
+                    //           ? Icon(
+                    //         Icons.person,
+                    //         size: 50,
+                    //         color: theme.primaryColor,
+                    //       )
+                    //           : null,
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    Text(
+                      Strings.SIGN_UP,
+                      style: themeData?.textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: Constant.CONTAINER_SIZE_22,
+                          color: Colors.white
                       ),
                     ),
-
+                    SizedBox(height: height * 0.005),
+                    Text(
+                      Strings.SIGN_UP_TTITLE,
+                      style: themeData?.textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                      ),
+                    ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
-
                     _buildTextField(
                       context,
                       controller: restaurantCtrl,
-                      hint: 'Full Name',
+                      hint: Strings.FULL_NAME,
                       validator: (v) {
                         if (v!.isEmpty) return "Restaurant name required";
                         if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
@@ -188,21 +205,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       },
                     ),
 
-                    _buildTextField(
-                      context,
-                      controller: emailCtrl,
-                      hint: Strings.EMAIL,
-                      keyboard: TextInputType.emailAddress,
-                      validator: (v) {
-                        if (v!.isEmpty) return "Email required";
-                        if (!RegExp(
-                            r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
-                            .hasMatch(v)) {
-                          return "Enter valid email";
-                        }
-                        return null;
-                      },
-                    ),
+                      _buildTextField(
+                        context,
+                        controller: emailCtrl,
+                        hint: Strings.EMAIL_ID,
+                        keyboard: TextInputType.emailAddress,
+                        validator: (v) {
+                          if (v!.isEmpty) return "Email required";
+                          if (!RegExp(
+                              r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
+                              .hasMatch(v)) {
+                            return "Enter valid email";
+                          }
+                          return null;
+                        },
+                      ),
 
                     _buildTextField(
                       context,
@@ -252,28 +269,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         return null;
                       },
                     ),
-                    // InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                    //       if(value != null){
-                    //         addressCtrl.text = value['address'];
-                    //         lat=value['lat'];
-                    //         long=value['lng'];
-                    //       }
-                    //
-                    //     });
-                    //   },
-                    //   child: IgnorePointer(
-                    //     child: _buildTextField(
-                    //       readOnly: true,
-                    //       context,
-                    //       controller: addressCtrl,
-                    //       hint: Strings.RESTAURANT_ADDRESS,
-                    //       validator: (v) =>
-                    //       v!.isEmpty ? "Restaurant address required" : null,
-                    //     ),
-                    //   ),
-                    // ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
+                          if(value != null){
+                            addressCtrl.text = value['address'];
+                            lat=value['lat'];
+                            long=value['lng'];
+                          }
+
+                        });
+                      },
+                      child: IgnorePointer(
+                        child: _buildTextField(
+                          readOnly: true,
+                          context,
+                          controller: addressCtrl,
+                          hint: Strings.RESTAURANT_ADDRESS,
+                          validator: (v) =>
+                          v!.isEmpty ? "Restaurant address required" : null,
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: double.infinity,
                       height: 48,
@@ -286,7 +303,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            if (!_validateImage()) return;
+                            // if (!_validateImage()) return;
 
                             final registrationData = RegistrationData(
                               fullName: restaurantCtrl.text,
@@ -299,9 +316,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               latitude: lat,
                               longitude: long,
                             );
-                            _getNetworkDataVerify(authState);
-                            Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
-                            registrationData: registrationData,));
+                            signUpState.setRegistrationData(registrationData);
+                            _getNetworkDataVerify(signUpState);
+                            // Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
+                            // registrationData: registrationData, email: emailCtrl.text));
                           }
                         },
                         child: Text(
@@ -346,7 +364,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
               ),
             ),
-            if(authState.isLoading)
+            if(signUpState.isLoading)
             Center(
               child: CircularProgressIndicator(),
             )
@@ -449,7 +467,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-              ref.read(verifyOtpProvider({"email": emailCtrl.text,}));
+              registrationState.setEmail(emailCtrl.text);
+              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text,}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
