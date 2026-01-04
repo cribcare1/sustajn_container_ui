@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -172,14 +174,12 @@ class Utils {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.pop(context);
-
+                       Navigator.pop(context);
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC8B531)),
@@ -199,13 +199,12 @@ class Utils {
                   ),
 
                   SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                  // STAY
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
-
+                        SharedPreferenceUtils.clearAll();
+                        Utils.navigateToPushReplaceScreen(context, LoginScreen());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,
@@ -446,6 +445,11 @@ class Utils {
 
   static void navigateToPushScreen(BuildContext context, screen) {
     Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }static void navigateToPushReplaceScreen(BuildContext context, screen) {
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => screen),
     );

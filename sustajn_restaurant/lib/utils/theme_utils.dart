@@ -124,9 +124,11 @@ class CustomTheme {
     );
   }
 
-  static TextField searchField(TextEditingController controller, String text) {
+  static TextField searchField(TextEditingController controller, String text,{ValueChanged<String>? onChanged}) {
     return TextField(
       controller: controller,
+      style: TextStyle(fontSize: 14,color: Colors.white),
+      onChanged: onChanged,
       decoration: InputDecoration(
         hintText: text,
         hintStyle: TextStyle(color: Colors.white70),
