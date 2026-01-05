@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/network_urls.dart';
 import '../models/login_model.dart';
+import '../models/subscriptionplan_data.dart';
 import '../models/user_register_model.dart';
 import '../network/ApiCallPresentator.dart';
 import '../utils/utils.dart';
@@ -89,5 +90,25 @@ class AuthServices {
     }
   }
 
+  Future<SubscriptionModel> getSubscriptionPlan(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = SubscriptionModel.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("borrowed service  service::::$e");
+      throw Exception(e);
+    }
+  }
 }
-final loginApiProvider = Provider<AuthServices>((ref) => AuthServices());
+
+
+final loginApiService = Provider<AuthServices>((ref) => AuthServices());

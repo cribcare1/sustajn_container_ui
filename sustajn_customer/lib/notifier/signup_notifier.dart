@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
-import '../models/login_model.dart';
+import '../models/login_model.dart' hide Data;
 import '../models/register_data.dart';
+import '../models/subscriptionplan_data.dart';
+
 import '../utils/utils.dart';
 
 class SignupNotifier extends ChangeNotifier{
@@ -23,6 +25,9 @@ class SignupNotifier extends ChangeNotifier{
   BuildContext? _context;
   File? _image;
   RegistrationData? _registrationData;
+  SubscriptionModel? _subscriptionModel;
+  List<SubscriptionData>? data = [];
+
 
 
   String get name => _name;
@@ -38,6 +43,10 @@ class SignupNotifier extends ChangeNotifier{
   bool get isVisible => _isVisible;
   File? get image => _image;
   RegistrationData? get registrationData => _registrationData;
+  SubscriptionModel? get subscriptionModel => _subscriptionModel;
+  List<SubscriptionData>? get subscriptionList=> data;
+
+
 
   // Error messages
   String? _nameError;
@@ -48,6 +57,11 @@ class SignupNotifier extends ChangeNotifier{
   String? get passwordError => _passwordError;
   void setRegistrationData(RegistrationData registrationData){
     _registrationData = registrationData;
+    notifyListeners();
+  }
+  void setSubscriptionModel(SubscriptionModel subscriptionModel){
+    _subscriptionModel = subscriptionModel;
+    data = subscriptionModel.data;
     notifyListeners();
   }
   void setSeconds(int value){
