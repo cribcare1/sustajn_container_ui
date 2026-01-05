@@ -26,7 +26,7 @@ class SignupNotifier extends ChangeNotifier{
   File? _image;
   RegistrationData? _registrationData;
   SubscriptionModel? _subscriptionModel;
-  List<Data>? data = [];
+  List<SubscriptionData>? data = [];
 
 
 
@@ -44,7 +44,7 @@ class SignupNotifier extends ChangeNotifier{
   File? get image => _image;
   RegistrationData? get registrationData => _registrationData;
   SubscriptionModel? get subscriptionModel => _subscriptionModel;
-  List<Data>? get subscriptionList=> data;
+  List<SubscriptionData>? get subscriptionList=> data;
 
 
 

@@ -1,5 +1,5 @@
 class SubscriptionModel {
-  List<Data>? data;
+  List<SubscriptionData>? data;
   String? message;
   String? status;
 
@@ -7,9 +7,9 @@ class SubscriptionModel {
 
   SubscriptionModel.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <SubscriptionData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new SubscriptionData.fromJson(v));
       });
     }
     message = json['message'];
@@ -27,21 +27,21 @@ class SubscriptionModel {
   }
 }
 
-class Data {
+class SubscriptionData {
   int? planId;
   String? planName;
   String? planStatus;
   int? totalContainers;
   String? billingCycle;
 
-  Data(
+  SubscriptionData(
       {this.planId,
         this.planName,
         this.planStatus,
         this.totalContainers,
         this.billingCycle});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  SubscriptionData.fromJson(Map<String, dynamic> json) {
     planId = json['planId'];
     planName = json['planName'];
     planStatus = json['planStatus'];
