@@ -1,20 +1,26 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sustajn_customer/auth/screens/bank_details_screen.dart';
 import 'package:sustajn_customer/auth/screens/reset_password_screen.dart'
     show ResetPasswordScreen;
 import 'package:sustajn_customer/notifier/signup_notifier.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
+import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lottie_animations/account_create_animation.dart';
 import '../models/login_model.dart';
+import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
 import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
@@ -102,7 +108,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
     );
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       registrationState.setIsLoading(false);
-      Utils.navigateToPushScreen(registrationState.context, LoginScreen());
+      NavUtil.navigateWithReplacement(AccountSuccessScreen());
     } else {
       Utils.showToast(responseData.message!);
     }
@@ -172,6 +178,13 @@ final getOtpToVerifyProvider =
             status.isNotEmpty &&
             status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
           registrationState.setIsLoading(false);
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message,
+            color: Colors.green,
+          );
           if (!registrationState.isResend) {
             Utils.navigateToPushScreen(
               registrationState.context,
@@ -181,6 +194,8 @@ final getOtpToVerifyProvider =
             registrationState.setResend(false);
           }
         } else {
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
@@ -190,6 +205,8 @@ final getOtpToVerifyProvider =
           registrationState.setIsLoading(false);
         }
       } catch (e) {
+        registrationState.setSeconds(120);
+        registrationState.startTimer();
         registrationState.setIsLoading(false);
         Utils.showNetworkErrorToast(registrationState.context, e.toString());
       } finally {
@@ -216,14 +233,18 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         status.isNotEmpty &&
         status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: message ?? "OTP verified successfully",
+        color: Colors.green,
+      );
       if (registrationState.isForgotPassword) {
         Utils.navigateToPushScreen(
           registrationState.context,
           ResetPasswordScreen(),
         );
       } else {
-        Utils.navigateToPushScreen(
-          registrationState.context,
+        NavUtil.navigateWithReplacement(
           PaymentTypeScreen(),
         );
       }
@@ -261,6 +282,11 @@ final resetPasswordProvider =
             status.isNotEmpty &&
             status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
           registrationState.setIsLoading(false);
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message ?? "Password reset successfully",
+            color: Colors.green,
+          );
           NavUtil.navigationToWithReplacement(
             registrationState.context,
             LoginScreen(),

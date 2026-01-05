@@ -5,6 +5,7 @@ class NetworkUrls {
   static const int UNAUTHORIZED_ERROR_CODE = 401;
 
   static const BASE_URL = "http://35.154.182.218:9090/";
+  static const BASE_IMAGE_URL = 'http://35.154.182.218:9090/auth/images/';
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -12,6 +13,10 @@ class NetworkUrls {
   static const VERIFY_OTP = "notification/verify-token";
   static const RESET_PASSWORD = "auth/change-password";
   static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/summaries";
+
+  static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
+  static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
+  static const PRODUCT_DATA = 'orders/productsSummary/';
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";

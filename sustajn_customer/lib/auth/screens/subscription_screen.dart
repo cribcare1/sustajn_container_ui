@@ -41,111 +41,113 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     final signUpState = ref.watch(signUpNotifier);
     final carouselHeight = MediaQuery.of(context).size.height * 0.55;
 
-    return Scaffold(
-      backgroundColor: theme.primaryColor,
-      appBar:
-      CustomAppBar(title: "", leading: CustomBackButton()).getAppBar(context),
-      body: Stack(
-        children: [SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Choose Plan",
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: Constant.SIZE_06),
-                  Text(
-                    "Select a subscription plan to unlock the functionality of the application",
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70,
-                    ),
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_22),
-
-                  // ---------- Carousel ----------
-                  SizedBox(
-                    height: carouselHeight,
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: carouselHeight,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false,
-                        viewportFraction: 0.8,
-                        onPageChanged: (index, reason) {
-                          setState(() => _currentIndex = index);
-                        },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: theme.primaryColor,
+        appBar:
+        CustomAppBar(title: "", leading: CustomBackButton()).getAppBar(context),
+        body: Stack(
+          children: [
+            SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Choose Plan",
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
-                      items: imgList.map((item) {
-                        return SingleChildScrollView(child: _freemiumCard(context, theme));
+                    ),
+                    SizedBox(height: Constant.SIZE_06),
+                    Text(
+                      "Select a subscription plan to unlock the functionality of the application",
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white70,
+                      ),
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_22),
+
+                    SizedBox(
+                      height: carouselHeight,
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: carouselHeight,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: false,
+                          viewportFraction: 0.8,
+                          onPageChanged: (index, reason) {
+                            setState(() => _currentIndex = index);
+                          },
+                        ),
+                        items: imgList.map((item) {
+                          return SingleChildScrollView(child: _freemiumCard(context, theme));
+                        }).toList(),
+                      ),
+                    ),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: imgList.asMap().entries.map((entry) {
+                        final isActive = _currentIndex == entry.key;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: isActive ? 10 : 6,
+                          height: 6,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: isActive ? Colors.white : Colors.white54,
+                          ),
+                        );
                       }).toList(),
                     ),
-                  ),
 
-                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                  // ---------- Dots ----------
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imgList.asMap().entries.map((entry) {
-                      final isActive = _currentIndex == entry.key;
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        width: isActive ? 10 : 6,
-                        height: 6,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: isActive ? Colors.white : Colors.white54,
+                    // ---------- Proceed Button ----------
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          NavUtil.navigateWithReplacement(TermsconditionScreen());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Constant.gold,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: Constant.CONTAINER_SIZE_16,
+                          ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                  // ---------- Proceed Button ----------
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        NavUtil.navigateToPushScreen(context, TermsconditionScreen());
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constant.gold,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: Constant.CONTAINER_SIZE_16,
-                        ),
-                      ),
-                      child: Text(
-                        "Proceed to Terms & Conditions",
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.primaryColor,
-                          fontWeight: FontWeight.w600,
+                        child: Text(
+                          "Proceed to Terms & Conditions",
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+            if(signUpState.isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              )
+      ]
         ),
-          if(signUpState.isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            )
-    ]
       ),
     );
   }
@@ -289,7 +291,6 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               registrationState.setContext(context);
               var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
 
-              // registrationState.setEmail(_emailController.text);
               ref.read(getSubscriptionProvider(url));
             } else {
               registrationState.setIsLoading(false);
