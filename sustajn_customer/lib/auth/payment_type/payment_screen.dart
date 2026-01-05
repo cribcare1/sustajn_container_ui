@@ -311,9 +311,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateWithReplacement( SubscriptinonScreen());
+              NavUtil.navigateWithReplacement( SubscriptionScreen());
               // _getNetworkData(authState);
-              NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+              // NavUtil.navigateToPushScreen(context, SubscriptionScreen());
             },
 
             style: OutlinedButton.styleFrom(
@@ -334,7 +334,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              NavUtil.navigateWithReplacement(SubscriptinonScreen());
+              NavUtil.navigateWithReplacement(SubscriptionScreen());
               // _getNetworkData(authState);
             },
             style: ElevatedButton.styleFrom(
