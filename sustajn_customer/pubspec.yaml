@@ -58,6 +58,8 @@ dependencies:
   qr_flutter: ^4.1.0
   share_plus: ^7.2.1
   carousel_slider: ^5.0.0
+  url_launcher: ^6.3.0
+  lottie: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +88,7 @@ flutter:
      - assets/images/
      - assets/icons/
      - assets/note/
+     - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

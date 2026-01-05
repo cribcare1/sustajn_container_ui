@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
@@ -14,7 +12,9 @@ class AuthState extends ChangeNotifier{
   LoginModel? _login;
   bool _isVisible = false;
   BuildContext? _context;
-  File? _image;
+  bool _isVerifying = false;
+
+  bool get isVerifying => _isVerifying;
 
   String get name => _name;
 
@@ -25,7 +25,6 @@ class AuthState extends ChangeNotifier{
   LoginModel get login => _login!;
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
-  File? get image => _image;
 
   // Error messages
   String? _nameError;
@@ -40,6 +39,10 @@ class AuthState extends ChangeNotifier{
     _validateName();
     notifyListeners();
   }
+  void setIsOTPVerify(bool isVerifying){
+    _isVerifying = isVerifying;
+    notifyListeners();
+  }
 
   void setPassword(String value) {
     _password = value;
@@ -50,11 +53,6 @@ class AuthState extends ChangeNotifier{
 
   void show() {
     _isVisible = true;
-    notifyListeners();
-  }
-
-  void setImage(File? file){
-    _image = file;
     notifyListeners();
   }
 

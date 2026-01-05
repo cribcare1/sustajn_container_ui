@@ -49,7 +49,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
         Navigator.pushReplacement(
           registrationState.context,
           MaterialPageRoute(
-            builder: (_) => const HomeScreen(),
+            builder: (_) => HomeScreen(userId: responseData.data!.userId,),
           ),
         );
       }
@@ -71,5 +71,3 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   }
   return responseData;
 });
-
-

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
-import '../models/login_model.dart' hide Data;
+import '../models/login_model.dart';
 import '../models/register_data.dart';
 import '../models/subscriptionplan_data.dart';
 
@@ -13,6 +13,7 @@ class SignupNotifier extends ChangeNotifier{
   String _name = '';
   String _password = '';
   String _email = '';
+  String _otp = '';
   bool _isResend = false;
   bool _isForgotPassword = false;
   bool _isPasswordVisible = false;
@@ -21,7 +22,7 @@ class SignupNotifier extends ChangeNotifier{
   LoginModel? _login;
   bool _isVisible = false;
   bool _isDisposed = false;
-  int _seconds = 60;
+  int _seconds = 120;
   BuildContext? _context;
   File? _image;
   RegistrationData? _registrationData;
@@ -32,6 +33,7 @@ class SignupNotifier extends ChangeNotifier{
 
   String get name => _name;
   String get email => _email;
+  String get otp => _otp;
   String get password => _password;
   int get seconds => _seconds;
   bool get isPasswordVisible => _isPasswordVisible;
@@ -102,6 +104,11 @@ class SignupNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setToken(String value){
+    _otp = value;
+    notifyListeners();
+  }
+
   void setImage(File? file){
     _image = file;
     notifyListeners();
@@ -121,10 +128,7 @@ class SignupNotifier extends ChangeNotifier{
     _login = login;
     notifyListeners();
   }
-  // void setContext(BuildContext context) {
-  //   _context = context;
-  //   notifyListeners();
-  // }
+
 
   void _validateName() {
     if (_name.isEmpty) {
@@ -165,22 +169,9 @@ class SignupNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
-  // void startTimer() {
-  //   Future.doWhile(() async {
-  //     // final signUpState = ref.read(signUpNotifier);
-  //     await Future.delayed(const Duration(seconds: 1));
-  //     // if (!mounted) return false;
-  //     if (seconds > 0) {
-  //       setSeconds(seconds-1);
-  //       notifyListeners();
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  // }
 
   void startTimer() {
-    if (_isTimerRunning) return; // 🚫 prevent multiple timers
+    if (_isTimerRunning) return;
     _isTimerRunning = true;
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
@@ -192,7 +183,7 @@ class SignupNotifier extends ChangeNotifier{
 
       if (_seconds > 0) {
         _seconds--;
-        notifyListeners(); // 🔥 THIS replaces setState
+        notifyListeners();
         return true;
       }
       _isTimerRunning = false;

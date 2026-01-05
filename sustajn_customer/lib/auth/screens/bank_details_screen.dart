@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/provider/signup_provider.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/register_data.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
@@ -74,15 +74,15 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       Text(
                         Strings.BANK_DETAILS,
                         style: theme?.textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                         ),
                       ),
                       SizedBox(height: height * 0.005),
                       Text(
                         Strings.ENTER_BANK_INFO,
                         style: theme?.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white
+                            color: Colors.white
                         ),
                       ),
                       SizedBox(height: height * 0.03),
@@ -224,7 +224,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                       ),
                       SizedBox(height: height * 0.02),
 
-                     SizedBox(
+                      SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
@@ -239,9 +239,8 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                               signUpState.registrationData?.bankName = bankNameController.text.trim();
                               signUpState.registrationData?.accountNumber = accNoController.text.trim();
                               signUpState.registrationData?.taxNumber = taxController.text.trim();
-
-                              _getNetworkData(signUpState);
                             }
+                            _getNetworkData(signUpState);
 
                           },
                           child: Text(
@@ -270,6 +269,26 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     );
   }
 
+  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
+    final cleanedMap = <String, dynamic>{};
+
+    map.forEach((key, value) {
+      if (value == null) return;
+
+      if (value is Map) {
+        final nested = removeNullAndEmpty(
+          Map<String, dynamic>.from(value),
+        );
+        if (nested.isNotEmpty) {
+          cleanedMap[key] = nested;
+        }
+      } else if (value.toString().trim().isNotEmpty) {
+        cleanedMap[key] = value;
+      }
+    });
+
+    return cleanedMap;
+  }
 
   _getNetworkData(var registrationState) async {
     try {
@@ -279,8 +298,9 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
           setState(() {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              final Map<String, dynamic> body =
-                        Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
+              final Map<String, dynamic> rawBody =
+              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
+              final body = removeNullAndEmpty(rawBody);
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
                   Strings.DATA, registrationState.registrationData.profileImage);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/utils/utils.dart';
+import 'package:sustajn_customer/search_resturant_screen/search_resturant_screen.dart';
 import '../../../constants/number_constants.dart';
 // import '../../../containers/customer_profile.dart';
 import '../../../notification/notification_screen.dart';
@@ -25,7 +26,6 @@ class HeaderWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
           InkWell(
             onTap: (){
               Navigator.push(context,
@@ -37,22 +37,36 @@ class HeaderWidget extends StatelessWidget {
               child: Icon(Icons.person, size: Constant.CONTAINER_SIZE_30, color: theme.primaryColor),
             ),
           ),
+          SizedBox(width: Constant.SIZE_10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(
                     color: Constant.subtitleText, fontSize: Constant.LABEL_TEXT_SIZE_14)),
-                SizedBox(height: Constant.SIZE_02),
                 Text(name, style: theme.textTheme.titleLarge?.copyWith(
                     color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600)),
               ],
             ),
           ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
+          InkWell(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
+            onTap: () {
+              NavUtil.navigateToPushScreen(context, SearchRestaurantScreen());
+            },
+            child: Container(
+              padding: EdgeInsets.all(Constant.SIZE_08),
+              decoration: BoxDecoration(
+                color: Constant.grey.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(color: Constant.grey.withOpacity(0.2)),
+              ),
+              child: Icon(Icons.search, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
+            ),
+          ),
+            SizedBox(width: Constant.SIZE_10,),
+            InkWell(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
               onTap: () {
                 Utils.navigateToPushScreen(context, NotificationScreen());
@@ -60,13 +74,13 @@ class HeaderWidget extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(Constant.SIZE_08),
                 decoration: BoxDecoration(
+                  color: Constant.grey.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  border: Border.all(color:theme.scaffoldBackgroundColor.withOpacity(0.3)),
+                  border: Border.all(color: Constant.grey.withOpacity(0.2)),
                 ),
                 child: Icon(Icons.notifications_none, color: Constant.subtitleText, size: Constant.CONTAINER_SIZE_22),
               ),
             ),
-          )
         ],
       ),
     );

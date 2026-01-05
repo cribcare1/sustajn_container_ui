@@ -14,7 +14,6 @@ class CustomAppBar {
     return AppBar(
       backgroundColor: themeData!.primaryColor,
       surfaceTintColor: themeData.primaryColor,
-      centerTitle: true,
       elevation: 0,
       title: Text(
         title,

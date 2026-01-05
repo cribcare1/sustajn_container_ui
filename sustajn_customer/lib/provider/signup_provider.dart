@@ -18,6 +18,7 @@ import '../auth/screens/termscondition_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lottie_animations/account_create_animation.dart';
 import '../models/login_model.dart';
 import '../models/subscriptionplan_data.dart';
 import '../notifier/login_notifier.dart';
@@ -80,33 +81,36 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 });
 
 ///Register
-final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
-      (ref, params) async {
-    final registrationState = ref.watch(signUpNotifier);
-    try {
-      var serviceProvider = ref.read(loginApiService);
-      var partUrl = params[Strings.PART_URL];
-      var data = params[Strings.DATA];
-      var requestKey = params[Strings.REQUEST_KEY];
-      var image = params[Strings.IMAGE];
-      Utils.printLog("partUrl===$partUrl");
-      var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
-      if (responseData.status != null && responseData.status!.isNotEmpty) {
-        registrationState.setIsLoading(false);
-        Utils.navigateToPushScreen(registrationState.context,
-            LoginScreen());
-      }else{
-        Utils.showToast(responseData.message!);
-      }
-    } catch (e) {
-      Utils.printLog("Register provider error called: $e");
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+  ref,
+  params,
+) async {
+  final registrationState = ref.watch(signUpNotifier);
+  try {
+    var serviceProvider = ref.read(loginApiService);
+    var partUrl = params[Strings.PART_URL];
+    var data = params[Strings.DATA];
+    var requestKey = params[Strings.REQUEST_KEY];
+    var image = params[Strings.IMAGE];
+    Utils.printLog("partUrl===$partUrl");
+    var responseData = await serviceProvider.registerUser(
+      partUrl,
+      data,
+      requestKey,
+      image,
+    );
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
       registrationState.setIsLoading(false);
-      Utils.showNetworkErrorToast(registrationState.context, e.toString());
+      Utils.navigateToPushScreen(registrationState.context, LoginScreen());
+    } else {
+      Utils.showToast(responseData.message!);
     }
-  },
-);
-
-
+  } catch (e) {
+    Utils.printLog("Register provider error called: $e");
+    registrationState.setIsLoading(false);
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  }
+});
 
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
@@ -151,28 +155,35 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
     final status = responseData['status'];
     final message = responseData['message'];
 
-    if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-      registrationState.setIsLoading(false);
-      if(!registrationState.isResend) {
-        Utils.navigateToPushScreen(
-            registrationState.context, VerifyEmailScreen(previousScreen: ''));
-      }else{
-        registrationState.setResend(false);
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+          registrationState.setIsLoading(false);
+          if (!registrationState.isResend) {
+            Utils.navigateToPushScreen(
+              registrationState.context,
+              VerifyEmailScreen(previousScreen: ''),
+            );
+          } else {
+            registrationState.setResend(false);
+          }
+        } else {
+          if (!registrationState.context.mounted) return;
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message!,
+            color: Colors.black,
+          );
+          registrationState.setIsLoading(false);
+        }
+      } catch (e) {
+        registrationState.setIsLoading(false);
+        Utils.showNetworkErrorToast(registrationState.context, e.toString());
+      } finally {
+        registrationState.setIsLoading(false);
       }
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: message!, color:Colors.black);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+      return null;
+    });
 
 final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final apiService = ref.watch(loginApiService);
@@ -187,10 +198,16 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
 
     if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
-      if(registrationState.isForgotPassword){
-        Utils.navigateToPushScreen(registrationState.context, ResetPasswordScreen());
-      }else {
-        Utils.navigateToPushScreen(registrationState.context, PaymentTypeScreen());
+      if (registrationState.isForgotPassword) {
+        Utils.navigateToPushScreen(
+          registrationState.context,
+          ResetPasswordScreen(),
+        );
+      } else {
+        Utils.navigateToPushScreen(
+          registrationState.context,
+          PaymentTypeScreen(),
+        );
       }
     } else {
       if(!registrationState.context.mounted) return;
@@ -218,24 +235,31 @@ final resetPasswordProvider = FutureProvider.family<dynamic, Map<String, dynamic
     final status = responseData['status'];
     final message = responseData['message'];
 
-    if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-      registrationState.setIsLoading(false);
-      NavUtil.navigationToWithReplacement(
-          registrationState.context, LoginScreen());
-    } else {
-      if(!registrationState.context.mounted) return;
-      showCustomSnackBar(context: registrationState.context,
-          message: message!, color:Colors.black);
-      registrationState.setIsLoading(false);
-    }
-  } catch (e) {
-    registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
-  }finally{
-    registrationState.setIsLoading(false);
-  }
-  return null;
-});
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+          registrationState.setIsLoading(false);
+          NavUtil.navigationToWithReplacement(
+            registrationState.context,
+            LoginScreen(),
+          );
+        } else {
+          if (!registrationState.context.mounted) return;
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message!,
+            color: Colors.black,
+          );
+          registrationState.setIsLoading(false);
+        }
+      } catch (e) {
+        registrationState.setIsLoading(false);
+        Utils.showNetworkErrorToast(registrationState.context, e.toString());
+      } finally {
+        registrationState.setIsLoading(false);
+      }
+      return null;
+    });
 
 final getSubscriptionProvider = FutureProvider.family<dynamic, String>(
         (ref, params) async {
