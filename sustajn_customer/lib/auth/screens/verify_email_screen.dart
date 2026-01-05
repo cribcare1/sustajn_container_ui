@@ -147,15 +147,28 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen>  {
                               ),
                             ),
                           ),
-                          onPressed: ()async {
-                            // await  _getNetworkData(authState);
-                            // if (widget.previousScreen == "forgotPassword") {
-                             print("Tapped");
-                             await _getNetworkData(signUpState);
-                            // }
-                            // Navigator.push(context,
-                            // MaterialPageRoute(builder: (context)=> BankDetails(registrationData: registrationData!,)));
+                          onPressed: () async {
+                            if (_otpController.text.isEmpty) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please enter your OTP",
+                                color: Colors.red,
+                              );
+                              return;
+                            }
+
+                            if (_otpController.text.length != 6) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please enter a valid 6-digit OTP",
+                                color: Colors.red,
+                              );
+                              return;
+                            }
+
+                            await _getNetworkData(signUpState);
                           },
+
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: Constant.SIZE_08,
@@ -189,7 +202,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen>  {
                       ] else ...[
                         Center(
                           child: TextButton(
-                            onPressed: () {
+                            onPressed: signUpState.isLoading
+                                ? null
+                                : () {
                               _getNetworkDataVerify(signUpState);
                             },
                             child: Row(
@@ -204,7 +219,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen>  {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  Strings.RESEND,
+                                  signUpState.isLoading
+                                      ? "Sending..."
+                                      : Strings.RESEND,
                                   style: theme.textTheme.bodyLarge?.copyWith(
                                     color: Constant.gold,
                                     decoration: TextDecoration.underline,
@@ -217,6 +234,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen>  {
                           ),
                         ),
                       ],
+
 
 
                       const Spacer(),

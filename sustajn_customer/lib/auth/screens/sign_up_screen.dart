@@ -101,17 +101,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
     }
   }
 
-  bool _validateImage() {
-    if (selectedImage == null) {
-      showCustomSnackBar(
-        context: context,
-        message: 'Please select a porfile image',
-        color: Colors.green,
-      );
-      return false;
-    }
-    return true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +297,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           controller: addressCtrl,
                           hint: Strings.RESTAURANT_ADDRESS,
                           validator: (v) =>
-                          v!.isEmpty ? "Restaurant address required" : null,
+                          v!.isEmpty ? " address required" : null,
                         ),
                       ),
                     ),
@@ -339,8 +328,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                             );
                             signUpState.setRegistrationData(registrationData);
                             _getNetworkDataVerify(signUpState);
-                            // Utils.navigateToPushScreen(context, VerifyEmailScreen(previousScreen: '',
-                            // registrationData: registrationData, email: emailCtrl.text));
                           }
                         },
                         child: Text(

@@ -108,10 +108,6 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
     );
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       registrationState.setIsLoading(false);
-      // if(registrationState.context.mounted) {
-      //   showCustomSnackBar(context: registrationState.context,
-      //       message: 'Account created successfully', color:Colors.green);
-      // }
       NavUtil.navigateWithReplacement(AccountSuccessScreen());
     } else {
       Utils.showToast(responseData.message!);
@@ -186,7 +182,7 @@ final getOtpToVerifyProvider =
           registrationState.startTimer();
           showCustomSnackBar(
             context: registrationState.context,
-            message: responseData["message"],
+            message: message,
             color: Colors.green,
           );
           if (!registrationState.isResend) {
@@ -209,7 +205,7 @@ final getOtpToVerifyProvider =
           registrationState.setIsLoading(false);
         }
       } catch (e) {
-        registrationState.setSeconds(60);
+        registrationState.setSeconds(120);
         registrationState.startTimer();
         registrationState.setIsLoading(false);
         Utils.showNetworkErrorToast(registrationState.context, e.toString());
@@ -248,8 +244,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
           ResetPasswordScreen(),
         );
       } else {
-        Utils.navigateToPushScreen(
-          registrationState.context,
+        NavUtil.navigateWithReplacement(
           PaymentTypeScreen(),
         );
       }

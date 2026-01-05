@@ -32,7 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       top: false,bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
-            title: "Select Restaurant Address",
+            title: "Select Home Address",
             leading: CustomBackButton()
         ).getAppBar(context),
         body: state.loading || state.position == null

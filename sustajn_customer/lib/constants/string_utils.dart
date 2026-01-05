@@ -35,7 +35,7 @@ class Strings {
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
-  static const String EMAIL = 'Email ID';
+  static const String EMAIL = 'Email ID*';
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';

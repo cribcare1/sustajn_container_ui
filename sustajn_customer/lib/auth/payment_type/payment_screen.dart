@@ -30,50 +30,53 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: 'Payment Type',
-        leading: CustomBackButton(),
-      ).getAppBar(context),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: CustomAppBar(
+          title: 'Payment Type',
+          leading: CustomBackButton(),
+        ).getAppBar(context),
 
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior:
-            ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionTitle(theme, title: 'Card Details'),
-                _addCardButton(context, theme),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Online Payment Gateway'),
-                _paypalTile(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _applePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _googlePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank Details'),
-                _bankFields(theme),
-              ],
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior:
+              ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom +
+                    Constant.CONTAINER_SIZE_20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle(theme, title: 'Card Details'),
+                  _addCardButton(context, theme),
+                  _orDivider(theme),
+                  _sectionTitle(theme, title: 'Online Payment Gateway'),
+                  _paypalTile(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _applePay(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _googlePay(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _orDivider(theme),
+                  _sectionTitle(theme, title: 'Bank Details'),
+                  _bankFields(theme),
+                ],
+              ),
             ),
           ),
         ),
-      ),
 
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: _bottomButtons(theme, context, authState),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            child: _bottomButtons(theme, context, authState),
+          ),
         ),
       ),
     );
@@ -312,8 +315,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           child: OutlinedButton(
             onPressed: () {
               NavUtil.navigateWithReplacement( SubscriptionScreen());
-              // _getNetworkData(authState);
-              // NavUtil.navigateToPushScreen(context, SubscriptionScreen());
             },
 
             style: OutlinedButton.styleFrom(

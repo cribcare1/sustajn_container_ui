@@ -1,4 +1,5 @@
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/header.dart';
+import 'package:sustajn_customer/auth/screens/map_screen.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
@@ -90,7 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   InkWell(
                     borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
                     onTap: () {
-                      NavUtil.navigateToPushScreen(context, HomeAddress());
+                      NavUtil.navigateToPushScreen(context, MapScreen());
                     },
                     child: Container(
                       padding: EdgeInsets.all(Constant.SIZE_08),

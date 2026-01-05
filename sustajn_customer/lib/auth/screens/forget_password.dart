@@ -22,6 +22,17 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
   final _emailController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(() {
+      if (_formKey.currentState != null) {
+        _formKey.currentState!.validate();
+      }
+    });
+
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
@@ -52,6 +63,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Stack(children: [SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -105,7 +117,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
                   },
                 ),
                 SizedBox(height: height * 0.02),
-                SizedBox(
+                registrationState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
                   width: double.infinity,
                   height: 45,
                   child: ElevatedButton(
@@ -115,9 +127,12 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: (){
-                      _getNetworkData();
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _getNetworkData();
+                      }
                     },
+
                     child: Text(
                       Strings.CONTINUE_VERIFICATION,
                       style: theme.textTheme.titleMedium!
@@ -130,10 +145,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
               ],
             ),
           ),
-            if(registrationState.isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              )
+
           ],
           ),
         ),
