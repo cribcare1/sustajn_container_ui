@@ -23,7 +23,7 @@ final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
 
 final loginDetailProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(authNotifierProvider);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';

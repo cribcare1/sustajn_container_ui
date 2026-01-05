@@ -14,10 +14,12 @@ import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
+import '../auth/screens/termscondition_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/subscriptionplan_data.dart';
 import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
 import '../utils/shared_preference_utils.dart';
@@ -28,7 +30,7 @@ final signUpNotifier = ChangeNotifierProvider((ref) => SignupNotifier());
 
 final loginDetailProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
@@ -82,7 +84,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
       (ref, params) async {
     final registrationState = ref.watch(signUpNotifier);
     try {
-      var serviceProvider = ref.read(loginApiProvider);
+      var serviceProvider = ref.read(loginApiService);
       var partUrl = params[Strings.PART_URL];
       var data = params[Strings.DATA];
       var requestKey = params[Strings.REQUEST_KEY];
@@ -108,7 +110,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
 
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
@@ -139,7 +141,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 });
 
 final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.GET_OTP}';
@@ -151,8 +153,6 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
 
     if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
       registrationState.setIsLoading(false);
-      registrationState.setSeconds(60);
-      registrationState.startTimer();
       if(!registrationState.isResend) {
         Utils.navigateToPushScreen(
             registrationState.context, VerifyEmailScreen(previousScreen: ''));
@@ -160,16 +160,12 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
         registrationState.setResend(false);
       }
     } else {
-      registrationState.setSeconds(60);
-      registrationState.startTimer();
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
           message: message!, color:Colors.black);
       registrationState.setIsLoading(false);
     }
   } catch (e) {
-    registrationState.setSeconds(60);
-    registrationState.startTimer();
     registrationState.setIsLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
   }finally{
@@ -179,7 +175,7 @@ final getOtpToVerifyProvider = FutureProvider.family<dynamic, Map<String, dynami
 });
 
 final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.VERIFY_OTP}';
@@ -212,7 +208,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
 });
 
 final resetPasswordProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-  final apiService = ref.watch(loginApiProvider);
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.RESET_PASSWORD}';
@@ -230,6 +226,37 @@ final resetPasswordProvider = FutureProvider.family<dynamic, Map<String, dynamic
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
           message: message!, color:Colors.black);
+      registrationState.setIsLoading(false);
+    }
+  } catch (e) {
+    registrationState.setIsLoading(false);
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  }finally{
+    registrationState.setIsLoading(false);
+  }
+  return null;
+});
+
+final getSubscriptionProvider = FutureProvider.family<dynamic, String>(
+        (ref, params) async {
+  final apiService = ref.watch(loginApiService);
+  final registrationState = ref.watch(signUpNotifier);
+
+  try {
+
+    var   responseData = await apiService.getSubscriptionPlan(params);
+Utils.printLog(params);
+
+
+    if (responseData.status != null && responseData.status!.isNotEmpty  && responseData.status!.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+      registrationState.setIsLoading(false);
+      registrationState.setSubscriptionModel(responseData);
+
+
+    } else {
+      if(!registrationState.context.mounted) return;
+      showCustomSnackBar(context: registrationState.context,
+          message: responseData.message!, color:Colors.black);
       registrationState.setIsLoading(false);
     }
   } catch (e) {

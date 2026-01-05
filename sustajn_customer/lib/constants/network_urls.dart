@@ -11,6 +11,8 @@ class NetworkUrls {
   static const GET_OTP = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
   static const RESET_PASSWORD = "auth/change-password";
+  static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/summaries";
+
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";

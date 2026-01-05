@@ -42,8 +42,13 @@ class PaymentTypeScreen extends StatelessWidget {
                 _orDivider(theme),
                 _sectionTitle(theme, title: 'Online Payment Gateway'),
                 _paypalTile(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _applePay(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _googlePay(theme),
+                SizedBox(height: Constant.SIZE_10),
                 _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank title'),
+                _sectionTitle(theme, title: 'Bank Details'),
                 _bankFields(theme),
               ],
             ),
@@ -179,10 +184,62 @@ class PaymentTypeScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.account_balance_wallet, color: Colors.white),
+          Image.asset('assets/icons/paypal.png'),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
             'PayPal',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _applePay(ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Constant.grey.withOpacity(0.3)
+        ),
+        color:Constant.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/icons/apple_pay.png'),
+          SizedBox(width: Constant.CONTAINER_SIZE_12),
+          Text(
+            'Apple Pay',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _googlePay(ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Constant.grey.withOpacity(0.3)
+        ),
+        color:Constant.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/icons/google_pay.png'),
+          SizedBox(width: Constant.CONTAINER_SIZE_12),
+          Text(
+            'Google Pay',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -200,7 +257,9 @@ class PaymentTypeScreen extends StatelessWidget {
         SizedBox(height: Constant.SIZE_10),
         _inputField(theme, 'Account Holder Name*'),
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'IBAN and BIC'),
+        _inputField(theme, 'IBAN '),
+        SizedBox(height: Constant.SIZE_10),
+        _inputField(theme, 'BIC')
       ],
     );
   }
