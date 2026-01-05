@@ -10,6 +10,7 @@ import '../../search_resturant_screen/search_resturant_screen.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
+import '../screens/save_home_address.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -89,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   InkWell(
                     borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_26),
                     onTap: () {
-                      NavUtil.navigateToPushScreen(context, SearchRestaurantScreen());
+                      NavUtil.navigateToPushScreen(context, HomeAddress());
                     },
                     child: Container(
                       padding: EdgeInsets.all(Constant.SIZE_08),

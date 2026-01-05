@@ -92,10 +92,10 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>(
       var responseData = await serviceProvider.registerUser(partUrl, data, requestKey, image);
       if (responseData.status != null && responseData.status!.isNotEmpty) {
         registrationState.setIsLoading(false);
-        if(registrationState.context.mounted) {
-          showCustomSnackBar(context: registrationState.context,
-              message: 'Account created successfully', color:Colors.green);
-        }
+        // if(registrationState.context.mounted) {
+        //   showCustomSnackBar(context: registrationState.context,
+        //       message: 'Account created successfully', color:Colors.green);
+        // }
         NavUtil.navigateWithReplacement(
             AccountSuccessScreen());
       }else{

@@ -74,7 +74,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     },
                   ),
 
-                  // 🔴 CENTER PIN (Google Maps Style)
                   const Center(
                     child: Icon(
                       Icons.location_pin,
@@ -86,7 +85,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
-            // ADDRESS
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
