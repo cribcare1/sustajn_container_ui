@@ -62,7 +62,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showQRDialog(context);
         break;
       case 3:
-        _showFeedbackDialog(context);
+        _showFeedbackDialog(context, loginResponse);
         break;
       case 4:
         _showFreemiumSheet(context);
@@ -73,12 +73,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  void _showFeedbackDialog(BuildContext context) {
+  void _showFeedbackDialog(BuildContext context,   Data? loginResponse
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const FeedbackBottomSheet(),
+      builder: (_) =>  FeedbackBottomSheet(customerID: loginResponse!.userId! ),
     );
   }
 
