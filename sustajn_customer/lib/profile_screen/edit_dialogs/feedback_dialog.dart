@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/provider/feedback_provider.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 
-class FeedbackBottomSheet extends StatefulWidget {
-  const FeedbackBottomSheet({super.key});
+class FeedbackBottomSheet extends ConsumerStatefulWidget {
+  final int customerID;
+  const FeedbackBottomSheet({super.key,required this.customerID});
 
-  @override
-  State<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
+   @override
+  ConsumerState<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
 }
 
-class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
+class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
   int selectedIndex = -1;
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController remarksController = TextEditingController();
@@ -215,7 +222,10 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
       width: double.infinity,
       height: Constant.CONTAINER_SIZE_48,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Utils.printLog("send button click");
+          _getNetworkData();
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Constant.gold,
           shape: RoundedRectangleBorder(
@@ -232,5 +242,43 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         ),
       ),
     );
+  }
+  _getNetworkData() async {
+    final registrationState = ref.read(feedbackNotifier);
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+
+            // registrationState.setEmail(_emailController.text);
+            ref.read(feedbackProvider({
+              "customerId": widget.customerID,
+              "restaurantId": "2",
+              "rating": "5",
+              "subject": subjectController.text,
+              "remark": remarksController.text,
+            }));
+          } else {
+            registrationState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }
