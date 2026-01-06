@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/subscription_details_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/terms_and_condition_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/notifier/login_notifier.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
 import '../model/plan_model.dart';
 
-class SubscriptionScreen extends StatefulWidget {
+class SubscriptionScreen extends ConsumerStatefulWidget {
   const SubscriptionScreen({super.key});
 
   @override
-  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+  ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen> {
+class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _getNetworkData(ref.read(authNotifierProvider));
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final authState = ref.watch(authNotifierProvider);
+    if(authState.isPlanLoading == true) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+    if(authState.planError != null){
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(authState.planError!,style: theme.textTheme.titleMedium!.copyWith(color: Colors.red),),
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+            SubmitButton(onRightTap: (){},rightText: "Retry"),
+          ],
+        ),
+      );
+    }
     return SafeArea(
       top: false,
       bottom: true,
@@ -74,7 +103,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               ListView.separated(
-                itemCount: plans.length,
+                itemCount: authState.plans.length,
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
@@ -82,13 +111,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     SizedBox(height: Constant.CONTAINER_SIZE_25),
                 itemBuilder: (context, index) {
                   return PlanCard(
-                    plan: plans[index],
+                    plan: authState.plans[index],
                     onTap: () {
                       setState(() {
-                        for (var p in plans) {
+                        for (var p in authState.plans) {
                           p.isSelected = false;
                         }
-                        plans[index].isSelected = true;
+                        authState.plans[index].isSelected = true;
+                        final selectedPlan = authState.plans.firstWhere(
+                              (plan) => plan.isSelected,
+                          orElse: () => throw Exception('No plan selected'),
+                        );
+                        authState.setPlanId(selectedPlan.planId);
                       });
                     },
                   );
@@ -112,6 +146,27 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ),
       ),
     );
+  }
+  Future<void> _getNetworkData(AuthState state) async {
+    try {
+      state.setIsPlanLoading(true);
+      final isNetworkAvailable = await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+        return;
+      }
+
+      ref.read(subscriptionProvider({}));
+    } catch (e) {
+      Utils.printLog("API Error: $e");
+    }
   }
 }
 
@@ -151,7 +206,7 @@ class PlanCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        plan.title,
+                        plan.planName,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 22,
@@ -232,7 +287,7 @@ class PlanCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                plan.price,
+                plan.totalContainers.toString(),
                 style: const TextStyle(
                   color: Color(0xFF052F1E),
                   fontWeight: FontWeight.bold,

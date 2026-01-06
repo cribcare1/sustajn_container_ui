@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../auth/model/plan_model.dart';
 import '../constants/network_urls.dart';
 import '../models/register.dart';
 import '../network/ApiCallPresentator.dart';
@@ -87,6 +88,21 @@ class AuthServices {
       throw Exception(e);
     }
   }
+  Future<List<PlanModel>?> planServices()async{
 
+    var api = "${NetworkUrls.BASE_URL}${NetworkUrls.SUBSCRIPTION_LIST}";
+    try{
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(api);
+      if(response != null){
+        final List list = response['data'] ?? [];
+        return list
+            .map((e) => PlanModel.fromJson(e))
+            .toList();
+      }else{
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    }catch(e){throw Exception(e);}
+  }
 }
 final loginApiProvider = Provider<AuthServices>((ref) => AuthServices());

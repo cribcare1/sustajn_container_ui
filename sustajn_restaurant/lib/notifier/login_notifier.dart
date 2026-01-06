@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../auth/model/payment_type_model.dart';
+import '../auth/model/plan_model.dart';
 import '../auth/model/social_media_model.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
@@ -172,6 +173,34 @@ class AuthState extends ChangeNotifier{
 
   void clearGateway() {
     _gateway = null;
+    notifyListeners();
+  }
+
+  /// Subscription ///
+
+bool _isPlanLoading = false;
+  List<PlanModel> _plans = [];
+  int _planId = 0;
+  int get planId => _planId;
+bool get isPlanLoading  => _isPlanLoading;
+  List<PlanModel> get plans => _plans;
+  String? _planError;
+  String? get planError => _planError;
+
+  void setIsPlanLoading(bool isLoading){
+    _isPlanLoading = isLoading;
+    notifyListeners();
+  }
+  void setPlan(List<PlanModel> plan){
+    _plans = plan;
+    notifyListeners();
+  }
+  void setPlanId(int id){
+    _planId = id;
+    notifyListeners();
+  }
+  void setPlanError(String error){
+    _planError = error;
     notifyListeners();
   }
 }

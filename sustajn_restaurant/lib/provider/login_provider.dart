@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 
+import '../auth/model/plan_model.dart';
 import '../auth/screens/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
@@ -200,3 +201,26 @@ FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
     }
   },
 );
+
+final subscriptionProvider =
+FutureProvider.family<List<PlanModel>, Map<String, dynamic>>(
+        (ref, body) async {
+      final provider = ref.read(authNotifierProvider);
+      final service = ref.read(loginApiProvider);
+      try {
+        final response = await service.planServices();
+        provider.setPlan(response!);
+        return response;
+      } catch (e) {
+        if (provider.context.mounted) {
+          Utils.showNetworkErrorToast(
+            provider.context,
+            e.toString(),
+          );
+        }
+        provider.setPlanError(e.toString());
+        return [];
+      } finally {
+        provider.setIsPlanLoading(false);
+      }
+    });

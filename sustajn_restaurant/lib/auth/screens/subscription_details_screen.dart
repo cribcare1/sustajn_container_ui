@@ -68,14 +68,14 @@ class SubscriptionDetailsScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-         Text(planModel.title,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
+         Text(planModel.planName,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
           SizedBox(height: Constant.SIZE_10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/logo/dirham_icon.png"),
+              // Image.asset("assets/logo/dirham_icon.png"),
               Text(
-                " ${planModel.price}",
+                " ${planModel.totalContainers}",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
                   fontWeight: FontWeight.w700,
