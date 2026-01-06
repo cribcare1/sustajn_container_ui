@@ -194,6 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: Constant.gold,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Constant.gold
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {

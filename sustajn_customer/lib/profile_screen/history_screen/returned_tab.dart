@@ -84,7 +84,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
             Expanded(
               child: list.isEmpty && !historyState.isLoading
                   ? Center(
-                child: Utils.getErrorText('No borrowed containers found'),
+                child: Utils.getErrorText('No returned containers found'),
               )
                   : ListView.builder(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
