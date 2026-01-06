@@ -127,6 +127,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     "lat": state.position!.latitude,
                     "lng": state.position!.longitude,
                     "address": state.address,
+                    "postalCode": state.postalCode,
                   });
                 },
                 child: const Text(

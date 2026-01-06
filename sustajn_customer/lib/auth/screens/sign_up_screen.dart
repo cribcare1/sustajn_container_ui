@@ -44,6 +44,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   bool confirmPasswordVisible = false;
   double lat = 0.0;
   double long = 0.0;
+  String postalCode = '';
+
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -286,6 +288,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                             addressCtrl.text = value['address'];
                             lat=value['lat'];
                             long=value['lng'];
+                            postalCode = value['postalCode'] ?? '';
                           }
 
                         });
@@ -313,7 +316,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // if (!_validateImage()) return;
 
                             final registrationData = RegistrationData(
                               fullName: restaurantCtrl.text,
@@ -321,11 +323,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               phoneNumber: mobileCtrl.text,
                               password: passwordCtrl.text,
                               profileImage: selectedImage,
-                              dateOfBirth: null,
-                              address: addressCtrl.text,
+
+                              flatDoorHouseDetails: "",
+                              areaStreetCityBlockDetails: addressCtrl.text,
+                              poBoxOrPostalCode: postalCode,
+                              addressType: "HOME",
+                              addressStatus: "ACTIVE",
+
                               latitude: lat,
                               longitude: long,
+                              subscriptionPlanId: 1,
                             );
+
                             signUpState.setRegistrationData(registrationData);
                             _getNetworkDataVerify(signUpState);
                           }

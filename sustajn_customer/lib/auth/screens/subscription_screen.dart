@@ -24,11 +24,23 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   int _currentIndex = 0;
+  int? _selectedIndex;
 
   final List<String> imgList = [
     '', // add actual images if needed
     '',
   ];
+
+  int? get selectedPlanId {
+    final plans = ref.read(signUpNotifier).subscriptionList;
+    if (plans == null || plans.isEmpty) return null;
+    if (_selectedIndex == null) return null;
+    if (_selectedIndex! >= plans.length) return null;
+    return plans[_selectedIndex!].planId;
+  }
+
+
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +51,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signUpState = ref.watch(signUpNotifier);
+    final plans = signUpState.subscriptionList ?? [];
+
     final carouselHeight = MediaQuery.of(context).size.height * 0.55;
 
     return WillPopScope(
@@ -84,9 +98,23 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             setState(() => _currentIndex = index);
                           },
                         ),
-                        items: imgList.map((item) {
-                          return SingleChildScrollView(child: _freemiumCard(context, theme));
-                        }).toList(),
+                        items: List.generate(imgList.length, (index) {
+                          return GestureDetector(
+                            onLongPress: () {
+                              setState(() {
+                                _selectedIndex = index;
+                              });
+                            },
+                            child: SingleChildScrollView(
+                              child: _freemiumCard(
+                                context,
+                                theme,
+                                isSelected: _selectedIndex == index,
+                              ),
+                            ),
+                          );
+                        }),
+
                       ),
                     ),
 
@@ -116,6 +144,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
+                          final planId = selectedPlanId;
+                          if (planId == null) {
+                            showCustomSnackBar(
+                              context: context,
+                              message: "Please select a subscription plan",
+                              color: Colors.red,
+                            );
+                            return;
+                          }
+                          ref.read(signUpNotifier).setSubscriptionPlan(planId);
                           NavUtil.navigateWithReplacement(TermsconditionScreen());
                         },
                         style: ElevatedButton.styleFrom(
@@ -152,8 +190,11 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     );
   }
 
-  // ---------- Freemium Card ----------
-  Widget _freemiumCard(BuildContext context, ThemeData theme) {
+  Widget _freemiumCard(
+      BuildContext context,
+      ThemeData theme, {
+        required bool isSelected,
+      }) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(Constant.SIZE_06),
@@ -180,11 +221,14 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: Icon(
+              child: isSelected
+                  ? Icon(
                 Icons.check_circle,
-                color: Constant.white,
-              ),
+                color: Constant.gold,
+              )
+                  : const SizedBox(height: 24),
             ),
+
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Icon(
               Icons.percent,
@@ -257,6 +301,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   Widget _learnMoreButton(BuildContext context, ThemeData theme) {
     return OutlinedButton(
       onPressed: () {
+        final planId = selectedPlanId;
+        if (planId == null) {
+          showCustomSnackBar(
+            context: context,
+            message: "Please select a subscription plan",
+            color: Colors.red,
+          );
+          return;
+        }
+        ref.read(signUpNotifier).setSubscriptionPlan(planId);
         NavUtil.navigateToPushScreen(context, PlandetailsScreen());
       },
       style: OutlinedButton.styleFrom(

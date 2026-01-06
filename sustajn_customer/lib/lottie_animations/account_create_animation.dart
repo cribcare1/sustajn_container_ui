@@ -17,7 +17,7 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 4), () {
       if (!mounted) return;
 
       Navigator.pushAndRemoveUntil(

@@ -268,16 +268,17 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
         final nested = removeNullAndEmpty(
           Map<String, dynamic>.from(value),
         );
-        if (nested.isNotEmpty) {
-          cleanedMap[key] = nested;
-        }
-      } else if (value.toString().trim().isNotEmpty) {
+
+        cleanedMap[key] = nested;
+      }
+      else {
         cleanedMap[key] = value;
       }
     });
 
     return cleanedMap;
   }
+
 
   _getNetworkData(var registrationState) async {
     try {
