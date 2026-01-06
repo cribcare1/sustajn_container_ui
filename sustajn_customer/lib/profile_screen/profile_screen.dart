@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
+import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
 import '../auth/dashboard_screen/generate_qr_screen.dart';
@@ -144,7 +145,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             centerTitle: true,
             backgroundColor: Constant.gold,
             surfaceTintColor: Constant.gold,
-            leading: SizedBox.shrink(),
+            leading: Container(
+              width: Constant.CONTAINER_SIZE_30,
+              height: Constant.CONTAINER_SIZE_30,
+              margin: EdgeInsets.all(Constant.SIZE_08),
+              decoration: BoxDecoration(
+                color: Constant.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(color: Constant.grey, width: 0.3),
+              ),
+              child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
+            ),
             title:  Text(
               "My Profile",
               style: TextStyle(
