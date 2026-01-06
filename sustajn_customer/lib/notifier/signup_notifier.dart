@@ -149,6 +149,26 @@ class SignupNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setAddress({
+    required String address,
+    String? postalCode,
+    required double latitude,
+    required double longitude,
+  }) {
+    if (_registrationData == null) {
+      _registrationData = RegistrationData();
+    }
+
+    _registrationData!
+      ..areaStreetCityBlockDetails = address
+      ..poBoxOrPostalCode = postalCode
+      ..latitude = latitude
+      ..longitude = longitude;
+
+    notifyListeners();
+  }
+
+
 
   void setIsForgotPassword(var value){
     _isForgotPassword = value;

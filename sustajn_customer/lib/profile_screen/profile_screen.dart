@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
@@ -39,6 +42,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Data? loginResponse;
   bool isLoading = true;
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
 
   @override
   void initState() {
@@ -124,6 +130,31 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     NavUtil.navigateToPushScreen(context, HistoryHomeScreen(userId: loginResponse!.userId!,));
   }
 
+  Future<void> _pickFromCamera() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if (isLoading || loginResponse == null) {
@@ -145,16 +176,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             centerTitle: true,
             backgroundColor: Constant.gold,
             surfaceTintColor: Constant.gold,
-            leading: Container(
-              width: Constant.CONTAINER_SIZE_30,
-              height: Constant.CONTAINER_SIZE_30,
-              margin: EdgeInsets.all(Constant.SIZE_08),
-              decoration: BoxDecoration(
-                color: Constant.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: Constant.grey, width: 0.3),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: Constant.CONTAINER_SIZE_30,
+                height: Constant.CONTAINER_SIZE_30,
+                margin: EdgeInsets.all(Constant.SIZE_08),
+                decoration: BoxDecoration(
+                  color: Constant.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(color: Constant.grey, width: 0.3),
+                ),
+                child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
               ),
-              child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
             ),
             title:  Text(
               "My Profile",
@@ -190,18 +226,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Constant.gold,
                               width: 2,
                             ),
-                            image: const DecorationImage(
-                              image:
-                              NetworkImage(
+                            image: DecorationImage(
+                              image: _profileImage != null
+                                  ? FileImage(_profileImage!)
+                                  : const NetworkImage(
                                 "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                              ),
+                              ) as ImageProvider,
                               fit: BoxFit.cover,
                             ),
+
                           ),
                         ),
                         GestureDetector(
                           onTap: (){
-                            Utils.showProfilePhotoBottomSheet(context);
+                            Utils.showProfilePhotoBottomSheet(context,
+                              onCamera: _pickFromCamera,
+                              onGallery: _pickFromGallery,);
                           },
                           child: Container(
                             height: w * 0.09,
@@ -236,11 +276,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => const EditUserNameDialog(),
+                                builder: (context) => EditUserNameDialog(userName:  loginResponse!.fullName ?? "",),
                               );
-
-
-                            },
+                              },
                             child: Icon(Icons.edit_outlined,
                                 size: w * 0.045, color: Colors.white)),
                       ],

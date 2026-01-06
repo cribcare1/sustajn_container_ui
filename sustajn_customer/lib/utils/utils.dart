@@ -18,7 +18,12 @@ import '../models/login_model.dart';
 class Utils {
 
 
-  static  showProfilePhotoBottomSheet(BuildContext context) {
+  static showProfilePhotoBottomSheet(
+      BuildContext context, {
+        required VoidCallback onCamera,
+        required VoidCallback onGallery,
+      }) {
+
     final theme = CustomTheme.getTheme(true);
     showModalBottomSheet(
       context: context,
@@ -87,6 +92,7 @@ class Utils {
                       iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
+                        onCamera();
                       },
                     ),
 
@@ -98,6 +104,7 @@ class Utils {
                       iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
+                        onGallery();
                       },
                     ),
                        // todo this may need in future
