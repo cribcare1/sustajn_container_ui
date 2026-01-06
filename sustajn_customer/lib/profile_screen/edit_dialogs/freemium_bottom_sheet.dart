@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/subscriptionplan_data.dart';
 import '../../network_provider/network_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../provider/subscription_provider.dart';
 import '../../utils/utils.dart';
 
@@ -19,6 +21,8 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final signUpState = ref.watch(signUpNotifier);
+    final plans = signUpState.subscriptionList ?? [];
 
     return SafeArea(
       child: Padding(
@@ -31,7 +35,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
 
             Flexible(
               child: SingleChildScrollView(
-                child: _freemiumCard(theme),
+                child: _freemiumCard(theme,plans),
               ),
             ),
 
@@ -57,7 +61,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _freemiumCard(ThemeData theme) {
+  Widget _freemiumCard(ThemeData theme,List<SubscriptionData> plan) {
     return Container(
       padding: EdgeInsets.all(Constant.SIZE_03),
       decoration: BoxDecoration(
@@ -84,11 +88,11 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
         ),
         child: Column(
           children: [
-            _iconSection(theme),
+            _iconSection(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_12),
-            _priceSection(theme),
+            _priceSection(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-            _featureList(theme),
+            _featureList(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
             _learnMoreButton(theme),
           ],
@@ -97,7 +101,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _iconSection(ThemeData theme) {
+  Widget _iconSection(ThemeData theme,List<SubscriptionData> plan, ) {
     return Column(
       children: [
         Icon(
@@ -107,7 +111,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
         ),
         SizedBox(height: Constant.SIZE_10),
         Text(
-          'Freemium',
+         plan.first.planType??'',
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
           ),
@@ -116,9 +120,9 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _priceSection(ThemeData theme) {
+  Widget _priceSection(ThemeData theme,List<SubscriptionData> plan, ) {
     return Text(
-      '₹ 0.00',
+      "₹ ${plan.first.feeType?.toStringAsFixed(2) ?? "0.00"}",
       style: theme.textTheme.headlineMedium?.copyWith(
         color: Constant.gold,
         fontWeight: FontWeight.w600,
@@ -126,18 +130,14 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _featureList(ThemeData theme) {
+  Widget _featureList(ThemeData theme,List<SubscriptionData> plan) {
     return Column(
       children: [
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.\nVel ac nunc tempus ornare neque odio massa in quis.'),
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.'),
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.'),
+        _featureItem(theme,plan.first.description??''),
       ],
     );
   }
+
 
   Widget _featureItem(ThemeData theme, String text) {
     return Padding(

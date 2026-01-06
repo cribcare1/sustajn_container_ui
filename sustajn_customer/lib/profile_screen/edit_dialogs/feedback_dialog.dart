@@ -140,8 +140,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               onTap: () {
                 setState(() {
                   selectedIndex = index;
-                  remarksController.text =
-                  '${feedbackOptions[index]['label']} ';
+                  // remarksController.text =
+                  // '${feedbackOptions[index]['label']} ';
                 });
               },
               child: Column(
