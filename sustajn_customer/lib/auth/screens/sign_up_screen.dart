@@ -281,29 +281,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         return null;
                       },
                     ),
-                    // InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                    //       if(value != null){
-                    //         addressCtrl.text = value['address'];
-                    //         lat=value['lat'];
-                    //         long=value['lng'];
-                    //         postalCode = value['postalCode'] ?? '';
-                    //       }
-                    //
-                    //     });
-                    //   },
-                    //   child: IgnorePointer(
-                    //     child: _buildTextField(
-                    //       readOnly: true,
-                    //       context,
-                    //       controller: addressCtrl,
-                    //       hint: Strings.RESTAURANT_ADDRESS,
-                    //       validator: (v) =>
-                    //       v!.isEmpty ? " address required" : null,
-                    //     ),
-                    //   ),
-                    // ),
                     signUpState.isLoading?Center(child: CircularProgressIndicator(),):SizedBox(
                       width: double.infinity,
                       height: 48,
@@ -361,6 +338,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color:Constant.gold,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Constant.gold
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
