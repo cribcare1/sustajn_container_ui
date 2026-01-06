@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
 import '../auth/dashboard_screen/generate_qr_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../common_widgets/custom_cricle_painter.dart';
+import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/subscriptionplan_data.dart';
+import '../network_provider/network_provider.dart';
+import '../provider/signup_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
@@ -19,14 +24,14 @@ import 'history_screen/history_home_screen.dart';
 
 
 
-class MyProfileScreen extends StatefulWidget {
+class MyProfileScreen extends ConsumerStatefulWidget {
   const MyProfileScreen({super.key});
 
   @override
-  State<MyProfileScreen> createState() => _MyProfileScreenState();
+  ConsumerState<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
-class _MyProfileScreenState extends State<MyProfileScreen> {
+class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "History", "icon": Icons.history},
     {"name": "Payment Type", "icon": Icons.currency_rupee},
@@ -42,6 +47,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _getNetworkData();
     _loadProfile();
   }
 
@@ -54,7 +60,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
 
-  void _handleItemTap(int index, BuildContext context) {
+  void _handleItemTap(int index, BuildContext context,int planID) {
     switch (index) {
       case 0:
         _showHistoryScreen(context);
@@ -69,7 +75,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showFeedbackDialog(context, loginResponse);
         break;
       case 4:
-        _showFreemiumSheet(context);
+        _showFreemiumSheet(context,planID);
         break;
       case 5:
         _showContactDialog(context);
@@ -83,7 +89,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>  FeedbackBottomSheet(customerID: loginResponse!.userId! ),
+      builder: (_) =>  FeedbackBottomSheet(userId: loginResponse!.userId! ),
     );
   }
 
@@ -100,15 +106,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  void _showFreemiumSheet(BuildContext context){
+  void _showFreemiumSheet(BuildContext context, int? planId) {
+    if (planId == null) {
+      Utils.printLog("PlanId is null");
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => const FreemiumBottomSheet(),
+      builder: (_) => FreemiumBottomSheet(
+        userID: loginResponse!.userId!,
+        planID: planId,
+      ),
     );
-
   }
+
 
   void _showQRDialog(BuildContext context){
     showDialog(
@@ -126,6 +140,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final signUpState = ref.watch(signUpNotifier);
+
+    final planId = signUpState.subscriptionModel?.data?.first.planId;
+
     if (isLoading || loginResponse == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -315,7 +333,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
                             title: Text(item['name'], style: TextStyle(fontSize: 14, color: Colors.white)),
                             trailing: Icon(Icons.arrow_forward_ios, size: w*0.044, color: Constant.grey,),
-                            onTap: () => _handleItemTap(index, context),
+                            onTap: () => _handleItemTap(index, context,planId!),
                           );
                         },
                       ),
@@ -413,5 +431,39 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ],
     );
   }
+
+  _getNetworkData() async {
+    final registrationState = ref.read(signUpNotifier);
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+            var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
+
+            ref.read(getSubscriptionProvider(url));
+          } else {
+            registrationState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
+
 
 }

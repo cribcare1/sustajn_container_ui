@@ -1,14 +1,14 @@
 class FeedbackModel {
   String? status;
   String? message;
-  dynamic data; // ✅ FIX
+  dynamic data;
 
   FeedbackModel({this.status, this.data, this.message});
 
   FeedbackModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = json['data']; // ✅ FIX
+    data = json['data'];
   }
 
   Map<String, dynamic> toJson() {

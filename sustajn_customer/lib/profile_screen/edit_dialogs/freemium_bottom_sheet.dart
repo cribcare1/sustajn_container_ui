@@ -1,9 +1,21 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/subscription_provider.dart';
+import '../../utils/utils.dart';
 
-class FreemiumBottomSheet extends StatelessWidget {
-  const FreemiumBottomSheet({super.key});
+class FreemiumBottomSheet extends ConsumerStatefulWidget {
+  final int userID;
+  final int planID;
+  const FreemiumBottomSheet({super.key,required this.userID,required this.planID});
 
+  @override
+  ConsumerState<FreemiumBottomSheet> createState() => _FreemiumBottomSheetState();
+}
+
+class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -178,7 +190,10 @@ class FreemiumBottomSheet extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Utils.printLog("send button click");
+          _getNetworkData();
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Constant.gold,
           shape: RoundedRectangleBorder(
@@ -198,4 +213,40 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
+  _getNetworkData() async {
+    final registrationState = ref.read(subscriptionNotifier);
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+
+            // registrationState.setEmail(_emailController.text);
+            ref.read(feedbackProvider({
+              "userId": widget.userID,
+              // "restaurantId": "2",
+              "subscriptionPlanId":widget.planID
+            }));
+          } else {
+            registrationState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
 }
