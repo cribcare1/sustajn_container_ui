@@ -197,6 +197,9 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String YES = 'Yes';
   static const String NO = 'No';
   static const USER_REGISTERED_SUCCESS = 'Account created successfully';
+  static const BUSINESS_INFORMATION = "Business Information";
+  static const PROVIDE_INFORMATION = "Provide information to help customers find you.";
+  static const PAYMENT_TYPE = "Payment Type";
 
 
 

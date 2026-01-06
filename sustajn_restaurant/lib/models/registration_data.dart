@@ -18,6 +18,7 @@ class RegistrationData {
   String? bankName;
   String? accountNumber;
   String? taxNumber;
+  String? image;
 
   List<Map<String, dynamic>> socialMediaList = [];
 
@@ -36,6 +37,7 @@ class RegistrationData {
     this.bankName,
     this.accountNumber,
     this.taxNumber,
+    this.image,
     List<Map<String, dynamic>>? socialMediaList,
   }) {
     if (socialMediaList != null) {
@@ -52,6 +54,7 @@ class RegistrationData {
       "address": address,
       "latitude": latitude,
       "longitude": longitude,
+      "image": image,
       "basicDetails": {
         "speciality": speciality,
         "websiteDetails": websiteDetails,

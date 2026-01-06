@@ -14,6 +14,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/sharedpreference_utils.dart';
 import '../../utils/utility.dart';
+import '../edit_dialogs/business_information_screen.dart';
 import 'login_screen.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
@@ -359,55 +360,57 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
           );
           return;
+        }else{
+          Utils.navigateToPushScreen(context, BusinessInformationScreen());
         }
 
         /// 🔹 Signup Flow
-        final Map<String, dynamic>? data =
-            await SharedPreferenceUtils.getMapFromSF("signUp");
-
-        print("SIGNUP DATA FROM SF =====> $data");
-
-        if (data == null) {
-          showCustomSnackBar(
-            context: context,
-            message: "Signup data not found",
-            color: Colors.red,
-          );
-          return;
-        }
-
-        /// Show loading before register API
-        registrationState.setIsLoading(true);
-
-        ref
-            .read(registerProvider(data).future)
-            .then((registerResponse) {
-              registrationState.setIsLoading(false);
-
-              if (!mounted) return;
-
-              if (registerResponse.status != null &&
-                  registerResponse.status?.toLowerCase() == Strings.SUCCESS) {
-                showCustomSnackBar(
-                  context: context,
-                  message: Strings.USER_REGISTERED_SUCCESS,
-                  color: Colors.green,
-                );
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                );
-              } else {
-                Utils.showToast(
-                  registerResponse.message ?? "Registration failed",
-                );
-              }
-            })
-            .catchError((e) {
-              registrationState.setIsLoading(false);
-              Utils.showNetworkErrorToast(context, e.toString());
-            });
+        // final Map<String, dynamic>? data =
+        //     await SharedPreferenceUtils.getMapFromSF("signUp");
+        //
+        // print("SIGNUP DATA FROM SF =====> $data");
+        //
+        // if (data == null) {
+        //   showCustomSnackBar(
+        //     context: context,
+        //     message: "Signup data not found",
+        //     color: Colors.red,
+        //   );
+        //   return;
+        // }
+        //
+        // /// Show loading before register API
+        // registrationState.setIsLoading(true);
+        //
+        // ref
+        //     .read(registerProvider(data).future)
+        //     .then((registerResponse) {
+        //       registrationState.setIsLoading(false);
+        //
+        //       if (!mounted) return;
+        //
+        //       if (registerResponse.status != null &&
+        //           registerResponse.status?.toLowerCase() == Strings.SUCCESS) {
+        //         showCustomSnackBar(
+        //           context: context,
+        //           message: Strings.USER_REGISTERED_SUCCESS,
+        //           color: Colors.green,
+        //         );
+        //
+        //         Navigator.pushReplacement(
+        //           context,
+        //           MaterialPageRoute(builder: (_) => LoginScreen()),
+        //         );
+        //       } else {
+        //         Utils.showToast(
+        //           registerResponse.message ?? "Registration failed",
+        //         );
+        //       }
+        //     })
+        //     .catchError((e) {
+        //       registrationState.setIsLoading(false);
+        //       Utils.showNetworkErrorToast(context, e.toString());
+        //     });
       }
       /// 4️⃣ OTP FAILED
       else {
