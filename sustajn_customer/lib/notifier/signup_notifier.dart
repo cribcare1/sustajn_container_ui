@@ -25,6 +25,14 @@ class SignupNotifier extends ChangeNotifier{
   int _seconds = 120;
   BuildContext? _context;
   File? _image;
+  String _bankName = '';
+  String _accountHolderName = '';
+  String _iban = '';
+  String _bic = '';
+  String? _bankNameError;
+  String? _accountHolderError;
+  String? _ibanError;
+  String? _bicError;
   RegistrationData? _registrationData;
   SubscriptionModel? _subscriptionModel;
   List<SubscriptionData>? data = [];
@@ -44,6 +52,11 @@ class SignupNotifier extends ChangeNotifier{
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
   File? get image => _image;
+  String? get bankNameError => _bankNameError;
+  String? get accountHolderError => _accountHolderError;
+  String? get ibanError => _ibanError;
+  String? get bicError => _bicError;
+
   RegistrationData? get registrationData => _registrationData;
   SubscriptionModel? get subscriptionModel => _subscriptionModel;
   List<SubscriptionData>? get subscriptionList=> data;
@@ -75,6 +88,67 @@ class SignupNotifier extends ChangeNotifier{
     _validateName();
     notifyListeners();
   }
+
+  void setSubscriptionPlan(int planId) {
+    if (_registrationData == null) return;
+
+    _registrationData!.subscriptionPlanId = planId;
+    notifyListeners();
+  }
+
+
+  void setBankName(String value) {
+    _bankName = value;
+    if (_bankName.isEmpty) {
+      _bankNameError = 'Bank name is required';
+    } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(_bankName)) {
+      _bankNameError = 'Special characters are not allowed';
+    } else {
+      _bankNameError = null;
+    }
+    notifyListeners();
+  }
+
+  void setAccountHolderName(String value) {
+    _accountHolderName = value;
+    if (_accountHolderName.isEmpty) {
+      _accountHolderError = 'Account holder name is required';
+    } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(_accountHolderName)) {
+      _accountHolderError = 'Special characters are not allowed';
+    } else {
+      _accountHolderError = null;
+    }
+    notifyListeners();
+  }
+
+  void setIban(String value) {
+    _iban = value.toUpperCase();
+    if (_iban.isEmpty) {
+      _ibanError = 'IBAN is required';
+    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_iban)) {
+      _ibanError = 'Only letters and numbers allowed';
+    } else if (_iban.length < 15 || _iban.length > 34) {
+      _ibanError = 'IBAN must be 15–34 characters';
+    } else {
+      _ibanError = null;
+    }
+    notifyListeners();
+  }
+
+  void setBic(String value) {
+    _bic = value.toUpperCase();
+    if (_bic.isEmpty) {
+      _bicError = 'BIC is required';
+    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_bic)) {
+      _bicError = 'Only letters and numbers allowed';
+    } else if (_bic.length != 8 && _bic.length != 11) {
+      _bicError = 'BIC must be 8 or 11 characters';
+    } else {
+      _bicError = null;
+    }
+    notifyListeners();
+  }
+
 
   void setIsForgotPassword(var value){
     _isForgotPassword = value;
@@ -168,6 +242,30 @@ class SignupNotifier extends ChangeNotifier{
     _isPasswordVisible = !_isPasswordVisible;
     notifyListeners();
   }
+
+  bool get isBankFormValid {
+    return _bankNameError == null &&
+        _accountHolderError == null &&
+        _ibanError == null &&
+        _bicError == null &&
+        _bankName.isNotEmpty &&
+        _accountHolderName.isNotEmpty &&
+        _iban.isNotEmpty &&
+        _bic.isNotEmpty;
+  }
+
+  void updateBankDetails() {
+    if (_registrationData == null) return;
+
+    _registrationData!
+      ..bankName = _bankName
+      ..accountHolderName = _accountHolderName
+      ..iban = _iban
+      ..bic = _bic;
+
+    notifyListeners();
+  }
+
 
 
   void startTimer() {

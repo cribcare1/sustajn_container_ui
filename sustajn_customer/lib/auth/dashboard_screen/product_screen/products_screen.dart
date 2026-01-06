@@ -238,7 +238,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
           ref.read(productProvider).clearProductList();
           ref.read(productProvider).setIsLoading(true);
 
-          final url = '${NetworkUrls.PRODUCT_DATA}1';
+          final url = '${NetworkUrls.PRODUCT_DATA}${widget.userId}';
           Utils.printLog("Fetching URL: $url");
           ref.read(borrowedProvider(url));
         } else {

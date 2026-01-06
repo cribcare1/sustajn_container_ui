@@ -19,6 +19,7 @@ class NetworkUrls {
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
   static const PRODUCT_DATA = 'orders/productsSummary/';
+  static const SEARCH_RESTAURANT ="auth/searchRestaurant";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
