@@ -5,9 +5,11 @@ import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../models/subscriptionplan_data.dart';
 
 class PlandetailsScreen extends StatelessWidget {
-  const PlandetailsScreen({super.key});
+  final SubscriptionData plan;
+  const PlandetailsScreen({super.key, required this.plan});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class PlandetailsScreen extends StatelessWidget {
               SizedBox(height: Constant.CONTAINER_SIZE_24),
               Expanded(
                 child: SingleChildScrollView(
-                  child: _featureList(theme),
+                  child: _featureList(theme, plan.description??""),
                 ),
               ),
 
@@ -100,7 +102,7 @@ class PlandetailsScreen extends StatelessWidget {
             SizedBox(height: Constant.SIZE_10),
 
             Text(
-              "Freemium",
+              plan.planName ?? "",
               style: theme.textTheme.titleLarge?.copyWith(
                 color: Colors.white,
               ),
@@ -109,7 +111,7 @@ class PlandetailsScreen extends StatelessWidget {
             SizedBox(height: Constant.SIZE_08),
 
             Text(
-              "₹0.00",
+              "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: Constant.gold,
                 fontWeight: FontWeight.w700,
@@ -120,22 +122,18 @@ class PlandetailsScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _featureList(ThemeData theme) {
-    final features = [
-      "Lorem ipsum dolor sit amet consectetur. Vel ac nunc tempus ornare neque odio massa in quis.",
-      "Lorem ipsum dolor sit amet consectetur.",
-      "Lorem Ipsum",
-      "Lorem ipsum dolor sit amet consectetur. Vitae eu",
-      "Lorem Ipsum",
-      "Lorem ipsum dolor sit amet consectetur. Vitae eu",
-    ];
+  Widget _featureList(ThemeData theme, String description) {
+    if (description.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
-      children: features
-          .map((e) => _featureItem(theme, e))
-          .toList(growable: false),
+      children: [
+        _featureItem(theme, description),
+      ],
     );
   }
+
 
   Widget _featureItem(ThemeData theme, String text) {
     return Padding(
