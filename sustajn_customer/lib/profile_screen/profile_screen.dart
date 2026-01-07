@@ -1,21 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
-import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
 import '../auth/dashboard_screen/generate_qr_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../common_widgets/custom_cricle_painter.dart';
+import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/subscriptionplan_data.dart';
+import '../network_provider/network_provider.dart';
+import '../provider/signup_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
-import 'edit_dialogs/edit_payment.dart';
+import 'edit_dialogs/edit_payment.dart' hide PaymentTypeScreen;
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
 import 'edit_dialogs/freemium_bottom_sheet.dart';
@@ -23,14 +24,14 @@ import 'history_screen/history_home_screen.dart';
 
 
 
-class MyProfileScreen extends StatefulWidget {
+class MyProfileScreen extends ConsumerStatefulWidget {
   const MyProfileScreen({super.key});
 
   @override
-  State<MyProfileScreen> createState() => _MyProfileScreenState();
+  ConsumerState<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
-class _MyProfileScreenState extends State<MyProfileScreen> {
+class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "History", "icon": Icons.history},
     {"name": "Payment Type", "icon": Icons.currency_rupee},
@@ -42,13 +43,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Data? loginResponse;
   bool isLoading = true;
-  File? _profileImage;
-  final ImagePicker _picker = ImagePicker();
-
 
   @override
   void initState() {
     super.initState();
+    _getNetworkData();
     _loadProfile();
   }
 
@@ -61,7 +60,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
 
-  void _handleItemTap(int index, BuildContext context) {
+  void _handleItemTap(int index, BuildContext context,int planID) {
     switch (index) {
       case 0:
         _showHistoryScreen(context);
@@ -73,10 +72,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         _showQRDialog(context);
         break;
       case 3:
-        _showFeedbackDialog(context);
+        _showFeedbackDialog(context, loginResponse);
         break;
       case 4:
-        _showFreemiumSheet(context);
+        _showFreemiumSheet(context,planID);
         break;
       case 5:
         _showContactDialog(context);
@@ -84,17 +83,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  void _showFeedbackDialog(BuildContext context) {
+  void _showFeedbackDialog(BuildContext context,   Data? loginResponse
+      ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const FeedbackBottomSheet(),
+      builder: (_) =>  FeedbackBottomSheet(userId: loginResponse!.userId! ),
     );
   }
 
   void _showPaymentScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
   }
 
   void _showContactDialog(BuildContext context){
@@ -106,15 +106,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  void _showFreemiumSheet(BuildContext context){
+  void _showFreemiumSheet(BuildContext context, int? planId) {
+    if (planId == null) {
+      Utils.printLog("PlanId is null");
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (_) => const FreemiumBottomSheet(),
+      builder: (_) => FreemiumBottomSheet(
+        userID: loginResponse!.userId!,
+        planID: planId,
+      ),
     );
-
   }
+
 
   void _showQRDialog(BuildContext context){
     showDialog(
@@ -130,33 +138,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     NavUtil.navigateToPushScreen(context, HistoryHomeScreen(userId: loginResponse!.userId!,));
   }
 
-  Future<void> _pickFromCamera() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
-    if (image != null) {
-      setState(() {
-        _profileImage = File(image.path);
-      });
-    }
-  }
-
-  Future<void> _pickFromGallery() async {
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-    if (image != null) {
-      setState(() {
-        _profileImage = File(image.path);
-      });
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
+    final signUpState = ref.watch(signUpNotifier);
+
+    final planId = signUpState.subscriptionModel?.data?.first.planId;
+
     if (isLoading || loginResponse == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -176,22 +163,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             centerTitle: true,
             backgroundColor: Constant.gold,
             surfaceTintColor: Constant.gold,
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                width: Constant.CONTAINER_SIZE_30,
-                height: Constant.CONTAINER_SIZE_30,
-                margin: EdgeInsets.all(Constant.SIZE_08),
-                decoration: BoxDecoration(
-                  color: Constant.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: Constant.grey, width: 0.3),
-                ),
-                child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
-              ),
-            ),
+            leading: SizedBox.shrink(),
             title:  Text(
               "My Profile",
               style: TextStyle(
@@ -226,22 +198,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               color: Constant.gold,
                               width: 2,
                             ),
-                            image: DecorationImage(
-                              image: _profileImage != null
-                                  ? FileImage(_profileImage!)
-                                  : const NetworkImage(
+                            image: const DecorationImage(
+                              image:
+                              NetworkImage(
                                 "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                              ) as ImageProvider,
+                              ),
                               fit: BoxFit.cover,
                             ),
-
                           ),
                         ),
                         GestureDetector(
                           onTap: (){
-                            Utils.showProfilePhotoBottomSheet(context,
-                              onCamera: _pickFromCamera,
-                              onGallery: _pickFromGallery,);
+                            Utils.showProfilePhotoBottomSheet(context, onCamera: () {  }, onGallery: () {  });
                           },
                           child: Container(
                             height: w * 0.09,
@@ -276,9 +244,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => EditUserNameDialog(userName:  loginResponse!.fullName ?? "",),
+                                builder: (context) => const EditUserNameDialog(userName: '',),
                               );
-                              },
+
+
+                            },
                             child: Icon(Icons.edit_outlined,
                                 size: w * 0.045, color: Colors.white)),
                       ],
@@ -363,7 +333,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
                             title: Text(item['name'], style: TextStyle(fontSize: 14, color: Colors.white)),
                             trailing: Icon(Icons.arrow_forward_ios, size: w*0.044, color: Constant.grey,),
-                            onTap: () => _handleItemTap(index, context),
+                            onTap: () => _handleItemTap(index, context,planId!),
                           );
                         },
                       ),
@@ -461,5 +431,39 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ],
     );
   }
+
+  _getNetworkData() async {
+    final registrationState = ref.read(signUpNotifier);
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+            var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
+
+            ref.read(getSubscriptionProvider(url));
+          } else {
+            registrationState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
+
 
 }
