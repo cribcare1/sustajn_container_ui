@@ -96,14 +96,14 @@ class Strings{
   static const CONFIRM_PASSWORD = 'Confirm Password';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
-  static const ALREADY_HAVE_ACC = 'Already have an account?';
+  static const ALREADY_HAVE_ACC = 'Already have an account? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD= 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
   static const WELCOME = 'Welcome';
   static const LOGIN_YOUR_ACC = 'Login to your account';
   static const FORGOT_PASSWORD = 'Forgot Password?';
-  static const DONT_HAVE_ACC = "Don't have an account ?";
+  static const DONT_HAVE_ACC = "Don't have an account? ";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';

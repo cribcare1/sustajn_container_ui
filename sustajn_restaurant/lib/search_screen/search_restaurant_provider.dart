@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:sustajn_restaurant/search_screen/search_res_service.dart';
-import 'package:sustajn_restaurant/search_screen/search_res_state.dart';
+import 'package:sustajn_restaurant/search_screen/search_restaurant_service.dart';
+import 'package:sustajn_restaurant/search_screen/search_restaurant_state.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_model.dart';
 
 import '../utils/utility.dart';
 
-final searchResProvider = ChangeNotifierProvider<SearchResState>((res) => SearchResState());
+final searchResProvider = ChangeNotifierProvider<SearchRestaurantState>((res) => SearchRestaurantState());
 
 final searchRes =
 FutureProvider.family<List<SearchData>, Map<String, dynamic>>(

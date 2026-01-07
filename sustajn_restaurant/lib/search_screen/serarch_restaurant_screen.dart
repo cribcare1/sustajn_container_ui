@@ -4,7 +4,7 @@ import 'package:sustajn_restaurant/auth/auth_state/location_state.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
-import 'package:sustajn_restaurant/search_screen/search_res_provider.dart';
+import 'package:sustajn_restaurant/search_screen/search_restaurant_provider.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_model.dart';
 
 import '../../utils/theme_utils.dart';

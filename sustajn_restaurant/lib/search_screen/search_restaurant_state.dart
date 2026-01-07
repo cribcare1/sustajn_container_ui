@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_model.dart';
 
-class SearchResState extends ChangeNotifier{
+class SearchRestaurantState extends ChangeNotifier{
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   BuildContext? _context;
