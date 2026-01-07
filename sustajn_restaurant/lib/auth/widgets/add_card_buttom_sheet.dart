@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
@@ -71,7 +72,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     _cardHolderNameController,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return '';
+                        return 'Card holder name required';
                       }
                       return null;
                     },
@@ -82,9 +83,17 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     'Card Number*',
                     _cardNumberController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CardNumberInputFormatter(),
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return '';
+                        return 'Card no. required';
+                      }
+                      final digitsOnly = value.replaceAll(' ', '');
+                      if (digitsOnly.length != 12) {
+                        return 'Card number must be 12 digits';
                       }
                       return null;
                     },
@@ -94,15 +103,25 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     children: [
                       Expanded(
                         child: _cardField(
+                          isReadOnly: true,
                           theme,
                           'Expiration Date',
                           _expiryDateController,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return '';
+                              return 'Expiry date required';
                             }
                             return null;
                           },
+                          onTap: ()async{
+                            final date = await showDatePicker(context: context,
+                                firstDate: DateTime.now(),
+                                initialDate: DateTime.now(),
+                                lastDate: DateTime(3000));
+                            if(date != null){
+                              _expiryDateController.text = "${date.day}/${date.month}/${date.year}";
+                            }
+                          }
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_10),
@@ -112,9 +131,16 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                           'CVV',
                           _cvvController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(3),
+                          ],
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return '';
+                              return 'CVV is required';
+                            }
+                            if (value.length != 3) {
+                              return 'CVV must be 3 digits';
                             }
                             return null;
                           },
@@ -182,20 +208,26 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   }
 
   Widget _cardField(
-    ThemeData theme,
-    String hint,
-    TextEditingController controller, {
-    String? Function(String?)? validator,
-    TextInputType keyboardType = TextInputType.text,
-    bool obscureText = false,
-  }) {
+      ThemeData theme,
+      String hint,
+      TextEditingController controller, {
+        String? Function(String?)? validator,
+        TextInputType keyboardType = TextInputType.text,
+        bool obscureText = false,
+        List<TextInputFormatter>? inputFormatters,
+        bool isReadOnly = false,
+        VoidCallback? onTap,
+      }) {
     return TextFormField(
       controller: controller,
+      readOnly: isReadOnly,
+      onTap: onTap,
       style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
       cursorColor: Colors.white,
       keyboardType: keyboardType,
       obscureText: obscureText,
       validator: validator,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
@@ -212,6 +244,31 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
           Constant.grey.withOpacity(0.3),
         ),
         errorStyle: const TextStyle(color: Colors.redAccent),
+      ),
+    );
+  }
+
+}
+
+class CardNumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    final text = newValue.text.replaceAll(' ', '');
+    if (text.length > 12) return oldValue;
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if ((i + 1) % 4 == 0 && i + 1 != text.length) {
+        buffer.write(' ');
+      }
+    }
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(
+        offset: buffer.length,
       ),
     );
   }

@@ -13,10 +13,10 @@ class CustomTheme {
             //TODO 
             // secondaryHeaderColor: const Color(0xFFe7f7f1),
             colorScheme: const ColorScheme(
-              primary: Color(0xff7300e6),
+              primary: Color(0xFFD4AE37),
               secondary: Color(0xff00c4cc),
               brightness: Brightness.light,
-              onPrimary: Color(0xff8b3dff),
+              onPrimary: Color(0xFF0f3727),
               onSecondary: Color(0xff9e77f3),
               error: Color(0xffdb1436),
               onError: Color(0xffff4757),

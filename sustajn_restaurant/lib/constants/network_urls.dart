@@ -22,7 +22,7 @@ class NetworkUrls {
   static const FORGOT_PASSWORD = "notification/forgot-password";
   static const RESET_PASSWORD = "auth/change-password";
   static const VERIFY_OTP = "notification/verify-token";
-  static const SUBSCRIPTION_LIST = "inventory/subscription-plans/summaries";
+  static const SUBSCRIPTION_LIST = "inventory/subscription-plans/getPlans?role=RESTAURANT";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";

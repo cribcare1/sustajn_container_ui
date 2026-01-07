@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/app_loading.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
@@ -81,7 +82,7 @@ class _TermsAndConditionScreenState
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
               child: authState.isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(child: AppLoading())
                   : SizedBox(
                       width: double.infinity,
                       child: SubmitButton(
@@ -126,7 +127,9 @@ class _TermsAndConditionScreenState
         "image": registrationState.registrationData!.image,
         "basicDetails": registrationState.businessModel!.toJson(),
         "bankDetails": registrationState.bankDetails!.toJson(),
-        "socialMediaList": registrationState.socialMediaList,
+        "socialMediaList": registrationState.socialMediaList.isEmpty
+            ? []
+            : registrationState.socialMediaList,
       };
       ref.read(registerProvider(mapData).future).then((value) {
         if (!mounted) return;
@@ -148,6 +151,8 @@ class _TermsAndConditionScreenState
       });
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
+    }finally{
+      registrationState.setIsLoading(false);
     }
   }
 }

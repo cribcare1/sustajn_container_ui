@@ -10,6 +10,8 @@ import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../common_widgets/app_loading.dart';
+import '../../common_widgets/empty_list_place_holder.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
@@ -23,31 +25,52 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _getNetworkData(ref.read(authNotifierProvider));
     });
     super.initState();
+  }
+
+  Future<void> _refreshIndicator() async {
+    _getNetworkData(ref.read(authNotifierProvider));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
-    if(authState.isPlanLoading == true) {
-      return Center(child: CircularProgressIndicator(),);
+    if (authState.isPlanLoading == true) {
+      return Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: theme.primaryColor,
+        child: Center(child: AppLoading()),
+      );
     }
-    if(authState.planError != null){
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(authState.planError!,style: theme.textTheme.titleMedium!.copyWith(color: Colors.red),),
-            SizedBox(height: Constant.CONTAINER_SIZE_10),
-            SubmitButton(onRightTap: (){},rightText: "Retry"),
-          ],
+    if (authState.planError != null) {
+      return Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: theme.primaryColor,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                authState.planError!,
+                style: theme.textTheme.titleMedium!.copyWith(color: Colors.red),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_10),
+              SubmitButton(
+                onRightTap: () {
+                  _refreshIndicator();
+                },
+                rightText: "Retry",
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -102,32 +125,35 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_16),
-              ListView.separated(
-                itemCount: authState.plans.length,
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_25),
-                itemBuilder: (context, index) {
-                  return PlanCard(
-                    plan: authState.plans[index],
-                    onTap: () {
-                      setState(() {
-                        for (var p in authState.plans) {
-                          p.isSelected = false;
-                        }
-                        authState.plans[index].isSelected = true;
-                        final selectedPlan = authState.plans.firstWhere(
-                              (plan) => plan.isSelected,
-                          orElse: () => throw Exception('No plan selected'),
+              (authState.plans.isEmpty)
+                  ? EmptyState(title: "No data found")
+                  : ListView.separated(
+                      itemCount: authState.plans.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_25),
+                      itemBuilder: (context, index) {
+                        return PlanCard(
+                          plan: authState.plans[index],
+                          onTap: () {
+                            setState(() {
+                              for (var p in authState.plans) {
+                                p.isSelected = false;
+                              }
+                              authState.plans[index].isSelected = true;
+                              final selectedPlan = authState.plans.firstWhere(
+                                (plan) => plan.isSelected,
+                                orElse: () =>
+                                    throw Exception('No plan selected'),
+                              );
+                              authState.setPlanId(selectedPlan.planId);
+                            });
+                          },
                         );
-                        authState.setPlanId(selectedPlan.planId);
-                      });
-                    },
-                  );
-                },
-              ),
+                      },
+                    ),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
@@ -147,6 +173,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       ),
     );
   }
+
   Future<void> _getNetworkData(AuthState state) async {
     try {
       state.setIsPlanLoading(true);
@@ -248,7 +275,7 @@ class PlanCard extends StatelessWidget {
                       onPressed: () {
                         Utils.navigateToPushScreen(
                           context,
-                          SubscriptionDetailsScreen(planModel: plan,),
+                          SubscriptionDetailsScreen(planModel: plan),
                         );
                       },
                       style: OutlinedButton.styleFrom(
