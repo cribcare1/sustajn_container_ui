@@ -1,4 +1,6 @@
 import 'package:sustajn_customer/auth/screens/termscondition_screen.dart';
+import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/imports_util.dart';
@@ -13,35 +15,14 @@ class PlandetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.primaryColor,
+      appBar: CustomAppBar(title: 'Plan Details',
+          leading: CustomBackButton()).getAppBar(context),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: Constant.CONTAINER_SIZE_26,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(
-                    "Plan Details",
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: Constant.CONTAINER_SIZE_22),
 
               _freemiumCard(theme),
 
@@ -57,7 +38,6 @@ class PlandetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> TermsconditionScreen()));
                     NavUtil.navigateToPushScreen(context, TermsconditionScreen());
                   },
                   style: ElevatedButton.styleFrom(

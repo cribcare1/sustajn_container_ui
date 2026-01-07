@@ -35,6 +35,7 @@ class Strings {
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
+  static const String EMAIL = 'Email ID*';
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
@@ -193,4 +194,7 @@ class Strings {
   static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your\n account with the Freemium plan.";
   static const String CANCEL = "Cancel";
   static const String CREATE = "Create";
+  static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
+  static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
+
 }

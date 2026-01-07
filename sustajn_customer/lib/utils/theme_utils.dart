@@ -21,7 +21,7 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xFF0f3727),
+      scaffoldBackgroundColor: const Color(0xff0f3d2e),
       appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),
@@ -119,6 +119,7 @@ class CustomTheme {
   static TextField searchField(TextEditingController controller, String text){
     return  TextField(
       controller: controller,
+      cursorColor: Colors.white70,
       decoration: InputDecoration(
         hintText: text,
         hintStyle: TextStyle(color: Colors.white70),

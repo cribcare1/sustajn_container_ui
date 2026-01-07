@@ -6,7 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/splash_screen.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
@@ -56,6 +58,8 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       child: MaterialApp(
+        navigatorObservers: [routeObserver],
+        navigatorKey: NavUtil.navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Container tracking',
         theme: CustomTheme.getTheme(true),

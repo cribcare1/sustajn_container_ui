@@ -1,60 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
+import 'package:sustajn_customer/models/register_data.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/login_provider.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 import '../screens/subscription_screen.dart';
 import 'add_card_dialog.dart';
 
-class PaymentTypeScreen extends StatelessWidget {
-  const PaymentTypeScreen({super.key});
+class PaymentTypeScreen extends ConsumerStatefulWidget {
+  final RegistrationData? registrationData;
+  const PaymentTypeScreen({super.key, this.registrationData});
 
-  BuildContext? get context => null;
+  @override
+  ConsumerState<PaymentTypeScreen> createState() => _PaymentTypeScreenState();
+}
+
+class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final authState = ref.watch(authNotifierProvider);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: 'Payment Type',
-        leading: CustomBackButton(),
-      ).getAppBar(context),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: CustomAppBar(
+          title: 'Payment Type',
+          leading: CustomBackButton(),
+        ).getAppBar(context),
 
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior:
-            ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionTitle(theme, title: 'Card Details'),
-                _addCardButton(context, theme),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Online Payment Gateway'),
-                _paypalTile(theme),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank title'),
-                _bankFields(theme),
-              ],
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior:
+              ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom +
+                    Constant.CONTAINER_SIZE_20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle(theme, title: 'Card Details'),
+                  _addCardButton(context, theme),
+                  _orDivider(theme),
+                  _sectionTitle(theme, title: 'Online Payment Gateway'),
+                  _paypalTile(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _applePay(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _googlePay(theme),
+                  SizedBox(height: Constant.SIZE_10),
+                  _orDivider(theme),
+                  _sectionTitle(theme, title: 'Bank Details'),
+                  _bankFields(theme),
+                ],
+              ),
             ),
           ),
         ),
-      ),
 
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: _bottomButtons(theme, context),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            child: _bottomButtons(theme, context, authState),
+          ),
         ),
       ),
     );
@@ -179,10 +201,62 @@ class PaymentTypeScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.account_balance_wallet, color: Colors.white),
+          Image.asset('assets/icons/paypal.png'),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
             'PayPal',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _applePay(ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Constant.grey.withOpacity(0.3)
+        ),
+        color:Constant.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/icons/apple_pay.png'),
+          SizedBox(width: Constant.CONTAINER_SIZE_12),
+          Text(
+            'Apple Pay',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _googlePay(ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Constant.grey.withOpacity(0.3)
+        ),
+        color:Constant.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      ),
+      child: Row(
+        children: [
+          Image.asset('assets/icons/google_pay.png'),
+          SizedBox(width: Constant.CONTAINER_SIZE_12),
+          Text(
+            'Google Pay',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -200,7 +274,9 @@ class PaymentTypeScreen extends StatelessWidget {
         SizedBox(height: Constant.SIZE_10),
         _inputField(theme, 'Account Holder Name*'),
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'IBAN and BIC'),
+        _inputField(theme, 'IBAN '),
+        SizedBox(height: Constant.SIZE_10),
+        _inputField(theme, 'BIC')
       ],
     );
   }
@@ -228,13 +304,17 @@ class PaymentTypeScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomButtons(ThemeData theme,BuildContext context) {
+  Widget _bottomButtons(
+      ThemeData theme,
+      BuildContext context,
+      var authState,
+      ) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+              NavUtil.navigateWithReplacement( SubscriptionScreen());
             },
 
             style: OutlinedButton.styleFrom(
@@ -254,7 +334,10 @@ class PaymentTypeScreen extends StatelessWidget {
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              NavUtil.navigateWithReplacement(SubscriptionScreen());
+              // _getNetworkData(authState);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
@@ -272,5 +355,54 @@ class PaymentTypeScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+
+  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
+    final cleanedMap = <String, dynamic>{};
+
+    map.forEach((key, value) {
+      if (value == null) return;
+
+      if (value is Map) {
+        final nested = removeNullAndEmpty(
+          Map<String, dynamic>.from(value),
+        );
+        if (nested.isNotEmpty) {
+          cleanedMap[key] = nested;
+        }
+      } else if (value.toString().trim().isNotEmpty) {
+        cleanedMap[key] = value;
+      }
+    });
+
+    return cleanedMap;
+  }
+
+  _getNetworkData(var registrationState) async {
+    try {
+      if(registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          setState(() {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              final Map<String, dynamic> rawBody =
+              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
+              final body = removeNullAndEmpty(rawBody);
+              final params = Utils.multipartParams(
+                  NetworkUrls.REGISTER_USER, body,
+                  Strings.DATA, registrationState.registrationData.profileImage);
+              ref.read(registerProvider(params));
+            } else {
+              registrationState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in registration button onPressed: $e');
+    }
   }
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../notifier/location_state.dart';
@@ -33,7 +32,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       top: false,bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
-            title: "Select Restaurant Address",
+            title: "Select Home Address",
             leading: CustomBackButton()
         ).getAppBar(context),
         body: state.loading || state.position == null
@@ -75,7 +74,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     },
                   ),
 
-                  // 🔴 CENTER PIN (Google Maps Style)
                   const Center(
                     child: Icon(
                       Icons.location_pin,
@@ -87,7 +85,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
             ),
 
-            // ADDRESS
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(

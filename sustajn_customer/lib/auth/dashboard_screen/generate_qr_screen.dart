@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -11,11 +13,18 @@ import 'package:share_plus/share_plus.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/shared_preference_utils.dart';
+import '../../utils/utils.dart';
 
-class QrDialog extends StatelessWidget {
+class QrDialog extends ConsumerStatefulWidget {
   QrDialog({Key? key}) : super(key: key);
 
+  @override
+  ConsumerState<QrDialog> createState() => _QrDialogState();
+}
+
+class _QrDialogState extends ConsumerState<QrDialog> {
   final GlobalKey _qrKey = GlobalKey();
+  bool isCopied = false;
 
   Future<int?> _getUserId() async {
     return await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
@@ -63,9 +72,9 @@ class QrDialog extends StatelessWidget {
                       ),
                     ],
                   ),
-              
+
                   SizedBox(height: Constant.CONTAINER_SIZE_24),
-              
+
                   RepaintBoundary(
                     key: _qrKey,
                     child: Container(
@@ -96,9 +105,9 @@ class QrDialog extends StatelessWidget {
                               backgroundColor: Colors.white,
                             ),
                           ),
-              
+
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
-              
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -110,20 +119,53 @@ class QrDialog extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: Constant.CONTAINER_SIZE_8),
-                               Icon(
-                                Icons.copy,
-                                size: Constant.CONTAINER_SIZE_16,
-                                color: Colors.black,
+
+                              InkWell(
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(text: userId));
+
+                                  setState(() {
+                                    isCopied = true;
+                                  });
+
+                                  Future.delayed(const Duration(seconds: 2), () {
+                                    if (mounted) {
+                                      setState(() {
+                                        isCopied = false;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      isCopied ? Icons.check : Icons.copy,
+                                      size: Constant.CONTAINER_SIZE_16,
+                                      color: Colors.black,
+                                    ),
+                                    SizedBox(width: Constant.SIZE_06),
+                                    Text(
+                                      isCopied ? "Copied" : "Copy",
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+
                             ],
                           ),
+
                         ],
                       ),
                     ),
                   ),
-              
+
                   SizedBox(height: Constant.CONTAINER_SIZE_20),
-              
+
                   InkWell(
                     onTap: () => _shareQrImage(),
                     child: Row(
