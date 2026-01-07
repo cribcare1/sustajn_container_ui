@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
-import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
+import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_screen.dart';
 
 import '../constants/number_constants.dart';
-import '../main.dart';
 import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
 import 'order_screen/order_screen.dart';
@@ -28,7 +26,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -78,6 +76,16 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Icon(Icons.reset_tv_outlined, size: 18),
+                  SizedBox(width: 6),
+                  Text('Return'),
+                ],
+              ),
+            ),
+            const Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Icon(Icons.history, size: 18),
                   SizedBox(width: 6),
                   Text('History'),
@@ -96,6 +104,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               controller: _tabController,
               children: [
                 AddContainerScreen(),
+                ReturnContainerScreen(),
                 OrdersScreen()
               ],
             ),
