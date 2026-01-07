@@ -152,7 +152,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                         showCustomSnackBar(
                                           context: context,
                                           message: "Please enter your OTP",
-                                          color: Colors.red,
+                                          color: Colors.black,
                                         );
                                         return;
                                       }
@@ -162,7 +162,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                           context: context,
                                           message:
                                               "Please enter a valid 6-digit OTP",
-                                          color: Colors.red,
+                                          color: Colors.black,
                                         );
                                         return;
                                       }

@@ -286,6 +286,16 @@ class SignupNotifier extends ChangeNotifier{
     notifyListeners();
   }
 
+  bool validateBankForm() {
+    setBankName(_bankName);
+    setAccountHolderName(_accountHolderName);
+    setIban(_iban);
+    setBic(_bic);
+
+    return isBankFormValid;
+  }
+
+
 
 
   void startTimer() {

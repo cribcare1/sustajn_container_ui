@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
@@ -19,7 +20,7 @@ import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
-import 'edit_dialogs/edit_payment.dart' hide PaymentTypeScreen;
+import 'edit_dialogs/edit_payment.dart';
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
 import 'edit_dialogs/freemium_bottom_sheet.dart';
@@ -66,7 +67,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
 
-  void _handleItemTap(int index, BuildContext context,int planID) {
+  void _handleItemTap(int index, BuildContext context,int? planID) {
     switch (index) {
       case 0:
         _showHistoryScreen(context);
@@ -81,7 +82,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showFeedbackDialog(context, loginResponse);
         break;
       case 4:
-        _showFreemiumSheet(context,planID);
+        if (planID == null) {
+          showCustomSnackBar(
+            context: context,
+            message: "subscription details not found",
+            color: Colors.green,
+          );
+          return;
+        }
+        _showFreemiumSheet(context, planID);
         break;
       case 5:
         _showContactDialog(context);
@@ -100,7 +109,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showPaymentScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
+    NavUtil.navigateToPushScreen(context, EditPaymentScreen());
   }
 
   void _showContactDialog(BuildContext context){
@@ -382,7 +391,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
                             title: Text(item['name'], style: TextStyle(fontSize: 14, color: Colors.white)),
                             trailing: Icon(Icons.arrow_forward_ios, size: w*0.044, color: Constant.grey,),
-                            onTap: () => _handleItemTap(index, context,planId!),
+                            onTap: () => _handleItemTap(index, context,planId),
                           );
                         },
                       ),
