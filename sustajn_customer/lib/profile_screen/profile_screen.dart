@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/auth/screens/map_screen.dart';
+import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
 import '../auth/dashboard_screen/generate_qr_screen.dart';
@@ -16,7 +20,7 @@ import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
-import 'edit_dialogs/edit_payment.dart' hide PaymentTypeScreen;
+import 'edit_dialogs/edit_payment.dart';
 import 'edit_dialogs/edit_user_name.dart';
 import 'edit_dialogs/feedback_dialog.dart';
 import 'edit_dialogs/freemium_bottom_sheet.dart';
@@ -43,6 +47,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   Data? loginResponse;
   bool isLoading = true;
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
 
   @override
   void initState() {
@@ -60,7 +67,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
 
-  void _handleItemTap(int index, BuildContext context,int planID) {
+  void _handleItemTap(int index, BuildContext context,int? planID) {
     switch (index) {
       case 0:
         _showHistoryScreen(context);
@@ -75,7 +82,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showFeedbackDialog(context, loginResponse);
         break;
       case 4:
-        _showFreemiumSheet(context,planID);
+        if (planID == null) {
+          showCustomSnackBar(
+            context: context,
+            message: "subscription details not found",
+            color: Colors.green,
+          );
+          return;
+        }
+        _showFreemiumSheet(context, planID);
         break;
       case 5:
         _showContactDialog(context);
@@ -84,7 +99,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showFeedbackDialog(BuildContext context,   Data? loginResponse
-      ) {
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -94,7 +109,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showPaymentScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, PaymentTypeScreen());
+    NavUtil.navigateToPushScreen(context, EditPaymentScreen());
   }
 
   void _showContactDialog(BuildContext context){
@@ -121,6 +136,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         planID: planId,
       ),
     );
+
   }
 
 
@@ -137,6 +153,31 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void _showHistoryScreen(BuildContext context){
     NavUtil.navigateToPushScreen(context, HistoryHomeScreen(userId: loginResponse!.userId!,));
   }
+
+  Future<void> _pickFromCamera() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +204,22 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             centerTitle: true,
             backgroundColor: Constant.gold,
             surfaceTintColor: Constant.gold,
-            leading: SizedBox.shrink(),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: Constant.CONTAINER_SIZE_30,
+                height: Constant.CONTAINER_SIZE_30,
+                margin: EdgeInsets.all(Constant.SIZE_08),
+                decoration: BoxDecoration(
+                  color: Constant.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(color: Constant.grey, width: 0.3),
+                ),
+                child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
+              ),
+            ),
             title:  Text(
               "My Profile",
               style: TextStyle(
@@ -198,18 +254,22 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               color: Constant.gold,
                               width: 2,
                             ),
-                            image: const DecorationImage(
-                              image:
-                              NetworkImage(
+                            image: DecorationImage(
+                              image: _profileImage != null
+                                  ? FileImage(_profileImage!)
+                                  : const NetworkImage(
                                 "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-                              ),
+                              ) as ImageProvider,
                               fit: BoxFit.cover,
                             ),
+
                           ),
                         ),
                         GestureDetector(
                           onTap: (){
-                            Utils.showProfilePhotoBottomSheet(context, onCamera: () {  }, onGallery: () {  });
+                            Utils.showProfilePhotoBottomSheet(context,
+                              onCamera: _pickFromCamera,
+                              onGallery: _pickFromGallery,);
                           },
                           child: Container(
                             height: w * 0.09,
@@ -244,11 +304,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => const EditUserNameDialog(userName: '',),
+                                builder: (context) => EditUserNameDialog(userName:  loginResponse!.fullName ?? "",),
                               );
-
-
-                            },
+                              },
                             child: Icon(Icons.edit_outlined,
                                 size: w * 0.045, color: Colors.white)),
                       ],
@@ -333,7 +391,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             leading: Icon(item['icon'], size: w*0.054, color: Constant.gold),
                             title: Text(item['name'], style: TextStyle(fontSize: 14, color: Colors.white)),
                             trailing: Icon(Icons.arrow_forward_ios, size: w*0.044, color: Constant.grey,),
-                            onTap: () => _handleItemTap(index, context,planId!),
+                            onTap: () => _handleItemTap(index, context,planId),
                           );
                         },
                       ),

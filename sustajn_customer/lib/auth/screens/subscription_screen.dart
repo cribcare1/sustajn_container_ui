@@ -51,156 +51,101 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     final plans = signUpState.subscriptionList ?? [];
     final carouselHeight = MediaQuery.of(context).size.height * 0.55;
 
-    if (!signUpState.isLoading && plans.isEmpty) {
-      return Scaffold(
+
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
         backgroundColor: theme.primaryColor,
         appBar: CustomAppBar(
           title: "",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body: const Center(
-          child: Text(
-            "No subscription plan found",
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        ),
-      );
-    }
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: theme.primaryColor,
-        appBar:
-        CustomAppBar(title: "", leading: CustomBackButton()).getAppBar(context),
+
         body: Stack(
           children: [
             SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Choose Plan",
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: Constant.SIZE_06),
-                    Text(
-                      "Select a subscription plan to unlock the functionality of the application",
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_22),
-
-                    SizedBox(
-                      height: carouselHeight,
-                      child: CarouselSlider(
-                        options: CarouselOptions(
-                          height: carouselHeight,
-                          enlargeCenterPage: true,
-                          enableInfiniteScroll: false,
-                          viewportFraction: 0.8,
-                          onPageChanged: (index, reason) {
-                            setState(() => _currentIndex = index);
-                          },
+              child: Padding(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Choose Plan",
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
-                        items: List.generate(plans.length, (index) {
-                          final plan = plans[index];
+                      ),
+                      SizedBox(height: Constant.SIZE_06),
+                      Text(
+                        "Select a subscription plan to unlock the functionality of the application",
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_22),
 
-                          return GestureDetector(
-                            onLongPress: () {
-                              setState(() {
-                                _selectedIndex = index;
-                              });
-                            },
-                            child: SingleChildScrollView(
-                              child: _freemiumCard(
-                                context,
-                                theme,
-                                plan,
-                                isSelected: _selectedIndex == index,
+                      if (plans.isEmpty && !signUpState.isLoading)
+                        _emptyState(theme)
+                      else
+                        _plansCarousel(context, theme, plans),
+
+                      SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final planId = selectedPlanId;
+                            if (planId == null) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please select a subscription plan",
+                                color: Colors.black,
+                              );
+                              return;
+                            }
+                            ref
+                                .read(signUpNotifier)
+                                .setSubscriptionPlan(planId);
+                            NavUtil.navigateWithReplacement(
+                              TermsconditionScreen(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
                               ),
                             ),
-                          );
-                        }),
-                      ),
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(plans.length, (index) {
-                        final isActive = _currentIndex == index;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          width: isActive ? 10 : 6,
-                          height: 6,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: isActive ? Colors.white : Colors.white54,
+                            padding: EdgeInsets.symmetric(
+                              vertical: Constant.CONTAINER_SIZE_16,
+                            ),
                           ),
-                        );
-                      }),
-                    ),
-
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                    // ---------- Proceed Button ----------
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          final planId = selectedPlanId;
-                          if (planId == null) {
-                            showCustomSnackBar(
-                              context: context,
-                              message: "Please select a subscription plan",
-                              color: Colors.red,
-                            );
-                            return;
-                          }
-                          ref.read(signUpNotifier).setSubscriptionPlan(planId);
-                          NavUtil.navigateWithReplacement(TermsconditionScreen());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Constant.gold,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: Constant.CONTAINER_SIZE_16,
-                          ),
-                        ),
-                        child: Text(
-                          "Proceed to Terms & Conditions",
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w600,
+                          child: Text(
+                            "Proceed to Terms & Conditions",
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.primaryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-            if(signUpState.isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              )
-      ]
+
+            if (signUpState.isLoading)
+              const Center(child: CircularProgressIndicator()),
+          ],
         ),
       ),
     );
+
   }
 
   Widget _freemiumCard(
@@ -300,6 +245,84 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       ),
     );
   }
+
+  Widget _plansCarousel(
+      BuildContext context,
+      ThemeData theme,
+      List<SubscriptionData> plans,
+      ) {
+    final carouselHeight = MediaQuery.of(context).size.height * 0.55;
+
+    return Column(
+      children: [
+        SizedBox(
+          height: carouselHeight,
+          child: CarouselSlider(
+            options: CarouselOptions(
+              height: carouselHeight,
+              enlargeCenterPage: true,
+              enableInfiniteScroll: false,
+              viewportFraction: 0.8,
+              onPageChanged: (index, reason) {
+                setState(() => _currentIndex = index);
+              },
+            ),
+            items: List.generate(plans.length, (index) {
+              final plan = plans[index];
+              return GestureDetector(
+                onLongPress: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                child: SingleChildScrollView(
+                  child: _freemiumCard(
+                    context,
+                    theme,
+                    plan,
+                    isSelected: _selectedIndex == index,
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+        SizedBox(height: Constant.CONTAINER_SIZE_10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(plans.length, (index) {
+            final isActive = _currentIndex == index;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: isActive ? 10 : 6,
+              height: 6,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: isActive ? Colors.white : Colors.white54,
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _emptyState(ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_40),
+      child: Center(
+        child: Text(
+          "No subscription plans found",
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: Colors.white70,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   Widget _learnMoreButton(BuildContext context, ThemeData theme, SubscriptionData plan) {
     return OutlinedButton(

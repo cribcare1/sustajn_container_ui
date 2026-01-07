@@ -329,11 +329,6 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
       registrationState.setSubscriptionModel(responseData);
     } else {
       if (!registrationState.context.mounted) return;
-      showCustomSnackBar(
-        context: registrationState.context,
-        message: responseData.message!,
-        color: Colors.black,
-      );
       registrationState.setIsLoading(false);
     }
   } catch (e) {

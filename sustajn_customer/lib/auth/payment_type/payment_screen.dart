@@ -73,7 +73,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   SizedBox(height: Constant.SIZE_10),
                   _orDivider(theme),
                   _sectionTitle(theme, title: 'Bank Details'),
-                  _bankFields(theme),
+                  _bankFields(theme, signupState),
                 ],
               ),
             ),
@@ -83,7 +83,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: _bottomButtons(theme, context),
+            child: _bottomButtons(theme, context, signupState),
           ),
         ),
       ),
@@ -153,7 +153,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
+              color: Constant.grey.withOpacity(0.3)
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           color: Constant.grey.withOpacity(0.1),
@@ -202,7 +202,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Constant.grey.withOpacity(0.3)
+            color: Constant.grey.withOpacity(0.3)
         ),
         color:Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -275,132 +275,96 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          _validatedField(
-            theme: theme,
-            controller: _bankNameController,
-            hint: 'Bank Name',
-            validator: _validateBankName,
-          ),
-          SizedBox(height: Constant.SIZE_10),
+  Widget _bankFields(ThemeData theme, var signupState) {
 
-          _validatedField(
-            theme: theme,
-            controller: _accountHolderController,
-            hint: 'Account Holder Name*',
-            validator: _validateAccountHolder,
-          ),
-          SizedBox(height: Constant.SIZE_10),
+    return Column(
+      children: [
+        _field(
+          theme: theme,
+          controller: _bankNameController,
+          hint: 'Bank Name',
+          error: signupState.bankNameError,
+          onChanged: signupState.setBankName,
+        ),
+        SizedBox(height: Constant.SIZE_10),
 
-          _validatedField(
-            theme: theme,
-            controller: _ibanController,
-            hint: 'IBAN',
-            validator: _validateIBAN,
-          ),
-          SizedBox(height: Constant.SIZE_10),
+        _field(
+          theme: theme,
+          controller: _accountHolderController,
+          hint: 'Account Holder Name',
+          error: signupState.accountHolderError,
+          onChanged: signupState.setAccountHolderName,
+        ),
+        SizedBox(height: Constant.SIZE_10),
 
-          _validatedField(
-            theme: theme,
-            controller: _bicController,
-            hint: 'BIC',
-            validator: _validateBIC,
-          ),
-        ],
-      ),
+        _field(
+          theme: theme,
+          controller: _ibanController,
+          hint: 'IBAN',
+          error: signupState.ibanError,
+          onChanged: signupState.setIban,
+        ),
+        SizedBox(height: Constant.SIZE_10),
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: 'BIC',
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
+        ),
+      ],
     );
   }
 
-
-  String? _validateBankName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Bank name is required';
-    }
-    if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(value)) {
-      return 'Special characters are not allowed';
-    }
-    return null;
-  }
-
-  String? _validateAccountHolder(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Account holder name is required';
-    }
-    if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(value)) {
-      return 'Special characters are not allowed';
-    }
-    return null;
-  }
-
-  String? _validateIBAN(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'IBAN is required';
-    }
-    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(value)) {
-      return 'Only letters and numbers allowed';
-    }
-    if (value.length < 15 || value.length > 34) {
-      return 'IBAN must be 15–34 characters';
-    }
-    return null;
-  }
-
-  String? _validateBIC(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'BIC is required';
-    }
-    if (!RegExp(r'^[A-Za-z0-9]+$').hasMatch(value)) {
-      return 'Only letters and numbers allowed';
-    }
-    if (value.length != 8 && value.length != 11) {
-      return 'BIC must be 8 or 11 characters';
-    }
-    return null;
-  }
-
-
-  Widget _validatedField({
+  Widget _field({
     required ThemeData theme,
     required TextEditingController controller,
     required String hint,
-    required String? Function(String?) validator,
+    required String? error,
+    required Function(String) onChanged,
   }) {
-    return TextFormField(
-      controller: controller,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
-      cursorColor: Colors.white,
-      validator: validator,
-      onChanged: (_) {
-        if (_formKey.currentState != null) {
-          _formKey.currentState!.validate();
-        }
-      },
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-        filled: true,
-        fillColor: Constant.grey.withOpacity(0.1),
-        errorStyle: TextStyle(color: Colors.redAccent),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+          cursorColor: Colors.white,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            filled: true,
+            fillColor: Constant.grey.withOpacity(0.1),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+            ),
+            enabledBorder:
+            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+            focusedBorder:
+            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+          ),
         ),
-        enabledBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-        focusedBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-      ),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8),
+            child: Text(
+              error,
+              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+            ),
+          ),
+      ],
     );
   }
+
 
 
   Widget _bottomButtons(
       ThemeData theme,
       BuildContext context,
+      var signupState
       ) {
     return Row(
       children: [
@@ -428,26 +392,32 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              final isValid = signupState.validateBankForm();
+
+              if (isValid) {
+                signupState.updateBankDetails();
                 NavUtil.navigateWithReplacement(SubscriptionScreen());
               }
             },
-
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
-            child: Text(
-              'Verify & Continue',
-
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.primaryColor,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'Verify & Continue',
+                maxLines: 1, // safety
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.primaryColor,
+                ),
               ),
             ),
           ),
         ),
+
       ],
     );
   }

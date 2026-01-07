@@ -119,7 +119,7 @@ class ApiHelper {
       var body = json.encode(jsonMap);
       Utils.printLog("body====$body");
       response = await http.post(Uri.parse(url),
-          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 60),);
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 30),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
     }  on TimeoutException catch (_) {
