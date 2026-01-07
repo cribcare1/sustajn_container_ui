@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
 import '../auth/screens/dashboard_screen.dart';
@@ -92,11 +93,6 @@ print(response);
   },
 );
 
-
-
-
-
-
 final forgotPasswordProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final apiService = ref.watch(loginApiProvider);
@@ -110,12 +106,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
           message: responseData.message!, color:Colors.green);
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) => const ResetPasswordScreen(),
-        ),
-      );
+      NavUtil.navigateToPushScreen(registrationState.context, ResetPasswordScreen());
     } else {
       if(!registrationState.context.mounted) return;
       showCustomSnackBar(context: registrationState.context,
@@ -151,13 +142,7 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: responseData["message"],
         color: Colors.green,
       );
-      Navigator.pushReplacement(
-        registrationState.context,
-        MaterialPageRoute(
-          builder: (_) =>
-              VerifyEmailScreen(previousScreen: previous, email: email),
-        ),
-      );
+      NavUtil.navigateToPushScreen(registrationState.context, VerifyEmailScreen(previousScreen: previous, email: email));
     } else {
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
@@ -201,6 +186,36 @@ FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>(
     }
   },
 );
+
+final resetPasswordProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.watch(loginApiProvider);
+  final registrationState = ref.watch(authNotifierProvider);
+
+  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.RESET_PASSWORD}';
+  try {
+    var   responseData = await apiService.resetPassword(url, params, "");
+
+    final status = responseData['status'];
+    final message = responseData['message'];
+
+    if (status != null && status.isNotEmpty  && status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+      registrationState.setIsLoading(false);
+      NavUtil.navigationToWithReplacement(
+          registrationState.context, LoginScreen());
+    } else {
+      if(!registrationState.context.mounted) return;
+      showCustomSnackBar(context: registrationState.context,
+          message: message!, color:Colors.black);
+      registrationState.setIsLoading(false);
+    }
+  } catch (e) {
+    registrationState.setIsLoading(false);
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  }finally{
+    registrationState.setIsLoading(false);
+  }
+  return null;
+});
 
 final subscriptionProvider =
 FutureProvider.family<List<PlanModel>, Map<String, dynamic>>(

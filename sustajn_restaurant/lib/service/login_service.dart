@@ -14,7 +14,7 @@ class AuthServices {
     try {
       print("requestData::::::: $requestData");
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
         var responseData = LoginModel.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
@@ -63,7 +63,7 @@ class AuthServices {
   Future<dynamic> forgetPassword(String url, Map<String, dynamic> requestData, String requestType) async {
     try {
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
         return response;
       } else {
@@ -77,7 +77,7 @@ class AuthServices {
   Future<dynamic> verifyOtp(String url, Map<String, dynamic> requestData, String requestType) async {
     try {
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
         return response;
       } else {
@@ -104,5 +104,21 @@ class AuthServices {
       }
     }catch(e){throw Exception(e);}
   }
+
+  Future<dynamic> resetPassword(String url, Map<String, dynamic> requestData, String requestType) async {
+    try {
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.postApiRequest(url, requestData);
+      if (response != null) {
+        return response;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    }catch(e){
+      Utils.printLog("login service::::$e");
+      throw Exception(e);
+    }
+  }
 }
+
 final loginApiProvider = Provider<AuthServices>((ref) => AuthServices());
