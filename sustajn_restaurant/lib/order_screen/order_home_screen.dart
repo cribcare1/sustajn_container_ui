@@ -64,30 +64,30 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ImageIcon(
-                    const AssetImage('assets/images/img.png'),
+                    AssetImage('assets/images/img.png'),
                     size: Constant.CONTAINER_SIZE_16,
                   ),
-                  const SizedBox(width: 6),
-                  const Text('Containers'),
+                  SizedBox(width: Constant.SIZE_06),
+                  Text('Containers'),
                 ],
               ),
             ),
-            const Tab(
+            Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.reset_tv_outlined, size: 18),
-                  SizedBox(width: 6),
+                  Icon(Icons.reset_tv_outlined, size: Constant.CONTAINER_SIZE_18),
+                  SizedBox(width: Constant.SIZE_06),
                   Text('Return'),
                 ],
               ),
             ),
-            const Tab(
+            Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.history, size: 18),
-                  SizedBox(width: 6),
+                  Icon(Icons.history, size: Constant.CONTAINER_SIZE_18),
+                  SizedBox(width: Constant.CONTAINER_SIZE_06),
                   Text('History'),
                 ],
               ),
