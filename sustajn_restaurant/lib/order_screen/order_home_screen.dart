@@ -87,7 +87,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.history, size: Constant.CONTAINER_SIZE_18),
-                  SizedBox(width: Constant.CONTAINER_SIZE_06),
+                  SizedBox(width: Constant.SIZE_06),
                   Text('History'),
                 ],
               ),
