@@ -49,43 +49,39 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ).getAppBar(context),
 
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom +
-                    Constant.CONTAINER_SIZE_20,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionTitle(theme, title: 'Card Details'),
-                  _addCardButton(context, theme),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Online Payment Gateway'),
-                  _paypalTile(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _applePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _googlePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Bank Details'),
-                  _bankFields(theme, signupState),
-                ],
-              ),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.only(
+              left: Constant.CONTAINER_SIZE_20,
+              right: Constant.CONTAINER_SIZE_20,
+              bottom: MediaQuery.of(context).viewInsets.bottom +
+                  Constant.CONTAINER_SIZE_20,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _sectionTitle(theme, title: 'Card Details'),
+                _addCardButton(context, theme),
+                _orDivider(theme),
+                _sectionTitle(theme, title: 'Online Payment Gateway'),
+                _paypalTile(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _applePay(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _googlePay(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _orDivider(theme),
+                _sectionTitle(theme, title: 'Bank Details'),
+                _bankFields(theme, signupState),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                _bottomButtons(theme, context, signupState),
+              ],
             ),
           ),
         ),
 
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: _bottomButtons(theme, context, signupState),
-          ),
-        ),
       ),
     );
 
@@ -364,20 +360,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   Widget _bottomButtons(
       ThemeData theme,
       BuildContext context,
-      var signupState
+      var signupState,
       ) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateWithReplacement( SubscriptionScreen());
+              NavUtil.navigateWithReplacement(SubscriptionScreen());
             },
-
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
             child: Text(
@@ -396,20 +392,23 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
               if (isValid) {
                 signupState.updateBankDetails();
-                NavUtil.navigateWithReplacement(SubscriptionScreen());
+                NavUtil.navigateWithReplacement(
+                  SubscriptionScreen(),
+                );
               }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 'Verify & Continue',
-                maxLines: 1, // safety
+                maxLines: 1,
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: theme.primaryColor,
                 ),
@@ -417,9 +416,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             ),
           ),
         ),
-
       ],
     );
   }
+
 
 }

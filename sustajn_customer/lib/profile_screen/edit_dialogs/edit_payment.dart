@@ -6,6 +6,7 @@ import 'package:sustajn_customer/models/register_data.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
+import '../../constants/string_utils.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 
@@ -28,6 +29,35 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   final TextEditingController _bicController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    _bankNameController.text = "HDFC Bank";
+    _accountHolderController.text = "John Doe";
+    _ibanController.text = "AE070331234567890123456";
+    _bicController.text = "HDFCINBB";
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final signupState = ref.read(signUpNotifier);
+      signupState.setBankName(_bankNameController.text);
+      signupState.setAccountHolderName(_accountHolderController.text);
+      signupState.setIban(_ibanController.text);
+      signupState.setBic(_bicController.text);
+    });
+  }
+
+  void _clearBankFields(var signupState) {
+    _bankNameController.clear();
+    _accountHolderController.clear();
+    _ibanController.clear();
+    _bicController.clear();
+
+    signupState.resetBankValidation();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signupState = ref.watch(signUpNotifier);
@@ -41,41 +71,100 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       ).getAppBar(context),
 
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(
-              bottom:
-                  MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionTitle(theme, title: 'Card Details'),
-                _addCardButton(context, theme),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Online Payment Gateway'),
-                _paypalTile(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _applePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _googlePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank Details'),
-                _bankFields(theme, signupState),
-              ],
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: EdgeInsets.only(
+                left: Constant.CONTAINER_SIZE_20,
+                right: Constant.CONTAINER_SIZE_20,
+                bottom: MediaQuery.of(context).viewInsets.bottom +
+                    Constant.CONTAINER_SIZE_20,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle(theme, title: 'Card Details'),
+                    _addCardButton(context, theme),
+                    _orDivider(theme),
+                    _sectionTitle(theme, title: 'Online Payment Gateway'),
+                    _paypalTile(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _applePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _googlePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _orDivider(theme),
+                    _bankHeader(theme, signupState),
+
+                    _bankFields(theme, signupState),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                    _verifyButton(theme, context, signupState),
+                  ],
+                ),
+
+              ),
+            );
+          },
         ),
       ),
 
-      bottomNavigationBar: _verifyButton(theme, context, signupState),
+
 
     );
   }
+
+
+  Widget _bankHeader(ThemeData theme, var signupState) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Bank Details',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              final shouldClear = await displayDialog(
+                context,
+                Icons.warning_amber_rounded,
+                Strings.REMOVE_DETAILS,
+               Strings.DELETE_MESSAGE,
+               Strings.REMOVE,
+              );
+
+              if (shouldClear) {
+                _clearBankFields(signupState);
+              }
+            },
+            child: Text(
+              "Clear fields",
+
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Constant.gold,
+                fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Constant.gold
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _sectionTitle(ThemeData theme, {String? title, String? subtitle}) {
     if (title == null && subtitle == null) {
@@ -334,43 +423,152 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       BuildContext context,
       var signupState,
       ) {
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-        child: SizedBox(
-          width: double.infinity,
-          height: Constant.CONTAINER_SIZE_50,
-          child: ElevatedButton(
-            onPressed: () {
-              final isValid = signupState.validateBankForm();
+    return Padding(
+      padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_20),
+      child: SizedBox(
+        width: double.infinity,
+        height: Constant.CONTAINER_SIZE_50,
+        child: ElevatedButton(
+          onPressed: () {
+            final isValid = signupState.validateBankForm();
 
-              if (isValid) {
-                signupState.updateBankDetails();
-
-                Navigator.pop(context);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Constant.gold,
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            if (isValid) {
+              signupState.updateBankDetails();
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Constant.gold,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                Constant.CONTAINER_SIZE_16,
               ),
             ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'Verify',
-                maxLines: 1,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.primaryColor,
-                ),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'Verify',
+              maxLines: 1,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.primaryColor,
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> displayDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                      color: Constant.grey.withOpacity(0.1)
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white
+              )),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ?? false;
   }
 
 }

@@ -159,7 +159,9 @@ class _SearchRestaurantScreenState
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: state.position == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator(
+          color: Constant.gold,
+        ))
             : Column(
                 children: [
                   Padding(
@@ -271,7 +273,9 @@ class _SearchRestaurantScreenState
                       children: [
                         if (searchProvider.isLoading)
                           const Expanded(
-                            child: Center(child: CircularProgressIndicator()),
+                            child: Center(child: CircularProgressIndicator(
+                              color: Constant.gold,
+                            )),
                           )
                         else if (searchProvider.resList.isEmpty)
                           const Expanded(child: Center(child: Text("No Data")))

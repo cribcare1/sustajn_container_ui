@@ -33,9 +33,16 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   @override
   void initState() {
     super.initState();
-    _getUserData();
-    // _startTimer();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notifier = ref.read(signUpNotifier);
+      notifier.resetTimer();
+      notifier.startTimer();
+    });
   }
+
+
+
 
   LoginModel? loginModel;
 
@@ -56,13 +63,15 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+
+
   final _otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signUpState = ref.watch(signUpNotifier);
-    signUpState.startTimer();
+    // signUpState.startTimer();
     RegistrationData? registrationData = signUpState.registrationData;
     String? email = signUpState.email;
     return Scaffold(
@@ -134,8 +143,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                           SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                          signUpState.isLoading
-                              ? Center(child: CircularProgressIndicator())
+                          signUpState.isVerifyLoading
+                              ? Center(child: CircularProgressIndicator(
+                            color: Constant.gold,
+                          ))
                               : SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
@@ -202,8 +213,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ] else ...[
                             Center(
-                              child: signUpState.isLoading
-                                  ? const CircularProgressIndicator()
+                              child: signUpState.isResendLoading
+                                  ? const CircularProgressIndicator(
+                                color: Constant.gold,
+                              )
                                   : TextButton(
                                       onPressed: () {
                                         _getNetworkDataVerify(signUpState);
@@ -431,7 +444,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         ) async {
           try {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
+              registrationState.setVerifyLoading(true);
               ref.read(
                 verifyOtpProvider({
                   "email": registrationState?.email,
@@ -439,7 +452,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                 }),
               );
             } else {
-              registrationState.setIsLoading(false);
+              registrationState.setVerifyLoading(false);
               if (!mounted) return;
               showCustomSnackBar(
                 context: context,
@@ -449,7 +462,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             }
           } catch (e) {
             Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
+            registrationState.setVerifyLoading(false);
           }
           if (!mounted) return;
           FocusScope.of(context).unfocus();
@@ -457,7 +470,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      registrationState.setVerifyLoading(false);
     }
   }
 
@@ -469,13 +482,13 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         ) async {
           try {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
+              registrationState.setResendLoading(true);
               registrationState.setResend(true);
               ref.read(
                 getOtpToVerifyProvider({"email": registrationState?.email}),
               );
             } else {
-              registrationState.setIsLoading(false);
+              registrationState.setResendLoading(false);
               if (!mounted) return;
               showCustomSnackBar(
                 context: context,
@@ -485,7 +498,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             }
           } catch (e) {
             Utils.printLog('Error on button onPressed: $e');
-            registrationState.setIsLoading(false);
+            registrationState.setResendLoading(false);
           }
           if (!mounted) return;
           FocusScope.of(context).unfocus();
@@ -493,7 +506,16 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       }
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
     }
   }
+
+  @override
+  void dispose() {
+    ref.read(signUpNotifier).stopTimer();
+    _otpController.dispose();
+    super.dispose();
+  }
+
+
 }

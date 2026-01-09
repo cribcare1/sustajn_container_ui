@@ -85,7 +85,9 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 ],
               ),
               if (productState.isLoading)
-                Center(child: CircularProgressIndicator()),
+                Center(child: CircularProgressIndicator(
+                  color: Constant.gold,
+                )),
             ],
           ),
         ),
