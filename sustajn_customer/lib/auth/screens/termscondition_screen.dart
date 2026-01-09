@@ -78,7 +78,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
                           snapshot.data ?? '',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
-                            height: Constant.CONTAINER_SIZE_1,
+                            height: Constant.SIZE_1,
                           ),
                         );
                       },

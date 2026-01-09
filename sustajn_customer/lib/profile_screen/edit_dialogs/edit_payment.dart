@@ -6,8 +6,10 @@ import 'package:sustajn_customer/models/register_data.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
+import '../../constants/string_utils.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 
 class EditPaymentScreen extends ConsumerStatefulWidget {
   final RegistrationData? registrationData;
@@ -23,7 +25,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
 
   final TextEditingController _bankNameController = TextEditingController();
   final TextEditingController _accountHolderController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
   final TextEditingController _bicController = TextEditingController();
 
@@ -46,8 +48,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
           child: SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             padding: EdgeInsets.only(
-              bottom:
-                  MediaQuery.of(context).viewInsets.bottom +
+              bottom: MediaQuery.of(context).viewInsets.bottom +
                   Constant.CONTAINER_SIZE_20,
             ),
             child: Column(
@@ -64,16 +65,55 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                 _googlePay(theme),
                 SizedBox(height: Constant.SIZE_10),
                 _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank Details'),
+
+                // ⭐ Bank Details + Clear Details (only text added)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Bank Details",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: Colors.white,
+                        fontSize: Constant.LABEL_TEXT_SIZE_16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+
+                    InkWell(
+                      onTap: () {
+                        Utils.logOutDialog(
+                          context,
+                          Icons.warning_amber,
+                          Strings.REMOVE_DETAILS,
+                          Strings.DELETE_MESSAGE,
+                          Strings.REMOVE,
+                          Strings.CANCEL,
+                        );
+                      },
+
+
+                   child: Text(
+                      "Clear Details",
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: Constant.gold,
+                        fontSize: Constant.LABEL_TEXT_SIZE_14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                   ),
+                    ),
+                  ],
+                ),
+
                 _bankFields(theme, signupState),
               ],
+
             ),
           ),
         ),
       ),
 
       bottomNavigationBar: _verifyButton(theme, context, signupState),
-
     );
   }
 
@@ -346,7 +386,6 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
 
               if (isValid) {
                 signupState.updateBankDetails();
-
                 Navigator.pop(context);
               }
             },
@@ -372,5 +411,4 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       ),
     );
   }
-
 }

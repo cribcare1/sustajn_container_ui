@@ -19,6 +19,7 @@ import '../provider/signup_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
+import 'edit_dialogs/address_screen.dart';
 import 'edit_dialogs/edit_mobile_number.dart';
 import 'edit_dialogs/edit_payment.dart';
 import 'edit_dialogs/edit_user_name.dart';
@@ -353,7 +354,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               showEdit: true,
                               theme: theme,
                               ontap: (){
-                                NavUtil.navigateToPushScreen(context, MapScreen());
+                                NavUtil.navigateToPushScreen(context, AddressScreen());
                               }
                           ),
                           Divider(color: Constant.grey.withOpacity(0.3),),
