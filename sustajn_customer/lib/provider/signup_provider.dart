@@ -16,6 +16,7 @@ import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
 import '../auth/screens/map_screen.dart';
+import '../auth/screens/save_home_address.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
@@ -246,7 +247,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         );
       } else {
         NavUtil.navigateWithReplacement(
-          MapScreen(),
+          HomeAddress(),
         );
       }
     } else {

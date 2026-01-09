@@ -117,7 +117,9 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
         ),
 
         if (historyState.isLoading)
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: CircularProgressIndicator(
+            color: Constant.gold,
+          )),
       ],
     );
   }

@@ -281,7 +281,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         return null;
                       },
                     ),
-                    signUpState.isLoading?Center(child: CircularProgressIndicator(),):SizedBox(
+                    signUpState.isLoading?Center(child: CircularProgressIndicator(
+                      color: Constant.gold,
+                    ),):SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(

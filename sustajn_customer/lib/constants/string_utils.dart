@@ -197,10 +197,7 @@ class Strings {
   static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
   static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
 
-  static const String REMOVE_DETAILS = 'Remove Saved Bank Details';
-  static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our system';
+  static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
+  static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
-  static const String DELETE_ADDRESS = 'Delete Address';
-  static const String REMOVE_MESSAGE = 'This address will be permanently removed from your saved list. You can’t undo this action';
-
 }

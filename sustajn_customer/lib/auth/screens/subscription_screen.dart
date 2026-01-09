@@ -140,7 +140,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             ),
 
             if (signUpState.isLoading)
-              const Center(child: CircularProgressIndicator()),
+              const Center(child: CircularProgressIndicator(
+                color: Constant.gold,
+              )),
           ],
         ),
       ),
