@@ -1,8 +1,12 @@
 
 import 'package:flutter/cupertino.dart';
 
+import '../auth/model/payment_type_model.dart';
+import '../auth/model/plan_model.dart';
+import '../auth/model/social_media_model.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/registration_data.dart';
 import '../utils/utility.dart';
 
 class AuthState extends ChangeNotifier{
@@ -34,6 +38,12 @@ class AuthState extends ChangeNotifier{
   String? get nameError => _nameError;
 
   String? get passwordError => _passwordError;
+  RegistrationData? _registrationData;
+  RegistrationData? get registrationData => _registrationData;
+  void setRegistrationData(RegistrationData data){
+    _registrationData = data;
+    notifyListeners();
+  }
 
   void setName(String value) {
     _name = value;
@@ -115,4 +125,82 @@ class AuthState extends ChangeNotifier{
     notifyListeners();
   }
 
+  BusinessModel? _businessModel;
+  BusinessModel? get businessModel => _businessModel;
+
+  void setBusinessDetails(BusinessModel? data){
+    _businessModel = data;
+    notifyListeners();
+  }
+   final List<SocialMediaModel> _socialMediaList = [];
+   List<SocialMediaModel> get socialMediaList => _socialMediaList;
+
+   void setSocialMedia(SocialMediaModel data){
+     _socialMediaList.add(data);
+     notifyListeners();
+   }
+   void removeSocialMedia(SocialMediaModel data){
+     _socialMediaList.remove(data);
+     notifyListeners();
+   }
+   /// Payment Type ///
+
+  CardDetails? _cardDetails;
+  CardDetails? get cardDetails => _cardDetails;
+  void setCardDetails(CardDetails details){
+    _cardDetails = details;
+    notifyListeners();
+  }
+  void removeCard(){
+    _cardDetails = null;
+    notifyListeners();
+  }
+  BankDetailsModel? _bankDetails;
+  BankDetailsModel? get bankDetails => _bankDetails;
+  void setBankDetails(BankDetailsModel details){
+    _bankDetails = details;
+    notifyListeners();
+  }
+
+  PaymentGatewayModel? _gateway;
+
+  PaymentGatewayModel? get gateway => _gateway;
+
+  void setGateway(PaymentGatewayModel data) {
+    _gateway = data;
+    notifyListeners();
+  }
+
+  void clearGateway() {
+    _gateway = null;
+    notifyListeners();
+  }
+
+  /// Subscription ///
+
+bool _isPlanLoading = false;
+  List<PlanModel> _plans = [];
+  int _planId = 0;
+  int get planId => _planId;
+bool get isPlanLoading  => _isPlanLoading;
+  List<PlanModel> get plans => _plans;
+  String? _planError;
+  String? get planError => _planError;
+
+  void setIsPlanLoading(bool isLoading){
+    _isPlanLoading = isLoading;
+    notifyListeners();
+  }
+  void setPlan(List<PlanModel> plan){
+    _plans = plan;
+    notifyListeners();
+  }
+  void setPlanId(int id){
+    _planId = id;
+    notifyListeners();
+  }
+  void setPlanError(String error){
+    _planError = error;
+    notifyListeners();
+  }
 }

@@ -20,7 +20,7 @@ class ApiHelper {
       var header = _getHeader(token);
       Utils.printLog("Get header :: $header");
       response = await http.get(Uri.parse(url),
-          headers: header).timeout(const Duration(seconds: 20),);
+          headers: header).timeout(const Duration(minutes: 1),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
     }  on TimeoutException catch (_) {
@@ -119,7 +119,7 @@ class ApiHelper {
       var body = json.encode(jsonMap);
       Utils.printLog("body====$body");
       response = await http.post(Uri.parse(url),
-          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 10),);
+          headers: _getHeader(token), body: body).timeout(const Duration(minutes: 1),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
     }  on TimeoutException catch (_) {
@@ -157,7 +157,7 @@ class ApiHelper {
         filename: image.path.split('/').last,
       );
       request.files.add(multiPart);
-      final response = await request.send().timeout(const Duration(seconds: 30));
+      final response = await request.send().timeout(const Duration(minutes: 1));
       final responseJson = await response.stream.bytesToString();
       responseData = http.Response(responseJson, response.statusCode);
       print("Network call success. response==${responseData.statusCode}");
@@ -207,7 +207,7 @@ class ApiHelper {
       }
 
 
-      final response = await request.send().timeout(const Duration(seconds: 30));
+      final response = await request.send().timeout(const Duration(minutes: 1));
       final responseJson = await response.stream.bytesToString();
       responseData = http.Response(responseJson, response.statusCode);
 
@@ -268,7 +268,7 @@ class ApiHelper {
         request.files.add(multiport);
       }
 
-      final response = await request.send().timeout(const Duration(seconds: 30));
+      final response = await request.send().timeout(const Duration(minutes:1));
       final responseJson = await response.stream.bytesToString();
       responseData = http.Response(responseJson, response.statusCode);
 
@@ -342,7 +342,7 @@ class ApiHelper {
         request.files.add(multiport);
       }
 
-      final response = await request.send().timeout(const Duration(seconds: 30));
+      final response = await request.send().timeout(const Duration(minutes: 1));
       final responseJson = await response.stream.bytesToString();
       responseData = http.Response(responseJson, response.statusCode);
 
@@ -404,7 +404,7 @@ class ApiHelper {
       // Send request
       final streamedResponse = await multipartRequest
           .send()
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(minutes: 1));
 
       // Convert stream to normal Response
       final responseString = await streamedResponse.stream.bytesToString();

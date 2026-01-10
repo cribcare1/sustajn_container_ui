@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'dart:io';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
 
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
@@ -14,8 +17,16 @@ Future<void> backgroundMessageHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ ADD THIS BLOCK
+  if (Platform.isAndroid) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
+
   await Firebase.initializeApp();
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  FlutterError.onError =
+      FirebaseCrashlytics.instance.recordFlutterFatalError;
 
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -29,24 +40,16 @@ void main() async {
     sound: true,
   );
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    debugPrint('✅ User granted notification permission');
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    debugPrint('⚠️ User granted provisional permission');
-  } else {
-    debugPrint('❌ User declined notification permission');
-  }
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-  // Foreground message
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     debugPrint('📩 Foreground message received');
     if (message.data.isNotEmpty) {
-      debugPrint('Title: ${message.notification?.title}');
-      debugPrint('Body: ${message.notification?.body}');
       await backgroundMessageHandler(message);
     }
   });
+
+  Utils.getToken();
 
   runApp(const ProviderScope(child: MyApp()));
 }

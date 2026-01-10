@@ -59,6 +59,7 @@ dependencies:
   google_places_flutter: ^2.1.1
   mobile_scanner: ^7.1.3
   firebase_messaging: ^16.1.0
+  syncfusion_flutter_charts: ^32.1.21
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,7 @@ flutter:
      - assets/animations/
      - assets/images/
      - assets/logo/
+     - assets/note/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
