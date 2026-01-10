@@ -41,7 +41,6 @@ class AuthServices {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog(" Register service::::$e");
       throw Exception(e);
     }
   }

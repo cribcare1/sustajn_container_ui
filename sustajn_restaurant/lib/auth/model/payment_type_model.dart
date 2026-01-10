@@ -13,10 +13,10 @@ class CardDetails {
 
   Map<String, dynamic> toJson() {
     return {
-      'cardHolderName': cardHolderName,
-      'cardNumber': cardNumber,
-      "expiryDate": expiryDate,
-      "cvv": cvv,
+      'cardHolderName': cardHolderName??"",
+      'cardNumber': cardNumber??"",
+      "expiryDate": expiryDate??"",
+      "cvv": cvv??"",
     };
   }
 }
@@ -36,21 +36,28 @@ class BankDetailsModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'bankName': bankName,
-      "accountNumber": accountNo,
-      'taxNumber': taxNumber,
-      "iBanNumber": ibanNumber,
+      'bankName': bankName??"",
+      "accountNumber": accountNo??"",
+      'taxNumber': taxNumber??"",
+      "iBanNumber": ibanNumber??"",
     };
   }
 }
 class PaymentGatewayModel {
-  final String name;
-  final String id;
-  final String asset;
+   String? name;
+   String? id;
+   String? asset;
 
   PaymentGatewayModel({
-    required this.name,
-    required this.id,
-    required this.asset,
+     this.name ="",
+     this.id ="",
+     this.asset ="",
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'paymentGatewayId': name??"",
+      "paymentGatewayName": id??"",
+      'asset': asset??"",
+    };
+  }
 }

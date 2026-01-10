@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
@@ -224,6 +225,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () {
+                    if (!_validateBankDetails(context)) return;
                     final bankData = BankDetailsModel(
                       bankName: bankNameController.text,
                       accountNo: accountNumberController.text,
@@ -390,7 +392,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        notifier.gateway!.id,
+                        notifier.gateway!.id!,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: Colors.white70,
                         ),
@@ -420,6 +422,10 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'Account Number',
           controller: accountNumberController,
           keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(12),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
@@ -440,14 +446,17 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _inputField(
-    ThemeData theme, {
-    required String hint,
-    required TextEditingController controller,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
+      ThemeData theme, {
+        required String hint,
+        required TextEditingController controller,
+        TextInputType keyboardType = TextInputType.text,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
     return TextField(
       controller: controller,
+      autofocus: false,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -459,15 +468,50 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
         ),
-        enabledBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
-        focusedBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
+        enabledBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        focusedBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
       ),
     );
   }
+  bool _validateBankDetails(BuildContext context) {
+    final bankName = bankNameController.text.trim();
+    final accountNo = accountNumberController.text.trim();
+    final tax = taxController.text.trim();
+    final iban = ibanController.text.trim();
+
+    // ✅ Case 1: All empty → allowed
+    if (bankName.isEmpty &&
+        accountNo.isEmpty &&
+        tax.isEmpty &&
+        iban.isEmpty) {
+      return true;
+    }
+
+    // ❌ Case 2: Some filled but account number empty
+    if (accountNo.isEmpty) {
+      showCustomSnackBar(
+        context: context,
+        message: 'Account number is required',
+        color: Colors.red,
+      );
+      return false;
+    }
+
+    // ❌ Case 3: Account number must be 12 digits
+    if (accountNo.length != 12) {
+      showCustomSnackBar(
+        context: context,
+        message: 'Account number must be 12 digits',
+        color: Colors.red,
+      );
+      return false;
+    }
+
+    return true;
+  }
+
 
   Widget _bottomButtons(ThemeData theme, BuildContext context) {
     return Row(

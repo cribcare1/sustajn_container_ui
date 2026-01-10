@@ -119,7 +119,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                                 initialDate: DateTime.now(),
                                 lastDate: DateTime(3000));
                             if(date != null){
-                              _expiryDateController.text = "${date.day}/${date.month}/${date.year}";
+                              _expiryDateController.text = "${date.month}/${date.year}";
                             }
                           }
                         ),

@@ -11,6 +11,7 @@ import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/utility.dart';
+import '../model/payment_type_model.dart';
 
 class TermsAndConditionScreen extends ConsumerStatefulWidget {
   const TermsAndConditionScreen({super.key});
@@ -87,7 +88,50 @@ class _TermsAndConditionScreenState
                       width: double.infinity,
                       child: SubmitButton(
                         onRightTap: () {
-                          _getNetworkData(authState);
+                          print(authState.registrationData!.address);
+                          print(authState.socialMediaList);
+                          print(authState.gateway!.toJson());
+                          final address = authState.registrationData!.address!;
+                          final parts = address.split(',').map((e) => e.trim()).toList();
+
+                          final country = parts.isNotEmpty ? parts.last : "";
+                          final postalCode = parts.length >= 2 ? parts[parts.length - 2] : "";
+                          final addressDetails = parts.length > 2
+                              ? parts.sublist(0, parts.length - 2).join(', ')
+                              : "";
+
+                          Map<String, dynamic> mapData = {
+                            "fullName": authState.registrationData!.fullName,
+                            "email": authState.registrationData!.email,
+                            "phoneNumber": authState.registrationData!.phoneNumber,
+                            "password": authState.registrationData!.password,
+                            "dateOfBirth": "",
+                            "subscriptionPlanId":authState.planId,
+                            "address": {
+                              "addressType": "",
+                              "flatDoorHouseDetails": addressDetails,
+                              "areaStreetCityBlockDetails": "$addressDetails,$country",
+                              "poBoxOrPostalCode": postalCode,
+                              // "country": country,
+                            },
+                            "latitude": authState.registrationData!.latitude,
+                            "longitude": authState.registrationData!.longitude,
+                            "image": authState.registrationData!.image,
+                            "basicDetails": authState.businessModel!.toJson(),
+                            "bankDetails": authState.bankDetails!.toJson(),
+                            "socialMediaList": authState.socialMediaList.isEmpty
+                                ? []
+                                : authState.socialMediaList.map((e) => e.toJson()).toList(),
+                            "cardDetails": authState.cardDetails?.toJson() ?? CardDetails().toJson(),
+
+                            "paymentGetWay": () {
+                              final map = (authState.gateway ?? PaymentGatewayModel()).toJson();
+                              map.remove('asset');
+                              return map;
+                            }(),
+                          };
+                          print("========= $mapData ==========");
+                          _getNetworkData(authState, mapData);
                         },
                         rightText: "Agree & Create Account",
                       ),
@@ -99,7 +143,7 @@ class _TermsAndConditionScreenState
     );
   }
 
-  Future<void> _getNetworkData(AuthState registrationState) async {
+  Future<void> _getNetworkData(AuthState registrationState, Map<String, dynamic> mapData ) async {
     try {
       registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
@@ -115,22 +159,6 @@ class _TermsAndConditionScreenState
         );
         return;
       }
-      Map<String, dynamic> mapData = {
-        "fullName": registrationState.registrationData!.fullName,
-        "email": registrationState.registrationData!.email,
-        "phoneNumber": registrationState.registrationData!.phoneNumber,
-        "password": registrationState.registrationData!.password,
-        "dateOfBirth": "",
-        "address": registrationState.registrationData!.address,
-        "latitude": registrationState.registrationData!.latitude,
-        "longitude": registrationState.registrationData!.longitude,
-        "image": registrationState.registrationData!.image,
-        "basicDetails": registrationState.businessModel!.toJson(),
-        "bankDetails": registrationState.bankDetails!.toJson(),
-        "socialMediaList": registrationState.socialMediaList.isEmpty
-            ? []
-            : registrationState.socialMediaList,
-      };
       ref.read(registerProvider(mapData).future).then((value) {
         if (!mounted) return;
 
