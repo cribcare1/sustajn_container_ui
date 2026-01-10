@@ -121,17 +121,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
 
-    if (profileState.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (profileState.getProfileData == null ||
-        profileState.getProfileData!.data == null) {
-      return const Scaffold(
-        body: Center(child: Text('Loading profile...')),
-      );
+    if (profileState.isLoading == true){
+      return const Center(child: CircularProgressIndicator());
     }
 
     final profile = profileState.getProfileData!.data!;
@@ -266,10 +257,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.email_outlined,
                         title: "Email",
-                        value:
-                        // profileState.getProfileData.data!.,
-
-                          loginResponse!.userName!,
+                        value: loginResponse!.userName!,
                         w: w,
                         showEdit: false,
                         theme: theme,
@@ -279,8 +267,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.location_on_outlined,
                         title: "Address",
-                        value: profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
-                        // loginResponse!.address!,
+                        value:
+                        // profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
+                        loginResponse!.address!,
                         w: w,
                         showEdit: true,
                         theme: theme,
@@ -428,14 +417,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then(
               (isNetworkAvailable) {
             Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-            final visitorState = ref.read(profileProvider);
+            final profileState = ref.read(profileProvider);
             if (isNetworkAvailable) {
-              visitorState.setIsLoading(true);
+              profileState.setIsLoading(true);
               final userId = Utils.userId;
               final url = '${NetworkUrls.GET_PROFILE}$userId';
               ref.read(getProfileProvider(url));
             } else {
-              visitorState.setIsLoading(false);
+              profileState.setIsLoading(false);
               Utils.showToast(Strings.NO_INTERNET_CONNECTION);
             }
           });

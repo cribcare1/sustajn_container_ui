@@ -404,7 +404,7 @@ class Utils {
   static void getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString(Strings.JWT_TOKEN);
-    printLog("JUT Token ==== $token");
+    printLog("JWT Token ==== $token");
   }
 
   static String authToken() {
@@ -413,6 +413,7 @@ class Utils {
     }
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
+
 
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");

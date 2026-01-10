@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
 
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
@@ -48,7 +49,9 @@ void main() async {
     }
   });
 
+  Utils.getToken();
   runApp(const ProviderScope(child: MyApp()));
+
 }
 
 class MyApp extends ConsumerWidget {

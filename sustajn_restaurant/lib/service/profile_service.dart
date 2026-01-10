@@ -6,10 +6,11 @@ import '../network/ApiCallPresentator.dart';
 import '../utils/utility.dart';
 
 class ProfileServices {
-  Future<dynamic> getProfileService(String url,
-      String requestType) async {
+
+  Future<GetProfileData> getProfileService(String partUrl) async {
     try {
-      print("requestData::::::: $requestType");
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
@@ -20,7 +21,7 @@ class ProfileServices {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     } catch (e) {
-      Utils.printLog("get profile service::::$e");
+      Utils.printLog("Get Profile service::::$e");
       throw Exception(e);
     }
   }

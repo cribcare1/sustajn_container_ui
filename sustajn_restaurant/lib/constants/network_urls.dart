@@ -21,8 +21,9 @@ class NetworkUrls {
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
-  static const UPDATE_PROFILE = "auth/updateProfileDetails";
+
   static const GET_PROFILE = "auth/getProfileDetails/";
+  static const UPDATE_PROFILE = "auth/updateProfileDetails";
 
 
   /// Container ///
