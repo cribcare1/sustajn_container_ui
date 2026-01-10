@@ -26,6 +26,12 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         responseData.status!.trim().toString().toLowerCase() ==
             NetworkUrls.SUCCESS) {
       feedbackState.setIsLoading(false);
+      if (!feedbackState.context!.mounted) return;
+      showCustomSnackBar(
+        context: feedbackState!.context,
+        message: responseData.message!,
+        color: Colors.green,
+      );
       // feedbackState.setSubscriptionModel(responseData);
     } else {
       if (!feedbackState.context!.mounted) return;
