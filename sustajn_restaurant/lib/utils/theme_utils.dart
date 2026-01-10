@@ -124,7 +124,7 @@ class CustomTheme {
     );
   }
 
-  static TextField searchField(TextEditingController controller, String text,{ValueChanged<String>? onChanged,}) {
+  static TextField searchField(TextEditingController controller, String text) {
     return TextField(
       controller: controller,
       style: TextStyle(fontSize: 14,color: Colors.white),
@@ -134,6 +134,14 @@ class CustomTheme {
         hintText: text,
         hintStyle: TextStyle(color: Colors.white70),
         prefixIcon: const Icon(Icons.search, color: Colors.white70),
+
+        suffixIcon: onFilterTap == null
+            ? null
+            : IconButton(
+          icon: const Icon(Icons.filter_list, color: Colors.white70),
+          onPressed: onFilterTap,
+        ),
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           borderSide: BorderSide.none,
