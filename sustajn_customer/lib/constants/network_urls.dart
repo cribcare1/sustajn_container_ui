@@ -12,12 +12,14 @@ class NetworkUrls {
   static const GET_OTP = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
   static const CREATE_FEEDBACK = "auth/submitFeedback";
+  static const UPGRADE_SUBSCRIPTION = "inventory/subscription-plans/upgradeUserSubscription";
   static const RESET_PASSWORD = "auth/change-password";
-  static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/summaries";
+  static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/getPlans?role=CUSTOMER";
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
   static const PRODUCT_DATA = 'orders/productsSummary/';
+  static const SEARCH_RESTAURANT ="auth/searchRestaurant";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";

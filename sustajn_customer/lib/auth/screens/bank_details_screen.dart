@@ -235,11 +235,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                             ),
                           ),
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              signUpState.registrationData?.bankName = bankNameController.text.trim();
-                              signUpState.registrationData?.accountNumber = accNoController.text.trim();
-                              signUpState.registrationData?.taxNumber = taxController.text.trim();
-                            }
+                            // if (_formKey.currentState!.validate()) {
+                            //   signUpState.registrationData?.bankName = bankNameController.text.trim();
+                            //   signUpState.registrationData?.accountNumber = accNoController.text.trim();
+                            //   signUpState.registrationData?.taxNumber = taxController.text.trim();
+                            // }
                             _getNetworkData(signUpState);
 
                           },

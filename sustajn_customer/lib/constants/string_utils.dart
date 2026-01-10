@@ -115,7 +115,7 @@ class Strings {
   static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verification';
-  static const ALREADY_HAVE_ACC = 'Already have an account?';
+  static const ALREADY_HAVE_ACC = 'Already have an account? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD = 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
@@ -123,7 +123,7 @@ class Strings {
   static const LOGIN_YOUR_ACC = 'Login to your account';
   static const String SIGN_UP_TTITLE = "Please provide your details below";
   static const FORGOT_PASSWORD = 'Forgot Password?';
-  static const DONT_HAVE_ACC = "Don't have an account ?";
+  static const DONT_HAVE_ACC = "Don't have an account? ";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE =
       'Please enter your email address to receive confirmation code';
@@ -197,4 +197,7 @@ class Strings {
   static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
   static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
 
+  static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
+  static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
+  static const String REMOVE = 'Remove';
 }

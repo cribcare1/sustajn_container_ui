@@ -9,8 +9,8 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
 class FeedbackBottomSheet extends ConsumerStatefulWidget {
-  final int customerID;
-  const FeedbackBottomSheet({super.key,required this.customerID});
+  final int userId;
+  const FeedbackBottomSheet({super.key,required this.userId});
 
    @override
   ConsumerState<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
@@ -140,8 +140,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
               onTap: () {
                 setState(() {
                   selectedIndex = index;
-                  remarksController.text =
-                  '${feedbackOptions[index]['label']} ';
+                  // remarksController.text =
+                  // '${feedbackOptions[index]['label']} ';
                 });
               },
               child: Column(
@@ -257,8 +257,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
 
             // registrationState.setEmail(_emailController.text);
             ref.read(feedbackProvider({
-              "customerId": widget.customerID,
-              "restaurantId": "2",
+              "userId": widget.userId,
+              // "restaurantId": "2",
               "rating": "5",
               "subject": subjectController.text,
               "remark": remarksController.text,

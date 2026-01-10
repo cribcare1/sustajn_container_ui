@@ -15,6 +15,8 @@ import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
+import '../auth/screens/map_screen.dart';
+import '../auth/screens/save_home_address.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
@@ -245,7 +247,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         );
       } else {
         NavUtil.navigateWithReplacement(
-          PaymentTypeScreen(),
+          HomeAddress(),
         );
       }
     } else {
@@ -328,11 +330,6 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
       registrationState.setSubscriptionModel(responseData);
     } else {
       if (!registrationState.context.mounted) return;
-      showCustomSnackBar(
-        context: registrationState.context,
-        message: responseData.message!,
-        color: Colors.black,
-      );
       registrationState.setIsLoading(false);
     }
   } catch (e) {

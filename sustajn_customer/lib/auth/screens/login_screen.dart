@@ -171,7 +171,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     SizedBox(height: height * 0.02),
 
-                    authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
+                    authState.isLoading?Center(child: CircularProgressIndicator(
+                      color: Constant.gold,
+                    ),): SizedBox(
                         width: double.infinity,
                         child:SubmitButton(onRightTap: (){
                           if (_formKey.currentState!.validate()) {
@@ -194,6 +196,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: Constant.gold,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Constant.gold
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {

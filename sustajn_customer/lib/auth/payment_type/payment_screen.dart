@@ -25,10 +25,18 @@ class PaymentTypeScreen extends ConsumerStatefulWidget {
 
 class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _bankNameController = TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
+  final TextEditingController _ibanController = TextEditingController();
+  final TextEditingController _bicController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final signupState = ref.watch(signUpNotifier);
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -41,43 +49,39 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ).getAppBar(context),
 
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom +
-                    Constant.CONTAINER_SIZE_20,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionTitle(theme, title: 'Card Details'),
-                  _addCardButton(context, theme),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Online Payment Gateway'),
-                  _paypalTile(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _applePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _googlePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Bank Details'),
-                  _bankFields(theme),
-                ],
-              ),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.only(
+              left: Constant.CONTAINER_SIZE_20,
+              right: Constant.CONTAINER_SIZE_20,
+              bottom: MediaQuery.of(context).viewInsets.bottom +
+                  Constant.CONTAINER_SIZE_20,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _sectionTitle(theme, title: 'Card Details'),
+                _addCardButton(context, theme),
+                _orDivider(theme),
+                _sectionTitle(theme, title: 'Online Payment Gateway'),
+                _paypalTile(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _applePay(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _googlePay(theme),
+                SizedBox(height: Constant.SIZE_10),
+                _orDivider(theme),
+                _sectionTitle(theme, title: 'Bank Details'),
+                _bankFields(theme, signupState),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                _bottomButtons(theme, context, signupState),
+              ],
             ),
           ),
         ),
 
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: _bottomButtons(theme, context, authState),
-          ),
-        ),
       ),
     );
 
@@ -145,7 +149,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
+              color: Constant.grey.withOpacity(0.3)
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           color: Constant.grey.withOpacity(0.1),
@@ -194,7 +198,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Constant.grey.withOpacity(0.3)
+            color: Constant.grey.withOpacity(0.3)
         ),
         color:Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -267,60 +271,109 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
+  Widget _bankFields(ThemeData theme, var signupState) {
+
     return Column(
       children: [
-        _inputField(theme, 'Bank Name'),
+        _field(
+          theme: theme,
+          controller: _bankNameController,
+          hint: 'Bank Name',
+          error: signupState.bankNameError,
+          onChanged: signupState.setBankName,
+        ),
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'Account Holder Name*'),
+
+        _field(
+          theme: theme,
+          controller: _accountHolderController,
+          hint: 'Account Holder Name',
+          error: signupState.accountHolderError,
+          onChanged: signupState.setAccountHolderName,
+        ),
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'IBAN '),
+
+        _field(
+          theme: theme,
+          controller: _ibanController,
+          hint: 'IBAN',
+          error: signupState.ibanError,
+          onChanged: signupState.setIban,
+        ),
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'BIC')
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: 'BIC',
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
+        ),
       ],
     );
   }
 
-  Widget _inputField(ThemeData theme, String hint) {
-    return TextField(
-      style: theme.textTheme.bodyLarge?.copyWith(
-        color: Colors.white,
-      ),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-          color: Colors.white,
-        ),
-        filled: true,
-        fillColor: Constant.grey.withOpacity(0.1),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+  Widget _field({
+    required ThemeData theme,
+    required TextEditingController controller,
+    required String hint,
+    required String? error,
+    required Function(String) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+          cursorColor: Colors.white,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            filled: true,
+            fillColor: Constant.grey.withOpacity(0.1),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+            ),
+            enabledBorder:
+            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+            focusedBorder:
+            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
           ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-      ),
+        ),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8),
+            child: Text(
+              error,
+              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+            ),
+          ),
+      ],
     );
   }
+
+
 
   Widget _bottomButtons(
       ThemeData theme,
       BuildContext context,
-      var authState,
+      var signupState,
       ) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              NavUtil.navigateWithReplacement( SubscriptionScreen());
+              NavUtil.navigateWithReplacement(SubscriptionScreen());
             },
-
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
             child: Text(
@@ -335,20 +388,30 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              NavUtil.navigateWithReplacement(SubscriptionScreen());
-              // _getNetworkData(authState);
+              final isValid = signupState.validateBankForm();
+
+              if (isValid) {
+                signupState.updateBankDetails();
+                NavUtil.navigateWithReplacement(
+                  SubscriptionScreen(),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
-            child: Text(
-              'Verify & Continue',
-
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.primaryColor,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'Verify & Continue',
+                maxLines: 1,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.primaryColor,
+                ),
               ),
             ),
           ),
@@ -358,51 +421,4 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
 
-  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
-    final cleanedMap = <String, dynamic>{};
-
-    map.forEach((key, value) {
-      if (value == null) return;
-
-      if (value is Map) {
-        final nested = removeNullAndEmpty(
-          Map<String, dynamic>.from(value),
-        );
-        if (nested.isNotEmpty) {
-          cleanedMap[key] = nested;
-        }
-      } else if (value.toString().trim().isNotEmpty) {
-        cleanedMap[key] = value;
-      }
-    });
-
-    return cleanedMap;
-  }
-
-  _getNetworkData(var registrationState) async {
-    try {
-      if(registrationState.isValid) {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              final Map<String, dynamic> rawBody =
-              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
-              final body = removeNullAndEmpty(rawBody);
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, registrationState.registrationData.profileImage);
-              ref.read(registerProvider(params));
-            } else {
-              registrationState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
-        });
-      }
-    } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
-    }
-  }
 }

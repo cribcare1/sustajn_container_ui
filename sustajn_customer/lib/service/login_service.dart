@@ -98,13 +98,13 @@ class AuthServices {
       var response = await presenter.getAPIData(url);
       if (response != null) {
         var responseData = SubscriptionModel.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
+        // Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     } catch (e) {
-      Utils.printLog("borrowed service  service::::$e");
+      // Utils.printLog("borrowed service  service::::$e");
       throw Exception(e);
     }
   }

@@ -2,9 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sustajn_customer/auth/payment_type/payment_screen.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../notifier/location_state.dart';
+import '../../provider/signup_provider.dart';
+import '../../utils/nav_utils.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -123,11 +126,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pop(context, {
-                    "lat": state.position!.latitude,
-                    "lng": state.position!.longitude,
-                    "address": state.address,
-                  });
+                  ref.read(signUpNotifier).setAddress(
+                    address: state.address,
+                    postalCode: state.postalCode,
+                    latitude: state.position!.latitude,
+                    longitude: state.position!.longitude,
+                  );
+                  NavUtil.navigateWithReplacement(PaymentTypeScreen());
                 },
                 child: const Text(
                   "Confirm",
