@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
+import '../../network_provider/network_provider.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
+import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -9,6 +13,7 @@ import '../../models/login_model.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
+import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
 import '../edit_dialogs/edit_mobile_number.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
@@ -18,14 +23,14 @@ import '../edit_dialogs/subscription_dialog.dart';
 
 
 
-class MyProfileScreen extends StatefulWidget {
+class MyProfileScreen extends ConsumerStatefulWidget {
   const MyProfileScreen({super.key});
 
   @override
-  State<MyProfileScreen> createState() => _MyProfileScreenState();
+  ConsumerState<MyProfileScreen> createState() => _MyProfileScreenState();
 }
 
-class _MyProfileScreenState extends State<MyProfileScreen> {
+class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
@@ -92,13 +97,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     MaterialPageRoute(builder: (context)=> ReportScreen()));
   }
 
+  List<GetProfileData> profileData = [];
   LoginData? loginResponse;
   bool isLoading = true;
+
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
+    _getProfileNetworkCall();
   }
 
   Future<void> _loadProfile() async {
@@ -108,8 +116,26 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       isLoading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileProvider);
+
+    if (profileState.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (profileState.getProfileData == null ||
+        profileState.getProfileData!.data == null) {
+      return const Scaffold(
+        body: Center(child: Text('Loading profile...')),
+      );
+    }
+
+    final profile = profileState.getProfileData!.data!;
+
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
@@ -190,8 +216,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      loginResponse!.fullName!,
+                    Text( profile.fullName ?? "",
+                      // loginResponse!.fullName!,
                       style: TextStyle(
                         fontSize: w * 0.055,
                         fontWeight: FontWeight.w700,
@@ -240,7 +266,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.email_outlined,
                         title: "Email",
-                        value: loginResponse!.userName!,
+                        value:
+                        // profileState.getProfileData.data!.,
+
+                          loginResponse!.userName!,
                         w: w,
                         showEdit: false,
                         theme: theme,
@@ -250,18 +279,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.location_on_outlined,
                         title: "Address",
-                        value:
-                        loginResponse!.address!,
+                        value: profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
+                        // loginResponse!.address!,
                         w: w,
                         showEdit: true,
                         theme: theme,
-                        ontap: (){}
+                        ontap: (){
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => const EditAddressDialog(),
+                          );
+                        }
                       ),
                        Divider(color: Colors.grey.shade700,),
                       _detailItem(
                         icon: Icons.phone_outlined,
                         title: "Mobile Number",
-                        value: "980765432",
+                        value: profile.mobileNumber! ?? "",
                         w: w,
                         showEdit: true,
                         theme: theme,
@@ -386,4 +422,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
+
+  _getProfileNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
+              (isNetworkAvailable) {
+            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+            final visitorState = ref.read(profileProvider);
+            if (isNetworkAvailable) {
+              visitorState.setIsLoading(true);
+              final userId = Utils.userId;
+              final url = '${NetworkUrls.GET_PROFILE}$userId';
+              ref.read(getProfileProvider(url));
+            } else {
+              visitorState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }
