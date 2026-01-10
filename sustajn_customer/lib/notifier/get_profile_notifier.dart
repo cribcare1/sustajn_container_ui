@@ -1,4 +1,3 @@
-//TODO: this should be used later
 // import 'package:flutter/cupertino.dart';
 // import '../models/register_data.dart';
 // import '../models/subscriptionplan_data.dart';
