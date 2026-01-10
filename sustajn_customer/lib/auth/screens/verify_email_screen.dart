@@ -36,6 +36,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final notifier = ref.read(signUpNotifier);
+
+      notifier.setVerifyLoading(false);
+      notifier.setResendLoading(false);
       notifier.resetTimer();
       notifier.startTimer();
     });
@@ -44,34 +47,18 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
 
 
-  LoginModel? loginModel;
-
-  _getUserData() async {
-    String? jsonString = await SharedPreferenceUtils.getStringValuesSF(
-      Strings.PROFILE_DATA,
-    );
-
-    if (jsonString != null && jsonString.isNotEmpty) {
-      loginModel = LoginModel.fromJson(jsonDecode(jsonString));
-    }
-  }
-
   String formatTime(int totalSeconds) {
     final minutes = totalSeconds ~/ 60;
     final seconds = totalSeconds % 60;
 
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
-
-
-
   final _otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signUpState = ref.watch(signUpNotifier);
-    // signUpState.startTimer();
     RegistrationData? registrationData = signUpState.registrationData;
     String? email = signUpState.email;
     return Scaffold(

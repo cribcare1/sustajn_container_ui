@@ -108,6 +108,10 @@ class Strings{
   static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
   static const FEEDBACK = 'Feedback';
+  static const CLEAR = 'Clear';
+  static const APPLY = 'Apply';
+  static const SORT_BY = 'Sort By';
+
   static const EDIT = 'Edit';
   static const DELETE = 'Delete';
   static const REJECT_TXT = 'rejected';

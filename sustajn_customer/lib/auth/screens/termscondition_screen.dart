@@ -136,7 +136,9 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
             ),
               if(signUpState.isLoading)
                 Center(
-                  child:CircularProgressIndicator(),
+                  child:CircularProgressIndicator(
+                    color: Constant.gold,
+                  ),
                 )
       ],
           ),

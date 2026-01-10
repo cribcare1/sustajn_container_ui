@@ -5,16 +5,16 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 import '../../constants/number_constants.dart';
 import '../models/add_container_model.dart';
 
-class AddContainerDialog extends StatefulWidget {
+class ReturnContainerDialog extends StatefulWidget {
   final ContainerItem item;
 
-  const AddContainerDialog({super.key, required this.item});
+  const ReturnContainerDialog({super.key, required this.item});
 
   @override
-  State<AddContainerDialog> createState() => _AddContainerDialogState();
+  State<ReturnContainerDialog> createState() => _ReturnContainerDialogState();
 }
 
-class _AddContainerDialogState extends State<AddContainerDialog> {
+class _ReturnContainerDialogState extends State<ReturnContainerDialog> {
   bool isEditingQty = false;
   final FocusNode qtyFocusNode = FocusNode();
   TextEditingController quantity = TextEditingController();
@@ -241,7 +241,7 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
                           elevation: Constant.SIZE_00,
                         ),
                         child: Text(
-                          "Add",
+                          "Return",
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: theme.primaryColor,
                             fontWeight: FontWeight.w600,
