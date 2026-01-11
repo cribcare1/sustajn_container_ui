@@ -367,6 +367,7 @@ class ApiHelper {
     required String url,
     required Map<String, dynamic> requestJson,
     File? file,
+    required String userType
   }) async {
     final token = Utils.authToken();
     Utils.printLog("Multipart call started => URL: $url");
@@ -381,7 +382,7 @@ class ApiHelper {
       }
 
       // Add JSON as string field -> "request"
-      multipartRequest.fields["data"] = jsonEncode(requestJson);
+      multipartRequest.fields[userType] = jsonEncode(requestJson);
 
       // Add file if exists
       if (file != null) {

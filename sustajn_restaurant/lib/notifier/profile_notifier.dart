@@ -4,12 +4,14 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
+import '../models/update_profile_data.dart';
 import '../utils/utility.dart';
 
 class ProfileState extends ChangeNotifier{
   String _name = '';
   bool _isLoading = false;
   GetProfileData? _getProfileData;
+  UpdateProfileData? _updateProfileData;
   BuildContext? _context;
   bool _isVerifying = false;
 
@@ -18,7 +20,8 @@ class ProfileState extends ChangeNotifier{
   String get name => _name;
 
   bool get isLoading => _isLoading;
-  GetProfileData? get getProfileData => _getProfileData!;
+  GetProfileData? get getProfileData => _getProfileData;
+  UpdateProfileData? get updateProfileData => _updateProfileData!;
   BuildContext get context => _context!;
 
   // Error messages
@@ -41,6 +44,12 @@ class ProfileState extends ChangeNotifier{
     _getProfileData = getProfile;
     notifyListeners();
   }
+
+  void setUpdateProfileData(UpdateProfileData updateProfile){
+    _updateProfileData = updateProfile;
+    notifyListeners();
+  }
+
   void setContext(BuildContext context) {
     _context = context;
     notifyListeners();

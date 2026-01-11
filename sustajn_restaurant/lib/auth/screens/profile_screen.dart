@@ -1,8 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
-import '../../network_provider/network_provider.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
@@ -10,6 +9,7 @@ import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
@@ -100,6 +100,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   List<GetProfileData> profileData = [];
   LoginData? loginResponse;
   bool isLoading = true;
+  File? profileImage;
 
 
   @override
@@ -120,12 +121,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
+    final profile = profileState.getProfileData?.data;
 
     if (profileState.isLoading == true){
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator());
     }
 
-    final profile = profileState.getProfileData!.data!;
 
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
@@ -207,7 +208,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text( profile.fullName ?? "",
+                    Text(
+                      // profileState.getProfileData!.data!.fullName!,
+                      profile?.fullName ?? "",
                       // loginResponse!.fullName!,
                       style: TextStyle(
                         fontSize: w * 0.055,
@@ -222,10 +225,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           context: context,
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
-                          builder: (context) => const EditRestaurantNameDialog(),
+                          builder: (context) => EditRestaurantNameDialog(name: profile!.fullName!,),
                         );
-
-
                       },
                         child: Icon(Icons.edit_outlined,
                             size: w * 0.045, color:Colors.white)),
@@ -286,7 +287,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                       _detailItem(
                         icon: Icons.phone_outlined,
                         title: "Mobile Number",
-                        value: profile.mobileNumber! ?? "",
+                        value: profile?.mobileNumber! ?? "",
                         w: w,
                         showEdit: true,
                         theme: theme,
@@ -295,9 +296,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             context: context,
                             isScrollControlled: true,
                             backgroundColor: Colors.transparent,
-                            builder: (context) => const EditMobileNumberDialog(),
+                            builder: (context) => EditMobileNumberDialog(mobileNumber: profile!.mobileNumber!),
                           );
-
                         }
                       ),
                     ],
@@ -432,4 +432,5 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       Utils.printLog('Error in visitor button onPressed: $e');
     }
   }
+
 }

@@ -19,6 +19,8 @@ class Strings{
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
   static const DATA = 'data';
+  static const PROFILE_IMAGE = 'profileImage';
+  static const USER_DATA = 'userData';
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
