@@ -297,7 +297,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
               final body = removeNullAndEmpty(rawBody);
               final params = Utils.multipartParams(
                   NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, registrationState.registrationData.profileImage);
+                  Strings.DATA,   image: registrationState.registrationData.profileImage,);
               ref.read(registerProvider(params));
             } else {
               registrationState.setIsLoading(false);

@@ -36,8 +36,12 @@ class SignupNotifier extends ChangeNotifier{
   String _accountHolderName = '';
   String _iban = '';
   String _bic = '';
+  String _taxNumber = '';
+  String _accountNumber = '';
   String? _bankNameError;
   String? _accountHolderError;
+  String? _taxNumberError;
+  String? _accountNumberError;
   String? _ibanError;
   String? _bicError;
   RegistrationData? _registrationData;
@@ -65,6 +69,9 @@ class SignupNotifier extends ChangeNotifier{
   File? get image => _image;
   String? get bankNameError => _bankNameError;
   String? get accountHolderError => _accountHolderError;
+  String? get taxNumberError => _taxNumberError;
+  String? get accountNumberError => _accountNumberError;
+
   String? get ibanError => _ibanError;
   String? get bicError => _bicError;
   bool get showBankErrors => _showBankErrors;
@@ -121,11 +128,12 @@ class SignupNotifier extends ChangeNotifier{
     if (_bankName.isEmpty) {
       _bankNameError = 'Bank name is required';
     } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(_bankName)) {
-      _bankNameError = 'Special characters are not allowed';
+      _bankNameError = 'Only letters and numbers allowed';
     } else {
       _bankNameError = null;
     }
   }
+
 
   void setBankName(String value) {
     _bankName = value;
@@ -171,7 +179,7 @@ class SignupNotifier extends ChangeNotifier{
   }
 
 
-  void _validateIBAN(){
+  void _validateIBAN() {
     if (_iban.isEmpty) {
       _ibanError = 'IBAN is required';
     } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_iban)) {
@@ -182,6 +190,7 @@ class SignupNotifier extends ChangeNotifier{
       _ibanError = null;
     }
   }
+
 
   void setBic(String value) {
     _bic = value.toUpperCase();
@@ -205,6 +214,51 @@ class SignupNotifier extends ChangeNotifier{
       _bicError = null;
     }
   }
+
+  void setTaxNumber(String value) {
+    _taxNumber = value.toUpperCase();
+
+    if (_showBankErrors) {
+      _validateTaxNumber();
+    } else {
+      _taxNumberError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateTaxNumber() {
+    if (_taxNumber.isEmpty) {
+      _taxNumberError = 'GSTIN is required';
+    } else if (!RegExp(
+        r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$'
+    ).hasMatch(_taxNumber)) {
+      _taxNumberError = 'Invalid GSTIN format';
+    } else {
+      _taxNumberError = null;
+    }
+  }
+
+  void setAccountNumber(String value) {
+    _accountNumber = value;
+
+    if (_showBankErrors) {
+      _validateAccountNumber();
+    } else {
+      _accountNumberError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateAccountNumber() {
+    if (_accountNumber.isEmpty) {
+      _accountNumberError = 'Account number is required';
+    } else if (!RegExp(r'^[0-9]{9,18}$').hasMatch(_accountNumber)) {
+      _accountNumberError = 'Account number must be 9–18 digits';
+    } else {
+      _accountNumberError = null;
+    }
+  }
+
 
   void setAddress({
     required String address,
@@ -360,17 +414,18 @@ class SignupNotifier extends ChangeNotifier{
     _showBankErrors = true;
 
     _validateBankName();
-    _validateAccHolderName();
+    _validateTaxNumber();
+    _validateAccountNumber();
     _validateIBAN();
-    _validateBIC();
 
     notifyListeners();
 
     return _bankNameError == null &&
-        _accountHolderError == null &&
-        _ibanError == null &&
-        _bicError == null;
+        _taxNumberError == null &&
+        _accountNumberError == null &&
+        _ibanError == null;
   }
+
 
 
   void resetBankValidation() {

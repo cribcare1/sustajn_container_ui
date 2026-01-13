@@ -10,6 +10,7 @@ class Strings {
   static const JWT_TOKEN = 'jwt_token';
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
+  static const USER_DATA = 'userData';
 
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
@@ -191,7 +192,7 @@ class Strings {
   static const String MY_QR_CODE = 'My QR Code';
 
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
-  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your\n account with the Freemium plan.";
+  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CANCEL = "Cancel";
   static const String CREATE = "Create";
   static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';

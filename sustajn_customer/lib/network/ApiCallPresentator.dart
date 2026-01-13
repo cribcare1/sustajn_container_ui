@@ -186,9 +186,9 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
-  Future<dynamic> postMultipartRequestAdmin(String url, File image, Map<String, dynamic> jsonMap, String keyName, String responseType,) async {
+  Future<dynamic> postMultipartRequestAdmin(String url, File? image, Map<String, dynamic> jsonMap, String keyName, String responseType) async {
     try {
-      var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image);
+      var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image , userType: responseType);
 
       if (Utils.isReqSuccess(response)) {
         try {
@@ -211,6 +211,7 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
       throw Exception('An error occurred: $e'); // Handle other exceptions
     }
   }
+
 
 
 }
