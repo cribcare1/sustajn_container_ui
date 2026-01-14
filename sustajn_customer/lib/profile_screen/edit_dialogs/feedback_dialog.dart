@@ -37,7 +37,7 @@ class _FeedbackBottomSheetState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final feedbackState = ref.watch(feedbackNotifier); // 👈 WATCH LOADING
+    final feedbackState = ref.watch(feedbackNotifier);
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -90,7 +90,7 @@ class _FeedbackBottomSheetState
                           color: Colors.white,
                         ),
                       )
-                          : _buildSubmitButton(context),
+                          : _buildSubmitButton(context, feedbackState),
                     ],
                   ),
                 ),
@@ -232,16 +232,18 @@ class _FeedbackBottomSheetState
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context) {
+  Widget _buildSubmitButton(BuildContext context, var feedbackState) {
     final theme = Theme.of(context);
 
     return SizedBox(
       width: double.infinity,
       height: Constant.CONTAINER_SIZE_48,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: feedbackState.isLoading
+            ? null
+            : () {
           Utils.printLog("Send Feedback clicked");
-          _getNetworkData();
+          _getNetworkData(feedbackState);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Constant.gold,
@@ -261,8 +263,7 @@ class _FeedbackBottomSheetState
     );
   }
 
-  Future<void> _getNetworkData() async {
-    final feedbackState = ref.read(feedbackNotifier);
+  Future<void> _getNetworkData(var feedbackState) async {
 
     try {
       final isNetworkAvailable =

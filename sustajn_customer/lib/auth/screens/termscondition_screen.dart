@@ -295,10 +295,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
               final Map<String, dynamic> rawBody =
               Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
               final body = removeNullAndEmpty(rawBody);
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA,   image: registrationState.registrationData.profileImage,);
-              ref.read(registerProvider(params));
+              ref.read(registerProvider(body));
             } else {
               registrationState.setIsLoading(false);
               Utils.showToast(Strings.NO_INTERNET_CONNECTION);

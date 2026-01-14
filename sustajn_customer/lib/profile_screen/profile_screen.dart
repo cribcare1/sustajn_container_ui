@@ -388,7 +388,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => EditUserNameDialog(
-                                  userName: loginResponse?.fullName ?? "",
+                                  userName:   profile?.fullName ?? "",
                                 ),
                               );
                             },

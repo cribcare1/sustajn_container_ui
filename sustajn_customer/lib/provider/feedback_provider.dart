@@ -25,14 +25,12 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         responseData.status!.trim().toString().toLowerCase() ==
             NetworkUrls.SUCCESS) {
       feedbackState.setIsLoading(false);
-      if (!feedbackState.context!.mounted) return;
-      showCustomSnackBar(
-        context: feedbackState!.context,
-        message: responseData.message!,
-        color: Colors.green,
-      );
+      if(feedbackState.context.mounted) {
+        showCustomSnackBar(context: feedbackState.context,
+            message: responseData.message!, color:Colors.green);
+      }
     } else {
-      if (!feedbackState.context!.mounted) return;
+      if (!feedbackState.context.mounted) return;
       showCustomSnackBar(
         context: feedbackState!.context,
         message: responseData.message!,
