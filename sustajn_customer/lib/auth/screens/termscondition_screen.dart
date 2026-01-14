@@ -172,33 +172,58 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
+              // Container(
+              //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              //   decoration: BoxDecoration(
+              //       color: Constant.grey.withOpacity(0.2),
+              //       shape: BoxShape.rectangle,
+              //       borderRadius: BorderRadius.circular(12),
+              //       border: Border.all(
+              //           color: Constant.grey.withOpacity(0.1)
+              //       )
+              //   ),
+              //   child: Icon(
+              //     icon,
+              //     size: Constant.CONTAINER_SIZE_40,
+              //     color: Constant.gold,
+              //   ),
+              // ),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                  decoration: BoxDecoration(
                     color: Constant.grey.withOpacity(0.2),
-                    shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: Constant.grey.withOpacity(0.1)
-                    )
-                ),
-                child: Icon(
-                  icon,
-                  size: Constant.CONTAINER_SIZE_40,
-                  color: Constant.gold,
+                      color: Constant.grey.withOpacity(0.1),
+                    ),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: Constant.CONTAINER_SIZE_40,
+                    color: Constant.gold,
+                  ),
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white
+              Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                    height: Constant.SIZE_2,
+                    fontWeight: FontWeight.w600,
               )),
               SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white
+                    color: Colors.white,
+                  height: Constant.SIZE_2,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
