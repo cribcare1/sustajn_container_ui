@@ -162,7 +162,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: Icon(Icons.check_circle, color: Constant.gold),
+              child: Icon(Icons.check_circle, color:Colors.white),
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Icon(

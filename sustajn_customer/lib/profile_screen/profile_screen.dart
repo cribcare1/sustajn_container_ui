@@ -133,9 +133,30 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showPaymentScreen(BuildContext context){
-    NavUtil.navigateToPushScreen(context, EditPaymentScreen());
+  void _showPaymentScreen(BuildContext context) {
+    final profileState = ref.read(profileProvider);
+
+    final profile = profileState.profileList.isNotEmpty
+        ? profileState.profileList.first
+        : null;
+
+    final bankDetails = profile?.bankDetailsResponse;
+
+    if (bankDetails == null) {
+      showCustomSnackBar(
+        context: context,
+        message: "Bank details not added yet. Please add bank details to view.",
+        color: Colors.green,
+      );
+      return;
+    }
+
+    NavUtil.navigateToPushScreen(
+      context,
+      EditPaymentScreen(bankDetails: bankDetails),
+    );
   }
+
 
   void _showContactDialog(BuildContext context){
     showModalBottomSheet(

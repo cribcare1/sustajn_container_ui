@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
-import 'package:sustajn_customer/models/register_data.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
 import '../../constants/string_utils.dart';
+import '../../models/profile_model.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 
 class EditPaymentScreen extends ConsumerStatefulWidget {
-  final RegistrationData? registrationData;
+  final BankDetailsResponse? bankDetails;
 
-  const EditPaymentScreen({super.key, this.registrationData});
+  const EditPaymentScreen({super.key, this.bankDetails});
 
   @override
   ConsumerState<EditPaymentScreen> createState() => _PaymentTypeScreenState();
@@ -23,37 +24,68 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _bankNameController = TextEditingController();
-  final TextEditingController _accountHolderController =
-      TextEditingController();
+  final TextEditingController _accountNumberController = TextEditingController();
+  final TextEditingController _taxNumberController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
-  final TextEditingController _bicController = TextEditingController();
+
 
   @override
   void initState() {
     super.initState();
 
-    _bankNameController.text = "HDFC Bank";
-    _accountHolderController.text = "John Doe";
-    _ibanController.text = "AE070331234567890123456";
-    _bicController.text = "HDFCINBB";
+    final bank = widget.bankDetails;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final signupState = ref.read(signUpNotifier);
-      signupState.setBankName(_bankNameController.text);
-      signupState.setAccountHolderName(_accountHolderController.text);
-      signupState.setIban(_ibanController.text);
-      signupState.setBic(_bicController.text);
-    });
+    if (bank != null) {
+      _bankNameController.text = bank.bankName ?? '';
+      _accountNumberController.text = bank.accountNumber ?? '';
+      _taxNumberController.text = bank.taxNumber ?? '';
+      _ibanController.text = bank.iBanNumber ?? '';
+    }
   }
 
-  void _clearBankFields(var signupState) {
-    _bankNameController.clear();
-    _accountHolderController.clear();
-    _ibanController.clear();
-    _bicController.clear();
 
-    signupState.resetBankValidation();
+  String? _validateBankName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Bank name is required';
+    }
+    if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(value)) {
+      return 'Only letters and numbers allowed';
+    }
+    return null;
   }
+
+  String? _validateAccountNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Account number is required';
+    }
+    if (!RegExp(r'^[0-9]{9,18}$').hasMatch(value)) {
+      return 'Account number must be 9–18 digits';
+    }
+    return null;
+  }
+
+  String? _validateTaxNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'GSTIN is required';
+    }
+    if (!RegExp(
+      r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$',
+    ).hasMatch(value)) {
+      return 'Invalid GSTIN format';
+    }
+    return null;
+  }
+
+  String? _validateIBAN(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'IBAN is required';
+    }
+    if (!RegExp(r'^[A-Z0-9]{15,34}$').hasMatch(value)) {
+      return 'IBAN must be 15–34 characters';
+    }
+    return null;
+  }
+
 
 
 
@@ -101,7 +133,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                     _orDivider(theme),
                     _bankHeader(theme, signupState),
 
-                    _bankFields(theme, signupState),
+                    _bankFields(theme),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
 
@@ -146,7 +178,6 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
               );
 
               if (shouldClear) {
-                _clearBankFields(signupState);
               }
             },
             child: Text(
@@ -331,44 +362,55 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme, var signupState) {
-    return Column(
-      children: [
-        _field(
-          theme: theme,
-          controller: _bankNameController,
-          hint: 'Bank Name',
-          error: signupState.bankNameError,
-          onChanged: signupState.setBankName,
-        ),
-        SizedBox(height: Constant.SIZE_10),
+  Widget _bankFields(ThemeData theme) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          _field(
+            theme: theme,
+            controller: _bankNameController,
+            hint: 'Bank Name',
+            validator: _validateBankName,
+          ),
+          SizedBox(height: Constant.SIZE_10),
 
-        _field(
-          theme: theme,
-          controller: _accountHolderController,
-          hint: 'Account Holder Name',
-          error: signupState.accountHolderError,
-          onChanged: signupState.setAccountHolderName,
-        ),
-        SizedBox(height: Constant.SIZE_10),
+          _field(
+            theme: theme,
+            controller: _accountNumberController,
+            hint: 'Account Number',
+            validator: _validateAccountNumber,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(18),
+            ],
+          ),
+          SizedBox(height: Constant.SIZE_10),
 
-        _field(
-          theme: theme,
-          controller: _ibanController,
-          hint: 'IBAN',
-          error: signupState.ibanError,
-          onChanged: signupState.setIban,
-        ),
-        SizedBox(height: Constant.SIZE_10),
+          _field(
+            theme: theme,
+            controller: _taxNumberController,
+            hint: 'Tax Number',
+            validator: _validateTaxNumber,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+              LengthLimitingTextInputFormatter(15),
+            ],
+          ),
+          SizedBox(height: Constant.SIZE_10),
 
-        _field(
-          theme: theme,
-          controller: _bicController,
-          hint: 'BIC',
-          error: signupState.bicError,
-          onChanged: signupState.setBic,
-        ),
-      ],
+          _field(
+            theme: theme,
+            controller: _ibanController,
+            hint: 'IBAN',
+            validator: _validateIBAN,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+              LengthLimitingTextInputFormatter(34),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -376,47 +418,31 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     required ThemeData theme,
     required TextEditingController controller,
     required String hint,
-    required String? error,
-    required Function(String) onChanged,
+    required String? Function(String?) validator,
+    List<TextInputFormatter>? inputFormatters,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
-          cursorColor: Colors.white,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-            ),
-            filled: true,
-            fillColor: Constant.grey.withOpacity(0.1),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-              borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
-            ),
-            enabledBorder: CustomTheme.roundedBorder(
-              Constant.grey.withOpacity(0.3),
-            ),
-            focusedBorder: CustomTheme.roundedBorder(
-              Constant.grey.withOpacity(0.3),
-            ),
-          ),
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      inputFormatters: inputFormatters,
+      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+        filled: true,
+        fillColor: Constant.grey.withOpacity(0.1),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         ),
-        if (error != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 4, left: 8),
-            child: Text(
-              error,
-              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
-            ),
-          ),
-      ],
+        enabledBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        focusedBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+      ),
     );
   }
+
 
   Widget _verifyButton(
       ThemeData theme,
