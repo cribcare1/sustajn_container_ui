@@ -9,22 +9,26 @@ class LocationState {
   final bool loading;
   final LatLng? position;
   final String address;
+  final String postalCode;
 
   LocationState({
     this.loading = false,
     this.position,
     this.address = "",
+    this.postalCode="",
   });
 
   LocationState copyWith({
     bool? loading,
     LatLng? position,
     String? address,
+    String? postalCode
   }) {
     return LocationState(
       loading: loading ?? this.loading,
       position: position ?? this.position,
       address: address ?? this.address,
+      postalCode: postalCode ?? this.postalCode
     );
   }
 }
@@ -76,9 +80,11 @@ class LocationNotifier extends StateNotifier<LocationState> {
           "${p.name ?? ""}, ${p.street ?? ""}, ${p.locality ?? ""}, "
           "${p.administrativeArea ?? ""},${p.postalCode ?? ""}, ${p.country ?? ""}";
 
-      state = state.copyWith(address: address);
+      state = state.copyWith(address: address,
+        postalCode: p.postalCode ?? "",);
     } catch (_) {
-      state = state.copyWith(address: "Unable to fetch address");
+      state = state.copyWith(address: "Unable to fetch address",
+        postalCode: "",);
     }
   }
 }

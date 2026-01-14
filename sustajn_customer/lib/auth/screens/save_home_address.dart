@@ -7,7 +7,10 @@ import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../notifier/location_state.dart';
+import '../../provider/signup_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../payment_type/payment_screen.dart';
 
 class HomeAddress extends ConsumerStatefulWidget {
   const HomeAddress({super.key});
@@ -21,6 +24,10 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
   int selectedSaveAs = 0;
   final searchController = TextEditingController();
+  final flatController = TextEditingController();
+  final streetController = TextEditingController();
+  final saveAsController = TextEditingController();
+
 
   @override
   void initState() {
@@ -46,7 +53,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         ).getAppBar(context),
 
         body: state.loading || state.position == null
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator(
+          color: Constant.gold,
+        ))
             : Column(
           children: [
 
@@ -112,23 +121,37 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
 
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Constant.gold),
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Use Current Location",
-                        style: TextStyle(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.w600,
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(signUpNotifier).setAddress(
+                        address: state.address,
+                        postalCode: state.postalCode,
+                        latitude: state.position!.latitude,
+                        longitude: state.position!.longitude,
+                      );
+
+                      NavUtil.navigateWithReplacement(PaymentTypeScreen());
+                    },
+
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Constant.gold),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Use Current Location",
+                          style: TextStyle(
+                            color: Constant.gold,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
                   ),
+
 
                   const SizedBox(height: 12),
 
@@ -170,15 +193,12 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                     ],
                   ),
 
-                  if (selectedSaveAs == 2) ...[
-                    const SizedBox(height: 12),
-                    _inputField("Save as"),
-                  ],
+                  if (selectedSaveAs == 2) _inputField("Save as", saveAsController),
 
                   const SizedBox(height: 12),
-                  _inputField("Flat / Door / House"),
+                  _inputField("Flat / Door / House", flatController),
                   const SizedBox(height: 12),
-                  _inputField("Street / Block / City / Postal Code"),
+                  _inputField("Street / Block / City / Postal Code", streetController),
 
                   const SizedBox(height: 16),
 
@@ -195,11 +215,23 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                       ),
 
                       onPressed: () {
-                        Navigator.pop(context, {
-                          "lat": state.position!.latitude,
-                          "lng": state.position!.longitude,
-                          "address": state.address,
-                        });
+                        final saveAs = selectedSaveAs == 0
+                            ? "Home"
+                            : selectedSaveAs == 1
+                            ? "Work"
+                            : saveAsController.text.trim();
+
+                        final manualAddress =
+                            "$saveAs, ${flatController.text}, ${streetController.text}";
+
+                        ref.read(signUpNotifier).setAddress(
+                          address: manualAddress,
+                          postalCode: state.postalCode,
+                          latitude: state.position!.latitude,
+                          longitude: state.position!.longitude,
+                        );
+
+                        NavUtil.navigateWithReplacement(PaymentTypeScreen());
                       },
                       child:  Text(
                         "Confirm & Continue",
@@ -252,20 +284,17 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     );
   }
 
-  Widget _inputField(String hint) {
+  Widget _inputField(String hint, TextEditingController controller) {
     return TextField(
+      controller: controller,
       style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white70,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.white70),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
         enabledBorder: CustomTheme.roundedBorder(Constant.grey),
         focusedBorder: CustomTheme.roundedBorder(Constant.grey),
       ),
     );
   }
+
 }

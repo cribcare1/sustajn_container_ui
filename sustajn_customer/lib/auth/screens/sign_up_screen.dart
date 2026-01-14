@@ -44,6 +44,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   bool confirmPasswordVisible = false;
   double lat = 0.0;
   double long = 0.0;
+  String postalCode = '';
+
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -279,29 +281,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         return null;
                       },
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => MapScreen())).then((value){
-                          if(value != null){
-                            addressCtrl.text = value['address'];
-                            lat=value['lat'];
-                            long=value['lng'];
-                          }
-
-                        });
-                      },
-                      child: IgnorePointer(
-                        child: _buildTextField(
-                          readOnly: true,
-                          context,
-                          controller: addressCtrl,
-                          hint: Strings.RESTAURANT_ADDRESS,
-                          validator: (v) =>
-                          v!.isEmpty ? " address required" : null,
-                        ),
-                      ),
-                    ),
-                    signUpState.isLoading?Center(child: CircularProgressIndicator(),):SizedBox(
+                    signUpState.isLoading?Center(child: CircularProgressIndicator(
+                      color: Constant.gold,
+                    ),):SizedBox(
                       width: double.infinity,
                       height: 48,
                       child: ElevatedButton(
@@ -313,7 +295,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // if (!_validateImage()) return;
 
                             final registrationData = RegistrationData(
                               fullName: restaurantCtrl.text,
@@ -321,11 +302,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               phoneNumber: mobileCtrl.text,
                               password: passwordCtrl.text,
                               profileImage: selectedImage,
-                              dateOfBirth: null,
-                              address: addressCtrl.text,
+
+                              flatDoorHouseDetails: "",
+                              areaStreetCityBlockDetails: addressCtrl.text,
+                              poBoxOrPostalCode: postalCode,
+                              addressType: "HOME",
+                              addressStatus: "ACTIVE",
+
                               latitude: lat,
                               longitude: long,
+                              subscriptionPlanId: 1,
                             );
+
                             signUpState.setRegistrationData(registrationData);
                             _getNetworkDataVerify(signUpState);
                           }
@@ -352,6 +340,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color:Constant.gold,
                                 decoration: TextDecoration.underline,
+                                decorationColor: Constant.gold
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {

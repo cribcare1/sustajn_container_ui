@@ -65,30 +65,7 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                 ],
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_16,),
-              InkWell(
-                onTap: () => Utils.callPhone('7865432134'),
-                child: Row(
-                  children: [
-                    Icon(Icons.phone,
-                        size: Constant.CONTAINER_SIZE_18, color: Colors.white),
-                    SizedBox(width: Constant.SIZE_10),
-                    Expanded(
-                      child: Text(
-                        '7865432134',
-                        style: theme.textTheme.bodyLarge
-                            ?.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: Constant.CONTAINER_SIZE_14,
-                      color: Colors.white70,
-                    ),
-                  ],
-                ),
-              ),
 
-              SizedBox(height: Constant.CONTAINER_SIZE_20,),
               InkWell(
                 onTap: () => Utils.sendEmail('example@gmail.com'),
                 child: Row(

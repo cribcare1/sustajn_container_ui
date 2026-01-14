@@ -64,6 +64,11 @@ class SharedPreferenceUtils{
     return jsonDecode(value) as Map<String, dynamic>;
   }
 
+  static Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
 
 
 }

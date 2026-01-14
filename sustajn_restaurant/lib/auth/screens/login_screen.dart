@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_restaurant/auth/screens/dashboard_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/submit_button.dart';
@@ -26,18 +25,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _showPassword = false;
 
-
   @override
   void initState() {
     super.initState();
     getDevice();
-   }
- 
+  }
+
   Future<void> getDevice() async {
     final deviceToken = await Utils.getDeviceToken();
- 
-    setState(() {
-     });
+
+    setState(() {});
   }
 
   @override
@@ -59,14 +56,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Strings.WELCOME,
                   style: themeData?.textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: height * 0.005),
                 Text(
                   Strings.LOGIN_YOUR_ACC,
                   style: themeData?.textTheme.bodyMedium!.copyWith(
-                      color: Colors.white
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: height * 0.03),
@@ -82,12 +79,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     fillColor: themeData!.primaryColor,
                     hintStyle: TextStyle(color: Colors.white70),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_20,
+                      ),
                       borderSide: BorderSide(color: Constant.grey),
-
                     ),
                     enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                    focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -116,13 +114,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     filled: true,
                     fillColor: themeData!.primaryColor,
                     contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14, horizontal: 12),
+                      vertical: 14,
+                      horizontal: 12,
+                    ),
                     hintStyle: TextStyle(color: Colors.white70),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _showPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                        _showPassword ? Icons.visibility : Icons.visibility_off,
                         color: Colors.white70,
                       ),
                       onPressed: () {
@@ -132,10 +130,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_16,
+                      ),
                     ),
-                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                      focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                    enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -176,21 +176,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: height * 0.02),
-                authState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
-                    width: double.infinity,
-                    child:SubmitButton(onRightTap: (){
-                      if (_formKey.currentState!.validate()) {
-                        _getNetworkData(authState);
-                      }
-                    },rightText: Strings.LOGIN)
-                ),
+                authState.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          onRightTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              _getNetworkData(authState);
+                            }
+                          },
+                          rightText: Strings.LOGIN,
+                        ),
+                      ),
                 SizedBox(height: height * 0.02),
                 Center(
                   child: Text.rich(
                     TextSpan(
-                      text:Strings.DONT_HAVE_ACC ,
+                      text: Strings.DONT_HAVE_ACC,
                       style: themeData.textTheme.bodyMedium!.copyWith(
-                          color: Colors.white
+                        color: Colors.white,
                       ),
                       children: [
                         TextSpan(
@@ -199,21 +204,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             color: Constant.gold,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
+                            decorationColor: themeData.secondaryHeaderColor,
                           ),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const SignUpScreen(),
-                                ),
-                              );
-                            },
+                            ..onTap = authState.isLoading
+                                ? null
+                                : () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const SignUpScreen(),
+                                      ),
+                                    );
+                                  },
                         ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -221,30 +229,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
     );
   }
+
   _getNetworkData(var registrationState) async {
     try {
-      ref.read(authNotifierProvider).loginData(
-          context, _emailController.text, _passwordController.text);
+      ref
+          .read(authNotifierProvider)
+          .loginData(context, _emailController.text, _passwordController.text);
       if (registrationState.isValid) {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+        ) async {
           Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+              ref.read(
+                loginDetailProvider({
+                  "userName": _emailController.text,
+                  "password": _passwordController.text,
+                }),
+              );
             } else {
               registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
             }
           } catch (e) {
             Utils.printLog('Error on button onPressed: $e');
             registrationState.setIsLoading(false);
           }
-          if(!mounted) return;
+          if (!mounted) return;
           FocusScope.of(context).unfocus();
         });
       }

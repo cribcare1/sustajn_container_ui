@@ -35,6 +35,7 @@ class Constant {
   static late double SIZE_15 = 15.00;
   static late double SIZE_17= 17.00;
   static late double SIZE_18 = 18.00;
+  static late double SIZE_1 = 1.6;
   static late double TOPSIZE = 10;
   static late double PADDING_HEIGHT_10 = 10.0;
   static late double PADDING_HEIGHT_50 = 50.0;

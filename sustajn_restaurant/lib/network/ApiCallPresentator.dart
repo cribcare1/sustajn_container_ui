@@ -58,7 +58,7 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
   }
 
 
-  Future<dynamic> postLoginRequest_old(
+  Future<dynamic> postApiRequest(
       String url, Map<String, dynamic> data) async {
     final response = await appDataManager.apiHelper.apiPostLoginRequest(url, data);
     Utils.printLog(

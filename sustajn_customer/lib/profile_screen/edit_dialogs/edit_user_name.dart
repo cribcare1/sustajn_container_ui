@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
 
 class EditUserNameDialog extends StatefulWidget {
-  const EditUserNameDialog({Key? key}) : super(key: key);
+  final String userName;
+  const EditUserNameDialog({Key? key, required this.userName}) : super(key: key);
 
   @override
   State<EditUserNameDialog> createState() =>
@@ -19,14 +20,12 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
   void initState() {
     super.initState();
 
-    final String restaurantName = 'User';
-
-    _controller.text = restaurantName;
-
+    _controller.text = widget.userName;
     _controller.selection = TextSelection.collapsed(
-      offset: restaurantName.length,
+      offset: widget.userName.length,
     );
   }
+
 
 
   @override
