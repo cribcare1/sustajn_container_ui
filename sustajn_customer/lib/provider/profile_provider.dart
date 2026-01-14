@@ -10,6 +10,7 @@ import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/profile_update_data.dart';
+import '../models/update_image.dart';
 import '../service/profile_service.dart';
 import '../utils/utils.dart';
 
@@ -80,3 +81,34 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
     Utils.showNetworkErrorToast(profileState.context, e.toString());
   }
 });
+
+final uploadImageProvider =
+FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
+
+  final serviceProvider = ref.read(getProfileApiService);
+
+  final String partUrl = params[Strings.PART_URL];
+  final String requestKey = params[Strings.REQUEST_KEY];
+  final File image = params[Strings.IMAGE];
+
+  final responseData = await serviceProvider.uploadImage(
+    partUrl,
+    requestKey,
+    image,
+  );
+
+  final isSuccess =
+      responseData.message?.toLowerCase() == "success";
+
+  if (!isSuccess) {
+    Utils.showToast(
+      responseData.status ?? "Image upload failed",
+    );
+  }
+
+  return responseData;
+});
+
+
+
+
