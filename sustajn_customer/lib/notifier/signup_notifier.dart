@@ -27,7 +27,6 @@ class SignupNotifier extends ChangeNotifier{
   bool _isDisposed = false;
   int _seconds = 120;
   Timer? _otpTimer;
-  bool _hasActiveListeners = false;
 
 
   BuildContext? _context;
@@ -106,7 +105,6 @@ class SignupNotifier extends ChangeNotifier{
   void resetTimer({int startFrom = 120}) {
     stopTimer();
     _seconds = startFrom;
-    _safeNotify();
   }
 
 
@@ -438,19 +436,26 @@ class SignupNotifier extends ChangeNotifier{
   }
 
   void startTimer() {
-    if (_isTimerRunning) return;
+    stopTimer(); // prevent duplicate timers
 
     _isTimerRunning = true;
 
     _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isDisposed) {
+        timer.cancel();
+        return;
+      }
+
       if (_seconds > 0) {
         _seconds--;
-        _safeNotify();
+        notifyListeners(); // <-- THIS IS ENOUGH
       } else {
         stopTimer();
       }
     });
   }
+
+
 
 
 
@@ -462,29 +467,18 @@ class SignupNotifier extends ChangeNotifier{
 
 
 
+
+
   @override
   void dispose() {
     _isDisposed = true;
+    stopTimer();
     super.dispose();
   }
 
-  @override
-  void addListener(VoidCallback listener) {
-    _hasActiveListeners = true;
-    super.addListener(listener);
-  }
 
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    _hasActiveListeners = hasListeners;
-  }
 
-  void _safeNotify() {
-    if (_hasActiveListeners) {
-      notifyListeners();
-    }
-  }
+
 
 
 }

@@ -8,6 +8,7 @@ import '../../search_resturant_screen/search_resturant_screen.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
+import '../payment_type/payment_screen.dart';
 import '../screens/save_home_address.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -126,7 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Constant.CONTAINER_SIZE_26,
                   ),
                   onTap: () {
-                    Utils.navigateToPushScreen(context, HomeAddress());
+                    Utils.navigateToPushScreen(context, NotificationScreen());
                   },
                   child: Container(
                     padding: EdgeInsets.all(Constant.SIZE_08),

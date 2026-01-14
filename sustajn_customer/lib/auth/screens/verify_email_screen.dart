@@ -75,16 +75,16 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           );
 
           if (shouldGoBack) {
-            Navigator.pop(context);
-          }
-          if (shouldGoBack) {
+            ref.read(signUpNotifier).stopTimer();
+
             if (widget.previousScreen == "signUp") {
               Navigator.pop(context, registrationData);
             } else if (widget.previousScreen == "forgotPassword") {
               Navigator.pop(context, email);
+            } else {
+              Navigator.pop(context);
             }
           }
-
           return false;
         },
 
