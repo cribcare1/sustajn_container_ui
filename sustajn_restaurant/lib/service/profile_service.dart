@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/network_urls.dart';
+import '../models/update_address_data.dart';
 import '../models/update_profile_data.dart';
 import '../network/ApiCallPresentator.dart';
 import '../utils/utility.dart';
@@ -50,14 +51,6 @@ class ProfileServices {
     }
   }
 
-  Map<String, dynamic> getJsonData(String mobileNo) {
-    final data = {
-      "userId": Utils.userId,
-      "phoneNumber": mobileNo
-    };
-    return data;
-  }
-
   Future<UpdateProfileData> updateImageService(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
     try {
       Utils.printLog("requestData::::::: $requestData");
@@ -77,13 +70,13 @@ class ProfileServices {
     }
   }
 
-  Future<dynamic> addressService(String url, Map<String, dynamic> requestData, String requestType) async {
+  Future<dynamic> addressService(String url, Map<String, dynamic> requestData) async {
     try {
       print("requestData::::::: $requestData");
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.postLoginRequest_old(url, requestData);
       if (response != null) {
-        var responseData = UpdateProfileData.fromJson(response);
+        var responseData = UpdateProfAddressData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {

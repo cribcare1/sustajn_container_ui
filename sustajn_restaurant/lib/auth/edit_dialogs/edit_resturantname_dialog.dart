@@ -203,7 +203,6 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
     );
   }
 
-
   Map<String, dynamic> getJsonData(String name) {
     final data = {
       "userId": Utils.userId,

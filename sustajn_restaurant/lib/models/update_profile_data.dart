@@ -33,15 +33,15 @@ class Data {
   int? id;
   String? userType;
   String? fullName;
-  String? customerId;
+  dynamic customerId;
   dynamic gender;
   String? profilePictureUrl;
-  String? dateOfBirth;
+  dynamic dateOfBirth;
   String? userName;
   String? email;
   String? phoneNumber;
   String? accountStatus;
-  dynamic address;
+  String? address;
   double? latitude;
   double? longitude;
   bool? phoneVerified;
@@ -52,7 +52,7 @@ class Data {
   String? createdAt;
   String? updatedAt;
   dynamic lastLogin;
-  int? subscriptionPlanId;
+  dynamic subscriptionPlanId;
 
   Data({this.id, this.userType, this.fullName, this.customerId, this.gender, this.profilePictureUrl, this.dateOfBirth, this.userName, this.email, this.phoneNumber, this.accountStatus, this.address, this.latitude, this.longitude, this.phoneVerified, this.emailVerified, this.appVersion, this.deviceOs, this.pushNotification, this.createdAt, this.updatedAt, this.lastLogin, this.subscriptionPlanId});
 
@@ -66,16 +66,12 @@ class Data {
     if(json["fullName"] is String) {
       fullName = json["fullName"];
     }
-    if(json["customerId"] is String) {
-      customerId = json["customerId"];
-    }
+    customerId = json["customerId"];
     gender = json["gender"];
     if(json["profilePictureUrl"] is String) {
       profilePictureUrl = json["profilePictureUrl"];
     }
-    if(json["dateOfBirth"] is String) {
-      dateOfBirth = json["dateOfBirth"];
-    }
+    dateOfBirth = json["dateOfBirth"];
     if(json["userName"] is String) {
       userName = json["userName"];
     }
@@ -88,7 +84,9 @@ class Data {
     if(json["accountStatus"] is String) {
       accountStatus = json["accountStatus"];
     }
-    address = json["address"];
+    if(json["address"] is String) {
+      address = json["address"];
+    }
     if(json["latitude"] is double) {
       latitude = json["latitude"];
     }
@@ -111,9 +109,7 @@ class Data {
       updatedAt = json["updatedAt"];
     }
     lastLogin = json["lastLogin"];
-    if(json["subscriptionPlanId"] is int) {
-      subscriptionPlanId = json["subscriptionPlanId"];
-    }
+    subscriptionPlanId = json["subscriptionPlanId"];
   }
 
   Map<String, dynamic> toJson() {

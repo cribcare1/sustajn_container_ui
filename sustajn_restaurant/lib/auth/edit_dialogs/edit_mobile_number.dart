@@ -35,8 +35,6 @@ class _EditMobileNumberDialogState
 
     Utils.getToken();
     Utils.userId;
-    // final String mobileNumber = "";
-    // _mobileController.text = mobileNumber;
     _mobileController.text = widget.mobileNumber;
 
     _mobileController.selection = TextSelection.collapsed(

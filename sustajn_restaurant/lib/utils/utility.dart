@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -204,8 +205,7 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
-
+                        navigateToPushScreen(context, LoginScreen());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,

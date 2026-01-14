@@ -1,0 +1,63 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:sustajn_restaurant/models/get_profile_data.dart';
+
+import '../constants/string_utils.dart';
+import '../models/get_container_data.dart';
+import '../models/login_model.dart';
+import '../models/update_profile_data.dart';
+import '../utils/utility.dart';
+
+class OrderState extends ChangeNotifier{
+  String _name = '';
+  bool _isLoading = false;
+  GetContainerData? _getContainerData;
+  BuildContext? _context;
+  bool _isVerifying = false;
+
+  bool get isVerifying => _isVerifying;
+
+  String get name => _name;
+
+  bool get isLoading => _isLoading;
+  GetContainerData? get getContainerData => _getContainerData;
+  BuildContext get context => _context!;
+
+  // Error messages
+  String? _nameError;
+
+  String? get nameError => _nameError;
+
+  void setName(String value) {
+    _name = value;
+    _validateName();
+    notifyListeners();
+  }
+
+  void setIsLoading(bool isLoading){
+    _isLoading = isLoading;
+    notifyListeners();
+  }
+
+  void setOrderData(GetContainerData getContainer){
+    _getContainerData = getContainer;
+    notifyListeners();
+  }
+
+
+  void setContext(BuildContext context) {
+    _context = context;
+    notifyListeners();
+  }
+
+  void _validateName() {
+    if (_name.isEmpty) {
+      _nameError = Strings.EMAIL_REQUIRED_TXT;
+    } else {
+      _nameError = null;
+    }
+  }
+
+
+
+}

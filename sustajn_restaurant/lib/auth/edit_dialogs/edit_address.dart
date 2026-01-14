@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/utility.dart';
 
-class EditAddressDialog extends StatefulWidget {
-  const EditAddressDialog({Key? key}) : super(key: key);
+class EditAddressDialog extends ConsumerStatefulWidget {
+  final String address;
+  const EditAddressDialog({ required this.address, Key? key,});
 
   @override
-  State<EditAddressDialog> createState() =>
+  ConsumerState<EditAddressDialog> createState() =>
       _EditAddressDialogState();
 }
 
-class _EditAddressDialogState extends State<EditAddressDialog> {
+class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
 
   @override
   void initState() {
     super.initState();
-
-    final String mobileNumber = '980765432';
-
-    _controller.text = mobileNumber;
-
-    _controller.selection = TextSelection.collapsed(
-      offset: mobileNumber.length,
-    );
+    _addressController.text = widget.address;
   }
 
 
   @override
   void dispose() {
-    _controller.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -105,7 +105,7 @@ class _EditAddressDialogState extends State<EditAddressDialog> {
                 SizedBox(height: Constant.SIZE_08),
 
                 TextFormField(
-                  controller: _controller,
+                  controller: _addressController,
                   validator: _validateAddress,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
@@ -156,7 +156,8 @@ class _EditAddressDialogState extends State<EditAddressDialog> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pop(context, _controller.text.trim());
+                        // _editAddressNetworkCall();
+                        Navigator.pop(context, _addressController.text.trim());
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -183,6 +184,43 @@ class _EditAddressDialogState extends State<EditAddressDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  Map<String, dynamic> getJsonData(String addressId, String addType, String houseDtls, String cityDtls, String pin) {
+    final data = {
+      "addressId": addressId,
+      "addressType": addType,
+      "flatDoorHouseDetails": houseDtls,
+      "areaStreetCityBlockDetails": cityDtls,
+      "poBoxOrPostalCode": pin
+    };
+    return data;
+  }
+
+  _editAddressNetworkCall(String addressId, String addType, String houseDtls, String cityDtls, String pin) async {
+    Utils.printLog('Update Address Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+
+    final jsonData = getJsonData(
+      addressId,
+      addType,
+      houseDtls,
+      cityDtls,
+      pin,
+    );
+    ref.read(
+      addressUpdateProvider({ Strings.USER_DATA: jsonData,
+        // NetworkUrls.UPDATE_ADDRESS: NetworkUrls.UPDATE_ADDRESS,
+      }),
     );
   }
 }

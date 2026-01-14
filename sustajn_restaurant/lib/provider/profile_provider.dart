@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../models/update_address_data.dart';
 import '../models/update_profile_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
@@ -78,4 +79,25 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
   },
 );
 
+
+final addressUpdateProvider =
+FutureProvider.family<UpdateProfAddressData, Map<String, dynamic>>(
+      (ref, params) async {
+    final apiService = ref.read(getProfileApiProvider);
+
+    final partUrl = params[NetworkUrls.UPDATE_ADDRESS];
+    final url = '${NetworkUrls.BASE_URL}$partUrl';
+    final requestData =
+    params[Strings.USER_DATA] as Map<String, dynamic>;
+    Utils.printLog("Provider url : $url");
+    final responseData =
+    await apiService.addressService(url, requestData);
+
+    print("Provider Response: $responseData");
+    if (responseData.status == null || responseData.status!.isEmpty) {
+      throw Exception(responseData.message ?? 'Update failed');
+    }
+    return responseData;
+  },
+);
 
