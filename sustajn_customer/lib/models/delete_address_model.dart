@@ -1,11 +1,11 @@
-class DeleteAddress {
+class DeleteAddressModel {
   Null? data;
   String? message;
   String? status;
 
-  DeleteAddress({this.data, this.message, this.status});
+  DeleteAddressModel({this.data, this.message, this.status});
 
-  DeleteAddress.fromJson(Map<String, dynamic> json) {
+  DeleteAddressModel.fromJson(Map<String, dynamic> json) {
     data = json['data'];
     message = json['message'];
     status = json['status'];

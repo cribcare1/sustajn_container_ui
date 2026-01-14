@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../models/profile_model.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 import 'edit_address.dart';
 
 class AddressScreen extends ConsumerStatefulWidget {
@@ -142,7 +145,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => AddressOptionsDialog(),
+                builder: (context) => AddressOptionsDialog(userId: data.id??0),
               );
             },
           child:Icon(
@@ -154,4 +157,6 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
       ),
     );
   }
+
+
 }

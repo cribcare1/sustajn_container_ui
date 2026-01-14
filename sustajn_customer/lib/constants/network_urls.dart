@@ -18,6 +18,7 @@ class NetworkUrls {
   static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/getPlans?role=CUSTOMER";
   static const CREATE_BANK = 'auth/createBankDetails';
   static const UPDATE_BANK = 'auth/updateBankDetails';
+  static const DELETE_ADDRESS = 'auth/deleteAddress';
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
