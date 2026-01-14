@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:sustajn_customer/provider/product_provider/product_notifier.dart';
+import 'package:sustajn_customer/notifier/product_notifier.dart';
 import 'package:sustajn_customer/service/product_serivice.dart';
 
-import '../../utils/utils.dart';
+import '../utils/utils.dart';
 
 final productProvider = ChangeNotifierProvider((ref) => ProductNotifier());
 

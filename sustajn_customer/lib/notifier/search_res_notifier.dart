@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 
-import '../../models/resturant_address_model.dart';
+import '../models/resturant_address_model.dart';
 
 class SearchResState extends ChangeNotifier{
   bool _isLoading = false;

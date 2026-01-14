@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../profile_screen/history_screen/model/borrowed_data.dart';
-import '../../profile_screen/history_screen/model/borrowed_items.dart';
-import '../../utils/utils.dart';
+import '../profile_screen/history_screen/model/borrowed_data.dart';
+import '../profile_screen/history_screen/model/borrowed_items.dart';
+import '../utils/utils.dart';
 
 class HistoryNotifier extends ChangeNotifier {
   bool _isLoading = false;

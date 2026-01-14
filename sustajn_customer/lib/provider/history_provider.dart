@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_customer/service/history_service.dart';
 
-import '../../utils/utils.dart';
-import 'history_notifier.dart';
+import '../utils/utils.dart';
+import '../notifier/history_notifier.dart';
 
 final historyProvider = ChangeNotifierProvider((ref) => HistoryNotifier());
 

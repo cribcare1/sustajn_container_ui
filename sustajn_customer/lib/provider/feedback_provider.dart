@@ -19,7 +19,6 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
   try {
     var url = '${NetworkUrls.BASE_URL}${NetworkUrls.CREATE_FEEDBACK}';
     var responseData = await apiService.createFeedback(url, params);
-    // Utils.printLog(params);
 
     if (responseData.status != null &&
         responseData.status!.isNotEmpty &&
@@ -32,7 +31,6 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: responseData.message!,
         color: Colors.green,
       );
-      // feedbackState.setSubscriptionModel(responseData);
     } else {
       if (!feedbackState.context!.mounted) return;
       showCustomSnackBar(

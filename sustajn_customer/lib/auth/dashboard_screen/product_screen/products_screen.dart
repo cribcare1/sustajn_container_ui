@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
-import 'package:sustajn_customer/provider/product_provider/product_provider.dart';
+import 'package:sustajn_customer/provider/product_provider.dart';
 
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';

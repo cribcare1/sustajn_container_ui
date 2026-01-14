@@ -28,8 +28,6 @@ class HeaderWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: (){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> MyProfileScreen()));
             },
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
