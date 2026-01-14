@@ -85,8 +85,8 @@ final registerProvider = FutureProvider.family<Register, Map<String, dynamic>>((
   final serviceProvider = ref.read(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   try {
-    final image = params[Strings.IMAGE];
-    params.remove(Strings.IMAGE);
+    // // final image = params[Strings.IMAGE];
+    // params.remove(Strings.IMAGE);
 
     final Map<String, dynamic> data = Map<String, dynamic>.from(params);
 
@@ -94,7 +94,6 @@ final registerProvider = FutureProvider.family<Register, Map<String, dynamic>>((
       NetworkUrls.REGISTER_USER,
       data,
       "data",
-      image,
     );
 
     return response;
@@ -195,7 +194,7 @@ final verifyOtpProvider =
       params,
     ) async {
       final apiService = ref.read(loginApiProvider);
-
+      final registrationState = ref.watch(authNotifierProvider);
       final String previous = params['previous'];
       params.remove("previous");
 
@@ -209,6 +208,9 @@ final verifyOtpProvider =
         return {"response": responseData, "previous": previous};
       } catch (e) {
         throw Exception(e.toString());
+
+      }finally{
+        registrationState.setIsOTPVerify(false);
       }
     });
 

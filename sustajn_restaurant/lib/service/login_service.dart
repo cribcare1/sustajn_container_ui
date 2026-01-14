@@ -27,12 +27,12 @@ class AuthServices {
       throw Exception(e);
     }
   }
-  Future<Register> registerUser(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
+  Future<Register> registerUser(String partUrl, Map<String, dynamic> requestData, String requestKey) async {
     try {
       Utils.printLog("requestData::::::: $requestData");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postMultipartRequestAdmin(url,File(image), requestData, requestKey,"");
+      var response = await presenter.postApiData(url, requestData, requestKey);
       if (response != null) {
         var responseData = Register.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");

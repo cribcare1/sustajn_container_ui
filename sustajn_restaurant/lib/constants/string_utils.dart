@@ -25,6 +25,7 @@ class Strings{
 
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
+  static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW = "Please provide your details below";
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
   static const String APPROVED_STATUS = 'Approved';
@@ -197,6 +198,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const LEAVE_RESET_PASSWORD= 'Leave Reset Password?';
   static const GO_BACK_RESET_PASSWORD = 'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const String CONFIRM_LOGOUT= 'Confirm Logout';
+  static const String CONFIRM= 'Confirm';
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';

@@ -116,7 +116,7 @@ class _TermsAndConditionScreenState
                             },
                             "latitude": authState.registrationData!.latitude,
                             "longitude": authState.registrationData!.longitude,
-                            "image": authState.registrationData!.image,
+                            // "image": authState.registrationData!.image,
                             "basicDetails": authState.businessModel!.toJson(),
                             "bankDetails": authState.bankDetails!.toJson(),
                             "socialMediaList": authState.socialMediaList.isEmpty

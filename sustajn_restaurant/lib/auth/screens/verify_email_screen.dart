@@ -109,142 +109,172 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                   minHeight: constraints.maxHeight - Constant.CONTAINER_SIZE_55,
                 ),
                 child: IntrinsicHeight(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      SizedBox(height: Constant.CONTAINER_SIZE_140),
-                      Text(
-                        Strings.VERIFY_EMAIL,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: Constant.CONTAINER_SIZE_140),
+                          Text(
+                            Strings.VERIFY_EMAIL,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              fontSize: Constant.LABEL_TEXT_SIZE_20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
 
-                      SizedBox(height: Constant.CONTAINER_SIZE_10),
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
 
-                      Text(
-                        "We've sent you a code to verify your email id on\n$emailToShow",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: Constant.LABEL_TEXT_SIZE_15,
-                        ),
-                      ),
+                          Text(
+                            "We've sent you a code to verify your email id on\n$emailToShow",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                              fontSize: Constant.LABEL_TEXT_SIZE_15,
+                            ),
+                          ),
 
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                      Center(child: buildOtp(context, _otpController)),
+                          Center(child: buildOtp(context, _otpController)),
 
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                      authState.isVerifying
-                          ? Center(child: CircularProgressIndicator())
-                          : SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFFD0A52C),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      Constant.CONTAINER_SIZE_12,
+                          authState.isVerifying
+                              ? Center(child: CircularProgressIndicator())
+                              : SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFFD0A52C),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          Constant.CONTAINER_SIZE_12,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      final otp = _otpController.text.trim();
+
+                                      if (otp.isEmpty) {
+                                        showCustomSnackBar(
+                                          context: context,
+                                          message: "Please enter OTP",
+                                          color: Colors.red,
+                                        );
+                                        return;
+                                      }
+
+                                      if (otp.length < 6) {
+                                        showCustomSnackBar(
+                                          context: context,
+                                          message:
+                                              "Please enter a valid 6-digit OTP",
+                                          color: Colors.red,
+                                        );
+                                        return;
+                                      }
+
+                                      await _getNetworkDataVerify(authState);
+                                    },
+
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: Constant.SIZE_08,
+                                      ),
+                                      child: Text(
+                                        Strings.VERIFY,
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              color: theme.primaryColor,
+                                              fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                                onPressed: () async {
-                                  final otp = _otpController.text.trim();
 
-                                  if (otp.isEmpty) {
-                                    showCustomSnackBar(
-                                      context: context,
-                                      message: "Please enter OTP",
-                                      color: Colors.red,
-                                    );
-                                    return;
-                                  }
+                          SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                                  if (otp.length < 6) {
-                                    showCustomSnackBar(
-                                      context: context,
-                                      message:
-                                          "Please enter a valid 6-digit OTP",
-                                      color: Colors.red,
-                                    );
-                                    return;
-                                  }
+                          Center(
+                            child: Text(
+                              "Resend Code in ${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_15,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
 
-                                  await _getNetworkDataVerify(authState);
+                          SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                          if (seconds == 0)
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    seconds = 120;
+                                    _startTimer();
+                                  });
                                 },
-
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: Constant.SIZE_08,
-                                  ),
-                                  child: Text(
-                                    Strings.VERIFY,
-                                    style: theme.textTheme.titleMedium
-                                        ?.copyWith(
-                                          color: theme.primaryColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      Strings.DIDNT_RECV_CODE,
+                                      style: theme.textTheme.bodyLarge?.copyWith(
+                                        color: Colors.white,
+                                        fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        _resetOtp(authState);
+                                      },
+                                      child: Text(
+                                        Strings.RESEND,
+                                        style: theme.textTheme.bodyLarge?.copyWith(
+                                          color: Constant.gold,
+                                          decoration: TextDecoration.underline,
                                           fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                  ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_40),
-
-                      Center(
-                        child: Text(
-                          "Resend Code in ${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}",
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_15,
-                            color: Colors.white,
-                          ),
-                        ),
+                          const Spacer(),
+                        ],
                       ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                      if (seconds == 0)
-                        Center(
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                seconds = 120;
-                                _startTimer();
-                              });
-                            },
+                      Visibility(
+                        visible: authState.isLoading,
+                        child: Container(
+                          width: double.infinity,
+                          height: Constant.CONTAINER_SIZE_50,
+                          color: theme.primaryColor,
+                          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                          child: Center(
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
+                                const CircularProgressIndicator(),
+                                 SizedBox(width: Constant.SIZE_08),
                                 Text(
-                                  Strings.DIDNT_RECV_CODE,
-                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                  "Resending OTP",
+                                  style: theme.textTheme.titleMedium?.copyWith(
                                     color: Colors.white,
-                                    fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    _resetOtp(authState);
-                                  },
-                                  child: Text(
-                                    Strings.RESEND,
-                                    style: theme.textTheme.bodyLarge?.copyWith(
-                                      color: Constant.gold,
-                                      decoration: TextDecoration.underline,
-                                      fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      const Spacer(),
+                      ),
                     ],
                   ),
                 ),
@@ -309,6 +339,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   Future<void> _getNetworkDataVerify(AuthState registrationState) async {
     try {
+      /// 🔹 Start loader
       registrationState.setIsOTPVerify(true);
 
       /// 1️⃣ Network check
@@ -327,27 +358,30 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         return;
       }
 
+      /// 2️⃣ Verify OTP API call
       final result = await ref.read(
         verifyOtpProvider({
           "email": widget.registrationData?.email ?? widget.email,
-          "token": _otpController.text,
+          "token": _otpController.text.trim(),
           "previous": widget.previousScreen,
         }).future,
       );
 
-      print("OTP VERIFY RESULT =====> $result");
-
       final Map<String, dynamic> response =
-          result["response"] as Map<String, dynamic>;
-      final String previous = result["previous"] as String;
+      result["response"] as Map<String, dynamic>;
+
+      final String previous = widget.previousScreen;
+
+      /// 🔍 Debug logs
+      Utils.printLog("VERIFY OTP RESPONSE =====> $response");
 
       /// 3️⃣ OTP SUCCESS
-      if (response["status"] == Strings.SUCCESS) {
+      if (response["status"]?.toString().toLowerCase() == "success") {
         if (!mounted) return;
 
         showCustomSnackBar(
           context: context,
-          message: "Email Verification Successful",
+          message: response["message"] ?? "Email Verification Successful",
           color: Colors.green,
         );
 
@@ -355,13 +389,18 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         if (previous == "forgotPassword") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const ResetPasswordScreen()),
+            MaterialPageRoute(
+              builder: (_) => const ResetPasswordScreen(),
+            ),
           );
-          return;
-        } else {
+        }
+        /// 🔹 Registration Flow
+        else {
           Utils.navigateToPushScreen(
             context,
-            BusinessInformationDetails(authState: registrationState),
+            BusinessInformationDetails(
+              authState: registrationState,
+            ),
           );
         }
       }
@@ -375,12 +414,24 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           color: Colors.red,
         );
       }
-    } catch (e) {
+    } catch (e, s) {
+      /// ❌ Error handling
       Utils.printLog("OTP Verify Error: $e");
+      Utils.printLog("STACKTRACE: $s");
+
+      if (!mounted) return;
+
+      showCustomSnackBar(
+        context: context,
+        message: "Something went wrong. Please try again.",
+        color: Colors.red,
+      );
     } finally {
+      /// 🔹 Stop loader
       registrationState.setIsOTPVerify(false);
     }
   }
+
 
   _resetOtp(var registrationState) async {
     try {

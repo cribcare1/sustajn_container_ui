@@ -50,6 +50,7 @@ void main() async {
   });
 
   Utils.getToken();
+  Utils.getProfile();
 
   runApp(const ProviderScope(child: MyApp()));
 }
