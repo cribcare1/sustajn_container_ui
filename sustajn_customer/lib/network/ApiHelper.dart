@@ -408,7 +408,6 @@ class ApiHelper {
           .send()
           .timeout(const Duration(seconds: 30));
 
-      // Convert stream to normal Response
       final responseString = await streamedResponse.stream.bytesToString();
       Utils.printLog("Status Code => ${streamedResponse.statusCode}");
       Utils.printLog("Response => $responseString");
@@ -423,4 +422,56 @@ class ApiHelper {
       return http.Response("Network call failed", 500);
     }
   }
+
+  Future<http.Response> apiMultiPartImageOnlyRequest(
+      String url,
+      File image,
+      String keyName,
+      ) async {
+    final token = Utils.authToken();
+
+    Utils.printLog("Multipart IMAGE ONLY call started==url==$url");
+    Utils.printLog("keyName====$keyName");
+    Utils.printLog("token::$token");
+
+    try {
+      final request = http.MultipartRequest("POST", Uri.parse(url));
+
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      final mimeType = image.path.toLowerCase().endsWith('.png')
+          ? http.MediaType('image', 'png')
+          : http.MediaType('image', 'jpeg');
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          keyName,
+          image.path,
+          filename: image.path.split('/').last,
+          contentType: mimeType,
+        ),
+      );
+
+
+      final streamedResponse =
+      await request.send().timeout(const Duration(seconds: 30));
+
+      final response =
+      await http.Response.fromStream(streamedResponse);
+
+      Utils.printLog("Multipart image response code=${response.statusCode}");
+      Utils.printLog("Multipart image response body=${response.body}");
+
+      return response;
+    } on TimeoutException {
+      Utils.printLog('Timed out in apiMultiPartImageOnlyRequest');
+      return http.Response('Request timed out', 408);
+    } catch (e) {
+      Utils.printLog("Multipart image upload failed==$e");
+      return http.Response('Multipart failed', 500);
+    }
+  }
+
 }

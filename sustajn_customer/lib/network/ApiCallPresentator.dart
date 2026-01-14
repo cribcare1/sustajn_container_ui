@@ -212,6 +212,36 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
+  Future<dynamic> putMultipartImageOnlyRequest(
+      String url,
+      String keyName,
+      File image,
+      ) async {
+    try {
+      var response =
+      await appDataManager.apiHelper.apiMultiPartImageOnlyRequest(
+        url,
+        image,
+        keyName,
+      );
+
+      if (Utils.isReqSuccess(response)) {
+        final jsonData = json.decode(response.body);
+        Utils.printLog('Response json: $jsonData');
+        return jsonData;
+      } else {
+        Utils.printLog('Error response status code: ${response.statusCode}');
+        throw Exception('Error: ${response.statusCode}');
+      }
+    } on TimeoutException {
+      throw Exception('Request timed out');
+    } catch (e) {
+      Utils.printLog('Unhandled exception in putMultipartImageOnlyRequest: $e');
+      throw Exception(e);
+    }
+  }
+
+
 
 
 }
