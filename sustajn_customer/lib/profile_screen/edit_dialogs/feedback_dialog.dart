@@ -87,7 +87,7 @@ class _FeedbackBottomSheetState
                       feedbackState.isLoading
                           ? const Center(
                         child: CircularProgressIndicator(
-                          color: Colors.white,
+                          color:Constant.gold,
                         ),
                       )
                           : _buildSubmitButton(context, feedbackState),
@@ -273,15 +273,13 @@ class _FeedbackBottomSheetState
         feedbackState.setIsLoading(true);
         feedbackState.setContext(context);
 
-        await ref.read(feedbackProvider({
+         ref.read(feedbackProvider({
           "userId": widget.userId,
           "rating": null,
           "subject": subjectController.text,
           "remark": remarksController.text,
-        }));
-
-        feedbackState.setIsLoading(false);
-
+        }).future);
+        await Future.delayed(const Duration(milliseconds: 300));
         if (!mounted) return;
         Navigator.pop(context);
       } else {
