@@ -255,7 +255,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                         child: Container(
                           width: double.infinity,
                           height: Constant.CONTAINER_SIZE_50,
-                          color: theme.primaryColor,
+                         
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                            border: Border.all(color: Colors.white),
+                          ),
                           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
                           child: Center(
                             child: Row(
