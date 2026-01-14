@@ -9,10 +9,8 @@ import '../utils/utils.dart';
 
 final feedbackNotifier = ChangeNotifierProvider((ref) => FeedbackNotifier());
 
-final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
-  ref,
-  params,
-) async {
+final feedbackProvider =
+FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final apiService = ref.watch(feedbackApiService);
   final feedbackState = ref.watch(feedbackNotifier);
 
@@ -21,30 +19,37 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
     var responseData = await apiService.createFeedback(url, params);
 
     if (responseData.status != null &&
-        responseData.status!.isNotEmpty &&
-        responseData.status!.trim().toString().toLowerCase() ==
-            NetworkUrls.SUCCESS) {
-      feedbackState.setIsLoading(false);
-      if (!feedbackState.context!.mounted) return;
-      showCustomSnackBar(
-        context: feedbackState!.context,
-        message: responseData.message!,
-        color: Colors.green,
-      );
+        responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+
+      if (feedbackState.context.mounted) {
+        showCustomSnackBar(
+          context: feedbackState.context,
+          message: responseData.message!,
+          color: Colors.green,
+        );
+      }
+
+      await Future.delayed(const Duration(milliseconds: 300));
     } else {
-      if (!feedbackState.context!.mounted) return;
+      if (!feedbackState.context.mounted) return null;
+
       showCustomSnackBar(
-        context: feedbackState!.context,
+        context: feedbackState.context,
         message: responseData.message!,
         color: Colors.black,
       );
-      feedbackState.setIsLoading(false);
+
+      await Future.delayed(const Duration(milliseconds: 300));
     }
   } catch (e) {
-    feedbackState.setIsLoading(false);
-    Utils.showNetworkErrorToast(feedbackState.context, e.toString());
+    Utils.showNetworkErrorToast(
+      feedbackState.context,
+      e.toString(),
+    );
   } finally {
     feedbackState.setIsLoading(false);
   }
+
   return null;
 });
+
