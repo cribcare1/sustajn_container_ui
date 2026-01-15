@@ -235,12 +235,11 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
                             ),
                           ),
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              signUpState.registrationData?.bankName = bankNameController.text.trim();
-                              signUpState.registrationData?.accountNumber = accNoController.text.trim();
-                              signUpState.registrationData?.taxNumber = taxController.text.trim();
-                            }
-                            _getNetworkData(signUpState);
+                            // if (_formKey.currentState!.validate()) {
+                            //   signUpState.registrationData?.bankName = bankNameController.text.trim();
+                            //   signUpState.registrationData?.accountNumber = accNoController.text.trim();
+                            //   signUpState.registrationData?.taxNumber = taxController.text.trim();
+                            // }
 
                           },
                           child: Text(
@@ -269,53 +268,7 @@ class _BankDetailsState extends ConsumerState<BankDetails> {
     );
   }
 
-  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
-    final cleanedMap = <String, dynamic>{};
 
-    map.forEach((key, value) {
-      if (value == null) return;
-
-      if (value is Map) {
-        final nested = removeNullAndEmpty(
-          Map<String, dynamic>.from(value),
-        );
-        if (nested.isNotEmpty) {
-          cleanedMap[key] = nested;
-        }
-      } else if (value.toString().trim().isNotEmpty) {
-        cleanedMap[key] = value;
-      }
-    });
-
-    return cleanedMap;
-  }
-
-  _getNetworkData(var registrationState) async {
-    try {
-      if(registrationState.isValid) {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              final Map<String, dynamic> rawBody =
-              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
-              final body = removeNullAndEmpty(rawBody);
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, registrationState.registrationData.profileImage);
-              ref.read(registerProvider(params));
-            } else {
-              registrationState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
-        });
-      }
-    } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
-    }
-  }
 
 
 }

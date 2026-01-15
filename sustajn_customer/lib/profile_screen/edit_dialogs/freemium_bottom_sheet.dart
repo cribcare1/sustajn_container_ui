@@ -1,12 +1,28 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../models/subscriptionplan_data.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/signup_provider.dart';
+import '../../provider/subscription_provider.dart';
+import '../../utils/utils.dart';
 
-class FreemiumBottomSheet extends StatelessWidget {
-  const FreemiumBottomSheet({super.key});
+class FreemiumBottomSheet extends ConsumerStatefulWidget {
+  final int userID;
+  final int planID;
+  const FreemiumBottomSheet({super.key,required this.userID,required this.planID});
 
+  @override
+  ConsumerState<FreemiumBottomSheet> createState() => _FreemiumBottomSheetState();
+}
+
+class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final signUpState = ref.watch(signUpNotifier);
+    final plans = signUpState.subscriptionList ?? [];
 
     return SafeArea(
       child: Padding(
@@ -19,7 +35,7 @@ class FreemiumBottomSheet extends StatelessWidget {
 
             Flexible(
               child: SingleChildScrollView(
-                child: _freemiumCard(theme),
+                child: _freemiumCard(theme,plans),
               ),
             ),
 
@@ -45,7 +61,7 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _freemiumCard(ThemeData theme) {
+  Widget _freemiumCard(ThemeData theme,List<SubscriptionData> plan) {
     return Container(
       padding: EdgeInsets.all(Constant.SIZE_03),
       decoration: BoxDecoration(
@@ -72,11 +88,11 @@ class FreemiumBottomSheet extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _iconSection(theme),
+            _iconSection(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_12),
-            _priceSection(theme),
+            _priceSection(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-            _featureList(theme),
+            _featureList(theme,plan),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
             _learnMoreButton(theme),
           ],
@@ -85,7 +101,7 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _iconSection(ThemeData theme) {
+  Widget _iconSection(ThemeData theme,List<SubscriptionData> plan, ) {
     return Column(
       children: [
         Icon(
@@ -95,7 +111,7 @@ class FreemiumBottomSheet extends StatelessWidget {
         ),
         SizedBox(height: Constant.SIZE_10),
         Text(
-          'Freemium',
+         plan.first.planType??'',
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
           ),
@@ -104,9 +120,9 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _priceSection(ThemeData theme) {
+  Widget _priceSection(ThemeData theme,List<SubscriptionData> plan, ) {
     return Text(
-      '₹ 0.00',
+      "₹ ${plan.first.feeType?.toStringAsFixed(2) ?? "0.00"}",
       style: theme.textTheme.headlineMedium?.copyWith(
         color: Constant.gold,
         fontWeight: FontWeight.w600,
@@ -114,18 +130,14 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _featureList(ThemeData theme) {
+  Widget _featureList(ThemeData theme,List<SubscriptionData> plan) {
     return Column(
       children: [
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.\nVel ac nunc tempus ornare neque odio massa in quis.'),
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.'),
-        _featureItem(theme,
-            'Lorem ipsum dolor sit amet consectetur.'),
+        _featureItem(theme,plan.first.description??''),
       ],
     );
   }
+
 
   Widget _featureItem(ThemeData theme, String text) {
     return Padding(
@@ -178,7 +190,10 @@ class FreemiumBottomSheet extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Utils.printLog("send button click");
+          _getNetworkData();
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Constant.gold,
           shape: RoundedRectangleBorder(
@@ -198,4 +213,40 @@ class FreemiumBottomSheet extends StatelessWidget {
     );
   }
 
+  _getNetworkData() async {
+    final registrationState = ref.read(subscriptionNotifier);
+    try {
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+
+            // registrationState.setEmail(_emailController.text);
+            ref.read(feedbackProvider({
+              "userId": widget.userID,
+              // "restaurantId": "2",
+              "subscriptionPlanId":widget.planID
+            }));
+          } else {
+            registrationState.setIsLoading(false);
+            if(!mounted) return;
+            showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if(!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
 }

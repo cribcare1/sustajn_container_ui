@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/models/register_data.dart';
+import 'package:sustajn_customer/provider/bankdetail_provider.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
 import '../../constants/network_urls.dart';
@@ -17,6 +19,7 @@ import 'add_card_dialog.dart';
 
 class PaymentTypeScreen extends ConsumerStatefulWidget {
   final RegistrationData? registrationData;
+
   const PaymentTypeScreen({super.key, this.registrationData});
 
   @override
@@ -24,11 +27,23 @@ class PaymentTypeScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _bankNameController = TextEditingController();
+  final TextEditingController _taxNumberController = TextEditingController();
+  final TextEditingController _ibanController = TextEditingController();
+  final TextEditingController _bicController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Utils.getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final signupState = ref.watch(signUpNotifier);
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -40,56 +55,51 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           leading: CustomBackButton(),
         ).getAppBar(context),
 
-        body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom +
-                    Constant.CONTAINER_SIZE_20,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionTitle(theme, title: 'Card Details'),
-                  _addCardButton(context, theme),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Online Payment Gateway'),
-                  _paypalTile(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _applePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _googlePay(theme),
-                  SizedBox(height: Constant.SIZE_10),
-                  _orDivider(theme),
-                  _sectionTitle(theme, title: 'Bank Details'),
-                  _bankFields(theme),
-                ],
+        body: Stack(
+          children: [
+            SafeArea(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.only(
+                  left: Constant.CONTAINER_SIZE_20,
+                  right: Constant.CONTAINER_SIZE_20,
+                  bottom:
+                      MediaQuery.of(context).viewInsets.bottom +
+                      Constant.CONTAINER_SIZE_20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle(theme, title: 'Card Details'),
+                    _addCardButton(context, theme),
+                    _orDivider(theme),
+                    _sectionTitle(theme, title: 'Online Payment Gateway'),
+                    _paypalTile(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _applePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _googlePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _orDivider(theme),
+                    _sectionTitle(theme, title: 'Bank Details'),
+                    _bankFields(theme, signupState),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_40),
+
+                    _bottomButtons(theme, context, signupState),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
-
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            child: _bottomButtons(theme, context, authState),
-          ),
+            if (signupState.isLoading) Utils.showProgressBar(),
+          ],
         ),
       ),
     );
-
-
   }
 
-
-  Widget _sectionTitle(
-      ThemeData theme, {
-        String? title,
-        String? subtitle,
-      }) {
+  Widget _sectionTitle(ThemeData theme, {String? title, String? subtitle}) {
     if (title == null && subtitle == null) {
       return const SizedBox.shrink();
     }
@@ -127,9 +137,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-
-
-
   Widget _addCardButton(BuildContext context, ThemeData theme) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -144,9 +151,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-          ),
+          border: Border.all(color: Constant.grey.withOpacity(0.3)),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           color: Constant.grey.withOpacity(0.1),
         ),
@@ -178,9 +183,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
             child: Text(
               'or',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
           Expanded(child: Divider(color: Constant.gold)),
@@ -193,10 +196,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -219,10 +220,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -245,10 +244,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -267,56 +264,129 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
+  Widget _bankFields(ThemeData theme, var signupState) {
     return Column(
       children: [
-        _inputField(theme, 'Bank Name'),
+        _field(
+          theme: theme,
+          controller: _bankNameController,
+          hint: 'Bank Name',
+          error: signupState.bankNameError,
+          onChanged: signupState.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+            LengthLimitingTextInputFormatter(50),
+          ],
+        ),
+
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'Account Holder Name*'),
+
+        _field(
+          theme: theme,
+          controller: _taxNumberController,
+          hint: 'Tax Number',
+          error: signupState.taxNumberError,
+          onChanged: signupState.setTaxNumber,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            LengthLimitingTextInputFormatter(15),
+          ],
+        ),
+
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'IBAN '),
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: 'Account Number',
+          error: signupState.accountNumberError,
+          onChanged: signupState.setAccountNumber,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(18),
+          ],
+        ),
+
         SizedBox(height: Constant.SIZE_10),
-        _inputField(theme, 'BIC')
+
+        _field(
+          theme: theme,
+          controller: _ibanController,
+          hint: 'IBAN',
+          error: signupState.ibanError,
+          onChanged: signupState.setIban,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            LengthLimitingTextInputFormatter(34),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _inputField(ThemeData theme, String hint) {
-    return TextField(
-      style: theme.textTheme.bodyLarge?.copyWith(
-        color: Colors.white,
-      ),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-          color: Colors.white,
-        ),
-        filled: true,
-        fillColor: Constant.grey.withOpacity(0.1),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+
+  Widget _field({
+    required ThemeData theme,
+    required TextEditingController controller,
+    required String hint,
+    required String? error,
+    required Function(String) onChanged,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+          cursorColor: Colors.white,
+          onChanged: onChanged,
+          inputFormatters: inputFormatters,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white,
+            ),
+            filled: true,
+            fillColor: Constant.grey.withOpacity(0.1),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+            ),
+            enabledBorder: CustomTheme.roundedBorder(
+              Constant.grey.withOpacity(0.3),
+            ),
+            focusedBorder: CustomTheme.roundedBorder(
+              Constant.grey.withOpacity(0.3),
+            ),
           ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-      ),
+        ),
+        if (error != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 8),
+            child: Text(
+              error,
+              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+            ),
+          ),
+      ],
     );
   }
 
   Widget _bottomButtons(
-      ThemeData theme,
-      BuildContext context,
-      var authState,
-      ) {
+    ThemeData theme,
+    BuildContext context,
+    var signupState,
+  ) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () {
-              NavUtil.navigateWithReplacement( SubscriptionScreen());
-            },
-
+            onPressed: signupState.isLoading
+                ? null
+                : () {
+                    NavUtil.navigateWithReplacement(SubscriptionScreen());
+                  },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(
@@ -325,19 +395,23 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             ),
             child: Text(
               'Skip',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: Constant.gold,
-              ),
+              style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
             ),
           ),
         ),
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {
-              NavUtil.navigateWithReplacement(SubscriptionScreen());
-              // _getNetworkData(authState);
-            },
+            onPressed: signupState.isLoading
+                ? null
+                : () async {
+                    final isValid = signupState.validateBankForm();
+                    if (!isValid) return;
+                    signupState.setIsLoading(true);
+
+                    await _getNetworkDataVerify(signupState);
+                  },
+
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
@@ -346,7 +420,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             ),
             child: Text(
               'Verify & Continue',
-
               style: theme.textTheme.labelLarge?.copyWith(
                 color: theme.primaryColor,
               ),
@@ -357,52 +430,64 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-
-  Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
-    final cleanedMap = <String, dynamic>{};
-
-    map.forEach((key, value) {
-      if (value == null) return;
-
-      if (value is Map) {
-        final nested = removeNullAndEmpty(
-          Map<String, dynamic>.from(value),
-        );
-        if (nested.isNotEmpty) {
-          cleanedMap[key] = nested;
-        }
-      } else if (value.toString().trim().isNotEmpty) {
-        cleanedMap[key] = value;
-      }
-    });
-
-    return cleanedMap;
+  Map<String, dynamic> getJsonData() {
+    final data = {
+      "bankDetailsRequest": {
+        "userId": Utils.userId,
+        "bankName": _bankNameController.text,
+        "taxNumber": _taxNumberController.text,
+        "accountNumber": _bicController.text,
+        "iBanNumber": _ibanController.text,
+      },
+      "cardDetailsRequest": {
+        "userId": 44,
+        "cardHolderName": "Suraj Kumar Nayak",
+        "cardNumber": "4111111111111111",
+        "expiryDate": "12/29",
+        "cvv": "123",
+        "paymentGatewayId": "PG1001",
+        "paymentGatewayName": "Razorpay",
+      },
+      "paymentGetWayRequest": {
+        "userId": 44,
+        "paymentGatewayId": "PG2001",
+        "paymentGatewayName": "PayU",
+      },
+    };
+    return data;
   }
 
-  _getNetworkData(var registrationState) async {
+  _getNetworkDataVerify(var registrationState) async {
     try {
-      if(registrationState.isValid) {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
+      if (registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+        ) async {
+          try {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              final Map<String, dynamic> rawBody =
-              Map<String, dynamic>.from(registrationState.registrationData.toApiBody());
-              final body = removeNullAndEmpty(rawBody);
-              final params = Utils.multipartParams(
-                  NetworkUrls.REGISTER_USER, body,
-                  Strings.DATA, registrationState.registrationData.profileImage);
-              ref.read(registerProvider(params));
+              // registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              ref.read(createBankProvider(getJsonData()));
             } else {
               registrationState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
             }
-          });
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
         });
       }
     } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
     }
   }
 }

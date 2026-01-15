@@ -1,32 +1,42 @@
 
-import 'package:flutter/material.dart';
-import '../../constants/number_constants.dart';
+import 'dart:io';
 
-class EditUserNameDialog extends StatefulWidget {
-  const EditUserNameDialog({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/utils.dart';
+
+class EditUserNameDialog extends ConsumerStatefulWidget {
+  final String userName;
+  const EditUserNameDialog({Key? key, required this.userName}) : super(key: key);
 
   @override
-  State<EditUserNameDialog> createState() =>
+  ConsumerState<EditUserNameDialog> createState() =>
       _EditUserNameDialogState();
 }
 
-class _EditUserNameDialogState extends State<EditUserNameDialog> {
+class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
+  File? imageFile;
 
 
   @override
   void initState() {
     super.initState();
+    Utils.userId;
 
-    final String restaurantName = 'User';
-
-    _controller.text = restaurantName;
+    _controller.text = widget.userName;
 
     _controller.selection = TextSelection.collapsed(
-      offset: restaurantName.length,
+      offset: widget.userName.length,
     );
   }
+
 
 
   @override
@@ -51,6 +61,7 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profileState = ref.watch(profileProvider);
 
     return SafeArea(
       top: false,
@@ -148,12 +159,16 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                    onPressed: () async {
+                      if (!_formKey.currentState!.validate()) return;
+
+                      await _editNameNetwork(
+                          _controller.text.trim(),profileState
+                      );
+                      if (mounted) {
                         Navigator.pop(context, _controller.text.trim());
                       }
                     },
@@ -182,5 +197,39 @@ class _EditUserNameDialogState extends State<EditUserNameDialog> {
         ),
       ),
     );
+  }
+
+  Map<String, dynamic> getJsonData(String name) {
+    final data = {
+      "userId": Utils.userId,
+      "fullName": name,
+      "phoneNumber": ""
+    };
+    return data;
+  }
+
+  _editNameNetwork(String name, var profileState) async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        setState(() async {
+          if (isNetworkAvailable) {
+            profileState.setIsLoading(true);
+            final params = Utils.multipartParams(
+              NetworkUrls.UPDATE_PROFILE,
+              getJsonData(name),
+              Strings.USER_DATA,
+            );
+            ref.read(profileUpdateProvider(params));
+
+          } else {
+            profileState.setIsLoading(false);
+            Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+          }
+        });
+      });
+    } catch (e) {
+      Utils.printLog('Error in registration button onPressed: $e');
+    }
   }
 }

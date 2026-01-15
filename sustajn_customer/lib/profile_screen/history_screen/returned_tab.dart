@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/provider/history_provider/history_provider.dart';
+import 'package:sustajn_customer/provider/history_provider.dart';
 
 import '../../common_widgets/filter_screen.dart';
 import '../../constants/imports_util.dart';
@@ -84,7 +84,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
             Expanded(
               child: list.isEmpty && !historyState.isLoading
                   ? Center(
-                child: Utils.getErrorText('No borrowed containers found'),
+                child: Utils.getErrorText('No returned containers found'),
               )
                   : ListView.builder(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
@@ -117,7 +117,9 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
         ),
 
         if (historyState.isLoading)
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: CircularProgressIndicator(
+            color: Constant.gold,
+          )),
       ],
     );
   }

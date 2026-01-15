@@ -1,29 +1,42 @@
-import 'package:flutter/material.dart';
-import '../../constants/number_constants.dart';
+import 'dart:io';
 
-class EditMobileNumberDialog extends StatefulWidget {
-  const EditMobileNumberDialog({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pinput/pinput.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/utils.dart';
+
+class EditMobileNumberDialog extends ConsumerStatefulWidget {
+  final String mobileNumber;
+  const EditMobileNumberDialog({Key? key, required this.mobileNumber}) : super(key: key);
 
   @override
-  State<EditMobileNumberDialog> createState() =>
+  ConsumerState<EditMobileNumberDialog> createState() =>
       _EditMobileNumberDialogState();
 }
 
-class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
+class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
 
+
+  File? imageFile;
 
   @override
   void initState() {
     super.initState();
 
-    final String mobileNumber = '980765432';
-
-    _controller.text = mobileNumber;
+    Utils.getToken();
+    Utils.userId;
+    _controller.text = widget.mobileNumber;
 
     _controller.selection = TextSelection.collapsed(
-      offset: mobileNumber.length,
+      offset: _controller.length,
     );
   }
 
@@ -35,7 +48,9 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
   }
 
   String? _validateMobileNumber(String? value) {
-    if (value == null || value.trim().isEmpty) {
+    if (value == null || value
+        .trim()
+        .isEmpty) {
       return 'Enter your mobile number';
     }
     if (value.length != 10) {
@@ -48,6 +63,7 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profileState = ref.watch(profileProvider);
 
     return SafeArea(
       top: false,
@@ -106,6 +122,10 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
                   cursorColor: Colors.white,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white
                   ),
@@ -146,12 +166,16 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
-                SizedBox(
+               profileState.isLoading ?Utils.showProgressBar(): SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                    onPressed: () async {
+                      if (!_formKey.currentState!.validate()) return;
+
+                      await _editMobileNetworkCall(
+                        _controller.text.trim(),profileState
+                      );
+                      if (mounted) {
                         Navigator.pop(context, _controller.text.trim());
                       }
                     },
@@ -180,5 +204,40 @@ class _EditMobileNumberDialogState extends State<EditMobileNumberDialog> {
         ),
       ),
     );
+  }
+
+
+  Map<String, dynamic> getJsonData(String mobileNo) {
+    final data = {
+      "userId": Utils.userId,
+      "fullName": "",
+      "phoneNumber": mobileNo
+    };
+    return data;
+  }
+
+  _editMobileNetworkCall(String mobileNo, var profileState) async {
+    try {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          setState(() async {
+            if (isNetworkAvailable) {
+              profileState.setIsLoading(true);
+              final params = Utils.multipartParams(
+                NetworkUrls.UPDATE_PROFILE,
+                getJsonData(mobileNo),
+                Strings.USER_DATA,
+              );
+               ref.read(profileUpdateProvider(params));
+
+            } else {
+              profileState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+        });
+    } catch (e) {
+      Utils.printLog('Error in registration button onPressed: $e');
+    }
   }
 }

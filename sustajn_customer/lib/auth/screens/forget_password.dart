@@ -117,7 +117,9 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
                   },
                 ),
                 SizedBox(height: height * 0.02),
-                registrationState.isLoading?Center(child: CircularProgressIndicator(),): SizedBox(
+                registrationState.isLoading?Center(child: CircularProgressIndicator(
+                  color: Constant.gold,
+                ),): SizedBox(
                   width: double.infinity,
                   height: 45,
                   child: ElevatedButton(

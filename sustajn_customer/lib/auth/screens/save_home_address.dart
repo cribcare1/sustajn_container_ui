@@ -7,7 +7,10 @@ import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../notifier/location_state.dart';
+import '../../provider/signup_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../payment_type/payment_screen.dart';
 
 class HomeAddress extends ConsumerStatefulWidget {
   const HomeAddress({super.key});
@@ -21,6 +24,10 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
   int selectedSaveAs = 0;
   final searchController = TextEditingController();
+  final flatController = TextEditingController();
+  final streetController = TextEditingController();
+  final saveAsController = TextEditingController();
+
 
   @override
   void initState() {
@@ -46,10 +53,12 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         ).getAppBar(context),
 
         body: state.loading || state.position == null
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+          child: CircularProgressIndicator(color: Constant.gold),
+        )
             : Column(
           children: [
-
+            /// 🔍 SEARCH BAR (FIXED BELOW APPBAR)
             Padding(
               padding: const EdgeInsets.all(16),
               child: CustomTheme.searchField(
@@ -58,6 +67,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
               ),
             ),
 
+            /// 🗺 MAP + BOTTOM SHEET
             Expanded(
               child: Stack(
                 children: [
@@ -67,7 +77,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                       zoom: 17,
                     ),
                     myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
+                    myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
                     onMapCreated: (controller) {
                       _controller.complete(controller);
@@ -92,6 +102,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                     },
                   ),
 
+                  /// 📍 CENTER PIN
                   const Center(
                     child: Icon(
                       Icons.location_pin,
@@ -99,128 +110,171 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                       color: Colors.red,
                     ),
                   ),
-                ],
-              ),
-            ),
 
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Color(0xff0f3d2e),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Constant.gold),
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Use Current Location",
-                        style: TextStyle(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Constant.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Constant.grey.withOpacity(0.1)
-                      )
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.location_on,
-                            color: Colors.white),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            state.address,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
+                  DraggableScrollableSheet(
+                    initialChildSize: 0.45,
+                    minChildSize: 0.35,
+                    maxChildSize: 0.75,
+                    builder: (context, scrollController) {
+                      return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: const BoxDecoration(
+                          color: Color(0xff0f3d2e),
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Row(
-                    children: [
-                      _saveAsChip("Home", 0),
-                      const SizedBox(width: 8),
-                      _saveAsChip("Work", 1),
-                      const SizedBox(width: 8),
-                      _saveAsChip("Other", 2),
-                    ],
-                  ),
-
-                  if (selectedSaveAs == 2) ...[
-                    const SizedBox(height: 12),
-                    _inputField("Save as"),
-                  ],
-
-                  const SizedBox(height: 12),
-                  _inputField("Flat / Door / House"),
-                  const SizedBox(height: 12),
-                  _inputField("Street / Block / City / Postal Code"),
-
-                  const SizedBox(height: 16),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffe3b023),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: _bottomContent(state, context),
                         ),
-                        elevation: 0,
-                        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
-                      ),
-
-                      onPressed: () {
-                        Navigator.pop(context, {
-                          "lat": state.position!.latitude,
-                          "lng": state.position!.longitude,
-                          "address": state.address,
-                        });
-                      },
-                      child:  Text(
-                        "Confirm & Continue",
-                        style: TextStyle(
-                          color:theme.scaffoldBackgroundColor ,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ],
         ),
+
+
       ),
     );
   }
 
-  Widget _saveAsChip(String text, int index) {
+  Widget _bottomContent(LocationState state, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// USE CURRENT LOCATION
+        GestureDetector(
+          onTap: () {
+            ref.read(signUpNotifier).setAddress(
+              address: state.address,
+              postalCode: state.postalCode,
+              latitude: state.position!.latitude,
+              longitude: state.position!.longitude,
+            );
+            NavUtil.navigateWithReplacement(PaymentTypeScreen());
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Constant.gold),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(
+              child: Text(
+                "Use Current Location",
+                style: TextStyle(
+                  color: Constant.gold,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        /// ADDRESS
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Constant.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.location_on, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  state.address,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        /// SAVE AS WITH ICONS
+        Row(
+          children: [
+            _saveAsChip("Home", Icons.home_outlined, 0),
+            const SizedBox(width: 8),
+            _saveAsChip("Work", Icons.work_outline, 1),
+            const SizedBox(width: 8),
+            _saveAsChip("Other", Icons.location_on_outlined, 2),
+          ],
+        ),
+
+        if (selectedSaveAs == 2) ...[
+          const SizedBox(height: 12),
+          _inputField("Save as", saveAsController),
+        ],
+
+        const SizedBox(height: 12),
+        _inputField("Flat / Door / House", flatController),
+        const SizedBox(height: 12),
+        _inputField(
+          "Street / Block / City / Postal Code",
+          streetController,
+          isLarge: true,
+        ),
+
+
+        const SizedBox(height: 16),
+
+        /// CONFIRM BUTTON
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xffe3b023),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: () {
+              final saveAs = selectedSaveAs == 0
+                  ? "Home"
+                  : selectedSaveAs == 1
+                  ? "Work"
+                  : saveAsController.text;
+
+              final manualAddress =
+                  "$saveAs, ${flatController.text}, ${streetController.text}";
+
+              ref.read(signUpNotifier).setAddress(
+                address: manualAddress,
+                postalCode: state.postalCode,
+                latitude: state.position!.latitude,
+                longitude: state.position!.longitude,
+              );
+
+              NavUtil.navigateWithReplacement(PaymentTypeScreen());
+            },
+            child: Text(
+              "Confirm & Continue",
+              style: TextStyle(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _saveAsChip(String text, IconData icon, int index) {
     final isSelected = selectedSaveAs == index;
 
     return Expanded(
@@ -238,34 +292,54 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 : const Color(0xff1b4d3a),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 18,
                 color: isSelected ? Colors.black : Colors.white,
-                fontWeight: FontWeight.w600,
               ),
-            ),
+              const SizedBox(width: 6),
+              Text(
+                text,
+                style: TextStyle(
+                  color: isSelected ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _inputField(String hint) {
+
+  Widget _inputField(
+      String hint,
+      TextEditingController controller, {
+        bool isLarge = false,
+      }) {
     return TextField(
+      controller: controller,
       style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white70,
+      minLines: isLarge ? 2 : 1,
+      maxLines: isLarge ? 3 : 1,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.white70),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey),
+
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: isLarge ? 20 : 14,
         ),
+
         enabledBorder: CustomTheme.roundedBorder(Constant.grey),
         focusedBorder: CustomTheme.roundedBorder(Constant.grey),
       ),
     );
   }
+
+
 }

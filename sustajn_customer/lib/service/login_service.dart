@@ -28,21 +28,17 @@ class AuthServices {
       throw Exception(e);
     }
   }
-  Future<UserRegistration> registerUser(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
+  Future<dynamic> registerUser(String url, Map<String, dynamic> requestData, String requestType) async {
     try {
-      Utils.printLog("requestData::::::: $requestData");
-      String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.putMultipartApiRequest(url, requestData, requestKey, image);
+      var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
-        var responseData = UserRegistration.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
-        return responseData;
+        return response;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog(" Register service::::$e");
+      Utils.printLog("login service::::$e");
       throw Exception(e);
     }
   }
@@ -98,13 +94,13 @@ class AuthServices {
       var response = await presenter.getAPIData(url);
       if (response != null) {
         var responseData = SubscriptionModel.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
+        // Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     } catch (e) {
-      Utils.printLog("borrowed service  service::::$e");
+      // Utils.printLog("borrowed service  service::::$e");
       throw Exception(e);
     }
   }

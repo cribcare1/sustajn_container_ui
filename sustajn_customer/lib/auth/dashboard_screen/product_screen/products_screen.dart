@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
-import 'package:sustajn_customer/provider/product_provider/product_provider.dart';
+import 'package:sustajn_customer/provider/product_provider.dart';
 
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
@@ -85,7 +85,9 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                 ],
               ),
               if (productState.isLoading)
-                Center(child: CircularProgressIndicator()),
+                Center(child: CircularProgressIndicator(
+                  color: Constant.gold,
+                )),
             ],
           ),
         ),
@@ -238,7 +240,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
           ref.read(productProvider).clearProductList();
           ref.read(productProvider).setIsLoading(true);
 
-          final url = '${NetworkUrls.PRODUCT_DATA}1';
+          final url = '${NetworkUrls.PRODUCT_DATA}${widget.userId}';
           Utils.printLog("Fetching URL: $url");
           ref.read(borrowedProvider(url));
         } else {

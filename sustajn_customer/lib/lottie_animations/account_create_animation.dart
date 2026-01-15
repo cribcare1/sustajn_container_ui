@@ -17,7 +17,7 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
 
       Navigator.pushAndRemoveUntil(
@@ -43,7 +43,7 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
             children: [
 
               Lottie.asset(
-                'assets/lottie/success_animation.json',
+                'assets/lottie/lottie_animation.json',
                 height: Constant.CONTAINER_SIZE_160,
                 repeat: false,
               ),

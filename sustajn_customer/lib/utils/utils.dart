@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,12 @@ import '../models/login_model.dart';
 class Utils {
 
 
-  static  showProfilePhotoBottomSheet(BuildContext context) {
+  static showProfilePhotoBottomSheet(
+      BuildContext context, {
+        required VoidCallback onCamera,
+        required VoidCallback onGallery,
+      }) {
+
     final theme = CustomTheme.getTheme(true);
     showModalBottomSheet(
       context: context,
@@ -87,6 +93,7 @@ class Utils {
                       iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
+                        onCamera();
                       },
                     ),
 
@@ -98,6 +105,7 @@ class Utils {
                       iconColor: Colors.white,
                       onTap: () {
                         Navigator.pop(context);
+                        onGallery();
                       },
                     ),
                        // todo this may need in future
@@ -476,14 +484,26 @@ class Utils {
     };
   }
 
-  static multipartParams(var partUrl, var data, var requestKey, var image) {
-    return {
+  static Map<String, dynamic> multipartParams(
+      String partUrl,
+      Map<String, dynamic> data,
+      String requestKey, {
+        File? image,
+      }) {
+    final params = {
       Strings.PART_URL: partUrl,
       Strings.DATA: data,
       Strings.REQUEST_KEY: requestKey,
-      if (image != null) Strings.IMAGE: image,
     };
+
+    if (image != null) {
+      params[Strings.IMAGE] = image;
+    }
+
+    return params;
   }
+
+
 
   static multipartParamsDocument(var partUrl, var data, var requestKey, var image, var document) {
     return {
@@ -494,6 +514,8 @@ class Utils {
       if (document != null) Strings.DOCUMENT: document,
     };
   }
+
+
 
 
 
@@ -526,6 +548,14 @@ class Utils {
           fontSize: Constant.LABEL_TEXT_SIZE_18,
           fontStyle: FontStyle.italic,
         ),
+      ),
+    );
+  }
+
+  static Widget showProgressBar(){
+    return Center (
+      child: CircularProgressIndicator(
+        color: Constant.gold,
       ),
     );
   }

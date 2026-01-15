@@ -1,36 +1,48 @@
-import 'package:flutter/material.dart';
-import '../../constants/number_constants.dart';
+import 'dart:io';
 
-class EditRestaurantNameDialog extends StatefulWidget {
-  const EditRestaurantNameDialog({Key? key}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/utility.dart';
+
+class EditRestaurantNameDialog extends ConsumerStatefulWidget {
+  final String name;
+
+  const EditRestaurantNameDialog({required this.name, Key? key});
 
   @override
-  State<EditRestaurantNameDialog> createState() =>
+  ConsumerState<EditRestaurantNameDialog> createState() =>
       _EditRestaurantNameDialogState();
 }
 
-class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
+class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
+  File? imageFile;
 
   @override
   void initState() {
     super.initState();
+    // Utils.getToken();
+    Utils.userId;
+    // final String restaurantName = 'Marina Sky Dine';
 
-    final String restaurantName = 'Marina Sky Dine';
+    _nameController.text = widget.name;
 
-    _controller.text = restaurantName;
-
-    _controller.selection = TextSelection.collapsed(
-      offset: restaurantName.length,
+    _nameController.selection = TextSelection.collapsed(
+      offset: widget.name.length,
     );
   }
 
 
   @override
   void dispose() {
-    _controller.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -103,7 +115,7 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
 
                 SizedBox(height: Constant.SIZE_08),
                 TextFormField(
-                  controller: _controller,
+                  controller: _nameController,
                   validator: _validateName,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
@@ -152,9 +164,16 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
                       if (_formKey.currentState!.validate()) {
-                        Navigator.pop(context, _controller.text.trim());
+                        await _editNameNetworkCall(
+                        _nameController.text.trim(),
+                        );
+                        if (mounted) {
+                          Navigator.pop(context, _nameController.text.trim());
+                        }
+
+                        // Navigator.pop(context, _nameController.text.trim());
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -181,6 +200,33 @@ class _EditRestaurantNameDialogState extends State<EditRestaurantNameDialog> {
           ),
         ),
       ),
+    );
+  }
+
+  Map<String, dynamic> getJsonData(String name) {
+    final data = {
+      "userId": Utils.userId,
+      "fullName": name
+    };
+    return data;
+  }
+
+  _editNameNetworkCall(String name) async {
+    Utils.printLog('edit restaurant name Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+    ref.read(
+      profileUpdateProvider({
+        NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
+        Strings.USER_DATA: getJsonData(name),
+      }),
     );
   }
 }
