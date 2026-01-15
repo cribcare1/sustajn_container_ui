@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -202,9 +203,13 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+
+                        navigateToPushScreen(context, LoginScreen());
+
                         Navigator.pop(context);
                         SharedPreferenceUtils.clearAll();
                         Utils.navigateToPushReplaceScreen(context, LoginScreen());
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,
@@ -403,7 +408,7 @@ class Utils {
   static void getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString(Strings.JWT_TOKEN);
-    printLog("JUT Token ==== $token");
+    printLog("JWT Token ==== $token");
   }
 
   static String authToken() {
@@ -412,6 +417,7 @@ class Utils {
     }
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
+
 
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");

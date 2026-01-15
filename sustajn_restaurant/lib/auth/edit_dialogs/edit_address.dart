@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pinput/pinput.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -11,66 +7,56 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/utility.dart';
 
-class EditMobileNumberDialog extends ConsumerStatefulWidget {
-  final String mobileNumber;
-
-  const EditMobileNumberDialog({
-    Key? key, required this.mobileNumber});
+class EditAddressDialog extends ConsumerStatefulWidget {
+  final String address;
+  const EditAddressDialog({ required this.address, Key? key,});
 
   @override
-  ConsumerState<EditMobileNumberDialog> createState() =>
-      _EditMobileNumberDialogState();
+  ConsumerState<EditAddressDialog> createState() =>
+      _EditAddressDialogState();
 }
 
-class _EditMobileNumberDialogState
-    extends ConsumerState<EditMobileNumberDialog> {
+class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
-  File? imageFile;
 
   @override
   void initState() {
     super.initState();
-
-    Utils.getToken();
-    Utils.userId;
-    _mobileController.text = widget.mobileNumber;
-
-    _mobileController.selection = TextSelection.collapsed(
-      offset: _mobileController.length,
-    );
+    _addressController.text = widget.address;
   }
+
 
   @override
   void dispose() {
-    _mobileController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
-  String? _validateMobileNumber(String? value) {
-    if (value == null || value
-        .trim()
-        .isEmpty) {
-      return 'Enter your mobile number';
+  String? _validateAddress(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Enter your address';
     }
-    if (value.length != 10) {
-      return 'Enter a valid 10-digit number';
+    if (value.trim().length < 5) {
+      return 'Address must be at least 5 characters';
+    }
+    if (value.trim().length > 250) {
+      return 'Address is too long';
     }
     return null;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final profileState = ref.watch(profileProvider);
     return SafeArea(
       top: false,
       child: Padding(
-        padding: MediaQuery
-            .of(context)
-            .viewInsets,
+        padding: MediaQuery.of(context).viewInsets,
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -87,23 +73,23 @@ class _EditMobileNumberDialogState
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Row(
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Mobile Number',
+                        'Edit Address',
                         style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                            fontSize: Constant.LABEL_TEXT_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white
                         ),
                       ),
                     ),
                     InkWell(
                       onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_20,
-                      ),
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_20),
                       child: Icon(
                         Icons.close,
                         size: Constant.CONTAINER_SIZE_20,
@@ -115,23 +101,20 @@ class _EditMobileNumberDialogState
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
+
                 SizedBox(height: Constant.SIZE_08),
 
                 TextFormField(
-                  controller: _mobileController,
-                  validator: _validateMobileNumber,
-                  keyboardType: TextInputType.number,
+                  controller: _addressController,
+                  validator: _validateAddress,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
                   cursorColor: Colors.white,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
+                      color: Colors.white
                   ),
                   decoration: InputDecoration(
-                    labelText: 'Mobile Number',
+                    labelText: 'Address',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -141,30 +124,29 @@ class _EditMobileNumberDialogState
                       vertical: Constant.CONTAINER_SIZE_14,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_12,
-                      ),
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_12,
-                      ),
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                       borderSide: BorderSide(color: Constant.grey),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_12,
-                      ),
-                      borderSide: BorderSide(color: Constant.grey),
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      borderSide:
+                      BorderSide(color: Constant.grey),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_12,
-                      ),
-                      borderSide: BorderSide(color: theme.colorScheme.error),
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      borderSide:
+                      BorderSide(color: theme.colorScheme.error),
                     ),
                   ),
                 ),
+
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
@@ -172,18 +154,11 @@ class _EditMobileNumberDialogState
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      if (!_formKey.currentState!.validate()) return;
-
-                      await _editMobileNetworkCall(
-                        _mobileController.text.trim(),
-                      );
-                      if (mounted) {
-                        Navigator.pop(context, _mobileController.text.trim());
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // _editAddressNetworkCall();
+                        Navigator.pop(context, _addressController.text.trim());
                       }
-                      // {
-                      //   Navigator.pop(context, _controller.text.trim());
-                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -191,9 +166,8 @@ class _EditMobileNumberDialogState
                         vertical: Constant.CONTAINER_SIZE_14,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_12,
-                        ),
+                        borderRadius:
+                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                       ),
                     ),
                     child: Text(
@@ -213,16 +187,19 @@ class _EditMobileNumberDialogState
     );
   }
 
-  Map<String, dynamic> getJsonData(String mobileNo) {
+  Map<String, dynamic> getJsonData(String addressId, String addType, String houseDtls, String cityDtls, String pin) {
     final data = {
-      "userId": Utils.userId,
-      "phoneNumber": mobileNo
+      "addressId": addressId,
+      "addressType": addType,
+      "flatDoorHouseDetails": houseDtls,
+      "areaStreetCityBlockDetails": cityDtls,
+      "poBoxOrPostalCode": pin
     };
     return data;
   }
 
-  _editMobileNetworkCall(String mobileNo) async {
-    Utils.printLog('edit mobile number Network call');
+  _editAddressNetworkCall(String addressId, String addType, String houseDtls, String cityDtls, String pin) async {
+    Utils.printLog('Update Address Network call');
 
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)
@@ -233,10 +210,16 @@ class _EditMobileNumberDialogState
       return;
     }
 
+    final jsonData = getJsonData(
+      addressId,
+      addType,
+      houseDtls,
+      cityDtls,
+      pin,
+    );
     ref.read(
-      profileUpdateProvider({
-        NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
-        Strings.USER_DATA: getJsonData(mobileNo),
+      addressUpdateProvider({ Strings.USER_DATA: jsonData,
+        // NetworkUrls.UPDATE_ADDRESS: NetworkUrls.UPDATE_ADDRESS,
       }),
     );
   }
