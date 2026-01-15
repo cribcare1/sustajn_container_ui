@@ -74,7 +74,7 @@ class ProfileServices {
     try {
       print("requestData::::::: $requestData");
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postLoginRequest_old(url, requestData);
+      var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
         var responseData = UpdateProfAddressData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
@@ -88,7 +88,5 @@ class ProfileServices {
     }
   }
 }
-
-
 
 final getProfileApiProvider = Provider<ProfileServices>((ref) => ProfileServices());

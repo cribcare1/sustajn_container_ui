@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/string_utils.dart';
+import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../models/login_model.dart';
 import '../models/update_profile_data.dart';
@@ -12,6 +13,7 @@ class OrderState extends ChangeNotifier{
   String _name = '';
   bool _isLoading = false;
   GetContainerData? _getContainerData;
+  ContainerHistoryData? _containerHistoryData;
   BuildContext? _context;
   bool _isVerifying = false;
 
@@ -21,6 +23,7 @@ class OrderState extends ChangeNotifier{
 
   bool get isLoading => _isLoading;
   GetContainerData? get getContainerData => _getContainerData;
+  ContainerHistoryData? get containerHistorydata => _containerHistoryData;
   BuildContext get context => _context!;
 
   // Error messages
@@ -44,6 +47,10 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setContainerHistoryData(ContainerHistoryData containerHistory){
+    _containerHistoryData = containerHistory;
+    notifyListeners();
+  }
 
   void setContext(BuildContext context) {
     _context = context;

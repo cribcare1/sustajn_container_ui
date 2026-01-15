@@ -1,20 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../models/get_container_data.dart';
+import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 import '../models/add_container_model.dart';
 import 'return_container_dialog.dart';
 
-class ReturnContainerScreen extends StatefulWidget {
+class ReturnContainerScreen extends ConsumerStatefulWidget {
   const ReturnContainerScreen({super.key});
 
   @override
-  State<ReturnContainerScreen> createState() => _ReturnContainerScreenState();
+  ConsumerState<ReturnContainerScreen> createState() => _ReturnContainerScreenState();
 }
 
-class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
+class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  List<GetContainerData> containerData = [];
+  LoginData? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _getOrderNetworkCall();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
 
   final List<ContainerItem> containers = [
     ContainerItem(
@@ -51,6 +78,7 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final orderState = ref.watch(orderProvider);
 
     return SafeArea(
       bottom: true,top: false,
@@ -64,16 +92,21 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
               const SizedBox(height: 10),
 
               Expanded(
-                child: ListView.separated(
-                  itemCount: containers.length,
+                child: orderState.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : orderState.getContainerData!.containersDetails!.isEmpty
+                    ? Center(
+                  child: Text("No containers found", style: TextStyle(color: Colors.white),),
+                )
+                    : ListView.separated(
+                  itemCount: orderState.getContainerData!.containersDetails!.length,
                   separatorBuilder: (_, __) =>
                       SizedBox(height: Constant.CONTAINER_SIZE_12),
                   itemBuilder: (context, index) {
+                    final item =
+                    orderState.getContainerData!.containersDetails![index];
                     return _containerCard(
-                      context,
-                      containers[index],
-                      theme,
-                    );
+                        context, item, theme);
                   },
                 ),
               ),
@@ -87,7 +120,7 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
 
 
   Widget _containerCard(
-      BuildContext context, ContainerItem item, ThemeData theme) {
+      BuildContext context, ContainersDetails item, ThemeData theme) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -108,7 +141,7 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
               borderRadius:
               BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             ),
-            child: Image.asset(item.image, fit: BoxFit.contain),
+            child: Image.asset("assets/images/cups.png", fit: BoxFit.contain),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -117,17 +150,17 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.name,
+                Text(item.containerName!,
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: Colors.white
                     )),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.code,
+                Text(item.containerUniqueId.toString(),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white
                     )),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.volume,
+                Text("${item.capacity.toString()} ml",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white70
                     )),
@@ -142,7 +175,7 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white
                   )),
-              Text(item.availableQty.toString(),
+              Text(item.quantityAvailable.toString(),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white
                   )),
@@ -151,22 +184,24 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
 
               GestureDetector(
                 onTap: () => _openAddDialog(context, item),
-                child: item.isAdded
-                    ? Row(
-                  children: [
-
-                    Text("Remove",
-                        style: theme.textTheme.bodySmall?.copyWith(
-                            color:
-                            Colors.white)),
-                    SizedBox(width: Constant.SIZE_04),
-                    Icon(Icons.close,
-                        size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white),
-
-                  ],
-                )
-                    : Container(
+                child:
+                // item.?
+                //     Row(
+                //   children: [
+                //
+                //     Text("Remove",
+                //         style: theme.textTheme.bodySmall?.copyWith(
+                //             color:
+                //             Colors.white)),
+                //     SizedBox(width: Constant.SIZE_04),
+                //     Icon(Icons.close,
+                //         size: Constant.CONTAINER_SIZE_14,
+                //         color: Colors.white),
+                //
+                //   ],
+                // )
+                //     ?
+                    Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Constant.CONTAINER_SIZE_20,
                     vertical: Constant.SIZE_04,
@@ -192,7 +227,7 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
     );
   }
 
-  void _openAddDialog(BuildContext context, ContainerItem item) async {
+  void _openAddDialog(BuildContext context, ContainersDetails item) async {
     final result = await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
@@ -200,15 +235,36 @@ class _ReturnContainerScreenState extends State<ReturnContainerScreen> {
       useSafeArea: true,
       builder: (_) => Padding(
         padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: ReturnContainerDialog(item: item),
+        // child: ReturnContainerDialog(item: item),
       ),
     );
 
-    if (result != null && result > 0) {
-      setState(() {
-        item.selectedQty = result;
-        item.isAdded = true;
-      });
+    // if (result != null && result > 0) {
+    //   setState(() {
+    //     item.selectedQty = result;
+    //     item.isAdded = true;
+    //   });
+    // }
+  }
+
+  _getOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
+              (isNetworkAvailable) {
+            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+            final orderState = ref.read(orderProvider);
+            if (isNetworkAvailable) {
+              orderState.setIsLoading(true);
+              final userId = Utils.userId;
+              final url = '${NetworkUrls.GET_CONTAINER}$userId';
+              ref.read(getOrderProvider(url));
+            } else {
+              orderState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
     }
   }
 }

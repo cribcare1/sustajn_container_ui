@@ -28,6 +28,7 @@ class NetworkUrls {
   static const UPDATE_PROFILE = "auth/updateProfileDetails";
   static const UPDATE_ADDRESS = "auth/updateAddress";
   static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  static const CONTAINER_HISTORY = "orders/orderHistory/";
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
