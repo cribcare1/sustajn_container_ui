@@ -78,6 +78,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
 
                         return Text(
                           snapshot.data ?? '',
+                          textAlign: TextAlign.justify,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
                             height: Constant.SIZE_1,
