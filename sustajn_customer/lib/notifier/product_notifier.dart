@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../models/product_data.dart';
-import '../../utils/utils.dart';
+import '../models/product_data.dart';
+import '../utils/utils.dart';
 
 class ProductNotifier extends ChangeNotifier {
   bool _isLoading = false;

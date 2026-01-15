@@ -19,23 +19,11 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
   const SubscriptionScreen({super.key});
 
   @override
-  ConsumerState<SubscriptionScreen> createState() =>
-      _SubscriptionScreenState();
+  ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   int _currentIndex = 0;
-  int? _selectedIndex;
-
-
-  int? get selectedPlanId {
-    final plans = ref.read(signUpNotifier).subscriptionList;
-    if (plans == null || plans.isEmpty) return null;
-    if (_selectedIndex == null) return null;
-    if (_selectedIndex! >= plans.length) return null;
-    return plans[_selectedIndex!].planId;
-  }
-
 
 
   @override
@@ -50,7 +38,6 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     final signUpState = ref.watch(signUpNotifier);
     final plans = signUpState.subscriptionList ?? [];
     final carouselHeight = MediaQuery.of(context).size.height * 0.55;
-
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -97,21 +84,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            final planId = selectedPlanId;
-                            if (planId == null) {
-                              showCustomSnackBar(
-                                context: context,
-                                message: "Please select a subscription plan",
-                                color: Colors.black,
-                              );
-                              return;
-                            }
-                            ref
-                                .read(signUpNotifier)
-                                .setSubscriptionPlan(planId);
+                            final plans = signUpState.subscriptionList ?? [];
+                            if (plans.isEmpty) return;
+
+                            final planId = plans[_currentIndex].planId;
+
+                            ref.read(signUpNotifier).setSubscriptionPlan(planId!);
                             NavUtil.navigateWithReplacement(
                               TermsconditionScreen(),
                             );
+
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -140,23 +122,20 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             ),
 
             if (signUpState.isLoading)
-              const Center(child: CircularProgressIndicator(
-                color: Constant.gold,
-              )),
+              const Center(
+                child: CircularProgressIndicator(color: Constant.gold),
+              ),
           ],
         ),
       ),
     );
-
   }
 
   Widget _freemiumCard(
-      BuildContext context,
-      ThemeData theme,
-      SubscriptionData plan, {
-        required bool isSelected,
-      })
-  {
+    BuildContext context,
+    ThemeData theme,
+    SubscriptionData plan,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       padding: EdgeInsets.all(Constant.SIZE_06),
@@ -183,14 +162,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: isSelected
-                  ? Icon(
-                Icons.check_circle,
-                color: Constant.gold,
-              )
-                  : const SizedBox(height: 24),
+              child: Icon(Icons.check_circle, color:Colors.white),
             ),
-
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Icon(
               Icons.percent,
@@ -200,9 +173,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             SizedBox(height: Constant.CONTAINER_SIZE_16),
             Text(
               plan.planName ?? "",
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
             ),
             SizedBox(height: Constant.SIZE_08),
             Text(
@@ -222,7 +193,6 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     );
   }
 
-
   Widget _featureItem(ThemeData theme, SubscriptionData data) {
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_10),
@@ -238,9 +208,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           Expanded(
             child: Text(
               data.description ?? "",
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -249,10 +217,10 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   }
 
   Widget _plansCarousel(
-      BuildContext context,
-      ThemeData theme,
-      List<SubscriptionData> plans,
-      ) {
+    BuildContext context,
+    ThemeData theme,
+    List<SubscriptionData> plans,
+  ) {
     final carouselHeight = MediaQuery.of(context).size.height * 0.55;
 
     return Column(
@@ -271,20 +239,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             ),
             items: List.generate(plans.length, (index) {
               final plan = plans[index];
-              return GestureDetector(
-                onLongPress: () {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-                child: SingleChildScrollView(
-                  child: _freemiumCard(
-                    context,
-                    theme,
-                    plan,
-                    isSelected: _selectedIndex == index,
-                  ),
-                ),
+              return SingleChildScrollView(
+                child: _freemiumCard(context, theme, plan),
               );
             }),
           ),
@@ -317,24 +273,22 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
         child: Text(
           "No subscription plans found",
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: Colors.white70,
-          ),
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70),
         ),
       ),
     );
   }
 
-
-  Widget _learnMoreButton(BuildContext context, ThemeData theme, SubscriptionData plan) {
+  Widget _learnMoreButton(
+    BuildContext context,
+    ThemeData theme,
+    SubscriptionData plan,
+  ) {
     return OutlinedButton(
       onPressed: () {
         ref.read(signUpNotifier).setSubscriptionPlan(plan.planId!);
 
-        NavUtil.navigateToPushScreen(
-          context,
-          PlandetailsScreen(plan: plan),
-        );
+        NavUtil.navigateToPushScreen(context, PlandetailsScreen(plan: plan));
       },
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: Constant.gold),
@@ -348,9 +302,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       ),
       child: Text(
         "Learn More",
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: Constant.gold,
-        ),
+        style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
       ),
     );
   }
@@ -358,36 +310,35 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   _getNetworkData() async {
     final registrationState = ref.read(signUpNotifier);
     try {
-        await ref
-            .read(networkProvider.notifier)
-            .isNetworkAvailable()
-            .then((isNetworkAvailable) async {
-          try {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-              registrationState.setContext(context);
-              var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
+        try {
+          if (isNetworkAvailable) {
+            registrationState.setIsLoading(true);
+            registrationState.setContext(context);
+            var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
 
-              ref.read(getSubscriptionProvider(url));
-            } else {
-              registrationState.setIsLoading(false);
-              if(!mounted) return;
-              showCustomSnackBar(context: context, message: Strings.NO_INTERNET_CONNECTION, color: Colors.red);
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
+            ref.read(getSubscriptionProvider(url));
+          } else {
             registrationState.setIsLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
           }
-          if(!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
-
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          registrationState.setIsLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);
     }
   }
-
-
 }
-

@@ -186,9 +186,9 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
-  Future<dynamic> postMultipartRequestAdmin(String url, File image, Map<String, dynamic> jsonMap, String keyName, String responseType,) async {
+  Future<dynamic> postMultipartRequestAdmin(String url, File? image, Map<String, dynamic> jsonMap, String keyName, String responseType) async {
     try {
-      var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image);
+      var response = await appDataManager.apiHelper.saveOrUpdateContainerType( url: url, requestJson: jsonMap,file: image , userType: responseType);
 
       if (Utils.isReqSuccess(response)) {
         try {
@@ -211,6 +211,37 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
       throw Exception('An error occurred: $e'); // Handle other exceptions
     }
   }
+
+  Future<dynamic> putMultipartImageOnlyRequest(
+      String url,
+      String keyName,
+      File image,
+      ) async {
+    try {
+      var response =
+      await appDataManager.apiHelper.apiMultiPartImageOnlyRequest(
+        url,
+        image,
+        keyName,
+      );
+
+      if (Utils.isReqSuccess(response)) {
+        final jsonData = json.decode(response.body);
+        Utils.printLog('Response json: $jsonData');
+        return jsonData;
+      } else {
+        Utils.printLog('Error response status code: ${response.statusCode}');
+        throw Exception('Error: ${response.statusCode}');
+      }
+    } on TimeoutException {
+      throw Exception('Request timed out');
+    } catch (e) {
+      Utils.printLog('Unhandled exception in putMultipartImageOnlyRequest: $e');
+      throw Exception(e);
+    }
+  }
+
+
 
 
 }

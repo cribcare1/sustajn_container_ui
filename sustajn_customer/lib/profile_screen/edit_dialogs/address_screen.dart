@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../models/profile_model.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 import 'edit_address.dart';
 
-class AddressScreen extends StatelessWidget {
+class AddressScreen extends ConsumerStatefulWidget {
   AddressScreen({super.key});
 
-  final List<Map<String, String>> addressList = [
-    {
-      "title": "Home",
-      "address":
-      "Unit 1402, Al Marsa Tower Sheikh Mohammed bin Rashid Blvd Downtown Dubai "
-          "Dubai, United Arab Emirates P.O. Box 112233"
-    }
-  ];
+  @override
+  ConsumerState<AddressScreen> createState() => _AddressScreenState();
+}
+
+class _AddressScreenState extends ConsumerState<AddressScreen> {
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profileState = ref.watch(profileProvider);
+
+    final addressList = profileState.profileList.isNotEmpty
+        ? profileState.profileList.first.addressResponses ?? []
+        : [];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -81,7 +89,7 @@ class AddressScreen extends StatelessWidget {
   Widget _addressCard(
       BuildContext context,
       ThemeData theme,
-      Map<String, String> data,
+      AddressResponses data,
       ) {
     return Container(
       margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
@@ -108,7 +116,7 @@ class AddressScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data["title"] ?? "",
+                  data.addressType ?? "",
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -118,7 +126,9 @@ class AddressScreen extends StatelessWidget {
                 SizedBox(height: Constant.SIZE_06),
 
                 Text(
-                  data["address"] ?? "",
+                  "${data.flatDoorHouseDetails ?? ""} "
+                      "${data.areaStreetCityBlockDetails ?? ""}\n"
+                      " ${data.poBoxOrPostalCode ?? ""}",
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                   ),
@@ -135,7 +145,7 @@ class AddressScreen extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => AddressOptionsDialog(),
+                builder: (context) => AddressOptionsDialog(userId: data.id??0),
               );
             },
           child:Icon(
@@ -147,4 +157,6 @@ class AddressScreen extends StatelessWidget {
       ),
     );
   }
+
+
 }

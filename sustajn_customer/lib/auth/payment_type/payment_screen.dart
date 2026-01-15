@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/models/register_data.dart';
+import 'package:sustajn_customer/provider/bankdetail_provider.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
 import '../../constants/network_urls.dart';
@@ -17,6 +19,7 @@ import 'add_card_dialog.dart';
 
 class PaymentTypeScreen extends ConsumerStatefulWidget {
   final RegistrationData? registrationData;
+
   const PaymentTypeScreen({super.key, this.registrationData});
 
   @override
@@ -24,14 +27,18 @@ class PaymentTypeScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
-
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _bankNameController = TextEditingController();
-  final TextEditingController _accountHolderController = TextEditingController();
+  final TextEditingController _taxNumberController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
   final TextEditingController _bicController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    Utils.getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,52 +55,51 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           leading: CustomBackButton(),
         ).getAppBar(context),
 
-        body: SafeArea(
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(
-              left: Constant.CONTAINER_SIZE_20,
-              right: Constant.CONTAINER_SIZE_20,
-              bottom: MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _sectionTitle(theme, title: 'Card Details'),
-                _addCardButton(context, theme),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Online Payment Gateway'),
-                _paypalTile(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _applePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _googlePay(theme),
-                SizedBox(height: Constant.SIZE_10),
-                _orDivider(theme),
-                _sectionTitle(theme, title: 'Bank Details'),
-                _bankFields(theme, signupState),
+        body: Stack(
+          children: [
+            SafeArea(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.only(
+                  left: Constant.CONTAINER_SIZE_20,
+                  right: Constant.CONTAINER_SIZE_20,
+                  bottom:
+                      MediaQuery.of(context).viewInsets.bottom +
+                      Constant.CONTAINER_SIZE_20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sectionTitle(theme, title: 'Card Details'),
+                    _addCardButton(context, theme),
+                    _orDivider(theme),
+                    _sectionTitle(theme, title: 'Online Payment Gateway'),
+                    _paypalTile(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _applePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _googlePay(theme),
+                    SizedBox(height: Constant.SIZE_10),
+                    _orDivider(theme),
+                    _sectionTitle(theme, title: 'Bank Details'),
+                    _bankFields(theme, signupState),
 
-                SizedBox(height: Constant.CONTAINER_SIZE_40),
+                    SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                _bottomButtons(theme, context, signupState),
-              ],
+                    _bottomButtons(theme, context, signupState),
+                  ],
+                ),
+              ),
             ),
-          ),
+            if (signupState.isLoading) Utils.showProgressBar(),
+          ],
         ),
-
       ),
     );
-
-
   }
 
-
-  Widget _sectionTitle(
-      ThemeData theme, {
-        String? title,
-        String? subtitle,
-      }) {
+  Widget _sectionTitle(ThemeData theme, {String? title, String? subtitle}) {
     if (title == null && subtitle == null) {
       return const SizedBox.shrink();
     }
@@ -131,9 +137,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-
-
-
   Widget _addCardButton(BuildContext context, ThemeData theme) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -148,9 +151,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
         decoration: BoxDecoration(
-          border: Border.all(
-              color: Constant.grey.withOpacity(0.3)
-          ),
+          border: Border.all(color: Constant.grey.withOpacity(0.3)),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           color: Constant.grey.withOpacity(0.1),
         ),
@@ -182,9 +183,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
             child: Text(
               'or',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
           Expanded(child: Divider(color: Constant.gold)),
@@ -197,10 +196,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -223,10 +220,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -249,10 +244,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
-        border: Border.all(
-            color: Constant.grey.withOpacity(0.3)
-        ),
-        color:Constant.grey.withOpacity(0.1),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
+        color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
@@ -272,7 +265,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _bankFields(ThemeData theme, var signupState) {
-
     return Column(
       children: [
         _field(
@@ -281,16 +273,40 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'Bank Name',
           error: signupState.bankNameError,
           onChanged: signupState.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+            LengthLimitingTextInputFormatter(50),
+          ],
         ),
+
         SizedBox(height: Constant.SIZE_10),
 
         _field(
           theme: theme,
-          controller: _accountHolderController,
-          hint: 'Account Holder Name',
-          error: signupState.accountHolderError,
-          onChanged: signupState.setAccountHolderName,
+          controller: _taxNumberController,
+          hint: 'Tax Number',
+          error: signupState.taxNumberError,
+          onChanged: signupState.setTaxNumber,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            LengthLimitingTextInputFormatter(15),
+          ],
         ),
+
+        SizedBox(height: Constant.SIZE_10),
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: 'Account Number',
+          error: signupState.accountNumberError,
+          onChanged: signupState.setAccountNumber,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(18),
+          ],
+        ),
+
         SizedBox(height: Constant.SIZE_10),
 
         _field(
@@ -299,19 +315,15 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'IBAN',
           error: signupState.ibanError,
           onChanged: signupState.setIban,
-        ),
-        SizedBox(height: Constant.SIZE_10),
-
-        _field(
-          theme: theme,
-          controller: _bicController,
-          hint: 'BIC',
-          error: signupState.bicError,
-          onChanged: signupState.setBic,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            LengthLimitingTextInputFormatter(34),
+          ],
         ),
       ],
     );
   }
+
 
   Widget _field({
     required ThemeData theme,
@@ -319,6 +331,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     required String hint,
     required String? error,
     required Function(String) onChanged,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,19 +341,24 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
           cursorColor: Colors.white,
           onChanged: onChanged,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white,
+            ),
             filled: true,
             fillColor: Constant.grey.withOpacity(0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
             ),
-            enabledBorder:
-            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-            focusedBorder:
-            CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+            enabledBorder: CustomTheme.roundedBorder(
+              Constant.grey.withOpacity(0.3),
+            ),
+            focusedBorder: CustomTheme.roundedBorder(
+              Constant.grey.withOpacity(0.3),
+            ),
           ),
         ),
         if (error != null)
@@ -355,63 +373,55 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-
-
   Widget _bottomButtons(
-      ThemeData theme,
-      BuildContext context,
-      var signupState,
-      ) {
+    ThemeData theme,
+    BuildContext context,
+    var signupState,
+  ) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
-            onPressed: () {
-              NavUtil.navigateWithReplacement(SubscriptionScreen());
-            },
+            onPressed: signupState.isLoading
+                ? null
+                : () {
+                    NavUtil.navigateWithReplacement(SubscriptionScreen());
+                  },
             style: OutlinedButton.styleFrom(
               side: BorderSide(color: Constant.gold),
               shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
             child: Text(
               'Skip',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: Constant.gold,
-              ),
+              style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
             ),
           ),
         ),
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {
-              final isValid = signupState.validateBankForm();
+            onPressed: signupState.isLoading
+                ? null
+                : () async {
+                    final isValid = signupState.validateBankForm();
+                    if (!isValid) return;
+                    signupState.setIsLoading(true);
 
-              if (isValid) {
-                signupState.updateBankDetails();
-                NavUtil.navigateWithReplacement(
-                  SubscriptionScreen(),
-                );
-              }
-            },
+                    await _getNetworkDataVerify(signupState);
+                  },
+
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
             ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'Verify & Continue',
-                maxLines: 1,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.primaryColor,
-                ),
+            child: Text(
+              'Verify & Continue',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.primaryColor,
               ),
             ),
           ),
@@ -420,5 +430,64 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
+  Map<String, dynamic> getJsonData() {
+    final data = {
+      "bankDetailsRequest": {
+        "userId": Utils.userId,
+        "bankName": _bankNameController.text,
+        "taxNumber": _taxNumberController.text,
+        "accountNumber": _bicController.text,
+        "iBanNumber": _ibanController.text,
+      },
+      "cardDetailsRequest": {
+        "userId": 44,
+        "cardHolderName": "Suraj Kumar Nayak",
+        "cardNumber": "4111111111111111",
+        "expiryDate": "12/29",
+        "cvv": "123",
+        "paymentGatewayId": "PG1001",
+        "paymentGatewayName": "Razorpay",
+      },
+      "paymentGetWayRequest": {
+        "userId": 44,
+        "paymentGatewayId": "PG2001",
+        "paymentGatewayName": "PayU",
+      },
+    };
+    return data;
+  }
 
+  _getNetworkDataVerify(var registrationState) async {
+    try {
+      if (registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+        ) async {
+          try {
+            if (isNetworkAvailable) {
+              // registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              ref.read(createBankProvider(getJsonData()));
+            } else {
+              registrationState.setIsLoading(false);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+      }
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
+  }
 }

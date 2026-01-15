@@ -10,7 +10,7 @@ import '../constants/string_utils.dart';
 import '../models/resturant_address_model.dart';
 import '../network_provider/network_provider.dart';
 import '../notifier/location_state.dart';
-import '../provider/search_res_provider/search_res_provider.dart';
+import '../provider/search_res_provider.dart';
 import '../utils/utils.dart';
 
 class SearchRestaurantScreen extends ConsumerStatefulWidget {

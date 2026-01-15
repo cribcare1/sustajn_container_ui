@@ -8,6 +8,8 @@ import '../../search_resturant_screen/search_resturant_screen.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
+import '../payment_type/payment_screen.dart';
+import '../screens/save_home_address.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -52,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyProfileScreen()),
+                MaterialPageRoute(builder: (context) => MyProfileScreen(userId: loginResponse?.userId??0,)),
               );
             },
             child: CircleAvatar(

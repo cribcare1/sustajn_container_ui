@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:sustajn_customer/provider/search_res_provider/search_res_notifier.dart';
+import 'package:sustajn_customer/notifier/search_res_notifier.dart';
 
-import '../../models/resturant_address_model.dart';
-import '../../service/search_res_service.dart';
-import '../../utils/utils.dart';
+import '../models/resturant_address_model.dart';
+import '../service/search_res_service.dart';
+import '../utils/utils.dart';
 
 
 final searchResProvider = ChangeNotifierProvider<SearchResState>((res) => SearchResState());
