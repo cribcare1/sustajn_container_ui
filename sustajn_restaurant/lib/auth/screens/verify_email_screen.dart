@@ -346,101 +346,45 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     try {
       /// 🔹 Start loader
       registrationState.setIsOTPVerify(true);
-
-      /// 1️⃣ Network check
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
-
-      if (!isNetworkAvailable) {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: Strings.NO_INTERNET_CONNECTION,
-          color: Colors.red,
-        );
-        return;
+      if (registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable,) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              registrationState.setContext(context);
+              ref.read(
+                verifyOtpProvider({
+                  "email": widget.registrationData?.email ?? widget.email,
+                  "token": _otpController.text.trim(),
+                  "previous": widget.previousScreen,
+                }),
+              );
+            } else {
+              registrationState.setIsLoading(false);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
       }
-
-      /// 2️⃣ Verify OTP API call
-      final result = await ref.read(
-        verifyOtpProvider({
-          "email": widget.registrationData?.email ?? widget.email,
-          "token": _otpController.text.trim(),
-          "previous": widget.previousScreen,
-        }).future,
-      );
-
-      final Map<String, dynamic> response =
-      result["response"] as Map<String, dynamic>;
-
-      final String previous = widget.previousScreen;
-
-      /// 🔍 Debug logs
-      Utils.printLog("VERIFY OTP RESPONSE =====> $response");
-
-      /// 3️⃣ OTP SUCCESS
-      if (response["status"]?.toString().toLowerCase() == "success") {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: response["message"] ?? "Email Verification Successful",
-          color: Colors.green,
-        );
-
-        /// 🔹 Forgot Password Flow
-        if (previous == "forgotPassword") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const ResetPasswordScreen(),
-            ),
-          );
-        }
-        /// 🔹 Registration Flow
-        else {
-          Utils.navigateToPushScreen(
-            context,
-            BusinessInformationDetails(
-              authState: registrationState,
-            ),
-          );
-        }
-      }
-      /// 4️⃣ OTP FAILED
-      else {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: response["message"] ?? "OTP verification failed",
-          color: Colors.red,
-        );
-      }
-    } catch (e, s) {
-      /// ❌ Error handling
-      Utils.printLog("OTP Verify Error: $e");
-      Utils.printLog("STACKTRACE: $s");
-
-      if (!mounted) return;
-
-      showCustomSnackBar(
-        context: context,
-        message: "Something went wrong. Please try again.",
-        color: Colors.red,
-      );
-    } finally {
-      /// 🔹 Stop loader
-      registrationState.setIsOTPVerify(false);
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
     }
   }
 
 
   _resetOtp(var registrationState) async {
     try {
-      registrationState.setIsLoading(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) async {

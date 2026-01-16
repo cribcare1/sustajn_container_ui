@@ -13,6 +13,7 @@ class AuthState extends ChangeNotifier{
   String _name = '';
   String _password = '';
   bool _isPasswordVisible = false;
+  bool _isForgotPassword = false;
   bool _isLoading = false;
   LoginModel? _login;
   bool _isVisible = false;
@@ -40,8 +41,14 @@ class AuthState extends ChangeNotifier{
   String? get passwordError => _passwordError;
   RegistrationData? _registrationData;
   RegistrationData? get registrationData => _registrationData;
+  bool get isForgotPassword => _isForgotPassword;
   void setRegistrationData(RegistrationData data){
     _registrationData = data;
+    notifyListeners();
+  }
+
+  void setIsForgotPassword(var value){
+    _isForgotPassword = value;
     notifyListeners();
   }
 
