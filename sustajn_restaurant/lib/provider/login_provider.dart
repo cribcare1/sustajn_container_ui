@@ -8,6 +8,7 @@ import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
+import '../auth/screens/business_information_screen.dart';
 import '../auth/screens/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
@@ -78,31 +79,38 @@ final loginDetailProvider =
 
 ///Register
 
-final registerProvider = FutureProvider.family<Register, Map<String, dynamic>>((
-  ref,
-  params,
-) async {
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params,) async {
   final serviceProvider = ref.read(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   try {
-    final image = params[Strings.IMAGE];
-    params.remove(Strings.IMAGE);
+    // // final image = params[Strings.IMAGE];
+    // params.remove(Strings.IMAGE);
 
     final Map<String, dynamic> data = Map<String, dynamic>.from(params);
 
-    final response = await serviceProvider.registerUser(
-      NetworkUrls.REGISTER_USER,
-      data,
-      "data",
-      image,
-    );
+    final response = await serviceProvider.registerUser(NetworkUrls.REGISTER_USER, data, "data",);
 
-    return response;
+    if(response != null){
+      Register register = Register.fromJson(response);
+      if (register.status != null && register.status!.toLowerCase() == 'success') {
+        registrationState.setIsLoading(false);
+        NavUtil.navigateWithReplacement(DashboardScreen());
+      } else {
+        showCustomSnackBar(
+          context: registrationState.context,
+          message: register.message!,
+          color: Colors.black,
+        );
+        registrationState.setIsLoading(false);
+      }
+    }
+
+
   } catch (e, stackTrace) {
     // Optional: log error
     debugPrint('Register API Error: $e');
     debugPrintStack(stackTrace: stackTrace);
-
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
     // Re-throw so Riverpod can catch and expose error
     throw Exception(e.toString());
   } finally {
@@ -168,11 +176,15 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: responseData["message"],
         color: Colors.green,
       );
+      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       NavUtil.navigateToPushScreen(
         registrationState.context,
         VerifyEmailScreen(previousScreen: previous, email: email),
       );
     } else {
+      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
@@ -181,21 +193,24 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
       );
     }
   } catch (e) {
+    registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
   } finally {
     registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
   }
 
   return null;
 });
 
 final verifyOtpProvider =
-    FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
+    FutureProvider.family<dynamic, Map<String, dynamic>>((
       ref,
       params,
     ) async {
       final apiService = ref.read(loginApiProvider);
-
+      final registrationState = ref.watch(authNotifierProvider);
       final String previous = params['previous'];
       params.remove("previous");
 
@@ -203,13 +218,53 @@ final verifyOtpProvider =
 
       try {
         final responseData = await apiService.verifyOtp(url, params, "");
+        final status = responseData['status'];
+        final message = responseData['message'];
 
-        print("VERIFY OTP RESPONSE =====> $responseData");
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+          registrationState.setVerifyLoading(false);
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message ?? "OTP verified successfully",
+            color: Colors.green,
+          );
+          if (registrationState.isForgotPassword) {
+            Utils.navigateToPushScreen(
+              registrationState.context,
+              ResetPasswordScreen(),
+            );
+          } else {
+            NavUtil.navigateToPushScreen(registrationState.context,
+              BusinessInformationDetails(
+                authState: registrationState,
+              ),
+            );
+          }
+        } else {
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
+          if (!registrationState.context.mounted) return;
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message!,
+            color: Colors.black,
+          );
+          registrationState.setVerifyLoading(false);
+        }
 
-        return {"response": responseData, "previous": previous};
-      } catch (e) {
-        throw Exception(e.toString());
+      }  catch (e) {
+        registrationState.setSeconds(120);
+        registrationState.startTimer();
+        registrationState.setVerifyLoading(false);
+        Utils.showNetworkErrorToast(registrationState.context, e.toString());
+      } finally {
+        registrationState.setVerifyLoading(false);
       }
+      return null;
     });
 
 final resetPasswordProvider =

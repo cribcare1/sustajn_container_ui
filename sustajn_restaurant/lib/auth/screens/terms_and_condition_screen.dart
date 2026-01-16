@@ -90,7 +90,7 @@ class _TermsAndConditionScreenState
                         onRightTap: () {
                           print(authState.registrationData!.address);
                           print(authState.socialMediaList);
-                          print(authState.gateway!.toJson());
+                          // print(authState.gateway??authState.gateway!.toJson());
                           final address = authState.registrationData!.address!;
                           final parts = address.split(',').map((e) => e.trim()).toList();
 
@@ -116,7 +116,8 @@ class _TermsAndConditionScreenState
                             },
                             "latitude": authState.registrationData!.latitude,
                             "longitude": authState.registrationData!.longitude,
-                            "image": authState.registrationData!.image,
+                            // "image": authState.registrationData!.image,
+                            if(authState.businessModel != null)
                             "basicDetails": authState.businessModel!.toJson(),
                             "bankDetails": authState.bankDetails!.toJson(),
                             "socialMediaList": authState.socialMediaList.isEmpty
@@ -147,7 +148,26 @@ class _TermsAndConditionScreenState
     try {
       registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
-      final isNetworkAvailable = await ref
+
+      if(registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+          setState(() {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+
+              ref.read(registerProvider(mapData));
+            } else {
+              registrationState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+        });
+      }else {
+        Utils.showToast("Not valid data for Registration");
+      }
+
+     /* final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
       if (!isNetworkAvailable) {
@@ -176,7 +196,7 @@ class _TermsAndConditionScreenState
         } else {
           Utils.showToast(value.message ?? "Registration failed");
         }
-      });
+      });*/
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
     }finally{

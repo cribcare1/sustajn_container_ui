@@ -138,65 +138,69 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
-                Center(
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(60),
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        useSafeArea: true,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                        ),
-                        builder: (_) => SafeArea(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: const Icon(Icons.camera),
-                                  title: const Text("Camera"),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    pickImage(ImageSource.camera);
-                                  },
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.photo),
-                                  title: const Text("Gallery"),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    pickImage(ImageSource.gallery);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    child: CircleAvatar(
-                      radius: Constant.CONTAINER_SIZE_40,
-                      backgroundColor: Constant.gold,
-                      backgroundImage: selectedImage != null
-                          ? FileImage(selectedImage!)
-                          : null,
-                      child: selectedImage == null
-                          ? Icon(
-                              Icons.person,
-                              size: 50,
-                              color: theme.primaryColor,
-                            )
-                          : null,
-                    ),
-                  ),
-                ),
+                Text(Strings.SIGN_UP,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+                SizedBox(height: Constant.SIZE_08),
+                Text(Strings.PLEASE_PROVIDE_YOUR_DETAILS_BELOW,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                //Todo:- image upload
+                // Center(
+                //   child: InkWell(
+                //     borderRadius: BorderRadius.circular(60),
+                //     onTap: () {
+                //       showModalBottomSheet(
+                //         context: context,
+                //         useSafeArea: true,
+                //         isScrollControlled: true,
+                //         shape: const RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.vertical(
+                //             top: Radius.circular(16),
+                //           ),
+                //         ),
+                //         builder: (_) => SafeArea(
+                //           child: Padding(
+                //             padding: EdgeInsets.only(
+                //               bottom: MediaQuery.of(context).viewInsets.bottom,
+                //             ),
+                //             child: Column(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: [
+                //                 ListTile(
+                //                   leading: const Icon(Icons.camera),
+                //                   title: const Text("Camera"),
+                //                   onTap: () {
+                //                     Navigator.pop(context);
+                //                     pickImage(ImageSource.camera);
+                //                   },
+                //                 ),
+                //                 ListTile(
+                //                   leading: const Icon(Icons.photo),
+                //                   title: const Text("Gallery"),
+                //                   onTap: () {
+                //                     Navigator.pop(context);
+                //                     pickImage(ImageSource.gallery);
+                //                   },
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ),
+                //       );
+                //     },
+                //     child: CircleAvatar(
+                //       radius: Constant.CONTAINER_SIZE_40,
+                //       backgroundColor: Constant.gold,
+                //       backgroundImage: selectedImage != null
+                //           ? FileImage(selectedImage!)
+                //           : null,
+                //       child: selectedImage == null
+                //           ? Icon(
+                //               Icons.person,
+                //               size: 50,
+                //               color: theme.primaryColor,
+                //             )
+                //           : null,
+                //     ),
+                //   ),
+                // ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
 
@@ -240,8 +244,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ],
                   validator: (v) {
                     if (v!.isEmpty) return "Mobile number required";
-                    if (v.length != 10)
+                    if (v.length != 10) {
                       return "Enter valid 10-digit mobile number";
+                    }
                     return null;
                   },
                 ),
@@ -319,11 +324,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 email: emailCtrl.text,
                                 phoneNumber: mobileCtrl.text,
                                 password: passwordCtrl.text,
-                                profileImage: selectedImage,
+                                // profileImage: selectedImage,
                                 address: addressCtrl.text,
                                 latitude: lat,
                                 longitude: long,
-                                image: (selectedImage == null) ? null : selectedImage!.path
+                                // image: (selectedImage == null) ? null : selectedImage!.path
                               );
                               authState.setRegistrationData(registrationData);
                               await _getNetworkData(authState);
@@ -378,7 +383,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     required TextEditingController controller,
     required String hint,
     String? Function(String?)? validator,
-    bool obscure = false,
     TextInputType keyboard = TextInputType.text,
     bool? readOnly = false,
     List<TextInputFormatter>? inputFormatters,

@@ -50,8 +50,9 @@ void main() async {
   });
 
   Utils.getToken();
-  runApp(const ProviderScope(child: MyApp()));
+  Utils.getProfile();
 
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {

@@ -38,4 +38,9 @@ class NetworkUrls {
 
  static const SEARCH_RESTAURANT ="auth/searchRestaurant";
 
+ /// Lease and Receive///
+
+static const CONTAINER_LIST_LEASE = "inventory/restaurant/getAvailableContainers/";
+
+
 }
