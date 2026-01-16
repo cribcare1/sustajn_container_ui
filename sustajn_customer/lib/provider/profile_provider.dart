@@ -12,6 +12,7 @@ import '../constants/string_utils.dart';
 import '../models/profile_update_data.dart';
 import '../models/update_image.dart';
 import '../service/profile_service.dart';
+import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
 
 final profileProvider = ChangeNotifierProvider((ref) => ProfileNotifier());
@@ -28,6 +29,11 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       profileState.setIsLoading(false);
       profileState.setProfileList(responseData);
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.CUSTOMER_ID,
+        responseData.data?.customerId,
+      );
+
     } else {
       profileState.setIsLoading(false);
       Utils.showToast(responseData.message!);

@@ -1,10 +1,15 @@
+import 'package:sustajn_customer/auth/screens/save_home_address.dart';
+
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/profile_model.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/utils.dart';
 
 class AddressOptionsDialog extends StatelessWidget {
-  const AddressOptionsDialog({super.key});
+  final AddressResponses address;
+  const AddressOptionsDialog({super.key, required this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +45,8 @@ class AddressOptionsDialog extends StatelessWidget {
             text: "Edit Address",
             onTap: () {
               Navigator.pop(context);
+              NavUtil.navigateToPushScreen(context, HomeAddress(flow: AddressFlow.profile,
+              existingAddress: address,));
               // navigate to edit address
             },
           ),
@@ -51,14 +58,6 @@ class AddressOptionsDialog extends StatelessWidget {
             icon: Icons.delete_forever,
             text: "Remove Address",
             onTap: () {
-              // Utils.logOutDialog(
-              //     context,
-              //     Icons.warning_amber,
-              //     Strings.DELETE_ADDRESS,
-              //     Strings.REMOVE_MESSAGE,
-              //     Strings.DELETE,
-              //     Strings.NO
-              // );
 
             },
           ),

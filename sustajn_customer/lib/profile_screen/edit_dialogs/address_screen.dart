@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/auth/screens/save_home_address.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../models/profile_model.dart';
 import '../../provider/profile_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import 'edit_address.dart';
 
@@ -61,7 +63,9 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
             width: double.infinity,
             height: Constant.CONTAINER_SIZE_50,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                NavUtil.navigateToPushScreen(context, HomeAddress(flow: AddressFlow.profile,));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Constant.gold,
                 shape: RoundedRectangleBorder(
@@ -142,7 +146,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => AddressOptionsDialog(),
+                builder: (context) => AddressOptionsDialog(address: data,),
               );
             },
           child:Icon(

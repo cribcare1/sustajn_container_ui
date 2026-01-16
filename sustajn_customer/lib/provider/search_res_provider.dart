@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_customer/notifier/search_res_notifier.dart';
+import 'package:sustajn_customer/service/address_service.dart';
 
+import '../constants/imports_util.dart';
+import '../constants/network_urls.dart';
 import '../models/resturant_address_model.dart';
 import '../service/search_res_service.dart';
 import '../utils/utils.dart';
@@ -31,3 +34,73 @@ FutureProvider.family<List<SearchData>, Map<String, dynamic>>(
         provider.setLoading(false);
       }
     });
+
+final createAddressProvider =
+FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.read(addressApiService);
+  final signupState = ref.read(searchResProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.CREATE_ADDRESS}';
+
+  try {
+    final responseData = await apiService.createAddressService(url, params, "");
+
+    final message = responseData['message'];
+
+    signupState.setLoading(false);
+
+    if (signupState.context.mounted) {
+      showCustomSnackBar(
+        context: signupState.context!,
+        message: "Address  created successfully",
+        color: Colors.green,
+      );
+
+      Navigator.pop(signupState.context!);
+    }
+  } catch (e) {
+    signupState.setLoading(false);
+
+    if (signupState.context.mounted) {
+      Utils.showNetworkErrorToast(
+        signupState.context!,
+        e.toString(),
+      );
+    }
+  }
+});
+
+final editAddressProvider =
+FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.read(addressApiService);
+  final signupState = ref.read(searchResProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.EDIT_ADDRESS}';
+
+  try {
+    final responseData = await apiService.createAddressService(url, params, "");
+
+    final message = responseData['message'];
+
+    signupState.setLoading(false);
+
+    if (signupState.context.mounted) {
+      showCustomSnackBar(
+        context: signupState.context!,
+        message: "Address updated successfully",
+        color: Colors.green,
+      );
+
+      Navigator.pop(signupState.context!);
+    }
+  } catch (e) {
+    signupState.setLoading(false);
+
+    if (signupState.context.mounted) {
+      Utils.showNetworkErrorToast(
+        signupState.context!,
+        e.toString(),
+      );
+    }
+  }
+});

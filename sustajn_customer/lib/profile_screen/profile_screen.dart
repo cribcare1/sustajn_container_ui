@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sustajn_customer/auth/screens/map_screen.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/constants/number_constants.dart';
 import 'package:sustajn_customer/profile_screen/edit_dialogs/contact_us_dialog.dart';
@@ -60,7 +59,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     super.initState();
     Utils.getToken();
     _getNetworkData();
-    _getProfileData();
     _loadProfile();
   }
 
@@ -77,6 +75,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     BuildContext context,
     int? planID,
     String? mobileNumber,
+      var profileState
   ) {
     switch (index) {
       case 0:
@@ -89,10 +88,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showHistoryScreen(context);
         break;
       case 3:
-        _showPaymentScreen(context);
+        _showPaymentScreen(context, profileState);
         break;
       case 4:
-        _showQRDialog(context);
+        _showQRDialog(context, profileState);
         break;
       case 5:
         _showFeedbackDialog(context);
@@ -136,9 +135,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showPaymentScreen(BuildContext context) {
-    final profileState = ref.read(profileProvider);
-
+  void _showPaymentScreen(
+      BuildContext context,
+      var profileState,
+      ) {
     final profile = profileState.profileList.isNotEmpty
         ? profileState.profileList.first
         : null;
@@ -146,10 +146,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final bankDetails = profile?.bankDetailsResponse;
 
     if (bankDetails == null) {
-      showCustomSnackBar(
-        context: context,
-        message: "Bank details not added yet. Please add bank details to view.",
-        color: Colors.green,
+      NavUtil.navigateToPushScreen(
+        context,
+        PaymentTypeScreen(
+          flow: PaymentFlow.profile,
+        ),
       );
       return;
     }
@@ -159,6 +160,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       EditPaymentScreen(bankDetails: bankDetails),
     );
   }
+
 
   void _showContactDialog(BuildContext context) {
     showModalBottomSheet(
@@ -184,13 +186,31 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showQRDialog(BuildContext context) {
+  void _showQRDialog(
+      BuildContext context,
+      var profileState,
+      ) {
+    final profile = profileState.profileList.isNotEmpty
+        ? profileState.profileList.first
+        : null;
+
+    if (profile?.bankDetailsResponse == null) {
+      showCustomSnackBar(
+        context: context,
+        message:
+        "You have not added bank details, please add it to view the QR code",
+        color: Colors.green,
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (_) => QrDialog(),
     );
   }
+
 
   void _showHistoryScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(
@@ -239,18 +259,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         ? profileState.profileList.first
         : null;
 
-    final addressList = profile?.addressResponses;
-
-    String addressText = "No address available";
-
-    if (addressList != null && addressList.isNotEmpty) {
-      final address = addressList.first;
-      addressText =
-          "${address.flatDoorHouseDetails ?? ""}, "
-          "${address.areaStreetCityBlockDetails ?? ""}\n"
-          "PO Box ${address.poBoxOrPostalCode ?? ""}";
-    }
-
     final size = MediaQuery.of(context).size;
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
@@ -291,16 +299,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: Builder(
-          builder: (context) {
-            if (profileState.isLoading) {
-              return Utils.showProgressBar();
-            }
-
-            if (!profileState.isLoading && profileState.profileList.isEmpty) {
-              return Utils.getErrorText('No profile details found');
-            }
-            return SingleChildScrollView(
+        body: SingleChildScrollView(
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -456,6 +455,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 context,
                                 planId,
                                 profileState.profileList.first.mobileNumber,
+                                profileState
                               ),
                             );
                           },
@@ -507,9 +507,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                   ),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+
       ),
     );
   }
@@ -605,29 +604,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     }
   }
 
-  _getProfileData() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        if (isNetworkAvailable) {
-          ref.read(profileProvider).clearProfileList();
-          ref.read(profileProvider).setIsLoading(true);
-
-          final url = '${NetworkUrls.GET_PROFILE}${widget.userId}';
-          Utils.printLog("Fetching URL: $url");
-          ref.read(getProfileProvider(url));
-        } else {
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      ref.read(profileProvider).setIsLoading(false);
-      Utils.showToast(e.toString());
-    }
-    FocusScope.of(context).unfocus();
-  }
 
   _uploadImageNetwork(var registrationState) async {
     if (_profileImage == null) return;

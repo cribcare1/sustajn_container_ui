@@ -19,6 +19,8 @@ class NetworkUrls {
   static const CREATE_BANK = 'auth/createBankDetails';
   static const UPDATE_BANK = 'auth/updateBankDetails';
   static const UPLOAD_IMAGE = 'auth/uploadImage/';
+  static const CREATE_ADDRESS = 'auth/saveAddress';
+  static const EDIT_ADDRESS = 'auth/updateAddress';
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
