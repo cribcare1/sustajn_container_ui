@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 
 import '../auth/model/payment_type_model.dart';
@@ -15,10 +17,15 @@ class AuthState extends ChangeNotifier{
   bool _isPasswordVisible = false;
   bool _isForgotPassword = false;
   bool _isLoading = false;
+  bool _isVerifyLoading = false;
+  bool _isResendLoading = false;
   LoginModel? _login;
   bool _isVisible = false;
   BuildContext? _context;
   bool _isVerifying = false;
+  int _seconds = 120;
+  Timer? _otpTimer;
+  bool _isDisposed = false;
 
   bool get isVerifying => _isVerifying;
 
@@ -27,8 +34,11 @@ class AuthState extends ChangeNotifier{
   String get password => _password;
 
   bool get isPasswordVisible => _isPasswordVisible;
+  bool get isVerifyLoading => _isVerifyLoading;
+  bool get isResendLoading => _isResendLoading;
   bool get isLoading => _isLoading;
   LoginModel get login => _login!;
+  int get seconds => _seconds;
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
 
@@ -68,6 +78,53 @@ class AuthState extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setVerifyLoading(bool value) {
+    _isVerifyLoading = value;
+    notifyListeners();
+  }
+  void setSeconds(int value){
+    _seconds = value;
+    notifyListeners();
+  }
+
+  void resetTimer({int startFrom = 120}) {
+    stopTimer();
+    _seconds = startFrom;
+  }
+
+  void startTimer() {
+    stopTimer(); // prevent duplicate timers
+
+    // _isTimerRunning = true;
+
+    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isDisposed) {
+        timer.cancel();
+        return;
+      }
+
+      if (_seconds > 0) {
+        _seconds--;
+        notifyListeners(); // <-- THIS IS ENOUGH
+      } else {
+        stopTimer();
+      }
+    });
+  }
+
+
+
+
+
+  void stopTimer() {
+    _otpTimer?.cancel();
+    _otpTimer = null;
+    // _isTimerRunning = false;
+  }
+  void setResendLoading(bool value) {
+    _isResendLoading = value;
+    notifyListeners();
+  }
 
   void show() {
     _isVisible = true;
@@ -209,5 +266,12 @@ bool get isPlanLoading  => _isPlanLoading;
   void setPlanError(String error){
     _planError = error;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    stopTimer();
+    super.dispose();
   }
 }

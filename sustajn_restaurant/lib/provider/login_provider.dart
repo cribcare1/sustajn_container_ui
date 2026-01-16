@@ -177,11 +177,14 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
         color: Colors.green,
       );
       registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       NavUtil.navigateToPushScreen(
         registrationState.context,
         VerifyEmailScreen(previousScreen: previous, email: email),
       );
     } else {
+      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
@@ -190,9 +193,12 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
       );
     }
   } catch (e) {
+    registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
   } finally {
     registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
   }
 
   return null;
@@ -218,7 +224,9 @@ final verifyOtpProvider =
         if (status != null &&
             status.isNotEmpty &&
             status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-          registrationState.setIsLoading(false);
+          registrationState.setVerifyLoading(false);
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
           showCustomSnackBar(
             context: registrationState.context,
             message: message ?? "OTP verified successfully",
@@ -237,20 +245,24 @@ final verifyOtpProvider =
             );
           }
         } else {
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
             message: message!,
             color: Colors.black,
           );
-          registrationState.setIsLoading(false);
+          registrationState.setVerifyLoading(false);
         }
 
       }  catch (e) {
-        registrationState.setIsLoading(false);
+        registrationState.setSeconds(120);
+        registrationState.startTimer();
+        registrationState.setVerifyLoading(false);
         Utils.showNetworkErrorToast(registrationState.context, e.toString());
       } finally {
-        registrationState.setIsLoading(false);
+        registrationState.setVerifyLoading(false);
       }
       return null;
     });
