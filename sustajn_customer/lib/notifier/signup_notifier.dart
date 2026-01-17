@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 import '../models/register_data.dart';
+import '../models/signup_model.dart';
 import '../models/subscriptionplan_data.dart';
 
 import '../utils/utils.dart';
@@ -23,6 +24,7 @@ class SignupNotifier extends ChangeNotifier {
   bool _isResendLoading = false;
   bool _isTimerRunning = false;
   LoginModel? _login;
+  SignUpModel? _signUp;
   bool _isVisible = false;
   bool _isDisposed = false;
   int _seconds = 120;
@@ -69,6 +71,7 @@ class SignupNotifier extends ChangeNotifier {
   bool get isResend => _isResend;
 
   LoginModel get login => _login!;
+  SignUpModel get signup => _signUp!;
 
   BuildContext get context => _context!;
 
@@ -358,6 +361,12 @@ class SignupNotifier extends ChangeNotifier {
   void setLoginData(LoginModel login){
     _login = login;
     notifyListeners();
+  }
+
+  void setSignUPData(SignUpModel signup){
+    _signUp = signup;
+    notifyListeners();
+
   }
 
 

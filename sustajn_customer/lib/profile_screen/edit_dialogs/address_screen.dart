@@ -5,6 +5,7 @@ import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_model.dart';
 import '../../models/profile_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';

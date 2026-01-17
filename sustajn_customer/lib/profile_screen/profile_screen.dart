@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,12 +13,15 @@ import '../auth/payment_type/payment_screen.dart';
 import '../common_widgets/custom_cricle_painter.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../models/get_profile_model.dart';
 import '../models/login_model.dart';
+import '../models/signup_model.dart';
 import '../models/subscriptionplan_data.dart';
 import '../models/update_image.dart';
 import '../network_provider/network_provider.dart';
 import '../provider/signup_provider.dart';
 import '../utils/nav_utils.dart';
+import '../utils/shared_preference_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utils.dart';
 import 'edit_dialogs/address_screen.dart';
@@ -30,8 +34,10 @@ import 'history_screen/history_home_screen.dart';
 
 class MyProfileScreen extends ConsumerStatefulWidget {
   final int userId;
+  final int subScriptionPlanId;
 
-  const MyProfileScreen({super.key, required this.userId});
+  const MyProfileScreen({super.key, required this.userId,
+  required this.subScriptionPlanId});
 
   @override
   ConsumerState<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -52,23 +58,31 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   bool isLoading = true;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
-  Data? loginResponse;
+  ProfileData? signUpResponse;
 
   @override
   void initState() {
     super.initState();
     Utils.getToken();
-    _getNetworkData();
+    // _getNetworkData();
     _loadProfile();
   }
 
   Future<void> _loadProfile() async {
-    await Utils.getProfile();
+    final profile = await Utils.getProfile();
+
+    if (profile == null) {
+      Utils.showToast("Session expired. Please login again.");
+      Navigator.pop(context);
+      return;
+    }
+
     setState(() {
-      loginResponse = Utils.loginData?.data;
+      signUpResponse = profile;
       isLoading = false;
     });
   }
+
 
   void _handleItemTap(
     int index,
@@ -326,10 +340,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             ),
                             child: ClipOval(
                               child:
-                                  (loginResponse?.image != null &&
-                                      loginResponse!.image!.isNotEmpty)
+                                  (signUpResponse?.profileImageUrl != null &&
+                                      signUpResponse!.profileImageUrl!.isNotEmpty)
                                   ? Image.network(
-                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}?t=${DateTime.now().millisecondsSinceEpoch}",
+                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${signUpResponse!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
@@ -409,7 +423,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                         child: _detailItem(
                           icon: Icons.email_outlined,
                           title: "Email",
-                          value: loginResponse!.userName ?? "",
+                          value: signUpResponse!.fullName ?? "",
                           w: w,
                           showEdit: false,
                           theme: theme,
@@ -453,7 +467,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               onTap: () => _handleItemTap(
                                 index,
                                 context,
-                                planId,
+                                widget.subScriptionPlanId,
                                 profileState.profileList.first.mobileNumber,
                                 profileState
                               ),
@@ -568,43 +582,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       ],
     );
   }
-
-  _getNetworkData() async {
-    final registrationState = ref.read(signUpNotifier);
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
-        try {
-          if (isNetworkAvailable) {
-            registrationState.setIsLoading(true);
-            registrationState.setContext(context);
-            var url = '${NetworkUrls.GET_SUBSCRIPTION_PLAN}';
-
-            ref.read(getSubscriptionProvider(url));
-          } else {
-            registrationState.setIsLoading(false);
-            if (!mounted) return;
-            showCustomSnackBar(
-              context: context,
-              message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
-            );
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          registrationState.setIsLoading(false);
-        }
-        if (!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
-    } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
-    }
-  }
-
-
   _uploadImageNetwork(var registrationState) async {
     if (_profileImage == null) return;
 
@@ -633,10 +610,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       if (response.message == "success") {
         Utils.printLog("Uploaded image path: ${response.data}");
 
+        // Update local UI
         setState(() {
-          loginResponse?.image = response.data;
+          signUpResponse?.profileImageUrl = response.data;
         });
-        Utils.loginData?.data?.image = response.data;
+
+
         showCustomSnackBar(context: context,
             message: 'User image uploaded successfully',
             color: Constant.green);

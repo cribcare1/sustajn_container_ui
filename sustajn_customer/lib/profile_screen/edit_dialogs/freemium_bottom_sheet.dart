@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/provider/profile_provider.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_model.dart';
 import '../../models/subscriptionplan_data.dart';
 import '../../network_provider/network_provider.dart';
+import '../../notifier/subscription_notifier.dart';
 import '../../provider/signup_provider.dart';
 import '../../provider/subscription_provider.dart';
 import '../../utils/utils.dart';
@@ -21,8 +24,31 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final signUpState = ref.watch(signUpNotifier);
-    final plans = signUpState.subscriptionList ?? [];
+    final subScriptionState = ref.watch(subscriptionNotifier);
+    final profileState = ref.watch(profileProvider);
+    final SubscriptionResponse? plan =
+        profileState.profileModel?.data?.subscriptionResponse;
+
+
+    if (profileState.isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(20),
+        child: Center(
+          child: CircularProgressIndicator(color: Constant.gold),
+        ),
+      );
+    }
+
+    if (plan == null) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Text(
+          "No subscription plans available",
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+        ),
+      );
+    }
+
 
     return SafeArea(
       child: Padding(
@@ -35,12 +61,12 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
 
             Flexible(
               child: SingleChildScrollView(
-                child: _freemiumCard(theme,plans),
+                child: _freemiumCard(theme,plan),
               ),
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-            _upgradeButton(theme),
+            _upgradeButton(theme, subScriptionState),
           ],
         ),
       ),
@@ -61,7 +87,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _freemiumCard(ThemeData theme,List<SubscriptionData> plan) {
+  Widget _freemiumCard(ThemeData theme,SubscriptionResponse plan) {
     return Container(
       padding: EdgeInsets.all(Constant.SIZE_03),
       decoration: BoxDecoration(
@@ -101,7 +127,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _iconSection(ThemeData theme,List<SubscriptionData> plan, ) {
+  Widget _iconSection(ThemeData theme,SubscriptionResponse plan, ) {
     return Column(
       children: [
         Icon(
@@ -111,7 +137,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
         ),
         SizedBox(height: Constant.SIZE_10),
         Text(
-         plan.first.planType??'',
+         plan.planType??'',
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
           ),
@@ -120,9 +146,9 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _priceSection(ThemeData theme,List<SubscriptionData> plan, ) {
+  Widget _priceSection(ThemeData theme,SubscriptionResponse plan, ) {
     return Text(
-      "₹ ${plan.first.feeType?.toStringAsFixed(2) ?? "0.00"}",
+      "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
       style: theme.textTheme.headlineMedium?.copyWith(
         color: Constant.gold,
         fontWeight: FontWeight.w600,
@@ -130,10 +156,10 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _featureList(ThemeData theme,List<SubscriptionData> plan) {
+  Widget _featureList(ThemeData theme,SubscriptionResponse plan) {
     return Column(
       children: [
-        _featureItem(theme,plan.first.description??''),
+        _featureItem(theme,plan.description??''),
       ],
     );
   }
@@ -186,11 +212,13 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  Widget _upgradeButton(ThemeData theme) {
+  Widget _upgradeButton(ThemeData theme, SubscriptionNotifier state) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: state.isLoading
+            ? null
+            : () {
           Utils.printLog("send button click");
           _getNetworkData();
         },
@@ -203,7 +231,16 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
             vertical: Constant.CONTAINER_SIZE_14,
           ),
         ),
-        child: Text(
+        child: state.isLoading
+            ? const SizedBox(
+          height: 22,
+          width: 22,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Colors.white,
+          ),
+        )
+            : Text(
           'Upgrade',
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.primaryColor,
@@ -212,6 +249,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
       ),
     );
   }
+
 
   _getNetworkData() async {
     final registrationState = ref.read(subscriptionNotifier);

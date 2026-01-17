@@ -4,6 +4,7 @@ import '../../auth/screens/save_home_address.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_model.dart';
 import '../../models/profile_model.dart';
 import '../../utils/nav_utils.dart';
 import '../../network_provider/network_provider.dart';

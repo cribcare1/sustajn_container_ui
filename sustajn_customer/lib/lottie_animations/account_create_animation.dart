@@ -1,4 +1,5 @@
 import 'package:lottie/lottie.dart';
+import 'package:sustajn_customer/auth/dashboard_screen/dashboard.dart';
 
 import '../auth/screens/login_screen.dart';
 import '../constants/imports_util.dart';
@@ -23,7 +24,7 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => LoginScreen(),
+          builder: (_) => DashboardScreen(),
         ),
             (route) => false,
       );

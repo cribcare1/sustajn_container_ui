@@ -7,6 +7,7 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_model.dart';
 import '../../models/profile_model.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,12 +31,19 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       profileState.setIsLoading(false);
       profileState.setProfileList(responseData);
+
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.PROFILE_DATA,
+        jsonEncode(responseData.data?.toJson()),
+      );
+
       SharedPreferenceUtils.saveDataInSF(
         Strings.CUSTOMER_ID,
         responseData.data?.customerId,
       );
+    }
 
-    } else {
+    else {
       profileState.setIsLoading(false);
       Utils.showToast(responseData.message!);
     }
@@ -147,7 +155,21 @@ FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
   final isSuccess =
       responseData.message?.toLowerCase() == "success";
 
-  if (!isSuccess) {
+  if (isSuccess) {
+    // final profileJson =
+    // await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
+    //
+    // if (profileJson != null && profileJson.isNotEmpty) {
+    //   final decoded = jsonDecode(profileJson);
+    //   decoded['profileImageUrl'] = responseData.data;
+    //
+    //   await SharedPreferenceUtils.saveDataInSF(
+    //     Strings.PROFILE_DATA,
+    //     jsonEncode(decoded),
+    //   );
+    // }
+
+  } else {
     Utils.showToast(
       responseData.status ?? "Image upload failed",
     );
@@ -155,6 +177,7 @@ FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
 
   return responseData;
 });
+
 
 
 

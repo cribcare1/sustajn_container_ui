@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_customer/auth/screens/reset_password_screen.dart'
     show ResetPasswordScreen;
+import 'package:sustajn_customer/models/signup_model.dart';
 import 'package:sustajn_customer/notifier/signup_notifier.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
@@ -91,31 +92,73 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   final registrationState = ref.watch(signUpNotifier);
 
   var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
+  var responseData = SignUpModel();
 
   try {
-    var responseData = await apiService.registerUser(url, params, "");
-    final status = responseData['status'];
-    final message = responseData['message'];
-    if (status != null && status!.isNotEmpty) {
+    responseData = await apiService.registerUser(url, params, "");
+
+    if (responseData.data != null &&
+        responseData.data!.userName != null) {
+
       registrationState.setIsLoading(false);
-      NavUtil.navigateWithReplacement(AccountSuccessScreen());
-    } else {
-      if (!registrationState.context.mounted) return;
-      showCustomSnackBar(
-        context: registrationState.context,
-        message: message,
-        color: Colors.black,
+      registrationState.setSignUPData(responseData);
+
+      String json = jsonEncode(responseData.toJson());
+
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.JWT_TOKEN,
+        responseData.data!.jwtToken!,
       );
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.IS_LOGGED_IN,
+        true,
+      );
+      // SharedPreferenceUtils.saveDataInSF(
+      //   Strings.PROFILE_DATA,
+      //   json,
+      // );
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.USER_ID,
+        responseData.data!.userId,
+      );
+
+      if (registrationState.context.mounted) {
+        Navigator.pushReplacement(
+          registrationState.context,
+          MaterialPageRoute(
+            builder: (_) => AccountSuccessScreen(),
+          ),
+        );
+      }
+
+    } else {
+      if (registrationState.context.mounted) {
+        showCustomSnackBar(
+          context: registrationState.context,
+          message: "Signup failed or response is not success",
+          color: Colors.red,
+        );
+      }
+
       registrationState.setIsLoading(false);
+      Utils.printLog('Signup failed or response is not success');
     }
+
   } catch (e) {
     registrationState.setIsLoading(false);
-    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+    if (registrationState.context.mounted) {
+      Utils.showNetworkErrorToast(
+        registrationState.context,
+        e.toString(),
+      );
+    }
   } finally {
     registrationState.setIsLoading(false);
   }
-  return null;
+
+  return responseData;
 });
+
 
 final forgotPasswordProvider =
     FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
