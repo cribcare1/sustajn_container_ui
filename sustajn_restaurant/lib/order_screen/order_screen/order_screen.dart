@@ -11,7 +11,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 
-class OrderHistoryScreen extends ConsumerStatefulWidget{
+class OrderHistoryScreen extends ConsumerStatefulWidget {
   const OrderHistoryScreen({super.key});
 
   @override
@@ -19,7 +19,6 @@ class OrderHistoryScreen extends ConsumerStatefulWidget{
 }
 
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
-
   final searchController = TextEditingController();
 
   final Map<String, List<Map<String, dynamic>>> orders = {
@@ -76,50 +75,65 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
 
-    final container = containerState.containerHistorydata?.data?.orderedResponses;
+    final container =
+        containerState.containerHistorydata?.data?.orderedResponses;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             children: [
-              CustomTheme.searchField(searchController, "Search Container by Name"),
+              CustomTheme.searchField(
+                searchController,
+                "Search Container by Name",
+              ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(
                 child: containerState.isLoading
                     ? Center(child: CircularProgressIndicator())
                     : container == null
                     ? const Center(
-                  child: Text("No containers available", style: TextStyle(color: Colors.white),),
-                )
-                    : ListView.builder(
-                  itemCount: container.length,
-                  itemBuilder: (context, index) {
-                    // final month = container.elementAt(index);
-                    // final monthOrders = container[month];
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // _buildMonthHeader(context, month),
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: container.length,
-                          separatorBuilder: (_, __) =>
-                              SizedBox(height: Constant.CONTAINER_SIZE_12),
-                          itemBuilder: (context, orderIndex) {
-                            final item = container[index];
-                            return _buildOrderCard(
-                                context, item.status!, item.productName!, item.orderId!, item.orderDate!);
-                          },
+                        child: Text(
+                          "No containers available",
+                          style: TextStyle(color: Colors.white),
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      )
+                    : ListView.builder(
+                        itemCount: container.length,
+                        itemBuilder: (context, index) {
+                          //todo needed later
+                          // final month = container.elementAt(index);
+                          // final monthOrders = container[month];
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //todo needed later
+                              // _buildMonthHeader(context, month),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: container.length,
+                                separatorBuilder: (_, __) => SizedBox(
+                                  height: Constant.CONTAINER_SIZE_12,
+                                ),
+                                itemBuilder: (context, orderIndex) {
+                                  final item = container[index];
+                                  return _buildOrderCard(
+                                    context,
+                                    item.status ?? "Unknown",
+                                    item.productName ?? "N/A",
+                                    item.orderId ?? "-",
+                                    item.orderDate ?? "",
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -161,18 +175,19 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       ),
       child: Text(
         title,
-        style: theme.textTheme.titleSmall?.copyWith(
-          color: Colors.white
-        ),
+        style: theme.textTheme.titleSmall?.copyWith(color: Colors.white),
       ),
     );
   }
 
   // 📦 Order Card
   Widget _buildOrderCard(
-      BuildContext context, String status, String title, String orderId, String date
-      // Map<String, dynamic> order,
-      ) {
+    BuildContext context,
+    String status,
+    String title,
+    String orderId,
+    String date,
+  ) {
     final theme = Theme.of(context);
 
     return Container(
@@ -180,9 +195,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.2)
-        )
+        border: Border.all(color: Constant.grey.withOpacity(0.2)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,8 +209,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   }
 
   Widget _buildOrderDetails(
-      BuildContext context, String title, String orderId, String date
-      ) {
+    BuildContext context,
+    String title,
+    String orderId,
+    String date,
+  ) {
     final theme = Theme.of(context);
 
     return Column(
@@ -205,25 +221,19 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: Colors.white
-          ),
+          style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: Constant.SIZE_04),
         Text(
           'Order ID: $orderId',
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.white
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
         ),
         SizedBox(height: Constant.SIZE_04),
         Text(
           date,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.white
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
         ),
       ],
     );
@@ -269,23 +279,23 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     );
   }
 
-
   _getContaineHistoryCall() async {
     try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
-              (isNetworkAvailable) {
-            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-            final orderState = ref.read(orderProvider);
-            if (isNetworkAvailable) {
-              orderState.setIsLoading(true);
-              final userId = Utils.userId;
-              final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
-              ref.read(getContainerHistoryProvider(url));
-            } else {
-              orderState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
+          ref.read(getContainerHistoryProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
     } catch (e) {
       Utils.printLog('Error in visitor button onPressed: $e');
     }

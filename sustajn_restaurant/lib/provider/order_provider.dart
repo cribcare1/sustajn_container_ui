@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../constants/network_urls.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../notifier/order_notifier.dart';
@@ -10,9 +11,9 @@ import '../utils/utility.dart';
 final orderProvider = ChangeNotifierProvider((ref) => OrderState());
 
 final getOrderProvider = FutureProvider.family<dynamic, String>((
-    ref,
-    params,
-    ) async {
+  ref,
+  params,
+) async {
   final orderState = ref.watch(orderProvider);
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
@@ -35,16 +36,16 @@ final getOrderProvider = FutureProvider.family<dynamic, String>((
   }
 });
 
-
-final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((ref,
-    params,
-    ) async {
+final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
+  ref,
+  params,
+) async {
   final containerState = ref.watch(orderProvider);
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
     Utils.printLog("params===$params");
-    ContainerHistoryData responseData = await serviceProvider.getContaineHistoryService(params,
-    );
+    ContainerHistoryData responseData = await serviceProvider
+        .getContaineHistoryService(params);
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       containerState.setIsLoading(false);
       containerState.setContainerHistoryData(responseData);
@@ -58,4 +59,19 @@ final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((ref,
     containerState.setIsLoading(false);
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }
+});
+
+final addReturnProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+  ref,
+  params,
+) async {
+  final apiService = ref.read(getOrderApiProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_RETURN_CONTAINER}';
+
+  Utils.printLog("Provider url : $url");
+  final responseData = await apiService.addReturnService(url, params, "");
+
+  print("Provider Response: $responseData");
+  return responseData;
 });
