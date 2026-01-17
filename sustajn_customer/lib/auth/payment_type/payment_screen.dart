@@ -422,7 +422,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   SubscriptionScreen(),
                 );
               },
-              child: Text('Skip'),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: Constant.gold,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // optional
+                ),
+              ),
+              child: Text('Skip',
+              style: TextStyle(
+                color: Constant.gold
+              ),),
             ),
           ),
 

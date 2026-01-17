@@ -169,7 +169,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
               registrationState.setContext(context);
               registrationState.setIsForgotPassword(true);
               registrationState.setEmail(_emailController.text);
-              ref.read(getOtpToVerifyProvider({"email":_emailController.text}));
+              ref.read(getOtpToVerifyProvider({"email":_emailController.text, "type":"RESET"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

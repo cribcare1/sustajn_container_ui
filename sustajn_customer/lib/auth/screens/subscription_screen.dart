@@ -254,9 +254,22 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             ),
             items: List.generate(plans.length, (index) {
               final plan = plans[index];
-              return SingleChildScrollView(
-                child: _freemiumCard(context, theme, plan,   _currentIndex == index,),
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                child: SingleChildScrollView(
+                  child: _freemiumCard(
+                    context,
+                    theme,
+                    plan,
+                    _currentIndex == index,
+                  ),
+                ),
               );
+
             }),
           ),
         ),
