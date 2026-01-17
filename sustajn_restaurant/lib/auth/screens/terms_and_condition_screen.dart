@@ -166,37 +166,6 @@ class _TermsAndConditionScreenState
       }else {
         Utils.showToast("Not valid data for Registration");
       }
-
-     /* final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
-      if (!isNetworkAvailable) {
-        if (!mounted) return;
-        showCustomSnackBar(
-          context: context,
-          message: Strings.NO_INTERNET_CONNECTION,
-          color: Colors.red,
-        );
-        return;
-      }
-      ref.read(registerProvider(mapData).future).then((value) {
-        if (!mounted) return;
-
-        if (value.status != null &&
-            value.status?.toLowerCase() == Strings.SUCCESS) {
-          showCustomSnackBar(
-            context: context,
-            message: Strings.USER_REGISTERED_SUCCESS,
-            color: Colors.green,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => LoginScreen()),
-          );
-        } else {
-          Utils.showToast(value.message ?? "Registration failed");
-        }
-      });*/
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
     }finally{

@@ -94,9 +94,9 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                 SizedBox(
                     width: double.infinity,
                     child: SubmitButton(onRightTap: (){if(_formKey.currentState!.validate()){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword', email: '',)));
-                      // _getNetworkData(authState);
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword', email: '',)));
+                      _getNetworkData(authState);
                     }},rightText: Strings.CONTINUE_VERIFICATION,)
                 ),
               ],
@@ -116,7 +116,8 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(forgotPasswordProvider({"email":_emailController.text}));
+              registrationState.setIsForgotPassword(true);
+              ref.read(forgotPasswordProvider({"email":_emailController.text, "previous":"RESET"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

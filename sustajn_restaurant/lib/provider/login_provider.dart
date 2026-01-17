@@ -41,13 +41,13 @@ final loginDetailProvider =
               color: Colors.green,
             );
           }
-          String json = jsonEncode(responseData.toJson());
+
           SharedPreferenceUtils.saveDataInSF(
             Strings.JWT_TOKEN,
             responseData.data!.jwtToken!,
           );
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
-          SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+
           if (registrationState.context.mounted) {
             Navigator.pushReplacement(
               registrationState.context,
@@ -83,8 +83,6 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
   final serviceProvider = ref.read(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   try {
-    // // final image = params[Strings.IMAGE];
-    // params.remove(Strings.IMAGE);
 
     final Map<String, dynamic> data = Map<String, dynamic>.from(params);
 
@@ -94,7 +92,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
       Register register = Register.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
         registrationState.setIsLoading(false);
-        NavUtil.navigateWithReplacement(DashboardScreen());
+        NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
       } else {
         showCustomSnackBar(
           context: registrationState.context,
@@ -104,8 +102,6 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
         registrationState.setIsLoading(false);
       }
     }
-
-
   } catch (e, stackTrace) {
     // Optional: log error
     debugPrint('Register API Error: $e');
@@ -156,10 +152,7 @@ final forgotPasswordProvider =
       return null;
     });
 
-final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
-  ref,
-  args,
-) async {
+final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args,) async {
   final apiService = ref.watch(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   final String email = args['email'];
@@ -167,7 +160,7 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
     final responseData = await apiService.forgetPassword(url, {
-      "email": email,
+      "email": email, "type":previous
     }, "");
     if (responseData != null && responseData.isNotEmpty) {
       if (!registrationState.context.mounted) return null;
@@ -313,9 +306,12 @@ final subscriptionProvider =
       final provider = ref.read(authNotifierProvider);
       final service = ref.read(loginApiProvider);
       try {
-        final response = await service.planServices();
-        provider.setPlan(response!);
-        return response;
+        List<PlanModel>? response = await service.planServices();
+
+        if (response != null && response.length>0) {
+          provider.setPlan(response!);
+        }
+        return response!;
       } catch (e) {
         if (provider.context.mounted) {
           Utils.showNetworkErrorToast(provider.context, e.toString());
