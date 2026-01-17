@@ -5,11 +5,19 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../constants/imports_util.dart';
+
 class LocationState {
   final bool loading;
   final LatLng? position;
   final String address;
   final String postalCode;
+  bool _isLoading = false;
+  BuildContext? _context;
+
+
+  bool get isLoading => _isLoading;
+  BuildContext get context => _context!;
 
   LocationState({
     this.loading = false,
@@ -31,6 +39,8 @@ class LocationState {
       postalCode: postalCode ?? this.postalCode
     );
   }
+
+
 }
 
 class LocationNotifier extends StateNotifier<LocationState> {
@@ -87,6 +97,8 @@ class LocationNotifier extends StateNotifier<LocationState> {
         postalCode: "",);
     }
   }
+
+
 }
 
 final locationProvider =

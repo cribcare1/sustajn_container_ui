@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 
 class NavUtil {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 
   static void navigateToPushScreen(BuildContext context, screen) {
@@ -18,7 +18,11 @@ class NavUtil {
         .pushNamed(routeName, arguments: arguments);
   }
 
-
+   static Future<dynamic> navigateWithReplacement(Widget screen) {
+    return navigatorKey.currentState!.pushReplacement(
+      MaterialPageRoute(builder: (_) => screen),
+    );
+  }
   static void navigateToWithReplacement(
       BuildContext context, StatefulWidget statefulWidget) {
     Navigator.pushReplacement(

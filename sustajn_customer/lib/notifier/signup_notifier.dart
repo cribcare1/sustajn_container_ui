@@ -10,7 +10,7 @@ import '../models/subscriptionplan_data.dart';
 
 import '../utils/utils.dart';
 
-class SignupNotifier extends ChangeNotifier{
+class SignupNotifier extends ChangeNotifier {
   String _name = '';
   String _password = '';
   String _email = '';
@@ -34,6 +34,7 @@ class SignupNotifier extends ChangeNotifier{
   String _bankName = '';
   String _accountHolderName = '';
   String _iban = '';
+
   String _bic = '';
   String _taxNumber = '';
   String _accountNumber = '';
@@ -49,36 +50,55 @@ class SignupNotifier extends ChangeNotifier{
   bool _showBankErrors = false;
 
 
-
   String get name => _name;
+
   String get email => _email;
+
   String get otp => _otp;
+
   String get password => _password;
+
   int get seconds => _seconds;
+
   bool get isPasswordVisible => _isPasswordVisible;
+
   bool get isLoading => _isLoading;
+
   bool get isForgotPassword => _isForgotPassword;
+
   bool get isResend => _isResend;
+
   LoginModel get login => _login!;
+
   BuildContext get context => _context!;
+
   bool get isVisible => _isVisible;
 
   bool get isVerifyLoading => _isVerifyLoading;
+
   bool get isResendLoading => _isResendLoading;
+
   File? get image => _image;
+
   String? get bankNameError => _bankNameError;
+
   String? get accountHolderError => _accountHolderError;
+
   String? get taxNumberError => _taxNumberError;
+
   String? get accountNumberError => _accountNumberError;
 
   String? get ibanError => _ibanError;
+
   String? get bicError => _bicError;
+
   bool get showBankErrors => _showBankErrors;
 
   RegistrationData? get registrationData => _registrationData;
-  SubscriptionModel? get subscriptionModel => _subscriptionModel;
-  List<SubscriptionData>? get subscriptionList=> data;
 
+  SubscriptionModel? get subscriptionModel => _subscriptionModel;
+
+  List<SubscriptionData>? get subscriptionList => data;
 
 
   // Error messages
@@ -88,16 +108,19 @@ class SignupNotifier extends ChangeNotifier{
   String? get nameError => _nameError;
 
   String? get passwordError => _passwordError;
-  void setRegistrationData(RegistrationData registrationData){
+
+  void setRegistrationData(RegistrationData registrationData) {
     _registrationData = registrationData;
     notifyListeners();
   }
-  void setSubscriptionModel(SubscriptionModel subscriptionModel){
+
+  void setSubscriptionModel(SubscriptionModel subscriptionModel) {
     _subscriptionModel = subscriptionModel;
     data = subscriptionModel.data;
     notifyListeners();
   }
-  void setSeconds(int value){
+
+  void setSeconds(int value) {
     _seconds = value;
     notifyListeners();
   }
@@ -106,7 +129,6 @@ class SignupNotifier extends ChangeNotifier{
     stopTimer();
     _seconds = startFrom;
   }
-
 
 
   void setName(String value) {
@@ -146,7 +168,7 @@ class SignupNotifier extends ChangeNotifier{
   }
 
 
-  void _validateAccHolderName(){
+  void _validateAccHolderName() {
     if (_accountHolderName.isEmpty) {
       _accountHolderError = 'Account holder name is required';
     } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(_accountHolderName)) {
@@ -155,6 +177,7 @@ class SignupNotifier extends ChangeNotifier{
       _accountHolderError = null;
     }
   }
+
   void setAccountHolderName(String value) {
     _accountHolderName = value;
     if (_showBankErrors) {
@@ -201,7 +224,7 @@ class SignupNotifier extends ChangeNotifier{
   }
 
 
-  void _validateBIC(){
+  void _validateBIC() {
     if (_bic.isEmpty) {
       _bicError = 'BIC is required';
     } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_bic)) {
@@ -259,23 +282,28 @@ class SignupNotifier extends ChangeNotifier{
 
 
   void setAddress({
-    required String address,
-    String? postalCode,
+    required String addressType,
+    required String flatDoorHouseDetails,
+    required String areaStreetCityBlockDetails,
+    required String poBoxOrPostalCode,
     required double latitude,
     required double longitude,
   }) {
-    if (_registrationData == null) {
-      _registrationData = RegistrationData();
-    }
+    _registrationData ??= RegistrationData();
 
     _registrationData!
-      ..areaStreetCityBlockDetails = address
-      ..poBoxOrPostalCode = postalCode
+      ..addressType = addressType
+      ..flatDoorHouseDetails = flatDoorHouseDetails
+      ..areaStreetCityBlockDetails = areaStreetCityBlockDetails
+      ..poBoxOrPostalCode = poBoxOrPostalCode
       ..latitude = latitude
       ..longitude = longitude;
 
     notifyListeners();
   }
+
+
+
 
 
 
@@ -401,12 +429,13 @@ class SignupNotifier extends ChangeNotifier{
 
     _registrationData!
       ..bankName = _bankName
-      ..accountHolderName = _accountHolderName
-      ..iban = _iban
-      ..bic = _bic;
+      ..taxNumber = _taxNumber
+      ..accountNumber = _accountNumber
+      ..iban = _iban;
 
     notifyListeners();
   }
+
 
   bool validateBankForm() {
     _showBankErrors = true;
@@ -428,10 +457,21 @@ class SignupNotifier extends ChangeNotifier{
 
   void resetBankValidation() {
     _showBankErrors = false;
+
     _bankNameError = null;
     _accountHolderError = null;
+    _taxNumberError = null;
+    _accountNumberError = null;
     _ibanError = null;
     _bicError = null;
+
+    _bankName = '';
+    _accountHolderName = '';
+    _taxNumber = '';
+    _accountNumber = '';
+    _iban = '';
+    _bic = '';
+
     notifyListeners();
   }
 
@@ -454,6 +494,9 @@ class SignupNotifier extends ChangeNotifier{
       }
     });
   }
+
+
+
 
 
 
