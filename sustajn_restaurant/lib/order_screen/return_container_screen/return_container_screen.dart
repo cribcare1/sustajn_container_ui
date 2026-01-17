@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_dialog.dart';
 
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -12,13 +13,13 @@ import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../models/add_container_model.dart';
-import 'return_container_dialog.dart';
 
 class ReturnContainerScreen extends ConsumerStatefulWidget {
   const ReturnContainerScreen({super.key});
 
   @override
-  ConsumerState<ReturnContainerScreen> createState() => _ReturnContainerScreenState();
+  ConsumerState<ReturnContainerScreen> createState() =>
+      _ReturnContainerScreenState();
 }
 
 class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
@@ -81,14 +82,18 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
     final orderState = ref.watch(orderProvider);
 
     return SafeArea(
-      bottom: true,top: false,
+      bottom: true,
+      top: false,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         body: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             children: [
-              CustomTheme.searchField(searchController, "Search Container by Name"),
+              CustomTheme.searchField(
+                searchController,
+                "Search Container by Name",
+              ),
               const SizedBox(height: 10),
 
               Expanded(
@@ -96,19 +101,25 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                     ? Center(child: CircularProgressIndicator())
                     : orderState.getContainerData!.containersDetails!.isEmpty
                     ? Center(
-                  child: Text("No containers found", style: TextStyle(color: Colors.white),),
-                )
+                        child: Text(
+                          "No containers found",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
                     : ListView.separated(
-                  itemCount: orderState.getContainerData!.containersDetails!.length,
-                  separatorBuilder: (_, __) =>
-                      SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  itemBuilder: (context, index) {
-                    final item =
-                    orderState.getContainerData!.containersDetails![index];
-                    return _containerCard(
-                        context, item, theme);
-                  },
-                ),
+                        itemCount: orderState
+                            .getContainerData!
+                            .containersDetails!
+                            .length,
+                        separatorBuilder: (_, __) =>
+                            SizedBox(height: Constant.CONTAINER_SIZE_12),
+                        itemBuilder: (context, index) {
+                          final item = orderState
+                              .getContainerData!
+                              .containersDetails![index];
+                          return _containerCard(context, item, theme);
+                        },
+                      ),
               ),
             ],
           ),
@@ -117,19 +128,17 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
     );
   }
 
-
-
   Widget _containerCard(
-      BuildContext context, ContainersDetails item, ThemeData theme) {
+    BuildContext context,
+    ContainersDetails item,
+    ThemeData theme,
+  ) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.3),
-        ),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        border: Border.all(color: Constant.grey.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -138,8 +147,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
             height: Constant.CONTAINER_SIZE_50,
             decoration: BoxDecoration(
               color: Constant.white.withOpacity(0.2),
-              borderRadius:
-              BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             ),
             child: Image.asset("assets/images/cups.png", fit: BoxFit.contain),
           ),
@@ -150,20 +158,26 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.containerName!,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white
-                    )),
+                Text(
+                  item.containerName!,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.containerUniqueId.toString(),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white
-                    )),
+                Text(
+                  item.containerUniqueId.toString(),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
                 SizedBox(height: Constant.SIZE_04),
-                Text("${item.capacity.toString()} ml",
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white70
-                    )),
+                Text(
+                  "${item.capacity.toString()} ml",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white70,
+                  ),
+                ),
               ],
             ),
           ),
@@ -171,57 +185,60 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text("Available Qty",
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white
-                  )),
-              Text(item.quantityAvailable.toString(),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white
-                  )),
+              Text(
+                "Available Qty",
+                style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
+              ),
+              Text(
+                item.quantityAvailable.toString(),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
 
               SizedBox(height: Constant.SIZE_06),
 
               GestureDetector(
                 onTap: () => _openAddDialog(context, item),
                 child:
-                // item.?
-                //     Row(
-                //   children: [
-                //
-                //     Text("Remove",
-                //         style: theme.textTheme.bodySmall?.copyWith(
-                //             color:
-                //             Colors.white)),
-                //     SizedBox(width: Constant.SIZE_04),
-                //     Icon(Icons.close,
-                //         size: Constant.CONTAINER_SIZE_14,
-                //         color: Colors.white),
-                //
-                //   ],
-                // )
-                //     ?
+                    //todo needed later
+                    // item.?
+                    //     Row(
+                    //   children: [
+                    //
+                    //     Text("Remove",
+                    //         style: theme.textTheme.bodySmall?.copyWith(
+                    //             color:
+                    //             Colors.white)),
+                    //     SizedBox(width: Constant.SIZE_04),
+                    //     Icon(Icons.close,
+                    //         size: Constant.CONTAINER_SIZE_14,
+                    //         color: Colors.white),
+                    //
+                    //   ],
+                    // )
+                    //     ?
                     Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_20,
-                    vertical: Constant.SIZE_04,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_20),
-                    border: Border.all(
-                        color: Constant.gold),
-                  ),
-                  child: Text(
-                    "Return",
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color:
-                        Constant.gold),
-                  ),
-                ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_20,
+                        vertical: Constant.SIZE_04,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_20,
+                        ),
+                        border: Border.all(color: Constant.gold),
+                      ),
+                      child: Text(
+                        "Return",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -234,10 +251,14 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
       backgroundColor: Colors.transparent,
       useSafeArea: true,
       builder: (_) => Padding(
-        padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        // child: ReturnContainerDialog(item: item),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: ReturnContainerDialog(item: item),
       ),
     );
+
+    //todo needed later
 
     // if (result != null && result > 0) {
     //   setState(() {
@@ -249,20 +270,21 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
 
   _getOrderNetworkCall() async {
     try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
-              (isNetworkAvailable) {
-            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-            final orderState = ref.read(orderProvider);
-            if (isNetworkAvailable) {
-              orderState.setIsLoading(true);
-              final userId = Utils.userId;
-              final url = '${NetworkUrls.GET_CONTAINER}$userId';
-              ref.read(getOrderProvider(url));
-            } else {
-              orderState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.GET_CONTAINER}$userId';
+          ref.read(getOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
     } catch (e) {
       Utils.printLog('Error in visitor button onPressed: $e');
     }

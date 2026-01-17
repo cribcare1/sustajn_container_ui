@@ -30,10 +30,12 @@ class NetworkUrls {
   static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
   static const CONTAINER_HISTORY = "orders/orderHistory/";
 
+
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";
-  static const DELETE_CONTAINER = "inventory/delete-container-type/123";
+  static const DELETE_CONTAINER = "inventory/delete-container-type/";
+  static const ADD_RETURN_CONTAINER = "inventory/raiseOrderRequest";
 
   /// Search Restaurant ///
 
