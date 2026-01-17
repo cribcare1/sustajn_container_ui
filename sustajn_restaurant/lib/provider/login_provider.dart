@@ -122,12 +122,18 @@ final forgotPasswordProvider =
       var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
       try {
         var responseData = await apiService.forgetPassword(url, params, "");
-        if (responseData != null) {
+
+        final status = responseData['status'];
+        final message = responseData['message'];
+
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
           registrationState.setIsLoading(false);
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
-            message: responseData.message!,
+            message: message,
             color: Colors.green,
           );
           NavUtil.navigateToPushScreen(
@@ -138,7 +144,7 @@ final forgotPasswordProvider =
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
-            message: responseData.message!,
+            message: message,
             color: Colors.red,
           );
           registrationState.setIsLoading(false);

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
-
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   debugPrint("📩 Background Notification Data: ${message.data}");
