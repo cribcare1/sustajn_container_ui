@@ -133,7 +133,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                           child: Text(
                             widget.type.contains("LEASE")
                                 ? "Scan Customer QR to Leased Products"
-                                : "Scan Container QR to Receive Products",
+                                : "Scan Customer QR to Receive Products",
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(
