@@ -187,24 +187,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
               GestureDetector(
                 onTap: () => _openAddDialog(context, item),
                 child:
-                //todo needed later
-
-                // item.isAdded
-                //     ? Row(
-                //   children: [
-                //
-                //     Text("Remove",
-                //         style: theme.textTheme.bodySmall?.copyWith(
-                //             color:
-                //             Colors.white)),
-                //     SizedBox(width: Constant.SIZE_04),
-                //     Icon(Icons.close,
-                //         size: Constant.CONTAINER_SIZE_14,
-                //         color: Colors.white),
-                //
-                //   ],
-                // )
-                //     :
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Constant.CONTAINER_SIZE_20,
@@ -246,15 +228,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             child: AddContainerDialog(item: item),
           ),
     );
-
-    //todo needed later
-
-    // if (result != null && result > 0) {
-    //   setState(() {
-    //     item.selectedQty = result;
-    //     item.isAdded = true;
-    //   });
-    // }
   }
 
   _getOrderNetworkCall() async {

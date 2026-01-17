@@ -201,23 +201,6 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
               GestureDetector(
                 onTap: () => _openAddDialog(context, item),
                 child:
-                    //todo needed later
-                    // item.?
-                    //     Row(
-                    //   children: [
-                    //
-                    //     Text("Remove",
-                    //         style: theme.textTheme.bodySmall?.copyWith(
-                    //             color:
-                    //             Colors.white)),
-                    //     SizedBox(width: Constant.SIZE_04),
-                    //     Icon(Icons.close,
-                    //         size: Constant.CONTAINER_SIZE_14,
-                    //         color: Colors.white),
-                    //
-                    //   ],
-                    // )
-                    //     ?
                     Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: Constant.CONTAINER_SIZE_20,
