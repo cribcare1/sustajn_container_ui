@@ -117,7 +117,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
                           Text(
-                            "${Strings.SEND_CODE}${email}",
+                            "${Strings.SEND_CODE}${Utils.maskEmail(email)}",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontSize: Constant.LABEL_TEXT_SIZE_15,

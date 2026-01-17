@@ -495,22 +495,11 @@ class SignupNotifier extends ChangeNotifier {
     });
   }
 
-
-
-
-
-
-
-
   void stopTimer() {
     _otpTimer?.cancel();
     _otpTimer = null;
     _isTimerRunning = false;
   }
-
-
-
-
 
   @override
   void dispose() {
@@ -518,10 +507,4 @@ class SignupNotifier extends ChangeNotifier {
     stopTimer();
     super.dispose();
   }
-
-
-
-
-
-
 }
