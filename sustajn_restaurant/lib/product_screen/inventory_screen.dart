@@ -197,7 +197,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                       ],
                     ),
                     Text(
-                      volume,
+                      "$volume ml",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(

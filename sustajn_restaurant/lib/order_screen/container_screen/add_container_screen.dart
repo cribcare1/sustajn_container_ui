@@ -160,7 +160,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                       color: Colors.white
                     )),
                 SizedBox(height: Constant.SIZE_04),
-                Text(item.capacity.toString(),
+                Text("${item.capacity.toString()} ml",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white70
                     )),
