@@ -1,43 +1,52 @@
-import 'package:sustajn_customer/auth/screens/save_home_address.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/profile_model.dart';
 import '../../utils/nav_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/utils.dart';
 
-class AddressOptionsDialog extends StatelessWidget {
-  final AddressResponses address;
-  const AddressOptionsDialog({super.key, required this.address});
+class AddressOptionsDialog extends ConsumerStatefulWidget {
+  final int userId;
+  const AddressOptionsDialog({super.key,required this.userId});
+
 
   @override
+  ConsumerState<AddressOptionsDialog> createState() => _AddressOptionsDialogState();
+}
+
+class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
+  @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileProvider);
     final theme = Theme.of(context);
 
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0D402C),
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(28),
-        ),
-      ),
-
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-          Text(
-            "Address Options",
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0D402C),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(28),
             ),
           ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Address Options",
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
 
-          SizedBox(height: Constant.CONTAINER_SIZE_18),
+              SizedBox(height: Constant.CONTAINER_SIZE_18),
 
           _optionItem(
             theme: theme,
@@ -51,19 +60,40 @@ class AddressOptionsDialog extends StatelessWidget {
             },
           ),
 
-          SizedBox(height: Constant.CONTAINER_SIZE_12),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-          _optionItem(
-            theme: theme,
-            icon: Icons.delete_forever,
-            text: "Remove Address",
-            onTap: () {
-
-            },
+              _optionItem(
+                theme: theme,
+                icon: Icons.delete_forever,
+                text: "Remove Address",
+                onTap: () {
+                  _getNetworkDataVerify(profileState);
+                },
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+
+
+        if (profileState.isLoading)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.4),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
+
   }
 
   Widget _optionItem({
@@ -105,5 +135,40 @@ class AddressOptionsDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _getNetworkDataVerify(var registrationState) async {
+    try {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+            isNetworkAvailable,
+            ) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setIsLoading(true);
+              ref.read(
+                deleteAddressProvider({  "addressId": widget.userId
+                }),
+              );
+            } else {
+              registrationState.setIsLoading(false);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setIsLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setIsLoading(false);
+    }
   }
 }

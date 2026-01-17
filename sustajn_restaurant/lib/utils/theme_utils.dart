@@ -13,10 +13,10 @@ class CustomTheme {
             //TODO 
             // secondaryHeaderColor: const Color(0xFFe7f7f1),
             colorScheme: const ColorScheme(
-              primary: Color(0xff7300e6),
+              primary: Color(0xFFD4AE37),
               secondary: Color(0xff00c4cc),
               brightness: Brightness.light,
-              onPrimary: Color(0xff8b3dff),
+              onPrimary: Color(0xFF0f3727),
               onSecondary: Color(0xff9e77f3),
               error: Color(0xffdb1436),
               onError: Color(0xffff4757),
@@ -124,12 +124,20 @@ class CustomTheme {
     );
   }
 
-  static TextField searchField(TextEditingController controller, String text, {VoidCallback? onFilterTap}) {
+  static Widget searchField(
+      TextEditingController controller,
+      String text, {
+        VoidCallback? onFilterTap,
+        ValueChanged<String>? onChanged,
+      }) {
     return TextField(
       controller: controller,
+      style: const TextStyle(fontSize: 14, color: Colors.white),
+      onChanged: onChanged,
+      cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: text,
-        hintStyle: TextStyle(color: Colors.white70),
+        hintStyle: const TextStyle(color: Colors.white70),
         prefixIcon: const Icon(Icons.search, color: Colors.white70),
 
         suffixIcon: onFilterTap == null
@@ -139,6 +147,34 @@ class CustomTheme {
           onPressed: onFilterTap,
         ),
 
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        fillColor: Constant.grey.withOpacity(0.1),
+        filled: true,
+      ),
+    );
+  }
+
+  static TextField textField(TextEditingController controller, String text,{ValueChanged<String>? onChanged, int maxLine = 1, bool isSearch = true}) {
+    return TextField(
+      controller: controller,
+      style: TextStyle(fontSize: 14,color: Colors.white),
+      onChanged: onChanged,
+      cursorColor: Colors.white,
+      maxLines: maxLine,
+      decoration: InputDecoration(
+        hintText: text,
+        hintStyle: TextStyle(color: Colors.white70),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           borderSide: BorderSide.none,

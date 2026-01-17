@@ -55,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
     });
     _checkLoginAndNavigate();
   }
+
   Future<void> _checkLoginAndNavigate() async {
     bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
       Strings.IS_LOGGED_IN,
@@ -68,6 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
   @override
   void dispose() {
     _controller.dispose();

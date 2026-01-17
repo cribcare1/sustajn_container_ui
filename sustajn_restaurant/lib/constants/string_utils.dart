@@ -19,12 +19,15 @@ class Strings{
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
   static const DATA = 'data';
+  static const PROFILE_IMAGE = 'profileImage';
+  static const USER_DATA = 'userData';
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
 
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
+  static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW = "Please provide your details below";
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
   static const String APPROVED_STATUS = 'Approved';
@@ -84,7 +87,7 @@ class Strings{
   static const CUSTOMER = 'Customer';
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
-  static const SEND_CODE =  "We've sent you a code to verify your email id on\nabc***@gmail.com";
+  static const SEND_CODE =  "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -96,14 +99,14 @@ class Strings{
   static const CONFIRM_PASSWORD = 'Confirm Password';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
-  static const ALREADY_HAVE_ACC = 'Already have an account?';
+  static const ALREADY_HAVE_ACC = 'Already have an account? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD= 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
   static const WELCOME = 'Welcome';
   static const LOGIN_YOUR_ACC = 'Login to your account';
   static const FORGOT_PASSWORD = 'Forgot Password?';
-  static const DONT_HAVE_ACC = "Don't have an account ?";
+  static const DONT_HAVE_ACC = "Don't have an account? ";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE = 'Please enter your email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
@@ -197,10 +200,14 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const LEAVE_RESET_PASSWORD= 'Leave Reset Password?';
   static const GO_BACK_RESET_PASSWORD = 'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const String CONFIRM_LOGOUT= 'Confirm Logout';
+  static const String CONFIRM= 'Confirm';
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';
   static const USER_REGISTERED_SUCCESS = 'Account created successfully';
+  static const BUSINESS_INFORMATION = "Business Information";
+  static const PROVIDE_INFORMATION = "Provide information to help customers find you.";
+  static const PAYMENT_TYPE = "Payment Type";
 
 
 

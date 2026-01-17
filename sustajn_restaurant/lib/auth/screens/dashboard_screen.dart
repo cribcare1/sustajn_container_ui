@@ -1,10 +1,9 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
-import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
+import 'package:sustajn_restaurant/notification/notification_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/circle_card_widget.dart';
@@ -132,11 +131,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             SizedBox(width: w * 0.02),
                             Expanded(
-                              child: CircleCardWidget(
-                                child: Icon(
-                                  Icons.notifications_none,
-                                  color: Colors.white70,
-                                  size: Constant.CONTAINER_SIZE_20,
+                              child: InkWell(
+                                onTap: () {
+                                  Utils.navigateToPushScreen(
+                                    context,
+                                    NotificationScreen(),
+                                  );
+                                },
+                                child: CircleCardWidget(
+                                  child: Icon(
+                                    Icons.notifications_none,
+                                    color: Colors.white70,
+                                    size: Constant.CONTAINER_SIZE_20,
+                                  ),
                                 ),
                               ),
                             ),
@@ -249,7 +256,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               SizedBox(height: Constant.SIZE_15),
                               _buildLegendRow(context),
-                              SizedBox(height: Constant.SIZE_15),
+                              SizedBox(height: Constant.CONTAINER_SIZE_20),
                               _buildChartRings(context, width, theme),
                             ],
                           ),
@@ -409,86 +416,97 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  final List<ChartData> chartData = [
+    ChartData('Total', 1000, Colors.greenAccent),
+    ChartData('Available', 800, Colors.yellowAccent),
+    ChartData('Lease', 300, Colors.lightBlueAccent),
+    ChartData('Receive', 100, Colors.amber.shade700),
+    ChartData('Damage', 2, Colors.redAccent.shade700),
+  ];
+
   Widget _buildChartRings(
     BuildContext context,
     double screenWidth,
     ThemeData theme,
   ) {
-    double chartSize = screenWidth * 0.55;
-    chartSize = chartSize.clamp(220.0, 320.0);
-
-    final holeRadius = chartSize * 0.32;
-    final ringThickness = chartSize * 0.2;
+    double chartSize = screenWidth * 0.65;
 
     return SizedBox(
       width: double.infinity,
       child: Column(
         children: [
-          SizedBox(
-            width: chartSize,
-            height: chartSize,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                /// Pie Chart
-                PieChart(
-                  PieChartData(
-                    sectionsSpace: 2,
-                    centerSpaceRadius: holeRadius,
-                    startDegreeOffset: -90,
-                    sections: _buildChartSections(ringThickness, theme),
-                  ),
+          Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                width: chartSize,
+                height: chartSize,
+                child: SfCircularChart(
+                  series: <DoughnutSeries<ChartData, String>>[
+                    DoughnutSeries<ChartData, String>(
+                      dataSource: chartData,
+                      xValueMapper: (ChartData data, _) => data.label,
+                      yValueMapper: (ChartData data, _) => data.value,
+                      pointColorMapper: (ChartData data, _) => data.color,
+                      innerRadius: '55%',
+                      radius: '100%',
+                      strokeWidth: 4,
+                      // explode: true,
+                      explodeOffset: '4%',
+                      dataLabelSettings: const DataLabelSettings(
+                        isVisible: false,
+                      ),
+                    ),
+                  ],
                 ),
-                _chartLabel(
-                  left: 0,
-                  top: chartSize * 0.18,
-                  title: 'Damage',
-                  value: damage.toString(),
-                  color: Colors.redAccent,
-                ),
+              ),
 
-                /// Receive (Top Right)
-                _chartLabel(
-                  right: 0,
-                  top: chartSize * 0.12,
-                  title: 'Receive',
-                  value: returnedCount.toString(),
-                  color: const Color(0xFF4AA6FF),
-                  alignEnd: true,
-                ),
+              _chartLabel(
+                left: 10,
+                top: 0,
+                right: 10,
+                title: 'Lease',
+                value: '300',
+                color: Colors.yellowAccent,
+              ),
 
-                /// Lease (Left)
-                _chartLabel(
-                  left: 0,
-                  top: chartSize * 0.45,
-                  title: 'Lease',
-                  value: borrowed.toString(),
-                  color: Colors.yellowAccent,
-                ),
+              _chartLabel(
+                right: 0,
+                top: 10,
+                title: 'Receive',
+                value: '100',
+                color: const Color(0xFF9CCBFF),
+                alignEnd: true,
+              ),
 
-                /// Available (Bottom Left)
-                _chartLabel(
-                  left: 0,
-                  bottom: 0,
-                  title: 'Available',
-                  value: available.toString(),
-                  color: const Color(0xFFD0A52C),
-                ),
+              _chartLabel(
+                left: -5,
+                bottom: 10,
+                title: 'Available',
+                value: '800',
+                color: const Color(0xFFFFD88A),
+              ),
 
-                _chartLabel(
-                  right: 0,
-                  bottom: 0,
-                  title: 'Total',
-                  value: total.toString(),
-                  color: Colors.lightGreenAccent,
-                  alignEnd: true,
-                ),
-              ],
-            ),
+              _chartLabel(
+                right: -5,
+                bottom: 30,
+                title: 'Total',
+                value: '1000',
+                color: const Color(0xFF9AF28D),
+                alignEnd: true,
+              ),
+
+              _chartLabel(
+                top: -20,
+                title: 'Damage',
+                value: '2',
+                color: Colors.redAccent,
+                alignEnd: true,
+              ),
+            ],
           ),
-
           const SizedBox(height: 8),
-
           Text(
             '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
             style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -520,63 +538,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Text(
             title,
-            style: const TextStyle(color: Colors.redAccent, fontSize: 11),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           Text(
             value,
             style: TextStyle(
               color: color,
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
     );
-  }
-
-  List<PieChartSectionData> _buildChartSections(
-    double ringThickness,
-    ThemeData theme,
-  ) {
-    return [
-      PieChartSectionData(
-        value: returnedCount,
-        color: const Color(0xFF4AA6FF),
-        radius: ringThickness,
-        showTitle: false,
-        titleStyle: const TextStyle(fontSize: 12),
-      ),
-
-      PieChartSectionData(
-        value: borrowed,
-        color: Colors.lightGreenAccent,
-        radius: ringThickness,
-        showTitle: false,
-        titleStyle: const TextStyle(fontSize: 12),
-      ),
-
-      PieChartSectionData(
-        value: available,
-        color: const Color(0xFFD0A52C),
-        radius: ringThickness,
-        showTitle: false,
-        titleStyle: const TextStyle(fontSize: 12),
-      ),
-      PieChartSectionData(
-        value: total,
-        color: Colors.yellowAccent,
-        radius: ringThickness,
-        showTitle: false,
-        titleStyle: const TextStyle(fontSize: 12),
-      ),
-      PieChartSectionData(
-        value: damage.toDouble(),
-        color: Colors.redAccent,
-        radius: ringThickness,
-        showTitle: false,
-      ),
-    ];
   }
 
   void _showFilterPopup(BuildContext context) {
@@ -760,8 +738,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                     damage: selectedValue,
                                   ),
                                 );
-                              }
-                             else if (selectedType == 'LEASE') {
+                              } else if (selectedType == 'LEASE') {
                                 Navigator.pop(context);
                                 Utils.navigateToPushScreen(
                                   context,
@@ -853,4 +830,12 @@ class _OptionTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class ChartData {
+  final String label;
+  final double value;
+  final Color color;
+
+  ChartData(this.label, this.value, this.color);
 }

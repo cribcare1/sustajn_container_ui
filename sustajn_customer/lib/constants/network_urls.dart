@@ -21,6 +21,7 @@ class NetworkUrls {
   static const UPLOAD_IMAGE = 'auth/uploadImage/';
   static const CREATE_ADDRESS = 'auth/saveAddress';
   static const EDIT_ADDRESS = 'auth/updateAddress';
+  static const DELETE_ADDRESS = 'auth/deleteAddress';
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';

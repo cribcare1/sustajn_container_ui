@@ -1,20 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../containers/container_details.dart';
+import '../models/get_container_data.dart';
+import '../models/login_model.dart';
+import '../network_provider/network_provider.dart';
+import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
+import '../utils/utility.dart';
 import 'models/inventory_list.dart';
 
-class InventoryScreen extends StatefulWidget {
+class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({Key? key}) : super(key: key);
 
   @override
-  State<InventoryScreen> createState() => _InventoryScreenState();
+  ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
 }
 
-class _InventoryScreenState extends State<InventoryScreen> {
+class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   TextEditingController searchController = TextEditingController();
 
   bool _isQtyAscending = true;
@@ -34,11 +41,32 @@ class _InventoryScreenState extends State<InventoryScreen> {
     ),
   ];
 
+  List<GetContainerData> containerData = [];
+  LoginData? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _getInventoryNetworkCall();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final orderState = ref.watch(orderProvider);
 
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           Padding(
@@ -51,17 +79,23 @@ class _InventoryScreenState extends State<InventoryScreen> {
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_10),
           Expanded(
-            child: ListView.builder(
+            child: orderState.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : orderState.getContainerData!.containersDetails!.isEmpty
+                ? Center(
+              child: Text("No containers found", style: TextStyle(color: Colors.white),),
+            )
+                : ListView.builder(
               padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
-              itemCount: inventoryList.length,
+              itemCount: orderState.getContainerData!.containersDetails!.length,
               itemBuilder: (context, index) {
-                final item = inventoryList[index];
+                final item = orderState.getContainerData!.containersDetails![index];
                 return inventoryItemCard(
                   context,
-                  title: item.title,
-                  subTitle: item.subTitle,
-                  volume: item.volume,
-                  qty: item.qty,
+                  title: item.containerName!,
+                  subTitle: item.containerUniqueId!,
+                  volume: item.capacity.toString(),
+                  qty: item.quantityAvailable!,
                 );
               },
             ),
@@ -318,5 +352,26 @@ class _InventoryScreenState extends State<InventoryScreen> {
         );
       },
     );
+  }
+
+  _getInventoryNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
+              (isNetworkAvailable) {
+            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+            final orderState = ref.read(orderProvider);
+            if (isNetworkAvailable) {
+              orderState.setIsLoading(true);
+              final userId = Utils.userId;
+              final url = '${NetworkUrls.GET_CONTAINER}$userId';
+              ref.read(getOrderProvider(url));
+            } else {
+              orderState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 }

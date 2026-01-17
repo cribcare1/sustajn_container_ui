@@ -11,6 +11,7 @@ import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/profile_update_data.dart';
 import '../models/update_image.dart';
+import '../service/delete_address_service.dart';
 import '../service/profile_service.dart';
 import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
@@ -43,6 +44,46 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     profileState.setIsLoading(false);
     Utils.showNetworkErrorToast(profileState.context, e.toString());
   }
+});
+
+final deleteAddressProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.watch(getProfileApiService);
+  final deleteState = ref.watch(profileProvider);
+
+  try {
+    var url = '${NetworkUrls.BASE_URL}${NetworkUrls.DELETE_ADDRESS}';
+    var responseData = await apiService.deleteAddress(url, params);
+
+    if (responseData.status != null &&
+        responseData.status!.isNotEmpty &&
+        responseData.status!.trim().toString().toLowerCase() ==
+            NetworkUrls.SUCCESS) {
+      deleteState.setIsLoading(false);
+      if (!deleteState.context!.mounted) return;
+      showCustomSnackBar(
+        context: deleteState!.context,
+        message: responseData.message!,
+        color: Colors.green,
+      );
+    } else {
+      if (!deleteState.context!.mounted) return;
+      showCustomSnackBar(
+        context: deleteState!.context,
+        message: responseData.message!,
+        color: Colors.black,
+      );
+      deleteState.setIsLoading(false);
+    }
+  } catch (e) {
+    deleteState.setIsLoading(false);
+    Utils.showNetworkErrorToast(deleteState.context, e.toString());
+  } finally {
+    deleteState.setIsLoading(false);
+  }
+  return null;
 });
 
 

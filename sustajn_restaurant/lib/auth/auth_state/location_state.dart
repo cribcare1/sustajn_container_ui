@@ -73,7 +73,7 @@ class LocationNotifier extends StateNotifier<LocationState> {
       final p = placemarks.first;
 
       final address =
-          "${p.name ?? ""}, ${p.street ?? ""}, ${p.locality ?? ""}, "
+          "${p.name},${p.locality ?? ""},"
           "${p.administrativeArea ?? ""},${p.postalCode ?? ""}, ${p.country ?? ""}";
 
       state = state.copyWith(address: address);
