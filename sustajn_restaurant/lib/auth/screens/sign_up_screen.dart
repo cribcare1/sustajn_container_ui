@@ -466,9 +466,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       if (!registrationState.isValid) return;
       registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
-      ref
-          .read(authNotifierProvider)
-          .loginData(context, emailCtrl.text, passwordCtrl.text);
+      ref.read(authNotifierProvider).loginData(context, emailCtrl.text, passwordCtrl.text);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -481,7 +479,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
         return;
       }
-      ref.read(validateEmail({"email": emailCtrl.text, "previous": "signUp"}));
+      ref.read(validateEmail({"email": emailCtrl.text, "previous": "SIGNUP"}));
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
     }

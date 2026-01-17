@@ -76,7 +76,6 @@ class ProfileServices {
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.postApiRequest(url, requestData);
 
-       var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
         var responseData = UpdateProfAddressData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");

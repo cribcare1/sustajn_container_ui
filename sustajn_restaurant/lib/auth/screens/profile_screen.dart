@@ -198,8 +198,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             image: DecorationImage(
                               image: NetworkImage(
                                 "${NetworkUrls
-                                    .PROFILE_IMAGE_BASE_URL}${loginResponse!
-                                    .image}",
+                                    .PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
                               ),
                               fit: BoxFit.cover,
                             ),
