@@ -31,6 +31,7 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       profileState.setProfileData(responseData);
+      profileState.setProfile();
     } else {
       profileState.setIsLoading(false);
       Utils.showToast(responseData.message!);
