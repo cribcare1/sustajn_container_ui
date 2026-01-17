@@ -520,20 +520,43 @@ class Utils {
 
 
   static LoginModel? loginData;
-  static int? societyId = 0;
-  static int? userId = 0;
+  static int? societyId;
+  static int? userId;
 
   static Future<Data?> getProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString(Strings.PROFILE_DATA);
-    printLog("Profile Data ==== $data");
-    if (data != null) {
-      var response = json.decode(data);
-      loginData = LoginModel.fromJson(response);
-      userId = loginData!.data!.userId;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final data = prefs.getString(Strings.PROFILE_DATA);
+
+      printLog("Profile Data ==== $data");
+
+      if (data == null || data.isEmpty) {
+        printLog("No profile data found in SharedPreferences");
+        return null;
+      }
+
+      final response = json.decode(data);
+      final parsed = LoginModel.fromJson(response);
+
+      if (parsed.data == null) {
+        printLog("Invalid profile data (data is null)");
+        loginData = null;
+        userId = null;
+        return null;
+      }
+
+      loginData = parsed;
+      userId = parsed.data!.userId;
+
+      return parsed.data;
+    } catch (e) {
+      printLog("getProfile exception: $e");
+      loginData = null;
+      userId = null;
+      return null;
     }
-    return null;
   }
+
 
 
 

@@ -30,8 +30,8 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     var responseData = await serviceProvider.getProfileService(params);
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       String json = jsonEncode(responseData.toJson());
-      SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
-      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      // SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
+      // SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       profileState.setIsLoading(false);
       profileState.setProfileList(responseData);
     } else {
@@ -111,7 +111,7 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       profileState.setIsLoading(false);
       String json = jsonEncode(responseData.toJson());
       // SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
-      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      // SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(profileState.context.mounted) {
         showCustomSnackBar(context: profileState.context,
             message: responseData.message!, color:Colors.green);

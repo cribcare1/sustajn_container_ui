@@ -26,6 +26,22 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     final signUpState = ref.watch(subscriptionNotifier);
     final plans = signUpState.subscriptionList ?? [];
 
+    if (signUpState.isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: Constant.gold),
+      );
+    }
+
+    if (plans.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+        child: Text(
+          "No subscription plan available",
+          style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+        ),
+      );
+    }
+
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -34,27 +50,15 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
           children: [
             _header(context),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-            Flexible(
-              child: SingleChildScrollView(
-                child: _freemiumCard(theme,plans),
-              ),
-            ),
-
+            _freemiumCard(theme, plans),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-            signUpState.isLoading
-                ? const Center(
-              child: CircularProgressIndicator(
-                color:Constant.gold,
-              ),
-            )
-                :
-            _upgradeButton(theme, signUpState)
+            _upgradeButton(theme, signUpState),
           ],
         ),
       ),
     );
   }
+
 
   Widget _header(BuildContext context) {
     return Align(
@@ -274,10 +278,8 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
               "userId": widget.userID,
               // "restaurantId": "2",
               "subscriptionPlanId":widget.planID
-            }).future);
-            await Future.delayed(const Duration(milliseconds: 300));
-            if (!mounted) return;
-            Navigator.pop(context);
+            }));
+
           } else {
             registrationState.setIsLoading(false);
             if(!mounted) return;
