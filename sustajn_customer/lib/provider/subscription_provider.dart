@@ -11,7 +11,7 @@ import '../utils/utils.dart';
 
 final subscriptionNotifier = ChangeNotifierProvider((ref) => SubscriptionNotifier());
 
-final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+final UpgradePlanProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
     ref,
     params,
     ) async {
@@ -28,6 +28,11 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         responseData.status!.trim().toString().toLowerCase() ==
             NetworkUrls.SUCCESS) {
       subscriptionState.setIsLoading(false);
+      showCustomSnackBar(
+        context: subscriptionState!.context,
+        message: responseData.message!,
+        color: Colors.green,
+      );
       // feedbackState.setSubscriptionModel(responseData);
     } else {
       if (!subscriptionState.context!.mounted) return;

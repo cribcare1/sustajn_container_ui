@@ -210,7 +210,7 @@ class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog>
   Map<String, dynamic> getJsonData(String mobileNo) {
     final data = {
       "userId": Utils.userId,
-      "fullName": "",
+      // "fullName": "",
       "phoneNumber": mobileNo
     };
     return data;

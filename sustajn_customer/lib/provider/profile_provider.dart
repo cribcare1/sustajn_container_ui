@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ import '../models/profile_update_data.dart';
 import '../models/update_image.dart';
 import '../service/delete_address_service.dart';
 import '../service/profile_service.dart';
+import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
 
 final profileProvider = ChangeNotifierProvider((ref) => ProfileNotifier());
@@ -27,6 +29,9 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     Utils.printLog("params===$params");
     var responseData = await serviceProvider.getProfileService(params);
     if (responseData.status != null && responseData.status!.isNotEmpty) {
+      String json = jsonEncode(responseData.toJson());
+      SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
+      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       profileState.setIsLoading(false);
       profileState.setProfileList(responseData);
     } else {
@@ -102,13 +107,17 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       requestKey,
       image,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData!.status!.toLowerCase()==NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
+      String json = jsonEncode(responseData.toJson());
+      // SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
+      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       if(profileState.context.mounted) {
         showCustomSnackBar(context: profileState.context,
             message: responseData.message!, color:Colors.green);
       }
-    } else {
+    }
+    else {
       Utils.showToast(
         responseData.message ?? "Update failed",
       );

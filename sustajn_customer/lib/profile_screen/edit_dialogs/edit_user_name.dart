@@ -203,7 +203,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     final data = {
       "userId": Utils.userId,
       "fullName": name,
-      "phoneNumber": ""
+      // "phoneNumber": ""
     };
     return data;
   }
