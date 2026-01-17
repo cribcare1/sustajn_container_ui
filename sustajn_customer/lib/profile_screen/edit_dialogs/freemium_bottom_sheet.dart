@@ -27,6 +27,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     final plans = signUpState.subscriptionList ?? [];
 
     if (signUpState.isLoading) {
+
       return const Center(
         child: CircularProgressIndicator(color: Constant.gold),
       );
