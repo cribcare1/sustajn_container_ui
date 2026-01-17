@@ -31,6 +31,7 @@ class Strings {
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
+  static const CUSTOMER_ID = "customer_id";
 
   //Sign Up & Login
   static const String LOGIN = "Log In";
@@ -102,7 +103,7 @@ class Strings {
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE =
-      "We've sent you a code to verify your email id on\n";
+      "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
