@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/screens/save_home_address.dart';
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -10,8 +11,8 @@ import '../../provider/profile_provider.dart';
 import '../../utils/utils.dart';
 
 class AddressOptionsDialog extends ConsumerStatefulWidget {
-  final int userId;
-  const AddressOptionsDialog({super.key,required this.userId});
+  final AddressResponses address;
+  const AddressOptionsDialog({super.key, required this.address});
 
 
   @override
@@ -55,7 +56,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             onTap: () {
               Navigator.pop(context);
               NavUtil.navigateToPushScreen(context, HomeAddress(flow: AddressFlow.profile,
-              existingAddress: address,));
+              existingAddress: widget.address,));
               // navigate to edit address
             },
           ),
@@ -67,7 +68,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
                 icon: Icons.delete_forever,
                 text: "Remove Address",
                 onTap: () {
-                  _getNetworkDataVerify(profileState);
+                  _getNetworkDataVerify(profileState, widget.address.id??0);
                 },
               ),
             ],
@@ -137,7 +138,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     );
   }
 
-  _getNetworkDataVerify(var registrationState) async {
+  _getNetworkDataVerify(var registrationState, int addressId) async {
     try {
         await ref.read(networkProvider.notifier).isNetworkAvailable().then((
             isNetworkAvailable,
@@ -146,7 +147,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               ref.read(
-                deleteAddressProvider({  "addressId": widget.userId
+                deleteAddressProvider({  "addressId": addressId
                 }),
               );
             } else {
