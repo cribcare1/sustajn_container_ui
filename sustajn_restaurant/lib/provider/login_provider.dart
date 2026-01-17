@@ -41,10 +41,14 @@ final loginDetailProvider =
               color: Colors.green,
             );
           }
-
+          registrationState.setUserId(responseData.data!.userId!);
           SharedPreferenceUtils.saveDataInSF(
             Strings.JWT_TOKEN,
             responseData.data!.jwtToken!,
+          );
+          SharedPreferenceUtils.saveDataInSF(
+            Strings.USER_ID,
+            responseData.data!.userId!,
           );
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
 

@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/circle_card_widget.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../lease_receive/screens/lease_scan_screen.dart';
 import '../../lease_receive/screens/receive_product_list_screen.dart';
 import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
 import '../../order_screen/order_home_screen.dart';
 import '../../product_screen/product_home_screen.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/utility.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   final double borrowed = 300;
   final double returnedCount = 100;
   final double available = 800;
@@ -41,7 +47,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    Utils.getUserId();
     _loadProfile();
+    if(loginResponse == null){
+      Utils.printLog("No data found for profile api will call");
+      _getProfileNetworkCall();
+    }
   }
 
   Future<void> _loadProfile() async {
@@ -52,8 +63,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  _getProfileNetworkCall() async {
+    try {
+
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final profileState = ref.read(profileProvider);
+
+        if (isNetworkAvailable) {
+          profileState.setIsLoading(true);
+          final userId = Utils.userId!;
+          Utils.printLog("userId::$userId");
+          final url = '${NetworkUrls.GET_PROFILE}$userId';
+          Utils.printLog("url::$url");
+          ref.read(getProfileProvider(url));
+        } else {
+          profileState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileProvider);
+    if(profileState.loginResponse != null) {
+      loginResponse = profileState.loginResponse;
+    }
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
     final width = mq.size.width;
@@ -382,20 +423,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildLegendRow(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        _legendItem('Total', Colors.greenAccent, theme),
-        SizedBox(width: Constant.SIZE_10),
-        _legendItem('Lease', Colors.yellowAccent, theme),
-        SizedBox(width: Constant.SIZE_10),
-        _legendItem('Receive', Colors.lightBlueAccent, theme),
-        SizedBox(width: Constant.SIZE_10),
-        _legendItem('Available', Colors.amber.shade700, theme),
-        SizedBox(width: Constant.SIZE_10),
-        _legendItem('Damage', Colors.redAccent.shade700, theme),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _legendItem('Total', Colors.greenAccent, theme),
+          SizedBox(width: Constant.SIZE_10),
+          _legendItem('Lease', Colors.yellowAccent, theme),
+          SizedBox(width: Constant.SIZE_10),
+          _legendItem('Receive', Colors.lightBlueAccent, theme),
+          SizedBox(width: Constant.SIZE_10),
+          _legendItem('Available', Colors.amber.shade700, theme),
+          SizedBox(width: Constant.SIZE_10),
+          _legendItem('Damage', Colors.redAccent.shade700, theme),
+        ],
+      ),
     );
+
+
   }
 
   Widget _legendItem(String text, Color color, ThemeData theme) {
@@ -778,6 +823,8 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
       ),
     );
   }
+
+
 }
 
 class _OptionTile extends StatelessWidget {

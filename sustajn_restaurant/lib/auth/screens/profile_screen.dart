@@ -171,7 +171,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
+            : loginResponse!=null?SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -196,9 +196,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: NetworkImage(
+                                  image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
                                     "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ),
+                                  ):AssetImage("assets/images/default_profile.png"),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -423,7 +423,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     ),
                   ],
                 ),
-              ),
+              ):const Center(
+          child: Text(
+            "No Data available",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
