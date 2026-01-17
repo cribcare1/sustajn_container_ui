@@ -14,6 +14,7 @@ import '../utils/utility.dart';
 class AuthState extends ChangeNotifier{
   String _name = '';
   String _password = '';
+  String _email = '';
   bool _isPasswordVisible = false;
   bool _isForgotPassword = false;
   bool _isLoading = false;
@@ -52,6 +53,7 @@ class AuthState extends ChangeNotifier{
   RegistrationData? _registrationData;
   RegistrationData? get registrationData => _registrationData;
   bool get isForgotPassword => _isForgotPassword;
+  String get email => _email;
   void setRegistrationData(RegistrationData data){
     _registrationData = data;
     notifyListeners();
@@ -61,7 +63,10 @@ class AuthState extends ChangeNotifier{
     _isForgotPassword = value;
     notifyListeners();
   }
-
+  void setEmail(String value){
+    _email = value;
+    notifyListeners();
+  }
   void setName(String value) {
     _name = value;
     _validateName();
