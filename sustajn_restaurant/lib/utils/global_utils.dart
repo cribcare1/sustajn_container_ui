@@ -24,3 +24,4 @@ String maskCardNumber(String? cardNumber) {
   final last4 = cardNumber.substring(cardNumber.length - 4);
   return "**** **** **** $last4";
 }
+String scannedId ="";
