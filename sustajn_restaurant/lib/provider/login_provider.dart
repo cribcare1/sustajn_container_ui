@@ -96,6 +96,15 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
       Register register = Register.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
         registrationState.setIsLoading(false);
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.USER_ID,
+          register.data!.userId!,
+        );
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.JWT_TOKEN,
+          register.data!.jwtToken!,
+        );
+        registrationState.setUserId(register.data!.userId!);
         NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
       } else {
         showCustomSnackBar(

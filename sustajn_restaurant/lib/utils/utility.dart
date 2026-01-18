@@ -220,9 +220,6 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-
-                        navigateToPushScreen(context, LoginScreen());
-
                         Navigator.pop(context);
                         SharedPreferenceUtils.clearAll();
                         Utils.navigateToPushReplaceScreen(context, LoginScreen());

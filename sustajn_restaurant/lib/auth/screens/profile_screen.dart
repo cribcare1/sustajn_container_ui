@@ -169,266 +169,287 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : loginResponse!=null?SingleChildScrollView(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    SizedBox(
-                      width: w - (w * 0.34),
-                      height: h * 0.30,
-                      child: CustomPaint(painter: TopCirclePainter()),
-                    ),
-                    Column(
-                      children: [
-                        SizedBox(height: h * 0.035),
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            Container(
-                              height: w * 0.28,
-                              width: w * 0.28,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: w * 0.012,
-                                ),
-                                image: DecorationImage(
-                                  image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
-                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/default_profile.png"),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                _profileImgNetworkCall(
-                                  profileState,
-                                  profile!.mobileNumber!,
-                                  profile.fullName!,
-                                );
-                                Utils.showProfilePhotoBottomSheet(context);
-                              },
-                              child: Container(
-                                height: w * 0.09,
-                                width: w * 0.09,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: theme.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+        body: isLoading && loginResponse != null
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // 🔹 Background painter
+              SizedBox(
+                width: w - (w * 0.34),
+                height: h * 0.30,
+                child: CustomPaint(painter: TopCirclePainter()),
+              ),
 
-                        SizedBox(height: h * 0.015),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              profile?.fullName ?? "",
-                              style: TextStyle(
-                                fontSize: w * 0.055,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: w * 0.015),
-                            if (profile?.fullName != null)
-                              GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditRestaurantNameDialog(
-                                          name: profile!.fullName!,
-                                        ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: h * 0.03),
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: w * 0.04,
-                            vertical: h * 0.02,
+              // 🔹 Main content
+              loginResponse != null
+                  ? Column(
+                children: [
+                  SizedBox(height: h * 0.035),
+
+                  // ===== Profile image =====
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Container(
+                        height: w * 0.28,
+                        width: w * 0.28,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: w * 0.012,
                           ),
-                          decoration: BoxDecoration(
-                            color: theme.scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(w * 0.04),
-                            border: Border.all(color: Colors.grey),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              _detailItem(
-                                icon: Icons.email_outlined,
-                                title: "Email",
-                                value: loginResponse!.userName! ?? "",
-                                w: w,
-                                showEdit: false,
-                                theme: theme,
-                                ontap: () {},
-                              ),
-                              Divider(color: Colors.grey.shade700),
-
-                              _detailItem(
-                                icon: Icons.location_on_outlined,
-                                title: "Address",
-                                value: fullAddress ?? "No address added",
-
-                                // "${profile?.addressResponses!.first
-                                //     .flatDoorHouseDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}",
-                                // profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
-                                // loginResponse!.address!,
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditAddressDialog(address: fullAddress),
-                                  );
-                                },
-                              ),
-                              Divider(color: Colors.grey.shade700),
-                              _detailItem(
-                                icon: Icons.phone_outlined,
-                                title: "Mobile Number",
-                                value: profile?.mobileNumber! ?? "",
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditMobileNumberDialog(
-                                          mobileNumber:
-                                              profile?.mobileNumber ?? "",
-                                        ),
-                                  );
-                                },
-                              ),
-                            ],
+                          image: DecorationImage(
+                            image: loginResponse?.image != null &&
+                                loginResponse!.image!.isNotEmpty
+                                ? NetworkImage(
+                              "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
+                            )
+                                : const AssetImage(
+                                "assets/images/default_profile.png")
+                            as ImageProvider,
+                            fit: BoxFit.cover,
                           ),
                         ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _profileImgNetworkCall(
+                            profileState,
+                            profile!.mobileNumber!,
+                            profile.fullName!,
+                          );
+                          Utils.showProfilePhotoBottomSheet(context);
+                        },
+                        child: Container(
+                          height: w * 0.09,
+                          width: w * 0.09,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Icon(
+                            Icons.edit_outlined,
+                            size: w * 0.045,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
 
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: h * 0.02),
-                          child: ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: detailList.length,
-                            separatorBuilder: (context, index) =>
-                                Divider(height: 1, color: Colors.grey.shade700),
-                            itemBuilder: (context, index) {
-                              final item = detailList[index];
-                              return ListTile(
-                                leading: Icon(
-                                  item['icon'],
-                                  size: w * 0.054,
-                                  color: Constant.gold,
-                                ),
-                                title: Text(
-                                  item['name'],
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
+                  SizedBox(height: h * 0.015),
+
+                  // ===== Name row =====
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        profile?.fullName ?? "",
+                        style: TextStyle(
+                          fontSize: w * 0.055,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: w * 0.015),
+                      if (profile?.fullName != null)
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) =>
+                                  EditRestaurantNameDialog(
+                                    name: profile!.fullName!,
                                   ),
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: w * 0.044,
-                                  color: Colors.white,
-                                ),
-                                onTap: () => _handleItemTap(index, context),
-                              );
-                            },
+                            );
+                          },
+                          child: Icon(
+                            Icons.edit_outlined,
+                            size: w * 0.045,
+                            color: Colors.white,
                           ),
                         ),
+                    ],
+                  ),
 
-                        Center(
-                          child: Container(
-                            width: w * 0.55,
-                            margin: EdgeInsets.only(top: h * 0.02),
-                            child: ElevatedButton.icon(
-                              icon: Icon(
-                                Icons.logout,
-                                color: theme.primaryColor,
-                                size: w * 0.05,
-                              ),
-                              label: Text(
-                                "Log Out",
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontSize: w * 0.045,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFC8B531),
-                                padding: EdgeInsets.symmetric(
-                                  vertical: h * 0.018,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(w * 0.04),
-                                ),
-                              ),
-                              onPressed: () {
-                                Utils.logOutDialog(
-                                  context,
-                                  Icons.logout,
-                                  Strings.CONFIRM_LOGOUT,
-                                  Strings.SURE_LOG_OUT,
-                                  Strings.YES,
-                                  Strings.NO,
-                                );
-                              },
-                            ),
-                          ),
+                  SizedBox(height: h * 0.03),
+
+                  // ===== Details card =====
+                  Container(
+                    width: double.infinity,
+                    margin:
+                    EdgeInsets.symmetric(horizontal: w * 0.05),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: w * 0.04,
+                      vertical: h * 0.02,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBackgroundColor,
+                      borderRadius:
+                      BorderRadius.circular(w * 0.04),
+                      border: Border.all(color: Colors.grey),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
                         ),
-                        SizedBox(height: h * 0.035),
                       ],
                     ),
-                  ],
+                    child: Column(
+                      children: [
+                        _detailItem(
+                          icon: Icons.email_outlined,
+                          title: "Email",
+                          value: loginResponse!.userName ?? "",
+                          w: w,
+                          showEdit: false,
+                          theme: theme,
+                          ontap: () {},
+                        ),
+                        Divider(color: Colors.grey.shade700),
+                        _detailItem(
+                          icon: Icons.location_on_outlined,
+                          title: "Address",
+                          value: fullAddress ?? "No address added",
+                          w: w,
+                          showEdit: true,
+                          theme: theme,
+                          ontap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) =>
+                                  EditAddressDialog(
+                                      address: fullAddress),
+                            );
+                          },
+                        ),
+                        Divider(color: Colors.grey.shade700),
+                        _detailItem(
+                          icon: Icons.phone_outlined,
+                          title: "Mobile Number",
+                          value: profile?.mobileNumber ?? "",
+                          w: w,
+                          showEdit: true,
+                          theme: theme,
+                          ontap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) =>
+                                  EditMobileNumberDialog(
+                                    mobileNumber:
+                                    profile?.mobileNumber ?? "",
+                                  ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ===== Menu list =====
+                  Container(
+                    margin:
+                    EdgeInsets.symmetric(horizontal: h * 0.02),
+                    child: ListView.separated(
+                      physics:
+                      const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: detailList.length,
+                      separatorBuilder: (_, __) => Divider(
+                        height: 1,
+                        color: Colors.grey.shade700,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = detailList[index];
+                        return ListTile(
+                          leading: Icon(
+                            item['icon'],
+                            size: w * 0.054,
+                            color: Constant.gold,
+                          ),
+                          title: Text(
+                            item['name'],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: w * 0.044,
+                            color: Colors.white,
+                          ),
+                          onTap: () =>
+                              _handleItemTap(index, context),
+                        );
+                      },
+                    ),
+                  ),
+
+                  SizedBox(height: h * 0.04),
+
+                  // ✅ LOGOUT BUTTON (NOW BELOW COLUMN)
+                  Container(
+                    width: w * 0.55,
+                    margin:
+                    EdgeInsets.only(bottom: h * 0.04),
+                    child: ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.logout,
+                        color: theme.primaryColor,
+                        size: w * 0.05,
+                      ),
+                      label: Text(
+                        "Log Out",
+                        style: TextStyle(
+                          color: theme.primaryColor,
+                          fontSize: w * 0.045,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                        const Color(0xFFC8B531),
+                        padding: EdgeInsets.symmetric(
+                            vertical: h * 0.018),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(w * 0.04),
+                        ),
+                      ),
+                      onPressed: () {
+                        Utils.logOutDialog(
+                          context,
+                          Icons.logout,
+                          Strings.CONFIRM_LOGOUT,
+                          Strings.SURE_LOG_OUT,
+                          Strings.YES,
+                          Strings.NO,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              )
+                  : const Center(
+                child: Text(
+                  "No Data available",
+                  style: TextStyle(color: Colors.white),
                 ),
-              ):const Center(
-          child: Text(
-            "No Data available",
-            style: TextStyle(color: Colors.white),
+              ),
+            ],
           ),
         ),
+
       ),
     );
   }

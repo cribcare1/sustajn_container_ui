@@ -1,24 +1,20 @@
 class Register {
-  RestaurantRegistrationData? restaurantRegistrationData;
+  Data? data;
   String? message;
   String? status;
 
-  Register({this.restaurantRegistrationData, this.message, this.status});
+  Register({this.data, this.message, this.status});
 
   Register.fromJson(Map<String, dynamic> json) {
-    restaurantRegistrationData = json['restaurantRegistrationData'] != null
-        ? new RestaurantRegistrationData.fromJson(
-        json['restaurantRegistrationData'])
-        : null;
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     message = json['message'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.restaurantRegistrationData != null) {
-      data['restaurantRegistrationData'] =
-          this.restaurantRegistrationData!.toJson();
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
     data['message'] = this.message;
     data['status'] = this.status;
@@ -26,35 +22,47 @@ class Register {
   }
 }
 
-class RestaurantRegistrationData {
-  int? restaurantId;
-  String? name;
-  String? email;
-  String? phoneNumber;
-  String? profileImageUrl;
+class Data {
+  int? userId;
+  Null? image;
+  String? role;
+  String? userName;
+  Null? address;
+  String? fullName;
+  String? jwtToken;
+  String? tokenType;
 
-  RestaurantRegistrationData(
-      {this.restaurantId,
-        this.name,
-        this.email,
-        this.phoneNumber,
-        this.profileImageUrl});
+  Data(
+      {this.userId,
+        this.image,
+        this.role,
+        this.userName,
+        this.address,
+        this.fullName,
+        this.jwtToken,
+        this.tokenType});
 
-  RestaurantRegistrationData.fromJson(Map<String, dynamic> json) {
-    restaurantId = json['restaurantId'];
-    name = json['name'];
-    email = json['email'];
-    phoneNumber = json['phoneNumber'];
-    profileImageUrl = json['profileImageUrl'];
+  Data.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    image = json['image'];
+    role = json['role'];
+    userName = json['userName'];
+    address = json['address'];
+    fullName = json['fullName'];
+    jwtToken = json['jwtToken'];
+    tokenType = json['tokenType'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['restaurantId'] = this.restaurantId;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['phoneNumber'] = this.phoneNumber;
-    data['profileImageUrl'] = this.profileImageUrl;
+    data['userId'] = this.userId;
+    data['image'] = this.image;
+    data['role'] = this.role;
+    data['userName'] = this.userName;
+    data['address'] = this.address;
+    data['fullName'] = this.fullName;
+    data['jwtToken'] = this.jwtToken;
+    data['tokenType'] = this.tokenType;
     return data;
   }
 }
