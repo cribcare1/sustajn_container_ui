@@ -9,11 +9,14 @@ import '../auth/model/social_media_model.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 import '../models/registration_data.dart';
+import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 
 class AuthState extends ChangeNotifier{
   String _name = '';
   String _password = '';
+  String _email = '';
+  int _userID = 0;
   bool _isPasswordVisible = false;
   bool _isForgotPassword = false;
   bool _isLoading = false;
@@ -41,6 +44,7 @@ class AuthState extends ChangeNotifier{
   int get seconds => _seconds;
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
+  int get userId => _userID;
 
   // Error messages
   String? _nameError;
@@ -52,6 +56,7 @@ class AuthState extends ChangeNotifier{
   RegistrationData? _registrationData;
   RegistrationData? get registrationData => _registrationData;
   bool get isForgotPassword => _isForgotPassword;
+  String get email => _email;
   void setRegistrationData(RegistrationData data){
     _registrationData = data;
     notifyListeners();
@@ -61,7 +66,21 @@ class AuthState extends ChangeNotifier{
     _isForgotPassword = value;
     notifyListeners();
   }
-
+  void setUserId(int value){
+    _userID = value;
+    notifyListeners();
+  }
+  void loadUserId(){
+    if(_userID==0){
+      _userID = SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
+      Utils.printLog("userid====$_userID");
+    }
+    notifyListeners();
+  }
+  void setEmail(String value){
+    _email = value;
+    notifyListeners();
+  }
   void setName(String value) {
     _name = value;
     _validateName();

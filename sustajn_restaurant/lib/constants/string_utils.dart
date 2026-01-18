@@ -3,6 +3,7 @@ class Strings{
   static const JWT_TOKEN = 'jwt_token';
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
+  static const USER_ID = 'USER_ID';
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
       'Something went wrong! Please try again after sometime.';
@@ -208,18 +209,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const BUSINESS_INFORMATION = "Business Information";
   static const PROVIDE_INFORMATION = "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
+  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
+  static const String CREATE = "Create";
 }

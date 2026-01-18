@@ -14,24 +14,32 @@ class ProfileState extends ChangeNotifier{
   UpdateProfileData? _updateProfileData;
   BuildContext? _context;
   bool _isVerifying = false;
-
-  bool get isVerifying => _isVerifying;
-
-  String get name => _name;
-
-  bool get isLoading => _isLoading;
-  GetProfileData? get getProfileData => _getProfileData;
-  UpdateProfileData? get updateProfileData => _updateProfileData!;
-  BuildContext get context => _context!;
+  LoginData? _loginResponse;
 
   // Error messages
   String? _nameError;
 
   String? get nameError => _nameError;
 
+  //Getter for all
+  bool get isVerifying => _isVerifying;
+  String get name => _name;
+  bool get isLoading => _isLoading;
+  GetProfileData? get getProfileData => _getProfileData;
+  UpdateProfileData? get updateProfileData => _updateProfileData!;
+  BuildContext get context => _context!;
+  LoginData? get loginResponse => _loginResponse;
+
+// Setter for all
   void setName(String value) {
     _name = value;
     _validateName();
+    notifyListeners();
+  }
+
+  Future<void> setProfile() async {
+    await Utils.getProfile();
+    _loginResponse = Utils.loginData?.data;
     notifyListeners();
   }
 

@@ -133,6 +133,24 @@ class Utils {
     );
   }
 
+  static String maskEmail(String email) {
+    if (email.isEmpty || !email.contains('@')) {
+      return email;
+    }
+
+    final parts = email.split('@');
+    final localPart = parts[0];
+    final domainPart = parts[1];
+
+    if (localPart.length <= 4) {
+      return email;
+    }
+
+    final maskedLength = localPart.length - 4;
+    final masked = List.filled(maskedLength, '*').join();
+
+    return '${localPart.substring(0, 4)}$masked@$domainPart';
+  }
   static Future<bool> displayDialog(
       BuildContext context,
       IconData icon,
