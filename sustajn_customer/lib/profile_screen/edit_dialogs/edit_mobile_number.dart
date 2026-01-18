@@ -13,7 +13,8 @@ import '../../utils/utils.dart';
 
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
-  const EditMobileNumberDialog({Key? key, required this.mobileNumber}) : super(key: key);
+  final int userId;
+  const EditMobileNumberDialog({Key? key, required this.mobileNumber, required this.userId}) : super(key: key);
 
   @override
   ConsumerState<EditMobileNumberDialog> createState() =>
@@ -172,12 +173,10 @@ class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog>
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
 
-                      await _editMobileNetworkCall(
-                        _controller.text.trim(),profileState
+                      await _editMobileNetwork(
+                        _controller.text.trim(),
+                        profileState,
                       );
-                      if (mounted) {
-                        Navigator.pop(context, _controller.text.trim());
-                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -210,34 +209,51 @@ class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog>
   Map<String, dynamic> getJsonData(String mobileNo) {
     final data = {
       "userId": Utils.userId,
-      "fullName": "",
       "phoneNumber": mobileNo
     };
     return data;
   }
 
-  _editMobileNetworkCall(String mobileNo, var profileState) async {
+  Future<bool> _editMobileNetwork(String name, var profileState) async {
     try {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() async {
-            if (isNetworkAvailable) {
-              profileState.setIsLoading(true);
-              final params = Utils.multipartParams(
-                NetworkUrls.UPDATE_PROFILE,
-                getJsonData(mobileNo),
-                Strings.USER_DATA,
-              );
-               ref.read(profileUpdateProvider(params));
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
 
-            } else {
-              profileState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
-        });
+      if (!isNetworkAvailable) {
+        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        return false;
+      }
+
+      profileState.setContext(context);
+      profileState.setIsLoading(true);
+
+      if (profileState.profileList.isNotEmpty) {
+        profileState.profileList.first.fullName = name;
+      }
+
+      final params = Utils.multipartParams(
+        NetworkUrls.UPDATE_PROFILE,
+        getJsonData(name),
+        Strings.USER_DATA,
+      );
+
+      await ref.read(profileUpdateProvider(params).future);
+
+      if (Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      ref.read(profileProvider).clearProfileList();
+      ref.read(
+        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      );
+
+      return true;
     } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
+      Utils.printLog('Error in edit name: $e');
+      return false;
+    } finally {
+      profileState.setIsLoading(false);
     }
   }
 }

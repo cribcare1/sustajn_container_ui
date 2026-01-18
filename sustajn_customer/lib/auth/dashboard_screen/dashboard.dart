@@ -93,24 +93,47 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         leading: Padding(
           padding: EdgeInsets.only(left: Constant.SIZE_10),
           child: InkWell(
+            customBorder: const CircleBorder(),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyProfileScreen(   userId: currentProfile?.id ?? 0,
-                subScriptionPlanId: subscriptionPlanId!)),
+                MaterialPageRoute(
+                  builder: (context) => MyProfileScreen(
+                    userId: currentProfile?.id ?? 0,
+                    subScriptionPlanId: subscriptionPlanId!,
+                  ),
+                ),
               );
             },
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
-              backgroundColor: Constant.grey,
-              child: Icon(
-                Icons.person,
-                size: Constant.CONTAINER_SIZE_35,
-                color: theme.primaryColor,
+              backgroundColor: Constant.grey.withOpacity(0.15),
+              child: ClipOval(
+                child: (currentProfile?.profileImageUrl != null &&
+                    currentProfile!.profileImageUrl!.isNotEmpty)
+                    ? Image.network(
+                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
+                  fit: BoxFit.cover,
+                  width: Constant.CONTAINER_SIZE_40,
+                  height: Constant.CONTAINER_SIZE_40,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.person,
+                      size: Constant.CONTAINER_SIZE_26,
+                      color: theme.primaryColor,
+                    );
+                  },
+                )
+                    : Icon(
+                  Icons.person,
+                  size: Constant.CONTAINER_SIZE_26,
+                  color: theme.primaryColor,
+                ),
               ),
             ),
           ),
         ),
+
         title: Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

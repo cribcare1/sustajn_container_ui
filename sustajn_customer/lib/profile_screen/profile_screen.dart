@@ -58,7 +58,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   bool isLoading = true;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
-  ProfileData? signUpResponse;
+  ProfileData? profileData;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     }
 
     setState(() {
-      signUpResponse = profile;
+      profileData = profile;
       isLoading = false;
     });
   }
@@ -89,11 +89,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     BuildContext context,
     int? planID,
     String? mobileNumber,
-      var profileState
+      var profileState,
+      int userId
   ) {
     switch (index) {
       case 0:
-        _showMobileEditDialog(context, mobileNumber ?? "");
+        _showMobileEditDialog(context, mobileNumber ?? "", userId );
         break;
       case 1:
         _showEditAddress(context);
@@ -127,12 +128,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     }
   }
 
-  void _showMobileEditDialog(BuildContext context, String mobileNumber) {
+  void _showMobileEditDialog(BuildContext context, String mobileNumber, int userId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => EditMobileNumberDialog(mobileNumber: mobileNumber),
+      builder: (context) => EditMobileNumberDialog(mobileNumber: mobileNumber,
+      userId: userId,),
     );
   }
 
@@ -340,10 +342,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             ),
                             child: ClipOval(
                               child:
-                                  (signUpResponse?.profileImageUrl != null &&
-                                      signUpResponse!.profileImageUrl!.isNotEmpty)
+                                  (profileData?.profileImageUrl != null &&
+                                      profileData!.profileImageUrl!.isNotEmpty)
                                   ? Image.network(
-                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${signUpResponse!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
+                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profileData!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
@@ -402,6 +404,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => EditUserNameDialog(
                                   userName:   profile?.fullName ?? "",
+                                  userId:widget.userId ,
                                 ),
                               );
                             },
@@ -423,7 +426,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                         child: _detailItem(
                           icon: Icons.email_outlined,
                           title: "Email",
-                          value: signUpResponse!.fullName ?? "",
+                          value: profileData!.emailId ?? "",
                           w: w,
                           showEdit: false,
                           theme: theme,
@@ -468,8 +471,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 index,
                                 context,
                                 widget.subScriptionPlanId,
-                                profileState.profileList.first.mobileNumber,
-                                profileState
+                                  profileData!.mobileNumber ?? "",
+                                profileState, profile!.id ??0
                               ),
                             );
                           },
@@ -612,7 +615,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         // Update local UI
         setState(() {
-          signUpResponse?.profileImageUrl = response.data;
+          profileData?.profileImageUrl = response.data;
         });
 
 

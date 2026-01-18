@@ -116,13 +116,17 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       requestKey,
       image,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty &&
+        responseData.status!.trim().toString().toLowerCase() ==
+        NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
       if(profileState.context.mounted) {
         showCustomSnackBar(context: profileState.context,
             message: responseData.message!, color:Colors.green);
       }
-    } else {
+      return true;
+    }
+    else {
       Utils.showToast(
         responseData.message ?? "Update failed",
       );
@@ -156,18 +160,6 @@ FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
       responseData.message?.toLowerCase() == "success";
 
   if (isSuccess) {
-    // final profileJson =
-    // await SharedPreferenceUtils.getStringValuesSF(Strings.PROFILE_DATA);
-    //
-    // if (profileJson != null && profileJson.isNotEmpty) {
-    //   final decoded = jsonDecode(profileJson);
-    //   decoded['profileImageUrl'] = responseData.data;
-    //
-    //   await SharedPreferenceUtils.saveDataInSF(
-    //     Strings.PROFILE_DATA,
-    //     jsonEncode(decoded),
-    //   );
-    // }
 
   } else {
     Utils.showToast(

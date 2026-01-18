@@ -250,17 +250,22 @@ class SignupNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void _validateTaxNumber() {
     if (_taxNumber.isEmpty) {
-      _taxNumberError = 'GSTIN is required';
-    } else if (!RegExp(
-        r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$'
-    ).hasMatch(_taxNumber)) {
-      _taxNumberError = 'Invalid GSTIN format';
-    } else {
+      _taxNumberError = 'Tax number is required';
+    }
+    else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_taxNumber)) {
+      _taxNumberError = 'Only letters and numbers allowed';
+    }
+    else if (_taxNumber.length != 15) {
+      _taxNumberError = 'Tax number must be exactly 15 characters';
+    }
+    else {
       _taxNumberError = null;
     }
   }
+
 
   void setAccountNumber(String value) {
     _accountNumber = value;
