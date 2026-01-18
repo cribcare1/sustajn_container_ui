@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
@@ -6,47 +7,75 @@ import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
+import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
-import '../model/assign_container_model.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../lease_receive_notifier.dart';
+import '../lease_receive_provider.dart';
+import '../model/container_list_model.dart';
 
-class ReceiveProductListScreen extends StatefulWidget {
+class ReceiveProductListScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
   const ReceiveProductListScreen({super.key, required this.type,this.damage});
 
   @override
-  State<ReceiveProductListScreen> createState() => _ReceiveProductListScreenState();
+  ConsumerState<ReceiveProductListScreen> createState() => _ReceiveProductListScreenState();
 }
 
-class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
-  List<AssignedContainerModel> assignedContainers = [
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Dip Cups',
-      id: 'ST-DC-50',
-      volume: '50ml',
-      quantity: 2,
-    ),
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Round Container',
-      id: 'ST-RB-450',
-      volume: '450ml',
-      quantity: 1,
-    ),
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Rectangular Container',
-      id: 'ST-RC-600',
-      volume: '900ml',
-      quantity: 1,
-    ),
-  ];
+class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getContainerList(
+        ref.read(leaseReceiveNotifier),
+        restaurantId: "4",
+        // Utils.userId.toString(),
+      );
+    });
 
+    super.initState();
+  }
+
+  _getContainerList(
+      LeaseReceiveNotifier leasState, {
+        required String restaurantId,
+      }) async {
+    try {
+      leasState.setLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+            ref.read(containerListProvider(restaurantId));
+          } else {
+            leasState.setLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leasState.setLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leasState.setLoading(false);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final leaseNotifier = ref.watch(leaseReceiveNotifier);
     return SafeArea(
       bottom: true,
       top: false,
@@ -55,7 +84,18 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
           title: "Receive product",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body: Column(
+        body: leaseNotifier.isLoading
+            ? const Center(child: SingleChildScrollView())
+            : leaseNotifier.containersDetails.isEmpty
+            ? Center(
+          child: Text(
+            "No Containers found",
+            style: theme.textTheme.titleMedium!.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        )
+            : Column(
           children: [
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -63,11 +103,11 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
+                    children: [
                       Icon(Icons.badge, color: Colors.white, size: 18),
                       SizedBox(width: 6),
                       Text(
-                        'Customer ID: ABC-1234',
+                        'Customer ID: $scannedId',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -84,7 +124,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                         ),
                         SizedBox(width: Constant.SIZE_08),
                         Text(
-                          assignedContainers.length.toString(),
+                          leaseNotifier.containersDetails.length.toString(),
                           style: const TextStyle(
                             color: Colors.amber,
                             fontSize: 22,
@@ -110,10 +150,10 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                 padding: EdgeInsets.symmetric(
                   horizontal: Constant.CONTAINER_SIZE_16,
                 ),
-                itemCount: assignedContainers.length,
+                itemCount: leaseNotifier.containersDetails.length,
                 itemBuilder: (context, index) {
                   return _containerCard(
-                    item: assignedContainers[index],
+                    item: leaseNotifier.containersDetails[index],
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -141,6 +181,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: SubmitButton(
             onRightTap: () {
+              showConfirmIssuePopup(context, leaseNotifier);
             },
             rightText: "Confirm Receive",
           ),
@@ -150,7 +191,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
   }
 
   Widget _containerCard({
-    required AssignedContainerModel item,
+    required ContainerDetails item,
   }) {
     return GlassSummaryCard(
       child: Row(
@@ -163,7 +204,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(6),
-            child: Image.asset(item.image, fit: BoxFit.contain),
+            child: Image.asset(item.containerImageUrl, fit: BoxFit.contain),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -174,7 +215,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        item.name,
+                        item.containerName,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -187,14 +228,14 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.id,
+                  item.containerUniqueId,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  item.volume,
+                  item.capacity.toString(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -207,7 +248,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantity.toString(),
+                item.quantityAvailable.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -221,7 +262,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
     );
   }
 
-  void showConfirmIssuePopup(BuildContext context) {
+  void showConfirmIssuePopup(BuildContext context, LeaseReceiveNotifier leaseState,) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).primaryColor,
@@ -274,9 +315,7 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                'You are about to issue the assigned containers to this '
-                    'customer. Once issued, the containers will be added '
-                    'to the customer’s active borrowing list.',
+                'Have you received the containers from the user?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
@@ -285,12 +324,32 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              SubmitClearButton(
+              leaseState.isSaving
+                  ? Center(child: CircularProgressIndicator())
+                  : SubmitClearButton(
                 onLeftTap: () {
                   Navigator.pop(context);
                 },
                 leftText: "Cancel",
-                onRightTap: () {},
+                onRightTap: () {
+                  Navigator.pop(context);
+                  final List<Map<String, dynamic>> items = leaseState
+                      .containersDetails
+                      .map(
+                        (i) => {
+                      "productId": i.containerId,
+                      "quantity": i.quantityAvailable,
+                    },
+                  )
+                      .toList();
+
+                  Map<String, dynamic> data = {
+                    "userId": int.parse(scannedId),
+                    "restaurantId": Utils.userId,
+                    "items": items,
+                  };
+                  _leaseContainer(leaseState, data);
+                },
                 rightText: "Confirm",
               ),
             ],
@@ -298,5 +357,40 @@ class _ReceiveProductListScreenState extends State<ReceiveProductListScreen> {
         );
       },
     );
+  }
+  _leaseContainer(
+      LeaseReceiveNotifier leasState,
+      Map<String, dynamic> body,
+      ) async {
+    try {
+      print("API calll");
+      leasState.setIsSaving(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          print("isNetworkAvailable :- $isNetworkAvailable");
+          if (isNetworkAvailable) {
+            ref.read(receiveContainer(body).future);
+          } else {
+            leasState.setIsSaving(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leasState.setIsSaving(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leasState.setIsSaving(false);
+    }
   }
 }

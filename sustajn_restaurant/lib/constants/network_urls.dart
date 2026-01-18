@@ -17,6 +17,7 @@ class NetworkUrls {
 
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
+  static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -36,6 +37,8 @@ class NetworkUrls {
  /// Lease and Receive///
 
 static const CONTAINER_LIST_LEASE = "inventory/restaurant/getAvailableContainers/";
+static const CONTAINER_LEASE = "orders/borrowContainers";
+static const CONTAINER_RECEIVE = "orders/returnContainers";
 
 
 }
