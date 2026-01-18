@@ -777,7 +777,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                 Navigator.pop(context);
                                 Utils.navigateToPushScreen(
                                   context,
-                                  ReceiveProductListScreen(
+                                  LeaseScanScreen(
                                     type: selectedType ?? "",
                                     damage: selectedValue,
                                   ),
