@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/lease_receive/lease_and_receive_services.dart';
 import 'package:sustajn_restaurant/lease_receive/lease_receive_notifier.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
@@ -13,10 +14,8 @@ final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   final apiService = ref.watch(leaseAPIServices);
   final leaseNotifier = ref.watch(leaseReceiveNotifier);
   try {
-    print("+++++++++++++++++++++++++++++++++++++++++++");
     final response = await apiService.leaseContainer((params));
-    print("=================  $response =====================================");
-    if(response != null){
+    if(response != null && response['status'] == NetworkUrls.SUCCESS){
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],
@@ -54,7 +53,7 @@ final receiveContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   final leaseNotifier = ref.watch(leaseReceiveNotifier);
   try {
     final response = await apiService.receiveContainer(params);
-    if(response != null){
+    if(response != null && response['status'] == NetworkUrls.SUCCESS){
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],
@@ -87,8 +86,9 @@ FutureProvider.family<ContainerListModel, String>((ref, restaurantId) async {
 
   try {
     final response = await apiService.fetchContainerList(restaurantId);
-    leaseNotifier.setContainer(response.containersDetails);
-    if (response.containersDetails.isEmpty) {
+    if  (response.status == NetworkUrls.SUCCESS && response.containersDetails.isNotEmpty) {
+      leaseNotifier.setContainer(response.containersDetails);
+    }else{
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message: response.message,

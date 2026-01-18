@@ -5,6 +5,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
+import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
@@ -31,8 +32,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getContainerList(
         ref.read(leaseReceiveNotifier),
-        restaurantId: "4",
-        // Utils.userId.toString(),
+        restaurantId:  Utils.userId.toString(),
       );
     });
 
@@ -204,7 +204,11 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(6),
-            child: Image.asset(item.containerImageUrl, fit: BoxFit.contain),
+            child: Image.network("${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+                errorBuilder: (context, obj, stack){
+              return Image.asset("assets/images/no_image_container.png");
+                },
+                fit: BoxFit.contain),
           ),
           const SizedBox(width: 12),
           Expanded(

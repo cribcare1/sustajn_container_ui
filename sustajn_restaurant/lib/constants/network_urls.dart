@@ -18,6 +18,7 @@ class NetworkUrls {
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
   static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
+  static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";

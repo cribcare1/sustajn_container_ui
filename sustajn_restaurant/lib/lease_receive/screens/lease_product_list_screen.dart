@@ -28,11 +28,11 @@ class _LeaseProductListScreenState
     extends ConsumerState<LeaseProductListScreen> {
   @override
   void initState() {
+    Utils.getUserId();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getContainerList(
         ref.read(leaseReceiveNotifier),
-        restaurantId: "4",
-        // Utils.userId.toString(),
+        restaurantId: Utils.userId.toString(),
       );
     });
 
@@ -203,7 +203,10 @@ class _LeaseProductListScreenState
             ),
             padding: const EdgeInsets.all(6),
             child: Image.network(
-              "${NetworkUrls.IMAGE_BASE_URL}${item.containerImageUrl}",
+              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+              errorBuilder: (context, obj, stack){
+                return Image.asset("assets/images/no_image_container.png");
+              },
               fit: BoxFit.contain,
             ),
           ),
