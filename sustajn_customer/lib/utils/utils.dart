@@ -537,24 +537,6 @@ class Utils {
 
 
 
-
-
-  // static LoginModel? loginData;
-  // static int? societyId = 0;
-  // static int? userId = 0;
-  //
-  // static Future<Data?> getProfile() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   var data = prefs.getString(Strings.PROFILE_DATA);
-  //   printLog("Profile Data ==== $data");
-  //   if (data != null) {
-  //     var response = json.decode(data);
-  //     loginData = LoginModel.fromJson(response);
-  //     userId = loginData!.data!.userId;
-  //   }
-  //   return null;
-  // }
-
   static ProfileData? profileData;
   static int? userId;
 

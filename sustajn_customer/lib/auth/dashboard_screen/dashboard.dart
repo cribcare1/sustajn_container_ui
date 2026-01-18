@@ -83,9 +83,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
 
 
-    if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (isLoading || profileState.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Constant.gold,
+          ),
+        ),
+      );
     }
+
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -94,17 +101,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           padding: EdgeInsets.only(left: Constant.SIZE_10),
           child: InkWell(
             customBorder: const CircleBorder(),
-            onTap: () {
+            onTap: currentProfile == null
+                ? null
+                : () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MyProfileScreen(
-                    userId: currentProfile?.id ?? 0,
-                    subScriptionPlanId: subscriptionPlanId!,
+                    userId: currentProfile.id!,
+                    subScriptionPlanId:
+                    currentProfile.subscriptionPlanId ??
+                        currentProfile.subscriptionResponse?.planId ??
+                        0,
                   ),
                 ),
               );
             },
+
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
               backgroundColor: Constant.grey.withOpacity(0.15),
