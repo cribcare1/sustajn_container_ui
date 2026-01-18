@@ -13,7 +13,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import 'dashboard_screen.dart';
+import 'dashboard/dashboard_screen.dart';
 import 'login_screen.dart';
 
 class BankDetails extends ConsumerStatefulWidget {

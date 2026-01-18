@@ -76,7 +76,7 @@ class _BusinessInformationDetailsState
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: Constant.SIZE_06),
+              SizedBox(height: Constant.SIZE_03),
               Text(
                 Strings.PROVIDE_INFORMATION,
                 style: theme.textTheme.titleSmall!.copyWith(
@@ -84,11 +84,77 @@ class _BusinessInformationDetailsState
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
+              Text(
+                Strings.CONTACT_REGISTRATION,
+                style: theme.textTheme.titleSmall!.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: Constant.SIZE_03),
               Form(
                 key: _key,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    _buildTextField(
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Contact Person";
+                        }
+                        return null;
+                      },
+                      controller: cuisineTypeController,
+                      hint: "Contact Person",
+                    ),
+
+                    _buildTextField(
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Mobile Number";
+                        }
+                        return null;
+                      },
+                      controller: cuisineTypeController,
+                      hint: "Mobile Number",
+                    ),
+                    _buildTextField(
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Email Registration";
+                        }
+                        return null;
+                      },
+                      controller: cuisineTypeController,
+                      hint: "Email Registration",
+                    ),
+                    _buildTextField(
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Trade License Number";
+                        }
+                        return null;
+                      },
+                      controller: cuisineTypeController,
+                      hint: "Trade License Number",
+                    ),
+                    _buildTextField(
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "VAT Number";
+                        }
+                        return null;
+                      },
+                      controller: cuisineTypeController,
+                      hint: "VAT Number",
+                    ),
+
+                    Text('Business Details'),
+                    SizedBox(height: 5),
                     _buildTextField(
                       context,
                       validator: (value) {
@@ -110,17 +176,6 @@ class _BusinessInformationDetailsState
                       },
                       controller: websiteController,
                       hint: "Enter website",
-                    ),
-                    _buildTextField(
-                      context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Enter country";
-                        }
-                        return null;
-                      },
-                      controller: cuisineTypeController,
-                      hint: "Enter country",
                     ),
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
@@ -199,41 +254,45 @@ class _BusinessInformationDetailsState
                       ),
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: SubmitButton(
-                        onRightTap: () {
-                          if (_key.currentState!.validate()) {
-                            final businessModel = BusinessModel(
-                              speciality: businessTypeController.text,
-                              websiteDetails: websiteController.text,
-                              cuisine: cuisineTypeController.text,
-                            );
-                            widget.authState.setBusinessDetails(businessModel);
+                    Row(
+                      children: [
+                        CustomOutlineButton(
+                          title: "Skip",
+                          onTap: () {
                             Utils.navigateToPushScreen(
                               context,
                               PaymentTypeScreen(),
                             );
-                          } else {
-                            showCustomSnackBar(
-                              context: context,
-                              message: "Enter Business details",
-                              color: Colors.red,
-                            );
-                          }
-                        },
-                        rightText: "Continue",
-                      ),
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    CustomOutlineButton(
-                      title: "Skip",
-                      onTap: () {
-                        Utils.navigateToPushScreen(
-                          context,
-                          PaymentTypeScreen(),
-                        );
-                      },
+                          },
+                        ),
+                        SizedBox(height: Constant.SIZE_06),
+                        SizedBox(
+                          width: double.infinity,
+                          child: SubmitButton(
+                            onRightTap: () {
+                              if (_key.currentState!.validate()) {
+                                final businessModel = BusinessModel(
+                                  speciality: businessTypeController.text,
+                                  websiteDetails: websiteController.text,
+                                  cuisine: cuisineTypeController.text,
+                                );
+                                widget.authState.setBusinessDetails(businessModel);
+                                Utils.navigateToPushScreen(
+                                  context,
+                                  PaymentTypeScreen(),
+                                );
+                              } else {
+                                showCustomSnackBar(
+                                  context: context,
+                                  message: "Enter Business details",
+                                  color: Colors.red,
+                                );
+                              }
+                            },
+                            rightText: "Continue",
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

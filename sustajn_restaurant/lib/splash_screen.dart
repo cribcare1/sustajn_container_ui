@@ -2,7 +2,7 @@ import 'package:sustajn_restaurant/constants/assets_utils.dart';
 import 'package:sustajn_restaurant/utils/app_permissons.dart';
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 
-import 'auth/screens/dashboard_screen.dart';
+import 'auth/screens/dashboard/dashboard_screen.dart';
 import 'constants/imports_util.dart';
 import 'constants/string_utils.dart';
 

@@ -341,7 +341,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 Center(
                   child: RichText(
                     text: TextSpan(
-                      text: Strings.ALREADY_HAVE_ACC,
+                      text: Strings.EXISTING_USER,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
                         fontSize: Constant.LABEL_TEXT_SIZE_14,

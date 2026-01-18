@@ -101,6 +101,7 @@ class Strings{
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
   static const ALREADY_HAVE_ACC = 'Already have an account? ';
+  static const EXISTING_USER= 'Existing User? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD= 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
@@ -115,7 +116,7 @@ class Strings{
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const SORT_BY = 'Sort By';
-
+  static const CONTACT_REGISTRATION = 'Contact & Registration Detals';
   static const EDIT = 'Edit';
   static const DELETE = 'Delete';
   static const REJECT_TXT = 'rejected';

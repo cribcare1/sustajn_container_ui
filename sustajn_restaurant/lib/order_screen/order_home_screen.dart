@@ -68,7 +68,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('Containers'),
+                  Text('Order'),
                 ],
               ),
             ),
