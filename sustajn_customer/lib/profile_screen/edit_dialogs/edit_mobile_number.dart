@@ -214,7 +214,7 @@ class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog>
     return data;
   }
 
-  Future<bool> _editMobileNetwork(String name, var profileState) async {
+  Future<bool> _editMobileNetwork(String mobileNumber, var profileState) async {
     try {
       final isNetworkAvailable =
       await ref.read(networkProvider.notifier).isNetworkAvailable();
@@ -228,12 +228,12 @@ class _EditMobileNumberDialogState extends ConsumerState<EditMobileNumberDialog>
       profileState.setIsLoading(true);
 
       if (profileState.profileList.isNotEmpty) {
-        profileState.profileList.first.fullName = name;
+        profileState.profileList.first.mobileNumber = mobileNumber;
       }
 
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
-        getJsonData(name),
+        getJsonData(mobileNumber),
         Strings.USER_DATA,
       );
 
