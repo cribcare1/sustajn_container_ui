@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
@@ -8,6 +10,7 @@ import '../models/update_address_data.dart';
 import '../models/update_profile_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
+import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 
 final profileProvider = ChangeNotifierProvider((ref) => ProfileState());
@@ -23,14 +26,17 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     GetProfileData responseData = await serviceProvider.getProfileService(
       params,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
+      String json = jsonEncode(responseData.toJson());
+      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       profileState.setProfileData(responseData);
+      profileState.setProfile();
     } else {
       profileState.setIsLoading(false);
       Utils.showToast(responseData.message!);
     }
-    return responseData;
+    return null;
   } catch (e) {
     Utils.printLog("Get Profile provider error called: $e");
     profileState.setIsLoading(false);
@@ -42,7 +48,7 @@ final profileUpdateProvider =
 FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
       (ref, params) async {
     final apiService = ref.read(getProfileApiProvider);
-
+    final profileState = ref.watch(profileProvider);
     final partUrl = params[NetworkUrls.UPDATE_PROFILE];
     final data = params[Strings.USER_DATA];
     final url = '${NetworkUrls.BASE_URL}$partUrl';
@@ -52,7 +58,12 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
     await apiService.profileUpdateService(url, data, "");
 
     print("Provider Response: $responseData");
-    if (responseData.status == null || responseData.status!.isEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+      profileState.setIsLoading(false);
+      String json = jsonEncode(responseData.toJson());
+      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+    }else {
+      profileState.setIsLoading(false);
       throw Exception(responseData.message ?? 'Update failed');
     }
     return responseData;

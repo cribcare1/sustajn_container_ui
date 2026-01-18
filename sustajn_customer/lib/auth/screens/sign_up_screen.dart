@@ -5,20 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sustajn_customer/auth/screens/verify_email_screen.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
-import '../../common_widgets/submit_button.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../main.dart';
 import '../../models/register_data.dart';
 import '../../network_provider/network_provider.dart';
-import '../../provider/login_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import 'login_screen.dart';
-import 'map_screen.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   final int currentStep;

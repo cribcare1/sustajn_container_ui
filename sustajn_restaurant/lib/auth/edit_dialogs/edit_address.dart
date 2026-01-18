@@ -218,9 +218,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
       pin,
     );
     ref.read(
-      addressUpdateProvider({ Strings.USER_DATA: jsonData,
-        // NetworkUrls.UPDATE_ADDRESS: NetworkUrls.UPDATE_ADDRESS,
-      }),
+      addressUpdateProvider(jsonData),
     );
   }
 }

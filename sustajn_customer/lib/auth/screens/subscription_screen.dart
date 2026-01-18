@@ -23,7 +23,8 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = -1;
+
 
 
   @override
@@ -85,16 +86,25 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             final plans = signUpState.subscriptionList ?? [];
-                            if (plans.isEmpty) return;
 
-                            final planId = plans[_currentIndex].planId;
+                            if (_currentIndex == -1) {
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please select a plan",
+                                color: Colors.green,
+                              );
+                              return;
+                            }
 
-                            ref.read(signUpNotifier).setSubscriptionPlan(planId!);
-                            NavUtil.navigateWithReplacement(
+                            final planId = plans[_currentIndex].planId!;
+                            ref.read(signUpNotifier).setSubscriptionPlan(planId);
+
+                            NavUtil.navigateToPushScreen(
+                              context,
                               TermsconditionScreen(),
                             );
-
                           },
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
                             shape: RoundedRectangleBorder(
@@ -135,6 +145,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     BuildContext context,
     ThemeData theme,
     SubscriptionData plan,
+      bool isSelected,
   ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
@@ -162,7 +173,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: Icon(Icons.check_circle, color:Colors.white),
+              child: Icon(Icons.check_circle,
+                  color:isSelected ? Constant.gold : Colors.white),
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Icon(
@@ -234,13 +246,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               enableInfiniteScroll: false,
               viewportFraction: 0.8,
               onPageChanged: (index, reason) {
-                setState(() => _currentIndex = index);
+                setState(() {
+                  _currentIndex = index;
+                });
               },
+
             ),
             items: List.generate(plans.length, (index) {
               final plan = plans[index];
               return SingleChildScrollView(
-                child: _freemiumCard(context, theme, plan),
+                child: _freemiumCard(context, theme, plan,   _currentIndex == index,),
               );
             }),
           ),

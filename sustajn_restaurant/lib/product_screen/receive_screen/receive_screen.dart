@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_details.dart';
 import '../../borrowed/borrowed_scan_screen.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 import '../models/lease_model.dart';
 
-class ReceiveScreen extends StatelessWidget {
+class ReceiveScreen extends ConsumerStatefulWidget {
+  const ReceiveScreen({super.key});
 
-  ReceiveScreen({
-    super.key,
-  });
+  @override
+  ConsumerState<ReceiveScreen> createState() => _ReceiveScreenState();
+}
 
+class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   final List<LeaseItem> leaseItem = [
     LeaseItem(
       customerId: "ABC-1234",
@@ -45,59 +54,95 @@ class ReceiveScreen extends StatelessWidget {
   ];
   final searchController = TextEditingController();
 
+  LoginData? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _getReceiveNetworkCall();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final containerState = ref.watch(orderProvider);
+
+    final container = containerState.containerHistorydata?.data?.receivedResponses;
 
     return Scaffold(
       body: Column(
         children: [
           Padding(
-            padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: CustomTheme.searchField(searchController, "Search by Customer Name"),
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+            child: CustomTheme.searchField(
+              searchController,
+              "Search by Customer Name",
+            ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(height: Constant.CONTAINER_SIZE_16),
           Expanded(
-            child: ListView.separated(
-              itemCount: leaseItem.length,
-              padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: Constant.SIZE_08),
+            child: containerState.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : container == null || container.isEmpty
+                ? const Center(
+              child: Text("No containers available", style: TextStyle(color: Colors.white),),
+            )
+                :ListView.separated(
+              itemCount: container.length,
+              padding: EdgeInsets.symmetric(
+                horizontal: Constant.CONTAINER_SIZE_16,
+              ),
+              separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
               itemBuilder: (context, index) {
-                return _leaseCard(
-                  context,
-                  leaseItem[index],
-                  theme,
-                );
+                final item = container[index];
+                return _receiveCard(context, theme, item.transactionId!, item.productsName!, item.returnedQuantity!, item.returnDateTime!);
               },
             ),
           ),
         ],
       ),
       floatingActionButton: InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) => QrCodeScanner()));
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => QrCodeScanner()),
+          );
         },
         child: Container(
-          height: 60,
-          width: 60,
+          height: Constant.CONTAINER_SIZE_60,
+          width: Constant.CONTAINER_SIZE_60,
           decoration: const BoxDecoration(
             color: Constant.gold,
             shape: BoxShape.circle,
           ),
-          child:  Icon(Icons.qr_code_scanner, color: theme.scaffoldBackgroundColor, size: 30),
+          child: Icon(
+            Icons.qr_code_scanner,
+            color: theme.scaffoldBackgroundColor,
+            size: Constant.CONTAINER_SIZE_30,
+          ),
         ),
       ),
     );
   }
 
-
-
-  Widget _leaseCard(
-      BuildContext context, LeaseItem item, ThemeData theme) {
+  Widget _receiveCard(BuildContext context, ThemeData theme,
+      String transactionId,
+      String productName,
+      int qty,
+      String date,) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-      onTap: () => _openLeaseDialog(context, item),
+      onTap: () => _openLeaseDialog(context, transactionId, date),
       child: Container(
         margin: EdgeInsets.only(bottom: Constant.SIZE_08),
         decoration: BoxDecoration(
@@ -112,7 +157,7 @@ class ReceiveScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                item.customerId,
+                transactionId,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -126,7 +171,7 @@ class ReceiveScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      item.containerTypes ?? '',
+                      productName ?? '',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -135,15 +180,15 @@ class ReceiveScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: Constant.SIZE_08),
                   Text(
-                    item.quantity.toString(),
+                    qty.toString(),
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: Constant.gold,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 6),
+                  SizedBox(width: Constant.SIZE_06),
                   Icon(
                     Icons.arrow_forward_ios,
                     size: Constant.CONTAINER_SIZE_14,
@@ -153,7 +198,7 @@ class ReceiveScreen extends StatelessWidget {
               ),
               SizedBox(height: Constant.SIZE_06),
               Text(
-                item.dateTime ?? '',
+                date ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -168,14 +213,36 @@ class ReceiveScreen extends StatelessWidget {
     );
   }
 
-
-
-  void _openLeaseDialog(BuildContext context, LeaseItem item) {
+  void _openLeaseDialog(BuildContext context,  String transactionId,
+      String date) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ReceiveDetailsDialog(customerId: item.customerId, dateTime: item.dateTime,),
+      builder: (_) => ReceiveDetailsDialog(
+          transactionId: transactionId, dateTime: date
+      ),
     );
+  }
+
+  _getReceiveNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
+              (isNetworkAvailable) {
+            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+            final orderState = ref.read(orderProvider);
+            if (isNetworkAvailable) {
+              orderState.setIsLoading(true);
+              final userId = Utils.userId;
+              final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
+              ref.read(getContainerHistoryProvider(url));
+            } else {
+              orderState.setIsLoading(false);
+              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+            }
+          });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 }

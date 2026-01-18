@@ -8,11 +8,12 @@ class SearchResState extends ChangeNotifier{
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   BuildContext? _context;
-  BuildContext? get context => _context;
+  BuildContext get context => _context!;
   List<SearchData> _resList = [];
   List<SearchData> get resList => _resList ;
   String _error = "";
   String get error => _error;
+
   void setLoading(bool isLoadingData){
     _isLoading = isLoadingData;
     notifyListeners();

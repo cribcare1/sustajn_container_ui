@@ -3,10 +3,10 @@ import '../../constants/number_constants.dart';
 import '../models/lease_model.dart';
 
 class LeaseDetailsDialog extends StatelessWidget {
-  final String customerId;
+  final String transactionId;
   final String dateTime;
 
-  LeaseDetailsDialog({super.key, required this.customerId, required this.dateTime});
+  LeaseDetailsDialog({super.key, required this.transactionId, required this.dateTime});
 
   final List<LeasedContainer> containers = [
     LeasedContainer(
@@ -98,7 +98,7 @@ class LeaseDetailsDialog extends StatelessWidget {
             SizedBox(width: Constant.SIZE_08),
             Expanded(
               child: Text(
-                "Customer ID: $customerId",
+                "Customer ID: $transactionId",
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white
                 ),
