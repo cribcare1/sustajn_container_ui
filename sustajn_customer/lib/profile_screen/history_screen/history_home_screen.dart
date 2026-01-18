@@ -59,39 +59,44 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.call_made_outlined,
-                    size: Constant.CONTAINER_SIZE_18,
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  const Text('Borrowed'),
-                ],
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  children: [
+                    Icon(Icons.call_made_outlined),
+                    SizedBox(width: 6),
+                    Text('Borrowed'),
+                  ],
+                ),
               ),
             ),
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.call_received, size: Constant.CONTAINER_SIZE_18),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text('Returned'),
-                ],
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.call_received, size: Constant.CONTAINER_SIZE_18),
+                    SizedBox(width: Constant.SIZE_06),
+                    Text('Returned'),
+                  ],
+                ),
               ),
             ),
             Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ImageIcon(
-                    const AssetImage('assets/images/img.png'),
-                    size: Constant.CONTAINER_SIZE_16,
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text('Sold'),
-                ],
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ImageIcon(
+                      const AssetImage('assets/images/img.png'),
+                      size: Constant.CONTAINER_SIZE_16,
+                    ),
+                    SizedBox(width: Constant.SIZE_06),
+                    Text('Sold'),
+                  ],
+                ),
               ),
             ),
           ],

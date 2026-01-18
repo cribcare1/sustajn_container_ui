@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import 'package:sustajn_restaurant/auth/screens/reset_password.dart';
 import 'package:sustajn_restaurant/models/registration_data.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 
@@ -14,7 +13,6 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/sharedpreference_utils.dart';
 import '../../utils/utility.dart';
-import 'business_information_screen.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
@@ -38,13 +36,20 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     (index) => TextEditingController(),
   );
 
-  int seconds = 120;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notifier = ref.read(authNotifierProvider);
+
+      notifier.setVerifyLoading(false);
+      notifier.setResendLoading(false);
+      notifier.resetTimer();
+      notifier.startTimer();
+    });
     _getUserData();
-    _startTimer();
+    // _startTimer();
   }
 
   LoginModel? loginModel;
@@ -59,60 +64,56 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     }
   }
 
-  void _startTimer() {
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      if (!mounted) return false;
-      if (seconds > 0) {
-        setState(() => seconds--);
-        return true;
-      }
-      return false;
-    });
+
+  String formatTime(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   final _otpController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
-    final emailToShow = widget.registrationData?.email ?? widget.email;
-
+    final signUpState = ref.watch(authNotifierProvider);
+    // String? email = signUpState.email;
+    final email = widget.registrationData?.email ?? widget.email;
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
 
       body: WillPopScope(
         onWillPop: () async {
           final shouldGoBack = await Utils.displayDialog(
-            context,
-            Icons.warning_amber,
-            Strings.GO_BACK,
-            Strings.VERIFIED_MAIL,
-            Strings.STAY_THIS_PAGE,
-          );
+                        context,
+                        Icons.warning_amber,
+                        Strings.GO_BACK,
+                        Strings.VERIFIED_MAIL,
+                        Strings.STAY_THIS_PAGE,
+                      );
 
-          if (shouldGoBack) {
-            Navigator.pop(context);
-          }
-
+                      if (shouldGoBack) {
+                        signUpState.stopTimer();
+                        Navigator.pop(context);
+                      }
           return false;
         },
+
         child: SafeArea(
           child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: Constant.CONTAINER_SIZE_24,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - Constant.CONTAINER_SIZE_55,
-                ),
-                child: IntrinsicHeight(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Column(
+            builder: (context, constraints) => Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_24,
+                  ),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight:
+                      constraints.maxHeight - Constant.CONTAINER_SIZE_55,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: Constant.CONTAINER_SIZE_140),
@@ -126,9 +127,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                           ),
 
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
-
                           Text(
-                            "We've sent you a code to verify your email id on\n$emailToShow",
+                            "${Strings.SEND_CODE}${Utils.maskEmail(email)}",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontSize: Constant.LABEL_TEXT_SIZE_15,
@@ -141,149 +141,123 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                           SizedBox(height: Constant.CONTAINER_SIZE_40),
 
-                          authState.isVerifying
-                              ? Center(child: CircularProgressIndicator())
+                          signUpState.isVerifyLoading
+                              ? Center(child: CircularProgressIndicator(
+                            color: Constant.gold,
+                          ))
                               : SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFFD0A52C),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          Constant.CONTAINER_SIZE_12,
-                                        ),
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      final otp = _otpController.text.trim();
-
-                                      if (otp.isEmpty) {
-                                        showCustomSnackBar(
-                                          context: context,
-                                          message: "Please enter OTP",
-                                          color: Colors.red,
-                                        );
-                                        return;
-                                      }
-
-                                      if (otp.length < 6) {
-                                        showCustomSnackBar(
-                                          context: context,
-                                          message:
-                                              "Please enter a valid 6-digit OTP",
-                                          color: Colors.red,
-                                        );
-                                        return;
-                                      }
-
-                                      await _getNetworkDataVerify(authState);
-                                    },
-
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: Constant.SIZE_08,
-                                      ),
-                                      child: Text(
-                                        Strings.VERIFY,
-                                        style: theme.textTheme.titleMedium
-                                            ?.copyWith(
-                                              color: theme.primaryColor,
-                                              fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      ),
-                                    ),
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFFD0A52C),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    Constant.CONTAINER_SIZE_12,
                                   ),
                                 ),
+                              ),
+                              onPressed: () async {
+                                if (_otpController.text.isEmpty) {
+                                  showCustomSnackBar(
+                                    context: context,
+                                    message: "Please enter your OTP",
+                                    color: Colors.black,
+                                  );
+                                  return;
+                                }
 
-                          SizedBox(height: Constant.CONTAINER_SIZE_40),
+                                if (_otpController.text.length != 6) {
+                                  showCustomSnackBar(
+                                    context: context,
+                                    message:
+                                    "Please enter a valid 6-digit OTP",
+                                    color: Colors.black,
+                                  );
+                                  return;
+                                }
 
-                          Center(
-                            child: Text(
-                              "Resend Code in ${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}",
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: Constant.LABEL_TEXT_SIZE_15,
-                                color: Colors.white,
+                                await _getNetworkDataVerify(signUpState);
+                              },
+
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: Constant.SIZE_08,
+                                ),
+                                child: Text(
+                                  Strings.VERIFY,
+                                  style: theme.textTheme.titleMedium
+                                      ?.copyWith(
+                                    color: theme.primaryColor,
+                                    fontSize:
+                                    Constant.LABEL_TEXT_SIZE_16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
 
                           SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                          if (seconds == 0)
+                          if (signUpState.seconds > 0) ...[
                             Center(
-                              child: TextButton(
+                              child: Text(
+                                "Resend code in ${formatTime(signUpState.seconds)}",
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_15,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ] else ...[
+                            Center(
+                              child: signUpState.isResendLoading
+                                  ? const CircularProgressIndicator(
+                                color: Constant.gold,
+                              )
+                                  : TextButton(
                                 onPressed: () {
-                                  setState(() {
-                                    seconds = 120;
-                                    _startTimer();
-                                  });
+                                  _resetOtp(signUpState);
                                 },
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       Strings.DIDNT_RECV_CODE,
-                                      style: theme.textTheme.bodyLarge?.copyWith(
+                                      style: theme.textTheme.bodyLarge
+                                          ?.copyWith(
                                         color: Colors.white,
-                                        fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                        fontSize: Constant
+                                            .LABEL_TEXT_SIZE_16,
                                       ),
                                     ),
-                                    InkWell(
-                                      onTap: () {
-                                        _resetOtp(authState);
-                                      },
-                                      child: Text(
-                                        Strings.RESEND,
-                                        style: theme.textTheme.bodyLarge?.copyWith(
-                                          color: Constant.gold,
-                                          decoration: TextDecoration.underline,
-                                          fontSize: Constant.LABEL_TEXT_SIZE_16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      Strings.RESEND,
+                                      style: theme.textTheme.bodyLarge
+                                          ?.copyWith(
+                                        color: Constant.gold,
+                                        decoration:
+                                        TextDecoration.underline,
+                                        fontSize: Constant
+                                            .LABEL_TEXT_SIZE_16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
+                          ],
+
                           const Spacer(),
                         ],
                       ),
-                      Visibility(
-                        visible: authState.isLoading,
-                        child: Container(
-                          width: double.infinity,
-                          height: Constant.CONTAINER_SIZE_50,
-                         
-                          decoration: BoxDecoration(
-                            color: theme.primaryColor,
-                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                            border: Border.all(color: Colors.white),
-                          ),
-                          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const CircularProgressIndicator(),
-                                 SizedBox(width: Constant.SIZE_08),
-                                Text(
-                                  "Resending OTP",
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -346,116 +320,59 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     try {
       /// 🔹 Start loader
       registrationState.setIsOTPVerify(true);
-
-      /// 1️⃣ Network check
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
-
-      if (!isNetworkAvailable) {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: Strings.NO_INTERNET_CONNECTION,
-          color: Colors.red,
-        );
-        return;
+      if (registrationState.isValid) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable,) async {
+          try {
+            if (isNetworkAvailable) {
+              registrationState.setVerifyLoading(true);
+              registrationState.setContext(context);
+              ref.read(
+                verifyOtpProvider({
+                  "email": widget.registrationData?.email ?? widget.email,
+                  "token": _otpController.text.trim(),
+                  "previous": widget.previousScreen,
+                }),
+              );
+            } else {
+              registrationState.setVerifyLoading(false);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.red,
+              );
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            registrationState.setVerifyLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
       }
-
-      /// 2️⃣ Verify OTP API call
-      final result = await ref.read(
-        verifyOtpProvider({
-          "email": widget.registrationData?.email ?? widget.email,
-          "token": _otpController.text.trim(),
-          "previous": widget.previousScreen,
-        }).future,
-      );
-
-      final Map<String, dynamic> response =
-      result["response"] as Map<String, dynamic>;
-
-      final String previous = widget.previousScreen;
-
-      /// 🔍 Debug logs
-      Utils.printLog("VERIFY OTP RESPONSE =====> $response");
-
-      /// 3️⃣ OTP SUCCESS
-      if (response["status"]?.toString().toLowerCase() == "success") {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: response["message"] ?? "Email Verification Successful",
-          color: Colors.green,
-        );
-
-        /// 🔹 Forgot Password Flow
-        if (previous == "forgotPassword") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const ResetPasswordScreen(),
-            ),
-          );
-        }
-        /// 🔹 Registration Flow
-        else {
-          Utils.navigateToPushScreen(
-            context,
-            BusinessInformationDetails(
-              authState: registrationState,
-            ),
-          );
-        }
-      }
-      /// 4️⃣ OTP FAILED
-      else {
-        if (!mounted) return;
-
-        showCustomSnackBar(
-          context: context,
-          message: response["message"] ?? "OTP verification failed",
-          color: Colors.red,
-        );
-      }
-    } catch (e, s) {
-      /// ❌ Error handling
-      Utils.printLog("OTP Verify Error: $e");
-      Utils.printLog("STACKTRACE: $s");
-
-      if (!mounted) return;
-
-      showCustomSnackBar(
-        context: context,
-        message: "Something went wrong. Please try again.",
-        color: Colors.red,
-      );
-    } finally {
-      /// 🔹 Stop loader
-      registrationState.setIsOTPVerify(false);
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      registrationState.setVerifyLoading(false);
     }
   }
 
 
   _resetOtp(var registrationState) async {
     try {
-      registrationState.setIsLoading(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) async {
         try {
           if (isNetworkAvailable) {
-            registrationState.setIsLoading(true);
+            registrationState.setResendLoading(true);
             ref.read(
               validateEmail({
                 "email": widget.email,
-                "previous": widget.previousScreen,
-                "token": _otpController.text,
+                "previous": widget.previousScreen
               }),
             );
           } else {
-            registrationState.setIsLoading(false);
+            registrationState.setResendLoading(false);
             if (!mounted) return;
             showCustomSnackBar(
               context: context,
@@ -465,14 +382,21 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           }
         } catch (e) {
           Utils.printLog('Error on button onPressed: $e');
-          registrationState.setIsLoading(false);
+          registrationState.setResendLoading(false);
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
     }
+  }
+
+  @override
+  void dispose() {
+    ref.read(authNotifierProvider).stopTimer();
+    _otpController.dispose();
+    super.dispose();
   }
 }

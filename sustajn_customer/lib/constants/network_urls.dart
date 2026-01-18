@@ -6,23 +6,33 @@ class NetworkUrls {
 
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const BASE_IMAGE_URL = 'http://35.154.182.218:9090/auth/images/';
+  static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
   static const GET_OTP = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
   static const CREATE_FEEDBACK = "auth/submitFeedback";
+  static const UPGRADE_SUBSCRIPTION = "inventory/subscription-plans/upgradeUserSubscription";
   static const RESET_PASSWORD = "auth/change-password";
-  static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/summaries";
+  static const GET_SUBSCRIPTION_PLAN = "inventory/subscription-plans/getPlans?role=CUSTOMER";
+  static const CREATE_BANK = 'auth/createBankDetails';
+  static const UPDATE_BANK = 'auth/updateBankDetails';
+  static const UPLOAD_IMAGE = 'auth/uploadImage/';
+  static const DELETE_ADDRESS = 'auth/deleteAddress';
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
   static const PRODUCT_DATA = 'orders/productsSummary/';
+  static const SEARCH_RESTAURANT ="auth/searchRestaurant";
+  static const GET_PROFILE = 'auth/getProfileDetails/';
+  static const UPDATE_PROFILE = 'auth/updateProfileDetails';
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";
   static const DELETE_CONTAINER = "inventory/delete-container-type/123";
   static const SUCCESS = 'success';
+
 
 }

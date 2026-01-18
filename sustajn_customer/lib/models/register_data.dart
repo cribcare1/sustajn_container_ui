@@ -6,18 +6,24 @@ class RegistrationData {
   String? phoneNumber;
   String? password;
   File? profileImage;
-  String? dateOfBirth;
 
-  String? address;
+  String? flatDoorHouseDetails;
+  String? areaStreetCityBlockDetails;
+  String? poBoxOrPostalCode;
+  String? addressType;
+  String? addressStatus;
+
   double? latitude;
   double? longitude;
 
+  int? subscriptionPlanId;
+
+  String? dateOfBirth;
 
   String? bankName;
-  String? accountNumber;
-  String? taxNumber;
-
-  List<Map<String, dynamic>> socialMediaList = [];
+  String? accountHolderName;
+  String? iban;
+  String? bic;
 
   RegistrationData({
     this.fullName,
@@ -25,31 +31,61 @@ class RegistrationData {
     this.phoneNumber,
     this.password,
     this.profileImage,
-    this.address,
+
+    this.flatDoorHouseDetails,
+    this.areaStreetCityBlockDetails,
+    this.poBoxOrPostalCode,
+    this.addressType,
+    this.addressStatus,
+
     this.latitude,
     this.longitude,
+    this.subscriptionPlanId,
+
+    this.dateOfBirth,
+
     this.bankName,
-    this.accountNumber,
-    this.taxNumber,
-    this.dateOfBirth
-  }) {
+    this.accountHolderName,
+    this.iban,
+    this.bic,
+  });
+
+  bool get hasBankDetails {
+    return (bankName != null && bankName!.trim().isNotEmpty) ||
+        (accountHolderName != null && accountHolderName!.trim().isNotEmpty) ||
+        (iban != null && iban!.trim().isNotEmpty) ||
+        (bic != null && bic!.trim().isNotEmpty);
   }
 
   Map<String, dynamic> toApiBody() {
-    return {
+    final Map<String, dynamic> body = {
       "fullName": fullName,
       "email": email,
       "phoneNumber": phoneNumber,
       "password": password,
-      "address": address,
+
+      "address": {
+        "addressType": addressType ?? "HOME",
+        "flatDoorHouseDetails": flatDoorHouseDetails,
+        "areaStreetCityBlockDetails": areaStreetCityBlockDetails,
+        "poBoxOrPostalCode": poBoxOrPostalCode,
+        "status": addressStatus ?? "ACTIVE",
+      },
+
       "latitude": latitude,
       "longitude": longitude,
-      "dateOfBirth": dateOfBirth,
-      "bankDetails": {
-        "bankName": bankName,
-        "accountNumber": accountNumber,
-        "taxNumber": taxNumber,
-      },
+      "subscriptionPlanId": subscriptionPlanId,
     };
+
+    if (hasBankDetails) {
+      body["bankDetails"] = {
+        "bankName": bankName ?? "",
+        "accountHolderName": accountHolderName ?? "",
+        "iban": iban ?? "",
+        "bic": bic ?? "",
+      };
+    }
+
+    return body;
   }
 }

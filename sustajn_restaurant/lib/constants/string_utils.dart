@@ -19,6 +19,8 @@ class Strings{
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
   static const DATA = 'data';
+  static const PROFILE_IMAGE = 'profileImage';
+  static const USER_DATA = 'userData';
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
@@ -85,7 +87,7 @@ class Strings{
   static const CUSTOMER = 'Customer';
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
-  static const SEND_CODE =  "We've sent you a code to verify your email id on\nabc***@gmail.com";
+  static const SEND_CODE =  "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';

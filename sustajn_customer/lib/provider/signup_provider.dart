@@ -15,6 +15,8 @@ import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
 import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
+import '../auth/screens/map_screen.dart';
+import '../auth/screens/save_home_address.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
@@ -87,36 +89,38 @@ final loginDetailProvider =
       return responseData;
     });
 
-///Register
-final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
-  ref,
-  params,
-) async {
+
+
+final registerProvider =
+FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.watch(loginApiService);
   final registrationState = ref.watch(signUpNotifier);
+
+  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.REGISTER_USER}';
+
   try {
-    var serviceProvider = ref.read(loginApiService);
-    var partUrl = params[Strings.PART_URL];
-    var data = params[Strings.DATA];
-    var requestKey = params[Strings.REQUEST_KEY];
-    var image = params[Strings.IMAGE];
-    Utils.printLog("partUrl===$partUrl");
-    var responseData = await serviceProvider.registerUser(
-      partUrl,
-      data,
-      requestKey,
-      image,
-    );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    var responseData = await apiService.registerUser(url, params, "");
+    final status = responseData['status'];
+    final message = responseData['message'];
+    if (status != null && status!.isNotEmpty) {
       registrationState.setIsLoading(false);
       NavUtil.navigateWithReplacement(AccountSuccessScreen());
     } else {
-      Utils.showToast(responseData.message!);
+      if (!registrationState.context.mounted) return;
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: message,
+        color: Colors.black,
+      );
+      registrationState.setIsLoading(false);
     }
   } catch (e) {
-    Utils.printLog("Register provider error called: $e");
     registrationState.setIsLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  } finally {
+    registrationState.setIsLoading(false);
   }
+  return null;
 });
 
 final forgotPasswordProvider =
@@ -245,7 +249,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         );
       } else {
         NavUtil.navigateWithReplacement(
-          PaymentTypeScreen(),
+          HomeAddress(),
         );
       }
     } else {
@@ -328,11 +332,6 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
       registrationState.setSubscriptionModel(responseData);
     } else {
       if (!registrationState.context.mounted) return;
-      showCustomSnackBar(
-        context: registrationState.context,
-        message: responseData.message!,
-        color: Colors.black,
-      );
       registrationState.setIsLoading(false);
     }
   } catch (e) {

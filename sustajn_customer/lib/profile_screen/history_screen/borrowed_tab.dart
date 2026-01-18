@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/provider/history_provider/history_provider.dart';
+import 'package:sustajn_customer/provider/history_provider.dart';
 
 import '../../common_widgets/filter_screen.dart';
 import '../../constants/imports_util.dart';
@@ -119,7 +119,9 @@ class _BorrowedTabScreenState extends ConsumerState<BorrowedTabScreen> {
         ),
 
         if (historyState.isLoading)
-          const Center(child: CircularProgressIndicator()),
+          const Center(child: CircularProgressIndicator(
+            color: Constant.gold,
+          )),
       ],
     );
   }

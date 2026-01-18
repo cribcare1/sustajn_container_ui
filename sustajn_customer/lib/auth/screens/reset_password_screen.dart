@@ -165,7 +165,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
           ),),
           if(signUpState.isLoading)
             Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Constant.gold,
+              ),
             )
          ],
         ),
