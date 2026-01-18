@@ -8,6 +8,7 @@ import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
+import '../auth/screens/business_information_screen.dart';
 import '../auth/screens/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
@@ -40,13 +41,17 @@ final loginDetailProvider =
               color: Colors.green,
             );
           }
-          String json = jsonEncode(responseData.toJson());
+          registrationState.setUserId(responseData.data!.userId!);
           SharedPreferenceUtils.saveDataInSF(
             Strings.JWT_TOKEN,
             responseData.data!.jwtToken!,
           );
+          SharedPreferenceUtils.saveDataInSF(
+            Strings.USER_ID,
+            responseData.data!.userId!,
+          );
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
-          SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+
           if (registrationState.context.mounted) {
             Navigator.pushReplacement(
               registrationState.context,
@@ -78,31 +83,34 @@ final loginDetailProvider =
 
 ///Register
 
-final registerProvider = FutureProvider.family<Register, Map<String, dynamic>>((
-  ref,
-  params,
-) async {
+final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params,) async {
   final serviceProvider = ref.read(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   try {
-    final image = params[Strings.IMAGE];
-    params.remove(Strings.IMAGE);
 
     final Map<String, dynamic> data = Map<String, dynamic>.from(params);
 
-    final response = await serviceProvider.registerUser(
-      NetworkUrls.REGISTER_USER,
-      data,
-      "data",
-      image,
-    );
+    final response = await serviceProvider.registerUser(NetworkUrls.REGISTER_USER, data, "data",);
 
-    return response;
+    if(response != null){
+      Register register = Register.fromJson(response);
+      if (register.status != null && register.status!.toLowerCase() == 'success') {
+        registrationState.setIsLoading(false);
+        NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
+      } else {
+        showCustomSnackBar(
+          context: registrationState.context,
+          message: register.message!,
+          color: Colors.black,
+        );
+        registrationState.setIsLoading(false);
+      }
+    }
   } catch (e, stackTrace) {
     // Optional: log error
     debugPrint('Register API Error: $e');
     debugPrintStack(stackTrace: stackTrace);
-
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
     // Re-throw so Riverpod can catch and expose error
     throw Exception(e.toString());
   } finally {
@@ -118,12 +126,18 @@ final forgotPasswordProvider =
       var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
       try {
         var responseData = await apiService.forgetPassword(url, params, "");
-        if (responseData != null) {
+
+        final status = responseData['status'];
+        final message = responseData['message'];
+
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
           registrationState.setIsLoading(false);
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
-            message: responseData.message!,
+            message: message,
             color: Colors.green,
           );
           NavUtil.navigateToPushScreen(
@@ -134,7 +148,7 @@ final forgotPasswordProvider =
           if (!registrationState.context.mounted) return;
           showCustomSnackBar(
             context: registrationState.context,
-            message: responseData.message!,
+            message: message,
             color: Colors.red,
           );
           registrationState.setIsLoading(false);
@@ -148,10 +162,7 @@ final forgotPasswordProvider =
       return null;
     });
 
-final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
-  ref,
-  args,
-) async {
+final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args,) async {
   final apiService = ref.watch(loginApiProvider);
   final registrationState = ref.watch(authNotifierProvider);
   final String email = args['email'];
@@ -159,7 +170,7 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
   try {
     final responseData = await apiService.forgetPassword(url, {
-      "email": email,
+      "email": email, "type":previous
     }, "");
     if (responseData != null && responseData.isNotEmpty) {
       if (!registrationState.context.mounted) return null;
@@ -168,11 +179,15 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: responseData["message"],
         color: Colors.green,
       );
+      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       NavUtil.navigateToPushScreen(
         registrationState.context,
         VerifyEmailScreen(previousScreen: previous, email: email),
       );
     } else {
+      registrationState.setIsLoading(false);
+      registrationState.setResendLoading(false);
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
@@ -181,21 +196,24 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((
       );
     }
   } catch (e) {
+    registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
     Utils.showNetworkErrorToast(registrationState.context, e.toString());
   } finally {
     registrationState.setIsLoading(false);
+    registrationState.setResendLoading(false);
   }
 
   return null;
 });
 
 final verifyOtpProvider =
-    FutureProvider.family<Map<String, dynamic>, Map<String, dynamic>>((
+    FutureProvider.family<dynamic, Map<String, dynamic>>((
       ref,
       params,
     ) async {
       final apiService = ref.read(loginApiProvider);
-
+      final registrationState = ref.watch(authNotifierProvider);
       final String previous = params['previous'];
       params.remove("previous");
 
@@ -203,13 +221,53 @@ final verifyOtpProvider =
 
       try {
         final responseData = await apiService.verifyOtp(url, params, "");
+        final status = responseData['status'];
+        final message = responseData['message'];
 
-        print("VERIFY OTP RESPONSE =====> $responseData");
+        if (status != null &&
+            status.isNotEmpty &&
+            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+          registrationState.setVerifyLoading(false);
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message ?? "OTP verified successfully",
+            color: Colors.green,
+          );
+          if (registrationState.isForgotPassword) {
+            Utils.navigateToPushScreen(
+              registrationState.context,
+              ResetPasswordScreen(),
+            );
+          } else {
+            NavUtil.navigateToPushScreen(registrationState.context,
+              BusinessInformationDetails(
+                authState: registrationState,
+              ),
+            );
+          }
+        } else {
+          registrationState.setSeconds(120);
+          registrationState.startTimer();
+          if (!registrationState.context.mounted) return;
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message!,
+            color: Colors.black,
+          );
+          registrationState.setVerifyLoading(false);
+        }
 
-        return {"response": responseData, "previous": previous};
-      } catch (e) {
-        throw Exception(e.toString());
+      }  catch (e) {
+        registrationState.setSeconds(120);
+        registrationState.startTimer();
+        registrationState.setVerifyLoading(false);
+        Utils.showNetworkErrorToast(registrationState.context, e.toString());
+      } finally {
+        registrationState.setVerifyLoading(false);
       }
+      return null;
     });
 
 final resetPasswordProvider =
@@ -258,9 +316,12 @@ final subscriptionProvider =
       final provider = ref.read(authNotifierProvider);
       final service = ref.read(loginApiProvider);
       try {
-        final response = await service.planServices();
-        provider.setPlan(response!);
-        return response;
+        List<PlanModel>? response = await service.planServices();
+
+        if (response != null && response.length>0) {
+          provider.setPlan(response!);
+        }
+        return response!;
       } catch (e) {
         if (provider.context.mounted) {
           Utils.showNetworkErrorToast(provider.context, e.toString());

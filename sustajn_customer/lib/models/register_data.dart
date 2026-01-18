@@ -7,6 +7,7 @@ class RegistrationData {
   String? password;
   File? profileImage;
 
+  // Address
   String? flatDoorHouseDetails;
   String? areaStreetCityBlockDetails;
   String? poBoxOrPostalCode;
@@ -17,13 +18,12 @@ class RegistrationData {
   double? longitude;
 
   int? subscriptionPlanId;
-
   String? dateOfBirth;
 
   String? bankName;
-  String? accountHolderName;
+  String? taxNumber;
+  String? accountNumber;
   String? iban;
-  String? bic;
 
   RegistrationData({
     this.fullName,
@@ -41,20 +41,19 @@ class RegistrationData {
     this.latitude,
     this.longitude,
     this.subscriptionPlanId,
-
     this.dateOfBirth,
 
     this.bankName,
-    this.accountHolderName,
+    this.taxNumber,
+    this.accountNumber,
     this.iban,
-    this.bic,
   });
 
   bool get hasBankDetails {
-    return (bankName != null && bankName!.trim().isNotEmpty) ||
-        (accountHolderName != null && accountHolderName!.trim().isNotEmpty) ||
-        (iban != null && iban!.trim().isNotEmpty) ||
-        (bic != null && bic!.trim().isNotEmpty);
+    return (bankName?.trim().isNotEmpty ?? false) ||
+        (taxNumber?.trim().isNotEmpty ?? false) ||
+        (accountNumber?.trim().isNotEmpty ?? false) ||
+        (iban?.trim().isNotEmpty ?? false);
   }
 
   Map<String, dynamic> toApiBody() {
@@ -79,10 +78,10 @@ class RegistrationData {
 
     if (hasBankDetails) {
       body["bankDetails"] = {
-        "bankName": bankName ?? "",
-        "accountHolderName": accountHolderName ?? "",
-        "iban": iban ?? "",
-        "bic": bic ?? "",
+        "bankName": bankName,
+        "taxNumber": taxNumber,
+        "accountNumber": accountNumber,
+        "iban": iban,
       };
     }
 

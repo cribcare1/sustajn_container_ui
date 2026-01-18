@@ -3,6 +3,7 @@ class Strings{
   static const JWT_TOKEN = 'jwt_token';
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
+  static const USER_ID = 'USER_ID';
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
       'Something went wrong! Please try again after sometime.';
@@ -27,6 +28,7 @@ class Strings{
 
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
+  static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW = "Please provide your details below";
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
   static const String APPROVED_STATUS = 'Approved';
@@ -86,7 +88,7 @@ class Strings{
   static const CUSTOMER = 'Customer';
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
-  static const SEND_CODE =  "We've sent you a code to verify your email id on\nabc***@gmail.com";
+  static const SEND_CODE =  "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -199,6 +201,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const LEAVE_RESET_PASSWORD= 'Leave Reset Password?';
   static const GO_BACK_RESET_PASSWORD = 'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const String CONFIRM_LOGOUT= 'Confirm Logout';
+  static const String CONFIRM= 'Confirm';
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';
@@ -206,18 +209,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const BUSINESS_INFORMATION = "Business Information";
   static const PROVIDE_INFORMATION = "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
+  static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
+  static const String CREATE = "Create";
 }

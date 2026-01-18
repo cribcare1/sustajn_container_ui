@@ -17,6 +17,8 @@ class NetworkUrls {
 
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
+  static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
+  static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -28,14 +30,24 @@ class NetworkUrls {
   static const UPDATE_PROFILE = "auth/updateProfileDetails";
   static const UPDATE_ADDRESS = "auth/updateAddress";
   static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  static const CONTAINER_HISTORY = "orders/orderHistory/";
+
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";
-  static const DELETE_CONTAINER = "inventory/delete-container-type/123";
+  static const DELETE_CONTAINER = "inventory/delete-container-type/";
+  static const ADD_RETURN_CONTAINER = "inventory/raiseOrderRequest";
 
   /// Search Restaurant ///
 
  static const SEARCH_RESTAURANT ="auth/searchRestaurant";
+
+ /// Lease and Receive///
+
+static const CONTAINER_LIST_LEASE = "inventory/restaurant/getAvailableContainers/";
+static const CONTAINER_LEASE = "orders/borrowContainers";
+static const CONTAINER_RECEIVE = "orders/returnContainers";
+
 
 }

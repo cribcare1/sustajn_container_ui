@@ -26,9 +26,15 @@ class _QrDialogState extends ConsumerState<QrDialog> {
   final GlobalKey _qrKey = GlobalKey();
   bool isCopied = false;
 
-  Future<int?> _getUserId() async {
-    return await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
+
+
+  Future<String?> _getCustomerId() async {
+    return await SharedPreferenceUtils.getStringValuesSF(
+      Strings.CUSTOMER_ID,
+    );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +43,14 @@ class _QrDialogState extends ConsumerState<QrDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: FutureBuilder<int?>(
-        future: _getUserId(),
+      child: FutureBuilder<String?>(
+        future: _getCustomerId(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data == null || snapshot.data == -1) {
+          if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
             return _errorView(theme);
           }
 
-          final userId = snapshot.data.toString();
+          final customerId = snapshot.data!;
 
           return Container(
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -100,7 +106,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
                                   Constant.CONTAINER_SIZE_12),
                             ),
                             child: QrImageView(
-                              data: userId,
+                              data: customerId,
                               size: Constant.CONTAINER_SIZE_200,
                               backgroundColor: Colors.white,
                             ),
@@ -112,7 +118,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                userId,
+                                customerId,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -122,7 +128,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
 
                               InkWell(
                                 onTap: () {
-                                  Clipboard.setData(ClipboardData(text: userId));
+                                  Clipboard.setData(ClipboardData(text: customerId));
 
                                   setState(() {
                                     isCopied = true;
@@ -225,7 +231,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       ),
       child: const Text(
-        "User ID not found",
+        "Customer ID not found",
         style: TextStyle(color: Colors.red),
       ),
     );

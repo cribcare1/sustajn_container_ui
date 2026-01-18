@@ -1,25 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../models/get_container_data.dart';
+import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/order_provider.dart';
 import '../models/add_container_model.dart';
 
-class AddContainerDialog extends StatefulWidget {
-  final ContainerItem item;
+class AddContainerDialog extends ConsumerStatefulWidget {
+  final ContainersDetails item;
 
   const AddContainerDialog({super.key, required this.item});
 
   @override
-  State<AddContainerDialog> createState() => _AddContainerDialogState();
+  ConsumerState<AddContainerDialog> createState() => _AddContainerDialogState();
 }
 
-class _AddContainerDialogState extends State<AddContainerDialog> {
+class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
   bool isEditingQty = false;
   final FocusNode qtyFocusNode = FocusNode();
   TextEditingController quantity = TextEditingController();
-
   int qty = 0;
+
+  List<ContainersDetails> container = [];
+  LoginData? loginResponse;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -31,6 +54,7 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final orderState = ref.watch(orderProvider);
 
     return SafeArea(
       top: false,
@@ -68,24 +92,31 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
                       Constant.CONTAINER_SIZE_20,
                     ),
                   ),
-                  child: Image.asset(widget.item.image, fit: BoxFit.contain),
+                  child: Image.asset(
+                    "assets/images/cups.png",
+                    fit: BoxFit.contain,
+                  ),
                 ),
 
                 SizedBox(height: Constant.SIZE_15),
 
                 Text(
-                  widget.item.name,
+                  widget.item.containerName!,
                   style: theme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  widget.item.code,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
+                  widget.item.containerUniqueId!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
-                  widget.item.volume,
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
+                  "${widget.item.capacity!.toString()} ml",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
 
                 SizedBox(height: Constant.SIZE_15),
@@ -102,7 +133,7 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
                     border: Border.all(color: Constant.gold),
                   ),
                   child: Text(
-                    "Available Quantity: ${widget.item.availableQty}",
+                    "Available Quantity: ${widget.item.quantityAvailable}",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Constant.gold,
                     ),
@@ -131,62 +162,67 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         border: Border.all(color: Constant.gold, width: 1.5),
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_12,
+                        ),
                       ),
                       child: isEditingQty
                           ? TextField(
-                        controller: quantity,
-                        focusNode: qtyFocusNode,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        autofocus: true,
-                        style: theme.textTheme.displaySmall?.copyWith(
-                          color: Colors.white,
-                        ),
-                        cursorColor: Colors.white,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          focusedErrorBorder: InputBorder.none,
-                          filled: true,
-                          fillColor: Colors.transparent,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        onSubmitted: (_) => _saveQty(),
-                        onEditingComplete: _saveQty,
-                      )
+                              controller: quantity,
+                              focusNode: qtyFocusNode,
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              autofocus: true,
+                              style: theme.textTheme.displaySmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                              cursorColor: Colors.white,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                focusedErrorBorder: InputBorder.none,
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              onSubmitted: (_) => _saveQty(),
+                              onEditingComplete: _saveQty,
+                            )
                           : GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          setState(() {
-                            isEditingQty = true;
-                            quantity.clear();
-                          });
-                          Future.delayed(const Duration(milliseconds: 50), () {
-                            qtyFocusNode.requestFocus();
-                          });
-                        },
-                        child: Text(
-                          qty.toString(),
-                          style: theme.textTheme.displaySmall?.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                setState(() {
+                                  isEditingQty = true;
+                                  quantity.clear();
+                                });
+                                Future.delayed(
+                                  const Duration(milliseconds: 50),
+                                  () {
+                                    qtyFocusNode.requestFocus();
+                                  },
+                                );
+                              },
+                              child: Text(
+                                qty.toString(),
+                                style: theme.textTheme.displaySmall?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                     ),
 
                     SizedBox(width: Constant.CONTAINER_SIZE_20),
                     _qtyButton(
                       icon: Icons.add,
                       onTap: () {
-                        if (qty < widget.item.availableQty) {
+                        if (qty < widget.item.quantityAvailable!) {
                           setState(() => qty++);
                         }
                       },
@@ -224,7 +260,7 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (qty > 0) {
-                            Navigator.pop(context, qty);
+                            _addContainerNetworkCall(widget.item, orderState);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -284,10 +320,10 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
     final int previousQty = qty;
     final int? value = int.tryParse(quantity.text);
 
-    if (value == null || value > widget.item.availableQty) {
+    if (value == null || value > widget.item.quantityAvailable!) {
       if (!_toastShown) {
         Utils.showToast(
-          "Quantity must be between 0 and ${widget.item.availableQty}",
+          "Quantity must be between 0 and ${widget.item.quantityAvailable}",
         );
         _toastShown = true;
         Future.delayed(Duration(seconds: 2), () => _toastShown = false);
@@ -304,5 +340,42 @@ class _AddContainerDialogState extends State<AddContainerDialog> {
       qty = value;
       isEditingQty = false;
     });
+  }
+
+  Map<String, dynamic> getJsonData(ContainersDetails item) {
+    final data = {
+      "restaurantId": loginResponse!.userId,
+      "type": "BORROW",
+      "items": [
+        {
+          "containerTypeId": item.containerId,
+          "requestedQty": item.quantityAvailable,
+        },
+      ],
+    };
+    return data;
+  }
+
+  _addContainerNetworkCall(ContainersDetails item, var orderState) async {
+    Utils.printLog('add container Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+    try {
+      await ref.read(addReturnProvider(getJsonData(item)).future);
+      Navigator.pop(context);
+
+      setState(() {
+        container = orderState.setOrderData!;
+      });
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
   }
 }

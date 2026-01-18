@@ -1,9 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
+import '../../network_provider/network_provider.dart';
 import '../../notification/notification_screen.dart';
 import '../../profile_screen/profile_screen.dart';
+import '../../provider/profile_provider.dart';
 import '../../search_resturant_screen/search_resturant_screen.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
@@ -11,14 +16,14 @@ import '../../utils/utils.dart';
 import '../payment_type/payment_screen.dart';
 import '../screens/save_home_address.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String userName = "";
   Data? loginResponse;
   bool isLoading = true;
@@ -26,7 +31,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    Utils.getToken();
     _loadProfile();
+    _getProfileData();
   }
 
   Future<void> _loadProfile() async {
@@ -198,5 +205,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  _getProfileData() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        if (isNetworkAvailable) {
+          ref.read(profileProvider).clearProfileList();
+          ref.read(profileProvider).setIsLoading(true);
+
+          final url = '${NetworkUrls.GET_PROFILE}${loginResponse?.userId}';
+          Utils.printLog("Fetching URL: $url");
+          ref.read(getProfileProvider(url));
+        } else {
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      ref.read(profileProvider).setIsLoading(false);
+      Utils.showToast(e.toString());
+    }
+    FocusScope.of(context).unfocus();
   }
 }

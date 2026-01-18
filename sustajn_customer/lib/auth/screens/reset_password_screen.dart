@@ -336,9 +336,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   _getNetworkDataVerify(var registrationState) async {
     try {
       if (registrationState.isValid) {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-        ) async {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable,) async {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);

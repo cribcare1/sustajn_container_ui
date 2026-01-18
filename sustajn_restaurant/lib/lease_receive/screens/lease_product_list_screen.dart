@@ -1,48 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
+import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
+import 'package:sustajn_restaurant/utils/global_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
 
-import '../model/assign_container_model.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../lease_receive_notifier.dart';
+import '../lease_receive_provider.dart';
+import '../model/container_list_model.dart';
 
-class LeaseProductListScreen extends StatefulWidget {
+class LeaseProductListScreen extends ConsumerStatefulWidget {
   const LeaseProductListScreen({super.key});
 
   @override
-  State<LeaseProductListScreen> createState() => _LeaseProductListScreenState();
+  ConsumerState<LeaseProductListScreen> createState() =>
+      _LeaseProductListScreenState();
 }
 
-class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
-  List<AssignedContainerModel> assignedContainers = [
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Dip Cups',
-      id: 'ST-DC-50',
-      volume: '50ml',
-      quantity: 2,
-    ),
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Round Container',
-      id: 'ST-RB-450',
-      volume: '450ml',
-      quantity: 1,
-    ),
-    AssignedContainerModel(
-      image: 'assets/images/cups.png',
-      name: 'Rectangular Container',
-      id: 'ST-RC-600',
-      volume: '900ml',
-      quantity: 1,
-    ),
-  ];
+class _LeaseProductListScreenState
+    extends ConsumerState<LeaseProductListScreen> {
+  @override
+  void initState() {
+    Utils.getUserId();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getContainerList(
+        ref.read(leaseReceiveNotifier),
+        restaurantId: Utils.userId.toString(),
+      );
+    });
+
+    super.initState();
+  }
+
+  _getContainerList(
+    LeaseReceiveNotifier leasState, {
+    required String restaurantId,
+  }) async {
+    try {
+      leasState.setLoading(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
+        try {
+          if (isNetworkAvailable) {
+            ref.read(containerListProvider(restaurantId));
+          } else {
+            leasState.setLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leasState.setLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leasState.setLoading(false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final leaseNotifier = ref.watch(leaseReceiveNotifier);
     return SafeArea(
       bottom: true,
       top: false,
@@ -51,95 +85,110 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
           title: "Assigned Containers",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: const [
-                      Icon(Icons.badge, color: Colors.white, size: 18),
-                      SizedBox(width: 6),
-                      Text(
-                        'Customer ID: ABC-1234',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
+        body: leaseNotifier.isLoading
+            ? const Center(child: SingleChildScrollView())
+            : leaseNotifier.containersDetails.isEmpty
+            ? Center(
+                child: Text(
+                  "No Containers found",
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              )
+            : Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          "assets/images/img.png",
-                          height: 25,
-                          width: 25,
+                        Row(
+                          children: [
+                            Icon(Icons.badge, color: Colors.white, size: 18),
+                            SizedBox(width: 6),
+                            Text(
+                              'Customer ID: $scannedId',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: Constant.SIZE_08),
-                        Text(
-                          assignedContainers.length.toString(),
-                          style: const TextStyle(
-                            color: Colors.amber,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/img.png",
+                                height: 25,
+                                width: 25,
+                              ),
+                              SizedBox(width: Constant.SIZE_08),
+                              Text(
+                                leaseNotifier.containersDetails.length
+                                    .toString(),
+                                style: const TextStyle(
+                                  color: Colors.amber,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Text(
+                          "Containers",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(color: Colors.white),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  Text(
-                    "Containers",
-                    textAlign: TextAlign.start,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: leaseNotifier.containersDetails.length,
+                      itemBuilder: (context, index) {
+                        return _containerCard(
+                          item: leaseNotifier.containersDetails[index],
+                          onRemove: () {
+                            setState(() {
+                              leaseNotifier.containersDetails.removeAt(index);
+                            });
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constant.CONTAINER_SIZE_16,
-                ),
-                itemCount: assignedContainers.length,
-                itemBuilder: (context, index) {
-                  return _containerCard(
-                    item: assignedContainers[index],
-                    onRemove: () {
-                      setState(() {
-                        assignedContainers.removeAt(index);
-                      });
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-              ),
-            ),
-          ],
-        ),
         bottomSheet: Container(
           width: double.infinity,
           color: theme.primaryColor,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: SubmitButton(
-            onRightTap: () {
-              showConfirmIssuePopup(context);
-            },
-            rightText: "Issue Container",
-          ),
+          child: leaseNotifier.containersDetails.isEmpty
+              ? SizedBox.shrink()
+              : leaseNotifier.isSaving
+              ? Center(child: CircularProgressIndicator())
+              : SubmitButton(
+                  onRightTap: () {
+                    showConfirmIssuePopup(context, leaseNotifier);
+                  },
+                  rightText: "Issue Container",
+                ),
         ),
       ),
     );
   }
 
   Widget _containerCard({
-    required AssignedContainerModel item,
+    required ContainerDetails item,
     required VoidCallback onRemove,
   }) {
     return GlassSummaryCard(
@@ -153,7 +202,13 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(6),
-            child: Image.asset(item.image, fit: BoxFit.contain),
+            child: Image.network(
+              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+              errorBuilder: (context, obj, stack){
+                return Image.asset("assets/images/no_image_container.png");
+              },
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -161,7 +216,7 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.name,
+                  item.containerName,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -170,14 +225,14 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.id,
+                  item.containerUniqueId,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  item.volume,
+                  item.capacity.toString(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -190,7 +245,7 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantity.toString(),
+                item.quantityAvailable.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -213,7 +268,10 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
     );
   }
 
-  void showConfirmIssuePopup(BuildContext context) {
+  void showConfirmIssuePopup(
+    BuildContext context,
+    LeaseReceiveNotifier leaseState,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).primaryColor,
@@ -277,18 +335,74 @@ class _LeaseProductListScreenState extends State<LeaseProductListScreen> {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              SubmitClearButton(
-                onLeftTap: () {
-                  Navigator.pop(context);
-                },
-                leftText: "Cancel",
-                onRightTap: () {},
-                rightText: "Confirm",
-              ),
+              leaseState.isSaving
+                  ? Center(child: CircularProgressIndicator())
+                  : SubmitClearButton(
+                      onLeftTap: () {
+                        Navigator.pop(context);
+                      },
+                      leftText: "Cancel",
+                      onRightTap: () {
+                        Navigator.pop(context);
+                        final List<Map<String, dynamic>> items = leaseState
+                            .containersDetails
+                            .map(
+                              (i) => {
+                                "productId": i.containerId,
+                                "quantity": i.quantityAvailable,
+                              },
+                            )
+                            .toList();
+
+                        Map<String, dynamic> data = {
+                          "userId": int.parse(scannedId),
+                          "restaurantId": Utils.userId,
+                          "items": items,
+                        };
+                        _leaseContainer(leaseState, data);
+                      },
+                      rightText: "Confirm",
+                    ),
             ],
           ),
         );
       },
     );
+  }
+
+  _leaseContainer(
+    LeaseReceiveNotifier leasState,
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      print("API calll");
+      leasState.setIsSaving(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
+        try {
+          print("isNetworkAvailable :- $isNetworkAvailable");
+          if (isNetworkAvailable) {
+            ref.read(leaseContainer(body).future);
+          } else {
+            leasState.setIsSaving(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.red,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leasState.setIsSaving(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leasState.setIsSaving(false);
+    }
   }
 }

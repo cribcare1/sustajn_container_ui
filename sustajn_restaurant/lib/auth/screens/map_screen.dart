@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
 
 import '../../utils/theme_utils.dart';
 import '../auth_state/location_state.dart';
@@ -104,7 +106,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             child: OutlinedButton.icon(
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(
-                                  color: theme!.secondaryHeaderColor,
+                                  color: theme.secondaryHeaderColor,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -116,12 +118,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                               ),
                               icon: Icon(
                                 Icons.my_location,
-                                color: theme!.secondaryHeaderColor,
+                                color: theme.secondaryHeaderColor,
                               ),
                               label: Text(
                                 'Use Current Location',
                                 style: TextStyle(
-                                  color: theme!.secondaryHeaderColor,
+                                  color: theme.secondaryHeaderColor,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -175,31 +177,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     // CONFIRM
                     Padding(
                       padding: const EdgeInsets.all(16),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffe3b023),
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
+                      child: SizedBox(width: double.infinity,
+                        child: SubmitButton(onRightTap: (){
                           Navigator.pop(context, {
                             "lat": state.position!.latitude,
                             "lng": state.position!.longitude,
                             "address":
-                                "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
+                            "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
                           });
-                        },
-                        child: const Text(
-                          "Confirm",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                        },rightText: Strings.CONFIRM,),
+                      )
+
                     ),
                   ],
                 ),

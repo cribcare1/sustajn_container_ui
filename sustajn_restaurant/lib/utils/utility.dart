@@ -122,7 +122,24 @@ class Utils {
       },
     );
   }
+  static String maskEmail(String email) {
+    if (email.isEmpty || !email.contains('@')) {
+      return email;
+    }
 
+    final parts = email.split('@');
+    final localPart = parts[0];
+    final domainPart = parts[1];
+
+    if (localPart.length <= 4) {
+      return email;
+    }
+
+    final maskedLength = localPart.length - 4;
+    final masked = List.filled(maskedLength, '*').join();
+
+    return '${localPart.substring(0, 4)}$masked@$domainPart';
+  }
   static  logOutDialog(
       BuildContext context,
       IconData icon,
@@ -418,7 +435,19 @@ class Utils {
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
 
+  static int? userId = 0;
+  static void loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt(Strings.USER_ID);
+    printLog("JWT Token ==== $token");
+  }
 
+  static int getUserId() {
+    if (userId == 0) {
+      loadUserId();
+    }
+    return userId!;
+  }
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");
     const error = "Error:";
@@ -472,7 +501,7 @@ class Utils {
 
   static LoginModel? loginData;
   static int? societyId = 0;
-  static int? userId = 0;
+  // static int? userId = 0;
 
   static Future<LoginModel?> getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -481,7 +510,7 @@ class Utils {
     if (data != null) {
       var response = json.decode(data);
       loginData = LoginModel.fromJson(response);
-      userId = loginData!.data!.userId;
+      // userId = loginData!.data!.userId;
     }
     return null;
   }
@@ -520,7 +549,8 @@ void showCustomSnackBar({
       // duration: const Duration(seconds: 2),
     ),
   );
-
-
 }
+
+
+
 

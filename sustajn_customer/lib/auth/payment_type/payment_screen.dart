@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/models/register_data.dart';
-import 'package:sustajn_customer/provider/bankdetail_provider.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
 import '../../constants/network_urls.dart';
@@ -16,11 +15,17 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../screens/subscription_screen.dart';
 import 'add_card_dialog.dart';
+enum PaymentFlow {
+  signup,
+  profile,
+}
 
 class PaymentTypeScreen extends ConsumerStatefulWidget {
   final RegistrationData? registrationData;
+  final PaymentFlow flow;
 
-  const PaymentTypeScreen({super.key, this.registrationData});
+  const PaymentTypeScreen({super.key, this.registrationData,
+  required this.flow});
 
   @override
   ConsumerState<PaymentTypeScreen> createState() => _PaymentTypeScreenState();
@@ -37,8 +42,32 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(signUpNotifier).resetBankValidation();
+      _clearBankControllers();
+    });
+
     Utils.getToken();
   }
+
+
+  void _clearBankControllers() {
+    _bankNameController.clear();
+    _taxNumberController.clear();
+    _bicController.clear();
+    _ibanController.clear();
+  }
+
+  @override
+  void dispose() {
+    _bankNameController.dispose();
+    _taxNumberController.dispose();
+    _bicController.dispose();
+    _ibanController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +89,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             SafeArea(
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
+                ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: EdgeInsets.only(
                   left: Constant.CONTAINER_SIZE_20,
                   right: Constant.CONTAINER_SIZE_20,
                   bottom:
-                      MediaQuery.of(context).viewInsets.bottom +
+                  MediaQuery.of(context).viewInsets.bottom +
                       Constant.CONTAINER_SIZE_20,
                 ),
                 child: Column(
@@ -374,43 +403,46 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _bottomButtons(
-    ThemeData theme,
-    BuildContext context,
-    var signupState,
-  ) {
+      ThemeData theme,
+      BuildContext context,
+      var signupState,
+      ) {
     return Row(
       children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: signupState.isLoading
-                ? null
-                : () {
-                    NavUtil.navigateWithReplacement(SubscriptionScreen());
-                  },
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Constant.gold),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-              ),
-            ),
-            child: Text(
-              'Skip',
-              style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
+        if (widget.flow == PaymentFlow.signup)
+          Expanded(
+            child: OutlinedButton(
+              onPressed: signupState.isLoading
+                  ? null
+                  : () {
+                ref.read(signUpNotifier).resetBankValidation();
+                _clearBankControllers();
+
+                NavUtil.navigateWithReplacement(
+                  SubscriptionScreen(),
+                );
+              },
+              child: Text('Skip'),
             ),
           ),
-        ),
+
         SizedBox(width: Constant.SIZE_15),
         Expanded(
           child: ElevatedButton(
             onPressed: signupState.isLoading
                 ? null
                 : () async {
-                    final isValid = signupState.validateBankForm();
-                    if (!isValid) return;
-                    signupState.setIsLoading(true);
+              final isValid = signupState.validateBankForm();
+              if (!isValid) return;
 
-                    await _getNetworkDataVerify(signupState);
-                  },
+              if (widget.flow == PaymentFlow.signup) {
+                signupState.updateBankDetails();
+                NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+              } else {
+                await _getNetworkDataVerify(signupState);
+              }
+
+            },
 
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
@@ -461,11 +493,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     try {
       if (registrationState.isValid) {
         await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-        ) async {
+            isNetworkAvailable,
+            ) async {
           try {
             if (isNetworkAvailable) {
-              // registrationState.setIsLoading(true);
+              registrationState.setIsLoading(true);
               registrationState.setContext(context);
               ref.read(createBankProvider(getJsonData()));
             } else {
@@ -491,3 +523,5 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     }
   }
 }
+
+

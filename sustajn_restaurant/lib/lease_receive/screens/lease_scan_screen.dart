@@ -3,8 +3,10 @@ import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/lease_receive/screens/receive_product_list_screen.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../utils/global_utils.dart';
 import 'lease_product_scan_screen.dart';
 
 class LeaseScanScreen extends StatefulWidget {
@@ -133,7 +135,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                           child: Text(
                             widget.type.contains("LEASE")
                                 ? "Scan Customer QR to Leased Products"
-                                : "Scan Container QR to Receive Products",
+                                : "Scan Customer QR to Receive Products",
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(
@@ -199,6 +201,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                     onPressed: textController.text.isEmpty
                         ? null
                         : () {
+                      scannedId = textController.text;
                             if (widget.type.contains("LEASE")) {
                               Utils.navigateToPushScreen(
                                 context,
@@ -207,7 +210,15 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                   damage: widget.damage,
                                 ),
                               );
-                            } else if (widget.type.contains("RECEIVE")) {}
+                            } else if (widget.type.contains("RECEIVE")) {
+                              Utils.navigateToPushScreen(
+                                context,
+                                ReceiveProductListScreen(
+                                  type: widget.type ?? "",
+                                  damage: widget.damage,
+                                ),
+                              );
+                            }
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: textController.text.isEmpty

@@ -1,28 +1,22 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sustajn_customer/auth/screens/bank_details_screen.dart';
 import 'package:sustajn_customer/auth/screens/reset_password_screen.dart'
     show ResetPasswordScreen;
 import 'package:sustajn_customer/notifier/signup_notifier.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
-import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
-import '../auth/payment_type/payment_screen.dart';
 import '../auth/screens/login_screen.dart';
-import '../auth/screens/map_screen.dart';
 import '../auth/screens/save_home_address.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../lottie_animations/account_create_animation.dart';
 import '../models/login_model.dart';
-import '../notifier/login_notifier.dart';
+import '../service/bankdetail_service.dart';
 import '../service/login_service.dart';
 import '../utils/shared_preference_utils.dart';
 import '../utils/utils.dart';
@@ -249,7 +243,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
         );
       } else {
         NavUtil.navigateWithReplacement(
-          HomeAddress(),
+          HomeAddress(flow: AddressFlow.signup,),
         );
       }
     } else {
@@ -342,3 +336,39 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
   }
   return null;
 });
+
+final createBankProvider =
+FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.read(bankApiService);
+  final signupState = ref.read(signUpNotifier);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.CREATE_BANK}';
+
+  try {
+    final responseData = await apiService.createBankService(url, params, "");
+
+    final message = responseData['message'];
+
+    signupState.setIsLoading(false);
+
+    if (signupState.context.mounted) {
+      showCustomSnackBar(
+        context: signupState.context!,
+        message: "Bank details created successfully",
+        color: Colors.green,
+      );
+
+      Navigator.pop(signupState.context!);
+    }
+  } catch (e) {
+    signupState.setIsLoading(false);
+
+    if (signupState.context.mounted) {
+      Utils.showNetworkErrorToast(
+        signupState.context!,
+        e.toString(),
+      );
+    }
+  }
+});
+
