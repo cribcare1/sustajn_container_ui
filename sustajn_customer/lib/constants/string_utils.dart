@@ -38,6 +38,7 @@ class Strings {
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
   static const String EMAIL = 'Email ID*';
+  static const String DATE_OF_BIRTH = 'Date of Birth';
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
@@ -111,13 +112,13 @@ class Strings {
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number*';
+  static const MOBILE_NUMBER = 'Contact Number*';
   static const EMAIL_ID = 'Email ID*';
   static const PASSWORD = 'Password*';
   static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verification';
-  static const ALREADY_HAVE_ACC = 'Already have an account? ';
+  static const EXISTING_USER = 'Existing user? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD = 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
