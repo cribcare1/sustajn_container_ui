@@ -86,7 +86,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: CustomTheme.searchField(
               searchController,
-              "Search by Customer Name",
+               Strings.SEARCH_BY_CONTAINER_NAME,
             ),
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_16),
@@ -95,7 +95,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : container == null || container.isEmpty
                 ? const Center(
-              child: Text("No containers available", style: TextStyle(color: Colors.white),),
+              child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
             )
                 :ListView.separated(
               itemCount: container.length,
