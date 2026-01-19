@@ -96,7 +96,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                     : container == null
                     ? const Center(
                         child: Text(
-                          "No containers available",
+                          Strings.NO_CONTAINER_AVAILABLE,
                           style: TextStyle(color: Colors.white),
                         ),
                       )

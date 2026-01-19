@@ -175,7 +175,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           title: Text(
             "My Profile",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: Constant.CONTAINER_SIZE_20,
               fontWeight: FontWeight.w500,
               color: theme.scaffoldBackgroundColor,
             ),
@@ -184,7 +184,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : loginResponse!=null?SingleChildScrollView(
+            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -211,7 +211,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 image: DecorationImage(
                                   image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
                                     "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/default_profile.png"),
+                                  ):AssetImage("assets/images/cups.png"),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -300,7 +300,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: loginResponse!.userName! ?? "",
+                                value: loginResponse?.userName! ?? "",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
@@ -311,7 +311,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.location_on_outlined,
                                 title: "Address",
-                                value: fullAddress ?? "No address added",
+                                value: fullAddress ?? "No address",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -321,7 +321,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
-                                        EditAddressDialog(address: fullAddress),
+                                        EditAddressDialog(selectedAddress: selectedAddress),
                                   );
                                 },
                               ),

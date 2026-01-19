@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_data.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/utility.dart';
 
 class EditAddressDialog extends ConsumerStatefulWidget {
-  final String address;
-  const EditAddressDialog({ required this.address, Key? key,});
+  final AddressResponses? selectedAddress;
+  const EditAddressDialog({ required this.selectedAddress, Key? key,});
 
   @override
   ConsumerState<EditAddressDialog> createState() =>
@@ -24,7 +25,11 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   @override
   void initState() {
     super.initState();
-    _addressController.text = widget.address;
+    if (widget.selectedAddress != null) {
+      _addressController.text =
+          widget.selectedAddress!.areaStreetCityBlockDetails ?? '';
+    }
+    // _addressController.text = widget.address;
   }
 
 
@@ -52,7 +57,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final address = widget.selectedAddress!;
     return SafeArea(
       top: false,
       child: Padding(
@@ -156,8 +161,8 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // _editAddressNetworkCall();
-                        Navigator.pop(context, _addressController.text.trim());
+                        _editAddressNetworkCall(address.id!.toString(), address.addressType!, address.flatDoorHouseDetails!, address.areaStreetCityBlockDetails!, address.poBoxOrPostalCode!);
+                        // Navigator.pop(context, _addressController.text.trim());
                       }
                     },
                     style: ElevatedButton.styleFrom(

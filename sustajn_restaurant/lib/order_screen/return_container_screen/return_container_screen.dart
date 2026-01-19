@@ -94,7 +94,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                 searchController,
                 "Search Container by Name",
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: Constant.CONTAINER_SIZE_10),
 
               Expanded(
                 child: orderState.isLoading
@@ -102,7 +102,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                     : orderState.getContainerData!.containersDetails!.isEmpty
                     ? Center(
                         child: Text(
-                          "No containers found",
+                          "No containers available",
                           style: TextStyle(color: Colors.white),
                         ),
                       )

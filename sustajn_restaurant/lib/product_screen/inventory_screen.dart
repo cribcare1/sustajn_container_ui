@@ -83,7 +83,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : orderState.getContainerData!.containersDetails!.isEmpty
                 ? Center(
-              child: Text("No containers found", style: TextStyle(color: Colors.white),),
+              child: Text("No containers available", style: TextStyle(color: Colors.white),),
             )
                 : ListView.builder(
               padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),

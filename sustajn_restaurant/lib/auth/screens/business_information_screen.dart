@@ -100,82 +100,82 @@ class _BusinessInformationDetailsState
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Contact Person";
+                          return Strings.CONTACT_PERSON;
                         }
                         return null;
                       },
                       controller: cuisineTypeController,
-                      hint: "Contact Person",
+                      hint: Strings.CONTACT_PERSON,
                     ),
 
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Mobile Number";
+                          return Strings.MOBILE_NUMBER;
                         }
                         return null;
                       },
                       controller: cuisineTypeController,
-                      hint: "Mobile Number",
+                      hint: Strings.MOBILE_NUMBER,
                     ),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Email Registration";
+                          return Strings.EMAIL_REGISTRATION;
                         }
                         return null;
                       },
                       controller: cuisineTypeController,
-                      hint: "Email Registration",
+                      hint: Strings.EMAIL_REGISTRATION,
                     ),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Trade License Number";
+                          return Strings.TRADE_LICENSE_NUMBER;
                         }
                         return null;
                       },
                       controller: cuisineTypeController,
-                      hint: "Trade License Number",
+                      hint: Strings.TRADE_LICENSE_NUMBER,
                     ),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "VAT Number";
+                          return Strings.VAT_NUMBER;
                         }
                         return null;
                       },
                       controller: cuisineTypeController,
-                      hint: "VAT Number",
+                      hint: Strings.VAT_NUMBER,
                     ),
 
-                    Text('Business Details'),
-                    SizedBox(height: 5),
+                    Text(Strings.BUSINESS_DTLS),
+                    SizedBox(height: Constant.SIZE_05),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Enter business type";
+                          return Strings.ENTER_BUSINESSTYPE;
                         }
                         return null;
                       },
                       controller: businessTypeController,
-                      hint: "Enter business type",
+                      hint: Strings.ENTER_BUSINESSTYPE,
                     ),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Enter website";
+                          return Strings.ENTER_WEBSITE;
                         }
                         return null;
                       },
                       controller: websiteController,
-                      hint: "Enter website",
+                      hint: Strings.ENTER_WEBSITE,
                     ),
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
@@ -187,7 +187,7 @@ class _BusinessInformationDetailsState
                               );
 
                               return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
+                                padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
                                 child: Row(
                                   children: [
                                     CircleAvatar(
@@ -197,12 +197,12 @@ class _BusinessInformationDetailsState
                                         color: Colors.black,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    SizedBox(width: Constant.CONTAINER_SIZE_12),
                                     Expanded(
                                       child: TextField(
                                         controller: item.controller,
                                         decoration: InputDecoration(
-                                          hintText: 'Link',
+                                          hintText: Strings.LINK,
                                           hintStyle: theme.textTheme.titleSmall!
                                               .copyWith(color: Colors.grey),
                                           filled: true,
@@ -221,7 +221,7 @@ class _BusinessInformationDetailsState
                                           ),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(
-                                              25,
+                                              Constant.CONTAINER_SIZE_25,
                                             ),
                                             borderSide: BorderSide.none,
                                           ),
@@ -245,7 +245,7 @@ class _BusinessInformationDetailsState
                         children: [
                           Icon(Icons.add, color: theme.secondaryHeaderColor),
                           Text(
-                            " Add Social Media",
+                            Strings.ADD_SOCIAL_MEDIA,
                             style: theme.textTheme.titleSmall!.copyWith(
                               color: theme.secondaryHeaderColor,
                             ),
@@ -257,7 +257,7 @@ class _BusinessInformationDetailsState
                     Row(
                       children: [
                         CustomOutlineButton(
-                          title: "Skip",
+                          title: Strings.SKIP,
                           onTap: () {
                             Utils.navigateToPushScreen(
                               context,
@@ -284,12 +284,12 @@ class _BusinessInformationDetailsState
                               } else {
                                 showCustomSnackBar(
                                   context: context,
-                                  message: "Enter Business details",
+                                  message: Strings.ENTER_BUSINESSTYPE,
                                   color: Colors.red,
                                 );
                               }
                             },
-                            rightText: "Continue",
+                            rightText: Strings.CONTINUE,
                           ),
                         ),
                       ],
@@ -367,7 +367,7 @@ class _BusinessInformationDetailsState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Social Media',
+                    Strings.SOCIAL_MEDIA,
                     style: Theme.of(
                       context,
                     ).textTheme.titleMedium!.copyWith(color: Colors.white),
@@ -405,7 +405,7 @@ class _BusinessInformationDetailsState
                             backgroundColor: item.color,
                             child: Icon(item.icon, color: Colors.black),
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: Constant.SIZE_06),
                           Text(
                             item.label,
                             style: const TextStyle(color: Colors.white),

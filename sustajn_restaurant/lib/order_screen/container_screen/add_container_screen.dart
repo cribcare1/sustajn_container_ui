@@ -103,7 +103,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                     : (containers == null || containers.isEmpty)
                     ? const Center(
                         child: Text(
-                          "No data available",
+                          Strings.NO_CONTAINER_AVAILABLE,
                           style: TextStyle(color: Colors.white),
                         ),
                       )
