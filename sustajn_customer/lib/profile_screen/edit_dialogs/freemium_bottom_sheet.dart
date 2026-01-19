@@ -173,29 +173,6 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
     );
   }
 
-  // Widget _learnMoreButton(ThemeData theme) {
-  //   return OutlinedButton(
-  //     onPressed: () {
-  //
-  //     },
-  //     style: OutlinedButton.styleFrom(
-  //       side: BorderSide(color: Constant.gold),
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-  //       ),
-  //       padding: EdgeInsets.symmetric(
-  //         vertical: Constant.SIZE_10,
-  //         horizontal: Constant.CONTAINER_SIZE_30,
-  //       ),
-  //     ),
-  //     child: Text(
-  //       'Learn More',
-  //       style: theme.textTheme.labelLarge?.copyWith(
-  //         color: Constant.gold,
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _learnMoreButton(ThemeData theme, List<SubscriptionData> plan) {
     return OutlinedButton(
       onPressed: () {

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sustajn_customer/auth/screens/plandetails_screen.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -128,63 +130,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                      // Center(
-                      //   child: InkWell(
-                      //     borderRadius: BorderRadius.circular(60),
-                      //     onTap: () {
-                      //       showModalBottomSheet(
-                      //         context: context,
-                      //         useSafeArea: true,
-                      //         isScrollControlled: true,
-                      //         shape: const RoundedRectangleBorder(
-                      //           borderRadius:
-                      //           BorderRadius.vertical(top: Radius.circular(16),
-                      //           ),
-                      //         ),
-                      //         builder: (_) => SafeArea(
-                      //           child: Padding(
-                      //             padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                      //             child: Column(
-                      //               mainAxisSize: MainAxisSize.min,
-                      //               children: [
-                      //                 ListTile(
-                      //                   leading: const Icon(Icons.camera),
-                      //                   title: const Text("Camera"),
-                      //                   onTap: () {
-                      //                     Navigator.pop(context);
-                      //                     pickImage(ImageSource.camera);
-                      //                   },
-                      //                 ),
-                      //                 ListTile(
-                      //                   leading: const Icon(Icons.photo),
-                      //                   title: const Text("Gallery"),
-                      //                   onTap: () {
-                      //                     Navigator.pop(context);
-                      //                     pickImage(ImageSource.gallery);
-                      //                   },
-                      //                 ),],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     },
-                      //     child: CircleAvatar(
-                      //       radius: 50,
-                      //       backgroundColor: Constant.gold,
-                      //       backgroundImage:
-                      //       selectedImage != null ? FileImage(selectedImage!) : null,
-                      //       child: selectedImage == null
-                      //           ? Icon(
-                      //         Icons.person,
-                      //         size: 50,
-                      //         color: theme.primaryColor,
-                      //       )
-                      //           : null,
-                      //     ),
-                      //   ),
-                      // ),
-
-                      // SizedBox(height: Constant.CONTAINER_SIZE_16),
                       Text(
                         Strings.SIGN_UP,
                         style: themeData?.textTheme.titleLarge!.copyWith(
@@ -360,13 +305,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                                     decorationColor: Constant.gold
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginScreen()),
+                                  ..onTap = (plan) {
+                                  NavUtil.navigateToPushScreen(context,
+                                      PlandetailsScreen(
+                                        plan: plan.first,
+                                      )
                                     );
-                                  },
+                                  } as GestureTapCallback?,
                               )
                             ],
                           ),
