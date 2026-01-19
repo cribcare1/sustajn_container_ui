@@ -94,7 +94,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             children: [
               CustomTheme.searchField(
                 searchController,
-                "Search Container by Name",
+                Strings.SEARCH_BY_CONTAINER_NAME,
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(

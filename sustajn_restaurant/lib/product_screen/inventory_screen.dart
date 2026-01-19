@@ -73,7 +73,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: CustomTheme.searchField(
               searchController,
-              "Search Containers",
+              Strings.SEARCH_BY_CONTAINER_NAME,
               onFilterTap: () => _showSortBottomSheet(context),
             ),
           ),
@@ -83,7 +83,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 ? Center(child: CircularProgressIndicator())
                 : orderState.getContainerData!.containersDetails!.isEmpty
                 ? Center(
-              child: Text("No containers available", style: TextStyle(color: Colors.white),),
+              child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
             )
                 : ListView.builder(
               padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),

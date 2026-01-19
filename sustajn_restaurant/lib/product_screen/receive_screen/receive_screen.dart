@@ -86,7 +86,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: CustomTheme.searchField(
               searchController,
-              "Search by Customer Name",
+               Strings.SEARCH_BY_CONTAINER_NAME,
             ),
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_16),

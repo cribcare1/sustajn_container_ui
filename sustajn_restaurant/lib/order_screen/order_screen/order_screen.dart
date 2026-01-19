@@ -87,7 +87,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             children: [
               CustomTheme.searchField(
                 searchController,
-                "Search Container by Name",
+                Strings.SEARCH_BY_CONTAINER_NAME,
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(
