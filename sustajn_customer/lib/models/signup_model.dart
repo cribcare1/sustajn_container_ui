@@ -43,14 +43,14 @@ class SignUpData {
         this.tokenType});
 
   SignUpData.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'];
-    image = json['image'];
-    role = json['role'];
-    userName = json['userName'];
-    address = json['address'];
-    fullName = json['fullName'];
-    jwtToken = json['jwtToken'];
-    tokenType = json['tokenType'];
+    userId = json['userId']??0;
+    image = json['image']??"";
+    role = json['role']??"";
+    userName = json['userName']??"";
+    address = json['address']??"";
+    fullName = json['fullName']??"";
+    jwtToken = json['jwtToken']??"";
+    tokenType = json['tokenType']??"";
   }
 
   Map<String, dynamic> toJson() {

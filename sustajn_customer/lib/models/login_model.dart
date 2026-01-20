@@ -6,9 +6,9 @@ class LoginModel {
   LoginModel({this.message, this.data, this.status});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
+    message = json['message']??"";
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    status = json['status'];
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -43,14 +43,14 @@ class Data {
         this.tokenType});
 
   Data.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'];
-    image = json['image'];
-    role = json['role'];
-    userName = json['userName'];
-    address = json['address'];
-    fullName = json['fullName'];
-    jwtToken = json['jwtToken'];
-    tokenType = json['tokenType'];
+    userId = json['userId']??0;
+    image = json['image']??"";
+    role = json['role']??"";
+    userName = json['userName']??"";
+    address = json['address']??"";
+    fullName = json['fullName']??"";
+    jwtToken = json['jwtToken']??"";
+    tokenType = json['tokenType']??"";
   }
 
   Map<String, dynamic> toJson() {

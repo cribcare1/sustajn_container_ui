@@ -8,7 +8,6 @@ import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
-import '../../models/profile_model.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 
@@ -25,10 +24,10 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _bankNameController = TextEditingController();
-  final TextEditingController _accountNumberController = TextEditingController();
+  final TextEditingController _accountNumberController =
+      TextEditingController();
   final TextEditingController _taxNumberController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
-
 
   @override
   void initState() {
@@ -43,7 +42,6 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       _ibanController.text = bank.iBanNumber ?? '';
     }
   }
-
 
   String? _validateBankName(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -87,9 +85,6 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return null;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -111,13 +106,12 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
               padding: EdgeInsets.only(
                 left: Constant.CONTAINER_SIZE_20,
                 right: Constant.CONTAINER_SIZE_20,
-                bottom: MediaQuery.of(context).viewInsets.bottom +
+                bottom:
+                    MediaQuery.of(context).viewInsets.bottom +
                     Constant.CONTAINER_SIZE_20,
               ),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -141,18 +135,13 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                     _verifyButton(theme, context, signupState),
                   ],
                 ),
-
               ),
             );
           },
         ),
       ),
-
-
-
     );
   }
-
 
   Widget _bankHeader(ThemeData theme, var signupState) {
     return Padding(
@@ -174,12 +163,11 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                 context,
                 Icons.warning_amber_rounded,
                 Strings.REMOVE_DETAILS,
-               Strings.DELETE_MESSAGE,
-               Strings.REMOVE,
+                Strings.DELETE_MESSAGE,
+                Strings.REMOVE,
               );
 
-              if (shouldClear) {
-              }
+              if (shouldClear) {}
             },
             child: Text(
               "Clear fields",
@@ -187,8 +175,8 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Constant.gold,
                 fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Constant.gold
+                decoration: TextDecoration.underline,
+                decorationColor: Constant.gold,
               ),
             ),
           ),
@@ -196,7 +184,6 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       ),
     );
   }
-
 
   Widget _sectionTitle(ThemeData theme, {String? title, String? subtitle}) {
     if (title == null && subtitle == null) {
@@ -436,20 +423,17 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         ),
-        enabledBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-        focusedBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        enabledBorder: CustomTheme.roundedBorder(
+          Constant.grey.withOpacity(0.3),
+        ),
+        focusedBorder: CustomTheme.roundedBorder(
+          Constant.grey.withOpacity(0.3),
+        ),
       ),
     );
   }
 
-
-  Widget _verifyButton(
-      ThemeData theme,
-      BuildContext context,
-      var signupState,
-      ) {
+  Widget _verifyButton(ThemeData theme, BuildContext context, var signupState) {
     return Padding(
       padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_20),
       child: SizedBox(
@@ -466,9 +450,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Constant.gold,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                Constant.CONTAINER_SIZE_16,
-              ),
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
             ),
           ),
           child: FittedBox(
@@ -487,115 +469,118 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   }
 
   Future<bool> displayDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String stayButtonText,
-      ) async {
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subTitle,
+    String stayButtonText,
+  ) async {
     final theme = Theme.of(context);
 
     return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => Dialog(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: Constant.PADDING_HEIGHT_10,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                  border: Border.all(
-                      color: Constant.grey.withOpacity(0.1)
-                  ),
-                  color: Constant.white.withOpacity(0.1),
-                  shape: BoxShape.rectangle,
-                ),
-                child: Icon(
-                  icon,
-                  size: Constant.CONTAINER_SIZE_40,
-                  color: Constant.gold,
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white
-              )),
-              SizedBox(height: Constant.SIZE_05),
-              Text(
-                subTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-              Row(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => Dialog(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: Constant.PADDING_HEIGHT_10,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFC8B531)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                        ),
+                  Container(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
                       ),
-                      child: Text(
-                        'Cancel',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Constant.gold,
-                        ),
-                      ),
+                      border: Border.all(color: Constant.grey.withOpacity(0.1)),
+                      color: Constant.white.withOpacity(0.1),
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: Constant.CONTAINER_SIZE_40,
+                      color: Constant.gold,
                     ),
                   ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_05),
+                  Text(
+                    subTitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-                  SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                  // STAY
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constant.gold,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFFC8B531)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Constant.gold,
+                            ),
                           ),
                         ),
                       ),
-                      child: Text(
-                        stayButtonText,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.primaryColor,
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                      // STAY
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            stayButtonText,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.primaryColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
-
 }

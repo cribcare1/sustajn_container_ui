@@ -3,15 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/auth/screens/save_home_address.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
+
 import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
-import '../../models/profile_model.dart';
-import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/nav_utils.dart';
-import '../../utils/theme_utils.dart';
-import '../../utils/utils.dart';
 import 'edit_address.dart';
 
 class AddressScreen extends ConsumerStatefulWidget {
@@ -22,7 +18,6 @@ class AddressScreen extends ConsumerStatefulWidget {
 }
 
 class _AddressScreenState extends ConsumerState<AddressScreen> {
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -48,11 +43,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
               child: ListView.builder(
                 itemCount: addressList.length,
                 itemBuilder: (context, index) {
-                  return _addressCard(
-                    context,
-                    theme,
-                    addressList[index],
-                  );
+                  return _addressCard(context, theme, addressList[index]);
                 },
               ),
             ),
@@ -68,13 +59,17 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
             height: Constant.CONTAINER_SIZE_50,
             child: ElevatedButton(
               onPressed: () {
-                NavUtil.navigateToPushScreen(context, HomeAddress(flow: AddressFlow.profile,));
+                NavUtil.navigateToPushScreen(
+                  context,
+                  HomeAddress(flow: AddressFlow.profile),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Constant.gold,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.circular(Constant.CONTAINER_SIZE_30),
+                  borderRadius: BorderRadius.circular(
+                    Constant.CONTAINER_SIZE_30,
+                  ),
                 ),
               ),
               child: Text(
@@ -92,10 +87,10 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
   }
 
   Widget _addressCard(
-      BuildContext context,
-      ThemeData theme,
-      AddressResponses data,
-      ) {
+    BuildContext context,
+    ThemeData theme,
+    AddressResponses data,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -132,8 +127,8 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
 
                 Text(
                   "${data.flatDoorHouseDetails ?? ""} "
-                      "${data.areaStreetCityBlockDetails ?? ""}\n"
-                      " ${data.poBoxOrPostalCode ?? ""}",
+                  "${data.areaStreetCityBlockDetails ?? ""}\n"
+                  " ${data.poBoxOrPostalCode ?? ""}",
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                   ),
@@ -150,18 +145,13 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => AddressOptionsDialog(address: data,),
+                builder: (context) => AddressOptionsDialog(address: data),
               );
             },
-          child:Icon(
-            Icons.more_vert_outlined,
-            color: Colors.white,
-          ),
+            child: Icon(Icons.more_vert_outlined, color: Colors.white),
           ),
         ],
       ),
     );
   }
-
-
 }

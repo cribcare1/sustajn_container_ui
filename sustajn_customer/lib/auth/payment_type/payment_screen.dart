@@ -430,7 +430,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   borderRadius: BorderRadius.circular(12), // optional
                 ),
               ),
-              child: Text('Skip',
+              child: Text(Strings.SKIP,
               style: TextStyle(
                 color: Constant.gold
               ),),

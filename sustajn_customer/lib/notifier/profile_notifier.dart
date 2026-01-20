@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/get_profile_model.dart';
-import '../models/product_data.dart';
-import '../models/profile_model.dart';
-import '../utils/utils.dart';
 
 class ProfileNotifier extends ChangeNotifier {
   bool _isLoading = false;
@@ -21,7 +18,6 @@ class ProfileNotifier extends ChangeNotifier {
 
   ProfileData? get profileData => _profileData?.data;
 
-
   List<ProfileData> get profileList => _profileList;
 
   void setProfileList(GetProfileModel data) {
@@ -35,7 +31,6 @@ class ProfileNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
-
 
   void clearProfileList() {
     _profileList.clear();

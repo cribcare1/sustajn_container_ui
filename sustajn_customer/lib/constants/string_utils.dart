@@ -202,4 +202,5 @@ class Strings {
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
+  static const String SKIP = 'Skip';
 }

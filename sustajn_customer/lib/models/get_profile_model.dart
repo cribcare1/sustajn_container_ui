@@ -7,8 +7,8 @@ class GetProfileModel {
 
   GetProfileModel.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new ProfileData.fromJson(json['data']) : null;
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -51,13 +51,13 @@ class ProfileData {
         this.subscriptionResponse});
 
   ProfileData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    fullName = json['fullName'];
-    mobileNumber = json['mobileNumber'];
-    customerId = json['customerId'];
-    emailId = json['emailId'];
-    profileImageUrl = json['profileImageUrl'];
-    subscriptionPlanId = json['subscriptionPlanId'];
+    id = json['id']??0;
+    fullName = json['fullName']??"";
+    mobileNumber = json['mobileNumber']??"";
+    customerId = json['customerId']??"";
+    emailId = json['emailId']??"";
+    profileImageUrl = json['profileImageUrl']??"";
+    subscriptionPlanId = json['subscriptionPlanId']??0;
     bankDetailsResponse = json['bankDetailsResponse'];
     cardDetailsResponse = json['cardDetailsResponse'];
     paymentGetWayResponse = json['paymentGetWayResponse'];
@@ -112,12 +112,12 @@ class BankDetailsResponse {
         this.taxNumber});
 
   BankDetailsResponse.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['userId'];
-    bankName = json['bankName'];
-    accountNumber = json['accountNumber'];
-    iBanNumber = json['iBanNumber'];
-    taxNumber = json['taxNumber'];
+    id = json['id']??0;
+    userId = json['userId']??0;
+    bankName = json['bankName']??"";
+    accountNumber = json['accountNumber']??"";
+    iBanNumber = json['iBanNumber']??"";
+    taxNumber = json['taxNumber']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -147,11 +147,11 @@ class AddressResponses {
         this.poBoxOrPostalCode});
 
   AddressResponses.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    addressType = json['addressType'];
-    flatDoorHouseDetails = json['flatDoorHouseDetails'];
-    areaStreetCityBlockDetails = json['areaStreetCityBlockDetails'];
-    poBoxOrPostalCode = json['poBoxOrPostalCode'];
+    id = json['id']??0;
+    addressType = json['addressType']??"";
+    flatDoorHouseDetails = json['flatDoorHouseDetails']??"";
+    areaStreetCityBlockDetails = json['areaStreetCityBlockDetails']??"";
+    poBoxOrPostalCode = json['poBoxOrPostalCode']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -202,22 +202,22 @@ class SubscriptionResponse {
         this.planStatus});
 
   SubscriptionResponse.fromJson(Map<String, dynamic> json) {
-    planId = json['planId'];
-    planName = json['planName'];
-    planType = json['planType'];
-    description = json['description'];
-    partnerType = json['partnerType'];
-    feeType = json['feeType'];
-    depositType = json['depositType'];
-    commissionPercentage = json['commissionPercentage'];
-    minContainers = json['minContainers'];
-    maxContainers = json['maxContainers'];
-    totalContainers = json['totalContainers'];
-    includesDelivery = json['includesDelivery'];
-    includesMarketing = json['includesMarketing'];
-    includesAnalytics = json['includesAnalytics'];
-    billingCycle = json['billingCycle'];
-    planStatus = json['planStatus'];
+    planId = json['planId']??0;
+    planName = json['planName']??"";
+    planType = json['planType']??"";
+    description = json['description']??"";
+    partnerType = json['partnerType']??"";
+    feeType = json['feeType']??"";
+    depositType = json['depositType']??"";
+    commissionPercentage = json['commissionPercentage']??"";
+    minContainers = json['minContainers']??0;
+    maxContainers = json['maxContainers']??0;
+    totalContainers = json['totalContainers']??0;
+    includesDelivery = json['includesDelivery']??false;
+    includesMarketing = json['includesMarketing']??false;
+    includesAnalytics = json['includesAnalytics']??false;
+    billingCycle = json['billingCycle']??"";
+    planStatus = json['planStatus']??"";
   }
 
   Map<String, dynamic> toJson() {

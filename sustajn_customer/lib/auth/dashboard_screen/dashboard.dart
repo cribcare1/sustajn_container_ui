@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/models/profile_model.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/network_urls.dart';
@@ -35,7 +34,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   ProfileData? profile;
 
 
-
   @override
   void initState() {
     super.initState();
@@ -69,20 +67,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final theme = CustomTheme.getTheme(true);
     final profileState = ref.watch(profileProvider);
     final ProfileData? profile = profileState.profileData;
-
-
-
     final ProfileData? currentProfile =
     profileState.profileList.isNotEmpty
         ? profileState.profileList.first
         : profile;
-
     final int? subscriptionPlanId =
         currentProfile?.subscriptionPlanId ??
             currentProfile?.subscriptionResponse?.planId;
-
-
-
     if (isLoading || profileState.isLoading) {
       return const Scaffold(
         body: Center(
@@ -92,7 +83,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       );
     }
-
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -107,13 +97,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MyProfileScreen(
-                    userId: currentProfile.id!,
-                    subScriptionPlanId:
-                    currentProfile.subscriptionPlanId ??
-                        currentProfile.subscriptionResponse?.planId ??
-                        0,
-                  ),
+                  builder: (context) =>
+                      MyProfileScreen(
+                        userId: currentProfile.id!,
+                        subScriptionPlanId:
+                        currentProfile.subscriptionPlanId ??
+                            currentProfile.subscriptionResponse?.planId ??
+                            0,
+                      ),
                 ),
               );
             },
@@ -125,7 +116,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: (currentProfile?.profileImageUrl != null &&
                     currentProfile!.profileImageUrl!.isNotEmpty)
                     ? Image.network(
-                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
+                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile
+                      .profileImageUrl}?t=${DateTime
+                      .now()
+                      .millisecondsSinceEpoch}",
                   fit: BoxFit.cover,
                   width: Constant.CONTAINER_SIZE_40,
                   height: Constant.CONTAINER_SIZE_40,
@@ -282,14 +276,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   _getProfileData() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) async {
+          isNetworkAvailable,) async {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         if (isNetworkAvailable) {
           ref.read(profileProvider).clearProfileList();
           ref.read(profileProvider).setIsLoading(true);
           final int? userId =
-              await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
+          await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
 
           if (userId == null || userId == -1) {
             Utils.showToast("User session expired. Please login again.");

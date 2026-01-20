@@ -12,8 +12,8 @@ class SubscriptionModel {
         data!.add(new SubscriptionData.fromJson(v));
       });
     }
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -70,27 +70,27 @@ class SubscriptionData {
         this.updatedAt});
 
   SubscriptionData.fromJson(Map<String, dynamic> json) {
-    billingCycle = json['billingCycle'];
-    commissionPercentage = json['commissionPercentage'];
-    createdAt = json['createdAt'];
+    billingCycle = json['billingCycle']??"";
+    commissionPercentage = json['commissionPercentage']??0.0;
+    createdAt = json['createdAt']??"";
     depositType = json['depositType'];
-    description = json['description'];
-    feeType = json['feeType'];
-    includesAnalytics = json['includesAnalytics'];
-    includesDelivery = json['includesDelivery'];
-    includesMarketing = json['includesMarketing'];
-    maxContainers = json['maxContainers'];
-    minContainers = json['minContainers'];
-    partnerType = json['partnerType'];
-    planFor = json['planFor'];
+    description = json['description']??"";
+    feeType = json['feeType']??0.0;
+    includesAnalytics = json['includesAnalytics']??false;
+    includesDelivery = json['includesDelivery']??false;
+    includesMarketing = json['includesMarketing']??false;
+    maxContainers = json['maxContainers']??0;
+    minContainers = json['minContainers']??0;
+    partnerType = json['partnerType']??"";
+    planFor = json['planFor']??"";
     planId = json['planId'] is int
         ? json['planId']
         : (json['planId'] as num?)?.toInt();
-    planName = json['planName'];
-    planStatus = json['planStatus'];
-    planType = json['planType'];
-    totalContainers = json['totalContainers'];
-    updatedAt = json['updatedAt'];
+    planName = json['planName']??"";
+    planStatus = json['planStatus']??"";
+    planType = json['planType']??"";
+    totalContainers = json['totalContainers']??0;
+    updatedAt = json['updatedAt']??"";
   }
 
   Map<String, dynamic> toJson() {
