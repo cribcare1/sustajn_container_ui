@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../constants/network_urls.dart';
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../notifier/order_notifier.dart';
@@ -21,14 +23,14 @@ final getOrderProvider = FutureProvider.family<dynamic, String>((
     GetContainerData responseData = await serviceProvider.getOrderService(
       params,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
       orderState.setIsLoading(false);
       orderState.setOrderData(responseData);
     } else {
       orderState.setIsLoading(false);
       Utils.showToast(responseData.message!);
     }
-    return responseData;
+    return null;
   } catch (e) {
     Utils.printLog("Get Profile provider error called: $e");
     orderState.setIsLoading(false);

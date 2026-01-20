@@ -58,12 +58,16 @@ class Strings{
   static const ENTER_PRODUCT_ID = 'Enter Product ID*';
   static const ENTER_VOLUME = 'Enter Volume in ml*';
   static const ENTER_QUANTITY = 'Quantity*';
+  static const ENTER_WEBSITE = 'Enter Website';
+  static const ENTER_BUSINESSTYPE = 'Enter business type';
+  static const ENTER_BUSINESS_DETAILS = 'Enter business details';
   static const CONTAINER_PRICE = 'Price of the container*';
   static const CONTAINER_IMAGE = 'Container Image';
   static const ADD_CONTAINER= 'Add Container';
   static const CHOOSE = 'Choose';
   static const CAMERA = 'Camera';
   static const GALLERY = 'Gallery';
+  static const LINK = 'Link';
   static const UPLOAD_IMAGE = 'Upload container image (JPG/PNG)';
   static const NO_CONTAINERS = 'No containers added yet';
   static const START_ADD_CONTAINERS= 'Start by adding container items so they appear here';
@@ -115,7 +119,7 @@ class Strings{
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const SORT_BY = 'Sort By';
-
+  static const CONTACT_REGISTRATION = 'Contact & Registration Detals';
   static const EDIT = 'Edit';
   static const DELETE = 'Delete';
   static const REJECT_TXT = 'rejected';
@@ -155,6 +159,8 @@ class Strings{
   static const String SUBMIT_REQUEST = "Submit Request";
   static const String REQUEST_HISTORY = "Request History";
   static const String NO_CONTAINER_REQUESTS_YET = "No container requests yet";
+  static const String NO_CONTAINER_AVAILABLE = "No containers available";
+  static const String SEARCH_BY_CONTAINER_NAME = "Search by Customer Name";
   static const String DELETE_REQUEST = "Delete Request";
   static const String REQUESTED = "Requested";
   static const String APPROVED = "Approved";
@@ -170,12 +176,16 @@ class Strings{
   static const String TAX_NUMBER = 'Tax Number';
   static const String CONTINUE= 'Continue';
   static const String BUSINESS_INFO= 'Business Information';
+  static const String BUSINESS_DTLS= 'Business Details';
+
   static const String PROVIDE_INFOR= 'Provide information to help customers find you';
   static const String SKIP = 'Skip';
   static const String SPECIALITY = 'Speciality';
   static const String CUISINE = 'Cuisine';
   static const String WEBSITE = 'Website';
   static const String ADD_SOCIAL_MEDIA = '+  Add Social Media';
+  static const String SOCIAL_MEDIA = 'Social Media';
+
   static const String SUBSCRIBE = 'Subscribe';
 static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String POPULAR = 'Popular';

@@ -87,7 +87,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: CustomTheme.searchField(
               searchController,
-              "Search by Customer Name",
+              Strings.SEARCH_BY_CONTAINER_NAME,
             ),
           ),
           SizedBox(height: 10),
@@ -97,7 +97,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                 : container == null
                 ? const Center(
                     child: Text(
-                      "No containers available",
+                      Strings.NO_CONTAINER_AVAILABLE,
                       style: TextStyle(color: Colors.white),
                     ),
                   )

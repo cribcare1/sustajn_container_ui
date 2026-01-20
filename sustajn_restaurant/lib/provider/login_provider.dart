@@ -9,7 +9,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
 import '../auth/screens/business_information_screen.dart';
-import '../auth/screens/dashboard_screen.dart';
+import '../auth/screens/dashboard/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';

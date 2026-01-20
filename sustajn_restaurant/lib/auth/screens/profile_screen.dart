@@ -99,6 +99,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   List<GetProfileData> profileData = [];
+  AddressResponses? selectedAddress;
+
   LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
@@ -123,17 +125,28 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final profileState = ref.watch(profileProvider);
     final profile = profileState.getProfileData?.data;
 
-    final address =
-        (profile?.addressResponses != null &&
-            profile!.addressResponses!.isNotEmpty)
-        ? profile.addressResponses!.first
-        : null;
+    final List<AddressResponses>? addresses = profile?.addressResponses;
 
-    final fullAddress = [
-      address?.flatDoorHouseDetails,
-      address?.areaStreetCityBlockDetails,
-      address?.poBoxOrPostalCode,
-    ].whereType<String>().join(', ');
+    if (addresses != null && addresses.isNotEmpty) {
+      selectedAddress = addresses.firstWhere(
+            (e) => e.addressType?.toLowerCase() == "home",
+        orElse: () => addresses.firstWhere(
+              (e) => e.addressType?.toLowerCase() == "work",
+          orElse: () => addresses.first,
+        ),
+      );
+    }
+
+    final String fullAddress = selectedAddress == null
+        ? "No address added"
+        : [
+      selectedAddress!.flatDoorHouseDetails,
+      selectedAddress!.areaStreetCityBlockDetails,
+      selectedAddress!.poBoxOrPostalCode,
+    ].whereType<String>()
+        .where((e) => e.isNotEmpty)
+        .join(', ');
+
 
     if (profileState.isLoading == true) {
       return Center(child: CircularProgressIndicator());
@@ -162,7 +175,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           title: Text(
             "My Profile",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: Constant.CONTAINER_SIZE_20,
               fontWeight: FontWeight.w500,
               color: theme.scaffoldBackgroundColor,
             ),
@@ -171,7 +184,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : loginResponse!=null?SingleChildScrollView(
+            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -198,7 +211,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 image: DecorationImage(
                                   image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
                                     "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/default_profile.png"),
+                                  ):AssetImage("assets/images/cups.png"),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -287,7 +300,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: loginResponse!.userName! ?? "",
+                                value: loginResponse?.userName! ?? "",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
@@ -298,14 +311,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.location_on_outlined,
                                 title: "Address",
-                                value: fullAddress ?? "No address added",
-
-                                // "${profile?.addressResponses!.first
-                                //     .flatDoorHouseDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}",
-                                // profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
-                                // loginResponse!.address!,
+                                value: fullAddress ?? "No address",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -315,7 +321,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
-                                        EditAddressDialog(address: fullAddress),
+                                        EditAddressDialog(selectedAddress: selectedAddress),
                                   );
                                 },
                               ),

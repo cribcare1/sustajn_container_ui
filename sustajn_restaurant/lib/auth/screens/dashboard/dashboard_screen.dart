@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
-import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../common_widgets/card_widget.dart';
-import '../../common_widgets/circle_card_widget.dart';
-import '../../constants/network_urls.dart';
-import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
-import '../../lease_receive/screens/lease_scan_screen.dart';
-import '../../lease_receive/screens/receive_product_list_screen.dart';
-import '../../models/login_model.dart';
-import '../../network_provider/network_provider.dart';
-import '../../order_screen/order_home_screen.dart';
-import '../../product_screen/product_home_screen.dart';
-import '../../provider/profile_provider.dart';
-import '../../utils/utility.dart';
+import '../../../common_widgets/card_widget.dart';
+import '../../../common_widgets/circle_card_widget.dart';
+import '../../../constants/network_urls.dart';
+import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../lease_receive/screens/lease_scan_screen.dart';
+import '../../../models/login_model.dart';
+import '../../../network_provider/network_provider.dart';
+import '../../../order_screen/order_home_screen.dart';
+import '../../../product_screen/product_home_screen.dart';
+import '../../../provider/profile_provider.dart';
+import '../../../utils/utility.dart';
+import 'pi_chart.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -49,7 +48,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     super.initState();
     Utils.getUserId();
     _loadProfile();
-    if(loginResponse == null){
+    if (loginResponse == null) {
       Utils.printLog("No data found for profile api will call");
       _getProfileNetworkCall();
     }
@@ -65,10 +64,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   _getProfileNetworkCall() async {
     try {
-
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
 
@@ -92,7 +90,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
-    if(profileState.loginResponse != null) {
+    if (profileState.loginResponse != null) {
       loginResponse = profileState.loginResponse;
     }
     final theme = Theme.of(context);
@@ -254,9 +252,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: Constant.SIZE_15),
+                        SizedBox(height: Constant.CONTAINER_SIZE_30),
                         Text(
-                          'Container Status Overview',
+                          'Container Status',
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.bold,
@@ -296,7 +294,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               ),
                               SizedBox(height: Constant.SIZE_15),
                               _buildLegendRow(context),
-                              SizedBox(height: Constant.CONTAINER_SIZE_20),
+                              SizedBox(height: Constant.CONTAINER_SIZE_35),
                               _buildChartRings(context, width, theme),
                             ],
                           ),
@@ -427,28 +425,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _legendItem('Total', Colors.greenAccent, theme),
+          _legendItem('Lease', Color(0xFFCD4400), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Lease', Colors.yellowAccent, theme),
+          _legendItem('Receive', Color(0xFF9C1A00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Receive', Colors.lightBlueAccent, theme),
+          _legendItem('Available', Color(0xFFF79F00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Available', Colors.amber.shade700, theme),
-          SizedBox(width: Constant.SIZE_10),
-          _legendItem('Damage', Colors.redAccent.shade700, theme),
+          _legendItem('Damage', Color(0xFF7B8D73), theme),
         ],
       ),
     );
-
-
   }
 
   Widget _legendItem(String text, Color color, ThemeData theme) {
     return Row(
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: Constant.CONTAINER_SIZE_10,
+          height: Constant.CONTAINER_SIZE_10,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         SizedBox(width: Constant.SIZE_06),
@@ -461,11 +455,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   final List<ChartData> chartData = [
-    ChartData('Total', 1000, Colors.greenAccent),
-    ChartData('Available', 800, Colors.yellowAccent),
-    ChartData('Lease', 300, Colors.lightBlueAccent),
-    ChartData('Receive', 100, Colors.amber.shade700),
-    ChartData('Damage', 2, Colors.redAccent.shade700),
+    ChartData('Available', 600, const Color(0xFFF79F00)),
+    ChartData('Receive', 280, const Color(0xFFCD4400)),
+    ChartData('Lease', 100, const Color(0xFF9C1A00)),
+    ChartData('Damage', 10, const Color(0xFF7B8D73)),
   ];
 
   Widget _buildChartRings(
@@ -486,78 +479,94 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               SizedBox(
                 width: chartSize,
                 height: chartSize,
-                child: SfCircularChart(
-                  series: <DoughnutSeries<ChartData, String>>[
-                    DoughnutSeries<ChartData, String>(
-                      dataSource: chartData,
-                      xValueMapper: (ChartData data, _) => data.label,
-                      yValueMapper: (ChartData data, _) => data.value,
-                      pointColorMapper: (ChartData data, _) => data.color,
-                      innerRadius: '55%',
-                      radius: '100%',
-                      strokeWidth: 4,
-                      // explode: true,
-                      explodeOffset: '4%',
-                      dataLabelSettings: const DataLabelSettings(
-                        isVisible: false,
-                      ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SfCircularChart(
+                      margin: EdgeInsets.zero,
+                      series: <DoughnutSeries<ChartData, String>>[
+                        DoughnutSeries<ChartData, String>(
+                          dataSource: chartData,
+                          xValueMapper: (d, _) => d.label,
+                          yValueMapper: (d, _) => d.value,
+                          pointColorMapper: (d, _) => d.color,
+                          radius: '100%',
+                          innerRadius: '65%',
+                          strokeWidth: 3,
+                          dataLabelSettings: const DataLabelSettings(
+                            isVisible: false,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Total',
+                          style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
+                        ),
+                        SizedBox(height: Constant.SIZE_04),
+                        Text(
+                          '1000',
+                          style: TextStyle(
+                            color: Colors.greenAccent,
+                            fontSize: Constant.CONTAINER_SIZE_24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
 
               _chartLabel(
-                left: 10,
-                top: 0,
-                right: 10,
-                title: 'Lease',
-                value: '300',
-                color: Colors.yellowAccent,
-              ),
-
-              _chartLabel(
-                right: 0,
-                top: 10,
-                title: 'Receive',
-                value: '100',
-                color: const Color(0xFF9CCBFF),
-                alignEnd: true,
-              ),
-
-              _chartLabel(
-                left: -5,
-                bottom: 10,
-                title: 'Available',
-                value: '800',
-                color: const Color(0xFFFFD88A),
-              ),
-
-              _chartLabel(
-                right: -5,
-                bottom: 30,
-                title: 'Total',
-                value: '1000',
-                color: const Color(0xFF9AF28D),
-                alignEnd: true,
-              ),
-
-              _chartLabel(
+                left: 45,
                 top: -20,
+                title: 'Receive',
+                value: '${getChartItem('Lease').value.toInt()}',
+                color: getChartItem('Lease').color,
+              ),
+
+              _chartLabel(
+                left: -30,
+                top: 35,
+                title: 'Lease',
+                value: '${getChartItem('Receive').value.toInt()}',
+                color: getChartItem('Receive').color,
+                alignEnd: true,
+              ),
+
+              _chartLabel(
+                right: -15,
+                top: 200,
+                bottom: 0,
+                title: 'Available',
+                value: '${getChartItem('Available').value.toInt()}',
+                color: getChartItem('Available').color,
+              ),
+              _chartLabel(
+                top: -30,
                 title: 'Damage',
-                value: '2',
-                color: Colors.redAccent,
+                value: '${getChartItem('Damage').value.toInt()}',
+                color: getChartItem('Damage').color,
                 alignEnd: true,
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: Constant.SIZE_08),
           Text(
             '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+            style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12),
           ),
         ],
       ),
     );
+  }
+
+  ChartData getChartItem(String label) {
+    return chartData.firstWhere((e) => e.label == label);
   }
 
   Widget _chartLabel({
@@ -584,7 +593,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             title,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: Constant.CONTAINER_SIZE_12,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -592,7 +601,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             value,
             style: TextStyle(
               color: color,
-              fontSize: 13,
+              fontSize: Constant.CONTAINER_SIZE_13,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -609,274 +618,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       useSafeArea: true,
       isDismissible: true,
       builder: (_) {
-        return const _FilterPopupWidget();
+        return const FilterPopupWidget();
       },
     );
   }
 }
 
-class _FilterPopupWidget extends StatefulWidget {
-  const _FilterPopupWidget();
 
-  @override
-  State<_FilterPopupWidget> createState() => _FilterPopupWidgetState();
-}
-
-class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
-  String? selectedType;
-  String? selectedValue;
-  List<String> valueList = ["Customer Return", "Restaurant Damage"];
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () => Navigator.pop(context),
-                child: const CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.clear, color: Colors.black, size: 18),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomLeft,
-                  colors: [Color(0xff0C794E), Color(0xff0F3727)],
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Scan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  const Icon(
-                    Icons.qr_code_scanner,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _OptionTile(
-                          title: 'Lease',
-                          icon: Icons.north_east,
-                          isSelected: selectedType == 'LEASE',
-                          onTap: () {
-                            setState(() {
-                              selectedType = 'LEASE';
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _OptionTile(
-                          title: 'Receive',
-                          icon: Icons.south_west,
-                          isSelected: selectedType == 'RECEIVE',
-                          onTap: () {
-                            setState(() {
-                              selectedType = 'RECEIVE';
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (selectedType == 'RECEIVE') ...[
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(valueList.length, (index) {
-                        final value = valueList[index];
-                        return Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                  radioTheme: RadioThemeData(
-                                    fillColor:
-                                        MaterialStateProperty.resolveWith<
-                                          Color
-                                        >((states) {
-                                          return Theme.of(
-                                            context,
-                                          ).secondaryHeaderColor;
-                                        }),
-                                  ),
-                                ),
-                                child: Radio<String>(
-                                  value: value,
-                                  groupValue: selectedValue,
-                                  activeColor: Theme.of(
-                                    context,
-                                  ).secondaryHeaderColor,
-                                  visualDensity: const VisualDensity(
-                                    horizontal: -4,
-                                    vertical: -4,
-                                  ),
-
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedValue = val;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  value,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context).textTheme.titleSmall!
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: selectedType == null
-                          ? null
-                          : () {
-                              if (selectedType == "RECEIVE" &&
-                                  selectedValue != null) {
-                                Navigator.pop(context);
-                                Utils.navigateToPushScreen(
-                                  context,
-                                  LeaseScanScreen(
-                                    type: selectedType ?? "",
-                                    damage: selectedValue,
-                                  ),
-                                );
-                              } else if (selectedType == 'LEASE') {
-                                Navigator.pop(context);
-                                Utils.navigateToPushScreen(
-                                  context,
-                                  LeaseScanScreen(
-                                    type: selectedType ?? "",
-                                    damage: selectedValue,
-                                  ),
-                                );
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedType == null
-                            ? Colors.grey.shade300
-                            : Theme.of(context).secondaryHeaderColor,
-                        foregroundColor: Colors.black,
-                        disabledBackgroundColor: Colors.grey.shade300,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: Colors.white),
-                        ),
-                      ),
-                      child: Text(
-                        'Confirm',
-                        style: Theme.of(context).textTheme.titleMedium!
-                            .copyWith(
-                              color: selectedType == null
-                                  ? Colors.grey
-                                  : Theme.of(context).primaryColor,
-                            ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-}
-
-class _OptionTile extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _OptionTile({
-    required this.title,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        height: 130,
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).secondaryHeaderColor
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Theme.of(context).secondaryHeaderColor),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 30,
-              color: isSelected ? Colors.black : Colors.white,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.black : Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class ChartData {
   final String label;
