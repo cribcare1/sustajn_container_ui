@@ -57,7 +57,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final address = widget.selectedAddress!;
+    final address = widget.selectedAddress;
     return SafeArea(
       top: false,
       child: Padding(
@@ -155,15 +155,34 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _editAddressNetworkCall(address.id!.toString(), address.addressType!, address.flatDoorHouseDetails!, address.areaStreetCityBlockDetails!, address.poBoxOrPostalCode!);
-                        // Navigator.pop(context, _addressController.text.trim());
-                      }
+                        if (!_formKey.currentState!.validate()) return;
+
+                        final address = widget.selectedAddress;
+                        if (address == null) {
+                          Utils.showToast('Address data not available');
+                          return;
+                        }
+
+                        if (address.id == null ||
+                            address.addressType == null ||
+                            address.flatDoorHouseDetails == null ||
+                            address.poBoxOrPostalCode == null) {
+                            Utils.showToast('Fill address details');
+                          return;
+                        }
+
+                        _editAddressNetworkCall(
+                          address.id.toString(),
+                          address.addressType!,
+                          address.flatDoorHouseDetails!,
+                          _addressController.text.trim(),
+                          address.poBoxOrPostalCode!,
+                        );
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
