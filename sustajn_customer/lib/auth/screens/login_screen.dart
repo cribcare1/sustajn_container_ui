@@ -50,11 +50,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                       Image.asset(
-                           AppAssets.sustajn_app_logo,
-                         height:  height * 0.12,
-                         fit: BoxFit.contain,
+                       Center(
+                         child: Image.asset(
+                             AppAssets.sustajn_app_logo,
+                           height:  height * 0.17,
+                           fit: BoxFit.contain,
+                         ),
                        ),
+                    SizedBox(height: height * 0.05),
                     Text(
                       Strings.WELCOME,
                       style: themeData?.textTheme.titleLarge!.copyWith(
