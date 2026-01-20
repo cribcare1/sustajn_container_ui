@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sustajn_customer/utils/app_permissions.dart';
 import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 
-import 'auth/dashboard_screen/dashboard_screen.dart';
 import 'auth/dashboard_screen/home_screen.dart';
 import 'auth/screens/login_screen.dart';
 import 'constants/assets_utils.dart';
