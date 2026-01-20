@@ -190,13 +190,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-                          // Text(
-                          //   Strings.BORROW_REUSABLE_CONTAINERS,
-                          //   style: theme.textTheme.titleMedium?.copyWith(
-                          //     color: Colors.white,
-                          //   ),
-                          //   textAlign: TextAlign.center,
-                          // ),
                         ],
                       ),
                     ),

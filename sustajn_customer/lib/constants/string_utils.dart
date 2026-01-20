@@ -188,7 +188,7 @@ class Strings {
   static const String SURE_LOG_OUT = 'Are you sure you want to log out?';
   static const String YES = 'Yes';
   static const String NO = 'No';
-  static const String DASHBOARD_TEXT = 'Welcome! Ready to start reusing?';
+  static const String DASHBOARD_TEXT = 'Welcome! Thanks for using Sustajn';
   static const String BORROW_REUSABLE_CONTAINERS = 'Borrow reusable containers from your favourite\n resturants  and track returns here';
 
   static const String MY_QR_CODE = 'My QR Code';
