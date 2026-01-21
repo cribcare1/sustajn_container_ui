@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 
+import '../../common_widgets/custom_back_button.dart';
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -59,6 +61,10 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
     return Scaffold(
 
       backgroundColor: theme!.scaffoldBackgroundColor,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        backgroundColor: theme.scaffoldBackgroundColor,
+      ),
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(
@@ -69,13 +75,13 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: Constant.CONTAINER_SIZE_140),
+                SizedBox(height: Constant.CONTAINER_SIZE_100),
                 Text(
                   Strings.FORGOT_PASSWORD_TXT,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
+                      fontSize: Constant.LABEL_TEXT_SIZE_20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white
                   ),
                 ),
 
@@ -156,7 +162,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
   }
 
   _getNetworkData() async {
-      final registrationState = ref.watch(signUpNotifier);
+    final registrationState = ref.watch(signUpNotifier);
     try {
       if (registrationState.isValid) {
         await ref
