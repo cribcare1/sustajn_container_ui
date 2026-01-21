@@ -29,7 +29,6 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
       _addressController.text =
           widget.selectedAddress!.areaStreetCityBlockDetails ?? '';
     }
-    // _addressController.text = widget.address;
   }
 
 
@@ -83,7 +82,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Address',
+                        Strings.EDIT_ADDRESS,
                         style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.w600,
@@ -119,7 +118,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       color: Colors.white
                   ),
                   decoration: InputDecoration(
-                    labelText: 'Address',
+                    labelText: Strings.ADDRESS,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -195,7 +194,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       ),
                     ),
                     child: Text(
-                      'Save Changes',
+                      Strings.SAVE_CHANGES,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,
