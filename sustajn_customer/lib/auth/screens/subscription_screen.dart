@@ -23,7 +23,10 @@ class SubscriptionScreen extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
-  int _currentIndex = -1;
+  int _visibleIndex = 0;
+  int? _selectedIndex;
+
+
 
 
 
@@ -87,7 +90,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                           onPressed: () {
                             final plans = signUpState.subscriptionList ?? [];
 
-                            if (_currentIndex == -1) {
+                            if (_selectedIndex == null) {
                               showCustomSnackBar(
                                 context: context,
                                 message: "Please select a plan",
@@ -96,7 +99,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               return;
                             }
 
-                            final planId = plans[_currentIndex].planId!;
+                            final planId = plans[_selectedIndex!].planId!;
                             ref.read(signUpNotifier).setSubscriptionPlan(planId);
 
                             NavUtil.navigateToPushScreen(
@@ -188,12 +191,24 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
             ),
             SizedBox(height: Constant.SIZE_08),
-            Text(
-              "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: Constant.gold,
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/diarhm.png',
+                  height: Constant.CONTAINER_SIZE_20,
+                  color: Constant.gold,
+                  colorBlendMode: BlendMode.srcIn,
+                ),
+                Text(
+                  plan.feeType?.toStringAsFixed(2) ?? "0.00",
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Constant.gold,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
             _featureItem(theme, plan),
@@ -247,7 +262,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               viewportFraction: 0.8,
               onPageChanged: (index, reason) {
                 setState(() {
-                  _currentIndex = index;
+                  _visibleIndex = index;
                 });
               },
 
@@ -257,15 +272,17 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    _currentIndex = index;
+                    _selectedIndex = index;
                   });
                 },
+
                 child: SingleChildScrollView(
                   child: _freemiumCard(
                     context,
                     theme,
                     plan,
-                    _currentIndex == index,
+                      _selectedIndex == index
+
                   ),
                 ),
               );
@@ -277,7 +294,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(plans.length, (index) {
-            final isActive = _currentIndex == index;
+            final isActive = _visibleIndex == index;
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: isActive ? 10 : 6,

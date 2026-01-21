@@ -116,6 +116,19 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     }
   }
 
+  String get _appBarTitle {
+    if (widget.flow == AddressFlow.signup) {
+      return "Select Home Address";
+    }
+
+    if (widget.existingAddress != null) {
+      return "Edit Address";
+    }
+
+    return "Add Address";
+  }
+
+
   @override
   void dispose() {
     _searchDebounce?.cancel();
@@ -131,122 +144,127 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     final state = ref.watch(locationProvider);
     final theme = Theme.of(context);
     final addressState = ref.watch(searchResProvider);
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Stack(
-        children:[
-          Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          appBar: CustomAppBar(
-            title: "Select Home Address",
-            leading: CustomBackButton(),
-          ).getAppBar(context),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Stack(
+          children:[
+            Scaffold(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            appBar: CustomAppBar(
+              title:  _appBarTitle,
+              leading: CustomBackButton(),
+            ).getAppBar(context),
 
-          body:
-          state.loading || state.position == null
-              ? const Center(
-            child: CircularProgressIndicator(color: Constant.gold),
-          )
-              : Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  controller: searchController,
-                  cursorColor: Colors.white,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                      hintText: "Search address / pincode / area",
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      filled: true,
-                      fillColor: const Color(0xff1b4d3a),
-                      prefixIcon:
-                      const Icon(Icons.search, color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                      ),
-                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                      focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+            body:
+            state.loading || state.position == null
+                ? const Center(
+              child: CircularProgressIndicator(color: Constant.gold),
+            )
+                : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    controller: searchController,
+                    cursorColor: Colors.white,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        hintText: "Search address / pincode / area",
+                        hintStyle: const TextStyle(color: Colors.white70),
+                        filled: true,
+                        fillColor: const Color(0xff1b4d3a),
+                        prefixIcon:
+                        const Icon(Icons.search, color: Colors.white),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                        ),
+                        enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                        focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                    ),
+                    onChanged: _onSearchChanged,
                   ),
-                  onChanged: _onSearchChanged,
                 ),
-              ),
 
-              Expanded(
-                child: Stack(
-                  children: [
-                    GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: state.position!,
-                        zoom: 17,
+                Expanded(
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: state.position!,
+                          zoom: 17,
+                        ),
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        onMapCreated: (controller) {
+                          _mapController.complete(controller);
+                        },
+                        onCameraIdle: () async {
+                          if (_isSearching) return;
+
+                          final controller = await _mapController.future;
+                          final bounds = await controller.getVisibleRegion();
+
+                          final center = LatLng(
+                            (bounds.northeast.latitude +
+                                bounds.southwest.latitude) / 2,
+                            (bounds.northeast.longitude +
+                                bounds.southwest.longitude) / 2,
+                          );
+
+                          ref.read(locationProvider.notifier).updatePosition(center);
+                        },
+
                       ),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      onMapCreated: (controller) {
-                        _mapController.complete(controller);
-                      },
-                      onCameraIdle: () async {
-                        if (_isSearching) return;
 
-                        final controller = await _mapController.future;
-                        final bounds = await controller.getVisibleRegion();
-
-                        final center = LatLng(
-                          (bounds.northeast.latitude +
-                              bounds.southwest.latitude) / 2,
-                          (bounds.northeast.longitude +
-                              bounds.southwest.longitude) / 2,
-                        );
-
-                        ref.read(locationProvider.notifier).updatePosition(center);
-                      },
-
-                    ),
-
-                    const Center(
-                      child: Icon(
-                        Icons.location_pin,
-                        size: 44,
-                        color: Colors.red,
+                      const Center(
+                        child: Icon(
+                          Icons.location_pin,
+                          size: 44,
+                          color: Colors.red,
+                        ),
                       ),
-                    ),
 
-                    DraggableScrollableSheet(
-                      initialChildSize: 0.45,
-                      minChildSize: 0.35,
-                      maxChildSize: 0.75,
-                      builder: (context, scrollController) {
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                            color: Color(0xff0f3d2e),
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                      DraggableScrollableSheet(
+                        initialChildSize: 0.45,
+                        minChildSize: 0.35,
+                        maxChildSize: 0.75,
+                        builder: (context, scrollController) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Color(0xff0f3d2e),
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
-                          ),
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: _bottomContent(state, context),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                            child: SingleChildScrollView(
+                              controller: scrollController,
+                              child: _bottomContent(state, context),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+
+
           ),
-
-
+            if(addressState.isLoading)
+              Utils.showProgressBar()
+        ]
         ),
-          if(addressState.isLoading)
-            Utils.showProgressBar()
-      ]
       ),
     );
   }
+
+
 
   Widget _bottomContent(LocationState state, BuildContext context) {
     return Column(
@@ -442,6 +460,23 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
       ),
     );
   }
+
+  Future<bool> _onBackPressed() async {
+    final result = await displayDialog(
+      context,
+      Icons.warning_amber,
+     Strings.GO_BACK,
+     Strings.VERIFIED_EMAIL,
+      Strings.STAY_ON_THIS_PAGE,
+    );
+
+    if (result) {
+      Navigator.pop(context);
+    }
+
+    return false;
+  }
+
 
   Future<bool> displayDialog(
       BuildContext context,

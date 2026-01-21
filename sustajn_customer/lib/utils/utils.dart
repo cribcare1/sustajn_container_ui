@@ -535,8 +535,8 @@ class Utils {
       {DateTime? initialDate}) async {
 
     final theme = Theme.of(context);
-
     final now = DateTime.now();
+
     final firstDate = DateTime(now.year - 100);
     final lastDate = DateTime(now.year - 13);
 
@@ -545,25 +545,49 @@ class Utils {
       initialDate: initialDate ?? lastDate,
       firstDate: firstDate,
       lastDate: lastDate,
+
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+
       helpText: "Select Date of Birth",
       cancelText: "Cancel",
       confirmText: "Select",
+
       builder: (context, child) {
         return Theme(
           data: theme.copyWith(
+            useMaterial3: true,
+
             colorScheme: theme.colorScheme.copyWith(
-              primary: theme.primaryColor,
-              onPrimary: Colors.white,
+              primary: Constant.gold,
+              onPrimary: Colors.black,
               surface: theme.scaffoldBackgroundColor,
               onSurface: Colors.white,
+              secondary: Constant.gold,
             ),
-            dialogBackgroundColor: theme.scaffoldBackgroundColor,
+
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              headerBackgroundColor: Constant.gold,
+              headerForegroundColor: Colors.black,
+              dayForegroundColor: MaterialStateProperty.all(Colors.white),
+              yearForegroundColor: MaterialStateProperty.all(Colors.white),
+              weekdayStyle: const TextStyle(color: Colors.white70),
+              dayStyle: const TextStyle(color: Colors.white),
+              yearStyle: const TextStyle(color: Colors.white),
+              todayForegroundColor: MaterialStateProperty.all(Constant.gold),
+              todayBackgroundColor:
+              MaterialStateProperty.all(Colors.transparent),
+              dayOverlayColor:
+              MaterialStateProperty.all(Constant.gold.withOpacity(0.2)),
+            ),
           ),
           child: child!,
         );
       },
     );
   }
+
+
 
   static String formatDob(DateTime date) {
     return "${date.day.toString().padLeft(2, '0')}-"
