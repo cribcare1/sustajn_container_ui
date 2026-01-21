@@ -29,7 +29,6 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
       _addressController.text =
           widget.selectedAddress!.areaStreetCityBlockDetails ?? '';
     }
-    // _addressController.text = widget.address;
   }
 
 
@@ -57,7 +56,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final address = widget.selectedAddress!;
+    final address = widget.selectedAddress;
     return SafeArea(
       top: false,
       child: Padding(
@@ -83,7 +82,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Address',
+                        Strings.EDIT_ADDRESS,
                         style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.w600,
@@ -119,7 +118,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       color: Colors.white
                   ),
                   decoration: InputDecoration(
-                    labelText: 'Address',
+                    labelText: Strings.ADDRESS,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -155,15 +154,34 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _editAddressNetworkCall(address.id!.toString(), address.addressType!, address.flatDoorHouseDetails!, address.areaStreetCityBlockDetails!, address.poBoxOrPostalCode!);
-                        // Navigator.pop(context, _addressController.text.trim());
-                      }
+                        if (!_formKey.currentState!.validate()) return;
+
+                        final address = widget.selectedAddress;
+                        if (address == null) {
+                          Utils.showToast('Address data not available');
+                          return;
+                        }
+
+                        if (address.id == null ||
+                            address.addressType == null ||
+                            address.flatDoorHouseDetails == null ||
+                            address.poBoxOrPostalCode == null) {
+                            Utils.showToast('Fill address details');
+                          return;
+                        }
+
+                        _editAddressNetworkCall(
+                          address.id.toString(),
+                          address.addressType!,
+                          address.flatDoorHouseDetails!,
+                          _addressController.text.trim(),
+                          address.poBoxOrPostalCode!,
+                        );
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -176,7 +194,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       ),
                     ),
                     child: Text(
-                      'Save Changes',
+                      Strings.SAVE_CHANGES,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,

@@ -26,21 +26,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   bool _isQtyAscending = true;
 
-  final List<InventoryItem> inventoryList = [
-    InventoryItem(
-      title: 'Dip Cup',
-      subTitle: 'ST-DC-50',
-      volume: '20 L',
-      qty: 132,
-    ),
-    InventoryItem(
-      title: 'Dip Cup',
-      subTitle: 'ST-DC-50',
-      volume: '10 L',
-      qty: 1900,
-    ),
-  ];
-
   List<GetContainerData> containerData = [];
   LoginData? loginResponse;
   bool isLoading = true;
@@ -216,6 +201,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
+    final orderState = ref.watch(orderProvider);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -308,8 +295,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           onPressed: () {
                             setState(() {
                               _isQtyAscending = true;
-                              inventoryList.sort(
-                                (a, b) => a.qty.compareTo(b.qty),
+                              orderState.getContainerData!.containersDetails!.sort(
+                                (a, b) => a.quantityAvailable!.compareTo(b.quantityAvailable!),
                               );
                             });
                             Navigator.pop(context);
@@ -319,7 +306,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                       ),
 
                       SizedBox(width: Constant.CONTAINER_SIZE_12),
-
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -332,10 +318,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           onPressed: () {
                             setState(() {
                               _isQtyAscending = tempAscending;
-                              inventoryList.sort(
+                              orderState.getContainerData!.containersDetails!.sort(
                                 (a, b) => _isQtyAscending
-                                    ? a.qty.compareTo(b.qty)
-                                    : b.qty.compareTo(a.qty),
+                                    ? a.quantityAvailable!.compareTo(b.quantityAvailable!)
+                                    : b.quantityAvailable!.compareTo(a.quantityAvailable!),
                               );
                             });
                             Navigator.pop(context);
