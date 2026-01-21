@@ -14,7 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../models/get_profile_model.dart';
 import '../models/login_model.dart';
+import '../models/signup_model.dart';
 
 class Utils {
 
@@ -149,16 +151,19 @@ class Utils {
 
     return '${localPart.substring(0, 4)}$masked@$domainPart';
   }
-  static Future<bool> displayDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String stayButtonText,
-      ) async {
+  static Future<void> displayDialog({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
     final theme = Theme.of(context);
 
-    return await showDialog<bool>(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
@@ -177,9 +182,10 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                   border: Border.all(
-                    color: Constant.grey.withOpacity(0.1)
+                    color: Constant.grey.withOpacity(0.1),
                   ),
                   color: Constant.white.withOpacity(0.1),
                   shape: BoxShape.rectangle,
@@ -191,16 +197,17 @@ class Utils {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.white
-              )),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: Colors.white),
+              ),
               SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white
-                ),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -209,9 +216,7 @@ class Utils {
                   // GO BACK
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
+                      onPressed: onCancel,
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC8B531)),
                         shape: RoundedRectangleBorder(
@@ -221,7 +226,7 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        "Go back",
+                        cancelButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -234,9 +239,7 @@ class Utils {
                   // STAY
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
+                      onPressed: onYes,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,
                         shape: RoundedRectangleBorder(
@@ -246,7 +249,7 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        stayButtonText,
+                        yesButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: theme.primaryColor,
                         ),
@@ -259,8 +262,116 @@ class Utils {
           ),
         ),
       ),
-    ) ?? false;
+    );
   }
+
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   static  logOutDialog(
       BuildContext context,
@@ -420,6 +531,46 @@ class Utils {
     );
   }
 
+  static Future<DateTime?> pickDob(BuildContext context,
+      {DateTime? initialDate}) async {
+
+    final theme = Theme.of(context);
+
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 100);
+    final lastDate = DateTime(now.year - 13);
+
+    return await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? lastDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: "Select Date of Birth",
+      cancelText: "Cancel",
+      confirmText: "Select",
+      builder: (context, child) {
+        return Theme(
+          data: theme.copyWith(
+            colorScheme: theme.colorScheme.copyWith(
+              primary: theme.primaryColor,
+              onPrimary: Colors.white,
+              surface: theme.scaffoldBackgroundColor,
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: theme.scaffoldBackgroundColor,
+          ),
+          child: child!,
+        );
+      },
+    );
+  }
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
+
   static showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
@@ -535,23 +686,41 @@ class Utils {
 
 
 
+  static ProfileData? profileData;
+  static int? userId;
 
+  static Future<ProfileData?> getProfile() async {
+    try {
+      final SharedPreferences prefs =
+      await SharedPreferences.getInstance();
 
-  static LoginModel? loginData;
-  static int? societyId = 0;
-  static int? userId = 0;
+      final data = prefs.getString(Strings.PROFILE_DATA);
+      printLog("Profile Data ==== $data");
 
-  static Future<Data?> getProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString(Strings.PROFILE_DATA);
-    printLog("Profile Data ==== $data");
-    if (data != null) {
-      var response = json.decode(data);
-      loginData = LoginModel.fromJson(response);
-      userId = loginData!.data!.userId;
+      if (data == null || data.isEmpty) {
+        printLog("No profile data found");
+        profileData = null;
+        userId = null;
+        return null;
+      }
+
+      final decoded = jsonDecode(data);
+      final parsed = ProfileData.fromJson(decoded);
+
+      profileData = parsed;
+      userId = parsed.id;
+
+      return parsed;
+    } catch (e) {
+      printLog("getProfile exception: $e");
+      profileData = null;
+      userId = null;
+      return null;
     }
-    return null;
   }
+
+
+
 
 
 

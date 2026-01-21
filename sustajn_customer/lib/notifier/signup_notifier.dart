@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 import '../models/register_data.dart';
+import '../models/signup_model.dart';
 import '../models/subscriptionplan_data.dart';
 
 import '../utils/utils.dart';
@@ -23,6 +24,7 @@ class SignupNotifier extends ChangeNotifier {
   bool _isResendLoading = false;
   bool _isTimerRunning = false;
   LoginModel? _login;
+  SignUpModel? _signUp;
   bool _isVisible = false;
   bool _isDisposed = false;
   int _seconds = 120;
@@ -69,6 +71,7 @@ class SignupNotifier extends ChangeNotifier {
   bool get isResend => _isResend;
 
   LoginModel get login => _login!;
+  SignUpModel get signup => _signUp!;
 
   BuildContext get context => _context!;
 
@@ -247,17 +250,22 @@ class SignupNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void _validateTaxNumber() {
     if (_taxNumber.isEmpty) {
-      _taxNumberError = 'GSTIN is required';
-    } else if (!RegExp(
-        r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$'
-    ).hasMatch(_taxNumber)) {
-      _taxNumberError = 'Invalid GSTIN format';
-    } else {
+      _taxNumberError = 'Tax number is required';
+    }
+    else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_taxNumber)) {
+      _taxNumberError = 'Only letters and numbers allowed';
+    }
+    else if (_taxNumber.length != 15) {
+      _taxNumberError = 'Tax number must be exactly 15 characters';
+    }
+    else {
       _taxNumberError = null;
     }
   }
+
 
   void setAccountNumber(String value) {
     _accountNumber = value;
@@ -358,6 +366,12 @@ class SignupNotifier extends ChangeNotifier {
   void setLoginData(LoginModel login){
     _login = login;
     notifyListeners();
+  }
+
+  void setSignUPData(SignUpModel signup){
+    _signUp = signup;
+    notifyListeners();
+
   }
 
 

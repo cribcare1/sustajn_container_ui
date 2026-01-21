@@ -34,10 +34,11 @@ class Strings {
   static const CUSTOMER_ID = "customer_id";
 
   //Sign Up & Login
-  static const String LOGIN = "Log In";
+  static const String LOGIN = "LogIn";
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
   static const String EMAIL = 'Email ID*';
+  static const String DOB = 'Date of Birth';
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
@@ -117,7 +118,7 @@ class Strings {
   static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verification';
-  static const ALREADY_HAVE_ACC = 'Already have an account? ';
+  static const ALREADY_HAVE_ACC = 'Existing user? ';
   static const RESET = 'Reset';
   static const SET_NEW_PASSWORD = 'Please set your new password';
   static const RESET_PASSWORD = 'Reset Password';
@@ -202,4 +203,12 @@ class Strings {
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
+  static const String SKIP = 'Skip';
+  static const String SKIP_PAYMENT = 'To enjoy the full benefits of the service offered, provideing the payment information is mandatory';
+  static const String SKIP_CONTINUE = 'Skip&Continue';
+  static const String USER_FULL_NAME = 'Full Name';
+  static const String SAVE_CHANGES = 'Save Changes';
+  static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
+  static const String LEARN_MORE = 'Learn More';
+  static const String UPGRADE = 'Upgrade';
 }

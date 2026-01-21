@@ -278,7 +278,7 @@ class _SearchRestaurantScreenState
                             )),
                           )
                         else if (searchProvider.resList.isEmpty)
-                          const Expanded(child: Center(child: Text("No Data")))
+                          Expanded(child: Utils.getErrorText("No resturant details found"))
                         else
                           /// Title
                           Padding(

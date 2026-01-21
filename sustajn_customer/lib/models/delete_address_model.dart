@@ -7,8 +7,8 @@ class DeleteAddressModel {
 
   DeleteAddressModel.fromJson(Map<String, dynamic> json) {
     data = json['data'];
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {

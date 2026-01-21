@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,12 +31,19 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       profileState.setIsLoading(false);
       profileState.setProfileList(responseData);
+
+      SharedPreferenceUtils.saveDataInSF(
+        Strings.PROFILE_DATA,
+        jsonEncode(responseData.data?.toJson()),
+      );
+
       SharedPreferenceUtils.saveDataInSF(
         Strings.CUSTOMER_ID,
         responseData.data?.customerId,
       );
+    }
 
-    } else {
+    else {
       profileState.setIsLoading(false);
       Utils.showToast(responseData.message!);
     }
@@ -108,13 +116,17 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       requestKey,
       image,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty) {
+    if (responseData.status != null && responseData.status!.isNotEmpty &&
+        responseData.status!.trim().toString().toLowerCase() ==
+        NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
       if(profileState.context.mounted) {
         showCustomSnackBar(context: profileState.context,
             message: responseData.message!, color:Colors.green);
       }
-    } else {
+      return true;
+    }
+    else {
       Utils.showToast(
         responseData.message ?? "Update failed",
       );
@@ -147,7 +159,9 @@ FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
   final isSuccess =
       responseData.message?.toLowerCase() == "success";
 
-  if (!isSuccess) {
+  if (isSuccess) {
+
+  } else {
     Utils.showToast(
       responseData.status ?? "Image upload failed",
     );
@@ -155,6 +169,7 @@ FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
 
   return responseData;
 });
+
 
 
 

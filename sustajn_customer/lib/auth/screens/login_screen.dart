@@ -8,6 +8,7 @@ import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/submit_button.dart';
+import '../../constants/assets_utils.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
@@ -49,6 +50,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                       Center(
+                         child: Image.asset(
+                             AppAssets.sustajn_app_logo,
+                           height:  height * 0.17,
+                           fit: BoxFit.contain,
+                         ),
+                       ),
+                    SizedBox(height: height * 0.05),
                     Text(
                       Strings.WELCOME,
                       style: themeData?.textTheme.titleLarge!.copyWith(

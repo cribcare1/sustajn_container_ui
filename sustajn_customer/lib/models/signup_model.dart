@@ -1,28 +1,28 @@
-class LoginModel {
+class SignUpModel {
+  SignUpData? data;
   String? message;
-  Data? data;
   String? status;
 
-  LoginModel({this.message, this.data, this.status});
+  SignUpModel({this.data, this.message, this.status});
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
-    message = json['message']??"";
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    status = json['status']??"";
+  SignUpModel.fromJson(Map<String, dynamic> json) {
+    data = json['data'] != null ? new SignUpData.fromJson(json['data']) : null;
+    message = json['message'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    data['message'] = this.message;
     data['status'] = this.status;
     return data;
   }
 }
 
-class Data {
+class SignUpData {
   int? userId;
   String? image;
   String? role;
@@ -32,7 +32,7 @@ class Data {
   String? jwtToken;
   String? tokenType;
 
-  Data(
+  SignUpData(
       {this.userId,
         this.image,
         this.role,
@@ -42,7 +42,7 @@ class Data {
         this.jwtToken,
         this.tokenType});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  SignUpData.fromJson(Map<String, dynamic> json) {
     userId = json['userId']??0;
     image = json['image']??"";
     role = json['role']??"";

@@ -7,8 +7,8 @@ class BankDetailData {
 
   BankDetailData.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new BankData.fromJson(json['data']) : null;
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -57,21 +57,21 @@ class BankData {
         this.updatedAt});
 
   BankData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['userId'];
-    bankName = json['bankName'];
-    accountNumber = json['accountNumber'];
-    iBanNumber = json['iBanNumber'];
-    taxNumber = json['taxNumber'];
-    cardHolderName = json['cardHolderName'];
-    cardNumber = json['cardNumber'];
-    expiryDate = json['expiryDate'];
-    cvv = json['cvv'];
-    paymentGatewayId = json['paymentGatewayId'];
-    paymentGatewayName = json['paymentGatewayName'];
-    status = json['status'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    id = json['id']??0;
+    userId = json['userId']??0;
+    bankName = json['bankName']??"";
+    accountNumber = json['accountNumber']??"";
+    iBanNumber = json['iBanNumber']??"";
+    taxNumber = json['taxNumber']??"";
+    cardHolderName = json['cardHolderName']??"";
+    cardNumber = json['cardNumber']??"";
+    expiryDate = json['expiryDate']??"";
+    cvv = json['cvv']??"";
+    paymentGatewayId = json['paymentGatewayId']??"";
+    paymentGatewayName = json['paymentGatewayName']??"";
+    status = json['status']??"";
+    createdAt = json['createdAt']??"";
+    updatedAt = json['updatedAt']??"";
   }
 
   Map<String, dynamic> toJson() {

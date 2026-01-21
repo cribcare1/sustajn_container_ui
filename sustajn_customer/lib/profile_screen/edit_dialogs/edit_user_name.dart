@@ -12,7 +12,8 @@ import '../../utils/utils.dart';
 
 class EditUserNameDialog extends ConsumerStatefulWidget {
   final String userName;
-  const EditUserNameDialog({Key? key, required this.userName}) : super(key: key);
+  final int userId;
+  const EditUserNameDialog({Key? key, required this.userName, required this.userId}) : super(key: key);
 
   @override
   ConsumerState<EditUserNameDialog> createState() =>
@@ -78,122 +79,127 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
             ),
           ),
           child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Edit Name',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white
-                        ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Edit Name',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: Constant.LABEL_TEXT_SIZE_18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white
                       ),
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                      child: Icon(
-                        Icons.close,
-                        size: Constant.CONTAINER_SIZE_20,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-
-                SizedBox(height: Constant.SIZE_08),
-                TextFormField(
-                  controller: _controller,
-                  validator: _validateName,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.done,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70
                   ),
-                  cursorColor: Colors.white70,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    labelStyle: TextStyle(color: Colors.white70),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: Constant.CONTAINER_SIZE_16,
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    borderRadius:
+                    BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                    child: Icon(
+                      Icons.close,
+                      size: Constant.CONTAINER_SIZE_20,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+
+              SizedBox(height: Constant.SIZE_08),
+              TextFormField(
+                controller: _controller,
+                validator: _validateName,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white70
+                ),
+                cursorColor: Colors.white70,
+                decoration: InputDecoration(
+                  labelText: Strings.USER_FULL_NAME,
+                  labelStyle: TextStyle(color: Colors.white70),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_16,
+                    vertical: Constant.CONTAINER_SIZE_14,
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey)
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius:
+                    BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                    borderSide: BorderSide(color:Constant.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius:
+                    BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                    borderSide:
+                    BorderSide(color: Constant.grey),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius:
+                    BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                    borderSide:
+                    BorderSide(color: theme.colorScheme.error),
+                  ),
+                ),
+              ),
+
+
+
+              SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+              profileState.isLoading
+                  ? const Center(
+                child: CircularProgressIndicator(
+                  color: Constant.gold,
+                ),
+              )
+                  : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) return;
+
+                    await _editNameNetwork(
+                      _controller.text.trim(),
+                      profileState,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFC8B531),
+                    padding: EdgeInsets.symmetric(
                       vertical: Constant.CONTAINER_SIZE_14,
                     ),
-                    border: OutlineInputBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        borderSide: BorderSide(color: Constant.grey)
-                    ),
-                    enabledBorder: OutlineInputBorder(
+                    shape: RoundedRectangleBorder(
                       borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                      borderSide: BorderSide(color:Constant.grey),
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                      borderSide:
-                      BorderSide(color: Constant.grey),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                      borderSide:
-                      BorderSide(color: theme.colorScheme.error),
+                  ),
+                  child: Text(
+                    Strings.SAVE_CHANGES,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
+              ),
 
-
-
-                SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (!_formKey.currentState!.validate()) return;
-
-                      await _editNameNetwork(
-                          _controller.text.trim(),profileState
-                      );
-                      if (mounted) {
-                        Navigator.pop(context, _controller.text.trim());
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
-                    child: Text(
-                      'Save Changes',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
+                      ),
         ),
       ),
     );
@@ -203,33 +209,54 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     final data = {
       "userId": Utils.userId,
       "fullName": name,
-      "phoneNumber": ""
     };
     return data;
   }
 
-  _editNameNetwork(String name, var profileState) async {
+  Future<bool> _editNameNetwork(String name, var profileState) async {
     try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        setState(() async {
-          if (isNetworkAvailable) {
-            profileState.setIsLoading(true);
-            final params = Utils.multipartParams(
-              NetworkUrls.UPDATE_PROFILE,
-              getJsonData(name),
-              Strings.USER_DATA,
-            );
-            ref.read(profileUpdateProvider(params));
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
 
-          } else {
-            profileState.setIsLoading(false);
-            Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-          }
-        });
-      });
+      if (!isNetworkAvailable) {
+        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        return false;
+      }
+
+      profileState.setContext(context);
+      profileState.setIsLoading(true);
+
+      if (profileState.profileList.isNotEmpty) {
+        profileState.profileList.first.fullName = name;
+      }
+
+      final params = Utils.multipartParams(
+        NetworkUrls.UPDATE_PROFILE,
+        getJsonData(name),
+        Strings.USER_DATA,
+      );
+
+      await ref.read(profileUpdateProvider(params).future);
+
+      if (Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      ref.read(profileProvider).clearProfileList();
+      ref.read(
+        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      );
+
+      return true;
     } catch (e) {
-      Utils.printLog('Error in registration button onPressed: $e');
+      Utils.printLog('Error in edit name: $e');
+      return false;
+    } finally {
+      profileState.setIsLoading(false);
     }
   }
+
+
+
+
 }

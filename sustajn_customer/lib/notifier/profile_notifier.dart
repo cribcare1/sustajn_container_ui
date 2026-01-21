@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../models/product_data.dart';
-import '../models/profile_model.dart';
-import '../utils/utils.dart';
+import '../models/get_profile_model.dart';
 
 class ProfileNotifier extends ChangeNotifier {
   bool _isLoading = false;
   BuildContext? _context;
 
-  ProfileData? _profileData;
+  GetProfileModel? _profileData;
 
-  List<ProfileList> _profileList = [];
+  List<ProfileData> _profileList = [];
 
   bool get isLoading => _isLoading;
 
   BuildContext get context => _context!;
 
-  ProfileData get profileData => _profileData!;
+  GetProfileModel? get profileModel => _profileData;
 
-  List<ProfileList> get profileList => _profileList;
+  ProfileData? get profileData => _profileData?.data;
 
-  void setProfileList(ProfileData data) {
+  List<ProfileData> get profileList => _profileList;
+
+  void setProfileList(GetProfileModel data) {
     _profileData = data;
 
     if (data.data != null) {
@@ -31,7 +31,6 @@ class ProfileNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
-
 
   void clearProfileList() {
     _profileList.clear();
