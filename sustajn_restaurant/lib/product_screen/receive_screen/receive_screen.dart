@@ -81,27 +81,6 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
           ),
         ],
       ),
-      // floatingActionButton: InkWell(
-      //   onTap: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (_) => QrCodeScanner()),
-      //     );
-      //   },
-      //   child: Container(
-      //     height: Constant.CONTAINER_SIZE_60,
-      //     width: Constant.CONTAINER_SIZE_60,
-      //     decoration: const BoxDecoration(
-      //       color: Constant.gold,
-      //       shape: BoxShape.circle,
-      //     ),
-      //     child: Icon(
-      //       Icons.qr_code_scanner,
-      //       color: theme.scaffoldBackgroundColor,
-      //       size: Constant.CONTAINER_SIZE_30,
-      //     ),
-      //   ),
-      // ),
     );
   }
 
