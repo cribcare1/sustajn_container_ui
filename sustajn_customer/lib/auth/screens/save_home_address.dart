@@ -131,8 +131,6 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     final state = ref.watch(locationProvider);
     final theme = Theme.of(context);
     final addressState = ref.watch(searchResProvider);
-
-
     return SafeArea(
       top: false,
       bottom: true,
@@ -145,7 +143,8 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             leading: CustomBackButton(),
           ).getAppBar(context),
 
-          body: state.loading || state.position == null
+          body:
+          state.loading || state.position == null
               ? const Center(
             child: CircularProgressIndicator(color: Constant.gold),
           )
@@ -442,6 +441,124 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         ),
       ),
     );
+  }
+
+  Future<bool> displayDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    Constant.CONTAINER_SIZE_12,
+                  ),
+                  border: Border.all(color: Constant.grey.withOpacity(0.1)),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  // GO BACK
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        "Go back",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        maxLines: 1,
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ??
+        false;
   }
 
 

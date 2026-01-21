@@ -124,7 +124,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                 ),
                 cursorColor: Colors.white70,
                 decoration: InputDecoration(
-                  labelText: 'Full Name',
+                  labelText: Strings.USER_FULL_NAME,
                   labelStyle: TextStyle(color: Colors.white70),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   contentPadding: EdgeInsets.symmetric(
@@ -188,7 +188,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                     ),
                   ),
                   child: Text(
-                    'Save Changes',
+                    Strings.SAVE_CHANGES,
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: theme.primaryColor,
                       fontWeight: FontWeight.w600,
