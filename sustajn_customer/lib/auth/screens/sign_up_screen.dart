@@ -312,7 +312,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                                       )
                                     );
                                   } as GestureTapCallback?,
-                              )
+                              ),
                             ],
                           ),
                         ),

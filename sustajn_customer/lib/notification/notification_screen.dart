@@ -13,9 +13,10 @@ class NotificationScreen extends StatelessWidget {
 
     NoticeModel(
       title: "Your Order\nSahara Sizzle",
+      icon: "assets/icons/right_check.png",
       subtitle: "Round Bowl | Dip Cup | Rectangular Container",
       dateTime: "01/12/2024 | 10:00am",
-      icon: "",
+      // icon: "assets/icons/check.png",
       hasActions: true,
     ),
 
@@ -152,46 +153,46 @@ class NotificationScreen extends StatelessWidget {
                   Row(
                     children: [
 
-                      Expanded(
-                        child: Container(
-                          height: Constant.CONTAINER_SIZE_30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-                            border: Border.all(color: Constant.gold),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "View",
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontFamily: "DMSans",
-                                color: Constant.gold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: Container(
+                      //     height: Constant.CONTAINER_SIZE_30,
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
+                      //       border: Border.all(color: Constant.gold),
+                      //     ),
+                      //     child: Center(
+                            // child: Text(
+                            //   "View",
+                            //   style: theme.textTheme.bodyMedium?.copyWith(
+                            //     fontFamily: "DMSans",
+                            //     color: Constant.gold,
+                            //   ),
+                            // ),
+                      //     ),
+                      //   ),
+                      // ),
 
                       SizedBox(width: Constant.SIZE_10),
 
-                      Expanded(
-                        child: Container(
-                          height: Constant.CONTAINER_SIZE_30,
-                          decoration: BoxDecoration(
-                            color: Constant.gold,
-                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Confirm",
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontFamily: "DMSans",
-                                color: theme.scaffoldBackgroundColor,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: Container(
+                      //     height: Constant.CONTAINER_SIZE_30,
+                      //     decoration: BoxDecoration(
+                      //       color: Constant.gold,
+                      //       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
+                      //     ),
+                      //     child: Center(
+                      //       child: Text(
+                      //         "Confirm",
+                      //         style: theme.textTheme.bodyMedium?.copyWith(
+                      //           fontFamily: "DMSans",
+                      //           color: theme.scaffoldBackgroundColor,
+                      //           fontWeight: FontWeight.w700,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
