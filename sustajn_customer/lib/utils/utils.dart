@@ -14,7 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../models/get_profile_model.dart';
 import '../models/login_model.dart';
+import '../models/signup_model.dart';
 
 class Utils {
 
@@ -535,23 +537,41 @@ class Utils {
 
 
 
+  static ProfileData? profileData;
+  static int? userId;
 
+  static Future<ProfileData?> getProfile() async {
+    try {
+      final SharedPreferences prefs =
+      await SharedPreferences.getInstance();
 
-  static LoginModel? loginData;
-  static int? societyId = 0;
-  static int? userId = 0;
+      final data = prefs.getString(Strings.PROFILE_DATA);
+      printLog("Profile Data ==== $data");
 
-  static Future<Data?> getProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString(Strings.PROFILE_DATA);
-    printLog("Profile Data ==== $data");
-    if (data != null) {
-      var response = json.decode(data);
-      loginData = LoginModel.fromJson(response);
-      userId = loginData!.data!.userId;
+      if (data == null || data.isEmpty) {
+        printLog("No profile data found");
+        profileData = null;
+        userId = null;
+        return null;
+      }
+
+      final decoded = jsonDecode(data);
+      final parsed = ProfileData.fromJson(decoded);
+
+      profileData = parsed;
+      userId = parsed.id;
+
+      return parsed;
+    } catch (e) {
+      printLog("getProfile exception: $e");
+      profileData = null;
+      userId = null;
+      return null;
     }
-    return null;
   }
+
+
+
 
 
 

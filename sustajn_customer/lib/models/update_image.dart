@@ -6,9 +6,9 @@ class UpdateImage {
   UpdateImage({this.data, this.message, this.status});
 
   UpdateImage.fromJson(Map<String, dynamic> json) {
-    data = json['data'];
-    message = json['message'];
-    status = json['status'];
+    data = json['data']??"";
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {

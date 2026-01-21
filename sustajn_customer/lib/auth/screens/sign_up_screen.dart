@@ -423,7 +423,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
               registrationState.setEmail(emailCtrl.text);
-              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text,}));
+              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text, "type":"SIGNUP"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

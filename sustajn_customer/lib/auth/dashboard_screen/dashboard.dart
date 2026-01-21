@@ -4,16 +4,20 @@ import '../../constants/imports_util.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_profile_model.dart';
 import '../../models/login_model.dart';
+import '../../models/signup_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notification/notification_screen.dart';
 import '../../profile_screen/profile_screen.dart';
 import '../../provider/profile_provider.dart';
 import '../../search_resturant_screen/search_resturant_screen.dart';
 import '../../utils/nav_utils.dart';
+import '../../utils/shared_preference_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../payment_type/payment_screen.dart';
+import '../screens/login_screen.dart';
 import '../screens/save_home_address.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -25,31 +29,59 @@ class DashboardScreen extends ConsumerStatefulWidget {
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   String userName = "";
-  Data? loginResponse;
   bool isLoading = true;
+  SignUpData? signUpResponse;
+  ProfileData? profile;
+
 
   @override
   void initState() {
     super.initState();
     Utils.getToken();
-    _loadProfile();
+    _loadLocalProfile();
     _getProfileData();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
+  Future<void> _loadLocalProfile() async {
+    final data = await Utils.getProfile();
+
+    if (data == null) {
+      Utils.showToast("Session expired. Please login again.");
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+            (route) => false,
+      );
+      return;
+    }
+
     setState(() {
-      loginResponse = Utils.loginData?.data;
+      profile = data;
       isLoading = false;
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
-
-    if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    final profileState = ref.watch(profileProvider);
+    final ProfileData? profile = profileState.profileData;
+    final ProfileData? currentProfile =
+    profileState.profileList.isNotEmpty
+        ? profileState.profileList.first
+        : profile;
+    final int? subscriptionPlanId =
+        currentProfile?.subscriptionPlanId ??
+            currentProfile?.subscriptionResponse?.planId;
+    if (isLoading || profileState.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Constant.gold,
+          ),
+        ),
+      );
     }
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
@@ -58,23 +90,57 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         leading: Padding(
           padding: EdgeInsets.only(left: Constant.SIZE_10),
           child: InkWell(
-            onTap: () {
+            customBorder: const CircleBorder(),
+            onTap: currentProfile == null
+                ? null
+                : () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyProfileScreen(userId: loginResponse?.userId??0,)),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MyProfileScreen(
+                        userId: currentProfile.id!,
+                        subScriptionPlanId:
+                        currentProfile.subscriptionPlanId ??
+                            currentProfile.subscriptionResponse?.planId ??
+                            0,
+                      ),
+                ),
               );
             },
+
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
-              backgroundColor: Constant.grey,
-              child: Icon(
-                Icons.person,
-                size: Constant.CONTAINER_SIZE_35,
-                color: theme.primaryColor,
+              backgroundColor: Constant.grey.withOpacity(0.15),
+              child: ClipOval(
+                child: (currentProfile?.profileImageUrl != null &&
+                    currentProfile!.profileImageUrl!.isNotEmpty)
+                    ? Image.network(
+                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile
+                      .profileImageUrl}?t=${DateTime
+                      .now()
+                      .millisecondsSinceEpoch}",
+                  fit: BoxFit.cover,
+                  width: Constant.CONTAINER_SIZE_40,
+                  height: Constant.CONTAINER_SIZE_40,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.person,
+                      size: Constant.CONTAINER_SIZE_26,
+                      color: theme.primaryColor,
+                    );
+                  },
+                )
+                    : Icon(
+                  Icons.person,
+                  size: Constant.CONTAINER_SIZE_26,
+                  color: theme.primaryColor,
+                ),
               ),
             ),
           ),
         ),
+
         title: Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +153,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
               ),
               Text(
-                loginResponse?.fullName ?? "",
+                profile?.fullName ?? "",
                 maxLines: Constant.MAX_LINE_1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -206,14 +272,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   _getProfileData() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+          isNetworkAvailable,) async {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         if (isNetworkAvailable) {
           ref.read(profileProvider).clearProfileList();
           ref.read(profileProvider).setIsLoading(true);
+          final int? userId =
+          await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
 
-          final url = '${NetworkUrls.GET_PROFILE}${loginResponse?.userId}';
+          if (userId == null || userId == -1) {
+            Utils.showToast("User session expired. Please login again.");
+            return;
+          }
+          final url = '${NetworkUrls.GET_PROFILE}$userId';
           Utils.printLog("Fetching URL: $url");
           ref.read(getProfileProvider(url));
         } else {

@@ -422,7 +422,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   SubscriptionScreen(),
                 );
               },
-              child: Text('Skip'),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: Constant.gold,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // optional
+                ),
+              ),
+              child: Text(Strings.SKIP,
+              style: TextStyle(
+                color: Constant.gold
+              ),),
             ),
           ),
 
@@ -472,18 +483,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         "iBanNumber": _ibanController.text,
       },
       "cardDetailsRequest": {
-        "userId": 44,
-        "cardHolderName": "Suraj Kumar Nayak",
-        "cardNumber": "4111111111111111",
-        "expiryDate": "12/29",
-        "cvv": "123",
-        "paymentGatewayId": "PG1001",
-        "paymentGatewayName": "Razorpay",
+        "userId": Utils.userId,
+        "cardHolderName": "",
+        "cardNumber": "",
+        "expiryDate": "",
+        "cvv": "",
+        "paymentGatewayId": "",
+        "paymentGatewayName": "",
       },
       "paymentGetWayRequest": {
-        "userId": 44,
-        "paymentGatewayId": "PG2001",
-        "paymentGatewayName": "PayU",
+        "userId": Utils.userId,
+        "paymentGatewayId": "",
+        "paymentGatewayName": "",
       },
     };
     return data;

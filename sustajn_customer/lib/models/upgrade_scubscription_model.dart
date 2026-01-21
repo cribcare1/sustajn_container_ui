@@ -5,8 +5,8 @@ class UpgradeSubscriptionModel {
   UpgradeSubscriptionModel({this.message, this.status});
 
   UpgradeSubscriptionModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {

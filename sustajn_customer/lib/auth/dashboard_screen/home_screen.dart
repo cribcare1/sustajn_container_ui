@@ -25,7 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final profileData = profileState.profileData;
 
       if (profileData == null ||
-          profileData.data?.bankDetailsResponse == null) {
+          profileData.bankDetailsResponse == null) {
         showCustomSnackBar(
           context: context,
           message:
@@ -47,6 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _currentIndex = index;
     });
   }
+
 
 
   @override

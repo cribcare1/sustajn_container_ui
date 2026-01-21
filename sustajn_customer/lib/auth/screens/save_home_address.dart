@@ -9,7 +9,7 @@ import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../models/profile_model.dart';
+import '../../models/get_profile_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/location_state.dart';
 import '../../provider/signup_provider.dart';
