@@ -5,11 +5,13 @@ import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../models/subscriptionplan_data.dart';
 
 class PlandetailsScreen extends StatelessWidget {
   final SubscriptionData plan;
-  const PlandetailsScreen({super.key, required this.plan});
+  final bool showProceedButton;
+  const PlandetailsScreen({super.key, required this.plan,this.showProceedButton=true});
 
   @override
   Widget build(BuildContext context) {
@@ -35,32 +37,35 @@ class PlandetailsScreen extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    NavUtil.navigateToPushScreen(context, TermsconditionScreen());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constant.gold,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+
+              if (showProceedButton) ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      NavUtil.navigateToPushScreen(context, TermsconditionScreen());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Constant.gold,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: Constant.CONTAINER_SIZE_16,
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: Constant.CONTAINER_SIZE_16,
-                    ),
-                  ),
-                  child: Text(
-                    "Proceed to Terms & Conditions",
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.w600,
+                    child: Text(
+                     Strings.PROCEED_TERMS,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
+
             ],
           ),
         ),

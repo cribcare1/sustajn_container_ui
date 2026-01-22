@@ -32,7 +32,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Reports", "icon": Icons.bar_chart_outlined},
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
   ];

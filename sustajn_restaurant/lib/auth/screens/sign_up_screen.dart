@@ -207,7 +207,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 _buildTextField(
                   context,
                   controller: restaurantCtrl,
-                  hint: Strings.RESTURANT_NAME,
+                  hint: Strings.BUSINESS_NAME,
                   validator: (v) {
                     if (v!.isEmpty) return "Restaurant name required";
                     if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
@@ -286,31 +286,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
-                InkWell(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => MapScreen()),
-                    ).then((value) {
-                      if (value != null) {
-                        addressCtrl.text = value['address'];
-                        lat = value['lat'];
-                        long = value['lng'];
-                      }
-                    });
-                  },
-                  child: IgnorePointer(
-                    child: _buildTextField(
-                      readOnly: true,
-                      context,
-                      controller: addressCtrl,
-                      hint: Strings.RESTURANT_ADDRESS,
-                      validator: (v) =>
-                          v!.isEmpty ? "Restaurant address required" : null,
-                    ),
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     FocusScope.of(context).unfocus();
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (_) => MapScreen()),
+                //     ).then((value) {
+                //       if (value != null) {
+                //         addressCtrl.text = value['address'];
+                //         lat = value['lat'];
+                //         long = value['lng'];
+                //       }
+                //     });
+                //   },
+                //   child: IgnorePointer(
+                //     child: _buildTextField(
+                //       readOnly: true,
+                //       context,
+                //       controller: addressCtrl,
+                //       hint: Strings.RESTURANT_ADDRESS,
+                //       validator: (v) =>
+                //           v!.isEmpty ? "Restaurant address required" : null,
+                //     ),
+                //   ),
+                // ),
 
                 authState.isLoading
                     ? Center(child: CircularProgressIndicator())
