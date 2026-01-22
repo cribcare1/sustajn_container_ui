@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
+
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -106,17 +107,17 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    // _loadProfile();
     _getProfileNetworkCall();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
-  }
+  // Future<void> _loadProfile() async {
+  //   await Utils.getProfile();
+  //   setState(() {
+  //     loginResponse = Utils.loginData?.data;
+  //     isLoading = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +129,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             profile!.addressResponses!.isNotEmpty)
         ? profile.addressResponses!.first
         : null;
-
+    // if (profile!.profileImageUrl != null) {
+    //   profileImage = File(
+    //     "${NetworkUrls.IMAGE_BASE_URL}${profile.profileImageUrl}",
+    //   );
+    // }
     final fullAddress = [
       address?.flatDoorHouseDetails,
-      address?.areaStreetCityBlockDetails,
+      // address?.areaStreetCityBlockDetails,
       address?.poBoxOrPostalCode,
     ].whereType<String>().join(', ');
 
@@ -169,9 +174,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: isLoading
+        body: profileState.isLoading
             ? Center(child: CircularProgressIndicator())
-            : loginResponse!=null?SingleChildScrollView(
+            : profile!.fullName != null
+            ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -196,21 +202,31 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
-                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/default_profile.png"),
+                                  image: profileImage != null
+                                      ? FileImage(profileImage!) as ImageProvider
+                                      : (profile.profileImageUrl != null &&
+                                      profile.profileImageUrl!.isNotEmpty)
+                                      ? NetworkImage(
+                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                  )
+                                      : const AssetImage(
+                                    "assets/images/default_profile.png",
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
+
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                _profileImgNetworkCall(
-                                  profileState,
-                                  profile!.mobileNumber!,
-                                  profile.fullName!,
-                                );
-                                Utils.showProfilePhotoBottomSheet(context);
+                              onTap: () async {
+                                profileImage = await Utils.uploadImage(context);
+                                if (profileImage != null) {
+                                  _profileImgNetworkCall(
+                                    profileState,
+                                    profile.mobileNumber!,
+                                    profile.fullName!,
+                                  );
+                                }
                               },
                               child: Container(
                                 height: w * 0.09,
@@ -234,7 +250,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              profile?.fullName ?? "",
+                              profile.fullName ?? "",
                               style: TextStyle(
                                 fontSize: w * 0.055,
                                 fontWeight: FontWeight.w700,
@@ -242,7 +258,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             SizedBox(width: w * 0.015),
-                            if (profile?.fullName != null)
+                            if (profile.fullName != null)
                               GestureDetector(
                                 onTap: () {
                                   showModalBottomSheet(
@@ -251,7 +267,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
                                         EditRestaurantNameDialog(
-                                          name: profile!.fullName!,
+                                          name: profile.fullName ?? "--",
                                         ),
                                   );
                                 },
@@ -287,7 +303,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: loginResponse!.userName! ?? "",
+                                value: profile.emailId ?? "__",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
@@ -300,12 +316,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 title: "Address",
                                 value: fullAddress ?? "No address added",
 
-                                // "${profile?.addressResponses!.first
-                                //     .flatDoorHouseDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}, "
-                                //     "${profile!.addressResponses!.first!.areaStreetCityBlockDetails!}",
-                                // profile.addressResponses!.first.flatDoorHouseDetails! ?? "",
-                                // loginResponse!.address!,
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -323,7 +333,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.phone_outlined,
                                 title: "Mobile Number",
-                                value: profile?.mobileNumber! ?? "",
+                                value: profile.mobileNumber! ?? "",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -335,7 +345,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     builder: (context) =>
                                         EditMobileNumberDialog(
                                           mobileNumber:
-                                              profile?.mobileNumber ?? "",
+                                              profile.mobileNumber ?? "",
                                         ),
                                   );
                                 },
@@ -423,12 +433,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     ),
                   ],
                 ),
-              ):const Center(
-          child: Text(
-            "No Data available",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+              )
+            : const Center(
+                child: Text(
+                  "No Data available",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
     );
   }
@@ -511,8 +522,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      if (!profileState.isValid) return;
-
+      // if (!profileState.isValid) return;
+      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -522,8 +533,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         return;
       }
-
-      profileState.setIsLoading(true);
 
       // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
@@ -535,10 +544,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();

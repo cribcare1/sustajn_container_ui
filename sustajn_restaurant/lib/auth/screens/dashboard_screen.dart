@@ -256,7 +256,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         ),
                         SizedBox(height: Constant.SIZE_15),
                         Text(
-                          'Container Status Overview',
+                          'Container Status',
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.bold,
@@ -427,15 +427,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _legendItem('Total', Colors.greenAccent, theme),
+          _legendItem('Lease', Color(0xffCD4400), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Lease', Colors.yellowAccent, theme),
+          _legendItem('Receive',  Color(0xff9C1A00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Receive', Colors.lightBlueAccent, theme),
+          _legendItem('Available', Color(0xffF79F00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Available', Colors.amber.shade700, theme),
-          SizedBox(width: Constant.SIZE_10),
-          _legendItem('Damage', Colors.redAccent.shade700, theme),
+          _legendItem('Damage', Color(0xff7B8D73), theme),
         ],
       ),
     );
@@ -461,11 +459,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   final List<ChartData> chartData = [
-    ChartData('Total', 1000, Colors.greenAccent),
-    ChartData('Available', 800, Colors.yellowAccent),
-    ChartData('Lease', 300, Colors.lightBlueAccent),
-    ChartData('Receive', 100, Colors.amber.shade700),
-    ChartData('Damage', 2, Colors.redAccent.shade700),
+    ChartData('Available', 800, Color(0xffF79F00)),
+    ChartData('Lease', 300, Color(0xffCD4400)),
+    ChartData('Receive', 100, Color(0xff9C1A00)),
+    ChartData('Damage', 20, Color(0xff7B8D73)),
   ];
 
   Widget _buildChartRings(
@@ -487,6 +484,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 width: chartSize,
                 height: chartSize,
                 child: SfCircularChart(
+                  tooltipBehavior: TooltipBehavior(
+                    enable: true,
+                    format: 'point.x : point.y',
+                  ),
+                  annotations: <CircularChartAnnotation>[
+                    CircularChartAnnotation(
+                      widget: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            '${10000}',
+                            style: theme.textTheme.titleMedium!.copyWith(color: Colors.green)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   series: <DoughnutSeries<ChartData, String>>[
                     DoughnutSeries<ChartData, String>(
                       dataSource: chartData,
@@ -496,7 +517,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       innerRadius: '55%',
                       radius: '100%',
                       strokeWidth: 4,
-                      // explode: true,
                       explodeOffset: '4%',
                       dataLabelSettings: const DataLabelSettings(
                         isVisible: false,
@@ -525,7 +545,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
 
               _chartLabel(
-                left: -5,
+                right: 0,
                 bottom: 10,
                 title: 'Available',
                 value: '800',
@@ -533,18 +553,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
 
               _chartLabel(
-                right: -5,
-                bottom: 30,
-                title: 'Total',
-                value: '1000',
-                color: const Color(0xFF9AF28D),
-                alignEnd: true,
-              ),
-
-              _chartLabel(
                 top: -20,
                 title: 'Damage',
-                value: '2',
+                value: '20',
                 color: Colors.redAccent,
                 alignEnd: true,
               ),
@@ -670,12 +681,6 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                     ),
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  const Icon(
-                    Icons.qr_code_scanner,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
                   Row(
                     children: [
                       Expanded(
@@ -690,7 +695,7 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 12),
+                       SizedBox(width: Constant.CONTAINER_SIZE_12),
                       Expanded(
                         child: _OptionTile(
                           title: 'Receive',
@@ -705,75 +710,13 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                       ),
                     ],
                   ),
-                  if (selectedType == 'RECEIVE') ...[
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(valueList.length, (index) {
-                        final value = valueList[index];
-                        return Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                  radioTheme: RadioThemeData(
-                                    fillColor:
-                                        MaterialStateProperty.resolveWith<
-                                          Color
-                                        >((states) {
-                                          return Theme.of(
-                                            context,
-                                          ).secondaryHeaderColor;
-                                        }),
-                                  ),
-                                ),
-                                child: Radio<String>(
-                                  value: value,
-                                  groupValue: selectedValue,
-                                  activeColor: Theme.of(
-                                    context,
-                                  ).secondaryHeaderColor,
-                                  visualDensity: const VisualDensity(
-                                    horizontal: -4,
-                                    vertical: -4,
-                                  ),
-
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedValue = val;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  value,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context).textTheme.titleSmall!
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
-
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: selectedType == null
                           ? null
                           : () {
-                              if (selectedType == "RECEIVE" &&
-                                  selectedValue != null) {
                                 Navigator.pop(context);
                                 Utils.navigateToPushScreen(
                                   context,
@@ -782,16 +725,6 @@ class _FilterPopupWidgetState extends State<_FilterPopupWidget> {
                                     damage: selectedValue,
                                   ),
                                 );
-                              } else if (selectedType == 'LEASE') {
-                                Navigator.pop(context);
-                                Utils.navigateToPushScreen(
-                                  context,
-                                  LeaseScanScreen(
-                                    type: selectedType ?? "",
-                                    damage: selectedValue,
-                                  ),
-                                );
-                              }
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedType == null
@@ -852,7 +785,7 @@ class _OptionTile extends StatelessWidget {
               ? Theme.of(context).secondaryHeaderColor
               : Colors.transparent,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+          border: Border.all(color:isSelected?Colors.white: Theme.of(context).secondaryHeaderColor),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -34,12 +34,17 @@ class Data {
   String? fullName;
   String? mobileNumber;
   String? customerId;
+  String? emailId;
+  String? profileImageUrl;
   dynamic bankDetailsResponse;
   dynamic cardDetailsResponse;
   dynamic paymentGetWayResponse;
   List<AddressResponses>? addressResponses;
 
-  Data({this.id, this.fullName, this.mobileNumber, this.customerId, this.bankDetailsResponse, this.cardDetailsResponse, this.paymentGetWayResponse, this.addressResponses});
+  Data({this.id, this.fullName, this.mobileNumber, this.customerId,
+    this.emailId,
+    this.profileImageUrl,
+    this.bankDetailsResponse, this.cardDetailsResponse, this.paymentGetWayResponse, this.addressResponses});
 
   Data.fromJson(Map<String, dynamic> json) {
     if(json["id"] is int) {
@@ -53,6 +58,12 @@ class Data {
     }
     if(json["customerId"] is String) {
       customerId = json["customerId"];
+    }
+    if(json["emailId"] is String) {
+      emailId = json["emailId"];
+    }
+    if(json["profileImageUrl"] is String) {
+      profileImageUrl = json["profileImageUrl"];
     }
     bankDetailsResponse = json["bankDetailsResponse"];
     cardDetailsResponse = json["cardDetailsResponse"];
@@ -68,6 +79,8 @@ class Data {
     _data["fullName"] = fullName;
     _data["mobileNumber"] = mobileNumber;
     _data["customerId"] = customerId;
+    _data["emailId"] = emailId;
+    _data["profileImageUrl"] = profileImageUrl;
     _data["bankDetailsResponse"] = bankDetailsResponse;
     _data["cardDetailsResponse"] = cardDetailsResponse;
     _data["paymentGetWayResponse"] = paymentGetWayResponse;
