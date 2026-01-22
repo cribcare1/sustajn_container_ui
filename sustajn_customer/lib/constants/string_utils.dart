@@ -198,6 +198,14 @@ class Strings {
   static const String CREATE = "Create";
   static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
   static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
+  static const String SKIP_PAYMENT = 'To enjoy the full benefits of the service offered, provideing the payment information is mandatory';
+  static const String SKIP_CONTINUE = 'Skip&Continue';
+  static const String SAVE_CHANGES = 'Save Changes';
+  static const String USER_FULL_NAME = 'Full Name';
+  static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
+  static const String LEARN_MORE = 'Learn More';
+  static const String UPGRADE = 'Upgrade';
+
 
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
@@ -214,6 +222,15 @@ class Strings {
   static const String VALID_MOB = 'Enter valid 10-digit mobile number';
   static const String EMAIL_REQ = 'Email required';
   static const String RESTAURANT = 'Restaurant name required';
+  static const String TITLE_1 = 'Order Confirmed\nSahara Sizzle';
+  static const String TITLE_2 = 'Item Marked as Sold\nYour return window has expired.The full amount of AED[amount] has now been charged.';
+  static const String TITLE_3 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_4 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_5 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_6 = 'Friendly reminder\nPlease return the leased product by 03.01.2026. You can also extend the lease for 5 days for a fee of AED 3';
+  static const String SUB_TITLE_= 'Round Bowl | Dip Cup | Rectangular Container';
+
+
 
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');

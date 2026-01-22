@@ -3,7 +3,9 @@ import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
+import '../constants/string_utils.dart';
 import 'models/notice_model.dart';
+import 'notification_dialog.dart';
 
 class NotificationScreen extends StatelessWidget {
 
@@ -12,31 +14,65 @@ class NotificationScreen extends StatelessWidget {
   final List<NoticeModel> notifications = [
 
     NoticeModel(
-      title: "Your Order\nSahara Sizzle",
+      title: Strings.TITLE_1,
       icon: "assets/icons/right_check.png",
-      subtitle: "Round Bowl | Dip Cup | Rectangular Container",
-      dateTime: "01/12/2024 | 10:00am",
+      subtitle: Strings.SUB_TITLE_,
+      dateTime: "08/01/2026 | 10:00",
       // icon: "assets/icons/check.png",
       hasActions: true,
     ),
+    NoticeModel(
+      title: Strings.TITLE_2,
+      icon: "assets/icons/icon_1.png",
+      subtitle: "",
+      dateTime: "08/10/2026 | 23:00",
+      hasActions: false,
+    ),
 
     NoticeModel(
-      title: "Your borrowed product is due for return in 1 days.Please return it by 01/12/2025.",
+      title: Strings.TITLE_3,
       icon: "assets/icons/warning_icon.png",
       subtitle: "",
-      dateTime: "30/11/2025 | 09:00am",
+      dateTime: "08/11/2026 | 09:00",
       hasActions: false,
     ),
 
     NoticeModel(
-      title:
-      "As the 7-day limit has been crossed, we have initiated the process "
-          "to charge the replacement fee of [Amount]",
-      icon: "assets/icons/siren_icon.png",
+      title: Strings.TITLE_4,
+      icon: "assets/icons/warning_icon.png",
       subtitle: "",
-      dateTime: "30/11/2025 | 09:00am",
+      dateTime: "30/11/2025 | 09:00",
       hasActions: false,
     ),
+    NoticeModel(
+      title: Strings.TITLE_5,
+      icon: "assets/icons/warning_icon.png",
+      subtitle: "",
+      dateTime: "30/11/2025 | 09:00",
+      hasActions: false,
+    ),
+    NoticeModel(
+      title: Strings.TITLE_6,
+      icon: "assets/icons/clock_icon.png",
+      subtitle: "",
+      dateTime: "30/11/2025 | 09:00",
+      hasActions: false,
+    ),
+    NoticeModel(
+      title: Strings.TITLE_6,
+      icon: "assets/icons/clock_icon.png",
+      subtitle: "",
+      dateTime: "30/11/2025 | 09:00",
+      hasActions: false,
+    ),
+    NoticeModel(
+      title: Strings.TITLE_6,
+      icon: "assets/icons/clock_icon.png",
+      subtitle: "",
+      dateTime: "30/11/2025 | 09:00",
+      hasActions: false,
+    ),
+
   ];
 
   @override
@@ -48,9 +84,15 @@ class NotificationScreen extends StatelessWidget {
         title: Text('Notifications',
           style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Colors.white),),
         backgroundColor: theme.scaffoldBackgroundColor,
-        leading: Icon(Icons.arrow_back_ios,
+        leading: IconButton(
+          icon: Icon(
+    Icons.arrow_back_ios,
         color: Colors.white,
-        size: Constant.CONTAINER_SIZE_20,),
+        size: Constant.CONTAINER_SIZE_20),
+        onPressed:(){
+          Navigator.pop(context);
+        },
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(
@@ -78,14 +120,30 @@ class NotificationScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: notifications.length,
-                itemBuilder: (context, index) {
-                  return _notificationCard(
+                itemCount: notifications.length,itemBuilder: (context, index) {
+                final item = notifications[index];
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                  onTap: () {
+                    if (index == 5) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const NotificationDialog(),
+                      );
+                    }
+                  },
+                  child: _notificationCard(
                     context,
-                    notifications[index],
+                    item,
                     theme,
-                  );
-                },
+                    index,
+                  ),
+                );
+              },
+
               ),
             ),
           ],
@@ -96,7 +154,9 @@ class NotificationScreen extends StatelessWidget {
 
   Widget _notificationCard(BuildContext context,
       NoticeModel item,
-      ThemeData theme) {
+      ThemeData theme,
+      int index,
+      ) {
     return Container(
       margin: EdgeInsets.only(bottom: Constant.SIZE_10),
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -129,13 +189,32 @@ class NotificationScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                Text(
-                  item.title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                if (item.title.contains('\n')) ...[
+                  Text(
+                    item.title.split('\n')[0],
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white70, // status text
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    item.title.split('\n')[1],
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ] else
+                  Text(
+                    item.title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
 
                 if(item.subtitle.isNotEmpty) ...[
                   SizedBox(height: Constant.SIZE_06),
@@ -212,6 +291,12 @@ class NotificationScreen extends StatelessWidget {
               ],
             ),
           ),
+          if (index == 5)
+            Icon(
+              Icons.chevron_right,
+              color: Colors.white70,
+              size: Constant.CONTAINER_SIZE_22,
+            )
         ],
       ),
     );
