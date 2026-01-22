@@ -462,11 +462,15 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
   }
 
   Future<bool> _onBackPressed() async {
+
+    if (widget.flow == AddressFlow.profile) {
+      return true;
+    }
     final result = await displayDialog(
       context,
       Icons.warning_amber,
-     Strings.GO_BACK,
-     Strings.VERIFIED_EMAIL,
+      Strings.GO_BACK,
+      Strings.VERIFIED_EMAIL,
       Strings.STAY_ON_THIS_PAGE,
     );
 
@@ -476,7 +480,6 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
     return false;
   }
-
 
   Future<bool> displayDialog(
       BuildContext context,

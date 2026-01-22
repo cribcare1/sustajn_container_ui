@@ -6,8 +6,9 @@ class AppAssets {
 
   // Images
   static const String sustajnLogoGif = '$_images/Sustajn_logo.gif';
-  static const String sustajnLogoName = '$_images/Sustajn - logo_name.png';
+  static const String sustajnLogoName = '$_images/sustajn_logo_name.png';
   static const String sustajn_app_logo = '$_images/sustajn_app_logo.png';
+  static const String sustajn_logo = '$_images/app_logo.png';
 
   // SVGs
   static const String sustajnLogoNameSvg = '$_images/logo_name.svg';
