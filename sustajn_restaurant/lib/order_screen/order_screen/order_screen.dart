@@ -87,7 +87,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             children: [
               CustomTheme.searchField(
                 searchController,
-                "Search Container by Name",
+                Strings.SEARCH_BY_CONTAINER_NAME,
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(
@@ -96,7 +96,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                     : container == null
                     ? const Center(
                         child: Text(
-                          "No containers available",
+                          Strings.NO_CONTAINER_AVAILABLE,
                           style: TextStyle(color: Colors.white),
                         ),
                       )

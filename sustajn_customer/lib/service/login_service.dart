@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/models/signup_model.dart';
 
 import '../constants/network_urls.dart';
 import '../models/login_model.dart';
@@ -33,12 +34,14 @@ class AuthServices {
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.postApiRequest(url, requestData);
       if (response != null) {
-        return response;
+        var responseData = SignUpModel.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     }catch(e){
-      Utils.printLog("login service::::$e");
+      Utils.printLog("register service::::$e");
       throw Exception(e);
     }
   }

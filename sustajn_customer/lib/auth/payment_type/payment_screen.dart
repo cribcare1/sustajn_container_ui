@@ -412,17 +412,40 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         if (widget.flow == PaymentFlow.signup)
           Expanded(
             child: OutlinedButton(
-              onPressed: signupState.isLoading
-                  ? null
-                  : () {
-                ref.read(signUpNotifier).resetBankValidation();
-                _clearBankControllers();
+              onPressed:
+                  () {
+                    Utils.skipDialog(
+                          context: context,
+                      icon: Icons.warning_amber,
+                      subTitle: Strings.SKIP_PAYMENT,
+                      cancelButtonText: Strings.CANCEL,
+                      yesButtonText: Strings.SKIP_CONTINUE,
+                      onCancel: (){
+                            Navigator.pop(context);
+                      },
+                      onYes: () {
+                        Navigator.pop(context);
 
-                NavUtil.navigateWithReplacement(
-                  SubscriptionScreen(),
-                );
+                        ref.read(signUpNotifier).resetBankValidation();
+                        _clearBankControllers();
+
+                        NavUtil.navigateWithReplacement(SubscriptionScreen());
+                      },
+
+                    );
               },
-              child: Text('Skip'),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: Constant.gold,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                ),
+              ),
+              child: Text(Strings.SKIP,
+              style: TextStyle(
+                color: Constant.gold
+              ),),
             ),
           ),
 
@@ -441,9 +464,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               } else {
                 await _getNetworkDataVerify(signupState);
               }
-
-            },
-
+              },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(
@@ -472,18 +493,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         "iBanNumber": _ibanController.text,
       },
       "cardDetailsRequest": {
-        "userId": 44,
-        "cardHolderName": "Suraj Kumar Nayak",
-        "cardNumber": "4111111111111111",
-        "expiryDate": "12/29",
-        "cvv": "123",
-        "paymentGatewayId": "PG1001",
-        "paymentGatewayName": "Razorpay",
+        "userId": Utils.userId,
+        "cardHolderName": "",
+        "cardNumber": "",
+        "expiryDate": "",
+        "cvv": "",
+        "paymentGatewayId": "",
+        "paymentGatewayName": "",
       },
       "paymentGetWayRequest": {
-        "userId": 44,
-        "paymentGatewayId": "PG2001",
-        "paymentGatewayName": "PayU",
+        "userId": Utils.userId,
+        "paymentGatewayId": "",
+        "paymentGatewayName": "",
       },
     };
     return data;

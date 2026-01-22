@@ -23,7 +23,7 @@ class ReturnContainerScreen extends ConsumerStatefulWidget {
 }
 
 class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
   LoginData? loginResponse;
@@ -44,38 +44,6 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
     });
   }
 
-  final List<ContainerItem> containers = [
-    ContainerItem(
-      name: "Dip Cup",
-      code: "ST-DC-50",
-      volume: "50ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Dip Cup",
-      code: "ST-DC-70",
-      volume: "70ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Round Container",
-      code: "ST-RDC-500",
-      volume: "500ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Rectangular Container",
-      code: "ST-RC-800",
-      volume: "800ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-  ];
-  final searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -92,9 +60,9 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
             children: [
               CustomTheme.searchField(
                 searchController,
-                "Search Container by Name",
+                Strings.SEARCH_BY_CONTAINER_NAME,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: Constant.CONTAINER_SIZE_10),
 
               Expanded(
                 child: orderState.isLoading
@@ -102,7 +70,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                     : orderState.getContainerData!.containersDetails!.isEmpty
                     ? Center(
                         child: Text(
-                          "No containers found",
+                          Strings.NO_CONTAINER_AVAILABLE,
                           style: TextStyle(color: Colors.white),
                         ),
                       )

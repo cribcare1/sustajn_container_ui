@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
-
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -33,7 +32,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Reports", "icon": Icons.bar_chart_outlined},
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
   ];
@@ -100,6 +99,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   List<GetProfileData> profileData = [];
+  AddressResponses? selectedAddress;
+
   LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
@@ -107,38 +108,45 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // _loadProfile();
+    _loadProfile();
     _getProfileNetworkCall();
   }
 
-  // Future<void> _loadProfile() async {
-  //   await Utils.getProfile();
-  //   setState(() {
-  //     loginResponse = Utils.loginData?.data;
-  //     isLoading = false;
-  //   });
-  // }
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final profile = profileState.getProfileData?.data;
 
-    final address =
-        (profile?.addressResponses != null &&
-            profile!.addressResponses!.isNotEmpty)
-        ? profile.addressResponses!.first
-        : null;
-    // if (profile!.profileImageUrl != null) {
-    //   profileImage = File(
-    //     "${NetworkUrls.IMAGE_BASE_URL}${profile.profileImageUrl}",
-    //   );
-    // }
-    final fullAddress = [
-      address?.flatDoorHouseDetails,
-      // address?.areaStreetCityBlockDetails,
-      address?.poBoxOrPostalCode,
-    ].whereType<String>().join(', ');
+    final List<AddressResponses>? addresses = profile?.addressResponses;
+
+    if (addresses != null && addresses.isNotEmpty) {
+      selectedAddress = addresses.firstWhere(
+            (e) => e.addressType?.toLowerCase() == "home",
+        orElse: () => addresses.firstWhere(
+              (e) => e.addressType?.toLowerCase() == "work",
+          orElse: () => addresses.first,
+        ),
+      );
+    }
+
+    final String fullAddress = selectedAddress == null
+        ? "No address added"
+        : [
+      selectedAddress!.flatDoorHouseDetails,
+      selectedAddress!.areaStreetCityBlockDetails,
+      selectedAddress!.poBoxOrPostalCode,
+    ].whereType<String>()
+        .where((e) => e.isNotEmpty)
+        .join(', ');
+
 
     if (profileState.isLoading == true) {
       return Center(child: CircularProgressIndicator());
@@ -167,17 +175,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           title: Text(
             "My Profile",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: Constant.CONTAINER_SIZE_20,
               fontWeight: FontWeight.w500,
               color: theme.scaffoldBackgroundColor,
             ),
           ),
         ),
 
-        body: profileState.isLoading
+        body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : profile!.fullName != null
-            ? SingleChildScrollView(
+            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -202,31 +209,21 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: profileImage != null
-                                      ? FileImage(profileImage!) as ImageProvider
-                                      : (profile.profileImageUrl != null &&
-                                      profile.profileImageUrl!.isNotEmpty)
-                                      ? NetworkImage(
-                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                  )
-                                      : const AssetImage(
-                                    "assets/images/default_profile.png",
-                                  ),
+                                  image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
+                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
+                                  ):AssetImage("assets/images/cups.png"),
                                   fit: BoxFit.cover,
                                 ),
-
                               ),
                             ),
                             GestureDetector(
-                              onTap: () async {
-                                profileImage = await Utils.uploadImage(context);
-                                if (profileImage != null) {
-                                  _profileImgNetworkCall(
-                                    profileState,
-                                    profile.mobileNumber!,
-                                    profile.fullName!,
-                                  );
-                                }
+                              onTap: () {
+                                _profileImgNetworkCall(
+                                  profileState,
+                                  profile!.mobileNumber!,
+                                  profile.fullName!,
+                                );
+                                Utils.showProfilePhotoBottomSheet(context);
                               },
                               child: Container(
                                 height: w * 0.09,
@@ -250,7 +247,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              profile.fullName ?? "",
+                              profile?.fullName ?? "",
                               style: TextStyle(
                                 fontSize: w * 0.055,
                                 fontWeight: FontWeight.w700,
@@ -258,7 +255,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             SizedBox(width: w * 0.015),
-                            if (profile.fullName != null)
+                            if (profile?.fullName != null)
                               GestureDetector(
                                 onTap: () {
                                   showModalBottomSheet(
@@ -267,7 +264,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
                                         EditRestaurantNameDialog(
-                                          name: profile.fullName ?? "--",
+                                          name: profile!.fullName!,
                                         ),
                                   );
                                 },
@@ -303,7 +300,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: profile.emailId ?? "__",
+                                value: loginResponse?.userName! ?? "",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
@@ -314,8 +311,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.location_on_outlined,
                                 title: "Address",
-                                value: fullAddress ?? "No address added",
-
+                                value: fullAddress ?? "No address",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -325,7 +321,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
-                                        EditAddressDialog(address: fullAddress),
+                                        EditAddressDialog(selectedAddress: selectedAddress),
                                   );
                                 },
                               ),
@@ -333,7 +329,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.phone_outlined,
                                 title: "Mobile Number",
-                                value: profile.mobileNumber! ?? "",
+                                value: profile?.mobileNumber! ?? "",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -345,7 +341,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     builder: (context) =>
                                         EditMobileNumberDialog(
                                           mobileNumber:
-                                              profile.mobileNumber ?? "",
+                                              profile?.mobileNumber ?? "",
                                         ),
                                   );
                                 },
@@ -433,13 +429,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     ),
                   ],
                 ),
-              )
-            : const Center(
-                child: Text(
-                  "No Data available",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              ):const Center(
+          child: Text(
+            "No Data available",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
@@ -522,8 +517,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      // if (!profileState.isValid) return;
-      profileState.setIsSaving(true);
+      if (!profileState.isValid) return;
+
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -533,6 +528,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         return;
       }
+
+      profileState.setIsLoading(true);
 
       // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
@@ -544,10 +541,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsSaving(false);
+      profileState.setIsLoading(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsSaving(false);
+      profileState.setIsLoading(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();
