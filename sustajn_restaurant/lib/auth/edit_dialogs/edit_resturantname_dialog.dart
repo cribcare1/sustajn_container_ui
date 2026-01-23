@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -83,8 +84,6 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                /// HEADER
                 Row(
                   children: [
                     Expanded(
@@ -155,45 +154,22 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                     ),
                   ),
                 ),
-
-
-
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async{
-                      if (_formKey.currentState!.validate()) {
-                        await _editNameNetworkCall(
-                        _nameController.text.trim(),
-                        );
-                        if (mounted) {
-                          Navigator.pop(context, _nameController.text.trim());
-                        }
-
-                        // Navigator.pop(context, _nameController.text.trim());
+                  child: SubmitButton(onRightTap: ()async{
+                    if (_formKey.currentState!.validate()) {
+                      await _editNameNetworkCall(
+                      _nameController.text.trim(),
+                      );
+                      if (mounted) {
+                        Navigator.pop(context, _nameController.text.trim());
                       }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
-                    child: Text(
-                      'Save Changes',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+
+                      // Navigator.pop(context, _nameController.text.trim());
+                    }
+                  },rightText:Strings.SAVE_CHANGES,)
+
                 ),
               ],
             ),

@@ -77,7 +77,8 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
     final serviceProvider = ref.read(getProfileApiProvider);
     final image = params[Strings.IMAGE];
     params.remove(Strings.IMAGE);
-    final Map<String, dynamic> data = Map<String, dynamic>.from(params);
+    params.remove('part_url');
+    final Map<String, dynamic> data = Map<String, dynamic>.from(params['data']);
 
     final response = await serviceProvider.updateImageService(
       NetworkUrls.UPDATE_PROFILE,
@@ -85,7 +86,6 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
       "profileImage",
       image,
     );
-    print(response);
     return response;
   },
 );

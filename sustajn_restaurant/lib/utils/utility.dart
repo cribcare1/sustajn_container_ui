@@ -124,6 +124,7 @@ class Utils {
       },
     );
   }
+
   static Future<File?> uploadImage(BuildContext context) async {
     final theme = CustomTheme.getTheme(true);
     final ImagePicker picker = ImagePicker();
@@ -323,9 +324,6 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-
-                        navigateToPushScreen(context, LoginScreen());
-
                         Navigator.pop(context);
                         SharedPreferenceUtils.clearAll();
                         Utils.navigateToPushReplaceScreen(context, LoginScreen());

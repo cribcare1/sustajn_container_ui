@@ -386,12 +386,6 @@ class ApiHelper {
 
       // Add file if exists
       if (file != null) {
-        // var stream = http.ByteStream(file.openRead());
-        // var length = await file.length();
-        // var multipartFile = http.MultipartFile(
-        //   'profileImage', file.path, length,
-        //   filename: file.path.split('/').last,
-        // );
         final fileName = file.path.split('/').last;
 
         multipartRequest.files.add( await http.MultipartFile.fromPath(

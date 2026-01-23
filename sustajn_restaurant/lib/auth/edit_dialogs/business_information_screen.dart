@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
+
 import '../../constants/number_constants.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
 
-class BusinessInformationScreen extends StatelessWidget {
+class BusinessInformationScreen extends ConsumerStatefulWidget {
   const BusinessInformationScreen({super.key});
 
+  @override
+  ConsumerState<BusinessInformationScreen> createState() => _BusinessInformationScreenState();
+}
+
+class _BusinessInformationScreenState extends ConsumerState<BusinessInformationScreen> {
+  _getData() {
+    final profileState = ref.read(profileProvider);
+    final profile = profileState.getProfileData?.data;
+    if (profile!.bankDetailsResponse != null) {
+      final business = profile.bankDetailsResponse;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -128,27 +144,10 @@ class BusinessInformationScreen extends StatelessWidget {
                 bottom: mediaQuery.padding.bottom + Constant.SIZE_10,
               ),
               child: SizedBox(
-                height: Constant.CONTAINER_SIZE_50,
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFC8B531),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_15,
-                      ),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    Strings.SAVE_CHANGES,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_15,
-                      fontWeight: FontWeight.w600,
-                      color: theme.primaryColor,
-                    ),
-                  ),
+                child: SubmitButton(
+                  onRightTap: () {},
+                  rightText: Strings.SAVE_CHANGES,
                 ),
               ),
             ),
@@ -172,7 +171,7 @@ class BusinessInformationScreen extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: Constant.SIZE_08),
           decoration: BoxDecoration(
             color: Color(0xFF1F4D3A),
-            borderRadius: BorderRadius.circular(Constant.LABEL_TEXT_SIZE_14),
+            borderRadius: BorderRadius.circular(Constant.LABEL_TEXT_SIZE_18),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
@@ -203,7 +202,9 @@ class BusinessInformationScreen extends StatelessWidget {
                 vertical: Constant.LABEL_TEXT_SIZE_14,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                borderRadius: BorderRadius.circular(
+                  Constant.LABEL_TEXT_SIZE_14,
+                ),
               ),
               enabledBorder: CustomTheme.roundedBorder(Constant.grey),
               focusedBorder: CustomTheme.roundedBorder(Constant.grey),

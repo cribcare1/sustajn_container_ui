@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
+
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -101,23 +101,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   List<GetProfileData> profileData = [];
   AddressResponses? selectedAddress;
 
-  LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
     _getProfileNetworkCall();
-  }
-
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
   }
 
   @override
@@ -129,9 +119,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     if (addresses != null && addresses.isNotEmpty) {
       selectedAddress = addresses.firstWhere(
-            (e) => e.addressType?.toLowerCase() == "home",
+        (e) => e.addressType?.toLowerCase() == "home",
         orElse: () => addresses.firstWhere(
-              (e) => e.addressType?.toLowerCase() == "work",
+          (e) => e.addressType?.toLowerCase() == "work",
           orElse: () => addresses.first,
         ),
       );
@@ -140,13 +130,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final String fullAddress = selectedAddress == null
         ? "No address added"
         : [
-      selectedAddress!.flatDoorHouseDetails,
-      selectedAddress!.areaStreetCityBlockDetails,
-      selectedAddress!.poBoxOrPostalCode,
-    ].whereType<String>()
-        .where((e) => e.isNotEmpty)
-        .join(', ');
-
+            selectedAddress!.flatDoorHouseDetails,
+            // selectedAddress!.areaStreetCityBlockDetails,
+            selectedAddress!.poBoxOrPostalCode,
+          ].whereType<String>().where((e) => e.isNotEmpty).join(', ');
 
     if (profileState.isLoading == true) {
       return Center(child: CircularProgressIndicator());
@@ -161,7 +148,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       top: false,
       bottom: true,
       child: Scaffold(
-        backgroundColor: theme!.scaffoldBackgroundColor,
+        backgroundColor: theme!.primaryColor,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color(0xFFD1AE31),
@@ -182,9 +169,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
+        body: profileState.isLoading
+            ? Container(
+                height: MediaQuery.sizeOf(context).height,
+                width: MediaQuery.sizeOf(context).width,
+                color: theme.primaryColor,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            : (profile!.fullName != null)
+            ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -208,22 +201,56 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   color: Colors.white,
                                   width: w * 0.012,
                                 ),
-                                image: DecorationImage(
-                                  image: profile?.profileImageUrl != null && profile?.profileImageUrl.isNotEmpty ? NetworkImage(
-                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/cups.png"),
-                                  fit: BoxFit.cover,
-                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Profile Image
+                                  ClipOval(
+                                    child: Image(
+                                      width: w * 0.28,
+                                      height: w * 0.28,
+                                      fit: BoxFit.cover,
+                                      image: profileImage != null
+                                          ? FileImage(profileImage!)
+                                          : (profile.profileImageUrl != null &&
+                                                profile
+                                                    .profileImageUrl!
+                                                    .isNotEmpty)
+                                          ? NetworkImage(
+                                              "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                            )
+                                          : const AssetImage(
+                                                  "assets/images/default_profile.png",
+                                                )
+                                                as ImageProvider,
+                                    ),
+                                  ),
+                                  if (profileState.isSaving)
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black.withOpacity(0.4),
+                                      ),
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                _profileImgNetworkCall(
-                                  profileState,
-                                  profile!.mobileNumber!,
-                                  profile.fullName!,
-                                );
-                                Utils.showProfilePhotoBottomSheet(context);
+                              onTap: () async {
+                                profileImage = await Utils.uploadImage(context);
+                                if (profileImage != null) {
+                                  _profileImgNetworkCall(
+                                    profileState,
+                                    profile.mobileNumber!,
+                                    profile.fullName!,
+                                  );
+                                }
                               },
                               child: Container(
                                 height: w * 0.09,
@@ -247,7 +274,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              profile?.fullName ?? "",
+                              profile.fullName ?? "",
                               style: TextStyle(
                                 fontSize: w * 0.055,
                                 fontWeight: FontWeight.w700,
@@ -255,7 +282,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             SizedBox(width: w * 0.015),
-                            if (profile?.fullName != null)
+                            if (profile.fullName != null)
                               GestureDetector(
                                 onTap: () {
                                   showModalBottomSheet(
@@ -264,7 +291,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
                                         EditRestaurantNameDialog(
-                                          name: profile!.fullName!,
+                                          name: profile.fullName!,
                                         ),
                                   );
                                 },
@@ -300,7 +327,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: profile?.emailId! ?? "",
+                                value: profile.emailId ?? "__",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
@@ -311,7 +338,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.location_on_outlined,
                                 title: "Address",
-                                value: fullAddress ?? "No address",
+                                value: fullAddress,
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -320,8 +347,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     context: context,
                                     isScrollControlled: true,
                                     backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditAddressDialog(selectedAddress: selectedAddress),
+                                    builder: (context) => EditAddressDialog(
+                                      selectedAddress: selectedAddress,
+                                    ),
                                   );
                                 },
                               ),
@@ -329,7 +357,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.phone_outlined,
                                 title: "Mobile Number",
-                                value: profile?.mobileNumber! ?? "",
+                                value: profile.mobileNumber! ?? "",
                                 w: w,
                                 showEdit: true,
                                 theme: theme,
@@ -341,7 +369,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     builder: (context) =>
                                         EditMobileNumberDialog(
                                           mobileNumber:
-                                              profile?.mobileNumber ?? "",
+                                              profile.mobileNumber ?? "",
                                         ),
                                   );
                                 },
@@ -403,12 +431,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFC8B531),
+                                backgroundColor: theme.secondaryHeaderColor,
                                 padding: EdgeInsets.symmetric(
                                   vertical: h * 0.018,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(w * 0.04),
+                                  side: BorderSide(color: Colors.white)
                                 ),
                               ),
                               onPressed: () {
@@ -429,12 +458,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     ),
                   ],
                 ),
-              ):const Center(
-          child: Text(
-            "No Data available",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+              )
+            : const Center(
+                child: Text(
+                  "No Data available",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
     );
   }
@@ -483,14 +513,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   _getProfileNetworkCall() async {
+    final profileState = ref.read(profileProvider);
+    profileState.setIsLoading(true);
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final profileState = ref.read(profileProvider);
+
         if (isNetworkAvailable) {
-          profileState.setIsLoading(true);
           final userId = Utils.userId;
           final url = '${NetworkUrls.GET_PROFILE}$userId';
           ref.read(getProfileProvider(url));
@@ -517,8 +548,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      if (!profileState.isValid) return;
-
+      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -528,10 +558,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         return;
       }
-
-      profileState.setIsLoading(true);
-
-      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
@@ -541,13 +567,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();
+      profileState.setIsSaving(false);
     }
   }
 }

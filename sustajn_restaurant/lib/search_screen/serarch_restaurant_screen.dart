@@ -70,7 +70,7 @@ class _SearchRestaurantScreenState
         return;
       }
 
-      ref.read(searchRes(body));
+      ref.read(searchRestaurant(body));
     } catch (e) {
       Utils.printLog("API Error: $e");
     }
@@ -205,7 +205,7 @@ class _SearchRestaurantScreenState
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -214,9 +214,8 @@ class _SearchRestaurantScreenState
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
+                    padding:  EdgeInsets.symmetric(
+                      vertical: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
                   icon: Icon(
@@ -269,18 +268,19 @@ class _SearchRestaurantScreenState
                     ),
                   SizedBox(height: Constant.SIZE_08),
                   Expanded(
-                    child: ListView.builder(
+                    child: ListView.separated(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.manual,
                       padding: EdgeInsets.symmetric(
                         horizontal: Constant.CONTAINER_SIZE_16,
                       ),
+                      separatorBuilder: (context, index) => Divider(color: Colors.grey,),
                       itemCount: searchProvider.resList.length,
                       itemBuilder: (context, index) {
                         final data = searchProvider.resList[index];
                         return RestaurantTile(
                           name: data.name,
-                          distance: '${data.distanceKm.toStringAsFixed(2)} km',
+                          distance: '${data.distanceKm.toStringAsFixed(2)} \nkm',
                           address: data.address,
                         );
                       },
@@ -311,57 +311,54 @@ class RestaurantTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.location_on, color: theme?.secondaryHeaderColor),
+              Text(
+                distance,textAlign: TextAlign.center,
+                style: theme?.textTheme.titleSmall?.copyWith(
+                  color: theme.secondaryHeaderColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          flex: 7,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: theme?.textTheme.titleMedium?.copyWith(
+                  color: Constant.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                address,
+                overflow: TextOverflow.ellipsis,
+                style: theme?.textTheme.titleSmall?.copyWith(
+                  color: Constant.white,
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.location_on, color: theme?.secondaryHeaderColor),
-                Text(
-                  distance,
-                  style: theme?.textTheme.titleSmall?.copyWith(
-                    color: theme.secondaryHeaderColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            flex: 7,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: theme?.textTheme.titleMedium?.copyWith(
-                    color: Constant.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  address,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme?.textTheme.titleSmall?.copyWith(
-                    color: Constant.white,
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-          ),
-
-          Expanded(
-            flex: 1,
-            child: const Icon(Icons.chevron_right, color: Constant.white),
-          ),
-        ],
-      ),
+        // Expanded(
+        //   flex: 1,
+        //   child: const Icon(Icons.chevron_right, color: Constant.white),
+        // ),
+      ],
     );
   }
 }
