@@ -10,7 +10,6 @@ import '../../../common_widgets/circle_card_widget.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
-import '../../../lease_receive/screens/lease_scan_screen.dart';
 import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../order_screen/order_home_screen.dart';
