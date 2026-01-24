@@ -211,4 +211,17 @@ class Strings {
   static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
   static const String LEARN_MORE = 'Learn More';
   static const String UPGRADE = 'Upgrade';
+  static const String SELECT_HOME_ADDRESS_TITLE = 'Select Home Address';
+  static const String ADD_ADDRESS_TITLE = 'Add Address';
+  static const String EDIT_ADDRESS_TITLE = 'Edit Address';
+  static const String CONTACT_NUMBER = 'Contact Number';
+  static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
+  static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
+  static const String PRIMARY_NUMBER = 'Primary Number';
+  static const String ADD_SECONDARY_NUMBER = 'Add Secondary Number';
+  static const String SECONDARY_NUMBER = 'Secondary Number';
+  static const String ADD_TEXT = 'Add';
+  static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
+  static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
+
 }

@@ -11,6 +11,7 @@ import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../auth/screens/save_home_address.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
@@ -786,6 +787,21 @@ class Utils {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
+  }
+
+  static String getAppBarTitle({
+    required AddressFlow flow,
+    required dynamic existingAddress,
+  }) {
+    if (flow == AddressFlow.signup) {
+      return Strings.SELECT_HOME_ADDRESS_TITLE;
+    }
+
+    if (existingAddress != null) {
+      return Strings.EDIT_ADDRESS_TITLE;
+    }
+
+    return Strings.ADD_ADDRESS_TITLE;
   }
 
 

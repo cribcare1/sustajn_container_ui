@@ -50,8 +50,8 @@ class _EditMobileNumberDialogState
   }
 
   String? _validate(String? v) {
-    if (v == null || v.isEmpty) return "Enter mobile number";
-    if (v.length != 10) return "Enter valid 10 digit number";
+    if (v == null || v.isEmpty) return Strings.ENTER_MOBILE_NUMBER;
+    if (v.length != 10) return Strings.ENTER_VALID_PHONE;
     return null;
   }
 
@@ -61,9 +61,9 @@ class _EditMobileNumberDialogState
     final profileState = ref.watch(profileProvider);
 
     String title = switch (view) {
-      ContactView.display => "Contact Number",
-      ContactView.edit => "Edit Contact Number",
-      ContactView.add => "Add Contact Number",
+      ContactView.display => Strings.CONTACT_NUMBER,
+      ContactView.edit =>Strings.EDIT_CONTACT_NUMBER,
+      ContactView.add => Strings.ADD_CONTACT_NUMBER,
     };
 
     return SafeArea(
@@ -114,7 +114,7 @@ class _EditMobileNumberDialogState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Primary Number",
+                            Strings.PRIMARY_NUMBER,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: Colors.white70,
                             ),
@@ -169,7 +169,7 @@ class _EditMobileNumberDialogState
                       const Icon(Icons.add, color: Constant.gold),
                       SizedBox(width: Constant.SIZE_08),
                       Text(
-                        "Add Secondary Number",
+                        Strings.ADD_SECONDARY_NUMBER,
                         style: theme.textTheme.bodyMedium
                             ?.copyWith(color: Constant.gold),
                       )
@@ -192,8 +192,8 @@ class _EditMobileNumberDialogState
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: view == ContactView.edit
-                          ? "Primary Number"
-                          : "Secondary Number",
+                          ? Strings.PRIMARY_NUMBER
+                          : Strings.SECONDARY_NUMBER,
                       labelStyle: const TextStyle(color: Colors.white70),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Constant.grey),
@@ -226,8 +226,8 @@ class _EditMobileNumberDialogState
                     },
                     child: Text(
                       view == ContactView.edit
-                          ? "Save Changes"
-                          : "Add",
+                          ? Strings.SAVE_CHANGES
+                          : Strings.ADD_TEXT,
                       style: theme.textTheme.labelLarge
                           ?.copyWith(color: Colors.black),
                     ),

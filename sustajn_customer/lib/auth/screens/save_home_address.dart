@@ -116,17 +116,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     }
   }
 
-  String get _appBarTitle {
-    if (widget.flow == AddressFlow.signup) {
-      return "Select Home Address";
-    }
 
-    if (widget.existingAddress != null) {
-      return "Edit Address";
-    }
-
-    return "Add Address";
-  }
 
 
   @override
@@ -154,7 +144,10 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             Scaffold(
             backgroundColor: theme.scaffoldBackgroundColor,
             appBar: CustomAppBar(
-              title:  _appBarTitle,
+              title:  Utils.getAppBarTitle(
+                flow: widget.flow,
+                existingAddress: widget.existingAddress,
+              ),
               leading: CustomBackButton(),
             ).getAppBar(context),
 
