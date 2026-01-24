@@ -38,7 +38,6 @@ class Strings {
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
   static const String EMAIL = 'Email ID*';
-  static const String DOB = 'Date of Birth';
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
@@ -224,4 +223,24 @@ class Strings {
   static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
   static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
 
+  static const String PROCEED_TERMS = 'Proceed to Terms & Conditions';
+  static const String VALID_EMAIL = 'Enter valid email';
+  static const String SPECIAL_CHAR = 'No special characters allowed';
+  static const String PASSWORD_MATCH = 'Password must be 8+ chars with letters, numbers & special char';
+  static const String CONFIRM = 'Confirm password required';
+  static const String NOT_MATCH = 'Passwords do not match';
+  static const String REQUIRED = 'Password required';
+  static const String MOBILE = 'Mobile number required';
+  static const String VALID_MOB = 'Enter valid 10-digit mobile number';
+  static const String EMAIL_REQ = 'Email required';
+  static const String RESTAURANT = 'Restaurant name required';
+
+  static final RegExp alphaNumericWithSpace =
+  RegExp(r'^[a-zA-Z0-9 ]+$');
+
+  static final RegExp email =
+  RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');
+
+  static final RegExp password =
+  RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$');
 }

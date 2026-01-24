@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../borrowed/borrowed_scan_screen.dart';
+
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -9,7 +9,6 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../models/lease_model.dart';
 import 'detail_dialo.dart';
 
 class LeaseScreen extends ConsumerStatefulWidget {
@@ -20,39 +19,9 @@ class LeaseScreen extends ConsumerStatefulWidget {
 }
 
 class _LeaseScreenState extends ConsumerState<LeaseScreen> {
-  final List<LeaseItem> leaseItem = [
-    LeaseItem(
-      customerId: "ABC-1234",
-      containerTypes: "Dip Cup | Round Container",
-      quantity: 10,
-      dateTime: "21/11/2025 | 09:00pm",
-    ),
-    LeaseItem(
-      customerId: "ABC-1234",
-      containerTypes: "Dip Cup | Round Container",
-      quantity: 10,
-      dateTime: "21/11/2025 | 09:00pm",
-    ),
-    LeaseItem(
-      customerId: "ABC-1234",
-      containerTypes: "Dip Cup | Round Container",
-      quantity: 10,
-      dateTime: "21/11/2025 | 09:00pm",
-    ),
-    LeaseItem(
-      customerId: "ABC-1234",
-      containerTypes: "Dip Cup | Round Container",
-      quantity: 10,
-      dateTime: "21/11/2025 | 09:00pm",
-    ),
-    LeaseItem(
-      customerId: "ABC-1234",
-      containerTypes: "Dip Cup | Round Container",
-      quantity: 10,
-      dateTime: "21/11/2025 | 09:00pm",
-    ),
-  ];
   final searchController = TextEditingController();
+
+  bool _isQtyAscending = true;
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -87,17 +56,18 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: CustomTheme.searchField(
               searchController,
-              "Search by Customer Name",
+              Strings.SEARCH_BY_CONTAINER_NAME,
+              onFilterTap: () => _showSortBottomSheet(context),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: Constant.CONTAINER_SIZE_10),
           Expanded(
             child: containerState.isLoading
                 ? Center(child: CircularProgressIndicator())
                 : container == null
                 ? const Center(
                     child: Text(
-                      "No containers available",
+                      Strings.NO_CONTAINER_AVAILABLE,
                       style: TextStyle(color: Colors.white),
                     ),
                   )
@@ -116,27 +86,30 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
           ),
         ],
       ),
-      floatingActionButton: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => QrCodeScanner()),
-          );
-        },
-        child: Container(
-          height: Constant.CONTAINER_SIZE_60,
-          width: Constant.CONTAINER_SIZE_60,
-          decoration: const BoxDecoration(
-            color: Constant.gold,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.qr_code_scanner,
-            color: theme.scaffoldBackgroundColor,
-            size: Constant.CONTAINER_SIZE_30,
-          ),
-        ),
-      ),
+
+      //// todo needed later
+
+      // floatingActionButton: InkWell(
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (_) => QrCodeScanner()),
+      //     );
+      //   },
+      //   child: Container(
+      //     height: Constant.CONTAINER_SIZE_60,
+      //     width: Constant.CONTAINER_SIZE_60,
+      //     decoration: const BoxDecoration(
+      //       color: Constant.gold,
+      //       shape: BoxShape.circle,
+      //     ),
+      //     child: Icon(
+      //       Icons.qr_code_scanner,
+      //       color: theme.scaffoldBackgroundColor,
+      //       size: Constant.CONTAINER_SIZE_30,
+      //     ),
+      //   ),
+      // ),
     );
   }
 
@@ -232,6 +205,151 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
       backgroundColor: Colors.transparent,
       builder: (_) =>
           LeaseDetailsDialog(transactionId: transactionId, dateTime: date),
+    );
+  }
+
+  void _showSortBottomSheet(BuildContext context) {
+
+    final containerState = ref.watch(orderProvider);
+
+    final container =
+        containerState.containerHistorydata?.data?.leasedResponses;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        bool tempAscending = _isQtyAscending;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              decoration: BoxDecoration(
+                color: Color(0xFF0F2E22),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        Strings.SORT_BY,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: Constant.CONTAINER_SIZE_18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "Quantity : Low to High",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    trailing: Radio<bool>(
+                      value: true,
+                      groupValue: tempAscending,
+                      activeColor: Constant.gold,
+                      onChanged: (value) {
+                        setModalState(() {
+                          tempAscending = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "Quantity : High to Low",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    trailing: Radio<bool>(
+                      value: false,
+                      groupValue: tempAscending,
+                      activeColor: Constant.gold,
+                      onChanged: (value) {
+                        setModalState(() {
+                          tempAscending = value!;
+                        });
+                      },
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Constant.gold),
+                            foregroundColor: Constant.gold,
+                            padding: EdgeInsets.symmetric(
+                              vertical: Constant.CONTAINER_SIZE_14,
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isQtyAscending = true;
+                              container!.sort(
+                                    (a, b) => a.leasedQuantity!.compareTo(b.leasedQuantity!),
+                              );
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text(Strings.CLEAR),
+                        ),
+                      ),
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            foregroundColor: Colors.black,
+                            padding: EdgeInsets.symmetric(
+                              vertical: Constant.CONTAINER_SIZE_14,
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isQtyAscending = tempAscending;
+                              container!.sort(
+                                    (a, b) => _isQtyAscending
+                                    ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
+                                    : b.leasedQuantity!.compareTo(a.leasedQuantity!),
+                              );
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text(Strings.APPLY),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

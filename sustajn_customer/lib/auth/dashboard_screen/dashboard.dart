@@ -235,31 +235,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/images/img_1.png',
-                            height: Constant.CONATAINER_SIZE_380,
-                            width: Constant.CONATAINER_SIZE_380,
-                          ),
-
-                          SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                          Text(
+                          Center(
+                          child: Text(
                             Strings.DASHBOARD_TEXT,
                             style: theme.textTheme.titleLarge?.copyWith(
                               color: Constant.gold,
                             ),
                             textAlign: TextAlign.center,
                           ),
+                          ),
+                          Image.asset(
+                            'assets/images/dashboard.png',
+                            height: Constant.CONATAINER_SIZE_380,
+                            width: Constant.CONATAINER_SIZE_380,
+                          ),
+
 
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-                          Text(
-                            Strings.BORROW_REUSABLE_CONTAINERS,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+
                         ],
                       ),
                     ),

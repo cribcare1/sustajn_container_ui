@@ -80,8 +80,8 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
   }
 
   Future<dynamic> postApiData(String url, var jsonMap, String requestType) async {
-    checkViewAttached();
-    Future.delayed(const Duration(seconds: 12));
+    // checkViewAttached();
+    // Future.delayed(const Duration(seconds: 12));
     var response;
 
     try {
