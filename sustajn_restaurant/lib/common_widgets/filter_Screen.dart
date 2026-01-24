@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
+
 import '../constants/number_constants.dart';
 import '../utils/theme_utils.dart';
 
@@ -23,8 +25,7 @@ class ReusableFilterBottomSheet extends StatefulWidget {
       _ReusableFilterBottomSheetState();
 }
 
-class _ReusableFilterBottomSheetState
-    extends State<ReusableFilterBottomSheet> {
+class _ReusableFilterBottomSheetState extends State<ReusableFilterBottomSheet> {
   String? selectedOption;
 
   @override
@@ -53,7 +54,6 @@ class _ReusableFilterBottomSheetState
       child: SafeArea(
         child: Column(
           children: [
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -62,7 +62,7 @@ class _ReusableFilterBottomSheetState
                   style: themeData.textTheme.titleLarge!.copyWith(
                     fontSize: Constant.LABEL_TEXT_SIZE_20,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white
+                    color: Colors.white,
                   ),
                 ),
                 GestureDetector(
@@ -76,20 +76,18 @@ class _ReusableFilterBottomSheetState
                     child: Icon(
                       Icons.close,
                       size: Constant.CONTAINER_SIZE_25,
-                      color:Colors.black ,
+                      color: Colors.black,
                     ),
                   ),
-                )
+                ),
               ],
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-
             Expanded(
               child: Row(
                 children: [
-
                   Container(
                     width: width * 0.25,
                     decoration: BoxDecoration(
@@ -116,21 +114,22 @@ class _ReusableFilterBottomSheetState
                     ),
                   ),
 
-
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: List.generate(
                           widget.options.length,
-                              (index) => RadioListTile(
+                          (index) => RadioListTile(
                             value: widget.options[index],
                             activeColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-                                  if (states.contains(MaterialState.selected)) {
-                                    return Constant.gold;
-                                  }
+                            fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (states) {
+                                if (states.contains(MaterialState.selected)) {
                                   return Constant.gold;
-                                }),
+                                }
+                                return Constant.gold;
+                              },
+                            ),
                             groupValue: selectedOption,
                             onChanged: (val) {
                               setState(() {
@@ -157,68 +156,16 @@ class _ReusableFilterBottomSheetState
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-
-            Row(
-              children: [
-
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => selectedOption = null);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_18,
-                      ),
-                      side: BorderSide(
-                        color: Color(0xFFD9B649),
-                        width: Constant.SIZE_01,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-                      ),
-                    ),
-                    child: Text(
-                      "Clear",
-                      style: themeData.textTheme.labelLarge?.copyWith(
-                        color: Constant.gold,
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(width: Constant.CONTAINER_SIZE_20),
-
-
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onApply(selectedOption);
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_18,
-                      ),
-                      backgroundColor: Color(0xFFD9B649),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-                      ),
-                    ),
-                    child: Text(
-                      "Apply",
-                      style: themeData.textTheme.labelLarge?.copyWith(
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                        color: themeData.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            SubmitClearButton(
+              onLeftTap: () {
+                setState(() => selectedOption = null);
+              },
+              onRightTap: () {
+                widget.onApply(selectedOption);
+                Navigator.pop(context);
+              },
+              leftText: "Clear",
+              rightText: "Apply",
             ),
           ],
         ),
