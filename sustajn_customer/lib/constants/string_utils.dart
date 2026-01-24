@@ -222,6 +222,7 @@ class Strings {
   static const String ADD_TEXT = 'Add';
   static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
   static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
+  static const String DOB= 'Date of birth';
 
   static const String PROCEED_TERMS = 'Proceed to Terms & Conditions';
   static const String VALID_EMAIL = 'Enter valid email';
