@@ -176,7 +176,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                 color: theme.primaryColor,
                 child: Center(child: CircularProgressIndicator()),
               )
-            : (profile!.fullName != null)
+            : (profile != null)
             ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,

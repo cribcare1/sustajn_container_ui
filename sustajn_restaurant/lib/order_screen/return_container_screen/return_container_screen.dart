@@ -67,7 +67,16 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
               Expanded(
                 child: orderState.isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : orderState.getContainerData!.containersDetails!.isEmpty
+                    : (orderState.getContainerData == null)?
+                    Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Return container list is not available",
+                          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+                        ),
+                      ],
+                    ),)
+                    :orderState.getContainerData!.containersDetails!.isEmpty
                     ? Center(
                         child: Text(
                           Strings.NO_CONTAINER_AVAILABLE,

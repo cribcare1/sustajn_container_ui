@@ -163,7 +163,7 @@ class Strings{
   static const String REQUEST_HISTORY = "Request History";
   static const String NO_CONTAINER_REQUESTS_YET = "No container requests yet";
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
-  static const String SEARCH_BY_CONTAINER_NAME = "Search by Customer Name or Id";
+  static const String SEARCH_BY_CONTAINER_NAME = "Search by container Name or Id";
   static const String DELETE_REQUEST = "Delete Request";
   static const String REQUESTED = "Requested";
   static const String APPROVED = "Approved";

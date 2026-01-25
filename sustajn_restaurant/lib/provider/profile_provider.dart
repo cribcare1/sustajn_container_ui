@@ -72,8 +72,7 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
 
 
 final profileImgProvider =
-FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
-      (ref, params) async {
+FutureProvider.family<UpdateProfileData, Map<String, dynamic>>((ref, params) async {
     final serviceProvider = ref.read(getProfileApiProvider);
     final image = params[Strings.IMAGE];
     params.remove(Strings.IMAGE);

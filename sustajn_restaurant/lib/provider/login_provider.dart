@@ -93,9 +93,19 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
     final response = await serviceProvider.registerUser(NetworkUrls.REGISTER_USER, data, "data",);
 
     if(response != null){
-      Register register = Register.fromJson(response);
+      LoginModel register = LoginModel.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
         registrationState.setIsLoading(false);
+        registrationState.setUserId(register.data!.userId!);
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.JWT_TOKEN,
+          register.data!.jwtToken!,
+        );
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.USER_ID,
+          register.data!.userId!,
+        );
+        SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
         NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
       } else {
         showCustomSnackBar(

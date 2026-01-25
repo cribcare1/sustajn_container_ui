@@ -115,6 +115,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         height: 300,
