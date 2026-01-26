@@ -99,6 +99,10 @@ class Strings{
   static const FILL_DETAILS = 'Please fill the below details to create your account';
   static const NAME = 'Name';
   static const MOBILE_NUMBER = 'Contact Number*';
+  static const CONTACT_PERSON = 'Contact Person';
+  static const EMAIL_REGISTRATION = 'Email Registration';
+  static const TRADE_LICENSE_NUMBER = 'Trade License Number';
+  static const VAT_NUMBER = 'VAT Number';
   static const EMAIL = 'Email ID* ';
   static const PASSWORD = 'Password*';
   static const CONFIRM_PASSWORD = 'Confirm Password*';
