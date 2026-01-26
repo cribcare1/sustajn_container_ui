@@ -27,9 +27,9 @@ class PaymentTypeScreen extends ConsumerStatefulWidget {
 class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController bankNameController = TextEditingController();
 
-  final TextEditingController accountNumberController = TextEditingController();
+  final TextEditingController accountHolderNameController = TextEditingController();
 
-  final TextEditingController taxController = TextEditingController();
+  final TextEditingController bicController = TextEditingController();
 
   final TextEditingController ibanController = TextEditingController();
 
@@ -236,8 +236,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     if (!_validateBankDetails(context)) return;
                     final bankData = BankDetailsModel(
                       bankName: bankNameController.text,
-                      accountNo: accountNumberController.text,
-                      taxNumber: taxController.text,
+                      bicNumber: bicController.text,
+                      accountHolderName: accountHolderNameController.text,
                       ibanNumber: ibanController.text,
                     );
                     authState.setBankDetails(bankData);
@@ -428,25 +428,21 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _inputField(
           theme,
           hint: 'Account Holder Name*',
-          controller: accountNumberController,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(12),
-          ],
+          controller: accountHolderNameController,
+          keyboardType: TextInputType.text,
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
           hint: 'IBAN',
-          controller: taxController,
+          controller: ibanController,
           keyboardType: TextInputType.text,
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
           hint: 'BIC',
-          controller: ibanController,
+          controller: bicController,
           keyboardType: TextInputType.text,
         ),
       ],
@@ -485,8 +481,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
   bool _validateBankDetails(BuildContext context) {
     final bankName = bankNameController.text.trim();
-    final accountNo = accountNumberController.text.trim();
-    final tax = taxController.text.trim();
+    final accountNo = accountHolderNameController.text.trim();
+    final tax = bicController.text.trim();
     final iban = ibanController.text.trim();
 
     // ✅ Case 1: All empty → allowed
@@ -501,69 +497,16 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     if (accountNo.isEmpty) {
       showCustomSnackBar(
         context: context,
-        message: 'Account number is required',
+        message: 'Account holder name is required',
         color: Colors.red,
       );
       return false;
     }
 
-    // ❌ Case 3: Account number must be 12 digits
-    if (accountNo.length != 12) {
-      showCustomSnackBar(
-        context: context,
-        message: 'Account number must be 12 digits',
-        color: Colors.red,
-      );
-      return false;
-    }
 
     return true;
   }
 
-
-  Widget _bottomButtons(ThemeData theme, BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () {
-              Utils.navigateToPushScreen(context, SubscriptionScreen());
-            },
-
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Constant.gold),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-              ),
-            ),
-            child: Text(
-              'Skip',
-              style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
-            ),
-          ),
-        ),
-        SizedBox(width: Constant.SIZE_15),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Constant.gold,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-              ),
-            ),
-            child: Text(
-              'Verify & Continue',
-
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.primaryColor,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
 class AddGatewayDialog extends StatefulWidget {
   final String title;

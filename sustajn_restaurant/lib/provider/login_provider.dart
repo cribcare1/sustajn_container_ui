@@ -95,6 +95,8 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
     if(response != null){
       LoginModel register = LoginModel.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
+        showCustomSnackBar(context: registrationState.context,
+            message: register.message??"Register successfully", color: Colors.green);
         registrationState.setIsLoading(false);
         registrationState.setUserId(register.data!.userId!);
         SharedPreferenceUtils.saveDataInSF(
@@ -106,7 +108,11 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
           register.data!.userId!,
         );
         SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
+        Utils.getToken();
+        Utils.getProfile();
+        Utils.getUserId();
         NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
+
       } else {
         showCustomSnackBar(
           context: registrationState.context,

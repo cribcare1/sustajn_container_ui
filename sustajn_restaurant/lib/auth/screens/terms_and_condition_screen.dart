@@ -12,6 +12,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../utils/utility.dart';
 import '../model/payment_type_model.dart';
+import '../model/social_media_model.dart';
 
 class TermsAndConditionScreen extends ConsumerStatefulWidget {
   const TermsAndConditionScreen({super.key});
@@ -346,7 +347,7 @@ class _TermsAndConditionScreenState
           ? []
           : authState.socialMediaList.map((e) => e.toJson()).toList(),
       "cardDetails": authState.cardDetails?.toJson() ?? CardDetails().toJson(),
-
+    "contactAndRegistrationDetails":authState.registrationDetailsData?.toJson()??ContactAndRegistrationDetails().toJson(),
       "paymentGetWay": () {
         final map = (authState.gateway ?? PaymentGatewayModel()).toJson();
         map.remove('asset');

@@ -286,31 +286,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
-                // InkWell(
-                //   onTap: () {
-                //     FocusScope.of(context).unfocus();
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (_) => MapScreen()),
-                //     ).then((value) {
-                //       if (value != null) {
-                //         addressCtrl.text = value['address'];
-                //         lat = value['lat'];
-                //         long = value['lng'];
-                //       }
-                //     });
-                //   },
-                //   child: IgnorePointer(
-                //     child: _buildTextField(
-                //       readOnly: true,
-                //       context,
-                //       controller: addressCtrl,
-                //       hint: Strings.RESTURANT_ADDRESS,
-                //       validator: (v) =>
-                //           v!.isEmpty ? "Restaurant address required" : null,
-                //     ),
-                //   ),
-                // ),
+                InkWell(
+                  onTap: () {
+                    _focusScopeNode.unfocus();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => MapScreen()),
+                    ).then((value) {
+                      if (value != null) {
+                        addressCtrl.text = value['address'];
+                        lat = value['lat'];
+                        long = value['lng'];
+                      }
+                    });
+                  },
+                  child: IgnorePointer(
+                    child: _buildTextField(
+                      readOnly: true,
+                      context,
+                      controller: addressCtrl,
+                      hint: Strings.RESTURANT_ADDRESS,
+                      validator: (v) =>
+                          v!.isEmpty ? "Restaurant address required" : null,
+                    ),
+                  ),
+                ),
 
                 authState.isLoading
                     ? Center(child: CircularProgressIndicator())
@@ -414,7 +414,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ),
     );
   }
-
+  final FocusScopeNode _focusScopeNode = FocusScopeNode();
   Widget _buildPasswordField(
     BuildContext context, {
     required TextEditingController controller,
@@ -428,6 +428,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: TextFormField(
+        focusNode: _focusScopeNode,
         autofocus: false,
         controller: controller,
         obscureText: !visible,

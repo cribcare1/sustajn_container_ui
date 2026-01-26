@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_outline_button.dart';
-import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
@@ -27,7 +26,11 @@ class _BusinessInformationDetailsState
     extends ConsumerState<BusinessInformationDetails> {
   final businessTypeController = TextEditingController();
   final websiteController = TextEditingController();
-  final cuisineTypeController = TextEditingController();
+  final contactPersonController = TextEditingController();
+  final vatController = TextEditingController();
+  final contactNumberController = TextEditingController();
+  final contactEmailController = TextEditingController();
+  final licenceController = TextEditingController();
   final _key = GlobalKey<FormState>();
 
   @override
@@ -104,7 +107,7 @@ class _BusinessInformationDetailsState
                         }
                         return null;
                       },
-                      controller: cuisineTypeController,
+                      controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
                     ),
 
@@ -116,7 +119,7 @@ class _BusinessInformationDetailsState
                         }
                         return null;
                       },
-                      controller: cuisineTypeController,
+                      controller: contactNumberController,
                       hint: Strings.MOBILE_NUMBER,
                     ),
                     _buildTextField(
@@ -127,7 +130,7 @@ class _BusinessInformationDetailsState
                         }
                         return null;
                       },
-                      controller: cuisineTypeController,
+                      controller: contactEmailController,
                       hint: Strings.EMAIL_REGISTRATION,
                     ),
                     _buildTextField(
@@ -138,7 +141,7 @@ class _BusinessInformationDetailsState
                         }
                         return null;
                       },
-                      controller: cuisineTypeController,
+                      controller: licenceController,
                       hint: Strings.TRADE_LICENSE_NUMBER,
                     ),
                     _buildTextField(
@@ -149,11 +152,20 @@ class _BusinessInformationDetailsState
                         }
                         return null;
                       },
-                      controller: cuisineTypeController,
+                      controller: vatController,
                       hint: Strings.VAT_NUMBER,
                     ),
 
-                    Text(Strings.BUSINESS_DTLS),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        Strings.BUSINESS_DTLS,
+                        textAlign: TextAlign.left,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                      ),
+                    ),
                     SizedBox(height: Constant.SIZE_05),
                     _buildTextField(
                       context,
@@ -187,7 +199,9 @@ class _BusinessInformationDetailsState
                               );
 
                               return Padding(
-                                padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
+                                padding: EdgeInsets.only(
+                                  bottom: Constant.CONTAINER_SIZE_12,
+                                ),
                                 child: Row(
                                   children: [
                                     CircleAvatar(
@@ -254,45 +268,44 @@ class _BusinessInformationDetailsState
                       ),
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    Row(
-                      children: [
-                        CustomOutlineButton(
-                          title: Strings.SKIP,
-                          onTap: () {
-                            Utils.navigateToPushScreen(
-                              context,
-                              PaymentTypeScreen(),
-                            );
-                          },
-                        ),
-                        SizedBox(height: Constant.SIZE_06),
-                        SizedBox(
-                          width: double.infinity,
-                          child: SubmitButton(
-                            onRightTap: () {
-                              if (_key.currentState!.validate()) {
-                                final businessModel = BusinessModel(
-                                  speciality: businessTypeController.text,
-                                  websiteDetails: websiteController.text,
-                                  cuisine: cuisineTypeController.text,
-                                );
-                                widget.authState.setBusinessDetails(businessModel);
-                                Utils.navigateToPushScreen(
-                                  context,
-                                  PaymentTypeScreen(),
-                                );
-                              } else {
-                                showCustomSnackBar(
-                                  context: context,
-                                  message: Strings.ENTER_BUSINESSTYPE,
-                                  color: Colors.red,
-                                );
-                              }
-                            },
-                            rightText: Strings.CONTINUE,
-                          ),
-                        ),
-                      ],
+                    SubmitClearButton(
+                      onLeftTap: () {
+                        Utils.navigateToPushScreen(
+                          context,
+                          PaymentTypeScreen(),
+                        );
+                      },
+                      leftText: Strings.SKIP,
+                      onRightTap: () {
+                        if (_key.currentState!.validate()) {
+                          final businessModel = BusinessModel(
+                            speciality: businessTypeController.text,
+                            websiteDetails: websiteController.text,
+                            cuisine: "",
+                          );
+                          final registerData = ContactAndRegistrationDetails(
+                            contactPersonName: contactPersonController.text,
+                            contactEmail: contactEmailController.text,
+                            treadLicenseNumber: licenceController.text,
+                            vatNumber: vatController.text,
+                            contactNumber: contactNumberController.text,
+                            registrationNumber: "",
+                          );
+                          widget.authState.setRegistrationDetails(registerData);
+                          widget.authState.setBusinessDetails(businessModel);
+                          Utils.navigateToPushScreen(
+                            context,
+                            PaymentTypeScreen(),
+                          );
+                        } else {
+                          showCustomSnackBar(
+                            context: context,
+                            message: Strings.ENTER_BUSINESSTYPE,
+                            color: Colors.red,
+                          );
+                        }
+                      },
+                      rightText: Strings.CONTINUE,
                     ),
                   ],
                 ),
@@ -395,6 +408,7 @@ class _BusinessInformationDetailsState
                                 controller: TextEditingController(),
                               ),
                             );
+                            setState(() {});
                           },
                     child: Opacity(
                       opacity: alreadyAdded ? 0.4 : 1,

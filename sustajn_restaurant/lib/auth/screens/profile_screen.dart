@@ -107,7 +107,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _getProfileNetworkCall();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _getProfileNetworkCall();
+    });
   }
 
   @override
@@ -547,34 +549,37 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   _profileImgNetworkCall(var profileState, String mobile, String name) async {
     Utils.printLog('Profile Image Network call');
 
+    profileState.setIsSaving(true);
+
     try {
-      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
+
       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
 
       if (!isNetworkAvailable) {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        return;
+        return; // safe now
       }
+
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
         Strings.PROFILE_IMAGE,
         profileImage,
       );
+
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();
       profileState.setIsSaving(false);
     }
   }
+
 }

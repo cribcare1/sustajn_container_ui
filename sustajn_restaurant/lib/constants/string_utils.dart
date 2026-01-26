@@ -230,4 +230,5 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String TRADE_LICENSE_NUMBER = "Trade License Number";
   static const String VAT_NUMBER = "VAT Number";
   static const String SOCIAL_MEDIA = "Social Media";
+  static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
 }

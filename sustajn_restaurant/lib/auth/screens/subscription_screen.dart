@@ -159,10 +159,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () {
-                    Utils.navigateToPushScreen(
-                      context,
-                      TermsAndConditionScreen(),
-                    );
+                    if(authState.planId != 0){
+                      Utils.navigateToPushScreen(
+                        context,
+                        TermsAndConditionScreen(),
+                      );
+                    }else{
+                      showCustomSnackBar(context: context,
+                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.red);
+                    }
+
                   },
                   rightText: "Proceed to Terms & Conditions",
                 ),
