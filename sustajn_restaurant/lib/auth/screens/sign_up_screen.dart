@@ -286,31 +286,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     return null;
                   },
                 ),
-                InkWell(
-                  onTap: () {
-                    _focusScopeNode.unfocus();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => MapScreen()),
-                    ).then((value) {
-                      if (value != null) {
-                        addressCtrl.text = value['address'];
-                        lat = value['lat'];
-                        long = value['lng'];
-                      }
-                    });
-                  },
-                  child: IgnorePointer(
-                    child: _buildTextField(
-                      readOnly: true,
-                      context,
-                      controller: addressCtrl,
-                      hint: Strings.RESTURANT_ADDRESS,
-                      validator: (v) =>
-                          v!.isEmpty ? "Restaurant address required" : null,
-                    ),
+                _buildTextField(
+                    onTap: (){
+                      _focusScopeNode.unfocus();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => MapScreen()),
+                      ).then((value) {
+                        if (value != null) {
+                          addressCtrl.text = value['address'];
+                          lat = value['lat'];
+                          long = value['lng'];
+                        }
+                      });
+                    },
+                    readOnly: true,
+                    context,
+                    controller: addressCtrl,
+                    hint: Strings.RESTURANT_ADDRESS,
+                    validator: (v) =>
+                        v!.isEmpty ? "Restaurant address required" : null,
                   ),
-                ),
 
                 authState.isLoading
                     ? Center(child: CircularProgressIndicator())
@@ -386,15 +382,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     TextInputType keyboard = TextInputType.text,
     bool? readOnly = false,
     List<TextInputFormatter>? inputFormatters,
+        VoidCallback? onTap,
   }) {
     final theme = Theme.of(context);
 
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: TextFormField(
+        onTap: onTap,
         autofocus: false,
         controller: controller,
         keyboardType: keyboard,
+        readOnly: readOnly!,
         style: TextStyle(color: Colors.white70),
         cursorColor: Colors.white70,
         validator: validator,
@@ -428,7 +427,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: TextFormField(
-        focusNode: _focusScopeNode,
         autofocus: false,
         controller: controller,
         obscureText: !visible,
