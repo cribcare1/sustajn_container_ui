@@ -190,7 +190,7 @@ class Strings{
   static const String SPECIALITY = 'Speciality';
   static const String CUISINE = 'Cuisine';
   static const String WEBSITE = 'Website';
-  static const String ADD_SOCIAL_MEDIA = '+  Add Social Media';
+  static const String ADD_SOCIAL_MEDIA = ' Add Social Media';
   static const String SOCIAL_MEDIA = 'Social Media';
 
   static const String SUBSCRIBE = 'Subscribe';

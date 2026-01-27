@@ -223,7 +223,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: loginResponse?.image != null && loginResponse!.image!.isNotEmpty?NetworkImage(
+                                  image: profile?.profileImageUrl != null && profile?.profileImageUrl.isNotEmpty ? NetworkImage(
                                     "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
                                   ):AssetImage("assets/images/cups.png"),
                                   fit: BoxFit.cover,
@@ -314,7 +314,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               _detailItem(
                                 icon: Icons.email_outlined,
                                 title: "Email",
-                                value: loginResponse?.userName! ?? "",
+                                value: profile?.emailId! ?? "",
                                 w: w,
                                 showEdit: false,
                                 theme: theme,
