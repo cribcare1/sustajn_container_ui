@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import '../../constants/network_urls.dart';
-import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
-import '../../network_provider/network_provider.dart';
-import '../../provider/profile_provider.dart';
-import '../../utils/utility.dart';
+import '../../../constants/network_urls.dart';
+import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../network_provider/network_provider.dart';
+import '../../../provider/profile_provider.dart';
+import '../../../utils/utility.dart';
 
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
@@ -63,8 +63,6 @@ class _EditMobileNumberDialogState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final profileState = ref.watch(profileProvider);
     return SafeArea(
       top: false,
       child: Padding(
@@ -91,7 +89,7 @@ class _EditMobileNumberDialogState
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Mobile Number',
+                        Strings.EDIT_MOBILE_NUMBER,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -131,7 +129,7 @@ class _EditMobileNumberDialogState
                     color: Colors.white,
                   ),
                   decoration: InputDecoration(
-                    labelText: 'Mobile Number',
+                    labelText: Strings.MOBILE_NUMBER,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -168,22 +166,13 @@ class _EditMobileNumberDialogState
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
 
-                      await _editMobileNetworkCall(
-                        _mobileController.text.trim(),
-                      );
-                      if (mounted) {
-                        Navigator.pop(context, _mobileController.text.trim());
-                      }
-                      // {
-                      //   Navigator.pop(context, _controller.text.trim());
-                      // }
+                      _showConfirmationDialog(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -197,7 +186,7 @@ class _EditMobileNumberDialogState
                       ),
                     ),
                     child: Text(
-                      'Save Changes',
+                      Strings.SAVE_CHANGES,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,
@@ -210,6 +199,61 @@ class _EditMobileNumberDialogState
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showConfirmationDialog(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          ),
+          title: Text(
+            Strings.CONFIRM_UPDATE,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+           Strings.UPDATE_CONTACT_NO,
+            style: TextStyle(color: Colors.grey.shade300),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                Strings.NO,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFC8B531),
+              ),
+              onPressed: () async{
+                await _editMobileNetworkCall(
+                      _mobileController.text.trim(),
+                    );
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text(
+                Strings.UPDATE,
+                style: TextStyle(color: theme.primaryColor),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

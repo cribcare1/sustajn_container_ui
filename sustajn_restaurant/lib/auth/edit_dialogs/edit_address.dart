@@ -31,7 +31,6 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
     }
   }
 
-
   @override
   void dispose() {
     _addressController.dispose();
@@ -50,8 +49,6 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
     }
     return null;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
