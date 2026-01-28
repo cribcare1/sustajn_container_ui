@@ -38,6 +38,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController _taxNumberController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
   final TextEditingController _bicController = TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
+
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     _taxNumberController.dispose();
     _bicController.dispose();
     _ibanController.dispose();
+    _accountHolderController.dispose();
     super.dispose();
   }
 
@@ -303,7 +306,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           error: signupState.bankNameError,
           onChanged: signupState.setBankName,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
             LengthLimitingTextInputFormatter(50),
           ],
         ),
@@ -312,13 +315,13 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
         _field(
           theme: theme,
-          controller: _taxNumberController,
-          hint: 'Tax Number',
-          error: signupState.taxNumberError,
-          onChanged: signupState.setTaxNumber,
+          controller: _accountHolderController,
+          hint: 'Account Holder Name',
+          error: signupState.accountHolderError,
+          onChanged: signupState.setAccountHolderName,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
-            LengthLimitingTextInputFormatter(15),
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+            LengthLimitingTextInputFormatter(50),
           ],
         ),
 
@@ -327,12 +330,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _field(
           theme: theme,
           controller: _bicController,
-          hint: 'Account Number',
-          error: signupState.accountNumberError,
-          onChanged: signupState.setAccountNumber,
+          hint: 'BIC',
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
           inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(18),
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            LengthLimitingTextInputFormatter(11),
           ],
         ),
 
@@ -352,6 +355,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ],
     );
   }
+
 
 
   Widget _field({
