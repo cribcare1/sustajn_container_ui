@@ -147,15 +147,27 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   }
 
   Widget _priceSection(ThemeData theme,SubscriptionResponse plan, ) {
-    return Text(
-      "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
-      style: theme.textTheme.headlineMedium?.copyWith(
-        color: Constant.gold,
-        fontWeight: FontWeight.w600,
-      ),
-    );
+    return
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/diarhm.png',
+            height: Constant.CONTAINER_SIZE_20,
+            color: Constant.gold,
+            colorBlendMode: BlendMode.srcIn,
+          ),
+          Text(
+            plan.feeType?.toStringAsFixed(2) ?? "0.00",
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: Constant.gold,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
   }
-
   Widget _featureList(ThemeData theme,SubscriptionResponse plan) {
     return Column(
       children: [

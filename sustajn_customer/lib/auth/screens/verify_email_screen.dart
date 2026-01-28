@@ -39,8 +39,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
       notifier.setVerifyLoading(false);
       notifier.setResendLoading(false);
-      notifier.resetTimer();
-      notifier.startTimer();
+      // notifier.resetTimer();
+      // notifier.startTimer();
     });
   }
 
@@ -75,8 +75,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           );
 
           if (shouldGoBack) {
-            ref.read(signUpNotifier).stopTimer();
-
+            ref.read(signUpNotifier).resetOtpScreen();
             if (widget.previousScreen == "signUp") {
               Navigator.pop(context, registrationData);
             } else if (widget.previousScreen == "forgotPassword") {
@@ -438,6 +437,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                   "token": _otpController.text,
                 }),
               );
+              registrationState.resetOtpScreen();
             } else {
               registrationState.setVerifyLoading(false);
               if (!mounted) return;
@@ -471,6 +471,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             if (isNetworkAvailable) {
               registrationState.setResendLoading(true);
               registrationState.setResend(true);
+              registrationState.resetTimer();
+              registrationState.startTimer();
               ref.read(
                 getOtpToVerifyProvider({"email": registrationState?.email}),
               );
@@ -499,10 +501,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   @override
   void dispose() {
-    ref.read(signUpNotifier).stopTimer();
+    ref.read(signUpNotifier).resetOtpScreen();
     _otpController.dispose();
     super.dispose();
   }
-
-
 }
