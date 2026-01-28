@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../constants/network_urls.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_data.dart';
@@ -10,17 +11,16 @@ import '../../utils/utility.dart';
 
 class EditAddressDialog extends ConsumerStatefulWidget {
   final AddressResponses? selectedAddress;
-  const EditAddressDialog({ required this.selectedAddress, Key? key,});
+
+  const EditAddressDialog({required this.selectedAddress, Key? key});
 
   @override
-  ConsumerState<EditAddressDialog> createState() =>
-      _EditAddressDialogState();
+  ConsumerState<EditAddressDialog> createState() => _EditAddressDialogState();
 }
 
 class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _addressController = TextEditingController();
-
 
   @override
   void initState() {
@@ -74,23 +74,23 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
                     Expanded(
                       child: Text(
                         Strings.EDIT_ADDRESS,
                         style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white
+                          fontSize: Constant.LABEL_TEXT_SIZE_18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
                     InkWell(
                       onTap: () => Navigator.pop(context),
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_20,
+                      ),
                       child: Icon(
                         Icons.close,
                         size: Constant.CONTAINER_SIZE_20,
@@ -102,7 +102,6 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-
                 SizedBox(height: Constant.SIZE_08),
 
                 TextFormField(
@@ -112,7 +111,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                   textInputAction: TextInputAction.done,
                   cursorColor: Colors.white,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white
+                    color: Colors.white,
                   ),
                   decoration: InputDecoration(
                     labelText: Strings.ADDRESS,
@@ -125,78 +124,62 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       vertical: Constant.CONTAINER_SIZE_14,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
                       borderSide: BorderSide(color: Constant.grey),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      borderSide:
-                      BorderSide(color: Constant.grey),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      borderSide:
-                      BorderSide(color: theme.colorScheme.error),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
+                      borderSide: BorderSide(color: theme.colorScheme.error),
                     ),
                   ),
                 ),
-
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                        if (!_formKey.currentState!.validate()) return;
+                  child: SubmitButton(
+                    onRightTap: () {
+                      if (!_formKey.currentState!.validate()) return;
 
-                        final address = widget.selectedAddress;
-                        if (address == null) {
-                          Utils.showToast('Address data not available');
-                          return;
-                        }
+                      final address = widget.selectedAddress;
+                      if (address == null) {
+                        Utils.showToast('Address data not available');
+                        return;
+                      }
 
-                        if (address.id == null ||
-                            address.addressType == null ||
-                            address.flatDoorHouseDetails == null ||
-                            address.poBoxOrPostalCode == null) {
-                            Utils.showToast('Fill address details');
-                          return;
-                        }
+                      if (address.id == null ||
+                          address.addressType == null ||
+                          address.flatDoorHouseDetails == null ||
+                          address.poBoxOrPostalCode == null) {
+                        Utils.showToast('Fill address details');
+                        return;
+                      }
 
-                        _editAddressNetworkCall(
-                          address.id.toString(),
-                          address.addressType!,
-                          address.flatDoorHouseDetails!,
-                          _addressController.text.trim(),
-                          address.poBoxOrPostalCode!,
-                        );
-
+                      _editAddressNetworkCall(
+                        address.id.toString(),
+                        address.addressType!,
+                        address.flatDoorHouseDetails!,
+                        _addressController.text.trim(),
+                        address.poBoxOrPostalCode!,
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
-                    child: Text(
-                      Strings.SAVE_CHANGES,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    rightText: Strings.SAVE_CHANGES,
                   ),
                 ),
               ],
@@ -207,18 +190,30 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
     );
   }
 
-  Map<String, dynamic> getJsonData(String addressId, String addType, String houseDtls, String cityDtls, String pin) {
+  Map<String, dynamic> getJsonData(
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) {
     final data = {
       "addressId": addressId,
       "addressType": addType,
       "flatDoorHouseDetails": houseDtls,
       "areaStreetCityBlockDetails": cityDtls,
-      "poBoxOrPostalCode": pin
+      "poBoxOrPostalCode": pin,
     };
     return data;
   }
 
-  _editAddressNetworkCall(String addressId, String addType, String houseDtls, String cityDtls, String pin) async {
+  _editAddressNetworkCall(
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) async {
     Utils.printLog('Update Address Network call');
 
     final isNetworkAvailable = await ref
@@ -230,15 +225,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
       return;
     }
 
-    final jsonData = getJsonData(
-      addressId,
-      addType,
-      houseDtls,
-      cityDtls,
-      pin,
-    );
-    ref.read(
-      addressUpdateProvider(jsonData),
-    );
+    final jsonData = getJsonData(addressId, addType, houseDtls, cityDtls, pin);
+    ref.read(addressUpdateProvider(jsonData));
   }
 }

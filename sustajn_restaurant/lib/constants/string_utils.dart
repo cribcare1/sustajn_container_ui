@@ -109,14 +109,10 @@ class Strings {
   static const EMAIL = 'Email ID ';
   static const PASSWORD = 'Password';
   static const CONFIRM_PASSWORD = 'Confirm Password';
-  static const MOBILE_NUMBER = 'Contact Number*';
   static const CONTACT_PERSON = 'Contact Person';
   static const EMAIL_REGISTRATION = 'Email Registration';
   static const TRADE_LICENSE_NUMBER = 'Trade License Number';
   static const VAT_NUMBER = 'VAT Number';
-  static const EMAIL = 'Email ID* ';
-  static const PASSWORD = 'Password*';
-  static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
   static const ALREADY_HAVE_ACC = 'Already have an account? ';
@@ -257,14 +253,16 @@ class Strings {
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
-  static const String CONTACT_PERSON = "Contact Person";
   static const String BUSINESS_NAME = "Restaurant Name";
   static const String EXISTING_USER = "Existing user?";
-  static const String EMAIL_REGISTRATION = "Email Registration";
-  static const String TRADE_LICENSE_NUMBER = "Trade License Number";
-  static const String VAT_NUMBER = "VAT Number";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
-}
   static const String CONTACT_US = 'Contact Us';
+  static const String ENTER_OTP = "Please enter your OTP";
+  static const String VALID_OTP = "Please enter a valid 6-digit OTP";
+  static const String RESEND_IN = "Resend code in ";
+  static const String RESTAURANT_NAME_NOT_EMPTY = 'Restaurant name cannot be empty';
+  static const String ONLY_LETTERS_NUMBERS = 'Only letters, numbers and spaces allowed';
+  static const String EDIT_RESTAURANT_NAME = 'Edit Restaurant Name';
+
 }

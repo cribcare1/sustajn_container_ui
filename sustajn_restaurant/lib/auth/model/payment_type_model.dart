@@ -23,26 +23,27 @@ class CardDetails {
 
 class BankDetailsModel {
   String? bankName;
-  String? accountNo;
-  String? taxNumber;
+  String? bicNumber;
+  String? accountHolderName;
   String? ibanNumber;
 
   BankDetailsModel({
     this.bankName = "",
-    this.accountNo = "",
-    this.taxNumber = "",
+    this.bicNumber = "",
+    this.accountHolderName = "",
     this.ibanNumber = "",
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'bankName': bankName??"",
-      "accountNumber": accountNo??"",
-      'taxNumber': taxNumber??"",
-      "iBanNumber": ibanNumber??"",
+      "bankName": bankName ?? "",
+      "bicNumber": bicNumber ?? "",
+      "accountHolderName": accountHolderName ?? "",
+      "iBanNumber": ibanNumber ?? "",
     };
   }
 }
+
 class PaymentGatewayModel {
    String? name;
    String? id;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 
 class SubscriptionPlanBottomSheet extends StatelessWidget {
@@ -262,22 +263,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
   }
 
   Widget _viewAllPlansButton(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      height: Constant.CONTAINER_SIZE_50,
-      decoration: BoxDecoration(
-        color: Constant.gold,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        'View all plans',
-        style: theme.textTheme.titleSmall?.copyWith(
-          color: theme.primaryColor,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
+    return SubmitButton(onRightTap: (){},rightText: "View all plans");
   }
 }

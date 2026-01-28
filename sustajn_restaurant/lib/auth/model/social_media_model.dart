@@ -64,3 +64,31 @@ class BusinessModel {
     "cuisine": cuisine,
   };
 }
+class ContactAndRegistrationDetails {
+  String? contactPersonName;
+  String? contactEmail;
+  String? treadLicenseNumber;
+  String? vatNumber;
+  String? contactNumber;
+  String? registrationNumber;
+
+  ContactAndRegistrationDetails({
+    this.contactPersonName="",
+    this.contactEmail="",
+    this.treadLicenseNumber="",
+    this.vatNumber="",
+    this.contactNumber="",
+    this.registrationNumber="",
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "contactPersonName": contactPersonName ?? "",
+      "contactEmail": contactEmail ?? "",
+      "treadLicenseNumber": treadLicenseNumber ?? "",
+      "vatNumber": vatNumber ?? "",
+      "contactNumber": contactNumber ?? "",
+      "registrationNumber": registrationNumber ?? "",
+    };
+  }
+}

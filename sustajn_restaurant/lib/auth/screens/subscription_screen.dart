@@ -8,6 +8,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../common_widgets/app_loading.dart';
@@ -159,10 +160,16 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () {
-                    Utils.navigateToPushScreen(
-                      context,
-                      TermsAndConditionScreen(),
-                    );
+                    if(authState.planId != 0){
+                      NavUtil.navigateToPushScreen(
+                        context,
+                        TermsAndConditionScreen(),
+                      );
+                    }else{
+                      showCustomSnackBar(context: context,
+                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.red);
+                    }
+
                   },
                   rightText: "Proceed to Terms & Conditions",
                 ),
@@ -273,7 +280,7 @@ class PlanCard extends StatelessWidget {
                   Center(
                     child: OutlinedButton(
                       onPressed: () {
-                        Utils.navigateToPushScreen(
+                        NavUtil.navigateToPushScreen(
                           context,
                           SubscriptionDetailsScreen(planModel: plan),
                         );

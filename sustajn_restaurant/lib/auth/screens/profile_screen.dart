@@ -56,7 +56,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       case 0:
         break;
       case 1:
-        _showAddressDialog(context);
+        // _showAddressDialog(context);
         break;
       case 2:
         _showMobileNoDialog(context, mobileNo);
@@ -81,12 +81,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showFeedbackDialog(context);
         break;
       case 9:
-      ///contact us
+        _showContactDialog(context);
         break;
+      ///contact us
       case 10:
         ///refer a partner
-      case 5:
-        _showContactDialog(context);
         break;
     }
   }
@@ -109,10 +108,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showAddressDialog(BuildContext context) {
-=======
   void _showContactDialog(BuildContext context) {
-  develop
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -131,10 +127,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
     );
   }
-  builder: (_) => const ContactUsDialog(),
-    );
-  }
-
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -160,25 +152,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   List<GetProfileData> profileData = [];
   AddressResponses? selectedAddress;
-
-  LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
     _getProfileNetworkCall();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +226,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
+            : (profile != null) ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -269,9 +251,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: profile?.profileImageUrl != null && profile?.profileImageUrl.isNotEmpty ? NetworkImage(
-                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/cups.png"),
+                                  image: profileImage != null
+                                      ? FileImage(profileImage!) as ImageProvider
+                                      : (profile!.profileImageUrl != null &&
+                                      profile.profileImageUrl!.isNotEmpty)
+                                      ? NetworkImage(
+                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                  )
+                                      : const AssetImage(
+                                    "assets/images/default_profile.png",
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -480,8 +469,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   _getProfileNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
+          isNetworkAvailable,
+          ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {

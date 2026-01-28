@@ -3,6 +3,7 @@ import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import 'lease_product_list_screen.dart';
@@ -113,6 +114,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         height: 300,
@@ -198,7 +200,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                         ? null
                         : () {
                             if (widget.type.contains("LEASE")) {
-                              Utils.navigateToPushScreen(
+                              NavUtil.navigateToPushScreen(
                                 context,
                                 LeaseProductListScreen(),
                               );
