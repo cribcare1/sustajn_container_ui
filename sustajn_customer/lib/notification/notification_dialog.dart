@@ -1,5 +1,6 @@
 import '../constants/imports_util.dart';
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
 class NotificationDialog extends StatelessWidget {
   const NotificationDialog({super.key});
@@ -7,14 +8,12 @@ class NotificationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding:  EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_16, Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
         color: const Color(0xFF0F3B2E), // dark green
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(24),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular( Constant.CONTAINER_SIZE_24),
         ),
       ),
       child: SafeArea(
@@ -28,19 +27,19 @@ class NotificationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Extend Lease Period',
+                  Strings.EXTEND_LEASE,
                   style: theme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: Constant.CONTAINER_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: const CircleAvatar(
-                    radius: 16,
+                  child: CircleAvatar(
+                    radius: Constant.CONTAINER_SIZE_16,
                     backgroundColor: Colors.white24,
-                    child: Icon(Icons.close, color: Colors.white, size: 18),
+                    child: Icon(Icons.close, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
                   ),
                 ),
               ],
@@ -49,10 +48,10 @@ class NotificationDialog extends StatelessWidget {
             SizedBox(height: Constant.CONTAINER_SIZE_20),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                 border: Border.all(color: Colors.white24),
               ),
               child: Column(
@@ -71,7 +70,7 @@ class NotificationDialog extends StatelessWidget {
              SizedBox(height: Constant.CONTAINER_SIZE_24),
 
             Text(
-              'Products',
+              Strings.PRODUCTS,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -107,16 +106,16 @@ class NotificationDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD4AF37), // gold
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
                   ),
                 ),
                 onPressed: () {},
-                child: const Text(
-                  'Confirm & Pay AED 9',
+                child: Text(
+                  Strings.PAY_AED,
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                    fontSize: Constant.CONTAINER_SIZE_16,
                   ),
                 ),
               ),
@@ -139,12 +138,12 @@ class _DateRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: const TextStyle(color: Colors.white70, fontSize: 13)),
+            style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_13)),
         SizedBox(height: Constant.CONTAINER_SIZE_4),
         Text(value,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: Constant.CONTAINER_SIZE_18,
                 fontWeight: FontWeight.w600)),
       ],
     );
@@ -169,10 +168,10 @@ class _ProductTile extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   return Container(
-    padding: const EdgeInsets.all(12),
+    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
     decoration: BoxDecoration(
       color: Colors.white.withOpacity(0.08),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       border: Border.all(color: Colors.white24),
     ),
     child: Row(
@@ -182,7 +181,7 @@ Widget build(BuildContext context) {
           width: Constant.CONTAINER_SIZE_50,
           decoration: BoxDecoration(
             color: Colors.white24,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           ),
           child: Image.asset(image, fit: BoxFit.contain),
         ),
@@ -197,18 +196,18 @@ Widget build(BuildContext context) {
                       fontWeight: FontWeight.w600)),
               Text(code,
                   style:
-                  const TextStyle(color: Colors.white70, fontSize: 12)),
+                  TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_12)),
               Text(size,
                   style:
-                  const TextStyle(color: Colors.white70, fontSize: 12)),
+                  TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_12)),
             ],
           ),
         ),
         Text(
           qty.toString(),
-          style: const TextStyle(
-              color: Color(0xFFD4AF37),
-              fontSize: 16,
+          style: TextStyle(
+              color: const Color(0xFFD4AF37),
+              fontSize: Constant.CONTAINER_SIZE_16,
               fontWeight: FontWeight.w700),
         ),
       ],

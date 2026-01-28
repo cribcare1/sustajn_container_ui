@@ -490,30 +490,42 @@ class SignupNotifier extends ChangeNotifier {
   }
 
   void startTimer() {
-    stopTimer(); // prevent duplicate timers
+    if (_isTimerRunning) return;   // prevent duplicates
 
     _isTimerRunning = true;
 
     _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_isDisposed) {
+      if (_isDisposed || !_isTimerRunning) {
         timer.cancel();
         return;
       }
 
       if (_seconds > 0) {
         _seconds--;
-        notifyListeners(); // <-- THIS IS ENOUGH
+        notifyListeners();
       } else {
         stopTimer();
       }
     });
   }
 
+
   void stopTimer() {
     _otpTimer?.cancel();
     _otpTimer = null;
     _isTimerRunning = false;
   }
+
+  void resetOtpScreen() {
+    stopTimer();
+    _seconds = 120;
+    _isVerifyLoading = false;
+    _isResendLoading = false;
+    _isResend = false;
+    notifyListeners();
+  }
+
+
 
   @override
   void dispose() {

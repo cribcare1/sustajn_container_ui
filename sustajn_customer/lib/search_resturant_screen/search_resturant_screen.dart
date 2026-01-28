@@ -133,7 +133,7 @@ class _SearchRestaurantScreenState
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                "Close",
+                Strings.CLOSE,
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent),
@@ -155,169 +155,73 @@ class _SearchRestaurantScreenState
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
-          title: "Search Restaurant",
+          title: Strings.SEARCH_RESTURANT_TITLE,
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: state.position == null
-            ? Center(child: CircularProgressIndicator(
-          color: Constant.gold,
-        ))
+            ? Center(
+          child: CircularProgressIndicator(color: Constant.gold),
+        )
             : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: CustomTheme.searchField(
-                      searchController,
-                      'Search by restaurant name',
-                      onChanged: (value) {
-                        if (value.isEmpty) {
-                          _getNetworkData(_lastKeyword);
-                        } else if (value.length >= 3) {
-                          _lastKeyword = value;
-                          _getNetworkData(value.toLowerCase());
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: state.position!,
-                        zoom: 17,
-                      ),
-                      markers: _buildMarkers(searchProvider.resList),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
-                      zoomControlsEnabled: false,
-                      compassEnabled: true,
-                      onMapCreated: (controller) {
-                        _controller.complete(controller);
-                      },
-                      onTap: (latLng) {
-                        searchController.clear();
-                        ref
-                            .read(locationProvider.notifier)
-                            .updatePosition(latLng);
-                        _getNetworkData(_lastKeyword);
-                      },
-                      onCameraIdle: () async {
-                        final controller = await _controller.future;
-                        final bounds = await controller.getVisibleRegion();
-
-                        final center = LatLng(
-                          (bounds.northeast.latitude +
-                                  bounds.southwest.latitude) /
-                              2,
-                          (bounds.northeast.longitude +
-                                  bounds.southwest.longitude) /
-                              2,
-                        );
-                        // ref.read(locationProvider.notifier).updatePosition(center);
-                        final oldPos = ref.read(locationProvider).position;
-                        if (oldPos == null ||
-                            oldPos.latitude != center.latitude ||
-                            oldPos.longitude != center.longitude) {
-                          ref
-                              .read(locationProvider.notifier)
-                              .updatePosition(center);
-                          _getNetworkData(_lastKeyword);
-                        }
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: theme!.secondaryHeaderColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
-                          ),
-                        ),
-                        icon: Icon(
-                          Icons.my_location,
-                          color: theme!.secondaryHeaderColor,
-                        ),
-                        label: Text(
-                          'Use Current Location',
-                          style: TextStyle(
-                            color: theme!.secondaryHeaderColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        onPressed: () async {
-                          searchController.clear();
-                          await ref
-                              .read(locationProvider.notifier)
-                              .initialize();
-                          final pos = ref.read(locationProvider).position;
-                          if (pos == null) return;
-                          final controller = await _controller.future;
-                          controller.animateCamera(
-                            CameraUpdate.newLatLngZoom(pos, 17),
-                          );
-                          _getNetworkData(_lastKeyword);
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        if (searchProvider.isLoading)
-                          const Expanded(
-                            child: Center(child: CircularProgressIndicator(
-                              color: Constant.gold,
-                            )),
-                          )
-                        else if (searchProvider.resList.isEmpty)
-                          Expanded(child: Utils.getErrorText("No resturant details found"))
-                        else
-                          /// Title
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Nearby Restaurants',
-                                style: theme!.textTheme.titleLarge!.copyWith(
-                                  color: Constant.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        SizedBox(height: Constant.SIZE_08),
-                        Expanded(
-                          child: ListView.builder(
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.manual,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Constant.CONTAINER_SIZE_16,
-                            ),
-                            itemCount: searchProvider.resList.length,
-                            itemBuilder: (context, index) {
-                              final data = searchProvider.resList[index];
-                              return RestaurantTile(
-                                name: data.name,
-                                distance:
-                                    '${data.distanceKm.toStringAsFixed(2)} km',
-                                address: data.address,
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          children: [
+            /// Search Bar
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: CustomTheme.searchField(
+                searchController,
+                Strings.SEARCH_RESTURANTS,
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    _getNetworkData(_lastKeyword);
+                  } else if (value.length >= 3) {
+                    _lastKeyword = value;
+                    _getNetworkData(value.toLowerCase());
+                  }
+                },
               ),
+            ),
+
+            /// Full screen map
+            Expanded(
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: state.position!,
+                  zoom: 17,
+                ),
+                markers: _buildMarkers(searchProvider.resList),
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+                zoomControlsEnabled: false,
+                compassEnabled: true,
+                onMapCreated: (controller) {
+                  _controller.complete(controller);
+                },
+                onTap: (latLng) {
+                  searchController.clear();
+                  ref.read(locationProvider.notifier).updatePosition(latLng);
+                  _getNetworkData(_lastKeyword);
+                },
+                onCameraIdle: () async {
+                  final controller = await _controller.future;
+                  final bounds = await controller.getVisibleRegion();
+                  final center = LatLng(
+                    (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
+                    (bounds.northeast.longitude + bounds.southwest.longitude) / 2,
+                  );
+
+                  final oldPos = ref.read(locationProvider).position;
+                  if (oldPos == null ||
+                      oldPos.latitude != center.latitude ||
+                      oldPos.longitude != center.longitude) {
+                    ref.read(locationProvider.notifier).updatePosition(center);
+                    _getNetworkData(_lastKeyword);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+
       ),
     );
   }
