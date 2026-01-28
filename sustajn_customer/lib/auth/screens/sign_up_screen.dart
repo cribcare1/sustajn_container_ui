@@ -273,8 +273,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               flatDoorHouseDetails: "",
                               areaStreetCityBlockDetails: addressCtrl.text,
                               poBoxOrPostalCode: postalCode,
-                              addressType: "HOME",
-                              addressStatus: "ACTIVE",
+                              addressType: Strings.HOME,
+                              addressStatus: Strings.ACTIVE,
 
                                 latitude: lat,
                                 longitude: long,

@@ -133,7 +133,7 @@ class _SearchRestaurantScreenState
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                "Close",
+                Strings.CLOSE,
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent),
@@ -155,7 +155,7 @@ class _SearchRestaurantScreenState
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: CustomAppBar(
-          title: "Search Restaurant",
+          title: Strings.SEARCH_RESTURANT_TITLE,
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: state.position == null
@@ -169,7 +169,7 @@ class _SearchRestaurantScreenState
               padding: const EdgeInsets.all(16),
               child: CustomTheme.searchField(
                 searchController,
-                'Search by restaurant name',
+                Strings.SEARCH_RESTURANTS,
                 onChanged: (value) {
                   if (value.isEmpty) {
                     _getNetworkData(_lastKeyword);

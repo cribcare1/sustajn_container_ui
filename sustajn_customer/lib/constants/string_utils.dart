@@ -41,6 +41,7 @@ class Strings {
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
+  static const String SEARCH_RESTURANT_TITLE = 'Search Resturant';
   static const String APPROVED_STATUS = 'Approved';
   static const String PENDING_STATUS = 'Pending';
   static const String REJECTED_STATUS = 'Rejected';
@@ -235,6 +236,21 @@ class Strings {
   static const String VALID_MOB = 'Enter valid 10-digit mobile number';
   static const String EMAIL_REQ = 'Email required';
   static const String RESTAURANT = 'Restaurant name required';
+  static const String SEARCH_ADDRESS = "Search address / pincode / area";
+  static const String USE_CURRENT_LOCATION = "Use Current Location";
+  static const String HOME_TXT = "Home";
+  static const String WORK_TXT = 'Work';
+  static const String OTHER_TXT = 'Other';
+  static const String SAVE_AS = 'Save as';
+  static const String FLAT_FLOOR_TXT = 'Flat / Door / House';
+  static const String STREET_BLOCK_TXT = 'Street / Block / City / Postal Code';
+  static const String CONFIRM_CONTINUE = 'Confirm & Continue';
+  static const String GO_BACK_TXT = 'Go back';
+  static const String HOME = 'HOME';
+  static const String ACTIVE_TXT = 'ACTIVE';
+  static const String CLOSE = 'Close';
+  static const String WORK = 'WORK';
+
 
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
@@ -244,4 +260,5 @@ class Strings {
 
   static final RegExp password =
   RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$');
+
 }

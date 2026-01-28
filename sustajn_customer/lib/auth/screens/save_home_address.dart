@@ -165,7 +165,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                     cursorColor: Colors.white,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                        hintText: "Search address / pincode / area",
+                        hintText: Strings.SEARCH_ADDRESS,
                         hintStyle: const TextStyle(color: Colors.white70),
                         filled: true,
                         fillColor: const Color(0xff1b4d3a),
@@ -273,7 +273,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             ),
             child: const Center(
               child: Text(
-                "Use Current Location",
+               Strings.USE_CURRENT_LOCATION,
                 style: TextStyle(
                   color: Constant.gold,
                   fontWeight: FontWeight.w600,
@@ -309,24 +309,24 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
         Row(
           children: [
-            _saveAsChip("Home", Icons.home_outlined, 0),
+            _saveAsChip(Strings.HOME_TXT, Icons.home_outlined, 0),
             const SizedBox(width: 8),
-            _saveAsChip("Work", Icons.work_outline, 1),
+            _saveAsChip(Strings.WORK_TXT, Icons.work_outline, 1),
             const SizedBox(width: 8),
-            _saveAsChip("Other", Icons.location_on_outlined, 2),
+            _saveAsChip(Strings.OTHER_TXT, Icons.location_on_outlined, 2),
           ],
         ),
 
         if (selectedSaveAs == 2) ...[
           const SizedBox(height: 12),
-          _inputField("Save as", saveAsController),
+          _inputField(Strings.SAVE_AS, saveAsController),
         ],
 
         const SizedBox(height: 12),
-        _inputField("Flat / Door / House", flatController),
+        _inputField(Strings.FLAT_FLOOR_TXT, flatController),
         const SizedBox(height: 12),
         _inputField(
-          "Street / Block / City / Postal Code",
+          Strings.STREET_BLOCK_TXT,
           streetController,
           isLarge: true,
         ),
@@ -346,9 +346,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             ),
             onPressed: () {
               final String addressType = selectedSaveAs == 0
-                  ? "HOME"
+                  ? Strings.HOME
                   : selectedSaveAs == 1
-                  ? "WORK"
+                  ? Strings.WORK
                   : saveAsController.text.trim();
 
               final String flatDetails = flatController.text.trim();
@@ -399,7 +399,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
             child: Text(
-              "Confirm & Continue",
+              Strings.CONFIRM_CONTINUE,
               style: TextStyle(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 fontWeight: FontWeight.w600,
