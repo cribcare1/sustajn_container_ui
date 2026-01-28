@@ -234,4 +234,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String ENTER_OTP = "Please enter your OTP";
   static const String VALID_OTP = "Please enter a valid 6-digit OTP";
   static const String RESEND_IN = "Resend code in ";
+  static const String RESTAURANT_NAME_NOT_EMPTY = 'Restaurant name cannot be empty';
+  static const String ONLY_LETTERS_NUMBERS = 'Only letters, numbers and spaces allowed';
+  static const String EDIT_RESTAURANT_NAME = 'Edit Restaurant Name';
 }

@@ -29,10 +29,7 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
   @override
   void initState() {
     super.initState();
-    // Utils.getToken();
     Utils.userId;
-    // final String restaurantName = 'Marina Sky Dine';
-
     _nameController.text = widget.name;
 
     _nameController.selection = TextSelection.collapsed(
@@ -49,13 +46,13 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Restaurant name cannot be empty';
+      return Strings.RESTAURANT_NAME_NOT_EMPTY;
     }
 
     final RegExp regex = RegExp(r'^[a-zA-Z0-9 ]+$');
 
     if (!regex.hasMatch(value.trim())) {
-      return 'Only letters, numbers and spaces allowed';
+      return Strings.ONLY_LETTERS_NUMBERS;
     }
     return null;
   }
@@ -88,7 +85,7 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Restaurant Name',
+                        Strings.EDIT_RESTAURANT_NAME,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -165,8 +162,6 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                       if (mounted) {
                         Navigator.pop(context, _nameController.text.trim());
                       }
-
-                      // Navigator.pop(context, _nameController.text.trim());
                     }
                   },rightText:Strings.SAVE_CHANGES,)
 
