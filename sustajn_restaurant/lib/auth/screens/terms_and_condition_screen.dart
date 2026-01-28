@@ -50,6 +50,7 @@ class _TermsAndConditionScreenState
             leading: CustomBackButton()).getAppBar(context),
         body: SafeArea(
           child: Stack(
+            alignment: Alignment.center,
             children: [
               Column(
                 children: [
@@ -95,43 +96,52 @@ class _TermsAndConditionScreenState
                     padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
                     child: SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: signUpState.isLoading
-                            ? null
-                            : () async {
-                          final confirmed = await termsDialog(
-                            context,
-                            Icons.warning_amber_outlined,
-                            Strings.CONFIRM_ACCOUNT,
-                            Strings.CONFIRM_MESSAGE,
-                            Strings.CANCEL,
-                            Strings.CREATE,
-                          );
-
-                          if (confirmed == true) {
-                            _getNetworkData(signUpState);
+                      child: SubmitButton(
+                        onRightTap:  ()  {
+                          if(!signUpState.isLoading){
+                            _onCreateAccount(signUpState);
                           }
-                        },
 
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Constant.gold,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_20,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: Constant.CONTAINER_SIZE_16,
-                          ),
-                        ),
-                        child: Text(
-                          "Agree & Create Account",
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
+                      },
+                      rightText: "Agree & Create Account",
+                      )
+                      // ElevatedButton(
+                      //   onPressed: signUpState.isLoading
+                      //       ? null
+                      //       : () async {
+                      //     final confirmed = await termsDialog(
+                      //       context,
+                      //       Icons.warning_amber_outlined,
+                      //       Strings.CONFIRM_ACCOUNT,
+                      //       Strings.CONFIRM_MESSAGE,
+                      //       Strings.CANCEL,
+                      //       Strings.CREATE,
+                      //     );
+                      //
+                      //     if (confirmed == true) {
+                      //       _getNetworkData(signUpState);
+                      //     }
+                      //   },
+                      //
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: Constant.gold,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(
+                      //         Constant.CONTAINER_SIZE_20,
+                      //       ),
+                      //     ),
+                      //     padding: EdgeInsets.symmetric(
+                      //       vertical: Constant.CONTAINER_SIZE_16,
+                      //     ),
+                      //   ),
+                      //   child: Text(
+                      //     "Agree & Create Account",
+                      //     style: theme.textTheme.labelLarge?.copyWith(
+                      //       color: theme.primaryColor,
+                      //       fontWeight: FontWeight.w700,
+                      //     ),
+                      //   ),
+                      // ),
                     ),
                   ),
                 ],
@@ -148,6 +158,22 @@ class _TermsAndConditionScreenState
       ),
     );
   }
+
+  Future<void> _onCreateAccount(AuthState signUpState) async {
+    final confirmed = await termsDialog(
+      context,
+      Icons.warning_amber_outlined,
+      Strings.CONFIRM_ACCOUNT,
+      Strings.CONFIRM_MESSAGE,
+      Strings.CANCEL,
+      Strings.CREATE,
+    );
+
+    if (confirmed == true) {
+      _getNetworkData(signUpState);
+    }
+  }
+
 
   termsDialog(
       BuildContext context,
