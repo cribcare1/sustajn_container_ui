@@ -235,6 +235,8 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
   static const String CONFIRM = 'Confirm';
+  static const String CONFIRM_UPDATE = 'Confirm Update';
+
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';

@@ -215,7 +215,7 @@ class _EditMobileNumberDialogState
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           ),
           title: Text(
-            "Confirm Update",
+            Strings.CONFIRM_UPDATE,
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
