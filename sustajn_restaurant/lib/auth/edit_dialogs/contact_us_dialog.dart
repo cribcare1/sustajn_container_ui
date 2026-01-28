@@ -13,7 +13,6 @@ class ContactUsDialog extends StatefulWidget{
 
 class _ContactUsDialogState extends State<ContactUsDialog> {
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
