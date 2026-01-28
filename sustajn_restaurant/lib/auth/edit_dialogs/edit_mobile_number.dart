@@ -91,7 +91,7 @@ class _EditMobileNumberDialogState
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Mobile Number',
+                        Strings.EDIT_MOBILE_NUMBER,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -131,7 +131,7 @@ class _EditMobileNumberDialogState
                     color: Colors.white,
                   ),
                   decoration: InputDecoration(
-                    labelText: 'Mobile Number',
+                    labelText: Strings.MOBILE_NUMBER,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -168,7 +168,6 @@ class _EditMobileNumberDialogState
 
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -181,9 +180,6 @@ class _EditMobileNumberDialogState
                       if (mounted) {
                         Navigator.pop(context, _mobileController.text.trim());
                       }
-                      // {
-                      //   Navigator.pop(context, _controller.text.trim());
-                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -197,7 +193,7 @@ class _EditMobileNumberDialogState
                       ),
                     ),
                     child: Text(
-                      'Save Changes',
+                      Strings.SAVE_CHANGES,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,
