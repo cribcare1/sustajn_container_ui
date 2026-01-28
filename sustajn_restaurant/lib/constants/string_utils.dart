@@ -26,7 +26,7 @@ class Strings {
   static const IMAGE = 'image';
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
-
+  static const PRIMARY_NO = "Primary Number";
   static const String LOGIN = "Log In";
   static const String LOGOUT = "Log Out";
   static const String SIGN_UP = "Sign Up";

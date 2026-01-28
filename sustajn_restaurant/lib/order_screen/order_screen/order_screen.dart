@@ -142,7 +142,6 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     );
   }
 
-  // 🔍 Search Bar
   Widget _buildSearchBar(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -150,7 +149,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Search by Container Name',
+          hintText: Strings.SEARCH_BY_CONTAINER_NAME,
           prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
           suffixIcon: Icon(Icons.tune, color: theme.iconTheme.color),
           filled: true,

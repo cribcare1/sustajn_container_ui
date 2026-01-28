@@ -173,12 +173,6 @@ class _EditMobileNumberDialogState
                       if (!_formKey.currentState!.validate()) return;
 
                       _showConfirmationDialog(context);
-                      // await _editMobileNetworkCall(
-                      //   _mobileController.text.trim(),
-                      // );
-                      // if (mounted) {
-                      //   Navigator.pop(context, _mobileController.text.trim());
-                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -218,7 +212,7 @@ class _EditMobileNumberDialogState
         return AlertDialog(
           backgroundColor: theme.scaffoldBackgroundColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           ),
           title: Text(
             "Confirm Update",

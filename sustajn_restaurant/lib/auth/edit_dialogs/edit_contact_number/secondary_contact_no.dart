@@ -78,7 +78,7 @@ class _SecondaryMobileNumberDialogState
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
 
                 Text(
-                  "Primary Number",
+                  Strings.PRIMARY_NO,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.grey,
                   ),

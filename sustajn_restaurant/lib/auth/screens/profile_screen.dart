@@ -31,7 +31,6 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    // {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Email", "icon": Icons.email_outlined},
     {"name": "Address", "icon": Icons.location_on_outlined},
     {"name": "Mobile Number", "icon": Icons.call},
@@ -66,20 +65,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showSubscriptionDialog(context);
         break;
       case 6:
-        //paymentType
+        ///paymentType
         _showBankDetailsEdit(context);
         break;
       case 7:
-        //history
+        ///history
         break;
       case 8:
         _showFeedbackDialog(context);
         break;
       case 9:
-      //contact us
+      ///contact us
         break;
       case 10:
-        //refer a partner
+        ///refer a partner
         break;
     }
   }
@@ -119,7 +118,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       backgroundColor: Colors.transparent,
       builder: (context) =>
       SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
-        // EditMobileNumberDialog(mobileNumber: mobile ?? ""),
     );
   }
   void _showBankDetailsEdit(BuildContext context) {
@@ -324,79 +322,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ],
                         ),
                         SizedBox(height: h * 0.02),
-                        // Container(
-                        //   width: double.infinity,
-                        //   margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                        //   padding: EdgeInsets.symmetric(
-                        //     horizontal: w * 0.04,
-                        //     vertical: h * 0.02,
-                        //   ),
-                        //   decoration: BoxDecoration(
-                        //     color: theme.scaffoldBackgroundColor,
-                        //     borderRadius: BorderRadius.circular(w * 0.04),
-                        //     border: Border.all(color: Colors.grey),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: Colors.black.withOpacity(0.08),
-                        //         blurRadius: 8,
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: Column(
-                        //     children: [
-                              // _detailItem(
-                              //   icon: Icons.email_outlined,
-                              //   title: Strings.EMAIL,
-                              //   value: profile?.emailId! ?? "",
-                              //   w: w,
-                              //   showEdit: false,
-                              //   theme: theme,
-                              //   ontap: () {},
-                              // ),
-                              // Divider(color: Colors.grey.shade700),
-                              //
-                              // _detailItem(
-                              //   icon: Icons.location_on_outlined,
-                              //   title: Strings.ADDRESS,
-                              //   value: fullAddress ?? "No address",
-                              //   w: w,
-                              //   showEdit: true,
-                              //   theme: theme,
-                              //   ontap: () {
-                              //     showModalBottomSheet(
-                              //       context: context,
-                              //       isScrollControlled: true,
-                              //       backgroundColor: Colors.transparent,
-                              //       builder: (context) =>
-                              //           EditAddressDialog(selectedAddress: selectedAddress),
-                              //     );
-                              //   },
-                              // ),
-                              // Divider(color: Colors.grey.shade700),
-                              // _detailItem(
-                              //   icon: Icons.phone_outlined,
-                              //   title: Strings.MOBILE_NUMBER,
-                              //   value: profile?.mobileNumber! ?? "",
-                              //   w: w,
-                              //   showEdit: true,
-                              //   theme: theme,
-                              //   ontap: () {
-                              //     showModalBottomSheet(
-                              //       context: context,
-                              //       isScrollControlled: true,
-                              //       backgroundColor: Colors.transparent,
-                              //       builder: (context) =>
-                              //           EditMobileNumberDialog(
-                              //             mobileNumber:
-                              //                 profile?.mobileNumber ?? "",
-                              //           ),
-                              //     );
-                              //   },
-                              // ),
-                        //     ],
-                        //   ),
-                        // ),
-
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: h * 0.02),
                           child: ListView.separated(
@@ -586,7 +511,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
       profileState.setIsLoading(true);
 
-      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
