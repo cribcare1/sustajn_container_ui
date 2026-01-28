@@ -11,6 +11,7 @@ import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../auth/screens/save_home_address.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
@@ -535,8 +536,8 @@ class Utils {
       {DateTime? initialDate}) async {
 
     final theme = Theme.of(context);
-
     final now = DateTime.now();
+
     final firstDate = DateTime(now.year - 100);
     final lastDate = DateTime(now.year - 13);
 
@@ -545,25 +546,49 @@ class Utils {
       initialDate: initialDate ?? lastDate,
       firstDate: firstDate,
       lastDate: lastDate,
+
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+
       helpText: "Select Date of Birth",
       cancelText: "Cancel",
       confirmText: "Select",
+
       builder: (context, child) {
         return Theme(
           data: theme.copyWith(
+            useMaterial3: true,
+
             colorScheme: theme.colorScheme.copyWith(
-              primary: theme.primaryColor,
-              onPrimary: Colors.white,
+              primary: Constant.gold,
+              onPrimary: Colors.black,
               surface: theme.scaffoldBackgroundColor,
               onSurface: Colors.white,
+              secondary: Constant.gold,
             ),
-            dialogBackgroundColor: theme.scaffoldBackgroundColor,
+
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              headerBackgroundColor: Constant.gold,
+              headerForegroundColor: Colors.black,
+              dayForegroundColor: MaterialStateProperty.all(Colors.white),
+              yearForegroundColor: MaterialStateProperty.all(Colors.white),
+              weekdayStyle: const TextStyle(color: Colors.white70),
+              dayStyle: const TextStyle(color: Colors.white),
+              yearStyle: const TextStyle(color: Colors.white),
+              todayForegroundColor: MaterialStateProperty.all(Constant.gold),
+              todayBackgroundColor:
+              MaterialStateProperty.all(Colors.transparent),
+              dayOverlayColor:
+              MaterialStateProperty.all(Constant.gold.withOpacity(0.2)),
+            ),
           ),
           child: child!,
         );
       },
     );
   }
+
+
 
   static String formatDob(DateTime date) {
     return "${date.day.toString().padLeft(2, '0')}-"
@@ -762,6 +787,21 @@ class Utils {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
+  }
+
+  static String getAppBarTitle({
+    required AddressFlow flow,
+    required dynamic existingAddress,
+  }) {
+    if (flow == AddressFlow.signup) {
+      return Strings.SELECT_HOME_ADDRESS_TITLE;
+    }
+
+    if (existingAddress != null) {
+      return Strings.EDIT_ADDRESS_TITLE;
+    }
+
+    return Strings.ADD_ADDRESS_TITLE;
   }
 
 

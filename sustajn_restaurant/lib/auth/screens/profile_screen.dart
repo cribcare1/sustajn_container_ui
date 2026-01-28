@@ -2,20 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
-
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
-import '../edit_dialogs/edit_mobile_number.dart';
+import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
+import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
@@ -30,29 +32,61 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
+    {"name": "Email", "icon": Icons.email_outlined},
+    {"name": "Address", "icon": Icons.location_on_outlined},
+    {"name": "Mobile Number", "icon": Icons.call},
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined}, //ok
+    {"name": "Business Information", "icon": Icons.business_outlined}, //ok
+    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined}, //ok
+    {"name": "Payment Type", "icon": Icons.payments_outlined},
+    {"name": "History", "icon": Icons.history},
+    {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
+    {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
+    {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
     {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
     {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us", "icon": Icons.headset_mic},
   ];
 
-  void _handleItemTap(int index, BuildContext context) {
+  void _handleItemTap(int index, BuildContext context, String mobileNo) {
     switch (index) {
       case 0:
-        _showBankDetailsEdit(context);
         break;
       case 1:
-        _showBusinessEditScreen(context);
+        _showAddressDialog(context);
         break;
       case 2:
-        _showReportScreen(context);
+        _showMobileNoDialog(context, mobileNo);
         break;
       case 3:
-        _showFeedbackDialog(context);
+        _showReportScreen(context);
         break;
       case 4:
+        _showBusinessEditScreen(context);
+        break;
+      case 5:
         _showSubscriptionDialog(context);
+        break;
+      case 6:
+      ///paymentType
+        _showBankDetailsEdit(context);
+        break;
+      case 7:
+      ///history
+        break;
+      case 8:
+        _showFeedbackDialog(context);
+        break;
+      case 9:
+      ///contact us
+        break;
+      case 10:
+      ///refer a partner
+      case 5:
+        _showContactDialog(context);
         break;
     }
   }
@@ -72,6 +106,32 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const SubscriptionPlanBottomSheet(),
+    );
+  }
+
+  void _showAddressDialog(BuildContext context) {
+    =======
+    void _showContactDialog(BuildContext context) {
+    develop
+    showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => EditAddressDialog(selectedAddress: selectedAddress),
+
+    );
+    }
+
+    void _showMobileNoDialog(BuildContext context, String mobile) {
+    showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) =>
+    SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
+    );
+    }
+    builder: (_) => const ContactUsDialog(),
     );
   }
 
@@ -101,14 +161,22 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   List<GetProfileData> profileData = [];
   AddressResponses? selectedAddress;
 
+  LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      _getProfileNetworkCall();
+    _loadProfile();
+    _getProfileNetworkCall();
+  }
+
+  Future<void> _loadProfile() async {
+    await Utils.getProfile();
+    setState(() {
+      loginResponse = Utils.loginData?.data;
+      isLoading = false;
     });
   }
 
@@ -121,9 +189,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     if (addresses != null && addresses.isNotEmpty) {
       selectedAddress = addresses.firstWhere(
-        (e) => e.addressType?.toLowerCase() == "home",
+            (e) => e.addressType?.toLowerCase() == "home",
         orElse: () => addresses.firstWhere(
-          (e) => e.addressType?.toLowerCase() == "work",
+              (e) => e.addressType?.toLowerCase() == "work",
           orElse: () => addresses.first,
         ),
       );
@@ -132,10 +200,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final String fullAddress = selectedAddress == null
         ? "No address added"
         : [
-            selectedAddress!.flatDoorHouseDetails,
-            // selectedAddress!.areaStreetCityBlockDetails,
-            selectedAddress!.poBoxOrPostalCode,
-          ].whereType<String>().where((e) => e.isNotEmpty).join(', ');
+      selectedAddress!.flatDoorHouseDetails,
+      selectedAddress!.areaStreetCityBlockDetails,
+      selectedAddress!.poBoxOrPostalCode,
+    ].whereType<String>()
+        .where((e) => e.isNotEmpty)
+        .join(', ');
+
 
     if (profileState.isLoading == true) {
       return Center(child: CircularProgressIndicator());
@@ -150,7 +221,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       top: false,
       bottom: true,
       child: Scaffold(
-        backgroundColor: theme!.primaryColor,
+        backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color(0xFFD1AE31),
@@ -171,302 +242,194 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: profileState.isLoading
-            ? Container(
-                height: MediaQuery.sizeOf(context).height,
-                width: MediaQuery.sizeOf(context).width,
-                color: theme.primaryColor,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : (profile != null)
-            ? SingleChildScrollView(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    SizedBox(
-                      width: w - (w * 0.34),
-                      height: h * 0.30,
-                      child: CustomPaint(painter: TopCirclePainter()),
-                    ),
-                    Column(
-                      children: [
-                        SizedBox(height: h * 0.035),
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            Container(
-                              height: w * 0.28,
-                              width: w * 0.28,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: w * 0.012,
-                                ),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Profile Image
-                                  ClipOval(
-                                    child: Image(
-                                      width: w * 0.28,
-                                      height: w * 0.28,
-                                      fit: BoxFit.cover,
-                                      image: profileImage != null
-                                          ? FileImage(profileImage!)
-                                          : (profile.profileImageUrl != null &&
-                                                profile
-                                                    .profileImageUrl!
-                                                    .isNotEmpty)
-                                          ? NetworkImage(
-                                              "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                            )
-                                          : const AssetImage(
-                                                  "assets/images/default_profile.png",
-                                                )
-                                                as ImageProvider,
-                                    ),
-                                  ),
-                                  if (profileState.isSaving)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black.withOpacity(0.4),
-                                      ),
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                profileImage = await Utils.uploadImage(context);
-                                if (profileImage != null) {
-                                  _profileImgNetworkCall(
-                                    profileState,
-                                    profile.mobileNumber!,
-                                    profile.fullName!,
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: w * 0.09,
-                                width: w * 0.09,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: theme.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: h * 0.015),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              profile.fullName ?? "",
-                              style: TextStyle(
-                                fontSize: w * 0.055,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: w * 0.015),
-                            if (profile.fullName != null)
-                              GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditRestaurantNameDialog(
-                                          name: profile.fullName!,
-                                        ),
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: h * 0.03),
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: w * 0.04,
-                            vertical: h * 0.02,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(w * 0.04),
-                            border: Border.all(color: Colors.grey),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              _detailItem(
-                                icon: Icons.email_outlined,
-                                title: "Email",
-                                value: profile.emailId ?? "__",
-                                w: w,
-                                showEdit: false,
-                                theme: theme,
-                                ontap: () {},
-                              ),
-                              Divider(color: Colors.grey.shade700),
-
-                              _detailItem(
-                                icon: Icons.location_on_outlined,
-                                title: "Address",
-                                value: fullAddress,
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) => EditAddressDialog(
-                                      selectedAddress: selectedAddress,
-                                    ),
-                                  );
-                                },
-                              ),
-                              Divider(color: Colors.grey.shade700),
-                              _detailItem(
-                                icon: Icons.phone_outlined,
-                                title: "Mobile Number",
-                                value: profile.mobileNumber! ?? "",
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditMobileNumberDialog(
-                                          mobileNumber:
-                                              profile.mobileNumber ?? "",
-                                        ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: h * 0.02),
-                          child: ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: detailList.length,
-                            separatorBuilder: (context, index) =>
-                                Divider(height: 1, color: Colors.grey.shade700),
-                            itemBuilder: (context, index) {
-                              final item = detailList[index];
-                              return ListTile(
-                                leading: Icon(
-                                  item['icon'],
-                                  size: w * 0.054,
-                                  color: Constant.gold,
-                                ),
-                                title: Text(
-                                  item['name'],
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: w * 0.044,
-                                  color: Colors.white,
-                                ),
-                                onTap: () => _handleItemTap(index, context),
-                              );
-                            },
-                          ),
-                        ),
-
-                        Center(
-                          child: Container(
-                            width: w * 0.55,
-                            margin: EdgeInsets.only(top: h * 0.02),
-                            child: ElevatedButton.icon(
-                              icon: Icon(
-                                Icons.logout,
-                                color: theme.primaryColor,
-                                size: w * 0.05,
-                              ),
-                              label: Text(
-                                "Log Out",
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontSize: w * 0.045,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.secondaryHeaderColor,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: h * 0.018,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(w * 0.04),
-                                  side: BorderSide(color: Colors.white)
-                                ),
-                              ),
-                              onPressed: () {
-                                Utils.logOutDialog(
-                                  context,
-                                  Icons.logout,
-                                  Strings.CONFIRM_LOGOUT,
-                                  Strings.SURE_LOG_OUT,
-                                  Strings.YES,
-                                  Strings.NO,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: h * 0.035),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            : const Center(
-                child: Text(
-                  "No Data available",
-                  style: TextStyle(color: Colors.white),
-                ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              SizedBox(
+                width: w - (w * 0.34),
+                height: h * 0.30,
+                child: CustomPaint(painter: TopCirclePainter()),
               ),
+              Column(
+                children: [
+                  SizedBox(height: h * 0.035),
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Container(
+                        height: w * 0.28,
+                        width: w * 0.28,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: w * 0.012,
+                          ),
+                          image: DecorationImage(
+                            image: profile?.profileImageUrl != null && profile?.profileImageUrl.isNotEmpty ? NetworkImage(
+                              "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
+                            ):AssetImage("assets/images/cups.png"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _profileImgNetworkCall(
+                            profileState,
+                            profile!.mobileNumber!,
+                            profile.fullName!,
+                          );
+                          Utils.showProfilePhotoBottomSheet(context);
+                        },
+                        child: Container(
+                          height: w * 0.09,
+                          width: w * 0.09,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Icon(
+                            Icons.edit_outlined,
+                            size: w * 0.045,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: h * 0.015),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        profile?.fullName ?? "",
+                        style: TextStyle(
+                          fontSize: w * 0.055,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: w * 0.015),
+                      if (profile?.fullName != null)
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) =>
+                                  EditRestaurantNameDialog(
+                                    name: profile!.fullName!,
+                                  ),
+                            );
+                          },
+                          child: Icon(
+                            Icons.edit_outlined,
+                            size: w * 0.045,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: h * 0.02),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: h * 0.02),
+                    child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: detailList.length,
+                      separatorBuilder: (context, index) =>
+                          Divider(height: 1, color: Colors.grey.shade700),
+                      itemBuilder: (context, index) {
+                        final item = detailList[index];
+                        return ListTile(
+                          leading: Icon(
+                            item['icon'],
+                            size: w * 0.054,
+                            color: Constant.gold,
+                          ),
+                          title: Text(
+                            item['name'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: index == 0
+                              ? Text(
+                            profile?.emailId ?? "",
+                            style: TextStyle(color: Colors.grey.shade300, fontSize: Constant.CONTAINER_SIZE_12),
+                          )
+                              : null,
+                          trailing: index == 0
+                              ? null
+                              : Icon(
+                            Icons.arrow_forward_ios,
+                            size: w * 0.044,
+                            color: Colors.white,
+                          ),
+                          onTap: () => _handleItemTap(index, context, profile?.mobileNumber ?? "", ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  Center(
+                    child: Container(
+                      width: w * 0.55,
+                      margin: EdgeInsets.only(top: h * 0.02),
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.logout,
+                          color: theme.primaryColor,
+                          size: w * 0.05,
+                        ),
+                        label: Text(
+                          Strings.LOGOUT,
+                          style: TextStyle(
+                            color: theme.primaryColor,
+                            fontSize: w * 0.045,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFFC8B531),
+                          padding: EdgeInsets.symmetric(
+                            vertical: h * 0.018,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(w * 0.04),
+                          ),
+                        ),
+                        onPressed: () {
+                          Utils.logOutDialog(
+                            context,
+                            Icons.logout,
+                            Strings.CONFIRM_LOGOUT,
+                            Strings.SURE_LOG_OUT,
+                            Strings.YES,
+                            Strings.NO,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: h * 0.035),
+                ],
+              ),
+            ],
+          ),
+        ):const Center(
+          child: Text(
+            "No Data available",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ),
     );
   }
@@ -515,15 +478,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   _getProfileNetworkCall() async {
-    final profileState = ref.read(profileProvider);
-    profileState.setIsLoading(true);
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
+          isNetworkAvailable,
+          ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-
+        final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {
+          profileState.setIsLoading(true);
           final userId = Utils.userId;
           final url = '${NetworkUrls.GET_PROFILE}$userId';
           ref.read(getProfileProvider(url));
@@ -549,19 +511,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   _profileImgNetworkCall(var profileState, String mobile, String name) async {
     Utils.printLog('Profile Image Network call');
 
-    profileState.setIsSaving(true);
-
     try {
+      if (!profileState.isValid) return;
+
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
-
       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
 
       if (!isNetworkAvailable) {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        return; // safe now
+        return;
       }
+
+      profileState.setIsLoading(true);
 
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
@@ -569,17 +532,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Strings.PROFILE_IMAGE,
         profileImage,
       );
-
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
+      profileState.setIsLoading(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
+      profileState.setIsLoading(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();
-      profileState.setIsSaving(false);
     }
   }
-
 }

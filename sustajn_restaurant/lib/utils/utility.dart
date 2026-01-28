@@ -12,6 +12,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
@@ -615,6 +616,16 @@ class Utils {
     printLog("DEVICE TOKEN NOT FOUND");
 
     return null;
+  }
+
+  static Future<void> sendEmail(String email) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
 
 }
