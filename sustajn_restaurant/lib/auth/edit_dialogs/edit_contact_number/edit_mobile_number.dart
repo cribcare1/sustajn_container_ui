@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import '../../constants/network_urls.dart';
-import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
-import '../../network_provider/network_provider.dart';
-import '../../provider/profile_provider.dart';
-import '../../utils/utility.dart';
+import '../../../constants/network_urls.dart';
+import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../network_provider/network_provider.dart';
+import '../../../provider/profile_provider.dart';
+import '../../../utils/utility.dart';
 
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
@@ -63,8 +63,6 @@ class _EditMobileNumberDialogState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final profileState = ref.watch(profileProvider);
     return SafeArea(
       top: false,
       child: Padding(
@@ -174,12 +172,13 @@ class _EditMobileNumberDialogState
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
 
-                      await _editMobileNetworkCall(
-                        _mobileController.text.trim(),
-                      );
-                      if (mounted) {
-                        Navigator.pop(context, _mobileController.text.trim());
-                      }
+                      _showConfirmationDialog(context);
+                      // await _editMobileNetworkCall(
+                      //   _mobileController.text.trim(),
+                      // );
+                      // if (mounted) {
+                      //   Navigator.pop(context, _mobileController.text.trim());
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFC8B531),
@@ -206,6 +205,61 @@ class _EditMobileNumberDialogState
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showConfirmationDialog(BuildContext context) async {
+    final theme = Theme.of(context);
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            "Confirm Update",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+            "Are you sure you want to update your contact number?",
+            style: TextStyle(color: Colors.grey.shade300),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                Strings.NO,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFC8B531),
+              ),
+              onPressed: () async{
+                await _editMobileNetworkCall(
+                      _mobileController.text.trim(),
+                    );
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text(
+                Strings.UPDATE,
+                style: TextStyle(color: theme.primaryColor),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
