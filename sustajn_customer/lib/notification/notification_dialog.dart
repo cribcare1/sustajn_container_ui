@@ -8,8 +8,6 @@ class NotificationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-
     return Container(
       padding:  EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_16, Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
