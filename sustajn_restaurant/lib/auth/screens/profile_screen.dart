@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
@@ -42,7 +43,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
-
+    {"name": "Bank Details", "icon": Icons.account_balance_outlined},
+    {"name": "Business Information", "icon": Icons.business_outlined},
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
+    {"name": "Feedback", "icon": Icons.feedback_outlined},
+    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us", "icon": Icons.headset_mic},
   ];
 
   void _handleItemTap(int index, BuildContext context, String mobileNo) {
@@ -79,6 +85,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         break;
       case 10:
         ///refer a partner
+      case 5:
+        _showContactDialog(context);
         break;
     }
   }
@@ -102,6 +110,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showAddressDialog(BuildContext context) {
+=======
+  void _showContactDialog(BuildContext context) {
+  develop
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -120,6 +131,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
     );
   }
+  builder: (_) => const ContactUsDialog(),
+    );
+  }
+
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,

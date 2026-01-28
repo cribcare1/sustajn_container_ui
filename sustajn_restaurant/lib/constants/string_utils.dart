@@ -109,6 +109,14 @@ class Strings {
   static const EMAIL = 'Email ID ';
   static const PASSWORD = 'Password';
   static const CONFIRM_PASSWORD = 'Confirm Password';
+  static const MOBILE_NUMBER = 'Contact Number*';
+  static const CONTACT_PERSON = 'Contact Person';
+  static const EMAIL_REGISTRATION = 'Email Registration';
+  static const TRADE_LICENSE_NUMBER = 'Trade License Number';
+  static const VAT_NUMBER = 'VAT Number';
+  static const EMAIL = 'Email ID* ';
+  static const PASSWORD = 'Password*';
+  static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
   static const ALREADY_HAVE_ACC = 'Already have an account? ';
@@ -255,4 +263,6 @@ class Strings {
   static const String VAT_NUMBER = "VAT Number";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
+}
+  static const String CONTACT_US = 'Contact Us';
 }
