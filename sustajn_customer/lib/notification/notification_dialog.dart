@@ -13,8 +13,8 @@ class NotificationDialog extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       decoration: BoxDecoration(
         color: const Color(0xFF0F3B2E), // dark green
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(24),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular( Constant.CONTAINER_SIZE_24),
         ),
       ),
       child: SafeArea(
@@ -31,16 +31,16 @@ class NotificationDialog extends StatelessWidget {
                   'Extend Lease Period',
                   style: theme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: Constant.CONTAINER_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: const CircleAvatar(
-                    radius: 16,
+                  child: CircleAvatar(
+                    radius: Constant.CONTAINER_SIZE_16,
                     backgroundColor: Colors.white24,
-                    child: Icon(Icons.close, color: Colors.white, size: 18),
+                    child: Icon(Icons.close, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
                   ),
                 ),
               ],
@@ -107,16 +107,16 @@ class NotificationDialog extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD4AF37), // gold
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
                   ),
                 ),
                 onPressed: () {},
-                child: const Text(
+                child: Text(
                   'Confirm & Pay AED 9',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                    fontSize: Constant.CONTAINER_SIZE_16,
                   ),
                 ),
               ),
@@ -142,9 +142,9 @@ class _DateRow extends StatelessWidget {
             style: const TextStyle(color: Colors.white70, fontSize: 13)),
         SizedBox(height: Constant.CONTAINER_SIZE_4),
         Text(value,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: Constant.CONTAINER_SIZE_18,
                 fontWeight: FontWeight.w600)),
       ],
     );
@@ -197,18 +197,18 @@ Widget build(BuildContext context) {
                       fontWeight: FontWeight.w600)),
               Text(code,
                   style:
-                  const TextStyle(color: Colors.white70, fontSize: 12)),
+                  TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_12)),
               Text(size,
                   style:
-                  const TextStyle(color: Colors.white70, fontSize: 12)),
+                  TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_12)),
             ],
           ),
         ),
         Text(
           qty.toString(),
-          style: const TextStyle(
-              color: Color(0xFFD4AF37),
-              fontSize: 16,
+          style: TextStyle(
+              color: const Color(0xFFD4AF37),
+              fontSize: Constant.CONTAINER_SIZE_16,
               fontWeight: FontWeight.w700),
         ),
       ],
