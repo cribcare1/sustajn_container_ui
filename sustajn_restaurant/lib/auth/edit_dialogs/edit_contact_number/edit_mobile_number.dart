@@ -222,7 +222,7 @@ class _EditMobileNumberDialogState
             ),
           ),
           content: Text(
-            "Are you sure you want to update your contact number?",
+           Strings.UPDATE_CONTACT_NO,
             style: TextStyle(color: Colors.grey.shade300),
           ),
           actions: [

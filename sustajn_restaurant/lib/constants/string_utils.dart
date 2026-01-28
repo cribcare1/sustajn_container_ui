@@ -244,7 +244,7 @@ class Strings {
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
   static const String CONFIRM = 'Confirm';
   static const String CONFIRM_UPDATE = 'Confirm Update';
-
+  static const String UPDATE_CONTACT_NO = "Are you sure you want to update your contact number?";
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';
