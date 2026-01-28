@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
@@ -175,24 +176,7 @@ class _EditMobileNumberDialogState
 
                       _showConfirmationDialog(context);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_12,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      Strings.SAVE_CHANGES,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    rightText: Strings.SAVE_CHANGES,
                   ),
                 ),
               ],

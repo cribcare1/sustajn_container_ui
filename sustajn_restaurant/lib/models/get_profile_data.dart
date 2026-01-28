@@ -35,7 +35,7 @@ class Data {
   String? mobileNumber;
   dynamic customerId;
   String? emailId;
-  dynamic profileImageUrl;
+  String? profileImageUrl;
   int? subscriptionPlanId;
   BankDetailsResponse? bankDetailsResponse;
   CardDetailsResponse? cardDetailsResponse;
