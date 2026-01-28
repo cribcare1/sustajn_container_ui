@@ -247,8 +247,6 @@ class Strings {
   static const String EXTEND_LEASE = 'Extend Lease Period';
   static const String PRODUCTS = 'Products';
   static const String PAY_AED = 'Confirm & Pay AED 9';
-
-
   static const String SEARCH_ADDRESS = "Search address / pincode / area";
   static const String USE_CURRENT_LOCATION = "Use Current Location";
   static const String HOME_TXT = "Home";
@@ -263,8 +261,6 @@ class Strings {
   static const String ACTIVE_TXT = 'ACTIVE';
   static const String CLOSE = 'Close';
   static const String WORK = 'WORK';
-
-
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
 
