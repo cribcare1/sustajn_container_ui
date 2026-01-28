@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/imports_util.dart';
+import '../../constants/string_utils.dart';
 
 class ContactUsDialog extends StatefulWidget{
   const ContactUsDialog({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Contact Us',
+                      Strings.CONTACT_US,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontSize: Constant.LABEL_TEXT_SIZE_18,
                         fontWeight: FontWeight.w600,

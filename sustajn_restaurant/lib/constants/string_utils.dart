@@ -229,4 +229,5 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
   static const String CONFIRM_MESSAGE = "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
+  static const String CONTACT_US = 'Contact Us';
 }
