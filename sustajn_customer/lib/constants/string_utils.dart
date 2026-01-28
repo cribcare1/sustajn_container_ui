@@ -41,6 +41,7 @@ class Strings {
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
+  static const String SEARCH_RESTURANT_TITLE = 'Search Resturant';
   static const String APPROVED_STATUS = 'Approved';
   static const String PENDING_STATUS = 'Pending';
   static const String REJECTED_STATUS = 'Rejected';
@@ -181,7 +182,7 @@ class Strings {
   static const String CONTINUE = 'Continue';
   static const String GO_BACK = 'Are you sure you want to go back ?';
   static const String VERIFIED_EMAIL =
-      'You have already verified your email. Going back may interrupt account the account setup process';
+      'You have already verified your email. Going back may interrupt the account setup process';
   static const String STAY_ON_THIS_PAGE = 'Stay on this page';
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
   static const String SURE_LOG_OUT = 'Are you sure you want to log out?';
@@ -198,11 +199,33 @@ class Strings {
   static const String CREATE = "Create";
   static const String LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
   static const String LEAVE_PASSWORD_TXT = 'If you go back now, your password reset process will\n be canceled.Do you still want to go back?';
+  static const String SKIP_PAYMENT = 'To enjoy the full benefits of the service offered, provideing the payment information is mandatory';
+  static const String SKIP_CONTINUE = 'Skip&Continue';
+  static const String SAVE_CHANGES = 'Save Changes';
+  static const String USER_FULL_NAME = 'Full Name';
+  static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
+  static const String LEARN_MORE = 'Learn More';
+  static const String UPGRADE = 'Upgrade';
+
 
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
   static const String SKIP = 'Skip';
+  static const String SELECT_HOME_ADDRESS_TITLE = 'Select Home Address';
+  static const String ADD_ADDRESS_TITLE = 'Add Address';
+  static const String EDIT_ADDRESS_TITLE = 'Edit Address';
+  static const String CONTACT_NUMBER = 'Contact Number';
+  static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
+  static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
+  static const String PRIMARY_NUMBER = 'Primary Number';
+  static const String ADD_SECONDARY_NUMBER = 'Add Secondary Number';
+  static const String SECONDARY_NUMBER = 'Secondary Number';
+  static const String ADD_TEXT = 'Add';
+  static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
+  static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
+  static const String DOB= 'Date of birth';
+
   static const String PROCEED_TERMS = 'Proceed to Terms & Conditions';
   static const String VALID_EMAIL = 'Enter valid email';
   static const String SPECIAL_CHAR = 'No special characters allowed';
@@ -214,7 +237,30 @@ class Strings {
   static const String VALID_MOB = 'Enter valid 10-digit mobile number';
   static const String EMAIL_REQ = 'Email required';
   static const String RESTAURANT = 'Restaurant name required';
-
+  static const String TITLE_1 = 'Order Confirmed\nSahara Sizzle';
+  static const String TITLE_2 = 'Item Marked as Sold\nYour return window has expired.The full amount of AED[amount] has now been charged.';
+  static const String TITLE_3 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_4 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_5 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
+  static const String TITLE_6 = 'Friendly reminder\nPlease return the leased product by 03.01.2026. You can also extend the lease for 5 days for a fee of AED 3';
+  static const String SUB_TITLE_= 'Round Bowl | Dip Cup | Rectangular Container';
+  static const String EXTEND_LEASE = 'Extend Lease Period';
+  static const String PRODUCTS = 'Products';
+  static const String PAY_AED = 'Confirm & Pay AED 9';
+  static const String SEARCH_ADDRESS = "Search address / pincode / area";
+  static const String USE_CURRENT_LOCATION = "Use Current Location";
+  static const String HOME_TXT = "Home";
+  static const String WORK_TXT = 'Work';
+  static const String OTHER_TXT = 'Other';
+  static const String SAVE_AS = 'Save as';
+  static const String FLAT_FLOOR_TXT = 'Flat / Door / House';
+  static const String STREET_BLOCK_TXT = 'Street / Block / City / Postal Code';
+  static const String CONFIRM_CONTINUE = 'Confirm & Continue';
+  static const String GO_BACK_TXT = 'Go back';
+  static const String HOME = 'HOME';
+  static const String ACTIVE_TXT = 'ACTIVE';
+  static const String CLOSE = 'Close';
+  static const String WORK = 'WORK';
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
 
@@ -223,4 +269,5 @@ class Strings {
 
   static final RegExp password =
   RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$');
+
 }
