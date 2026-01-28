@@ -35,6 +35,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final passwordCtrl = TextEditingController();
   final confirmPasswordCtrl = TextEditingController();
   final addressCtrl = TextEditingController();
+  final dobCtrl = TextEditingController();
+  DateTime? selectedDob;
+
 
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
@@ -69,6 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
     passwordCtrl.dispose();
     confirmPasswordCtrl.dispose();
     addressCtrl.dispose();
+    dobCtrl.dispose();
     super.dispose();
   }
 
@@ -157,7 +161,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         },
                       ),
 
-                      _buildTextField(
+                    _buildTextField(
+                      context,
+                      controller: dobCtrl,
+                      hint: Strings.DOB,
+                      readOnly: true,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return "Date of birth required";
+                        return null;
+                      },
+                      suffixIcon: Icons.calendar_month,
+                      onSuffixTap: () async {
+                        final picked = await Utils.pickDob(context, initialDate: selectedDob);
+
+                        if (picked != null) {
+                          setState(() {
+                            selectedDob = picked;
+                            dobCtrl.text = Utils.formatDob(picked);
+                          });
+                        }
+                      },
+                    ),
+                    _buildTextField(
                         context,
                         controller: emailCtrl,
                         hint: Strings.EMAIL_ID,
@@ -236,18 +261,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
 
-                              final registrationData = RegistrationData(
-                                fullName: restaurantCtrl.text,
-                                email: emailCtrl.text,
-                                phoneNumber: mobileCtrl.text,
-                                password: passwordCtrl.text,
-                                profileImage: selectedImage,
-
-                                flatDoorHouseDetails: "",
-                                areaStreetCityBlockDetails: addressCtrl.text,
-                                poBoxOrPostalCode: postalCode,
-                                addressType: "HOME",
-                                addressStatus: "ACTIVE",
+                            final registrationData = RegistrationData(
+                              fullName: restaurantCtrl.text,
+                              email: emailCtrl.text,
+                              phoneNumber: mobileCtrl.text,
+                              password: passwordCtrl.text,
+                              profileImage: selectedImage,
+                              dateOfBirth: selectedDob == null
+                                  ? null
+                                  : Utils.formatDob(selectedDob!),
+                              flatDoorHouseDetails: "",
+                              areaStreetCityBlockDetails: addressCtrl.text,
+                              poBoxOrPostalCode: postalCode,
+                              addressType: Strings.HOME,
+                              addressStatus: Strings.ACTIVE,
 
                                 latitude: lat,
                                 longitude: long,
@@ -312,10 +339,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
         required TextEditingController controller,
         required String hint,
         String? Function(String?)? validator,
-        bool obscure = false,
         TextInputType keyboard = TextInputType.text,
-        bool? readOnly = false,
+        bool readOnly = false,
         List<TextInputFormatter>? inputFormatters,
+
+        IconData? suffixIcon,
+        VoidCallback? onSuffixTap,
       }) {
     final theme = Theme.of(context);
 
@@ -324,25 +353,30 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
-        style: TextStyle(color: Colors.white70),
+        readOnly: readOnly,
+        style: const TextStyle(color: Colors.white70),
         cursorColor: Colors.white70,
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.white70),
+          hintStyle: const TextStyle(color: Colors.white70),
           filled: true,
           fillColor: theme.primaryColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey),
-          ),
           enabledBorder: CustomTheme.roundedBorder(Constant.grey),
           focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+
+          suffixIcon: suffixIcon == null
+              ? null
+              : IconButton(
+            icon: Icon(suffixIcon, color: Colors.white70),
+            onPressed: onSuffixTap,
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildPasswordField(
       BuildContext context, {
@@ -401,7 +435,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
               registrationState.setEmail(emailCtrl.text);
-              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text,}));
+              ref.read(getOtpToVerifyProvider({"email": emailCtrl.text, "type":"SIGNUP"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;
@@ -421,3 +455,4 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
     }
   }
 }
+

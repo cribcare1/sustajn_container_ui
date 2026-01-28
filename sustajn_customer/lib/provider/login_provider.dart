@@ -42,7 +42,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       SharedPreferenceUtils.saveDataInSF(
           Strings.JWT_TOKEN, responseData.data!.jwtToken!);
       SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
-      // SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       SharedPreferenceUtils.saveDataInSF(
           Strings.USER_ID, responseData.data!.userId);
       if(registrationState.context.mounted){

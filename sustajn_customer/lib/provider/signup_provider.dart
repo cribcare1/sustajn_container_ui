@@ -285,7 +285,7 @@ final verifyOtpProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
           ResetPasswordScreen(),
         );
       } else {
-        NavUtil.navigateWithReplacement(
+        NavUtil.navigateToPushScreen(registrationState.context,
           HomeAddress(flow: AddressFlow.signup,),
         );
       }
