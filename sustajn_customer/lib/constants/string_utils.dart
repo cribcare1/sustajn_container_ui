@@ -229,6 +229,9 @@ class Strings {
   static const String TITLE_5 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
   static const String TITLE_6 = 'Friendly reminder\nPlease return the leased product by 03.01.2026. You can also extend the lease for 5 days for a fee of AED 3';
   static const String SUB_TITLE_= 'Round Bowl | Dip Cup | Rectangular Container';
+  static const String EXTEND_LEASE = 'Extend Lease Period';
+  static const String PRODUCTS = 'Products';
+  static const String PAY_AED = 'Confirm & Pay AED 9';
 
 
 

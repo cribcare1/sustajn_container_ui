@@ -1,5 +1,6 @@
 import '../constants/imports_util.dart';
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
 class NotificationDialog extends StatelessWidget {
   const NotificationDialog({super.key});
@@ -10,7 +11,7 @@ class NotificationDialog extends StatelessWidget {
 
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding:  EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_16, Constant.CONTAINER_SIZE_16,Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
         color: const Color(0xFF0F3B2E), // dark green
         borderRadius: BorderRadius.vertical(
@@ -28,7 +29,7 @@ class NotificationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Extend Lease Period',
+                  Strings.EXTEND_LEASE,
                   style: theme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontSize: Constant.CONTAINER_SIZE_20,
@@ -49,10 +50,10 @@ class NotificationDialog extends StatelessWidget {
             SizedBox(height: Constant.CONTAINER_SIZE_20),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                 border: Border.all(color: Colors.white24),
               ),
               child: Column(
@@ -71,7 +72,7 @@ class NotificationDialog extends StatelessWidget {
              SizedBox(height: Constant.CONTAINER_SIZE_24),
 
             Text(
-              'Products',
+              Strings.PRODUCTS,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -112,7 +113,7 @@ class NotificationDialog extends StatelessWidget {
                 ),
                 onPressed: () {},
                 child: Text(
-                  'Confirm & Pay AED 9',
+                  Strings.PAY_AED,
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w700,
@@ -139,7 +140,7 @@ class _DateRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: const TextStyle(color: Colors.white70, fontSize: 13)),
+            style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_13)),
         SizedBox(height: Constant.CONTAINER_SIZE_4),
         Text(value,
             style: TextStyle(
@@ -169,10 +170,10 @@ class _ProductTile extends StatelessWidget {
 @override
 Widget build(BuildContext context) {
   return Container(
-    padding: const EdgeInsets.all(12),
+    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
     decoration: BoxDecoration(
       color: Colors.white.withOpacity(0.08),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       border: Border.all(color: Colors.white24),
     ),
     child: Row(
@@ -182,7 +183,7 @@ Widget build(BuildContext context) {
           width: Constant.CONTAINER_SIZE_50,
           decoration: BoxDecoration(
             color: Colors.white24,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
           ),
           child: Image.asset(image, fit: BoxFit.contain),
         ),
