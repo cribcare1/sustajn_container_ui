@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
@@ -35,6 +36,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us", "icon": Icons.headset_mic},
   ];
 
   void _handleItemTap(int index, BuildContext context) {
@@ -54,6 +56,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       case 4:
         _showSubscriptionDialog(context);
         break;
+      case 5:
+        _showContactDialog(context);
+        break;
     }
   }
 
@@ -72,6 +77,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const SubscriptionPlanBottomSheet(),
+    );
+  }
+
+  void _showContactDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const ContactUsDialog(),
     );
   }
 
