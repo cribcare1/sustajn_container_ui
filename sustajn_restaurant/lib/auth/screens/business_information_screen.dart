@@ -6,6 +6,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
@@ -270,7 +271,7 @@ class _BusinessInformationDetailsState
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
                     SubmitClearButton(
                       onLeftTap: () {
-                        Utils.navigateToPushScreen(
+                        NavUtil.navigateToPushScreen(
                           context,
                           PaymentTypeScreen(),
                         );
@@ -293,7 +294,7 @@ class _BusinessInformationDetailsState
                           );
                           widget.authState.setRegistrationDetails(registerData);
                           widget.authState.setBusinessDetails(businessModel);
-                          Utils.navigateToPushScreen(
+                          NavUtil.navigateToPushScreen(
                             context,
                             PaymentTypeScreen(),
                           );

@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_product_list_screen.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../utils/global_utils.dart';
@@ -204,7 +205,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                         : () {
                       scannedId = textController.text;
                             if (widget.type.contains("LEASE")) {
-                              Utils.navigateToPushScreen(
+                              NavUtil.navigateToPushScreen(
                                 context,
                                 LeaseProductScanScreen(
                                   type: widget.type,
@@ -212,7 +213,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                 ),
                               );
                             } else if (widget.type.contains("RECEIVE")) {
-                              Utils.navigateToPushScreen(
+                              NavUtil.navigateToPushScreen(
                                 context,
                                 ReceiveProductListScreen(
                                   type: widget.type ?? "",

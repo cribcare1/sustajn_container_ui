@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
@@ -151,7 +152,7 @@ class Utils {
                   children: [
                     Expanded(
                       child: Text(
-                        "Choose",
+                        Strings.CHOOSE,
                         style: TextStyle(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.bold,
@@ -184,7 +185,7 @@ class Utils {
                     _optionButton(
                       context,
                       icon: Icons.camera_alt_outlined,
-                      label: "Camera",
+                      label: Strings.CAMERA,
                       color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () async {
@@ -201,7 +202,7 @@ class Utils {
                     _optionButton(
                       context,
                       icon: Icons.image_outlined,
-                      label: "Gallery",
+                      label: Strings.GALLERY,
                       color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () async {
@@ -326,7 +327,7 @@ class Utils {
                       onPressed: () {
                         Navigator.pop(context);
                         SharedPreferenceUtils.clearAll();
-                        Utils.navigateToPushReplaceScreen(context, LoginScreen());
+                        NavUtil.navigateToWithReplacement(context, LoginScreen());
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -578,19 +579,6 @@ class Utils {
         break;
     }
   }
-
-  static void navigateToPushScreen(BuildContext context, screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }static void navigateToPushReplaceScreen(BuildContext context, screen) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
-
   static multipartParams(var partUrl, var data, var requestKey, var image) {
     return {
       NetworkUrls.PART_URL: partUrl,

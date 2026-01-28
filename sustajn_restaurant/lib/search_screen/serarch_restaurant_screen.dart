@@ -353,11 +353,6 @@ class RestaurantTile extends StatelessWidget {
             ],
           ),
         ),
-
-        // Expanded(
-        //   flex: 1,
-        //   child: const Icon(Icons.chevron_right, color: Constant.white),
-        // ),
       ],
     );
   }

@@ -253,7 +253,7 @@ final verifyOtpProvider =
             color: Colors.green,
           );
           if (registrationState.isForgotPassword) {
-            Utils.navigateToPushScreen(
+            NavUtil.navigateToPushScreen(
               registrationState.context,
               ResetPasswordScreen(),
             );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../../lease_receive/screens/lease_scan_screen.dart';
+import '../../../utils/nav_utils.dart';
 import '../../../utils/utility.dart';
 import 'option_file.dart';
 
@@ -99,7 +100,7 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                           ? null
                           : () {
                           Navigator.pop(context);
-                          Utils.navigateToPushScreen(
+                          NavUtil.navigateToPushScreen(
                             context,
                             LeaseScanScreen(
                               type: selectedType ?? "",

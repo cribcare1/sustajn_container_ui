@@ -9,6 +9,7 @@ import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/string_utils.dart';
@@ -163,7 +164,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
           ],
         ),
         floatingActionButton: InkWell(onTap: (){
-          Utils.navigateToPushScreen(context, ReceiveScanScreen(type: widget.type,previous: "list",));
+          NavUtil.navigateToPushScreen(context, ReceiveScanScreen(type: widget.type,previous: "list",));
         },
         child: Container(
           decoration: BoxDecoration(

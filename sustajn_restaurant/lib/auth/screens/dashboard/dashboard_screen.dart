@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../common_widgets/card_widget.dart';
 import '../../../common_widgets/circle_card_widget.dart';
@@ -152,7 +153,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  Utils.navigateToPushScreen(
+                                  NavUtil.navigateToPushScreen(
                                     context,
                                     SearchRestaurantScreen(),
                                   );
@@ -170,7 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  Utils.navigateToPushScreen(
+                                  NavUtil.navigateToPushScreen(
                                     context,
                                     NotificationScreen(),
                                   );

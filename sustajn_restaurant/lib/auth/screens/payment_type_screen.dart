@@ -6,6 +6,7 @@ import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/number_constants.dart';
@@ -241,7 +242,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                       ibanNumber: ibanController.text,
                     );
                     authState.setBankDetails(bankData);
-                    Utils.navigateToPushScreen(context, SubscriptionScreen());
+                    NavUtil.navigateToPushScreen(context, SubscriptionScreen());
                   },
                   rightText: "Verify and Continue",
                 ),

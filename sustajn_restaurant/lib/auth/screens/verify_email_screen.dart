@@ -184,7 +184,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                       if (_otpController.text.isEmpty) {
                                         showCustomSnackBar(
                                           context: context,
-                                          message: "Please enter your OTP",
+                                          message: Strings.ENTER_OTP,
                                           color: Colors.black,
                                         );
                                         return;
@@ -194,7 +194,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                         showCustomSnackBar(
                                           context: context,
                                           message:
-                                              "Please enter a valid 6-digit OTP",
+                                              Strings.VALID_OTP,
                                           color: Colors.black,
                                         );
                                         return;
@@ -226,7 +226,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                           if (signUpState.seconds > 0) ...[
                             Center(
                               child: Text(
-                                "Resend code in ${formatTime(signUpState.seconds)}",
+                                "${Strings.RESEND_IN}${formatTime(signUpState.seconds)}",
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontSize: Constant.LABEL_TEXT_SIZE_15,
                                   color: Colors.white,
@@ -407,14 +407,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             );
           }
         } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
           registrationState.setResendLoading(false);
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setResendLoading(false);
     }
   }

@@ -231,4 +231,7 @@ static const String PAY_PER_USE = 'Pay-Per-Use';
   static const String VAT_NUMBER = "VAT Number";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
+  static const String ENTER_OTP = "Please enter your OTP";
+  static const String VALID_OTP = "Please enter a valid 6-digit OTP";
+  static const String RESEND_IN = "Resend code in ";
 }
