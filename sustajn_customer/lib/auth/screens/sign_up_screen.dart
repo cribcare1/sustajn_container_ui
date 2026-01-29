@@ -160,23 +160,23 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         },
                       ),
 
-                      _buildTextField(
-                        context,
-                        controller: birthCtrl,
-                        hint: Strings.DATE_OF_BIRTH,
-                        validator: (v) {
-                          if (v!.isEmpty) return "Date of Birth required";
-                          if (!RegExp(
-                            r'^(0[1-9]|[12][0-9]|3[01])/'
-                            r'(0[1-9]|1[0-2])/'
-                            r'(19|20)\d{2}$',
-                          ).hasMatch(v)) {
-                            return 'Enter DOB in DD/MM/YYYY format';
-                          }
-
-                          return null;
-                        },
-                      ),
+                      // _buildTextField(
+                      //   context,
+                      //   controller: birthCtrl,
+                      //   hint: Strings.DATE_OF_BIRTH,
+                      //   validator: (v) {
+                      //     if (v!.isEmpty) return "Date of Birth required";
+                      //     if (!RegExp(
+                      //       r'^(0[1-9]|[12][0-9]|3[01])/'
+                      //       r'(0[1-9]|1[0-2])/'
+                      //       r'(19|20)\d{2}$',
+                      //     ).hasMatch(v)) {
+                      //       return 'Enter DOB in DD/MM/YYYY format';
+                      //     }
+                      //
+                      //     return null;
+                      //   },
+                      // ),
 
                       _buildTextField(
                         context,

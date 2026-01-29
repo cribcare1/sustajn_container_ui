@@ -203,4 +203,5 @@ class Strings {
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
   static const String SKIP = 'Skip';
+  static const String EXISTING_USER = 'Existing User';
 }
