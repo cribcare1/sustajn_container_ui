@@ -1,12 +1,11 @@
 import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sustajn_customer/auth/screens/plandetails_screen.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
-import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -31,12 +30,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final _formKey = GlobalKey<FormState>();
 
   final restaurantCtrl = TextEditingController();
-  final birthCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
   final mobileCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final confirmPasswordCtrl = TextEditingController();
   final addressCtrl = TextEditingController();
+  final dobCtrl = TextEditingController();
+  DateTime? selectedDob;
+
 
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
@@ -54,7 +55,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
     super.initState();
 
     restaurantCtrl.addListener(() => setState(() {}));
-    birthCtrl.addListener(() => setState(() {}));
     emailCtrl.addListener(() => setState(() {}));
     mobileCtrl.addListener(() => setState(() {}));
     passwordCtrl.addListener(() => setState(() {}));
@@ -67,12 +67,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
     routeObserver.unsubscribe(this);
 
     restaurantCtrl.dispose();
-    birthCtrl.dispose();
     emailCtrl.dispose();
     mobileCtrl.dispose();
     passwordCtrl.dispose();
     confirmPasswordCtrl.dispose();
     addressCtrl.dispose();
+    dobCtrl.dispose();
     super.dispose();
   }
 
@@ -152,44 +152,47 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         controller: restaurantCtrl,
                         hint: Strings.FULL_NAME,
                         validator: (v) {
-                          if (v!.isEmpty) return "Restaurant name required";
-                          if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(v)) {
-                            return "No special characters allowed";
+                          if (v!.isEmpty) return Strings.RESTAURANT;
+                          if (Strings.alphaNumericWithSpace.hasMatch(v)) {
+                            return Strings.SPECIAL_CHAR;
                           }
+
                           return null;
                         },
                       ),
 
-                      // _buildTextField(
-                      //   context,
-                      //   controller: birthCtrl,
-                      //   hint: Strings.DATE_OF_BIRTH,
-                      //   validator: (v) {
-                      //     if (v!.isEmpty) return "Date of Birth required";
-                      //     if (!RegExp(
-                      //       r'^(0[1-9]|[12][0-9]|3[01])/'
-                      //       r'(0[1-9]|1[0-2])/'
-                      //       r'(19|20)\d{2}$',
-                      //     ).hasMatch(v)) {
-                      //       return 'Enter DOB in DD/MM/YYYY format';
-                      //     }
-                      //
-                      //     return null;
-                      //   },
-                      // ),
+                    _buildTextField(
+                      context,
+                      controller: dobCtrl,
+                      hint: Strings.DOB,
+                      readOnly: true,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return "Date of birth required";
+                        return null;
+                      },
+                      suffixIcon: Icons.calendar_month,
+                      onSuffixTap: () async {
+                        final picked = await Utils.pickDob(context, initialDate: selectedDob);
 
-                      _buildTextField(
+                        if (picked != null) {
+                          setState(() {
+                            selectedDob = picked;
+                            dobCtrl.text = Utils.formatDob(picked);
+                          });
+                        }
+                      },
+                    ),
+                    _buildTextField(
                         context,
                         controller: emailCtrl,
                         hint: Strings.EMAIL_ID,
                         keyboard: TextInputType.emailAddress,
                         validator: (v) {
-                          if (v!.isEmpty) return "Email required";
-                          if (!RegExp(
-                              r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
-                              .hasMatch(v)) {
-                            return "Enter valid email";
+                          if (v!.isEmpty) return Strings.EMAIL_REQ;
+                          if (!Strings.email.hasMatch(v)) {
+                            return Strings.VALID_EMAIL;
                           }
+
                           return null;
                         },
                       ),
@@ -204,8 +207,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           LengthLimitingTextInputFormatter(10),
                         ],
                         validator: (v) {
-                          if (v!.isEmpty) return "Mobile number required";
-                          if (v.length != 10) return "Enter valid 10-digit mobile number";
+                          if (v!.isEmpty) return Strings.MOBILE;
+                          if (v.length != 10) return Strings.VALID_MOB;
                           return null;
                         },
                       ),
@@ -219,10 +222,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           setState(() => passwordVisible = !passwordVisible);
                         },
                         validator: (v) {
-                          if (v!.isEmpty) return "Password required";
-                          if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$').hasMatch(v)) {
-                            return "Password must be 8+ chars with letters, numbers & special char";
+                          if (v!.isEmpty) return Strings.REQUIRED;
+                          if (!Strings.password.hasMatch(v)) {
+                            return Strings.PASSWORD_MATCH;
                           }
+
                           return null;
                         },
                       ),
@@ -237,8 +241,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           confirmPasswordVisible = !confirmPasswordVisible);
                         },
                         validator: (v) {
-                          if (v!.isEmpty) return "Confirm password required";
-                          if (v != passwordCtrl.text) return "Passwords do not match";
+                          if (v!.isEmpty) return Strings.CONFIRM;
+                          if (v != passwordCtrl.text) return Strings.NOT_MATCH;
                           return null;
                         },
                       ),
@@ -257,19 +261,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
 
-                              final registrationData = RegistrationData(
-                                fullName: restaurantCtrl.text,
-                                dateOfBirth: birthCtrl.text,
-                                email: emailCtrl.text,
-                                phoneNumber: mobileCtrl.text,
-                                password: passwordCtrl.text,
-                                profileImage: selectedImage,
-
-                                flatDoorHouseDetails: "",
-                                areaStreetCityBlockDetails: addressCtrl.text,
-                                poBoxOrPostalCode: postalCode,
-                                addressType: "HOME",
-                                addressStatus: "ACTIVE",
+                            final registrationData = RegistrationData(
+                              fullName: restaurantCtrl.text,
+                              email: emailCtrl.text,
+                              phoneNumber: mobileCtrl.text,
+                              password: passwordCtrl.text,
+                              profileImage: selectedImage,
+                              dateOfBirth: selectedDob == null
+                                  ? null
+                                  : Utils.formatDob(selectedDob!),
+                              flatDoorHouseDetails: "",
+                              areaStreetCityBlockDetails: addressCtrl.text,
+                              poBoxOrPostalCode: postalCode,
+                              addressType: Strings.HOME,
+                              addressStatus: Strings.ACTIVE,
 
                                 latitude: lat,
                                 longitude: long,
@@ -291,7 +296,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                       Center(
                         child: RichText(
                           text: TextSpan(
-                            text: Strings.EXISTING_USER,
+                            text: Strings.ALREADY_HAVE_ACC,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -305,14 +310,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                                     decorationColor: Constant.gold
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = (plan) {
-                                  NavUtil.navigateToPushScreen(context,
-                                      PlandetailsScreen(
-                                        plan: plan.first,
-                                      )
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginScreen()),
                                     );
-                                  } as GestureTapCallback?,
-                              ),
+                                  },
+                              )
                             ],
                           ),
                         ),
@@ -334,10 +339,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
         required TextEditingController controller,
         required String hint,
         String? Function(String?)? validator,
-        bool obscure = false,
         TextInputType keyboard = TextInputType.text,
-        bool? readOnly = false,
+        bool readOnly = false,
         List<TextInputFormatter>? inputFormatters,
+
+        IconData? suffixIcon,
+        VoidCallback? onSuffixTap,
       }) {
     final theme = Theme.of(context);
 
@@ -346,25 +353,30 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
-        style: TextStyle(color: Colors.white70),
+        readOnly: readOnly,
+        style: const TextStyle(color: Colors.white70),
         cursorColor: Colors.white70,
         validator: validator,
         inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.white70),
+          hintStyle: const TextStyle(color: Colors.white70),
           filled: true,
           fillColor: theme.primaryColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey),
-          ),
           enabledBorder: CustomTheme.roundedBorder(Constant.grey),
           focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+
+          suffixIcon: suffixIcon == null
+              ? null
+              : IconButton(
+            icon: Icon(suffixIcon, color: Colors.white70),
+            onPressed: onSuffixTap,
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildPasswordField(
       BuildContext context, {

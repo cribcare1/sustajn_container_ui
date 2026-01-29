@@ -11,6 +11,7 @@ import 'package:sustajn_customer/utils/shared_preference_utils.dart';
 import 'package:sustajn_customer/utils/theme_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../auth/screens/save_home_address.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
@@ -151,16 +152,19 @@ class Utils {
 
     return '${localPart.substring(0, 4)}$masked@$domainPart';
   }
-  static Future<bool> displayDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String stayButtonText,
-      ) async {
+  static Future<void> displayDialog({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
     final theme = Theme.of(context);
 
-    return await showDialog<bool>(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
@@ -179,9 +183,10 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                   border: Border.all(
-                    color: Constant.grey.withOpacity(0.1)
+                    color: Constant.grey.withOpacity(0.1),
                   ),
                   color: Constant.white.withOpacity(0.1),
                   shape: BoxShape.rectangle,
@@ -193,16 +198,17 @@ class Utils {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.white
-              )),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: Colors.white),
+              ),
               SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white
-                ),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
 
@@ -211,9 +217,7 @@ class Utils {
                   // GO BACK
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
+                      onPressed: onCancel,
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC8B531)),
                         shape: RoundedRectangleBorder(
@@ -223,7 +227,7 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        "Go back",
+                        cancelButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -236,9 +240,7 @@ class Utils {
                   // STAY
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
+                      onPressed: onYes,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,
                         shape: RoundedRectangleBorder(
@@ -248,7 +250,7 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        stayButtonText,
+                        yesButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: theme.primaryColor,
                         ),
@@ -261,8 +263,116 @@ class Utils {
           ),
         ),
       ),
-    ) ?? false;
+    );
   }
+
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 
   static  logOutDialog(
       BuildContext context,
@@ -420,6 +530,70 @@ class Utils {
         ),
       ),
     );
+  }
+
+  static Future<DateTime?> pickDob(BuildContext context,
+      {DateTime? initialDate}) async {
+
+    final theme = Theme.of(context);
+    final now = DateTime.now();
+
+    final firstDate = DateTime(now.year - 100);
+    final lastDate = DateTime(now.year - 13);
+
+    return await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? lastDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+
+      helpText: "Select Date of Birth",
+      cancelText: "Cancel",
+      confirmText: "Select",
+
+      builder: (context, child) {
+        return Theme(
+          data: theme.copyWith(
+            useMaterial3: true,
+
+            colorScheme: theme.colorScheme.copyWith(
+              primary: Constant.gold,
+              onPrimary: Colors.black,
+              surface: theme.scaffoldBackgroundColor,
+              onSurface: Colors.white,
+              secondary: Constant.gold,
+            ),
+
+            datePickerTheme: DatePickerThemeData(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              headerBackgroundColor: Constant.gold,
+              headerForegroundColor: Colors.black,
+              dayForegroundColor: MaterialStateProperty.all(Colors.white),
+              yearForegroundColor: MaterialStateProperty.all(Colors.white),
+              weekdayStyle: const TextStyle(color: Colors.white70),
+              dayStyle: const TextStyle(color: Colors.white),
+              yearStyle: const TextStyle(color: Colors.white),
+              todayForegroundColor: MaterialStateProperty.all(Constant.gold),
+              todayBackgroundColor:
+              MaterialStateProperty.all(Colors.transparent),
+              dayOverlayColor:
+              MaterialStateProperty.all(Constant.gold.withOpacity(0.2)),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+  }
+
+
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
   }
 
   static showToast(String msg) {
@@ -613,6 +787,21 @@ class Utils {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
+  }
+
+  static String getAppBarTitle({
+    required AddressFlow flow,
+    required dynamic existingAddress,
+  }) {
+    if (flow == AddressFlow.signup) {
+      return Strings.SELECT_HOME_ADDRESS_TITLE;
+    }
+
+    if (existingAddress != null) {
+      return Strings.EDIT_ADDRESS_TITLE;
+    }
+
+    return Strings.ADD_ADDRESS_TITLE;
   }
 
 

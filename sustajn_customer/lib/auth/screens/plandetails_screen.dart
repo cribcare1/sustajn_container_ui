@@ -5,6 +5,7 @@ import 'package:sustajn_customer/utils/nav_utils.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../models/subscriptionplan_data.dart';
 
 class PlandetailsScreen extends StatelessWidget {
@@ -55,7 +56,7 @@ class PlandetailsScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "Proceed to Terms & Conditions",
+                     Strings.PROCEED_TERMS,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,

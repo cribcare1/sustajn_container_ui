@@ -8,13 +8,12 @@ import '../utils/utility.dart';
 
 final searchResProvider = ChangeNotifierProvider<SearchRestaurantState>((res) => SearchRestaurantState());
 
-final searchRes =
+final searchRestaurant =
 FutureProvider.family<List<SearchData>, Map<String, dynamic>>(
         (ref, body) async {
       final provider = ref.read(searchResProvider);
       final service = ref.read(searchRestaurantService);
       try {
-        // provider.setLoading(true);
         final response = await service.searchRestaurant(body);
         provider.setRestaurant(response!);
         return response;

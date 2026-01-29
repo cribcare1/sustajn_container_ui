@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../utils/theme_utils.dart';
 
 class CustomAppBar {
-  final String title;
+   String? title;
   final List<Widget>? action;
   final PreferredSize? bottom;
   bool? centerTitle;
   final Widget leading;
 
   CustomAppBar({
-    required this.title,
+    this.title,
     this.action,
     this.bottom,
     this.centerTitle = false,
@@ -25,7 +25,7 @@ class CustomAppBar {
       centerTitle: true,
       elevation: 0,
       title: Text(
-        title,
+        title??"",
         style: Theme.of(
           context,
         ).textTheme.titleMedium!.copyWith(color: Colors.white),

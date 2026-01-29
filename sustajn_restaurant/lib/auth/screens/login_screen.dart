@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/sign_up_screen.dart';
+import 'package:sustajn_restaurant/constants/assets_utils.dart';
 
 import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
@@ -52,6 +53,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Center(
+                  child: Image.asset(
+                    AppAssets.sustajnAppLogo,
+                    height: height * 0.17,
+                    fit: BoxFit.contain,
+                  ),
+                ),
                 Text(
                   Strings.WELCOME,
                   style: themeData?.textTheme.titleLarge!.copyWith(

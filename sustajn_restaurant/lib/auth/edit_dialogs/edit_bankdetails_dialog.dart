@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
-import '../../constants/number_constants.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
 
-class EditBankDetailsDialog extends StatefulWidget {
-  const EditBankDetailsDialog({Key? key}) : super(key: key);
+import '../../constants/number_constants.dart';
+import '../../provider/profile_provider.dart';
+
+class EditBankDetailsDialog extends ConsumerStatefulWidget {
+  const EditBankDetailsDialog({super.key});
 
   @override
-  State<EditBankDetailsDialog> createState() =>
+  ConsumerState<EditBankDetailsDialog> createState() =>
       _EditBankDetailsDialogState();
 }
 
-class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
+class _EditBankDetailsDialogState extends ConsumerState<EditBankDetailsDialog> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _bankNameController;
   late TextEditingController _accountNumberController;
   late TextEditingController _taxNumberController;
 
-
-
   @override
   void initState() {
     super.initState();
-
-    _bankNameController = TextEditingController(text: 'HDFC Bank');
-    _accountNumberController = TextEditingController(text: '123456789012');
-    _taxNumberController = TextEditingController(text: 'ABCDE1234F');
+    _bankNameController = TextEditingController();
+    _accountNumberController = TextEditingController();
+    _taxNumberController = TextEditingController();
+    _getData();
   }
-
 
   @override
   void dispose() {
@@ -34,7 +36,6 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
     _taxNumberController.dispose();
     super.dispose();
   }
-
 
   String? _validateBankName(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -63,12 +64,21 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
     return null;
   }
 
-
+  _getData() {
+    final profileState = ref.read(profileProvider);
+    final profile = profileState.getProfileData?.data;
+    if (profile!.bankDetailsResponse != null) {
+      final bank = profile.bankDetailsResponse;
+      _bankNameController.text = bank!.bankName ?? "";
+      _accountNumberController.text = bank.accountNumber ?? "";
+      _taxNumberController.text = bank.taxNumber ?? "";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final profileState = ref.watch(profileProvider);
     return SafeArea(
       top: false,
       child: Padding(
@@ -89,7 +99,6 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
                     Expanded(
@@ -98,14 +107,15 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                     ),
                     InkWell(
                       onTap: () => Navigator.pop(context),
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_20,
+                      ),
                       child: Icon(
                         Icons.close,
                         size: Constant.CONTAINER_SIZE_20,
@@ -116,8 +126,6 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-
 
                 _buildTextField(
                   context,
@@ -146,34 +154,14 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
                   _taxNumberController,
                   _validateTaxNumber,
                 ),
-
-
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
-
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                      }
+                  child: SubmitButton(
+                    onRightTap: () {
+                      if (_formKey.currentState!.validate()) {}
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
-                    child: Text(
-                      'Save Changes',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    rightText: Strings.SAVE_CHANGES,
                   ),
                 ),
               ],
@@ -185,12 +173,12 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
   }
 
   Widget _buildTextField(
-      BuildContext context,
-      String label,
-      TextInputType keyboard,
-      TextEditingController controller,
-      String? Function(String?) validator,
-      ) {
+    BuildContext context,
+    String label,
+    TextInputType keyboard,
+    TextEditingController controller,
+    String? Function(String?) validator,
+  ) {
     final theme = Theme.of(context);
 
     return TextFormField(
@@ -198,9 +186,7 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
       validator: validator,
       keyboardType: keyboard,
       textInputAction: TextInputAction.next,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        color: Colors.white70
-      ),
+      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
       cursorColor: Colors.white70,
       decoration: InputDecoration(
         labelText: label,
@@ -211,8 +197,8 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
           vertical: Constant.CONTAINER_SIZE_14,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16,),
-          borderSide: BorderSide(color: Constant.grey)
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          borderSide: BorderSide(color: Constant.grey),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -229,5 +215,4 @@ class _EditBankDetailsDialogState extends State<EditBankDetailsDialog> {
       ),
     );
   }
-
 }

@@ -41,9 +41,9 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
 
     if (plan == null) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_20),
         child: Text(
-          "No subscription plans available",
+         Strings.NO_SUBSCRIPTION_TEXT,
           style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
         ),
       );
@@ -147,15 +147,27 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   }
 
   Widget _priceSection(ThemeData theme,SubscriptionResponse plan, ) {
-    return Text(
-      "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
-      style: theme.textTheme.headlineMedium?.copyWith(
-        color: Constant.gold,
-        fontWeight: FontWeight.w600,
-      ),
-    );
+    return
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/diarhm.png',
+            height: Constant.CONTAINER_SIZE_20,
+            color: Constant.gold,
+            colorBlendMode: BlendMode.srcIn,
+          ),
+          Text(
+            plan.feeType?.toStringAsFixed(2) ?? "0.00",
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: Constant.gold,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      );
   }
-
   Widget _featureList(ThemeData theme,SubscriptionResponse plan) {
     return Column(
       children: [
@@ -204,7 +216,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
         ),
       ),
       child: Text(
-        'Learn More',
+        Strings.LEARN_MORE,
         style: theme.textTheme.labelLarge?.copyWith(
           color: Constant.gold,
         ),
@@ -219,7 +231,6 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
         onPressed: state.isLoading
             ? null
             : () {
-          Utils.printLog("send button click");
           _getNetworkData();
         },
         style: ElevatedButton.styleFrom(
@@ -241,7 +252,7 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
           ),
         )
             : Text(
-          'Upgrade',
+          Strings.UPGRADE,
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.primaryColor,
           ),
@@ -263,7 +274,6 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
             registrationState.setIsLoading(true);
             registrationState.setContext(context);
 
-            // registrationState.setEmail(_emailController.text);
             ref.read(feedbackProvider({
               "userId": widget.userID,
               // "restaurantId": "2",

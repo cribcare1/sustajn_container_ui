@@ -412,22 +412,34 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         if (widget.flow == PaymentFlow.signup)
           Expanded(
             child: OutlinedButton(
-              onPressed: signupState.isLoading
-                  ? null
-                  : () {
-                ref.read(signUpNotifier).resetBankValidation();
-                _clearBankControllers();
+              onPressed:
+                  () {
+                    Utils.skipDialog(
+                          context: context,
+                      icon: Icons.warning_amber,
+                      subTitle: Strings.SKIP_PAYMENT,
+                      cancelButtonText: Strings.CANCEL,
+                      yesButtonText: Strings.SKIP_CONTINUE,
+                      onCancel: (){
+                            Navigator.pop(context);
+                      },
+                      onYes: () {
+                        Navigator.pop(context);
 
-                NavUtil.navigateWithReplacement(
-                  SubscriptionScreen(),
-                );
+                        ref.read(signUpNotifier).resetBankValidation();
+                        _clearBankControllers();
+
+                        NavUtil.navigateWithReplacement(SubscriptionScreen());
+                      },
+
+                    );
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
                   color: Constant.gold,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12), // optional
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                 ),
               ),
               child: Text(Strings.SKIP,
@@ -452,9 +464,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               } else {
                 await _getNetworkDataVerify(signupState);
               }
-
-            },
-
+              },
             style: ElevatedButton.styleFrom(
               backgroundColor: Constant.gold,
               shape: RoundedRectangleBorder(

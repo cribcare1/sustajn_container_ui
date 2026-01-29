@@ -116,6 +116,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     }
   }
 
+
+
+
   @override
   void dispose() {
     _searchDebounce?.cancel();
@@ -131,123 +134,130 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     final state = ref.watch(locationProvider);
     final theme = Theme.of(context);
     final addressState = ref.watch(searchResProvider);
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Stack(
+          children:[
+            Scaffold(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            appBar: CustomAppBar(
+              title:  Utils.getAppBarTitle(
+                flow: widget.flow,
+                existingAddress: widget.existingAddress,
+              ),
+              leading: CustomBackButton(),
+            ).getAppBar(context),
 
-
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: Stack(
-        children:[
-          Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          appBar: CustomAppBar(
-            title: "Select Home Address",
-            leading: CustomBackButton(),
-          ).getAppBar(context),
-
-          body: state.loading || state.position == null
-              ? const Center(
-            child: CircularProgressIndicator(color: Constant.gold),
-          )
-              : Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  controller: searchController,
-                  cursorColor: Colors.white,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                      hintText: "Search address / pincode / area",
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      filled: true,
-                      fillColor: const Color(0xff1b4d3a),
-                      prefixIcon:
-                      const Icon(Icons.search, color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                      ),
-                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                      focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+            body:
+            state.loading || state.position == null
+                ? const Center(
+              child: CircularProgressIndicator(color: Constant.gold),
+            )
+                : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    controller: searchController,
+                    cursorColor: Colors.white,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        hintText: Strings.SEARCH_ADDRESS,
+                        hintStyle: const TextStyle(color: Colors.white70),
+                        filled: true,
+                        fillColor: const Color(0xff1b4d3a),
+                        prefixIcon:
+                        const Icon(Icons.search, color: Colors.white),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                        ),
+                        enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                        focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                    ),
+                    onChanged: _onSearchChanged,
                   ),
-                  onChanged: _onSearchChanged,
                 ),
-              ),
 
-              Expanded(
-                child: Stack(
-                  children: [
-                    GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: state.position!,
-                        zoom: 17,
+                Expanded(
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: state.position!,
+                          zoom: 17,
+                        ),
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
+                        onMapCreated: (controller) {
+                          _mapController.complete(controller);
+                        },
+                        onCameraIdle: () async {
+                          if (_isSearching) return;
+
+                          final controller = await _mapController.future;
+                          final bounds = await controller.getVisibleRegion();
+
+                          final center = LatLng(
+                            (bounds.northeast.latitude +
+                                bounds.southwest.latitude) / 2,
+                            (bounds.northeast.longitude +
+                                bounds.southwest.longitude) / 2,
+                          );
+
+                          ref.read(locationProvider.notifier).updatePosition(center);
+                        },
+
                       ),
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: false,
-                      zoomControlsEnabled: false,
-                      onMapCreated: (controller) {
-                        _mapController.complete(controller);
-                      },
-                      onCameraIdle: () async {
-                        if (_isSearching) return;
 
-                        final controller = await _mapController.future;
-                        final bounds = await controller.getVisibleRegion();
-
-                        final center = LatLng(
-                          (bounds.northeast.latitude +
-                              bounds.southwest.latitude) / 2,
-                          (bounds.northeast.longitude +
-                              bounds.southwest.longitude) / 2,
-                        );
-
-                        ref.read(locationProvider.notifier).updatePosition(center);
-                      },
-
-                    ),
-
-                    const Center(
-                      child: Icon(
-                        Icons.location_pin,
-                        size: 44,
-                        color: Colors.red,
+                      const Center(
+                        child: Icon(
+                          Icons.location_pin,
+                          size: 44,
+                          color: Colors.red,
+                        ),
                       ),
-                    ),
 
-                    DraggableScrollableSheet(
-                      initialChildSize: 0.45,
-                      minChildSize: 0.35,
-                      maxChildSize: 0.75,
-                      builder: (context, scrollController) {
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                            color: Color(0xff0f3d2e),
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                      DraggableScrollableSheet(
+                        initialChildSize: 0.45,
+                        minChildSize: 0.35,
+                        maxChildSize: 0.75,
+                        builder: (context, scrollController) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: const BoxDecoration(
+                              color: Color(0xff0f3d2e),
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
-                          ),
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: _bottomContent(state, context),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                            child: SingleChildScrollView(
+                              controller: scrollController,
+                              child: _bottomContent(state, context),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+
+
           ),
-
-
+            if(addressState.isLoading)
+              Utils.showProgressBar()
+        ]
         ),
-          if(addressState.isLoading)
-            Utils.showProgressBar()
-      ]
       ),
     );
   }
+
+
 
   Widget _bottomContent(LocationState state, BuildContext context) {
     return Column(
@@ -263,7 +273,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             ),
             child: const Center(
               child: Text(
-                "Use Current Location",
+               Strings.USE_CURRENT_LOCATION,
                 style: TextStyle(
                   color: Constant.gold,
                   fontWeight: FontWeight.w600,
@@ -299,24 +309,24 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
         Row(
           children: [
-            _saveAsChip("Home", Icons.home_outlined, 0),
+            _saveAsChip(Strings.HOME_TXT, Icons.home_outlined, 0),
             const SizedBox(width: 8),
-            _saveAsChip("Work", Icons.work_outline, 1),
+            _saveAsChip(Strings.WORK_TXT, Icons.work_outline, 1),
             const SizedBox(width: 8),
-            _saveAsChip("Other", Icons.location_on_outlined, 2),
+            _saveAsChip(Strings.OTHER_TXT, Icons.location_on_outlined, 2),
           ],
         ),
 
         if (selectedSaveAs == 2) ...[
           const SizedBox(height: 12),
-          _inputField("Save as", saveAsController),
+          _inputField(Strings.SAVE_AS, saveAsController),
         ],
 
         const SizedBox(height: 12),
-        _inputField("Flat / Door / House", flatController),
+        _inputField(Strings.FLAT_FLOOR_TXT, flatController),
         const SizedBox(height: 12),
         _inputField(
-          "Street / Block / City / Postal Code",
+          Strings.STREET_BLOCK_TXT,
           streetController,
           isLarge: true,
         ),
@@ -336,9 +346,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             ),
             onPressed: () {
               final String addressType = selectedSaveAs == 0
-                  ? "HOME"
+                  ? Strings.HOME
                   : selectedSaveAs == 1
-                  ? "WORK"
+                  ? Strings.WORK
                   : saveAsController.text.trim();
 
               final String flatDetails = flatController.text.trim();
@@ -389,7 +399,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
             child: Text(
-              "Confirm & Continue",
+              Strings.CONFIRM_CONTINUE,
               style: TextStyle(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 fontWeight: FontWeight.w600,
@@ -442,6 +452,144 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         ),
       ),
     );
+  }
+
+  Future<bool> _onBackPressed() async {
+
+    if (widget.flow == AddressFlow.profile) {
+      return true;
+    }
+    final result = await displayDialog(
+      context,
+      Icons.warning_amber,
+      Strings.GO_BACK,
+      Strings.VERIFIED_EMAIL,
+      Strings.STAY_ON_THIS_PAGE,
+    );
+
+    if (result) {
+      Navigator.pop(context);
+    }
+
+    return false;
+  }
+
+  Future<bool> displayDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    Constant.CONTAINER_SIZE_12,
+                  ),
+                  border: Border.all(color: Constant.grey.withOpacity(0.1)),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  // GO BACK
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        "Go back",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        maxLines: 1,
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ??
+        false;
   }
 
 
