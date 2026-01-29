@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
@@ -122,6 +126,108 @@ class Utils {
       },
     );
   }
+
+  static Future<File?> uploadImage(BuildContext context) async {
+    final theme = CustomTheme.getTheme(true);
+    final ImagePicker picker = ImagePicker();
+
+    return await showModalBottomSheet<File?>(
+      context: context,
+      isScrollControlled: false,
+      backgroundColor: theme!.scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: Constant.CONTAINER_SIZE_20,
+              horizontal: Constant.CONTAINER_SIZE_20,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        Strings.CHOOSE,
+                        style: TextStyle(
+                          fontSize: Constant.LABEL_TEXT_SIZE_18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      child: Container(
+                        height: Constant.CONTAINER_SIZE_36,
+                        width: Constant.CONTAINER_SIZE_36,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _optionButton(
+                      context,
+                      icon: Icons.camera_alt_outlined,
+                      label: Strings.CAMERA,
+                      color: Colors.white70,
+                      iconColor: theme.primaryColor,
+                      onTap: () async {
+                        final XFile? image =
+                        await picker.pickImage(source: ImageSource.camera);
+
+                        if (image != null) {
+                          Navigator.pop(context, File(image.path));
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    _optionButton(
+                      context,
+                      icon: Icons.image_outlined,
+                      label: Strings.GALLERY,
+                      color: Colors.white70,
+                      iconColor: theme.primaryColor,
+                      onTap: () async {
+                        final XFile? image =
+                        await picker.pickImage(source: ImageSource.gallery);
+
+                        if (image != null) {
+                          Navigator.pop(context, File(image.path));
+                        } else {
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   static String maskEmail(String email) {
     if (email.isEmpty || !email.contains('@')) {
       return email;
@@ -220,12 +326,9 @@ class Utils {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-
-                        navigateToPushScreen(context, LoginScreen());
-
                         Navigator.pop(context);
                         SharedPreferenceUtils.clearAll();
-                        Utils.navigateToPushReplaceScreen(context, LoginScreen());
+                        NavUtil.navigateToWithReplacement(context, LoginScreen());
 
                       },
                       style: ElevatedButton.styleFrom(
@@ -477,19 +580,6 @@ class Utils {
         break;
     }
   }
-
-  static void navigateToPushScreen(BuildContext context, screen) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }static void navigateToPushReplaceScreen(BuildContext context, screen) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    );
-  }
-
   static multipartParams(var partUrl, var data, var requestKey, var image) {
     return {
       NetworkUrls.PART_URL: partUrl,
@@ -526,6 +616,16 @@ class Utils {
     printLog("DEVICE TOKEN NOT FOUND");
 
     return null;
+  }
+
+  static Future<void> sendEmail(String email) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
 
 }

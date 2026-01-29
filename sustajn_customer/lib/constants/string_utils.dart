@@ -41,6 +41,7 @@ class Strings {
 
   static const String RESTURANT_TITLE = 'Resturants';
   static const String SEARCH_RESTURANTS = 'Search by Resturant Name';
+  static const String SEARCH_RESTURANT_TITLE = 'Search Resturant';
   static const String APPROVED_STATUS = 'Approved';
   static const String PENDING_STATUS = 'Pending';
   static const String REJECTED_STATUS = 'Rejected';
@@ -181,7 +182,7 @@ class Strings {
   static const String CONTINUE = 'Continue';
   static const String GO_BACK = 'Are you sure you want to go back ?';
   static const String VERIFIED_EMAIL =
-      'You have already verified your email. Going back may interrupt account the account setup process';
+      'You have already verified your email. Going back may interrupt the account setup process';
   static const String STAY_ON_THIS_PAGE = 'Stay on this page';
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
   static const String SURE_LOG_OUT = 'Are you sure you want to log out?';
@@ -211,6 +212,20 @@ class Strings {
   static const String DELETE_MESSAGE = 'Your bank information will be securely deleted from our sysytem';
   static const String REMOVE = 'Remove';
   static const String SKIP = 'Skip';
+  static const String SELECT_HOME_ADDRESS_TITLE = 'Select Home Address';
+  static const String ADD_ADDRESS_TITLE = 'Add Address';
+  static const String EDIT_ADDRESS_TITLE = 'Edit Address';
+  static const String CONTACT_NUMBER = 'Contact Number';
+  static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
+  static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
+  static const String PRIMARY_NUMBER = 'Primary Number';
+  static const String ADD_SECONDARY_NUMBER = 'Add Secondary Number';
+  static const String SECONDARY_NUMBER = 'Secondary Number';
+  static const String ADD_TEXT = 'Add';
+  static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
+  static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
+  static const String DOB= 'Date of birth';
+
   static const String PROCEED_TERMS = 'Proceed to Terms & Conditions';
   static const String VALID_EMAIL = 'Enter valid email';
   static const String SPECIAL_CHAR = 'No special characters allowed';
@@ -229,9 +244,30 @@ class Strings {
   static const String TITLE_5 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
   static const String TITLE_6 = 'Friendly reminder\nPlease return the leased product by 03.01.2026. You can also extend the lease for 5 days for a fee of AED 3';
   static const String SUB_TITLE_= 'Round Bowl | Dip Cup | Rectangular Container';
-
-
-
+  static const String EXTEND_LEASE = 'Extend Lease Period';
+  static const String PRODUCTS = 'Products';
+  static const String PAY_AED = 'Confirm & Pay AED 9';
+  static const String SEARCH_ADDRESS = "Search address / pincode / area";
+  static const String USE_CURRENT_LOCATION = "Use Current Location";
+  static const String HOME_TXT = "Home";
+  static const String WORK_TXT = 'Work';
+  static const String OTHER_TXT = 'Other';
+  static const String SAVE_AS = 'Save as';
+  static const String FLAT_FLOOR_TXT = 'Flat / Door / House';
+  static const String STREET_BLOCK_TXT = 'Street / Block / City / Postal Code';
+  static const String CONFIRM_CONTINUE = 'Confirm & Continue';
+  static const String GO_BACK_TXT = 'Go back';
+  static const String HOME = 'HOME';
+  static const String ACTIVE_TXT = 'ACTIVE';
+  static const String CLOSE = 'Close';
+  static const String WORK = 'WORK';
+  static const String PAYMENT_TITLE = 'Payment Type';
+  static const String CARD_DETAILS = 'Card Details';
+  static const String ONLINE_PAYMENT_GATEWAY = 'Online Payment Gateway';
+  static const String ACCOUNT_HOLDER_NAME = 'Account Holder Name';
+  static const String BIC = 'BIC';
+  static const String IBAN = 'IBAN';
+  static const String VERIFY_CONTINUE = 'Verify & Continue';
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
 
@@ -240,4 +276,11 @@ class Strings {
 
   static final RegExp password =
   RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$');
+
+  static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
+
+  static final RegExp number_validation = RegExp(r'[A-Z0-9]');
+
+
+
 }

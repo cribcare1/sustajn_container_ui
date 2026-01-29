@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../../lease_receive/screens/lease_scan_screen.dart';
+import '../../../utils/nav_utils.dart';
 import '../../../utils/utility.dart';
 import 'option_file.dart';
 
@@ -61,12 +62,6 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                     ),
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  Icon(
-                    Icons.qr_code_scanner,
-                    color: Colors.white,
-                    size: Constant.CONTAINER_SIZE_40,
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
                   Row(
                     children: [
                       Expanded(
@@ -96,65 +91,6 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                       ),
                     ],
                   ),
-                  if (selectedType == 'RECEIVE') ...[
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(valueList.length, (index) {
-                        final value = valueList[index];
-                        return Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: [
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                  radioTheme: RadioThemeData(
-                                    fillColor:
-                                    MaterialStateProperty.resolveWith<
-                                        Color
-                                    >((states) {
-                                      return Theme.of(
-                                        context,
-                                      ).secondaryHeaderColor;
-                                    }),
-                                  ),
-                                ),
-                                child: Radio<String>(
-                                  value: value,
-                                  groupValue: selectedValue,
-                                  activeColor: Theme.of(
-                                    context,
-                                  ).secondaryHeaderColor,
-                                  visualDensity: const VisualDensity(
-                                    horizontal: -4,
-                                    vertical: -4,
-                                  ),
-
-                                  materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedValue = val;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  value,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: Theme.of(context).textTheme.titleSmall!
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ),
-                              SizedBox(width: Constant.SIZE_08),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                   SizedBox(
@@ -163,26 +99,14 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                       onPressed: selectedType == null
                           ? null
                           : () {
-                        if (selectedType == "RECEIVE" &&
-                            selectedValue != null) {
                           Navigator.pop(context);
-                          Utils.navigateToPushScreen(
+                          NavUtil.navigateToPushScreen(
                             context,
                             LeaseScanScreen(
                               type: selectedType ?? "",
                               damage: selectedValue,
                             ),
                           );
-                        } else if (selectedType == 'LEASE') {
-                          Navigator.pop(context);
-                          Utils.navigateToPushScreen(
-                            context,
-                            LeaseScanScreen(
-                              type: selectedType ?? "",
-                              damage: selectedValue,
-                            ),
-                          );
-                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedType == null

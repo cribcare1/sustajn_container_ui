@@ -2,6 +2,7 @@ import 'package:sustajn_restaurant/auth/screens/terms_and_condition_screen.dart'
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/imports_util.dart';
@@ -38,7 +39,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
-                  onRightTap: () => Utils.navigateToPushScreen(
+                  onRightTap: () => NavUtil.navigateToPushScreen(
                     context,
                     TermsAndConditionScreen(),
                   ),

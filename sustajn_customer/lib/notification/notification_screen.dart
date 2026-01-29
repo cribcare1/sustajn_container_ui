@@ -72,7 +72,6 @@ class NotificationScreen extends StatelessWidget {
       dateTime: "30/11/2025 | 09:00",
       hasActions: false,
     ),
-
   ];
 
   @override
@@ -143,7 +142,6 @@ class NotificationScreen extends StatelessWidget {
                   ),
                 );
               },
-
               ),
             ),
           ],
@@ -177,7 +175,6 @@ class NotificationScreen extends StatelessWidget {
                 color: Theme
                     .of(context)
                     .secondaryHeaderColor,
-
               ),
               child: Image.asset(item.icon),
             ),
@@ -196,11 +193,11 @@ class NotificationScreen extends StatelessWidget {
                       color: Colors.white70, // status text
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: Constant.CONTAINER_SIZE_1),
                   Text(
                     item.title.split('\n')[1],
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 14,
+                      fontSize: Constant.CONTAINER_SIZE_14,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
@@ -209,13 +206,11 @@ class NotificationScreen extends StatelessWidget {
                   Text(
                     item.title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 14,
+                      fontSize: Constant.CONTAINER_SIZE_14,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
-
                 if(item.subtitle.isNotEmpty) ...[
                   SizedBox(height: Constant.SIZE_06),
                   Text(
@@ -228,50 +223,9 @@ class NotificationScreen extends StatelessWidget {
 
                 if(item.hasActions)...[
                   SizedBox(height: Constant.SIZE_10),
-
                   Row(
                     children: [
-
-                      // Expanded(
-                      //   child: Container(
-                      //     height: Constant.CONTAINER_SIZE_30,
-                      //     decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-                      //       border: Border.all(color: Constant.gold),
-                      //     ),
-                      //     child: Center(
-                            // child: Text(
-                            //   "View",
-                            //   style: theme.textTheme.bodyMedium?.copyWith(
-                            //     fontFamily: "DMSans",
-                            //     color: Constant.gold,
-                            //   ),
-                            // ),
-                      //     ),
-                      //   ),
-                      // ),
-
                       SizedBox(width: Constant.SIZE_10),
-
-                      // Expanded(
-                      //   child: Container(
-                      //     height: Constant.CONTAINER_SIZE_30,
-                      //     decoration: BoxDecoration(
-                      //       color: Constant.gold,
-                      //       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-                      //     ),
-                      //     child: Center(
-                      //       child: Text(
-                      //         "Confirm",
-                      //         style: theme.textTheme.bodyMedium?.copyWith(
-                      //           fontFamily: "DMSans",
-                      //           color: theme.scaffoldBackgroundColor,
-                      //           fontWeight: FontWeight.w700,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ],

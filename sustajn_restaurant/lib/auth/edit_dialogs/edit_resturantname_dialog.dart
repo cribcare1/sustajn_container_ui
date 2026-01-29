@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -28,10 +29,7 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
   @override
   void initState() {
     super.initState();
-    // Utils.getToken();
     Utils.userId;
-    // final String restaurantName = 'Marina Sky Dine';
-
     _nameController.text = widget.name;
 
     _nameController.selection = TextSelection.collapsed(
@@ -48,13 +46,13 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
 
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Restaurant name cannot be empty';
+      return Strings.RESTAURANT_NAME_NOT_EMPTY;
     }
 
     final RegExp regex = RegExp(r'^[a-zA-Z0-9 ]+$');
 
     if (!regex.hasMatch(value.trim())) {
-      return 'Only letters, numbers and spaces allowed';
+      return Strings.ONLY_LETTERS_NUMBERS;
     }
     return null;
   }
@@ -83,13 +81,11 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                /// HEADER
                 Row(
                   children: [
                     Expanded(
                       child: Text(
-                        'Edit Restaurant Name',
+                        Strings.EDIT_RESTAURANT_NAME,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -155,45 +151,20 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                     ),
                   ),
                 ),
-
-
-
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                /// BUTTON
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async{
-                      if (_formKey.currentState!.validate()) {
-                        await _editNameNetworkCall(
-                        _nameController.text.trim(),
-                        );
-                        if (mounted) {
-                          Navigator.pop(context, _nameController.text.trim());
-                        }
-
-                        // Navigator.pop(context, _nameController.text.trim());
+                  child: SubmitButton(onRightTap: ()async{
+                    if (_formKey.currentState!.validate()) {
+                      await _editNameNetworkCall(
+                      _nameController.text.trim(),
+                      );
+                      if (mounted) {
+                        Navigator.pop(context, _nameController.text.trim());
                       }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
-                    child: Text(
-                      'Save Changes',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                    }
+                  },rightText:Strings.SAVE_CHANGES,)
+
                 ),
               ],
             ),

@@ -51,12 +51,12 @@ class ProfileServices {
     }
   }
 
-  Future<UpdateProfileData> updateImageService(String partUrl, Map<String, dynamic> requestData, String requestKey, var image) async {
+  Future<UpdateProfileData> updateImageService(String partUrl, Map<String, dynamic> requestData, String requestKey, File? image) async {
     try {
       Utils.printLog("requestData::::::: $requestData");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.postMultipartRequestAdmin(url, File(image), requestData, requestKey,"");
+      var response = await presenter.postMultipartRequestAdmin(url, image!, requestData, requestKey,"userData");
       if (response != null) {
         var responseData = UpdateProfileData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");

@@ -51,7 +51,7 @@ void main() async {
 
   Utils.getToken();
   Utils.getProfile();
-  // Utils.getUserId();
+  Utils.getUserId();
   runApp(const ProviderScope(child: MyApp()));
 }
 

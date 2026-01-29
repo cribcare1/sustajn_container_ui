@@ -23,37 +23,6 @@ class AddContainerScreen extends ConsumerStatefulWidget {
 
 class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  final List<ContainerItem> containers = [
-    ContainerItem(
-      name: "Dip Cup",
-      code: "ST-DC-50",
-      volume: "50ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Dip Cup",
-      code: "ST-DC-70",
-      volume: "70ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Round Container",
-      code: "ST-RDC-500",
-      volume: "500ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-    ContainerItem(
-      name: "Rectangular Container",
-      code: "ST-RC-800",
-      volume: "800ml",
-      availableQty: 165,
-      image: "assets/images/cups.png",
-    ),
-  ];
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];

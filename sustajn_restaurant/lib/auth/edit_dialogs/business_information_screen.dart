@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
+
 import '../../constants/number_constants.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
 
-class BusinessInformationScreen extends StatelessWidget {
+class BusinessInformationScreen extends ConsumerStatefulWidget {
   const BusinessInformationScreen({super.key});
 
+  @override
+  ConsumerState<BusinessInformationScreen> createState() => _BusinessInformationScreenState();
+}
+
+class _BusinessInformationScreenState extends ConsumerState<BusinessInformationScreen> {
+  _getData() {
+    final profileState = ref.read(profileProvider);
+    final profile = profileState.getProfileData?.data;
+    if (profile!.bankDetailsResponse != null) {
+      final business = profile.bankDetailsResponse;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -37,7 +54,7 @@ class BusinessInformationScreen extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -46,26 +63,52 @@ class BusinessInformationScreen extends StatelessWidget {
 
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constant.SIZE_15,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_15),
                 child: Column(
                   children: [
                     _buildTextField(
                       context,
-                      hint: 'Specialty',
+                      label: Strings.CONTACT_PERSON,
+                      hint: Strings.CONTACT_PERSON,
                     ),
                     SizedBox(height: Constant.SIZE_10),
 
                     _buildTextField(
                       context,
-                      hint: 'Cuisine',
+                      label: Strings.MOBILE_NUMBER,
+                      hint: Strings.MOBILE_NUMBER,
+                    ),
+                    SizedBox(height: Constant.SIZE_10),
+                    _buildTextField(
+                      context,
+                      label: Strings.EMAIL_REGISTRATION,
+                      hint: Strings.EMAIL_REGISTRATION,
                     ),
                     SizedBox(height: Constant.SIZE_10),
 
                     _buildTextField(
                       context,
-                      hint: 'Website',
+                      label: Strings.TRADE_LICENSE_NUMBER,
+                      hint: Strings.TRADE_LICENSE_NUMBER,
+                    ),
+                    SizedBox(height: Constant.SIZE_10),
+                    _buildTextField(
+                      context,
+                      label: Strings.TAX_NUMBER,
+                      hint: Strings.TAX_NUMBER,
+                    ),
+                    SizedBox(height: Constant.SIZE_10),
+
+                    _buildTextField(
+                      context,
+                      label: "Type of Business",
+                      hint: "Type of Business",
+                    ),
+                    SizedBox(height: Constant.SIZE_10),
+                    _buildTextField(
+                      context,
+                      label: Strings.WEBSITE,
+                      hint: Strings.WEBSITE,
                     ),
                     SizedBox(height: Constant.SIZE_18),
 
@@ -79,7 +122,7 @@ class BusinessInformationScreen extends StatelessWidget {
                         ),
                         SizedBox(width: Constant.SIZE_06),
                         Text(
-                          'Add Social Media',
+                          Strings.ADD_SOCIAL_MEDIA,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_14,
                             color: Constant.gold,
@@ -101,27 +144,10 @@ class BusinessInformationScreen extends StatelessWidget {
                 bottom: mediaQuery.padding.bottom + Constant.SIZE_10,
               ),
               child: SizedBox(
-                height: Constant.CONTAINER_SIZE_50,
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFC8B531),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_15,
-                      ),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Save Changes',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_15,
-                      fontWeight: FontWeight.w600,
-                      color: theme.primaryColor,
-                    ),
-                  ),
+                child: SubmitButton(
+                  onRightTap: () {},
+                  rightText: Strings.SAVE_CHANGES,
                 ),
               ),
             ),
@@ -131,30 +157,62 @@ class BusinessInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(BuildContext context, {required String hint}) {
-    final theme = Theme.of(context);
-
-    return TextField(
-      maxLines: Constant.MAX_LINE_1,
-      style: theme.textTheme.bodyMedium?.copyWith(
-       color: Colors.white70
-      ),
-      cursorColor: Colors.white70,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: theme.primaryColor,
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-          fontSize: Constant.LABEL_TEXT_SIZE_14,
-          color: Colors.white70,
+  Widget _buildTextField(
+    BuildContext context, {
+    required String hint,
+    required String label,
+    TextEditingController? controller,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: Constant.SIZE_08),
+          decoration: BoxDecoration(
+            color: Color(0xFF1F4D3A),
+            borderRadius: BorderRadius.circular(Constant.LABEL_TEXT_SIZE_18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.LABEL_TEXT_SIZE_14,
+            ),
+            cursorColor: Colors.white70,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: TextStyle(color: Colors.white70),
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              hintText: hint,
+              hintStyle: TextStyle(
+                color: Colors.white70,
+                fontSize: Constant.CONTAINER_SIZE_13,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: Constant.LABEL_TEXT_SIZE_16,
+                vertical: Constant.LABEL_TEXT_SIZE_14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  Constant.LABEL_TEXT_SIZE_14,
+                ),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+              isDense: true,
+            ),
+          ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        ),
-        enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-        focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-        isDense: true,
-      ),
+      ],
     );
   }
 }
