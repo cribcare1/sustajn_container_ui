@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
@@ -15,7 +16,8 @@ import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
-import '../edit_dialogs/edit_mobile_number.dart';
+import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
+import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
@@ -30,29 +32,60 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
+    {"name": "Email", "icon": Icons.email_outlined},
+    {"name": "Address", "icon": Icons.location_on_outlined},
+    {"name": "Mobile Number", "icon": Icons.call},
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined}, //ok
+    {"name": "Business Information", "icon": Icons.business_outlined}, //ok
+    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined}, //ok
+    {"name": "Payment Type", "icon": Icons.payments_outlined},
+    {"name": "History", "icon": Icons.history},
+    {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
+    {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
+    {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
     {"name": "Bank Details", "icon": Icons.account_balance_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
     {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Contact Us", "icon": Icons.headset_mic},
   ];
 
-  void _handleItemTap(int index, BuildContext context) {
+  void _handleItemTap(int index, BuildContext context, String mobileNo) {
     switch (index) {
       case 0:
-        _showBankDetailsEdit(context);
         break;
       case 1:
-        _showBusinessEditScreen(context);
+        // _showAddressDialog(context);
         break;
       case 2:
-        _showReportScreen(context);
+        _showMobileNoDialog(context, mobileNo);
         break;
       case 3:
-        _showFeedbackDialog(context);
+        _showReportScreen(context);
         break;
       case 4:
+        _showBusinessEditScreen(context);
+        break;
+      case 5:
         _showSubscriptionDialog(context);
+        break;
+      case 6:
+        ///paymentType
+        _showBankDetailsEdit(context);
+        break;
+      case 7:
+        ///history
+        break;
+      case 8:
+        _showFeedbackDialog(context);
+        break;
+      case 9:
+        _showContactDialog(context);
+        break;
+      ///contact us
+      case 10:
+        ///refer a partner
         break;
     }
   }
@@ -75,6 +108,25 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
+  void _showContactDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => EditAddressDialog(selectedAddress: selectedAddress),
+
+    );
+  }
+
+  void _showMobileNoDialog(BuildContext context, String mobile) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) =>
+      SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
+    );
+  }
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -100,25 +152,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   List<GetProfileData> profileData = [];
   AddressResponses? selectedAddress;
-
-  LoginData? loginResponse;
   bool isLoading = true;
   File? profileImage;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
     _getProfileNetworkCall();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +226,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: isLoading
             ? Center(child: CircularProgressIndicator())
-            : (loginResponse != null || profileData != null) ? SingleChildScrollView(
+            : (profile != null) ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -209,9 +251,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   width: w * 0.012,
                                 ),
                                 image: DecorationImage(
-                                  image: profile?.profileImageUrl != null && profile?.profileImageUrl.isNotEmpty ? NetworkImage(
-                                    "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${loginResponse!.image}",
-                                  ):AssetImage("assets/images/cups.png"),
+                                  image: profileImage != null
+                                      ? FileImage(profileImage!) as ImageProvider
+                                      : (profile!.profileImageUrl != null &&
+                                      profile.profileImageUrl!.isNotEmpty)
+                                      ? NetworkImage(
+                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                  )
+                                      : const AssetImage(
+                                    "assets/images/default_profile.png",
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -276,80 +325,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                           ],
                         ),
-                        SizedBox(height: h * 0.03),
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: w * 0.05),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: w * 0.04,
-                            vertical: h * 0.02,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(w * 0.04),
-                            border: Border.all(color: Colors.grey),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              _detailItem(
-                                icon: Icons.email_outlined,
-                                title: "Email",
-                                value: profile?.emailId! ?? "",
-                                w: w,
-                                showEdit: false,
-                                theme: theme,
-                                ontap: () {},
-                              ),
-                              Divider(color: Colors.grey.shade700),
-
-                              _detailItem(
-                                icon: Icons.location_on_outlined,
-                                title: "Address",
-                                value: fullAddress ?? "No address",
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditAddressDialog(selectedAddress: selectedAddress),
-                                  );
-                                },
-                              ),
-                              Divider(color: Colors.grey.shade700),
-                              _detailItem(
-                                icon: Icons.phone_outlined,
-                                title: "Mobile Number",
-                                value: profile?.mobileNumber! ?? "",
-                                w: w,
-                                showEdit: true,
-                                theme: theme,
-                                ontap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    builder: (context) =>
-                                        EditMobileNumberDialog(
-                                          mobileNumber:
-                                              profile?.mobileNumber ?? "",
-                                        ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-
+                        SizedBox(height: h * 0.02),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: h * 0.02),
                           child: ListView.separated(
@@ -373,12 +349,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     color: Colors.white,
                                   ),
                                 ),
-                                trailing: Icon(
+                                subtitle: index == 0
+                                    ? Text(
+                                  profile?.emailId ?? "",
+                                  style: TextStyle(color: Colors.grey.shade300, fontSize: Constant.CONTAINER_SIZE_12),
+                                )
+                                    : null,
+                                trailing: index == 0
+                                    ? null
+                                    : Icon(
                                   Icons.arrow_forward_ios,
                                   size: w * 0.044,
                                   color: Colors.white,
                                 ),
-                                onTap: () => _handleItemTap(index, context),
+                                onTap: () => _handleItemTap(index, context, profile?.mobileNumber ?? "", ),
                               );
                             },
                           ),
@@ -395,7 +379,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 size: w * 0.05,
                               ),
                               label: Text(
-                                "Log Out",
+                                Strings.LOGOUT,
                                 style: TextStyle(
                                   color: theme.primaryColor,
                                   fontSize: w * 0.045,
@@ -485,8 +469,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   _getProfileNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
+          isNetworkAvailable,
+          ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {
@@ -531,7 +515,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
       profileState.setIsLoading(true);
 
-      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),

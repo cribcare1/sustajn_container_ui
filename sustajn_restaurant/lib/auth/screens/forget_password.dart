@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -57,6 +58,10 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen>
     final registrationState = ref.watch(authNotifierProvider);
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        backgroundColor: theme.scaffoldBackgroundColor,
+      ),
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(

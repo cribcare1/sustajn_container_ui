@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
@@ -209,28 +210,10 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
   }
 
   Widget _buildSubmitButton(BuildContext context) {
-    final theme = Theme.of(context);
-
     return SizedBox(
       width: double.infinity,
       height: Constant.CONTAINER_SIZE_48,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Constant.gold,
-          shape: RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          ),
-        ),
-        child: Text(
-          'Send Feedback',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.primaryColor,
-          ),
-        ),
-      ),
+      child: SubmitButton(onRightTap: (){},rightText: "Send Feedback",),
     );
   }
 }

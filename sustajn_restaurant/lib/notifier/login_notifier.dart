@@ -215,6 +215,13 @@ class AuthState extends ChangeNotifier{
     _businessModel = data;
     notifyListeners();
   }
+  ContactAndRegistrationDetails? _registrationDetailsData;
+  ContactAndRegistrationDetails? get registrationDetailsData => _registrationDetailsData;
+
+  void setRegistrationDetails(ContactAndRegistrationDetails? register){
+    _registrationDetailsData = register;
+    notifyListeners();
+  }
    final List<SocialMediaModel> _socialMediaList = [];
    List<SocialMediaModel> get socialMediaList => _socialMediaList;
 

@@ -93,10 +93,27 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
     final response = await serviceProvider.registerUser(NetworkUrls.REGISTER_USER, data, "data",);
 
     if(response != null){
-      Register register = Register.fromJson(response);
+      LoginModel register = LoginModel.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
+        showCustomSnackBar(context: registrationState.context,
+            message: register.message??"Register successfully", color: Colors.green);
+        Utils.printLog(register.data!.toJson().toString());
         registrationState.setIsLoading(false);
+        registrationState.setUserId(register.data!.userId!);
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.JWT_TOKEN,
+          register.data!.jwtToken!,
+        );
+        SharedPreferenceUtils.saveDataInSF(
+          Strings.USER_ID,
+          register.data!.userId!,
+        );
+        SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
+        Utils.getToken();
+        Utils.getProfile();
+        // Utils.getUserId();
         NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
+
       } else {
         showCustomSnackBar(
           context: registrationState.context,
@@ -236,7 +253,7 @@ final verifyOtpProvider =
             color: Colors.green,
           );
           if (registrationState.isForgotPassword) {
-            Utils.navigateToPushScreen(
+            NavUtil.navigateToPushScreen(
               registrationState.context,
               ResetPasswordScreen(),
             );

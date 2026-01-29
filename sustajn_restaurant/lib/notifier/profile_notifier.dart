@@ -10,6 +10,7 @@ import '../utils/utility.dart';
 class ProfileState extends ChangeNotifier{
   String _name = '';
   bool _isLoading = false;
+  bool _isSaving = false;
   GetProfileData? _getProfileData;
   UpdateProfileData? _updateProfileData;
   BuildContext? _context;
@@ -25,6 +26,7 @@ class ProfileState extends ChangeNotifier{
   bool get isVerifying => _isVerifying;
   String get name => _name;
   bool get isLoading => _isLoading;
+  bool get isSaving => _isSaving;
   GetProfileData? get getProfileData => _getProfileData;
   UpdateProfileData? get updateProfileData => _updateProfileData!;
   BuildContext get context => _context!;
@@ -45,6 +47,10 @@ class ProfileState extends ChangeNotifier{
 
   void setIsLoading(bool isLoading){
     _isLoading = isLoading;
+    notifyListeners();
+  }
+void setIsSaving(bool isLoading){
+    _isSaving = isLoading;
     notifyListeners();
   }
 

@@ -4,13 +4,13 @@ import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../common_widgets/card_widget.dart';
 import '../../../common_widgets/circle_card_widget.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
-import '../../../lease_receive/screens/lease_scan_screen.dart';
 import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../order_screen/order_home_screen.dart';
@@ -153,7 +153,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  Utils.navigateToPushScreen(
+                                  NavUtil.navigateToPushScreen(
                                     context,
                                     SearchRestaurantScreen(),
                                   );
@@ -171,7 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  Utils.navigateToPushScreen(
+                                  NavUtil.navigateToPushScreen(
                                     context,
                                     NotificationScreen(),
                                   );

@@ -116,6 +116,7 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         height: 300,
