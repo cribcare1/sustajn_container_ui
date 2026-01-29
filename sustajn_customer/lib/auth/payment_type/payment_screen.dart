@@ -38,6 +38,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController _taxNumberController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
   final TextEditingController _bicController = TextEditingController();
+  final TextEditingController _accountHolderController = TextEditingController();
+
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     _taxNumberController.dispose();
     _bicController.dispose();
     _ibanController.dispose();
+    _accountHolderController.dispose();
     super.dispose();
   }
 
@@ -80,7 +83,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         resizeToAvoidBottomInset: true,
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: CustomAppBar(
-          title: 'Payment Type',
+          title: Strings.PAYMENT_TITLE,
           leading: CustomBackButton(),
         ).getAppBar(context),
 
@@ -100,10 +103,10 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _sectionTitle(theme, title: 'Card Details'),
+                    _sectionTitle(theme, title: Strings.CARD_DETAILS),
                     _addCardButton(context, theme),
                     _orDivider(theme),
-                    _sectionTitle(theme, title: 'Online Payment Gateway'),
+                    _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
                     _paypalTile(theme),
                     SizedBox(height: Constant.SIZE_10),
                     _applePay(theme),
@@ -299,12 +302,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _field(
           theme: theme,
           controller: _bankNameController,
-          hint: 'Bank Name',
+          hint: Strings.BANK_NAME,
           error: signupState.bankNameError,
           onChanged: signupState.setBankName,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
-            LengthLimitingTextInputFormatter(50),
+            FilteringTextInputFormatter.allow(Strings.text_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_20),
           ],
         ),
 
@@ -312,13 +315,13 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
         _field(
           theme: theme,
-          controller: _taxNumberController,
-          hint: 'Tax Number',
-          error: signupState.taxNumberError,
-          onChanged: signupState.setTaxNumber,
+          controller: _accountHolderController,
+          hint:Strings.ACCOUNT_HOLDER_NAME,
+          error: signupState.accountHolderError,
+          onChanged: signupState.setAccountHolderName,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
-            LengthLimitingTextInputFormatter(15),
+            FilteringTextInputFormatter.allow(Strings.text_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_20),
           ],
         ),
 
@@ -327,12 +330,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _field(
           theme: theme,
           controller: _bicController,
-          hint: 'Account Number',
-          error: signupState.accountNumberError,
-          onChanged: signupState.setAccountNumber,
+          hint: Strings.BIC,
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
           inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(18),
+            FilteringTextInputFormatter.allow(Strings.number_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_11),
           ],
         ),
 
@@ -341,17 +344,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _field(
           theme: theme,
           controller: _ibanController,
-          hint: 'IBAN',
+          hint: Strings.IBAN,
           error: signupState.ibanError,
           onChanged: signupState.setIban,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
-            LengthLimitingTextInputFormatter(34),
+            FilteringTextInputFormatter.allow(Strings.number_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_34),
           ],
         ),
       ],
     );
   }
+
 
 
   Widget _field({
@@ -472,7 +476,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               ),
             ),
             child: Text(
-              'Verify & Continue',
+             Strings.VERIFY_CONTINUE,
               style: theme.textTheme.labelLarge?.copyWith(
                 color: theme.primaryColor,
               ),
@@ -488,8 +492,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       "bankDetailsRequest": {
         "userId": Utils.userId,
         "bankName": _bankNameController.text,
-        "taxNumber": _taxNumberController.text,
-        "accountNumber": _bicController.text,
+        "bicNumber": _bicController.text,
+        "accountHolderName": _accountHolderController.text,
         "iBanNumber": _ibanController.text,
       },
       "cardDetailsRequest": {

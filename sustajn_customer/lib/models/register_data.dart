@@ -21,9 +21,9 @@ class RegistrationData {
   String? dateOfBirth;
 
   String? bankName;
-  String? taxNumber;
-  String? accountNumber;
   String? iban;
+  String? accountHolderName;
+  String? bic;
 
   RegistrationData({
     this.fullName,
@@ -44,16 +44,16 @@ class RegistrationData {
     this.dateOfBirth,
 
     this.bankName,
-    this.taxNumber,
-    this.accountNumber,
     this.iban,
+    this.accountHolderName,
+    this.bic
   });
 
   bool get hasBankDetails {
     return (bankName?.trim().isNotEmpty ?? false) ||
-        (taxNumber?.trim().isNotEmpty ?? false) ||
-        (accountNumber?.trim().isNotEmpty ?? false) ||
-        (iban?.trim().isNotEmpty ?? false);
+        (iban?.trim().isNotEmpty ?? false) ||
+          (accountHolderName?.trim().isNotEmpty ?? false) ||
+        (bic?.trim().isNotEmpty ?? false);
   }
 
   Map<String, dynamic> toApiBody() {
@@ -79,9 +79,9 @@ class RegistrationData {
     if (hasBankDetails) {
       body["bankDetails"] = {
         "bankName": bankName,
-        "taxNumber": taxNumber,
-        "accountNumber": accountNumber,
         "iban": iban,
+        "accountHolderName": accountHolderName,
+        "bic": bic
       };
     }
 

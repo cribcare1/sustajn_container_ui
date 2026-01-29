@@ -95,7 +95,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
     );
   }
 
-  Widget returnCard({required BuildContext context, required Value data}) {
+  Widget returnCard({required BuildContext context, required Data data}) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -157,7 +157,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                       ),
                     ),
                     Text(
-                      "50",
+                     data.quantity.toString(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -202,7 +202,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      ' ${data.daysLeft} Days Left',
+                      ' ${data.dueDate}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.black,
                         fontSize: Constant.CONTAINER_SIZE_12,
