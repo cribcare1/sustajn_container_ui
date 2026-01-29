@@ -32,8 +32,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                   children: [
                     _planCard(context),
-                    // SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    // _dateSection(context),
                     SizedBox(height: Constant.CONTAINER_SIZE_30),
                     _viewAllPlansButton(context),
                   ],
@@ -46,7 +44,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
     );
   }
 
-  // ================= HEADER =================
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -108,7 +105,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                 ],
 
               ),
-              // color: theme.primaryColor,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
               border: Border.all(
                 color: Constant.gold,
