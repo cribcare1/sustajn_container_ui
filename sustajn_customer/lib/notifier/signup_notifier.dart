@@ -171,26 +171,6 @@ class SignupNotifier extends ChangeNotifier {
   }
 
 
-  void _validateAccHolderName() {
-    if (_accountHolderName.isEmpty) {
-      _accountHolderError = 'Account holder name is required';
-    } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(_accountHolderName)) {
-      _accountHolderError = 'Special characters are not allowed';
-    } else {
-      _accountHolderError = null;
-    }
-  }
-
-  void setAccountHolderName(String value) {
-    _accountHolderName = value;
-    if (_showBankErrors) {
-      _validateAccHolderName();
-    } else {
-      _accountHolderError = null;
-    }
-    notifyListeners();
-  }
-
 
   void setIban(String value) {
     _iban = value.toUpperCase();
@@ -218,14 +198,15 @@ class SignupNotifier extends ChangeNotifier {
 
   void setBic(String value) {
     _bic = value.toUpperCase();
+
     if (_showBankErrors) {
       _validateBIC();
     } else {
       _bicError = null;
     }
+
     notifyListeners();
   }
-
 
   void _validateBIC() {
     if (_bic.isEmpty) {
@@ -238,6 +219,30 @@ class SignupNotifier extends ChangeNotifier {
       _bicError = null;
     }
   }
+
+
+  void setAccountHolderName(String value) {
+    _accountHolderName = value;
+
+    if (_showBankErrors) {
+      _validateAccountHolderName();
+    } else {
+      _accountHolderError = null;
+    }
+
+    notifyListeners();
+  }
+
+  void _validateAccountHolderName() {
+    if (_accountHolderName.isEmpty) {
+      _accountHolderError = 'Account holder name is required';
+    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(_accountHolderName)) {
+      _accountHolderError = 'Only letters and spaces allowed';
+    } else {
+      _accountHolderError = null;
+    }
+  }
+
 
   void setTaxNumber(String value) {
     _taxNumber = value.toUpperCase();
@@ -443,51 +448,50 @@ class SignupNotifier extends ChangeNotifier {
 
     _registrationData!
       ..bankName = _bankName
-      ..taxNumber = _taxNumber
-      ..accountNumber = _accountNumber
-      ..iban = _iban;
+      ..accountHolderName = _accountHolderName
+      ..iban = _iban
+      ..bic = _bic;
 
     notifyListeners();
   }
+
 
 
   bool validateBankForm() {
     _showBankErrors = true;
 
     _validateBankName();
-    _validateTaxNumber();
-    _validateAccountNumber();
+    _validateAccountHolderName();
+    _validateBIC();
     _validateIBAN();
 
     notifyListeners();
 
     return _bankNameError == null &&
-        _taxNumberError == null &&
-        _accountNumberError == null &&
+        _accountHolderError == null &&
+        _bicError == null &&
         _ibanError == null;
   }
+
 
 
 
   void resetBankValidation() {
     _showBankErrors = false;
 
-    _bankNameError = null;
-    _accountHolderError = null;
-    _taxNumberError = null;
-    _accountNumberError = null;
-    _ibanError = null;
-    _bicError = null;
-
     _bankName = '';
     _accountHolderName = '';
-    _taxNumber = '';
-    _accountNumber = '';
     _iban = '';
     _bic = '';
 
+    _bankNameError = null;
+    _accountHolderError = null;
+    _ibanError = null;
+    _bicError = null;
+
     notifyListeners();
   }
+
 
   void startTimer() {
     if (_isTimerRunning) return;   // prevent duplicates

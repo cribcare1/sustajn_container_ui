@@ -261,6 +261,13 @@ class Strings {
   static const String ACTIVE_TXT = 'ACTIVE';
   static const String CLOSE = 'Close';
   static const String WORK = 'WORK';
+  static const String PAYMENT_TITLE = 'Payment Type';
+  static const String CARD_DETAILS = 'Card Details';
+  static const String ONLINE_PAYMENT_GATEWAY = 'Online Payment Gateway';
+  static const String ACCOUNT_HOLDER_NAME = 'Account Holder Name';
+  static const String BIC = 'BIC';
+  static const String IBAN = 'IBAN';
+  static const String VERIFY_CONTINUE = 'Verify & Continue';
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
 
@@ -269,5 +276,11 @@ class Strings {
 
   static final RegExp password =
   RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$');
+
+  static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
+
+  static final RegExp number_validation = RegExp(r'[A-Z0-9]');
+
+
 
 }

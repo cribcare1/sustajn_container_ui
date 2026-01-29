@@ -1,33 +1,33 @@
 class ProductData {
-  String? message;
-  List<Value>? value;
   String? status;
+  String? message;
+  List<Data>? data;
 
-  ProductData({this.message, this.value, this.status});
+  ProductData({this.status, this.message, this.data});
 
   ProductData.fromJson(Map<String, dynamic> json) {
-    message = json['message']??'';
-    if (json['value'] != null) {
-      value = <Value>[];
-      json['value'].forEach((v) {
-        value!.add(new Value.fromJson(v));
+    status = json['status'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <Data>[];
+      json['data'].forEach((v) {
+        data!.add(new Data.fromJson(v));
       });
     }
-    status = json['status']??'';
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    if (this.value != null) {
-      data['value'] = this.value!.map((v) => v.toJson()).toList();
-    }
     data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
 
-class Value {
+class Data {
   int? orderId;
   int? productId;
   String? productName;
@@ -35,24 +35,30 @@ class Value {
   String? productImageUrl;
   int? daysLeft;
   String? productUniqueId;
+  int? containerQuantity;
+  String? dueDate;
 
-  Value(
+  Data(
       {this.orderId,
         this.productId,
         this.productName,
         this.quantity,
         this.productImageUrl,
         this.daysLeft,
-        this.productUniqueId});
+        this.productUniqueId,
+        this.containerQuantity,
+        this.dueDate});
 
-  Value.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     orderId = json['orderId']??0;
     productId = json['productId']??0;
-    productName = json['productName']??'';
+    productName = json['productName']??"";
     quantity = json['quantity']??0;
-    productImageUrl = json['productImageUrl']??'';
+    productImageUrl = json['productImageUrl']??"";
     daysLeft = json['daysLeft']??0;
-    productUniqueId = json['productUniqueId']??'';
+    productUniqueId = json['productUniqueId']??"";
+    containerQuantity = json['containerQuantity']??0;
+    dueDate = json['dueDate']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +70,8 @@ class Value {
     data['productImageUrl'] = this.productImageUrl;
     data['daysLeft'] = this.daysLeft;
     data['productUniqueId'] = this.productUniqueId;
+    data['containerQuantity'] = this.containerQuantity;
+    data['dueDate'] = this.dueDate;
     return data;
   }
 }

@@ -9,7 +9,7 @@ class ProductNotifier extends ChangeNotifier {
 
   ProductData? _productData;
 
-  List<Value> _productList = [];
+  List<Data> _productList = [];
 
   bool get isLoading => _isLoading;
 
@@ -17,11 +17,11 @@ class ProductNotifier extends ChangeNotifier {
 
   ProductData get productData => _productData!;
 
-  List<Value> get productList => _productList;
+  List<Data> get productList => _productList;
 
   void setProductData(ProductData data) {
     _productData = data;
-    _productList = data.value!;
+    _productList = data.data!;
     notifyListeners();
   }
 
