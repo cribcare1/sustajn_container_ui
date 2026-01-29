@@ -20,6 +20,7 @@ import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
+import '../edit_dialogs/refer_partner_dialogue.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
 
@@ -34,7 +35,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Email", "icon": Icons.email_outlined},
     {"name": "Address", "icon": Icons.location_on_outlined},
-    {"name": "Mobile Number", "icon": Icons.call},
+    {"name": "Contact", "icon": Icons.call},
     {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined}, //ok
     {"name": "Business Information", "icon": Icons.business_outlined}, //ok
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined}, //ok
@@ -43,12 +44,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
-    {"name": "Bank Details", "icon": Icons.account_balance_outlined},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
-    {"name": "Feedback", "icon": Icons.feedback_outlined},
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
-    {"name": "Contact Us", "icon": Icons.headset_mic},
   ];
 
   void _handleItemTap(int index, BuildContext context, String mobileNo) {
@@ -56,6 +51,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       case 0:
         break;
       case 1:
+        _showContactDialog(context);
         // _showAddressDialog(context);
         break;
       case 2:
@@ -86,6 +82,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       ///contact us
       case 10:
         ///refer a partner
+        _showReferPartnerDialogue(context);
         break;
     }
   }
@@ -136,6 +133,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
+  void _showReferPartnerDialogue(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => EditReferPartnerDialog(),
+    );
+  }
+
   void _showBusinessEditScreen(BuildContext context) {
     Navigator.push(
       context,
@@ -152,7 +158,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   List<GetProfileData> profileData = [];
   AddressResponses? selectedAddress;
-  bool isLoading = true;
   File? profileImage;
 
   @override
@@ -179,15 +184,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       );
     }
 
-    final String fullAddress = selectedAddress == null
-        ? "No address added"
-        : [
-      selectedAddress!.flatDoorHouseDetails,
-      selectedAddress!.areaStreetCityBlockDetails,
-      selectedAddress!.poBoxOrPostalCode,
-    ].whereType<String>()
-        .where((e) => e.isNotEmpty)
-        .join(', ');
+    // final String fullAddress = selectedAddress == null
+    //     ? "No address added"
+    //     : [
+    //   selectedAddress!.flatDoorHouseDetails,
+    //   selectedAddress!.areaStreetCityBlockDetails,
+    //   selectedAddress!.poBoxOrPostalCode,
+    // ].whereType<String>()
+    //     .where((e) => e.isNotEmpty)
+    //     .join(', ');
 
 
     if (profileState.isLoading == true) {
@@ -215,7 +220,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             icon: Icon(Icons.keyboard_arrow_left),
           ),
           title: Text(
-            "My Profile",
+            Strings.MY_PROFILE,
             style: TextStyle(
               fontSize: Constant.CONTAINER_SIZE_20,
               fontWeight: FontWeight.w500,
@@ -224,7 +229,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
         ),
 
-        body: isLoading
+        body: profileState.isLoading
             ? Center(child: CircularProgressIndicator())
             : (profile != null) ? SingleChildScrollView(
                 child: Stack(
