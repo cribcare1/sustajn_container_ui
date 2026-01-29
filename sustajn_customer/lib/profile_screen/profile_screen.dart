@@ -279,6 +279,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
     final h = size.height;
+    final double goldBarHeight = h * 0.26;
 
     return SafeArea(
       top: false,
@@ -287,8 +288,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         backgroundColor: theme?.scaffoldBackgroundColor,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Constant.gold,
-          surfaceTintColor: Constant.gold,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
           leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
@@ -298,35 +300,41 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
               height: Constant.CONTAINER_SIZE_30,
               margin: EdgeInsets.all(Constant.SIZE_08),
               decoration: BoxDecoration(
-                color: Constant.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: Constant.grey, width: 0.3),
+                color: Colors.white.withOpacity(0.25),
+                shape: BoxShape.circle,
               ),
-              child: Icon(Icons.arrow_back_ios, color: theme!.primaryColor),
+              child: Icon(Icons.arrow_back_ios, color: Colors.white),
             ),
           ),
           title: Text(
             "My Profile",
             style: TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: theme!.primaryColor,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
         ),
+        extendBodyBehindAppBar:true,
 
         body: SingleChildScrollView(
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
-                  SizedBox(
-                    width: w - (w * 0.34),
-                    height: h * 0.30,
-                    child: CustomPaint(painter: TopCirclePainter()),
+                  Container(
+                    height: goldBarHeight,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Constant.gold,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40),
+                      ),
+                    ),
                   ),
                   Column(
                     children: [
-                      SizedBox(height: h * 0.035),
+                      SizedBox(height: goldBarHeight - (w * 0.14)),
                       Stack(
                         alignment: Alignment.bottomRight,
                         children: [
@@ -335,11 +343,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             width: w * 0.28,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Constant.gold,
-                                width: 2,
+                              border: Border.all(color: Constant.gold, width: 2),
                               ),
-                            ),
                             child: ClipOval(
                               child:
                                   (profileData?.profileImageUrl != null &&
@@ -347,15 +352,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   ? Image.network(
                                       "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profileData!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
                                       fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                            return _defaultProfileIcon(
-                                              w,
-                                              theme,
-                                            );
-                                          },
+                                    errorBuilder: (context, error, stackTrace){
+                                        return _defaultProfileIcon(w, theme!);
+                                    },
                                     )
-                                  : _defaultProfileIcon(w, theme),
+                                  : _defaultProfileIcon(w, theme!),
                             ),
                           ),
                           GestureDetector(
@@ -376,7 +377,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               child: Icon(
                                 Icons.edit_outlined,
                                 size: w * 0.045,
-                                color: theme.primaryColor,
+                                color: theme?.primaryColor,
                               ),
                             ),
                           ),
@@ -416,68 +417,84 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: h * 0.03),
+                      SizedBox(height: h * 0.00),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: h * 0.02),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: w * 0.04,
-                          vertical: h * 0.02,
-                        ),
-                        child: _detailItem(
-                          icon: Icons.email_outlined,
-                          title: "Email",
-                          value: profileData!.emailId ?? "",
-                          w: w,
-                          showEdit: false,
-                          theme: theme,
-                          ontap: () {},
+                        padding: EdgeInsets.symmetric(horizontal: w * 0.04),
+                        child: Column(
+                          children: [
+                            // EMAIL
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: h * 0.015),
+                              child: _detailItem(
+                                icon: Icons.email_outlined,
+                                title: "Email",
+                                value: profileData!.emailId ?? "",
+                                w: w,
+                                showEdit: false,
+                                theme: theme,
+                                ontap: () {},
+                              ),
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: h*0.02),
+                            child:Divider(
+                              height: 0,
+                              thickness: 1,
+                              color: Colors.grey.withOpacity(0.3),
+                            ),
+                            ),
+
+                            SizedBox(height: h*0.01),
+                            // OTHER FIELDS — DIRECTLY BELOW EMAIL
+                            ListView.separated(
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: detailList.length,
+                              separatorBuilder: (context, index) => Divider(
+                                height: 0,
+                                thickness: 1,
+                                color: Constant.grey.withOpacity(0.3),
+                              ),
+                              itemBuilder: (context, index) {
+                                final item = detailList[index];
+                                return ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity.compact,
+                                  leading: Icon(
+                                    item['icon'],
+                                    size: w * 0.054,
+                                    color: Constant.gold,
+                                  ),
+                                  title: Text(
+                                    item['name'],
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: w * 0.044,
+                                    color: Constant.grey,
+                                  ),
+                                  onTap: () => _handleItemTap(
+                                    index,
+                                    context,
+                                    widget.subScriptionPlanId,
+                                    profileData!.mobileNumber ?? "",
+                                    profileState,
+                                    profile!.id ?? 0,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: h * 0.02),
-                        child: Divider(color: Colors.grey.withOpacity(0.3)),
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: h * 0.02),
-                        child: ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: detailList.length,
-                          separatorBuilder: (context, index) => Divider(
-                            height: 1,
-                            color: Constant.grey.withOpacity(0.3),
-                          ),
-                          itemBuilder: (context, index) {
-                            final item = detailList[index];
-                            return ListTile(
-                              leading: Icon(
-                                item['icon'],
-                                size: w * 0.054,
-                                color: Constant.gold,
-                              ),
-                              title: Text(
-                                item['name'],
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios,
-                                size: w * 0.044,
-                                color: Constant.grey,
-                              ),
-                              onTap: () => _handleItemTap(
-                                index,
-                                context,
-                                widget.subScriptionPlanId,
-                                  profileData!.mobileNumber ?? "",
-                                profileState, profile!.id ??0
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+
 
                       Center(
                         child: Container(
@@ -498,7 +515,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.primaryColor,
+                              backgroundColor: theme?.primaryColor,
                               padding: EdgeInsets.symmetric(
                                 vertical: h * 0.018,
                               ),
@@ -525,7 +542,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                 ],
               ),
             ),
-
       ),
     );
   }
