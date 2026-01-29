@@ -37,8 +37,8 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
 
     if (bank != null) {
       _bankNameController.text = bank.bankName ?? '';
-      _accountNumberController.text = bank.accountNumber ?? '';
-      _taxNumberController.text = bank.taxNumber ?? '';
+      _accountNumberController.text = bank.accountHolderName ?? '';
+      _taxNumberController.text = bank.bicNumber ?? '';
       _ibanController.text = bank.iBanNumber ?? '';
     }
   }

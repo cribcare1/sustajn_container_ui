@@ -50,15 +50,15 @@ class Data {
         this.dueDate});
 
   Data.fromJson(Map<String, dynamic> json) {
-    orderId = json['orderId'];
-    productId = json['productId'];
-    productName = json['productName'];
-    quantity = json['quantity'];
-    productImageUrl = json['productImageUrl'];
-    daysLeft = json['daysLeft'];
-    productUniqueId = json['productUniqueId'];
-    containerQuantity = json['containerQuantity'];
-    dueDate = json['dueDate'];
+    orderId = json['orderId']??0;
+    productId = json['productId']??0;
+    productName = json['productName']??"";
+    quantity = json['quantity']??0;
+    productImageUrl = json['productImageUrl']??"";
+    daysLeft = json['daysLeft']??0;
+    productUniqueId = json['productUniqueId']??"";
+    containerQuantity = json['containerQuantity']??0;
+    dueDate = json['dueDate']??"";
   }
 
   Map<String, dynamic> toJson() {

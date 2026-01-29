@@ -276,7 +276,6 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
 
             ref.read(feedbackProvider({
               "userId": widget.userID,
-              // "restaurantId": "2",
               "subscriptionPlanId":widget.planID
             }));
           } else {
