@@ -192,13 +192,13 @@ class _SearchRestaurantScreenState
                     (bounds.northeast.longitude + bounds.southwest.longitude) /
                         2,
                   );
-                  // ref.read(locationProvider.notifier).updatePosition(center);
                   final oldPos = ref.read(locationProvider).position;
                   if (oldPos == null ||
                       oldPos.latitude != center.latitude ||
                       oldPos.longitude != center.longitude) {
                     ref.read(locationProvider.notifier).updatePosition(center);
-                    _getNetworkData(_lastKeyword);
+                    //TODO:- required
+                    // _getNetworkData(_lastKeyword);
                   }
                 },
 
@@ -286,6 +286,7 @@ class _SearchRestaurantScreenState
                       },
                     ),
                   ),
+                  SizedBox(height: Constant.SIZE_08),
                 ],
               ),
             ),

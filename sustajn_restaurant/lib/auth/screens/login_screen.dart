@@ -44,6 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     var themeData = CustomTheme.getTheme(true);
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
+resizeToAvoidBottomInset: true,
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Center(
@@ -56,7 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Center(
                   child: Image.asset(
                     AppAssets.sustajnAppLogo,
-                    height: height * 0.17,
+                    height: height * 0.14,
                     fit: BoxFit.contain,
                   ),
                 ),

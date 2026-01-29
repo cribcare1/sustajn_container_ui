@@ -538,19 +538,21 @@ class Utils {
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
 
-  static int? userId = 0;
-  static void loadUserId() async {
+  static int? userId;
+
+  static Future<void> loadUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt(Strings.USER_ID);
-    printLog("JWT Token ==== $token");
+    Utils.printLog("user Id ==========$userId");
   }
 
-  static int getUserId() {
-    if (userId == 0) {
-      loadUserId();
+  static Future<int?> getUserId() async {
+    if (userId == null) {
+      await loadUserId();
     }
-    return userId!;
+    return userId??0;
   }
+
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");
     const error = "Error:";
