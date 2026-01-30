@@ -85,7 +85,15 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>((ref, params) asy
       "profileImage",
       image,
     );
-    return response;
+    if (response.status != null &&
+        response.status!.isNotEmpty &&
+        response.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+      return response;
+    } else {
+      throw Exception(
+        response.message ?? "Profile image update failed",
+      );
+    }
   },
 );
 

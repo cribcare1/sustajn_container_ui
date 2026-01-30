@@ -57,6 +57,7 @@ class Constant {
   static late double CONTAINER_HEGIHT_SIZE = 35;
   static late double CONTAINER_WIDTH_SIZE = 40;
   static late double CONTAINER_SIZE_1 = 01.0;
+  static late double CONTAINER_SIZE_2 = 02.0;
   static late double CONTAINER_SIZE_4 = 04.0;
   static late double CONTAINER_SIZE_8 = 08.0;
   static late double CONTAINER_SIZE_10 = 10.0;

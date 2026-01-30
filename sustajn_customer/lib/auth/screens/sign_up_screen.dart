@@ -154,7 +154,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           if (Strings.alphaNumericWithSpace.hasMatch(v)) {
                             return Strings.SPECIAL_CHAR;
                           }
-
                           return null;
                         },
                       ),
