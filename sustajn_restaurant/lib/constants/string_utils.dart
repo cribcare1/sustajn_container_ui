@@ -101,7 +101,7 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
-  static const OR = 'or';
+  static const OR = 'Or';
 
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -285,5 +285,15 @@ class Strings {
   static const String INVENTORY = 'Inventory';
   static const String LEASE = 'Lease';
   static const String RECEIVE = 'Receive';
+  static const String INVALID_QR_CODE ="Invalid or unsupported QR code";
+  static const String ENTER_CUSTOMER_ID ="Enter Customer ID";
+  static const String LEASE_UC ="LEASE";
+  static const String RECEIVE_UC ="RECEIVE";
+  static const String SCAN_FOR_LEASE ="Scan Customer QR to Leased Products";
+  static const String SCAN_FOR_RECEIVE ="Scan Customer QR to Receive Products";
+  static const String SCAN ="Scan";
+  static const String SCAN_PRODUCT ="Scan Product";
+  static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
+  static const String ENTER_CONTAINER_ID ="Enter Container ID";
 
 }

@@ -3,6 +3,8 @@ import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
+import 'package:sustajn_restaurant/utils/qr_crypto_helper.dart';
 
 class ReceiveScanScreen extends StatefulWidget {
   final String type;
@@ -26,42 +28,57 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
     torchEnabled: false,
     autoZoom: true,
   );
-
   bool _isScanned = false;
   String? scannedValue;
   bool _torchOn = false;
   final textController = TextEditingController();
-
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
-
   Future<void> _onDetect(BarcodeCapture capture) async {
     if (_isScanned) return;
-
     final Barcode? barcode = capture.barcodes.firstWhere(
-      (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
+          (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
       orElse: () => Barcode(
         rawValue: null,
         displayValue: null,
         format: BarcodeFormat.unknown,
       ),
     );
+    if (barcode?.rawValue == null || barcode!.rawValue!.isEmpty) return;
+    final encryptedValue = barcode.rawValue!;
+    if (!QrCryptoHelper.isBase64(encryptedValue)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+          content: Text(Strings.INVALID_QR_CODE),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    if (barcode!.rawValue != null && barcode.rawValue!.isNotEmpty) {
-      final value = barcode.rawValue!;
-      print("✅ QR Code Detected: $value");
+    try {
+      final decrypted = QrCryptoHelper.decrypt(encryptedValue);
       if (mounted) {
         setState(() {
           _isScanned = true;
-          scannedValue = value;
+          scannedValue = decrypted;
           textController.text = scannedValue!;
         });
       }
+
       await Future.delayed(const Duration(milliseconds: 300));
       await controller.stop();
+    } catch (e) {
+      if(!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(Strings.INVALID_QR_CODE),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -92,7 +109,7 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Scan",
+          title: Strings.SCAN,
           leading: CustomBackButton(),
           action: [
             IconButton(
@@ -119,8 +136,8 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 300,
-                        width: 300,
+                        height: Constant.CONTAINER_SIZE_300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: MobileScanner(
                             controller: controller,
@@ -132,10 +149,10 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_16),
                       SizedBox(
-                        width: 300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: Text(
-                            "Scan Container QR to Receive Products",
+                            Strings.SCAN_FOR_RECEIVE,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(
@@ -157,9 +174,9 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                       child: Text(
-                        'Or',
+                        Strings.OR,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -182,12 +199,12 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                   ).textTheme.titleSmall!.copyWith(color: Colors.white),
                   controller: textController,
                   decoration: InputDecoration(
-                    hintText: "Enter Container ID",
+                    hintText: Strings.ENTER_CONTAINER_ID,
                     hintStyle: Theme.of(
                       context,
                     ).textTheme.titleSmall!.copyWith(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     filled: true,
@@ -210,12 +227,12 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
                       foregroundColor: Colors.black,
                       disabledBackgroundColor: Colors.grey.shade300,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                         side: BorderSide(color: Colors.white),
                       ),
                     ),
                     child: Text(
-                      'Verify',
+                      Strings.VERIFY,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: textController.text.isEmpty
                             ? Colors.grey
@@ -236,7 +253,7 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
               color: Theme.of(context).secondaryHeaderColor,
             ),
             padding: EdgeInsetsGeometry.all(Constant.CONTAINER_SIZE_10),
-            child: Icon(Icons.flip_camera_android, size: 20),
+            child: Icon(Icons.flip_camera_android, size: Constant.CONTAINER_SIZE_20),
           ),
         ),
       ),

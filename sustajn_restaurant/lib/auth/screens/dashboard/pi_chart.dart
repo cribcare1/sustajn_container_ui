@@ -8,7 +8,7 @@ import '../../../utils/utility.dart';
 import 'option_file.dart';
 
 class FilterPopupWidget extends StatefulWidget {
-  const FilterPopupWidget();
+  const FilterPopupWidget({super.key});
 
   @override
   State<FilterPopupWidget> createState() => _FilterPopupWidgetState();
