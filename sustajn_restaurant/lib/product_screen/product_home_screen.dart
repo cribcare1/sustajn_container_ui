@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
 
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../main.dart';
 import '../utils/theme_utils.dart';
 import 'inventory_screen.dart';
@@ -46,10 +47,10 @@ class _ProductsScreenState extends State<ProductsScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
-          'Products',
+          Strings.PRODUCTS,
             style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(
@@ -69,28 +70,34 @@ class _ProductsScreenState extends State<ProductsScreen>
                     const AssetImage('assets/images/img.png'),
                     size: Constant.CONTAINER_SIZE_16,
                   ),
-                  const SizedBox(width: 6),
-                  const Text('Inventory'),
+                  SizedBox(width: Constant.SIZE_06),
+                  const Text(
+                    Strings.INVENTORY,
+                  ),
                 ],
               ),
             ),
-            const Tab(
+            Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_made_outlined, size: 18),
-                  SizedBox(width: 6),
-                  Text('Lease'),
+                  Icon(Icons.call_made_outlined, size: Constant.CONTAINER_SIZE_18),
+                  SizedBox(width: Constant.SIZE_06),
+                  const Text(
+                    Strings.LEASE,
+                  ),
                 ],
               ),
             ),
-            const Tab(
+            Tab(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_received_outlined, size: 18),
-                  SizedBox(width: 6),
-                  Text('Receive'),
+                  Icon(Icons.call_received_outlined, size: Constant.CONTAINER_SIZE_18),
+                  SizedBox(width: Constant.SIZE_06),
+                  const Text(
+                    Strings.RECEIVE,
+                  ),
                 ],
               ),
             ),
