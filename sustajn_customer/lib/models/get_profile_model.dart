@@ -203,9 +203,9 @@ class SubscriptionResponse {
   String? planType;
   String? description;
   String? partnerType;
-  double? feeType;
-  double? depositType;
-  double? commissionPercentage;
+  int? feeType;
+  int? depositType;
+  int? commissionPercentage;
   int? minContainers;
   int? maxContainers;
   int? totalContainers;

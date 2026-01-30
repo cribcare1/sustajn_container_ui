@@ -115,7 +115,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         if (planID == null) {
           showCustomSnackBar(
             context: context,
-            message: "subscription details not found",
+            message: Strings.SUBSCRIPTION_NOT_FOUND,
             color: Colors.green,
           );
           return;
@@ -214,7 +214,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       showCustomSnackBar(
         context: context,
         message:
-        "You have not added bank details, please add it to view the QR code",
+        Strings.BANK_DETAILS_NOT_ADDED,
         color: Colors.green,
       );
       return;
@@ -646,7 +646,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
 
         showCustomSnackBar(context: context,
-            message: 'User image uploaded successfully',
+            message: Strings.IMAGE_UPLOADED,
             color: Constant.green);
 
         ref.read(profileProvider).clearProfileList();
