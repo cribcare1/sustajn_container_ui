@@ -15,6 +15,7 @@ class BusinessInformationScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessInformationScreenState extends ConsumerState<BusinessInformationScreen> {
+
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
@@ -22,6 +23,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
       final business = profile.bankDetailsResponse;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -50,7 +52,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                   ),
                   SizedBox(width: Constant.SIZE_05),
                   Text(
-                    'Business Information',
+                    Strings.BUSINESS_INFORMATION,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.w600,
@@ -101,8 +103,8 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
 
                     _buildTextField(
                       context,
-                      label: "Type of Business",
-                      hint: "Type of Business",
+                      label: Strings.TYPES_OF_BUSINESS,
+                      hint: Strings.TYPES_OF_BUSINESS,
                     ),
                     SizedBox(height: Constant.SIZE_10),
                     _buildTextField(
@@ -175,7 +177,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
-                blurRadius: 6,
+                blurRadius: Constant.SIZE_06,
                 offset: Offset(0, 3),
               ),
             ],

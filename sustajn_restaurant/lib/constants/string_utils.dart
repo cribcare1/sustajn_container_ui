@@ -51,6 +51,7 @@ class Strings {
   static const String LARGE = 'Large';
   static const String MEDIUM = 'Medium';
   static const String SMALL = 'Small';
+  static const String MY_PROFILE = "My Profile";
   static const String RESTURANT_TRANSACTION_HISTORY_TITLE =
       'Resturant Transaction History';
   static const String STATUS = 'Status';
@@ -86,6 +87,7 @@ class Strings {
   static const BORROWED = 'Borrowed';
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
+  static const SUBSCRIPTION_PLAN = 'Subscription Plan';
   static const TOTAL_RETURNED_CONTAINER = 'Total Returned Containers';
   static const TOTAL_BORROWED_CONTAINER = 'Total Borrowed Containers';
   static const TOTAL_ACTIVE_CUSTOMER = 'Total Active Customers';
@@ -99,6 +101,8 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
+  static const OR = 'or';
+
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
   static const FILL_DETAILS =
@@ -106,7 +110,10 @@ class Strings {
   static const NAME = 'Name';
   static const MOBILE_NUMBER = 'Mobile Number';
   static const EDIT_MOBILE_NUMBER = 'Edit Mobile Number';
-  static const EMAIL = 'Email ID ';
+  static const EDIT_PAYMENT_TYPE = "Edit Payment Type";
+  static const EMAIL = 'Email ID';
+  static const CONTACT_NUMBER = 'Contact Number';
+  static const REFER_PARTNER = 'Refer a Partner';
   static const PASSWORD = 'Password';
   static const CONFIRM_PASSWORD = 'Confirm Password';
   static const CONTACT_PERSON = 'Contact Person';
@@ -195,10 +202,20 @@ class Strings {
   static const String BANK_NAME = 'Bank Name';
   static const String ACC_NO = 'Account Number';
   static const String CONFIRM_ACC_NO = 'Confirm Account Number';
+  static const String CARD_DETAILS = "Card Details";
   static const String TAX_NUMBER = 'Tax Number';
+  static const String TYPES_OF_BUSINESS = "Type of Business";
   static const String CONTINUE = 'Continue';
   static const String BUSINESS_INFO = 'Business Information';
   static const String BUSINESS_DTLS = 'Business Details';
+  static const String ONLINE_PAYMENT_GATEWAY = "Online Payment Gateway";
+  static const String PAYPAL = "PayPal";
+  static const String APPLE_PAY = "Apple Pay";
+  static const String GOOGLE_PAY = "Google Pay";
+  static const String ADD_CARD = "Add Card";
+  static const String ACCOUNT_HOLDER_NAME = "Account Holder Name";
+  static const String IBAN = "IBAN";
+
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -253,7 +270,7 @@ class Strings {
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
-  static const String BUSINESS_NAME = "Restaurant Name";
+  static const String RESTAURANT_NAME = "Restaurant Name";
   static const String EXISTING_USER = "Existing user?";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";

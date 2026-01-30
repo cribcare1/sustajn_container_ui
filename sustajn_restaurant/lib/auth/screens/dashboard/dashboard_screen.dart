@@ -46,10 +46,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    Utils.getUserId();
     _loadProfile();
     if (loginResponse == null) {
-      Utils.printLog("No data found for profile api will call");
       _getProfileNetworkCall();
     }
   }
