@@ -11,6 +11,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/business_information_screen.dart';
@@ -51,8 +52,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       case 0:
         break;
       case 1:
-        _showContactDialog(context);
-        // _showAddressDialog(context);
+        _showAddressDialog(context);
         break;
       case 2:
         _showMobileNoDialog(context, mobileNo);
@@ -67,7 +67,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showSubscriptionDialog(context);
         break;
       case 6:
-        ///paymentType
         _showBankDetailsEdit(context);
         break;
       case 7:
@@ -77,11 +76,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showFeedbackDialog(context);
         break;
       case 9:
-        _showContactDialog(context);
+        _showAddressDialog(context);
         break;
-      ///contact us
       case 10:
-        ///refer a partner
         _showReferPartnerDialogue(context);
         break;
     }
@@ -105,13 +102,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showContactDialog(BuildContext context) {
+  void _showAddressDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => EditAddressDialog(selectedAddress: selectedAddress),
-
     );
   }
 
@@ -121,9 +117,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) =>
-      SecondaryMobileNumberDialog(mobileNumber: mobile ?? "")
+          SecondaryMobileNumberDialog(mobileNumber: mobile ?? ""),
     );
   }
+
   void _showBankDetailsEdit(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -143,17 +140,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showBusinessEditScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => BusinessInformationScreen()),
-    );
+    NavUtil.navigateToPushScreen(context, BusinessInformationScreen());
   }
 
   void _showReportScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ReportScreen()),
-    );
+    NavUtil.navigateToPushScreen(context, ReportScreen());
   }
 
   List<GetProfileData> profileData = [];
@@ -166,7 +157,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     _getProfileNetworkCall();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
@@ -176,24 +166,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     if (addresses != null && addresses.isNotEmpty) {
       selectedAddress = addresses.firstWhere(
-            (e) => e.addressType?.toLowerCase() == "home",
+        (e) => e.addressType?.toLowerCase() == "home",
         orElse: () => addresses.firstWhere(
-              (e) => e.addressType?.toLowerCase() == "work",
+          (e) => e.addressType?.toLowerCase() == "work",
           orElse: () => addresses.first,
         ),
       );
     }
-
-    // final String fullAddress = selectedAddress == null
-    //     ? "No address added"
-    //     : [
-    //   selectedAddress!.flatDoorHouseDetails,
-    //   selectedAddress!.areaStreetCityBlockDetails,
-    //   selectedAddress!.poBoxOrPostalCode,
-    // ].whereType<String>()
-    //     .where((e) => e.isNotEmpty)
-    //     .join(', ');
-
 
     if (profileState.isLoading == true) {
       return Center(child: CircularProgressIndicator());
@@ -231,7 +210,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: profileState.isLoading
             ? Center(child: CircularProgressIndicator())
-            : (profile != null) ? SingleChildScrollView(
+            : (profile != null)
+            ? SingleChildScrollView(
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
@@ -257,15 +237,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                                 image: DecorationImage(
                                   image: profileImage != null
-                                      ? FileImage(profileImage!) as ImageProvider
+                                      ? FileImage(profileImage!)
+                                            as ImageProvider
                                       : (profile!.profileImageUrl != null &&
-                                      profile.profileImageUrl!.isNotEmpty)
+                                            profile.profileImageUrl!.isNotEmpty)
                                       ? NetworkImage(
-                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                  )
+                                          "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                        )
                                       : const AssetImage(
-                                    "assets/images/default_profile.png",
-                                  ),
+                                          "assets/images/default_profile.png",
+                                        ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -356,18 +337,25 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                                 subtitle: index == 0
                                     ? Text(
-                                  profile?.emailId ?? "",
-                                  style: TextStyle(color: Colors.grey.shade300, fontSize: Constant.CONTAINER_SIZE_12),
-                                )
+                                        profile?.emailId ?? "",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade300,
+                                          fontSize: Constant.CONTAINER_SIZE_12,
+                                        ),
+                                      )
                                     : null,
                                 trailing: index == 0
                                     ? null
                                     : Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: w * 0.044,
-                                  color: Colors.white,
+                                        Icons.arrow_forward_ios,
+                                        size: w * 0.044,
+                                        color: Colors.white,
+                                      ),
+                                onTap: () => _handleItemTap(
+                                  index,
+                                  context,
+                                  profile?.mobileNumber ?? "",
                                 ),
-                                onTap: () => _handleItemTap(index, context, profile?.mobileNumber ?? "", ),
                               );
                             },
                           ),
@@ -418,12 +406,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     ),
                   ],
                 ),
-              ):const Center(
-          child: Text(
-            "No Data available",
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
+              )
+            : const Center(
+                child: Text(
+                  "No Data available",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
     );
   }
@@ -474,8 +463,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   _getProfileNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {
