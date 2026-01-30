@@ -239,7 +239,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   image: profileImage != null
                                       ? FileImage(profileImage!)
                                             as ImageProvider
-                                      : (profile!.profileImageUrl != null &&
+                                      : (profile.profileImageUrl != null &&
                                             profile.profileImageUrl!.isNotEmpty)
                                       ? NetworkImage(
                                           "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
@@ -252,13 +252,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                _profileImgNetworkCall(
-                                  profileState,
-                                  profile!.mobileNumber!,
-                                  profile.fullName!,
-                                );
-                                Utils.showProfilePhotoBottomSheet(context);
+                              onTap: () async {
+                                profileImage = await Utils.uploadImage(context);
+                                if (profileImage != null) {
+                                  _profileImgNetworkCall(
+                                    profileState,
+                                    profile.mobileNumber!,
+                                    profile.fullName!,
+                                  );
+                                }
                               },
                               child: Container(
                                 height: w * 0.09,
@@ -282,7 +284,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              profile?.fullName ?? "",
+                              profile.fullName ?? "",
                               style: TextStyle(
                                 fontSize: w * 0.055,
                                 fontWeight: FontWeight.w700,
@@ -290,7 +292,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             SizedBox(width: w * 0.015),
-                            if (profile?.fullName != null)
+                            if (profile.fullName != null)
                               GestureDetector(
                                 onTap: () {
                                   showModalBottomSheet(
@@ -299,7 +301,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                     backgroundColor: Colors.transparent,
                                     builder: (context) =>
                                         EditRestaurantNameDialog(
-                                          name: profile!.fullName!,
+                                          name: profile.fullName!,
                                         ),
                                   );
                                 },
@@ -337,7 +339,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                                 subtitle: index == 0
                                     ? Text(
-                                        profile?.emailId ?? "",
+                                        profile.emailId ?? "",
                                         style: TextStyle(
                                           color: Colors.grey.shade300,
                                           fontSize: Constant.CONTAINER_SIZE_12,
@@ -354,7 +356,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 onTap: () => _handleItemTap(
                                   index,
                                   context,
-                                  profile?.mobileNumber ?? "",
+                                  profile.mobileNumber ?? "",
                                 ),
                               );
                             },
