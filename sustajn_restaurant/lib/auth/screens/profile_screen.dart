@@ -19,6 +19,7 @@ import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
 import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
+import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
@@ -67,7 +68,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showSubscriptionDialog(context);
         break;
       case 6:
-        _showBankDetailsEdit(context);
+        _showPaymentTypeScreen(context);
+        // _showBankDetailsEdit(context);
         break;
       case 7:
         ///history
@@ -76,7 +78,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showFeedbackDialog(context);
         break;
       case 9:
-        _showAddressDialog(context);
+        _showContactUsDialogue(context);
         break;
       case 10:
         _showReferPartnerDialogue(context);
@@ -138,9 +140,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       builder: (_) => EditReferPartnerDialog(),
     );
   }
+  void _showContactUsDialogue(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => ContactUsDialog(),
+    );
+  }
 
   void _showBusinessEditScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(context, BusinessInformationScreen());
+  }
+  void _showPaymentTypeScreen(BuildContext context) {
+    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
   }
 
   void _showReportScreen(BuildContext context) {
