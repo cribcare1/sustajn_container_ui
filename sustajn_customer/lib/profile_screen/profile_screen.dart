@@ -287,7 +287,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       child: Scaffold(
         backgroundColor: theme?.scaffoldBackgroundColor,
         appBar: AppBar(
-          centerTitle: true,
+          centerTitle: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
           surfaceTintColor: Colors.transparent,
@@ -303,17 +303,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                 color: Colors.white.withOpacity(0.25),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.arrow_back_ios, color: Colors.white),
+              child: Icon(Icons.arrow_back_ios, color: Colors.black),
             ),
           ),
-          title: Text(
-            "My Profile",
+          title:Padding(
+            padding: const EdgeInsets.only(left: 4),
+          child:  Text(
+            Strings.MY_PROFILE,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: Constant.CONTAINER_SIZE_18,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
+        ),
         ),
         extendBodyBehindAppBar:true,
 
@@ -327,8 +330,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                     decoration: BoxDecoration(
                       color: Constant.gold,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
+                        bottomLeft: Radius.circular(Constant.CONTAINER_SIZE_40),
+                        bottomRight: Radius.circular(Constant.CONTAINER_SIZE_40),
                       ),
                     ),
                   ),
@@ -343,7 +346,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             width: w * 0.28,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Constant.gold, width: 2),
+                              border: Border.all(color: Constant.gold, width: Constant.CONTAINER_SIZE_2),
                               ),
                             child: ClipOval(
                               child:
@@ -419,50 +422,54 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                       ),
                       SizedBox(height: h * 0.00),
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: h * 0.02),
-                        padding: EdgeInsets.symmetric(horizontal: w * 0.04),
-                        child: Column(
-                          children: [
-                            // EMAIL
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: h * 0.015),
-                              child: _detailItem(
-                                icon: Icons.email_outlined,
-                                title: "Email",
-                                value: profileData!.emailId ?? "",
-                                w: w,
-                                showEdit: false,
-                                theme: theme,
-                                ontap: () {},
+                        margin: EdgeInsets.only(
+                          left: h*0.02,
+                          right: h*0.02,
+                        ),
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.email_outlined,
+                                size: w*0.054,
+                                color: Constant.gold,
+                          ),
+                                title: Text(
+                                  Strings.EMAIL_1,
+                                style: TextStyle(
+                                  fontSize: Constant.CONTAINER_SIZE_14,
+                                  color: Colors.white,
+                                ),
+                                ),
+                                subtitle: Text(profileData!.emailId ?? "",
+                                maxLines:1,
+                                overflow:TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: w*0.040,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                                ),
+                        ),
+                      ),
+                                _commonDivider(),
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: h*0.02,
+                                right: h*0.02,
+                                top: 0,
                               ),
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: h*0.02),
-                            child:Divider(
-                              height: 0,
-                              thickness: 1,
-                              color: Colors.grey.withOpacity(0.3),
-                            ),
-                            ),
-
-                            SizedBox(height: h*0.01),
-                            // OTHER FIELDS — DIRECTLY BELOW EMAIL
-                            ListView.separated(
+                            child: ListView.separated(
                               padding: EdgeInsets.zero,
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: detailList.length,
                               separatorBuilder: (context, index) => Divider(
-                                height: 0,
-                                thickness: 1,
+                                height: Constant.CONTAINER_SIZE_1,
+                                thickness: Constant.CONTAINER_SIZE_1,
                                 color: Constant.grey.withOpacity(0.3),
                               ),
                               itemBuilder: (context, index) {
                                 final item = detailList[index];
                                 return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  visualDensity: VisualDensity.compact,
                                   leading: Icon(
                                     item['icon'],
                                     size: w * 0.054,
@@ -470,8 +477,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   ),
                                   title: Text(
                                     item['name'],
-                                    style: const TextStyle(
-                                      fontSize: 14,
+                                    style: TextStyle(
+                                      fontSize: Constant.CONTAINER_SIZE_14,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -491,11 +498,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 );
                               },
                             ),
-                          ],
-                        ),
-                      ),
-
-
+                            ),
                       Center(
                         child: Container(
                           width: w * 0.55,
@@ -507,7 +510,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               size: w * 0.05,
                             ),
                             label: Text(
-                              "Log Out",
+                              Strings.LOG_OUT,
                               style: TextStyle(
                                 color: Constant.gold,
                                 fontSize: w * 0.045,
@@ -599,6 +602,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             ),
           ),
       ],
+    );
+  }
+  Widget _commonDivider(){
+    return Divider(
+      height: Constant.CONTAINER_SIZE_1,
+      thickness: Constant.CONTAINER_SIZE_1,
+      color: Constant.grey.withOpacity(0.3),
     );
   }
   _uploadImageNetwork(var registrationState) async {
