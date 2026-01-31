@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
-
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../main.dart';
@@ -132,12 +131,12 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen>
                           )
                         : SizedBox(
                             width: double.infinity,
-                            height: 45,
+                            height: Constant.CONTAINER_SIZE_45,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFFD0A52C),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                                 ),
                               ),
                               onPressed: () {

@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
-
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../main.dart';
@@ -156,7 +154,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                           if (Strings.alphaNumericWithSpace.hasMatch(v)) {
                             return Strings.SPECIAL_CHAR;
                           }
-
                           return null;
                         },
                       ),

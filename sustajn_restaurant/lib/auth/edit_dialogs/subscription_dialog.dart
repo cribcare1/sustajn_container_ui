@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 
 class SubscriptionPlanBottomSheet extends StatelessWidget {
   const SubscriptionPlanBottomSheet({super.key});
@@ -31,8 +32,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                   children: [
                     _planCard(context),
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    _dateSection(context),
                     SizedBox(height: Constant.CONTAINER_SIZE_30),
                     _viewAllPlansButton(context),
                   ],
@@ -45,7 +44,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
     );
   }
 
-  // ================= HEADER =================
   Widget _header(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -58,7 +56,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'Subscription Plan',
+              Strings.SUBSCRIPTION_PLAN,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.white
@@ -86,6 +84,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Container(
           padding: EdgeInsets.all(Constant.SIZE_04),
@@ -106,7 +105,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                 ],
 
               ),
-              // color: theme.primaryColor,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
               border: Border.all(
                 color: Constant.gold,
@@ -157,14 +155,13 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
           ),
         ),
 
-        // PRICE TAG
         Positioned(
-          right: Constant.CONTAINER_SIZE_16,
-          top: Constant.CONTAINER_SIZE_12,
+          top: Constant.NEGATIVE_HEIGHT_10,
+          right: Constant.CONTAINER_SIZE_24,
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: Constant.CONTAINER_SIZE_12,
-              vertical: Constant.SIZE_06,
+              vertical: Constant.SIZE_08,
             ),
             decoration: BoxDecoration(
               color: Constant.gold,
