@@ -3,9 +3,9 @@ import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_product_list_screen.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
-import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../utils/global_utils.dart';
 import 'lease_product_scan_screen.dart';
@@ -52,7 +52,6 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
 
     if (barcode!.rawValue != null && barcode.rawValue!.isNotEmpty) {
       final value = barcode.rawValue!;
-      print("✅ QR Code Detected: $value");
       if (mounted) {
         setState(() {
           _isScanned = true;
@@ -64,6 +63,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
       await controller.stop();
     }
   }
+
 
   Future<void> _toggleFlash() async {
     await controller.toggleTorch();
@@ -92,7 +92,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Scan",
+          title: Strings.SCAN,
           leading: CustomBackButton(),
           action: [
             IconButton(
@@ -119,8 +119,8 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 300,
-                        width: 300,
+                        height: Constant.CONTAINER_SIZE_300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: MobileScanner(
                             controller: controller,
@@ -132,12 +132,12 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_16),
                       SizedBox(
-                        width: 300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: Text(
-                            widget.type.contains("LEASE")
-                                ? "Scan Customer QR to Leased Products"
-                                : "Scan Customer QR to Receive Products",
+                            widget.type.contains(Strings.LEASE_UC)
+                                ? Strings.SCAN_FOR_LEASE
+                                : Strings.SCAN_FOR_RECEIVE,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(
@@ -159,9 +159,9 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                       child: Text(
-                        'Or',
+                        Strings.OR,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -184,12 +184,12 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                   ).textTheme.titleSmall!.copyWith(color: Colors.white),
                   controller: textController,
                   decoration: InputDecoration(
-                    hintText: "Enter Customer ID",
+                    hintText: Strings.ENTER_CUSTOMER_ID,
                     hintStyle: Theme.of(
                       context,
                     ).textTheme.titleSmall!.copyWith(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     filled: true,
@@ -204,7 +204,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                         ? null
                         : () {
                       scannedId = textController.text;
-                            if (widget.type.contains("LEASE")) {
+                            if (widget.type.contains(Strings.LEASE_UC)) {
                               NavUtil.navigateToPushScreen(
                                 context,
                                 LeaseProductScanScreen(
@@ -212,11 +212,11 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                   damage: widget.damage,
                                 ),
                               );
-                            } else if (widget.type.contains("RECEIVE")) {
+                            } else if (widget.type.contains(Strings.RECEIVE_UC)) {
                               NavUtil.navigateToPushScreen(
                                 context,
                                 ReceiveProductListScreen(
-                                  type: widget.type ?? "",
+                                  type: widget.type,
                                   damage: widget.damage,
                                 ),
                               );
@@ -229,12 +229,12 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                       foregroundColor: Colors.black,
                       disabledBackgroundColor: Colors.grey.shade300,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                         side: BorderSide(color: Colors.white),
                       ),
                     ),
                     child: Text(
-                      'Verify',
+                      Strings.VERIFY,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: textController.text.isEmpty
                             ? Colors.grey
@@ -255,7 +255,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
               color: Theme.of(context).secondaryHeaderColor,
             ),
             padding: EdgeInsetsGeometry.all(Constant.CONTAINER_SIZE_10),
-            child: Icon(Icons.flip_camera_android, size: 20),
+            child: Icon(Icons.flip_camera_android, size: Constant.CONTAINER_SIZE_20),
           ),
         ),
       ),

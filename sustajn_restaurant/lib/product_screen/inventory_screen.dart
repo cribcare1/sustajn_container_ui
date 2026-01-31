@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
@@ -15,7 +16,7 @@ import '../utils/utility.dart';
 import 'models/inventory_list.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
-  const InventoryScreen({Key? key}) : super(key: key);
+  const InventoryScreen({super.key});
 
   @override
   ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
@@ -50,42 +51,45 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: CustomTheme.searchField(
-              searchController,
-              Strings.SEARCH_BY_CONTAINER_NAME,
-              onFilterTap: () => _showSortBottomSheet(context),
+    return SafeArea(
+      top: false,bottom: true,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: CustomTheme.searchField(
+                searchController,
+                Strings.SEARCH_BY_CONTAINER_NAME,
+                onFilterTap: () => _showSortBottomSheet(context),
+              ),
             ),
-          ),
-          SizedBox(height: Constant.CONTAINER_SIZE_10),
-          Expanded(
-            child: orderState.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : orderState.getContainerData!.containersDetails!.isEmpty
-                ? Center(
-              child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
-            )
-                : ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
-              itemCount: orderState.getContainerData!.containersDetails!.length,
-              itemBuilder: (context, index) {
-                final item = orderState.getContainerData!.containersDetails![index];
-                return inventoryItemCard(
-                  context,
-                  title: item.containerName!,
-                  subTitle: item.containerUniqueId!,
-                  volume: item.capacity.toString(),
-                  qty: item.quantityAvailable!,
-                );
-              },
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+            Expanded(
+              child: orderState.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : orderState.getContainerData!.containersDetails!.isEmpty
+                  ? Center(
+                child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
+              )
+                  : ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
+                itemCount: orderState.getContainerData!.containersDetails!.length,
+                itemBuilder: (context, index) {
+                  final item = orderState.getContainerData!.containersDetails![index];
+                  return inventoryItemCard(
+                    context,
+                    title: item.containerName!,
+                    subTitle: item.containerUniqueId!,
+                    volume: item.capacity.toString(),
+                    qty: item.quantityAvailable!,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -209,132 +213,119 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       builder: (context) {
         bool tempAscending = _isQtyAscending;
 
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              decoration: BoxDecoration(
-                color: Color(0xFF0F2E22),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+        return SafeArea(
+          top: false,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        Strings.SORT_BY,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: Constant.CONTAINER_SIZE_18,
-                          fontWeight: FontWeight.w600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          Strings.SORT_BY,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constant.CONTAINER_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : Low to High",
+                        style: TextStyle(color: Colors.white),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                      trailing: Radio<bool>(
+                        value: true,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Constant.gold; // selected
+                            }
+                            return Colors.white; // unselected
+                          },
+                        ),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
                         },
-                        child: Icon(Icons.cancel_rounded, color: Constant.gold),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : Low to High",
-                      style: TextStyle(color: Colors.white),
                     ),
-                    trailing: Radio<bool>(
-                      value: true,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : High to Low",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    trailing: Radio<bool>(
-                      value: false,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Constant.gold),
-                            foregroundColor: Constant.gold,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = true;
-                              orderState.getContainerData!.containersDetails!.sort(
-                                (a, b) => a.quantityAvailable!.compareTo(b.quantityAvailable!),
-                              );
-                            });
-                            Navigator.pop(context);
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : High to Low",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Radio<bool>(
+                        value: false,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold, // selected color
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (states) {
+                            if (states.contains(MaterialState.selected)) {
+                              return Constant.gold; // selected
+                            }
+                            return Colors.white; // unselected
                           },
-                          child: Text(Strings.CLEAR),
                         ),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
+                        },
                       ),
+                    ),
 
-                      SizedBox(width: Constant.CONTAINER_SIZE_12),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Constant.gold,
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = tempAscending;
-                              orderState.getContainerData!.containersDetails!.sort(
-                                (a, b) => _isQtyAscending
-                                    ? a.quantityAvailable!.compareTo(b.quantityAvailable!)
-                                    : b.quantityAvailable!.compareTo(a.quantityAvailable!),
-                              );
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(Strings.APPLY),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SubmitClearButton(onLeftTap: (){setState(() {
+                      _isQtyAscending = true;
+                      orderState.getContainerData!.containersDetails!.sort(
+                            (a, b) => a.quantityAvailable!.compareTo(b.quantityAvailable!),
+                      );
+                    });
+                    Navigator.pop(context);},
+                        leftText: Strings.CLEAR,
+                        onRightTap: (){
+                          setState(() {
+                            _isQtyAscending = tempAscending;
+                            orderState.getContainerData!.containersDetails!.sort(
+                                  (a, b) => _isQtyAscending
+                                  ? a.quantityAvailable!.compareTo(b.quantityAvailable!)
+                                  : b.quantityAvailable!.compareTo(a.quantityAvailable!),
+                            );
+                          });
+                          Navigator.pop(context);
+                        },rightText: Strings.APPLY,)
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
