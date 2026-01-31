@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_details.dart';
+
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -9,7 +11,6 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../models/lease_model.dart';
 
 class ReceiveScreen extends ConsumerStatefulWidget {
   const ReceiveScreen({super.key});
@@ -46,49 +47,67 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
 
-    final container = containerState.containerHistorydata?.data?.receivedResponses;
+    final container =
+        containerState.containerHistorydata?.data?.receivedResponses;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: CustomTheme.searchField(
-              searchController,
-               Strings.SEARCH_BY_CONTAINER_NAME,
-              onFilterTap: () => _showSortBottomSheet(context),
-            ),
-          ),
-          SizedBox(height: Constant.CONTAINER_SIZE_16),
-          Expanded(
-            child: containerState.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : container == null || container.isEmpty
-                ? const Center(
-              child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
-            )
-                :ListView.separated(
-              itemCount: container.length,
-              padding: EdgeInsets.symmetric(
-                horizontal: Constant.CONTAINER_SIZE_16,
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: CustomTheme.searchField(
+                searchController,
+                Strings.SEARCH_BY_CONTAINER_NAME,
+                onFilterTap: () => _showSortBottomSheet(context),
               ),
-              separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
-              itemBuilder: (context, index) {
-                final item = container[index];
-                return _receiveCard(context, theme, item.transactionId!, item.productsName!, item.returnedQuantity!, item.returnDateTime!);
-              },
             ),
-          ),
-        ],
+            SizedBox(height: Constant.CONTAINER_SIZE_16),
+            Expanded(
+              child: containerState.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : container == null || container.isEmpty
+                  ? const Center(
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : ListView.separated(
+                      itemCount: container.length,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                      ),
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: Constant.SIZE_08),
+                      itemBuilder: (context, index) {
+                        final item = container[index];
+                        return _receiveCard(
+                          context,
+                          theme,
+                          item.transactionId!,
+                          item.productsName!,
+                          item.returnedQuantity!,
+                          item.returnDateTime!,
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _receiveCard(BuildContext context, ThemeData theme,
-      String transactionId,
-      String productName,
-      int qty,
-      String date,) {
+  Widget _receiveCard(
+    BuildContext context,
+    ThemeData theme,
+    String transactionId,
+    String productName,
+    int qty,
+    String date,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () => _openLeaseDialog(context, transactionId, date),
@@ -162,155 +181,158 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
     );
   }
 
-  void _openLeaseDialog(BuildContext context,  String transactionId,
-      String date) {
+  void _openLeaseDialog(
+    BuildContext context,
+    String transactionId,
+    String date,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => ReceiveDetailsDialog(
-          transactionId: transactionId, dateTime: date
-      ),
+      builder: (_) =>
+          ReceiveDetailsDialog(transactionId: transactionId, dateTime: date),
     );
   }
 
   void _showSortBottomSheet(BuildContext context) {
     final containerState = ref.watch(orderProvider);
 
-    final container = containerState.containerHistorydata?.data?.receivedResponses;
+    final container =
+        containerState.containerHistorydata?.data?.receivedResponses;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
         bool tempAscending = _isQtyAscending;
 
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              decoration: BoxDecoration(
-                color: Color(0xFF0F2E22),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+        return SafeArea(
+          top: false,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        Strings.SORT_BY,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: Constant.CONTAINER_SIZE_18,
-                          fontWeight: FontWeight.w600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          Strings.SORT_BY,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constant.CONTAINER_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.cancel_rounded,
+                            color: Constant.gold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : Low to High",
+                        style: TextStyle(color: Colors.white),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                      trailing: Radio<bool>(
+                        value: true,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold,
+                        fillColor: MaterialStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Constant.gold; // selected
+                          }
+                          return Colors.white; // unselected
+                        }),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
                         },
-                        child: Icon(Icons.cancel_rounded, color: Constant.gold),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    ),
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : High to Low",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Radio<bool>(
+                        value: false,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold,
+                        fillColor: MaterialStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Constant.gold; // selected
+                          }
+                          return Colors.white; // unselected
+                        }),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
+                        },
+                      ),
+                    ),
 
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : Low to High",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    trailing: Radio<bool>(
-                      value: true,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : High to Low",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    trailing: Radio<bool>(
-                      value: false,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
-                        });
-                      },
-                    ),
-                  ),
-
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Constant.gold),
-                            foregroundColor: Constant.gold,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SubmitClearButton(
+                      onLeftTap: () {
+                        setState(() {
+                          _isQtyAscending = true;
+                          container!.sort(
+                            (a, b) => a.returnedQuantity!.compareTo(
+                              b.returnedQuantity!,
                             ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = true;
-                              container!.sort(
-                                    (a, b) => a.returnedQuantity!.compareTo(b.returnedQuantity!),
-                              );
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(Strings.CLEAR),
-                        ),
-                      ),
-
-                      SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Constant.gold,
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = tempAscending;
-                              container!.sort(
-                                    (a, b) => _isQtyAscending
-                                    ? a.returnedQuantity!.compareTo(b.returnedQuantity!)
-                                    : b.returnedQuantity!.compareTo(a.returnedQuantity!),
-                              );
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(Strings.APPLY),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
+                          );
+                        });
+                        Navigator.pop(context);
+                      },
+                      leftText: Strings.CLEAR,
+                      onRightTap: () {
+                        setState(() {
+                          _isQtyAscending = tempAscending;
+                          container!.sort(
+                            (a, b) => _isQtyAscending
+                                ? a.returnedQuantity!.compareTo(
+                                    b.returnedQuantity!,
+                                  )
+                                : b.returnedQuantity!.compareTo(
+                                    a.returnedQuantity!,
+                                  ),
+                          );
+                        });
+                        Navigator.pop(context);
+                      },
+                      rightText: Strings.APPLY,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
@@ -318,20 +340,21 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
 
   _getReceiveNetworkCall() async {
     try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then(
-              (isNetworkAvailable) {
-            Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-            final orderState = ref.read(orderProvider);
-            if (isNetworkAvailable) {
-              orderState.setIsLoading(true);
-              final userId = Utils.userId;
-              final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
-              ref.read(getContainerHistoryProvider(url));
-            } else {
-              orderState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
+          ref.read(getContainerHistoryProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
     } catch (e) {
       Utils.printLog('Error in visitor button onPressed: $e');
     }

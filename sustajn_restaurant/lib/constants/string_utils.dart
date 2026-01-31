@@ -295,5 +295,6 @@ class Strings {
   static const String SCAN_PRODUCT ="Scan Product";
   static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
   static const String ENTER_CONTAINER_ID ="Enter Container ID";
+  static const String NO_PROFILE ="Your profile information is not available right now";
 
 }

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
 
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
-import '../main.dart';
 import '../utils/theme_utils.dart';
 import 'inventory_screen.dart';
 import 'lease_screen/lease_screen.dart';
-
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -20,11 +17,8 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen>
     with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-
-
 
   @override
   void initState() {
@@ -43,15 +37,15 @@ class _ProductsScreenState extends State<ProductsScreen>
   Widget build(BuildContext context) {
     var theme = CustomTheme.getTheme(true);
     return Scaffold(
-      backgroundColor: const Color(0xFF0E3B2E),
+      backgroundColor: theme!.primaryColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0E3B2E),
+        backgroundColor:theme.primaryColor,
         elevation: 0,
         centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
           Strings.PRODUCTS,
-            style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
+          style: theme  .textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(
           controller: _tabController,
@@ -71,9 +65,7 @@ class _ProductsScreenState extends State<ProductsScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  const Text(
-                    Strings.INVENTORY,
-                  ),
+                  const Text(Strings.INVENTORY),
                 ],
               ),
             ),
@@ -81,11 +73,12 @@ class _ProductsScreenState extends State<ProductsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_made_outlined, size: Constant.CONTAINER_SIZE_18),
-                  SizedBox(width: Constant.SIZE_06),
-                  const Text(
-                    Strings.LEASE,
+                  Icon(
+                    Icons.call_made_outlined,
+                    size: Constant.CONTAINER_SIZE_18,
                   ),
+                  SizedBox(width: Constant.SIZE_06),
+                  const Text(Strings.LEASE),
                 ],
               ),
             ),
@@ -93,17 +86,17 @@ class _ProductsScreenState extends State<ProductsScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.call_received_outlined, size: Constant.CONTAINER_SIZE_18),
-                  SizedBox(width: Constant.SIZE_06),
-                  const Text(
-                    Strings.RECEIVE,
+                  Icon(
+                    Icons.call_received_outlined,
+                    size: Constant.CONTAINER_SIZE_18,
                   ),
+                  SizedBox(width: Constant.SIZE_06),
+                  const Text(Strings.RECEIVE),
                 ],
               ),
             ),
           ],
         ),
-
       ),
 
       body: Column(
@@ -111,17 +104,11 @@ class _ProductsScreenState extends State<ProductsScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                InventoryScreen(),
-                 LeaseScreen(),
-                ReceiveScreen(),
-              ],
+              children: [InventoryScreen(), LeaseScreen(), ReceiveScreen()],
             ),
           ),
         ],
       ),
     );
   }
-
-
 }

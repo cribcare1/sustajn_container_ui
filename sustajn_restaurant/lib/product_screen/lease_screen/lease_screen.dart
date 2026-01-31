@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -49,67 +50,78 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     final container =
         containerState.containerHistorydata?.data?.leasedResponses;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: CustomTheme.searchField(
-              searchController,
-              Strings.SEARCH_BY_CONTAINER_NAME,
-              onFilterTap: () => _showSortBottomSheet(context),
+    return SafeArea(
+      bottom: true,
+      top: false,
+      child: Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: CustomTheme.searchField(
+                searchController,
+                Strings.SEARCH_BY_CONTAINER_NAME,
+                onFilterTap: () => _showSortBottomSheet(context),
+              ),
             ),
-          ),
-          SizedBox(height: Constant.CONTAINER_SIZE_10),
-          Expanded(
-            child: containerState.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : container == null
-                ? const Center(
-                    child: Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+            Expanded(
+              child: containerState.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : container == null
+                  ? const Center(
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: container.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: Constant.SIZE_08),
+                      itemBuilder: (context, index) {
+                        final item = container[index];
+                        return _leaseCard(
+                          context,
+                          theme,
+                          item.transactionId!,
+                          item.productsName!,
+                          item.leasedQuantity!,
+                          item.leasedStartDateTime!,
+                        );
+                      },
                     ),
-                  )
-                : ListView.separated(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Constant.CONTAINER_SIZE_16,
-                    ),
-                    itemCount: container.length,
-                    separatorBuilder: (_, __) =>
-                        SizedBox(height: Constant.SIZE_08),
-                    itemBuilder: (context, index) {
-                      final item = container[index];
-                      return _leaseCard(context, theme, item.transactionId!, item.productsName!, item.leasedQuantity!, item.leasedStartDateTime!);
-                    },
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
+
+        //// todo needed later
+
+        // floatingActionButton: InkWell(
+        //   onTap: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (_) => QrCodeScanner()),
+        //     );
+        //   },
+        //   child: Container(
+        //     height: Constant.CONTAINER_SIZE_60,
+        //     width: Constant.CONTAINER_SIZE_60,
+        //     decoration: const BoxDecoration(
+        //       color: Constant.gold,
+        //       shape: BoxShape.circle,
+        //     ),
+        //     child: Icon(
+        //       Icons.qr_code_scanner,
+        //       color: theme.scaffoldBackgroundColor,
+        //       size: Constant.CONTAINER_SIZE_30,
+        //     ),
+        //   ),
+        // ),
       ),
-
-      //// todo needed later
-
-      // floatingActionButton: InkWell(
-      //   onTap: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (_) => QrCodeScanner()),
-      //     );
-      //   },
-      //   child: Container(
-      //     height: Constant.CONTAINER_SIZE_60,
-      //     width: Constant.CONTAINER_SIZE_60,
-      //     decoration: const BoxDecoration(
-      //       color: Constant.gold,
-      //       shape: BoxShape.circle,
-      //     ),
-      //     child: Icon(
-      //       Icons.qr_code_scanner,
-      //       color: theme.scaffoldBackgroundColor,
-      //       size: Constant.CONTAINER_SIZE_30,
-      //     ),
-      //   ),
-      // ),
     );
   }
 
@@ -209,7 +221,6 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
-
     final containerState = ref.watch(orderProvider);
 
     final container =
@@ -221,133 +232,130 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
       builder: (context) {
         bool tempAscending = _isQtyAscending;
 
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              decoration: BoxDecoration(
-                color: Color(0xFF0F2E22),
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+        return SafeArea(
+          top: false,
+          child: StatefulBuilder(
+            builder: (context, setModalState) {
+              return Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color: Color(0xFF0F2E22),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        Strings.SORT_BY,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: Constant.CONTAINER_SIZE_18,
-                          fontWeight: FontWeight.w600,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          Strings.SORT_BY,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constant.CONTAINER_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.cancel_rounded,
+                            color: Constant.gold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : Low to High",
+                        style: TextStyle(color: Colors.white),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                      trailing: Radio<bool>(
+                        value: true,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold,
+                        fillColor: MaterialStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Constant.gold; // selected
+                          }
+                          return Colors.white; // unselected
+                        }),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
                         },
-                        child: Icon(Icons.cancel_rounded, color: Constant.gold),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : Low to High",
-                      style: TextStyle(color: Colors.white),
                     ),
-                    trailing: Radio<bool>(
-                      value: true,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Quantity : High to Low",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Radio<bool>(
+                        value: false,
+                        groupValue: tempAscending,
+                        activeColor: Constant.gold,
+                        fillColor: MaterialStateProperty.resolveWith<Color>((
+                          states,
+                        ) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Constant.gold; // selected
+                          }
+                          return Colors.white; // unselected
+                        }),
+                        onChanged: (value) {
+                          setModalState(() {
+                            tempAscending = value!;
+                          });
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SubmitClearButton(
+                      onLeftTap: () {
+                        setState(() {
+                          _isQtyAscending = true;
+                          container!.sort(
+                            (a, b) =>
+                                a.leasedQuantity!.compareTo(b.leasedQuantity!),
+                          );
                         });
+                        Navigator.pop(context);
                       },
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      "Quantity : High to Low",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    trailing: Radio<bool>(
-                      value: false,
-                      groupValue: tempAscending,
-                      activeColor: Constant.gold,
-                      onChanged: (value) {
-                        setModalState(() {
-                          tempAscending = value!;
+                      leftText: Strings.CLEAR,
+                      onRightTap: () {
+                        setState(() {
+                          _isQtyAscending = tempAscending;
+                          container!.sort(
+                            (a, b) => _isQtyAscending
+                                ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
+                                : b.leasedQuantity!.compareTo(
+                                    a.leasedQuantity!,
+                                  ),
+                          );
                         });
+                        Navigator.pop(context);
                       },
+                      rightText: Strings.APPLY,
                     ),
-                  ),
-
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Constant.gold),
-                            foregroundColor: Constant.gold,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = true;
-                              container!.sort(
-                                    (a, b) => a.leasedQuantity!.compareTo(b.leasedQuantity!),
-                              );
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(Strings.CLEAR),
-                        ),
-                      ),
-
-                      SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Constant.gold,
-                            foregroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isQtyAscending = tempAscending;
-                              container!.sort(
-                                    (a, b) => _isQtyAscending
-                                    ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
-                                    : b.leasedQuantity!.compareTo(a.leasedQuantity!),
-                              );
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Text(Strings.APPLY),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );
