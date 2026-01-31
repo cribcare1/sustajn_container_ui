@@ -219,7 +219,9 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
 
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
+
+                    await Future.delayed(const Duration(milliseconds: 200));
 
                     Utils.displayDialog(
                       context: context,
