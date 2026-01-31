@@ -214,7 +214,6 @@ class Utils {
 
               Row(
                 children: [
-                  // GO BACK
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onCancel,
@@ -237,7 +236,6 @@ class Utils {
 
                   SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-                  // STAY
                   Expanded(
                     child: ElevatedButton(
                       onPressed: onYes,
@@ -743,6 +741,9 @@ class Utils {
       return null;
     }
   }
+
+
+
 
 
 

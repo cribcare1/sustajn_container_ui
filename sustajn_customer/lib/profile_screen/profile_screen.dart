@@ -58,30 +58,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   bool isLoading = true;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
-  ProfileData? profileData;
+  int _profileImageVersion = 0;
 
   @override
   void initState() {
     super.initState();
     Utils.getToken();
-    // _getNetworkData();
-    _loadProfile();
+    ref.read(getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'));
   }
 
-  Future<void> _loadProfile() async {
-    final profile = await Utils.getProfile();
 
-    if (profile == null) {
-      Utils.showToast("Session expired. Please login again.");
-      Navigator.pop(context);
-      return;
-    }
-
-    setState(() {
-      profileData = profile;
-      isLoading = false;
-    });
-  }
 
 
   void _handleItemTap(
@@ -89,12 +75,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     BuildContext context,
     int? planID,
     String? mobileNumber,
+      String? secondaryNumber,
       var profileState,
       int userId
   ) {
     switch (index) {
       case 0:
-        _showMobileEditDialog(context, mobileNumber ?? "", userId );
+        _showMobileEditDialog(context, mobileNumber ?? "", userId, secondaryNumber ??"" );
         break;
       case 1:
         _showEditAddress(context);
@@ -128,12 +115,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     }
   }
 
-  void _showMobileEditDialog(BuildContext context, String mobileNumber, int userId) {
+  void _showMobileEditDialog(BuildContext context, String mobileNumber, int userId, String secondayNumber) {
+    ref.read(profileProvider).setContext(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => EditMobileNumberDialog(mobileNumber: mobileNumber,
+      builder: (_) => EditMobileNumberDialog(mobileNumber: mobileNumber,
+      secondaryNumber: secondayNumber,
       userId: userId,),
     );
   }
@@ -211,6 +200,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         : null;
 
     if (profile?.bankDetailsResponse == null) {
+      if (!mounted) return;
       showCustomSnackBar(
         context: context,
         message:
@@ -267,12 +257,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final signUpState = ref.watch(signUpNotifier);
     final profileState = ref.watch(profileProvider);
 
-    final planId = signUpState.subscriptionModel?.data?.first.planId;
     final profile = profileState.profileList.isNotEmpty
         ? profileState.profileList.first
+        : null;
+
+    final profileImageUrl =
+    profile?.profileImageUrl != null && profile!.profileImageUrl!.isNotEmpty
+        ? '${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profile.profileImageUrl}?v=$_profileImageVersion'
         : null;
 
     final size = MediaQuery.of(context).size;
@@ -341,20 +334,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
                             child: ClipOval(
-                              child:
-                                  (profileData?.profileImageUrl != null &&
-                                      profileData!.profileImageUrl!.isNotEmpty)
+                              child: profileImageUrl != null
                                   ? Image.network(
-                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profileData!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                            return _defaultProfileIcon(
-                                              w,
-                                              theme,
-                                            );
-                                          },
-                                    )
+                                profileImageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return _defaultProfileIcon(w, theme);
+                                },
+                              )
                                   : _defaultProfileIcon(w, theme),
                             ),
                           ),
@@ -396,22 +383,39 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             ),
                           ),
                           SizedBox(width: w * 0.015),
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
+                              ref.read(profileProvider).setContext(context);
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
+                                useRootNavigator: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => EditUserNameDialog(
-                                  userName:   profile?.fullName ?? "",
-                                  userId:widget.userId ,
+                                builder: (_) => EditUserNameDialog(
+                                  userName: profile?.fullName ?? "",
+                                  dob: profile?.dateOfBirth ?? "",
+                                  userId: widget.userId,
                                 ),
                               );
+
                             },
                             child: Icon(
                               Icons.edit_outlined,
                               size: w * 0.045,
                               color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // SizedBox(height: h * 0.01),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                           'DOB - ${profile?.dateOfBirth ?? ""} ',
+                            style: TextStyle(
+                              fontSize: w * 0.045,
+                              color: Colors.white70,
                             ),
                           ),
                         ],
@@ -426,7 +430,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                         child: _detailItem(
                           icon: Icons.email_outlined,
                           title: "Email",
-                          value: profileData!.emailId ?? "",
+                          value: profile?.emailId ?? "",
                           w: w,
                           showEdit: false,
                           theme: theme,
@@ -471,7 +475,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 index,
                                 context,
                                 widget.subScriptionPlanId,
-                                  profileData!.mobileNumber ?? "",
+                                  profile?.mobileNumber ?? "",
+                                profile?.secondaryNumber ?? "",
                                 profileState, profile!.id ??0
                               ),
                             );
@@ -589,9 +594,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     if (_profileImage == null) return;
 
     try {
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
 
       if (!isNetworkAvailable) {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
@@ -604,31 +608,49 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Strings.PART_URL: '${NetworkUrls.UPLOAD_IMAGE}${widget.userId}',
         Strings.REQUEST_KEY: 'image',
         Strings.IMAGE: _profileImage!,
+        'userId': widget.userId,
       };
 
-      final UpdateImage response = await ref.read(
-        uploadImageProvider(params).future,
-      );
+      final UpdateImage response = await ref.read(uploadImageProvider(params).future);
 
-      if (response.message == "success") {
-        Utils.printLog("Uploaded image path: ${response.data}");
-
-        // Update local UI
-        setState(() {
-          profileData?.profileImageUrl = response.data;
-        });
-
-
-        showCustomSnackBar(context: context,
-            message: 'User image uploaded successfully',
-            color: Constant.green);
-
-        ref.read(profileProvider).clearProfileList();
-        ref.read(
-          getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      if (response.message?.toLowerCase().contains("success") ?? false) {
+        final profileResponse = await ref.refresh(
+          getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}').future,
         );
-      } else {
-        Utils.showToast(response.status ?? "Image upload failed");
+
+        ref.read(profileProvider.notifier).setProfileList(profileResponse);
+
+        await SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
+        await SharedPreferenceUtils.saveDataInSF(
+          Strings.PROFILE_DATA,
+          jsonEncode(profileResponse.data?.toJson()),
+        );
+
+        final newImageFileName = profileResponse.data?.profileImageUrl;
+        if (newImageFileName != null && newImageFileName.isNotEmpty) {
+          final newUrl =
+              '${NetworkUrls.PROFILE_IMAGE_BASE_URL}$newImageFileName?v=${DateTime.now().millisecondsSinceEpoch}';
+          await NetworkImage(newUrl).evict();
+        }
+
+        imageCache.clear();
+        imageCache.clearLiveImages();
+
+        if (mounted) {
+          setState(() {
+            _profileImageVersion++;
+            _profileImage = null;
+          });
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showCustomSnackBar(
+              context: context,
+              message: 'User image uploaded successfully',
+              color: Constant.green,
+            );
+
+          });
+        }
       }
     } catch (e) {
       Utils.printLog('Error in image upload: $e');
@@ -637,4 +659,5 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       ref.read(profileProvider).setIsLoading(false);
     }
   }
+
 }

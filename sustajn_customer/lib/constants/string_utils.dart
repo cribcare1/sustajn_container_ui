@@ -236,7 +236,7 @@ class Strings {
   static const String MOBILE = 'Mobile number required';
   static const String VALID_MOB = 'Enter valid 10-digit mobile number';
   static const String EMAIL_REQ = 'Email required';
-  static const String RESTAURANT = 'Restaurant name required';
+  static const String RESTAURANT = 'Name required';
   static const String TITLE_1 = 'Order Confirmed\nSahara Sizzle';
   static const String TITLE_2 = 'Item Marked as Sold\nYour return window has expired.The full amount of AED[amount] has now been charged.';
   static const String TITLE_3 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';

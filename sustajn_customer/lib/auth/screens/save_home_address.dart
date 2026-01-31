@@ -7,11 +7,13 @@ import 'package:sustajn_customer/provider/search_res_provider.dart';
 
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/location_state.dart';
+import '../../provider/profile_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
@@ -40,6 +42,8 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
   final flatController = TextEditingController();
   final streetController = TextEditingController();
   final saveAsController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   bool _isSearching = false;
   Timer? _searchDebounce;
 
@@ -236,7 +240,10 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                             ),
                             child: SingleChildScrollView(
                               controller: scrollController,
-                              child: _bottomContent(state, context),
+                              child: Form(
+                                  key: _formKey,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  child: _bottomContent(state, context)),
                             ),
                           );
                         },
@@ -324,12 +331,14 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
         const SizedBox(height: 12),
         _inputField(Strings.FLAT_FLOOR_TXT, flatController),
+
         const SizedBox(height: 12),
         _inputField(
           Strings.STREET_BLOCK_TXT,
           streetController,
           isLarge: true,
         ),
+
 
 
         const SizedBox(height: 16),
@@ -345,6 +354,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
               ),
             ),
             onPressed: () {
+              if (!_formKey.currentState!.validate()) {
+                return;
+              }
               final String addressType = selectedSaveAs == 0
                   ? Strings.HOME
                   : selectedSaveAs == 1
@@ -597,12 +609,21 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
       String hint,
       TextEditingController controller, {
         bool isLarge = false,
+        bool isRequired = true,
       }) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       style: const TextStyle(color: Colors.white),
       minLines: isLarge ? 2 : 1,
       maxLines: isLarge ? 3 : 1,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (!isRequired) return null;
+        if (value == null || value.trim().isEmpty) {
+          return "Please fill this field";
+        }
+        return null;
+      },
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: Colors.white70),
@@ -628,8 +649,14 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
           try {
             if (isNetworkAvailable) {
               profileState.setLoading(true);
+
               profileState.setContext(context);
-              ref.read(createAddressProvider(body));
+              await ref.read(createAddressProvider(body).future);
+
+              ref.read(profileProvider).clearProfileList();
+              await ref.read(
+                getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
+              );
             } else {
               profileState.setLoading(false);
               if (!mounted) return;
@@ -662,7 +689,11 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
           if (isNetworkAvailable) {
             profileState.setLoading(true);
             profileState.setContext(context);
-            ref.read(editAddressProvider(body));
+            await ref.read(editAddressProvider(body).future);
+            ref.read(profileProvider).clearProfileList();
+            await ref.read(
+              getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
+            );
           } else {
             profileState.setLoading(false);
             if (!mounted) return;

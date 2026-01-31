@@ -152,13 +152,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         controller: restaurantCtrl,
                         hint: Strings.FULL_NAME,
                         validator: (v) {
-                          if (v!.isEmpty) return Strings.RESTAURANT;
-                          if (Strings.alphaNumericWithSpace.hasMatch(v)) {
+                          if (v == null || v.isEmpty) return Strings.RESTAURANT;
+                          if (!Strings.alphaNumericWithSpace.hasMatch(v)) {
                             return Strings.SPECIAL_CHAR;
                           }
-
                           return null;
                         },
+
                       ),
 
                     _buildTextField(

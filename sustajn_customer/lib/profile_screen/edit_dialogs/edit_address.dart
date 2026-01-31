@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/screens/save_home_address.dart';
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
@@ -71,8 +72,22 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
                 theme: theme,
                 icon: Icons.delete_forever,
                 text: "Remove Address",
-                onTap: () {
-                  _getNetworkDataVerify(profileState, widget.address.id ?? 0);
+                onTap: () async {
+                  Utils.displayDialog(
+                    context: context,
+                    icon: Icons.warning,
+                    title: "Delete Address",
+                    subTitle: "This address will be permanently removed from your saved list.You can't undo this action",
+                    cancelButtonText: "No",
+                    yesButtonText: "Delete",
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                    onYes: () async {
+                      Navigator.pop(context);
+                      _deleteAddress(profileState, widget.address.id ?? 0);
+                    },
+                  );
                 },
               ),
             ],
@@ -138,7 +153,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     );
   }
 
-  _getNetworkDataVerify(var registrationState, int addressId) async {
+  _deleteAddress(var registrationState, int addressId) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
@@ -146,7 +161,14 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
         try {
           if (isNetworkAvailable) {
             registrationState.setIsLoading(true);
-            ref.read(deleteAddressProvider({"addressId": addressId}));
+            await ref.read(
+              deleteAddressProvider({"addressId": addressId}).future,
+            );
+
+            ref.read(profileProvider).clearProfileList();
+            await ref.read(
+              getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
+            );
           } else {
             registrationState.setIsLoading(false);
             if (!mounted) return;

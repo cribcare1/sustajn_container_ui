@@ -12,8 +12,9 @@ import '../../utils/utils.dart';
 
 class EditUserNameDialog extends ConsumerStatefulWidget {
   final String userName;
+  final String dob;
   final int userId;
-  const EditUserNameDialog({Key? key, required this.userName, required this.userId}) : super(key: key);
+  const EditUserNameDialog({Key? key, required this.userName, required this.dob,required this.userId}) : super(key: key);
 
   @override
   ConsumerState<EditUserNameDialog> createState() =>
@@ -35,6 +36,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     Utils.userId;
 
     _controller.text = widget.userName;
+    _dobCtrl.text = widget.dob;
 
     _controller.selection = TextSelection.collapsed(
       offset: widget.userName.length,
@@ -217,11 +219,25 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
 
-                    await _editNameNetwork(
-                      _controller.text.trim(),
-                      profileState,
+                    Navigator.of(context).pop();
+
+                    Utils.displayDialog(
+                      context: context,
+                      icon: Icons.warning,
+                      title: "Confirm Update",
+                      subTitle: "Are you sure you want to update your userName?",
+                      cancelButtonText: "No",
+                      yesButtonText: "Yes",
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                      onYes: () async {
+                        Navigator.pop(context);
+                        await _editNameNetwork(_controller.text, profileState);
+                      },
                     );
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFC8B531),
                     padding: EdgeInsets.symmetric(
@@ -254,7 +270,9 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     final data = {
       "userId": Utils.userId,
       "fullName": name,
-      "dateOfBirth": selectedDob == null ? null : Utils.formatDob(selectedDob!),
+      "dateOfBirth": selectedDob != null
+          ? Utils.formatDob(selectedDob!)
+          : widget.dob,
     };
     return data;
   }
@@ -268,8 +286,6 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         return false;
       }
-
-      profileState.setContext(context);
       profileState.setIsLoading(true);
 
       if (profileState.profileList.isNotEmpty) {
@@ -281,18 +297,11 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
         getJsonData(name),
         Strings.USER_DATA,
       );
-
       await ref.read(profileUpdateProvider(params).future);
-
-      if (Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
-
       ref.read(profileProvider).clearProfileList();
-      ref.read(
-        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      await ref.read(
+        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}').future,
       );
-
       return true;
     } catch (e) {
       Utils.printLog('Error in edit name: $e');
@@ -301,8 +310,4 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
       profileState.setIsLoading(false);
     }
   }
-
-
-
-
 }
