@@ -237,23 +237,24 @@ class _EditMobileNumberDialogState
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
 
-                      Navigator.of(context).pop();
-
-                      Utils.displayDialog(
-                        context: context,
-                        icon: Icons.warning,
-                        title: "Confirm Update",
-                        subTitle: "Are you sure you want to update your contact number?",
-                        cancelButtonText: "No",
-                        yesButtonText: "Yes",
-                        onCancel: () {
-                          Navigator.pop(context);
-                        },
-                        onYes: () async {
-                          Navigator.pop(context);
-                          await _editMobileNetwork(_controller.text, profileState);
-                        },
-                      );
+                      Navigator.pop(context);
+                      await _editMobileNetwork(_controller.text, profileState);
+                      //
+                      // Utils.displayDialog(
+                      //   context: context,
+                      //   icon: Icons.warning,
+                      //   title: "Confirm Update",
+                      //   subTitle: "Are you sure you want to update your contact number?",
+                      //   cancelButtonText: "No",
+                      //   yesButtonText: "Yes",
+                      //   onCancel: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      //   onYes: () async {
+                      //     Navigator.pop(context);
+                      //     await _editMobileNetwork(_controller.text, profileState);
+                      //   },
+                      // );
                     },
 
                     child: Text(

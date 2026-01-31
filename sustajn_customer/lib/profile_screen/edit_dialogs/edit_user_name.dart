@@ -218,26 +218,24 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
-
                     Navigator.pop(context);
+                    await _editNameNetwork(_controller.text, profileState);
 
-                    await Future.delayed(const Duration(milliseconds: 200));
-
-                    Utils.displayDialog(
-                      context: context,
-                      icon: Icons.warning,
-                      title: "Confirm Update",
-                      subTitle: "Are you sure you want to update your userName?",
-                      cancelButtonText: "No",
-                      yesButtonText: "Yes",
-                      onCancel: () {
-                        Navigator.pop(context);
-                      },
-                      onYes: () async {
-                        Navigator.pop(context);
-                        await _editNameNetwork(_controller.text, profileState);
-                      },
-                    );
+                    // Utils.displayDialog(
+                    //   context: context,
+                    //   icon: Icons.warning,
+                    //   title: "Confirm Update",
+                    //   subTitle: "Are you sure you want to update your userName?",
+                    //   cancelButtonText: "No",
+                    //   yesButtonText: "Yes",
+                    //   onCancel: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    //   onYes: () async {
+                    //     Navigator.pop(context);
+                    //     await _editNameNetwork(_controller.text, profileState);
+                    //   },
+                    // );
                   },
 
                   style: ElevatedButton.styleFrom(

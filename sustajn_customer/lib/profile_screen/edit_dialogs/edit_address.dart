@@ -73,21 +73,23 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
                 icon: Icons.delete_forever,
                 text: "Remove Address",
                 onTap: () async {
-                  Utils.displayDialog(
-                    context: context,
-                    icon: Icons.warning,
-                    title: "Delete Address",
-                    subTitle: "This address will be permanently removed from your saved list.You can't undo this action",
-                    cancelButtonText: "No",
-                    yesButtonText: "Delete",
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                    onYes: () async {
-                      Navigator.pop(context);
-                      _deleteAddress(profileState, widget.address.id ?? 0);
-                    },
-                  );
+                  Navigator.pop(context);
+                  _deleteAddress(profileState, widget.address.id ?? 0);
+                  // Utils.displayDialog(
+                  //   context: context,
+                  //   icon: Icons.warning,
+                  //   title: "Delete Address",
+                  //   subTitle: "This address will be permanently removed from your saved list.You can't undo this action",
+                  //   cancelButtonText: "No",
+                  //   yesButtonText: "Delete",
+                  //   onCancel: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  //   onYes: () async {
+                  //     Navigator.pop(context);
+                  //     _deleteAddress(profileState, widget.address.id ?? 0);
+                  //   },
+                  // );
                 },
               ),
             ],
