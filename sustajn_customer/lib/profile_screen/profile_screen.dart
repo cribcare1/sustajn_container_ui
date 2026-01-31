@@ -347,10 +347,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 profileImageUrl,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return _defaultProfileIcon(w, theme);
+                                  return _defaultProfileIcon(w, theme!);
                                 },
                               )
-                                  : _defaultProfileIcon(w, theme),
+                                  : _defaultProfileIcon(w, theme!),
                             ),
                           ),
                           GestureDetector(
@@ -434,28 +434,45 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           left: h*0.02,
                           right: h*0.02,
                         ),
-                        child: _detailItem(
-                          icon: Icons.email_outlined,
-                          title: "Email",
-                          value: profile?.emailId ?? "",
-                          w: w,
-                          showEdit: false,
-                          theme: theme,
-                          ontap: () {},
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.email_outlined,
+                            size: w*0.054,
+                            color: Constant.gold,
+                          ),
+                          title: Text(
+                            Strings.EMAIL_1,
+                            style: TextStyle(
+                              fontSize: Constant.CONTAINER_SIZE_14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(profile!.emailId ?? "",
+                            maxLines:1,
+                            overflow:TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: w*0.040,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: h * 0.02),
-                        child: Divider(color: Colors.grey.withOpacity(0.3)),
-                      ),
+                      _commonDivider(),
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: h * 0.02),
+                        margin: EdgeInsets.only(
+                          left: h*0.02,
+                          right: h*0.02,
+                          top: 0,
+                        ),
                         child: ListView.separated(
+                          padding: EdgeInsets.zero,
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: detailList.length,
                           separatorBuilder: (context, index) => Divider(
                             height: 1,
+                            thickness: 1,
                             color: Constant.grey.withOpacity(0.3),
                           ),
                           itemBuilder: (context, index) {
