@@ -26,6 +26,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       if (profileData == null ||
           profileData.bankDetailsResponse == null) {
+        if (!mounted) return;
         showCustomSnackBar(
           context: context,
           message:

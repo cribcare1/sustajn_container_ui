@@ -62,6 +62,7 @@ class RegistrationData {
       "email": email,
       "phoneNumber": phoneNumber,
       "password": password,
+      "dateOfBirth": dateOfBirth,
 
       "address": {
         "addressType": addressType ?? "HOME",

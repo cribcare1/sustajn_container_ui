@@ -34,8 +34,9 @@ class ProfileData {
   int? subscriptionPlanId;
 
   BankDetailsResponse? bankDetailsResponse;
-  dynamic cardDetailsResponse;
-  dynamic paymentGetWayResponse;
+  CardDetailsResponse? cardDetailsResponse;
+  PaymentGetWayResponse? paymentGetWayResponse;
+
 
   List<AddressResponses>? addressResponses;
   SubscriptionResponse? subscriptionResponse;
@@ -72,8 +73,14 @@ class ProfileData {
         ? BankDetailsResponse.fromJson(json['bankDetailsResponse'])
         : null;
 
-    cardDetailsResponse = json['cardDetailsResponse'];
-    paymentGetWayResponse = json['paymentGetWayResponse'];
+    cardDetailsResponse = json['cardDetailsResponse'] != null
+        ? CardDetailsResponse.fromJson(json['cardDetailsResponse'])
+        : null;
+
+    paymentGetWayResponse = json['paymentGetWayResponse'] != null
+        ? PaymentGetWayResponse.fromJson(json['paymentGetWayResponse'])
+        : null;
+
 
     if (json['addressResponses'] != null) {
       addressResponses = <AddressResponses>[];
@@ -164,6 +171,52 @@ class BankDetailsResponse {
   }
 }
 
+class CardDetailsResponse {
+  int? id;
+  String? cardHolderName;
+  String? cardNumber;
+  String? expiryDate;
+
+  CardDetailsResponse.fromJson(Map<String, dynamic> json) {
+    id = json['id']??0;
+    cardHolderName = json['cardHolderName']??"";
+    cardNumber = json['cardNumber']??"";
+    expiryDate = json['expiryDate']??"";
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'cardHolderName': cardHolderName,
+    'cardNumber': cardNumber,
+    'expiryDate': expiryDate,
+  };
+}
+
+class PaymentGetWayResponse {
+  int? id;
+  String? paymentGatewayId;
+  String? paymentGatewayName;
+
+  PaymentGetWayResponse({
+    this.id,
+    this.paymentGatewayId,
+    this.paymentGatewayName,
+  });
+
+  PaymentGetWayResponse.fromJson(Map<String, dynamic> json) {
+    id = json['id']??0;
+    paymentGatewayId = json['paymentGatewayId']??"";
+    paymentGatewayName = json['paymentGatewayName']??"";
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'paymentGatewayId': paymentGatewayId,
+    'paymentGatewayName': paymentGatewayName,
+  };
+}
+
+
 class AddressResponses {
   int? id;
   String? addressType;
@@ -239,9 +292,9 @@ class SubscriptionResponse {
     planType = json['planType']??"";
     description = json['description']??"";
     partnerType = json['partnerType']??"";
-    feeType = json['feeType']??0;
-    depositType = json['depositType']??0;
-    commissionPercentage = json['commissionPercentage']??0;
+    feeType = json['feeType']??0.0;
+    depositType = json['depositType']??0.0;
+    commissionPercentage = json['commissionPercentage']??0.0;
     minContainers = json['minContainers']??0;
     maxContainers = json['maxContainers']??0;
     totalContainers = json['totalContainers']??0;

@@ -122,13 +122,31 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                   borderRadius: BorderRadius.circular(Constant.SIZE_08),
                 ),
                 child: Center(
-                  child: Image.asset(
-                    'assets/images/dip_cup.png',
-                    height: Constant.CONTAINER_SIZE_70,
-                    width: Constant.CONTAINER_SIZE_70,
-                  ),
-                ),
-              ),
+          child: (data.productImageUrl != null &&
+              data.productImageUrl!.isNotEmpty)
+              ? Image.network(
+            "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${data.productImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
+            height: Constant.CONTAINER_SIZE_70,
+            width: Constant.CONTAINER_SIZE_70,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/dip_cup.png',
+                height: Constant.CONTAINER_SIZE_70,
+                width: Constant.CONTAINER_SIZE_70,
+                fit: BoxFit.contain,
+              );
+            },
+          )
+              : Image.asset(
+            'assets/images/dip_cup.png',
+            height: Constant.CONTAINER_SIZE_70,
+            width: Constant.CONTAINER_SIZE_70,
+            fit: BoxFit.contain,
+          ),
+        ),
+
+      ),
 
               SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -152,12 +170,12 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: Constant.subtitleText,
+                        color: Constant.profileText,
                         fontSize: Constant.LABEL_TEXT_SIZE_14,
                       ),
                     ),
                     Text(
-                     data.quantity.toString(),
+                     '${data.quantity.toString()}ml',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -192,21 +210,11 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                     ],
                   ),
                   SizedBox(height: Constant.SIZE_08),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Constant.SIZE_08,
-                      vertical: Constant.SIZE_06,
-                    ),
-                    decoration: BoxDecoration(
-                      color: getDaysBadgeColor(data.daysLeft ?? 0),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      ' ${data.dueDate}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.black,
-                        fontSize: Constant.CONTAINER_SIZE_12,
-                      ),
+                  Text(
+                    ' Due on: ${data.dueDate}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
                 ],

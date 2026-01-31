@@ -144,31 +144,32 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
 final uploadImageProvider =
 FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
 
+  final profileState = ref.watch(profileProvider);
   final serviceProvider = ref.read(getProfileApiService);
 
-  final String partUrl = params[Strings.PART_URL];
-  final String requestKey = params[Strings.REQUEST_KEY];
-  final File image = params[Strings.IMAGE];
-
   final responseData = await serviceProvider.uploadImage(
-    partUrl,
-    requestKey,
-    image,
+    params[Strings.PART_URL],
+    params[Strings.REQUEST_KEY],
+    params[Strings.IMAGE],
   );
 
-  final isSuccess =
-      responseData.message?.toLowerCase() == "success";
-
-  if (isSuccess) {
-
-  } else {
-    Utils.showToast(
-      responseData.status ?? "Image upload failed",
-    );
+  if (responseData.message?.toLowerCase() == "success") {
+    if (profileState.context.mounted) {
+      showCustomSnackBar(
+        context: profileState.context,
+        message: responseData.message!,
+        color: Colors.green,
+      );
+    }
   }
 
   return responseData;
 });
+
+
+
+
+
 
 
 
