@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/screens/map_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -12,7 +14,7 @@ import '../../utils/utility.dart';
 class EditAddressDialog extends ConsumerStatefulWidget {
   final AddressResponses? selectedAddress;
 
-  const EditAddressDialog({required this.selectedAddress, Key? key});
+  const EditAddressDialog({super.key, required this.selectedAddress});
 
   @override
   ConsumerState<EditAddressDialog> createState() => _EditAddressDialogState();
@@ -49,7 +51,8 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
     }
     return null;
   }
-
+double lat = 0.0;
+double long = 0.0;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -119,6 +122,20 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
                     ),
+                    suffixIcon: IconButton(onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => MapScreen()),
+                      ).then((value) {
+                        if (value != null) {
+                          _addressController.text = value['address'];
+                          lat = value['lat'];
+                          long = value['lng'];
+                        }
+                      });
+                    },
+
+                        icon: Icon(Icons.map,color: theme.secondaryHeaderColor,)),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: Constant.CONTAINER_SIZE_16,
                       vertical: Constant.CONTAINER_SIZE_14,

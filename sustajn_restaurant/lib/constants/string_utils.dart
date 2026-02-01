@@ -246,7 +246,8 @@ class Strings {
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS = "Logged in successfully";
-  static const String G_MAP_API_KEY = "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
+  static const String G_MAP_API_KEY = "AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q";
+      // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
   static const GO_BACK = 'Are you sure you want to go back?';
   static const VERIFIED_MAIL =
       'You have already verified your email.Going back may interrupt the account setup process';
