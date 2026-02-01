@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
@@ -10,28 +11,66 @@ class AddCardDialog extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Constant.CONTAINER_SIZE_20),
-          ),
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
+        child: Container(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+          ),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _header(context, theme),
             SizedBox(height: Constant.SIZE_15),
-            _cardField(theme, 'Card Holder Name*'),
+            _cardField(
+                theme, 
+                'Card Holder Name*',
+              KeyboardType: TextInputType.name,
+              maxLength: 26,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+              ],
+            ),
             SizedBox(height: Constant.SIZE_10),
-            _cardField(theme, 'Card Number*'),
+            _cardField(
+                theme,
+                'Card Number*',
+              KeyboardType: TextInputType.number,
+              maxLength: 16,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+            ),
             SizedBox(height: Constant.SIZE_10),
             Row(
               children: [
-                Expanded(child: _cardField(theme, 'Expiration Date')),
+                Expanded(child: _cardField(theme,
+                    'Expiration Date',
+                  KeyboardType: TextInputType.number,
+                  maxLength: 5,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9/]')),
+                    ExpiryDateFormatter(),
+                  ]
+                )),
                 SizedBox(width: Constant.SIZE_10),
-                Expanded(child: _cardField(theme, 'CVV')),
+                Expanded(child: _cardField(
+                    theme,
+                    'CVV',
+                  KeyboardType: TextInputType.number,
+                  maxLength: 4,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                )),
               ],
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
@@ -57,6 +96,8 @@ class AddCardDialog extends StatelessWidget {
           ],
         ),
       ),
+    ),
+    ),
     );
   }
 
@@ -91,13 +132,23 @@ class AddCardDialog extends StatelessWidget {
     );
   }
 
-  Widget _cardField(ThemeData theme, String hint) {
+  Widget _cardField(
+      ThemeData theme, 
+      String hint, {
+  TextInputType KeyboardType = TextInputType.text,
+  List<TextInputFormatter>? inputFormatters,
+  int? maxLength,
+  }) {
     return TextField(
+      keyboardType: KeyboardType,
+      inputFormatters: inputFormatters,
+      maxLength: maxLength,
       style: theme.textTheme.bodyLarge?.copyWith(
         color: Colors.white,
       ),
       cursorColor: Colors.white,
       decoration: InputDecoration(
+        counterText: '',
         hintText: hint,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(
           color: Colors.white
@@ -114,3 +165,23 @@ class AddCardDialog extends StatelessWidget {
     );
   }
 }
+
+class ExpiryDateFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue,
+      ) {
+    var text = newValue.text.replaceAll('/', '');
+
+    if (text.length >= 3) {
+      text = '${text.substring(0, 2)}/${text.substring(2)}';
+    }
+
+    return newValue.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+}
+
