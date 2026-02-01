@@ -400,12 +400,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFC8B531),
+                                backgroundColor: theme.secondaryHeaderColor,
                                 padding: EdgeInsets.symmetric(
                                   vertical: h * 0.018,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(w * 0.04),
+                                  side: BorderSide(color: Colors.white)
                                 ),
                               ),
                               onPressed: () {
@@ -429,7 +430,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
               )
             : const Center(
                 child: Text(
-                  "No Data available",
+                  Strings.NO_PROFILE,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
