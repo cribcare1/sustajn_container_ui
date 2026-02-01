@@ -152,7 +152,9 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 flow: widget.flow,
                 existingAddress: widget.existingAddress,
               ),
-              leading: CustomBackButton(),
+              leading: CustomBackButton(
+                onBack: _onBackPressed,
+              ),
             ).getAppBar(context),
 
             body:
@@ -243,7 +245,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                               child: Form(
                                   key: _formKey,
                                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  child: _bottomContent(state, context)),
+                                  child: _bottomContent(state, context, addressState)),
                             ),
                           );
                         },
@@ -256,8 +258,8 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
           ),
-            if(addressState.isLoading)
-              Utils.showProgressBar()
+            // if(addressState.isLoading)
+            //   Utils.showProgressBar()
         ]
         ),
       ),
@@ -266,7 +268,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
 
-  Widget _bottomContent(LocationState state, BuildContext context) {
+  Widget _bottomContent(LocationState state, BuildContext context, var addressState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -330,13 +332,15 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         ],
 
         const SizedBox(height: 12),
-        _inputField(Strings.FLAT_FLOOR_TXT, flatController),
+        _inputField(Strings.FLAT_FLOOR_TXT, flatController,
+        isRequired: true),
 
         const SizedBox(height: 12),
         _inputField(
           Strings.STREET_BLOCK_TXT,
           streetController,
           isLarge: true,
+          isRequired: false
         ),
 
 
@@ -353,10 +357,13 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            onPressed: () {
+            onPressed: addressState.isLoading
+                ? null
+                : () {
               if (!_formKey.currentState!.validate()) {
                 return;
               }
+
               final String addressType = selectedSaveAs == 0
                   ? Strings.HOME
                   : selectedSaveAs == 1
@@ -365,7 +372,8 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
               final String flatDetails = flatController.text.trim();
 
-              final String areaDetails = streetController.text.trim().isEmpty
+              final String areaDetails =
+              streetController.text.trim().isEmpty
                   ? state.address
                   : "${streetController.text}, ${state.address}";
 
@@ -407,10 +415,16 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 _addNewAddress(body);
               }
             },
-
-
-
-            child: Text(
+            child: addressState.isLoading
+                ? const SizedBox(
+              height: 22,
+              width: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Constant.gold,
+              ),
+            )
+                : Text(
               Strings.CONFIRM_CONTINUE,
               style: TextStyle(
                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -419,6 +433,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
               ),
             ),
           ),
+
         ),
       ],
     );
@@ -613,6 +628,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
       }) {
     return TextFormField(
       controller: controller,
+      cursorColor: Colors.white70,
       style: const TextStyle(color: Colors.white),
       minLines: isLarge ? 2 : 1,
       maxLines: isLarge ? 3 : 1,

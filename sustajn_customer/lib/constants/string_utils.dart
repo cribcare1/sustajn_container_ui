@@ -279,7 +279,7 @@ class Strings {
 
   static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
 
-  static final RegExp number_validation = RegExp(r'[A-Z0-9]');
+  static final RegExp number_validation = RegExp(r'[A-Za-z0-9]');
 
 
 

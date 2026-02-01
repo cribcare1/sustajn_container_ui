@@ -118,8 +118,6 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-
               SizedBox(height: Constant.SIZE_08),
               TextFormField(
                 controller: _controller,
@@ -165,45 +163,16 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
 
               SizedBox(height: Constant.CONTAINER_SIZE_14),
 
-              TextFormField(
-                controller: _dobCtrl,
-                readOnly: true,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
-                cursorColor: Colors.white70,
-                decoration: InputDecoration(
-                  labelText: Strings.DOB,
-                  labelStyle: const TextStyle(color: Colors.white70),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.calendar_month, color: Colors.white70),
-                    onPressed: () async {
-                      final picked = await Utils.pickDob(context, initialDate: selectedDob);
-
-                      if (picked != null) {
-                        setState(() {
-                          selectedDob = picked;
-                          _dobCtrl.text = Utils.formatDob(picked);
-                        });
-                      }
-                    },
-                  ),
-                ),
+              Utils.getDateTimePicker(
+                  context,
+                  Strings.DOB,
+                  _dobCtrl,
+                      (date) {
+                    setState(() {
+                      selectedDob = date;
+                    });
+                  },
+                  theme
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
 

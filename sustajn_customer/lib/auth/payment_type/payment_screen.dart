@@ -10,6 +10,7 @@ import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
@@ -349,7 +350,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           onChanged: signupState.setIban,
           inputFormatters: [
             FilteringTextInputFormatter.allow(Strings.number_validation),
-            LengthLimitingTextInputFormatter(Constant.MAX_LINE_34),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_23),
           ],
         ),
       ],
@@ -375,6 +376,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           cursorColor: Colors.white,
           onChanged: onChanged,
           inputFormatters: inputFormatters,
+          textCapitalization: TextCapitalization.characters,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: theme.textTheme.bodyMedium?.copyWith(
@@ -466,7 +468,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 signupState.updateBankDetails();
                 NavUtil.navigateToPushScreen(context, SubscriptionScreen());
               } else {
-                await _getNetworkDataVerify(signupState);
+                await _addBankNetwork(signupState);
               }
               },
             style: ElevatedButton.styleFrom(
@@ -514,7 +516,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return data;
   }
 
-  _getNetworkDataVerify(var registrationState) async {
+  _addBankNetwork(var registrationState) async {
     try {
       if (registrationState.isValid) {
         await ref.read(networkProvider.notifier).isNetworkAvailable().then((
@@ -524,7 +526,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-              ref.read(createBankProvider(getJsonData()));
+             await ref.read(createBankProvider(getJsonData()).future);
+              ref.read(profileProvider).clearProfileList();
+              await ref.read(
+                getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
+              );
             } else {
               registrationState.setIsLoading(false);
               if (!mounted) return;

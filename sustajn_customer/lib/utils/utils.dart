@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_customer/auth/screens/login_screen.dart';
@@ -16,8 +17,6 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../models/get_profile_model.dart';
-import '../models/login_model.dart';
-import '../models/signup_model.dart';
 
 class Utils {
 
@@ -529,60 +528,61 @@ class Utils {
       ),
     );
   }
-
-  static Future<DateTime?> pickDob(BuildContext context,
-      {DateTime? initialDate}) async {
-
-    final theme = Theme.of(context);
-    final now = DateTime.now();
-
-    final firstDate = DateTime(now.year - 100);
-    final lastDate = DateTime(now.year - 13);
-
-    return await showDatePicker(
-      context: context,
-      initialDate: initialDate ?? lastDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-
-      helpText: "Select Date of Birth",
-      cancelText: "Cancel",
-      confirmText: "Select",
-
-      builder: (context, child) {
-        return Theme(
-          data: theme.copyWith(
-            useMaterial3: true,
-
-            colorScheme: theme.colorScheme.copyWith(
-              primary: Constant.gold,
-              onPrimary: Colors.black,
-              surface: theme.scaffoldBackgroundColor,
-              onSurface: Colors.white,
-              secondary: Constant.gold,
+  static Widget getDateTimePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme
+      ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              doneStyle: const TextStyle( fontSize: 16),
             ),
-
-            datePickerTheme: DatePickerThemeData(
-              backgroundColor: theme.scaffoldBackgroundColor,
-              headerBackgroundColor: Constant.gold,
-              headerForegroundColor: Colors.black,
-              dayForegroundColor: MaterialStateProperty.all(Colors.white),
-              yearForegroundColor: MaterialStateProperty.all(Colors.white),
-              weekdayStyle: const TextStyle(color: Colors.white70),
-              dayStyle: const TextStyle(color: Colors.white),
-              yearStyle: const TextStyle(color: Colors.white),
-              todayForegroundColor: MaterialStateProperty.all(Constant.gold),
-              todayBackgroundColor:
-              MaterialStateProperty.all(Colors.transparent),
-              dayOverlayColor:
-              MaterialStateProperty.all(Constant.gold.withOpacity(0.2)),
+            onConfirm: (date) {
+              final value =
+                  "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white70),
+              suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
             ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
           ),
-          child: child!,
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -814,19 +814,23 @@ void showCustomSnackBar({
   required String message,
   required Color color,
 }) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  final messenger = ScaffoldMessenger.of(context);
+
+  messenger.clearSnackBars();
+
+  messenger.showSnackBar(
     SnackBar(
       content: Text(
         message,
-        style:  TextStyle(
+        style: TextStyle(
           color: Colors.white,
           fontSize: Constant.CONTAINER_SIZE_14,
         ),
       ),
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
-      margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
     ),
   );
 }
+

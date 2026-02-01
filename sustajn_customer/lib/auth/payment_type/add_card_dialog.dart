@@ -10,55 +10,64 @@ class AddCardDialog extends StatelessWidget {
     final theme = Theme.of(context);
 
     return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Constant.CONTAINER_SIZE_20),
-          ),
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _header(context, theme),
-            SizedBox(height: Constant.SIZE_15),
-            _cardField(theme, 'Card Holder Name*'),
-            SizedBox(height: Constant.SIZE_10),
-            _cardField(theme, 'Card Number*'),
-            SizedBox(height: Constant.SIZE_10),
-            Row(
-              children: [
-                Expanded(child: _cardField(theme, 'Expiration Date')),
-                SizedBox(width: Constant.SIZE_10),
-                Expanded(child: _cardField(theme, 'CVV')),
-              ],
+        child: Container(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Constant.CONTAINER_SIZE_20),
             ),
-            SizedBox(height: Constant.CONTAINER_SIZE_20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Constant.gold,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _header(context, theme),
+              SizedBox(height: Constant.SIZE_15),
+              _cardField(theme, 'Card Holder Name*'),
+              SizedBox(height: Constant.SIZE_10),
+              _cardField(theme, 'Card Number*'),
+              SizedBox(height: Constant.SIZE_10),
+              Row(
+                children: [
+                  Expanded(child: _cardField(theme, 'Expiration Date')),
+                  SizedBox(width: Constant.SIZE_10),
+                  Expanded(child: _cardField(theme, 'CVV')),
+                ],
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Constant.gold,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                    ),
                   ),
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Add Card & Continue',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.primaryColor,
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Add Card & Continue',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.primaryColor,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
+
+
 
   Widget _header(BuildContext context, ThemeData theme) {
     return Row(

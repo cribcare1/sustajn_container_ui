@@ -41,6 +41,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
         widget.onBack();
         return false;
       },
+
       child: Scaffold(
         backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: CustomAppBar(
@@ -58,7 +59,14 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
               icon: Icon(Icons.filter_list, color: Colors.white),
             ),
           ],
-          leading: CustomBackButton(onTap: widget.onBack),
+          leading: CustomBackButton(
+            onBack: () async {
+              widget.onBack();
+              return false;
+            },
+          ),
+
+
         ).getAppBar(context),
         body: SafeArea(
           child: Stack(

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/provider/profile_provider.dart';
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
@@ -274,10 +275,15 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
             registrationState.setIsLoading(true);
             registrationState.setContext(context);
 
-            ref.read(feedbackProvider({
+            await ref.read(feedbackProvider({
               "userId": widget.userID,
               "subscriptionPlanId":widget.planID
-            }));
+            }).future);
+            final profileResponse = await ref.refresh(
+              getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userID}').future,
+            );
+
+            ref.read(profileProvider.notifier).setProfileList(profileResponse);
           } else {
             registrationState.setIsLoading(false);
             if(!mounted) return;

@@ -186,14 +186,15 @@ class SignupNotifier extends ChangeNotifier {
   void _validateIBAN() {
     if (_iban.isEmpty) {
       _ibanError = 'IBAN is required';
-    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_iban)) {
-      _ibanError = 'Only letters and numbers allowed';
-    } else if (_iban.length < 15 || _iban.length > 34) {
-      _ibanError = 'IBAN must be 15–34 characters';
-    } else {
+    }
+    else if (!RegExp(r'^AE[0-9]{2}[0-9]{3}[0-9]{16}$').hasMatch(_iban)) {
+      _ibanError = 'Invalid UAE IBAN format';
+    }
+    else {
       _ibanError = null;
     }
   }
+
 
 
   void setBic(String value) {
@@ -211,14 +212,15 @@ class SignupNotifier extends ChangeNotifier {
   void _validateBIC() {
     if (_bic.isEmpty) {
       _bicError = 'BIC is required';
-    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_bic)) {
-      _bicError = 'Only letters and numbers allowed';
-    } else if (_bic.length != 8 && _bic.length != 11) {
-      _bicError = 'BIC must be 8 or 11 characters';
-    } else {
+    }
+    else if (!RegExp(r'^[A-Z0-9]{8}([A-Z0-9]{3})?$').hasMatch(_bic)) {
+      _bicError = 'BIC must be 8 or 11 alphanumeric characters';
+    }
+    else {
       _bicError = null;
     }
   }
+
 
 
   void setAccountHolderName(String value) {
@@ -512,6 +514,8 @@ class SignupNotifier extends ChangeNotifier {
       }
     });
   }
+
+
 
 
   void stopTimer() {
