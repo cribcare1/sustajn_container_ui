@@ -32,7 +32,6 @@ class Strings {
   static const String SIGN_UP = "Sign Up";
   static const String LEASED = "Leased";
   static const String RECEIVED = "Received";
-  static const String INVENTORY = "Inventory";
   static const String ORDERED = "Ordered";
   static const String DAMAGED = "Damaged";
   static const String SOLD = "Sold";

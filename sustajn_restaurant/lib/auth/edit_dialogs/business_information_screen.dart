@@ -91,6 +91,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                         label: Strings.CONTACT_PERSON,
                         hint: Strings.CONTACT_PERSON,
                         keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Contact person'),
                       ),
                       SizedBox(height: Constant.SIZE_10),
 
@@ -143,6 +144,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                         label: Strings.TYPES_OF_BUSINESS,
                         hint: Strings.TYPES_OF_BUSINESS,
                         keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Business type'),
                       ),
                       SizedBox(height: Constant.SIZE_10),
                       Utils.buildTextField(
@@ -151,6 +153,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                         label: Strings.WEBSITE,
                         hint: Strings.WEBSITE,
                         keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Website'),
                       ),
                       SizedBox(height: Constant.SIZE_18),
 
@@ -183,26 +186,15 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
               ),
             ),
 
-            GestureDetector(
-              onTap: (){
-                if(_key.currentState!.validate()){
-                  Utils.showToast("Information uploaded successful");
+            SubmitButton(
+              rightText: Strings.SAVE_CHANGES,
+              onRightTap: () {
+                if (!_key.currentState!.validate()) {
+                  Utils.showToast("Fill all the above fields");
+                  return;
                 }
+                Utils.showToast("Information uploaded successful");
               },
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: Constant.SIZE_15,
-                  right: Constant.SIZE_15,
-                  bottom: mediaQuery.padding.bottom + Constant.SIZE_10,
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SubmitButton(
-                    onRightTap: () {},
-                    rightText: Strings.SAVE_CHANGES,
-                  ),
-                ),
-              ),
             ),
           ],
         ),
