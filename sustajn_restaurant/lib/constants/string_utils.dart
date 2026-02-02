@@ -222,6 +222,8 @@ class Strings {
   static const String ADD_CARD = "Add Card";
   static const String ACCOUNT_HOLDER_NAME = "Account Holder Name";
   static const String IBAN = "IBAN";
+  static const String BIC = "BIC";
+  static const String CLEAR_DTLS = "Clear Details";
 
 
   static const String PROVIDE_INFOR =

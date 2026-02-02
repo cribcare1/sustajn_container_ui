@@ -190,7 +190,6 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
               rightText: Strings.SAVE_CHANGES,
               onRightTap: () {
                 if (!_key.currentState!.validate()) {
-                  Utils.showToast("Fill all the above fields");
                   return;
                 }
                 Utils.showToast("Information uploaded successful");
