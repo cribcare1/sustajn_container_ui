@@ -268,6 +268,12 @@ class Strings {
   static const String BIC = 'BIC';
   static const String IBAN = 'IBAN';
   static const String VERIFY_CONTINUE = 'Verify & Continue';
+  static const String MY_PROFILE = 'My Profile';
+  static const String EMAIL_1 = 'Email';
+  static const String LOG_OUT = 'Log Out';
+  static const String BANK_DETAILS_NOT_ADDED = 'You have not added bank details, please add it to view the QR code';
+  static const String SUBSCRIPTION_NOT_FOUND = 'subscription details not found';
+  static const String IMAGE_UPLOADED = 'User image uploaded successfully';
   static final RegExp alphaNumericWithSpace =
   RegExp(r'^[a-zA-Z0-9 ]+$');
 

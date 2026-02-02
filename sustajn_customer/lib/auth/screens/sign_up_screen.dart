@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
-
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../main.dart';

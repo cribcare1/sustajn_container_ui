@@ -307,8 +307,9 @@ class BankDetailsResponse {
   String? accountNumber;
   String? iBanNumber;
   String? taxNumber;
+  String? emailId;
 
-  BankDetailsResponse({this.id, this.userId, this.bankName, this.accountNumber, this.iBanNumber, this.taxNumber});
+  BankDetailsResponse({this.id, this.userId, this.bankName, this.accountNumber, this.iBanNumber, this.taxNumber, this.emailId});
 
   BankDetailsResponse.fromJson(Map<String, dynamic> json) {
     if(json["id"] is int) {
@@ -329,6 +330,9 @@ class BankDetailsResponse {
     if(json["taxNumber"] is String) {
       taxNumber = json["taxNumber"];
     }
+    if(json["email"] is String) {
+      emailId = json["email"];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -339,6 +343,7 @@ class BankDetailsResponse {
     _data["accountNumber"] = accountNumber;
     _data["iBanNumber"] = iBanNumber;
     _data["taxNumber"] = taxNumber;
+    _data["email"] = emailId;
     return _data;
   }
 }
