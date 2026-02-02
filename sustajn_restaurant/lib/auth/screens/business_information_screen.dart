@@ -34,6 +34,7 @@ class _BusinessInformationDetailsState
   final licenceController = TextEditingController();
   final _key = GlobalKey<FormState>();
 
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

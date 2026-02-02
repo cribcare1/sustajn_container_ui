@@ -22,6 +22,7 @@ import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
+import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
@@ -69,10 +70,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         break;
       case 6:
         _showPaymentTypeScreen(context);
-        // _showBankDetailsEdit(context);
         break;
       case 7:
-        ///history
+        _showHistoryScreen(context);
         break;
       case 8:
         _showFeedbackDialog(context);
@@ -152,8 +152,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void _showBusinessEditScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(context, BusinessInformationScreen());
   }
+
   void _showPaymentTypeScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+  }
+
+  void _showHistoryScreen(BuildContext context) {
+    NavUtil.navigateToPushScreen(context, HistoryHomeScreen());
   }
 
   void _showReportScreen(BuildContext context) {

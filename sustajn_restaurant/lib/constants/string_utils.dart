@@ -30,6 +30,13 @@ class Strings {
   static const String LOGIN = "Log In";
   static const String LOGOUT = "Log Out";
   static const String SIGN_UP = "Sign Up";
+  static const String LEASED = "Leased";
+  static const String RECEIVED = "Received";
+  static const String ORDERED = "Ordered";
+  static const String DAMAGED = "Damaged";
+  static const String SOLD = "Sold";
+  static const String HISTORY = "History";
+
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
       "Please provide your details below";
   static const String RESTURANT_TITLE = 'Resturants';
