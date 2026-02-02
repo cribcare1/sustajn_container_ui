@@ -79,7 +79,6 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
 
             Expanded(
               child: SingleChildScrollView(
-                // padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_16),
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
 
                 child: Form(
@@ -163,7 +162,6 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                           children: [
                             Icon(
                               Icons.add,
-                              // size: Constant.CONTAINER_SIZE_18,
                               color: theme.secondaryHeaderColor,
                             ),
                             SizedBox(width: Constant.SIZE_06),
@@ -220,8 +218,8 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
       backgroundColor: Theme.of(context).primaryColor,
       useSafeArea: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.SIZE_10)),
       ),
       builder: (_) {
         return SingleChildScrollView(
