@@ -6,6 +6,7 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
+import '../../auth/payment_type/link_payment_sheet.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
@@ -17,8 +18,10 @@ import '../../utils/utils.dart';
 
 class EditPaymentScreen extends ConsumerStatefulWidget {
   final BankDetailsResponse? bankDetails;
+  final CardDetailsResponse? cardDetails;
+  final PaymentGetWayResponse? paymentGateway;
 
-  const EditPaymentScreen({super.key, this.bankDetails});
+  const EditPaymentScreen({super.key, this.bankDetails, this.cardDetails, this.paymentGateway});
 
   @override
   ConsumerState<EditPaymentScreen> createState() => _PaymentTypeScreenState();
@@ -268,30 +271,45 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   }
 
   Widget _paypalTile(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/paypal.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'PayPal',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Pay Pal Account",
+          hint: "Enter your PayPal ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
     );
   }
+
 
   Widget _applePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Apple Pay Account",
+          hint: "Enter your Apple Pay ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
+    );
+  }
+
+
+  Widget _googlePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Google Pay Account",
+          hint: "Enter your Google Pay ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
+    );
+  }
+
+
+  Widget _gatewayTile(ThemeData theme, String icon, String title) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -301,10 +319,10 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       ),
       child: Row(
         children: [
-          Image.asset('assets/icons/apple_pay.png'),
+          Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
-            'Apple Pay',
+            title,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -315,26 +333,19 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     );
   }
 
-  Widget _googlePay(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/google_pay.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'Google Pay',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
+  void _showLinkBottomSheet({
+    required String title,
+    required String hint,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LinkPaymentBottomSheet(
+        title: title,
+        hint: hint,
+        onSubmit: () {
+        },
       ),
     );
   }
@@ -607,14 +618,14 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   Map<String, dynamic> getJsonData() {
     final data = {
       "bankDetailsRequest": {
-        "userId": Utils.userId,
+        "id": widget.bankDetails?.id,
         "bankName": _bankNameController.text,
         "bicNumber": _bicController.text,
         "accountHolderName": _accountHolderController.text,
         "iBanNumber": _ibanController.text,
       },
       "cardDetailsRequest": {
-        "userId": Utils.userId,
+        "id": widget.cardDetails?.id,
         "cardHolderName": "",
         "cardNumber": "",
         "expiryDate": "",
@@ -623,7 +634,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         "paymentGatewayName": "",
       },
       "paymentGetWayRequest": {
-        "userId": Utils.userId,
+        "id": widget.paymentGateway?.id,
         "paymentGatewayId": "",
         "paymentGatewayName": "",
       },

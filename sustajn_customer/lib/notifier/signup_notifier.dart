@@ -29,6 +29,9 @@ class SignupNotifier extends ChangeNotifier {
   bool _isDisposed = false;
   int _seconds = 120;
   Timer? _otpTimer;
+  RegistrationData? _registrationData;
+  SubscriptionModel? _subscriptionModel;
+  List<SubscriptionData>? data = [];
 
 
   BuildContext? _context;
@@ -36,19 +39,26 @@ class SignupNotifier extends ChangeNotifier {
   String _bankName = '';
   String _accountHolderName = '';
   String _iban = '';
-
   String _bic = '';
   String _taxNumber = '';
   String _accountNumber = '';
+  String _cardHolderName = '';
+  String _cardNumber = '';
+  String _cvv = '';
+  String _expiryDate = '';
+
+
   String? _bankNameError;
   String? _accountHolderError;
   String? _taxNumberError;
   String? _accountNumberError;
   String? _ibanError;
   String? _bicError;
-  RegistrationData? _registrationData;
-  SubscriptionModel? _subscriptionModel;
-  List<SubscriptionData>? data = [];
+  String? _cardHolderError;
+  String? _cardNumberError;
+  String? _cvvError;
+  String? _expiryError;
+
   bool _showBankErrors = false;
 
 
@@ -96,6 +106,10 @@ class SignupNotifier extends ChangeNotifier {
   String? get bicError => _bicError;
 
   bool get showBankErrors => _showBankErrors;
+  String? get cardHolderError => _cardHolderError;
+  String? get cardNumberError => _cardNumberError;
+  String? get cvvError => _cvvError;
+  String? get expiryError => _expiryError;
 
   RegistrationData? get registrationData => _registrationData;
 
@@ -294,6 +308,106 @@ class SignupNotifier extends ChangeNotifier {
       _accountNumberError = null;
     }
   }
+
+  void setCardHolderName(String value) {
+    _cardHolderName = value;
+
+    if (_showBankErrors) {
+      _validateCardHolder();
+    } else {
+      _cardHolderError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCardHolder() {
+    if (_cardHolderName.isEmpty) {
+      _cardHolderError = 'Card holder name is required';
+    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(_cardHolderName)) {
+      _cardHolderError = 'Only letters and spaces allowed';
+    } else {
+      _cardHolderError = null;
+    }
+  }
+
+  void setCardNumber(String value) {
+    _cardNumber = value;
+
+    if (_showBankErrors) {
+      _validateCardNumber();
+    } else {
+      _cardNumberError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCardNumber() {
+    if (_cardNumber.isEmpty) {
+      _cardNumberError = 'Card number is required';
+    } else if (!RegExp(r'^[0-9]{16}$').hasMatch(_cardNumber)) {
+      _cardNumberError = 'Card number must be 16 digits';
+    } else {
+      _cardNumberError = null;
+    }
+  }
+
+  void setCVV(String value) {
+    _cvv = value;
+
+    if (_showBankErrors) {
+      _validateCVV();
+    } else {
+      _cvvError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCVV() {
+    if (_cvv.isEmpty) {
+      _cvvError = 'CVV is required';
+    } else if (!RegExp(r'^[0-9]{4}$').hasMatch(_cvv)) {
+      _cvvError = 'CVV must be 4 digits';
+    } else {
+      _cvvError = null;
+    }
+  }
+
+  void setExpiryDate(String value) {
+    _expiryDate = value;
+    _expiryError = null;
+    notifyListeners();
+  }
+
+  bool validateCardForm() {
+    _showBankErrors = true;
+
+    _validateCardHolder();
+    _validateCardNumber();
+    _validateCVV();
+
+    notifyListeners();
+
+    return _cardHolderError == null &&
+        _cardNumberError == null &&
+        _cvvError == null;
+  }
+
+  void resetCardValidation() {
+    _showBankErrors = false;
+
+    _cardHolderName = '';
+    _cardNumber = '';
+    _cvv = '';
+    _expiryDate = '';
+
+    _cardHolderError = null;
+    _cardNumberError = null;
+    _cvvError = null;
+    _expiryError = null;
+
+    notifyListeners();
+  }
+
 
 
   void setAddress({

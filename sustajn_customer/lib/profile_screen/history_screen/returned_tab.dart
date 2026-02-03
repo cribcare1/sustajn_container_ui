@@ -332,7 +332,10 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) =>
-          ReceiveDetailsDialog(title: 'Borrowed Details', item: [item]),
+          ReceiveDetailsDialog(title: 'Returned Details', items: [item],
+          isReturned: true,
+          borrowedOn:'${item.date} | ${item.time}' ,
+          returnedOn:'${item.returnedTime} | ${item.returnedTime}'),
     );
   }
 
@@ -347,7 +350,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
           ref.read(historyProvider).setIsLoading(true);
           final int year = DateTime.now().year;
 
-          final url = '${NetworkUrls.RETURNED_DATA}userId=${widget.userId}&year=$year';
+          final url = '${NetworkUrls.RETURNED_DATA}userId=51&year=$year';
           Utils.printLog("Fetching URL: $url");
           ref.read(borrowedProvider(url));
         } else {

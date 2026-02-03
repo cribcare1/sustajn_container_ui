@@ -11,88 +11,87 @@ class BorrowedData {
     status = json['status'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['message'] = message;
-    if (value != null) {
-      data['value'] = value!.toJson();
-    }
-    data['status'] = status;
-    return data;
-  }
+
 }
 
 class Value {
   List<December>? december;
-  List<Null>? november;
-  List<Null>? october;
-  List<Null>? september;
-  List<Null>? august;
-  List<Null>? july;
-  List<Null>? june;
-  List<Null>? may;
-  List<Null>? april;
-  List<Null>? march;
-  List<Null>? february;
-  List<Null>? january;
-
-  Value({
-    this.december,
-    this.november,
-    this.october,
-    this.september,
-    this.august,
-    this.july,
-    this.june,
-    this.may,
-    this.april,
-    this.march,
-    this.february,
-    this.january,
-  });
+  List<December>? november;
+  List<December>? october;
+  List<December>? september;
+  List<December>? august;
+  List<December>? july;
+  List<December>? june;
+  List<December>? may;
+  List<December>? april;
+  List<December>? march;
+  List<December>? february;
+  List<December>? january;
 
   Value.fromJson(Map<String, dynamic> json) {
-    // December has actual data
     if (json['December'] != null) {
       december = (json['December'] as List)
           .map((e) => December.fromJson(e))
           .toList();
     }
-
-    november = json['November'] != null ? <Null>[] : null;
-    october = json['October'] != null ? <Null>[] : null;
-    september = json['September'] != null ? <Null>[] : null;
-    august = json['August'] != null ? <Null>[] : null;
-    july = json['July'] != null ? <Null>[] : null;
-    june = json['June'] != null ? <Null>[] : null;
-    may = json['May'] != null ? <Null>[] : null;
-    april = json['April'] != null ? <Null>[] : null;
-    march = json['March'] != null ? <Null>[] : null;
-    february = json['February'] != null ? <Null>[] : null;
-    january = json['January'] != null ? <Null>[] : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-
-    if (december != null) {
-      data['December'] = december!.map((v) => v.toJson()).toList();
+    if (json['November'] != null) {
+      november = (json['November'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
     }
-    if (november != null) data['November'] = [];
-    if (october != null) data['October'] = [];
-    if (september != null) data['September'] = [];
-    if (august != null) data['August'] = [];
-    if (july != null) data['July'] = [];
-    if (june != null) data['June'] = [];
-    if (may != null) data['May'] = [];
-    if (april != null) data['April'] = [];
-    if (march != null) data['March'] = [];
-    if (february != null) data['February'] = [];
-    if (january != null) data['January'] = [];
-
-    return data;
+    if (json['October'] != null) {
+      october = (json['October'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['September'] != null) {
+      september = (json['September'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['August'] != null) {
+      august = (json['August'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['July'] != null) {
+      july = (json['July'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['June'] != null) {
+      june = (json['June'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['May'] != null) {
+      may = (json['May'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['April'] != null) {
+      april = (json['April'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['March'] != null) {
+      march = (json['March'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['February'] != null) {
+      february = (json['February'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
+    if (json['January'] != null) {
+      january = (json['January'] as List)
+          .map((e) => December.fromJson(e))
+          .toList();
+    }
   }
 }
+
 
 class December {
   int? orderId;
@@ -103,6 +102,8 @@ class December {
   int? totalContainerCount;
   String? orderDate;
   String? orderTime;
+  String? returnedDate;
+  String? returnedTime;
   List<ProductOrderListResponseList>? productOrderListResponseList;
 
   December(
@@ -114,6 +115,8 @@ class December {
         this.totalContainerCount,
         this.orderDate,
         this.orderTime,
+        this.returnedDate,
+        this.returnedTime,
         this.productOrderListResponseList});
 
   December.fromJson(Map<String, dynamic> json) {
@@ -125,6 +128,8 @@ class December {
     totalContainerCount = json['totalContainerCount'];
     orderDate = json['orderDate'];
     orderTime = json['orderTime'];
+    returnedDate = json['returnedDate'];
+    returnedTime = json['returnedTime'];
     if (json['productOrderListResponseList'] != null) {
       productOrderListResponseList = <ProductOrderListResponseList>[];
       json['productOrderListResponseList'].forEach((v) {
@@ -144,6 +149,8 @@ class December {
     data['totalContainerCount'] = this.totalContainerCount;
     data['orderDate'] = this.orderDate;
     data['orderTime'] = this.orderTime;
+    data['returnedDate'] = this.returnedDate;
+    data['returnedTime'] = this.returnedTime;
     if (this.productOrderListResponseList != null) {
       data['productOrderListResponseList'] =
           this.productOrderListResponseList!.map((v) => v.toJson()).toList();

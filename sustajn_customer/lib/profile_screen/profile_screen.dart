@@ -162,7 +162,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     NavUtil.navigateToPushScreen(
       context,
-      EditPaymentScreen(bankDetails: bankDetails),
+      EditPaymentScreen(
+        bankDetails: profile.bankDetailsResponse,
+        cardDetails: profile.cardDetailsResponse,
+        paymentGateway: profile.paymentGetWayResponse,),
     );
   }
 
@@ -187,7 +190,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) =>
-          FreemiumBottomSheet(userID: widget.userId, planID: planId),
+          FreemiumBottomSheet(userID: widget.userId,
+              // planID: planId
+          ),
     );
   }
 

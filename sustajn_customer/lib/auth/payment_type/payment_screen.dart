@@ -16,6 +16,7 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../screens/subscription_screen.dart';
 import 'add_card_dialog.dart';
+import 'link_payment_sheet.dart';
 enum PaymentFlow {
   signup,
   profile,
@@ -226,30 +227,45 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _paypalTile(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/paypal.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'PayPal',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Pay Pal Account",
+          hint: "Enter your PayPal ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
     );
   }
+
 
   Widget _applePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Apple Pay Account",
+          hint: "Enter your Apple Pay ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
+    );
+  }
+
+
+  Widget _googlePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Google Pay Account",
+          hint: "Enter your Google Pay ID",
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
+    );
+  }
+
+
+  Widget _gatewayTile(ThemeData theme, String icon, String title) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -259,10 +275,10 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ),
       child: Row(
         children: [
-          Image.asset('assets/icons/apple_pay.png'),
+          Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
-            'Apple Pay',
+            title,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -273,29 +289,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _googlePay(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/google_pay.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'Google Pay',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _bankFields(ThemeData theme, var signupState) {
     return Column(
@@ -356,6 +349,24 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ],
     );
   }
+
+  void _showLinkBottomSheet({
+    required String title,
+    required String hint,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LinkPaymentBottomSheet(
+        title: title,
+        hint: hint,
+        onSubmit: () {
+        },
+      ),
+    );
+  }
+
 
 
 

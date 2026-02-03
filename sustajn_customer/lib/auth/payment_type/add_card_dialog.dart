@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/number_constants.dart';
+import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utils.dart';
 
-class AddCardDialog extends StatelessWidget {
+class AddCardDialog extends ConsumerStatefulWidget {
   const AddCardDialog({super.key});
+
+  @override
+  ConsumerState<AddCardDialog> createState() => _AddCardDialogState();
+}
+
+class _AddCardDialogState extends ConsumerState<AddCardDialog> {
+  final TextEditingController _expiryController = TextEditingController();
+
+  @override
+  void dispose() {
+    _expiryController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final signupState = ref.watch(signUpNotifier);
+
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -28,17 +48,59 @@ class AddCardDialog extends StatelessWidget {
             children: [
               _header(context, theme),
               SizedBox(height: Constant.SIZE_15),
-              _cardField(theme, 'Card Holder Name*'),
-              SizedBox(height: Constant.SIZE_10),
-              _cardField(theme, 'Card Number*'),
-              SizedBox(height: Constant.SIZE_10),
-              Row(
-                children: [
-                  Expanded(child: _cardField(theme, 'Expiration Date')),
-                  SizedBox(width: Constant.SIZE_10),
-                  Expanded(child: _cardField(theme, 'CVV')),
+              _cardField(
+                theme: theme,
+                hint: 'Card Holder Name*',
+                error: signupState.cardHolderError,
+                onChanged: signupState.setCardHolderName,
+                formatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
                 ],
               ),
+
+              _cardField(
+                theme: theme,
+                hint: 'Card Number*',
+                error: signupState.cardNumberError,
+                onChanged: signupState.setCardNumber,
+                formatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(16),
+                ],
+              ),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: getDatePicker(
+                      context,
+                      'Expiration Date',
+                      _expiryController,
+                          (date) {
+                        signupState.setExpiryDate(
+                          "${date.year}-${date.month}-${date.day}",
+                        );
+                      },
+                      theme,
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.SIZE_10),
+                  Expanded(
+                    child: _cardField(
+                      theme: theme,
+                      hint: 'CVV*',
+                      error: signupState.cvvError,
+                      onChanged: signupState.setCVV,
+                      formatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
               SizedBox(height: Constant.CONTAINER_SIZE_20),
               SizedBox(
                 width: double.infinity,
@@ -50,7 +112,13 @@ class AddCardDialog extends StatelessWidget {
                       BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                     ),
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    final isValid = signupState.validateCardForm();
+                    if (!isValid) return;
+
+                    Navigator.pop(context);
+                  },
+
                   child: Text(
                     'Add Card & Continue',
                     style: theme.textTheme.labelLarge?.copyWith(
@@ -66,8 +134,6 @@ class AddCardDialog extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _header(BuildContext context, ThemeData theme) {
     return Row(
@@ -100,26 +166,112 @@ class AddCardDialog extends StatelessWidget {
     );
   }
 
-  Widget _cardField(ThemeData theme, String hint) {
-    return TextField(
-      style: theme.textTheme.bodyLarge?.copyWith(
-        color: Colors.white,
-      ),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-          color: Colors.white
-        ),
-        filled: true,
-        fillColor: Constant.grey.withOpacity(0.1),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
-        ),
-        enabledBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-        focusedBorder: CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+  Widget _cardField({
+    required ThemeData theme,
+    required String hint,
+    required Function(String) onChanged,
+    String? error,
+    List<TextInputFormatter>? formatters,
+  }) {
+    return Padding(
+      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            onChanged: onChanged,
+            inputFormatters: formatters,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+            ),
+            cursorColor: Colors.white,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+              ),
+              filled: true,
+              fillColor: Constant.grey.withOpacity(0.1),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  Constant.CONTAINER_SIZE_16,
+                ),
+              ),
+            ),
+          ),
+          if (error != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4, left: 8),
+              child: Text(
+                error,
+                style: const TextStyle(
+                  color: Colors.redAccent,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
+
+  static Widget getDatePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme,
+      ) {
+    return Padding(
+      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              doneStyle: const TextStyle(fontSize: 16),
+            ),
+            onConfirm: (date) {
+              final value = "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: labelText,
+              filled: true,
+              fillColor: Constant.grey.withOpacity(.1),
+              hintStyle: const TextStyle(color: Colors.white),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  Constant.CONTAINER_SIZE_16,
+                ),
+              ),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }
