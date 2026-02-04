@@ -253,49 +253,63 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   color: Colors.white,
                                   width: w * 0.012,
                                 ),
-                                image: DecorationImage(
+                              ),
+                              child: ClipOval(
+                                child: profileState.isSaving
+                                    ? const Center(
+                                  child: CircularProgressIndicator(color: Colors.red,),
+                                )
+                                    : Image(
+                                  fit: BoxFit.cover,
                                   image: profileImage != null
                                       ? FileImage(profileImage!)
-                                            as ImageProvider
                                       : (profile.profileImageUrl != null &&
-                                            profile.profileImageUrl!.isNotEmpty)
+                                      profile.profileImageUrl!.isNotEmpty)
                                       ? NetworkImage(
-                                          "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                        )
+                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                  )
                                       : const AssetImage(
-                                          "assets/images/default_profile.png",
-                                        ),
-                                  fit: BoxFit.cover,
+                                    "assets/images/default_profile.png",
+                                  ) as ImageProvider,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/default_profile.png",
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                profileImage = await Utils.uploadImage(context);
-                                if (profileImage != null) {
-                                  _profileImgNetworkCall(
-                                    profileState,
-                                    profile.mobileNumber!,
-                                    profile.fullName!,
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: w * 0.09,
-                                width: w * 0.09,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: theme.primaryColor,
+
+                            if (!profileState.isSaving)
+                              GestureDetector(
+                                onTap: () async {
+                                  profileImage = await Utils.uploadImage(context);
+                                  if (profileImage != null) {
+                                    _profileImgNetworkCall(
+                                      profileState,
+                                      profile.mobileNumber!,
+                                      profile.fullName!,
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: w * 0.09,
+                                  width: w * 0.09,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                  child: Icon(
+                                    Icons.edit_outlined,
+                                    size: w * 0.045,
+                                    color: theme.primaryColor,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
-                        ),
+                        )
+                        ,
 
                         SizedBox(height: h * 0.015),
                         Row(
@@ -516,8 +530,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      if (!profileState.isValid) return;
-
+      // if (!profileState.isValid) return;
+      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -528,8 +542,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         return;
       }
 
-      profileState.setIsLoading(true);
-
+      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
@@ -539,10 +552,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();

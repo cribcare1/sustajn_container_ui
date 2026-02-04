@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "123411972530",
-    "project_id": "container-tracking-12026",
-    "storage_bucket": "container-tracking-12026.firebasestorage.app"
+    "project_number": "284651712540",
+    "project_id": "sustajn-application",
+    "storage_bucket": "sustajn-application.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123411972530:android:f357a470643fd96bfc64ab",
+        "mobilesdk_app_id": "1:284651712540:android:960c7326cd9c0116916fd9",
         "android_client_info": {
           "package_name": "com.example.sustajn_restaurant"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCIVrlKNEXSe9eY7p-SM9C6F9Eay5QoLCc"
+          "current_key": "AIzaSyA_aclcfx_Jsi_AoP0kmHDqu0BwEAo_HFA"
         }
       ],
       "services": {

@@ -32,7 +32,8 @@ class Strings {
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
   static const CUSTOMER_ID = "customer_id";
-
+  static const String G_MAP_API_KEY = "AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q";
+  // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
   //Sign Up & Login
   static const String LOGIN = "LogIn";
   static const String SIGN_UP = "Sign Up";
