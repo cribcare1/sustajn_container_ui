@@ -511,8 +511,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      if (!profileState.isValid) return;
-
+      // if (!profileState.isValid) return;
+      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -523,8 +523,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         return;
       }
 
-      profileState.setIsLoading(true);
-
+      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
@@ -534,10 +533,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();
