@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 
 import '../../constants/number_constants.dart';
+import '../../provider/login_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
+import '../model/social_media_model.dart';
 
 class BusinessInformationScreen extends ConsumerStatefulWidget {
   const BusinessInformationScreen({super.key});
@@ -15,6 +19,15 @@ class BusinessInformationScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessInformationScreenState extends ConsumerState<BusinessInformationScreen> {
+
+  final contactPersonController = TextEditingController();
+  final contactNumberController = TextEditingController();
+  final contactEmailController = TextEditingController();
+  final licenceController = TextEditingController();
+  final taxController = TextEditingController();
+  final businessTypeController = TextEditingController();
+  final websiteController = TextEditingController();
+  final _key = GlobalKey<FormState>();
 
   _getData() {
     final profileState = ref.read(profileProvider);
@@ -62,96 +75,125 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                 ],
               ),
             ),
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
 
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_15),
-                child: Column(
-                  children: [
-                    _buildTextField(
-                      context,
-                      label: Strings.CONTACT_PERSON,
-                      hint: Strings.CONTACT_PERSON,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
 
-                    _buildTextField(
-                      context,
-                      label: Strings.MOBILE_NUMBER,
-                      hint: Strings.MOBILE_NUMBER,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
-                    _buildTextField(
-                      context,
-                      label: Strings.EMAIL_REGISTRATION,
-                      hint: Strings.EMAIL_REGISTRATION,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
+                child: Form(
+                  key: _key,
+                  child: Column(
+                    children: [
+                      Utils.buildTextField(
+                        context,
+                        controller: contactPersonController,
+                        label: Strings.CONTACT_PERSON,
+                        hint: Strings.CONTACT_PERSON,
+                        keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Contact person'),
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
 
-                    _buildTextField(
-                      context,
-                      label: Strings.TRADE_LICENSE_NUMBER,
-                      hint: Strings.TRADE_LICENSE_NUMBER,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
-                    _buildTextField(
-                      context,
-                      label: Strings.TAX_NUMBER,
-                      hint: Strings.TAX_NUMBER,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
+                      Utils.buildTextField(
+                        context,
+                        controller: contactNumberController,
+                        label: Strings.MOBILE_NUMBER,
+                        hint: Strings.MOBILE_NUMBER,
+                        keyboard: TextInputType.number,
+                        validator: Utils.validateMobile,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                      ),
 
-                    _buildTextField(
-                      context,
-                      label: Strings.TYPES_OF_BUSINESS,
-                      hint: Strings.TYPES_OF_BUSINESS,
-                    ),
-                    SizedBox(height: Constant.SIZE_10),
-                    _buildTextField(
-                      context,
-                      label: Strings.WEBSITE,
-                      hint: Strings.WEBSITE,
-                    ),
-                    SizedBox(height: Constant.SIZE_18),
+                      SizedBox(height: Constant.SIZE_10),
+                      Utils.buildTextField(
+                        context,
+                        controller: contactEmailController,
+                        label: Strings.EMAIL_REGISTRATION,
+                        hint: Strings.EMAIL_REGISTRATION,
+                        keyboard: TextInputType.emailAddress,
+                        validator: Utils.validateEmailId,
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: Constant.CONTAINER_SIZE_18,
-                          color: Constant.gold,
+                      Utils.buildTextField(
+                        context,
+                        controller: licenceController,
+                        label: Strings.TRADE_LICENSE_NUMBER,
+                        hint: Strings.TRADE_LICENSE_NUMBER,
+                        keyboard: TextInputType.emailAddress,
+                        validator: Utils.validateTradeLicense,
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
+                      Utils.buildTextField(
+                        context,
+                        controller: taxController,
+                        label: Strings.TAX_NUMBER,
+                        hint: Strings.TAX_NUMBER,
+                        keyboard: TextInputType.text,
+                        validator:  (v) => Utils.validateTaxNumber(v),
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
+
+                      Utils.buildTextField(
+                        context,
+                        controller: businessTypeController,
+                        label: Strings.TYPES_OF_BUSINESS,
+                        hint: Strings.TYPES_OF_BUSINESS,
+                        keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Business type'),
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
+                      Utils.buildTextField(
+                        context,
+                        controller: websiteController,
+                        label: Strings.WEBSITE,
+                        hint: Strings.WEBSITE,
+                        keyboard: TextInputType.text,
+                        validator:(v) => Utils.validateRequired(v, 'Website'),
+                      ),
+                      SizedBox(height: Constant.SIZE_18),
+
+                      InkWell(
+                        onTap: () => _openSocialMediaSheet(context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: theme.secondaryHeaderColor,
+                            ),
+                            SizedBox(width: Constant.SIZE_06),
+                            Text(
+                              Strings.ADD_SOCIAL_MEDIA,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: Constant.LABEL_TEXT_SIZE_14,
+                                color: Constant.gold,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: Constant.SIZE_06),
-                        Text(
-                          Strings.ADD_SOCIAL_MEDIA,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            color: Constant.gold,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_70),
-                  ],
+                      ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_70),
+                    ],
+                  ),
                 ),
               ),
             ),
 
-            Padding(
-              padding: EdgeInsets.only(
-                left: Constant.SIZE_15,
-                right: Constant.SIZE_15,
-                bottom: mediaQuery.padding.bottom + Constant.SIZE_10,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: SubmitButton(
-                  onRightTap: () {},
-                  rightText: Strings.SAVE_CHANGES,
-                ),
-              ),
+            SubmitButton(
+              rightText: Strings.SAVE_CHANGES,
+              onRightTap: () {
+                if (!_key.currentState!.validate()) {
+                  return;
+                }
+                Utils.showToast("Information uploaded successful");
+              },
             ),
           ],
         ),
@@ -159,62 +201,88 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
     );
   }
 
-  Widget _buildTextField(
-    BuildContext context, {
-    required String hint,
-    required String label,
-    TextEditingController? controller,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(vertical: Constant.SIZE_08),
-          decoration: BoxDecoration(
-            color: Color(0xFF1F4D3A),
-            borderRadius: BorderRadius.circular(Constant.LABEL_TEXT_SIZE_18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: Constant.SIZE_06,
-                offset: Offset(0, 3),
+  void _openSocialMediaSheet(BuildContext context) {
+    final registrationState = ref.watch(authNotifierProvider);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).primaryColor,
+      useSafeArea: true,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.SIZE_10)),
+      ),
+      builder: (_) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(
+            Constant.CONTAINER_SIZE_16,
+            Constant.CONTAINER_SIZE_16,
+            Constant.CONTAINER_SIZE_16,
+            MediaQuery.of(context).viewInsets.bottom +
+                Constant.CONTAINER_SIZE_50,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    Strings.SOCIAL_MEDIA,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                  ),
+                  CloseButton(color: Colors.white),
+                ],
               ),
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
+              Wrap(
+                spacing: Constant.CONTAINER_SIZE_20,
+                alignment: WrapAlignment.center,
+                children: socialMediaOptions.map((item) {
+                  final alreadyAdded = registrationState.socialMediaList.any(
+                        (e) => e.socialMediaType == item.type,
+                  );
+
+                  return GestureDetector(
+                    onTap: alreadyAdded
+                        ? null
+                        : () {
+                      Navigator.pop(context);
+                      registrationState.setSocialMedia(
+                        SocialMediaModel(
+                          socialMediaType: item.type,
+                          controller: TextEditingController(),
+                        ),
+                      );
+                      setState(() {});
+                    },
+                    child: Opacity(
+                      opacity: alreadyAdded ? 0.4 : 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: item.color,
+                            child: Icon(item.icon, color: Colors.black),
+                          ),
+                          SizedBox(height: Constant.SIZE_06),
+                          Text(
+                            item.label,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
             ],
           ),
-          child: TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_14,
-            ),
-            cursorColor: Colors.white70,
-            decoration: InputDecoration(
-              labelText: label,
-              labelStyle: TextStyle(color: Colors.white70),
-              floatingLabelBehavior: FloatingLabelBehavior.auto,
-              hintText: hint,
-              hintStyle: TextStyle(
-                color: Colors.white70,
-                fontSize: Constant.CONTAINER_SIZE_13,
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: Constant.LABEL_TEXT_SIZE_16,
-                vertical: Constant.LABEL_TEXT_SIZE_14,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  Constant.LABEL_TEXT_SIZE_14,
-                ),
-              ),
-              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-              isDense: true,
-            ),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

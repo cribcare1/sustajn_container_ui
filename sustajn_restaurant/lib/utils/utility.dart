@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -628,6 +629,113 @@ class Utils {
     }
   }
 
+  static String? validateEmailId(String? value) {
+    if (value == null || value
+        .trim()
+        .isEmpty) {
+      return 'Enter email address';
+    }
+    if (!RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    ).hasMatch(value)) {
+      return 'Enter valid email address';
+    }
+    return null;
+  }
+
+
+  static String? validateMobile(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Enter mobile number';
+    }
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+      return 'Enter valid 10 digit mobile number';
+    }
+    return null;
+  }
+
+  static String? validateTradeLicense(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Enter trade license number';
+    }
+    if (value.length < 5) {
+      return 'Trade license number is too short';
+    }
+    return null;
+  }
+
+  static String? validateTaxNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Enter VAT / Tax number';
+    }
+    if (!RegExp(r'^[A-Z0-9]{8,15}$').hasMatch(value)) {
+      return 'Enter valid VAT / Tax number';
+    }
+    return null;
+  }
+
+  static String? validateRequired(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  static Widget buildTextField(
+      BuildContext context, {
+        required TextEditingController controller,
+        required String label,
+        required String hint,
+        String? Function(String?)? validator,
+        bool obscure = false,
+        TextInputType keyboard = TextInputType.text,
+        bool? readOnly = false,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboard,
+        autofocus: false,
+        style: TextStyle(color: Colors.white70),
+        cursorColor: Colors.white70,
+        validator: validator,
+        inputFormatters: inputFormatters,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.white70),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.white70),
+          filled: true,
+          fillColor: theme.primaryColor,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.CONTAINER_SIZE_16,
+            vertical: Constant.CONTAINER_SIZE_10,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.SIZE_08),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Color(0xFFD1AE31)),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+        ),
+      ),
+    );
+  }
 }
 void showCustomSnackBar({
   required BuildContext context,
@@ -650,6 +758,8 @@ void showCustomSnackBar({
     ),
   );
 }
+
+
 
 
 
