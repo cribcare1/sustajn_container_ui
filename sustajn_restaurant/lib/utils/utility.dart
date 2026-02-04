@@ -695,7 +695,7 @@ class Utils {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      padding: EdgeInsets.only(bottom: Constant.SIZE_08),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
@@ -712,12 +712,26 @@ class Utils {
           hintStyle: TextStyle(color: Colors.white70),
           filled: true,
           fillColor: theme.primaryColor,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.CONTAINER_SIZE_16,
+            vertical: Constant.CONTAINER_SIZE_10,
+          ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderRadius: BorderRadius.circular(Constant.SIZE_08),
             borderSide: BorderSide(color: Constant.grey),
           ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Color(0xFFD1AE31)),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
         ),
       ),
     );
