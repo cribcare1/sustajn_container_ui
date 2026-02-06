@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -25,6 +26,7 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
   final TextEditingController _nameController = TextEditingController();
 
   File? imageFile;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -152,6 +154,9 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                   ),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
+                  _isSaving
+                      ? const Center(child: CircularProgressIndicator())
+                      :
                 SizedBox(
                   width: double.infinity,
                   child: SubmitButton(onRightTap: ()async{
@@ -160,7 +165,8 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
                       _nameController.text.trim(),
                       );
                       if (mounted) {
-                        Navigator.pop(context, _nameController.text.trim());
+                        NavUtil.popScreen(context, 1);
+                        _getProfileNetworkCall();
                       }
                     }
                   },rightText:Strings.SAVE_CHANGES,)
@@ -172,6 +178,28 @@ class _EditRestaurantNameDialogState extends ConsumerState<EditRestaurantNameDia
         ),
       ),
     );
+  }
+
+  _getProfileNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final profileState = ref.read(profileProvider);
+        if (isNetworkAvailable) {
+          profileState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.GET_PROFILE}$userId';
+          ref.read(getProfileProvider(url));
+        } else {
+          profileState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 
   Map<String, dynamic> getJsonData(String name) {

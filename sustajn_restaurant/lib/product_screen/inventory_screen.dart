@@ -68,26 +68,40 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Expanded(
               child: orderState.isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData!.containersDetails!.isEmpty
-                  ? Center(
-                child: Text(Strings.NO_CONTAINER_AVAILABLE, style: TextStyle(color: Colors.white),),
+                  ? const Center(child: CircularProgressIndicator())
+                  : orderState.getContainerData == null
+                  ? const Center(
+                child: Text( Strings.SOMETHING_WENT_WRONG,
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+                  : orderState.getContainerData!.containersDetails == null ||
+                  orderState.getContainerData!.containersDetails!.isEmpty
+                  ? const Center(
+                child: Text(
+                  Strings.NO_CONTAINER_AVAILABLE,
+                  style: TextStyle(color: Colors.white),
+                ),
               )
                   : ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
-                itemCount: orderState.getContainerData!.containersDetails!.length,
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_16),
+                itemCount: orderState
+                    .getContainerData!.containersDetails!.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.getContainerData!.containersDetails![index];
+                  final item = orderState
+                      .getContainerData!.containersDetails![index];
+
                   return inventoryItemCard(
                     context,
-                    title: item.containerName!,
-                    subTitle: item.containerUniqueId!,
-                    volume: item.capacity.toString(),
-                    qty: item.quantityAvailable!,
+                    title: item.containerName ?? "-",
+                    subTitle: item.containerUniqueId ?? "-",
+                    volume: item.capacity?.toString() ?? "0",
+                    qty: item.quantityAvailable ?? 0,
                   );
                 },
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -331,7 +345,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-  _getInventoryNetworkCall() async {
+_getInventoryNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then(
               (isNetworkAvailable) {

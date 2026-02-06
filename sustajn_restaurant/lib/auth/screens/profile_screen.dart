@@ -337,6 +337,22 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                         ),
                                   );
                                 },
+
+                                // onTap: () async {
+                                //   final result = await showModalBottomSheet<String>(
+                                //     context: context,
+                                //     isScrollControlled: true,
+                                //     backgroundColor: Colors.transparent,
+                                //     builder: (context) => EditRestaurantNameDialog(
+                                //       name: profile.fullName!,
+                                //     ),
+                                //   );
+                                //
+                                //   if (result != null) {
+                                //     _getProfileNetworkCall();
+                                //   }
+                                // },
+
                                 child: Icon(
                                   Icons.edit_outlined,
                                   size: w * 0.045,
@@ -530,7 +546,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      // if (!profileState.isValid) return;
       profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
