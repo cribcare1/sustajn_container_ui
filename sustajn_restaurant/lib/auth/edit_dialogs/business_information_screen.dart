@@ -7,7 +7,6 @@ import 'package:sustajn_restaurant/constants/string_utils.dart';
 import '../../constants/number_constants.dart';
 import '../../provider/login_provider.dart';
 import '../../provider/profile_provider.dart';
-import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../model/social_media_model.dart';
 
@@ -15,19 +14,55 @@ class BusinessInformationScreen extends ConsumerStatefulWidget {
   const BusinessInformationScreen({super.key});
 
   @override
-  ConsumerState<BusinessInformationScreen> createState() => _BusinessInformationScreenState();
+  ConsumerState<BusinessInformationScreen> createState() =>
+      _BusinessInformationScreenState();
 }
 
-class _BusinessInformationScreenState extends ConsumerState<BusinessInformationScreen> {
-
-  final contactPersonController = TextEditingController();
-  final contactNumberController = TextEditingController();
-  final contactEmailController = TextEditingController();
-  final licenceController = TextEditingController();
-  final taxController = TextEditingController();
-  final businessTypeController = TextEditingController();
-  final websiteController = TextEditingController();
+class _BusinessInformationScreenState
+    extends ConsumerState<BusinessInformationScreen> {
   final _key = GlobalKey<FormState>();
+
+  late TextEditingController _contactPersonController;
+  late TextEditingController _contactNumberController;
+  late TextEditingController _contactEmailController;
+  late TextEditingController _licenceController;
+  late TextEditingController _vatController;
+  late TextEditingController _businessTypeController;
+  late TextEditingController _websiteController;
+  String? _selectedBusinessType;
+
+  @override
+  void initState() {
+    super.initState();
+    Utils.userId;
+    _contactPersonController = TextEditingController();
+    _contactNumberController = TextEditingController();
+    _contactEmailController = TextEditingController();
+    _licenceController = TextEditingController();
+    _vatController = TextEditingController();
+    _businessTypeController = TextEditingController();
+    _websiteController = TextEditingController();
+    _getData();
+  }
+
+  @override
+  void dispose() {
+    _contactPersonController.dispose();
+    _contactNumberController.dispose();
+    _contactEmailController.dispose();
+    _licenceController.dispose();
+    _vatController.dispose();
+    _businessTypeController.dispose();
+    _websiteController.dispose();
+    super.dispose();
+  }
+
+  final List<String> _businessTypes = [
+    'Restaurant',
+    'Cafe',
+    'Fast food Shop',
+    'Food court Cloud kitchen',
+  ];
 
   _getData() {
     final profileState = ref.read(profileProvider);
@@ -40,8 +75,6 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -84,20 +117,33 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                 child: Form(
                   key: _key,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        "Contact and Registration Details",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Constant.CONTAINER_SIZE_18,
+                        ),
+                      ),
+                      SizedBox(height: Constant.SIZE_08),
+
                       Utils.buildTextField(
                         context,
-                        controller: contactPersonController,
+                        controller: _contactPersonController,
                         label: Strings.CONTACT_PERSON,
                         hint: Strings.CONTACT_PERSON,
                         keyboard: TextInputType.text,
-                        validator:(v) => Utils.validateRequired(v, 'Contact person'),
+                        validator: (v) =>
+                            Utils.validateRequired(v, 'Contact person'),
                       ),
                       SizedBox(height: Constant.SIZE_10),
 
                       Utils.buildTextField(
                         context,
-                        controller: contactNumberController,
+                        controller: _contactNumberController,
                         label: Strings.MOBILE_NUMBER,
                         hint: Strings.MOBILE_NUMBER,
                         keyboard: TextInputType.number,
@@ -111,7 +157,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                       SizedBox(height: Constant.SIZE_10),
                       Utils.buildTextField(
                         context,
-                        controller: contactEmailController,
+                        controller: _contactEmailController,
                         label: Strings.EMAIL_REGISTRATION,
                         hint: Strings.EMAIL_REGISTRATION,
                         keyboard: TextInputType.emailAddress,
@@ -121,7 +167,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
 
                       Utils.buildTextField(
                         context,
-                        controller: licenceController,
+                        controller: _licenceController,
                         label: Strings.TRADE_LICENSE_NUMBER,
                         hint: Strings.TRADE_LICENSE_NUMBER,
                         keyboard: TextInputType.emailAddress,
@@ -130,30 +176,87 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                       SizedBox(height: Constant.SIZE_10),
                       Utils.buildTextField(
                         context,
-                        controller: taxController,
-                        label: Strings.TAX_NUMBER,
-                        hint: Strings.TAX_NUMBER,
+                        controller: _vatController,
+                        label: Strings.VAT_NUMBER,
+                        hint: Strings.VAT_NUMBER,
                         keyboard: TextInputType.text,
-                        validator:  (v) => Utils.validateTaxNumber(v),
+                        validator: (v) => Utils.validateTaxNumber(v),
                       ),
+                      SizedBox(height: Constant.SIZE_10),
+
+                      Text(
+                        Strings.BUSINESS_DTLS,
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold,
+                          fontSize: Constant.CONTAINER_SIZE_18,
+                        ),
+                      ),
+
+                      SizedBox(height: Constant.SIZE_08),
+
+                      GestureDetector(
+                        onTap: () => _showBusinessTypeMenu(context),
+                        child: AbsorbPointer(
+                          child: TextFormField(
+                            controller: _businessTypeController,
+                            style: const TextStyle(color: Colors.white70),
+                            decoration: InputDecoration(
+                              labelText: Strings.TYPES_OF_BUSINESS,
+                              labelStyle: const TextStyle(
+                                color: Colors.white70,
+                              ),
+                              hintText: Strings.TYPES_OF_BUSINESS,
+                              hintStyle: const TextStyle(color: Colors.white70),
+                              filled: true,
+                              fillColor: theme.primaryColor,
+                              suffixIcon: const Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white70,
+                              ),
+
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: Constant.CONTAINER_SIZE_16,
+                                vertical: Constant.CONTAINER_SIZE_10,
+                              ),
+
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constant.SIZE_08,
+                                ),
+                                borderSide: BorderSide(color: Constant.grey),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_14,
+                                ),
+                                borderSide: BorderSide(color: Constant.grey),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_14,
+                                ),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFD1AE31),
+                                ),
+                              ),
+                            ),
+                            validator: (v) => v == null || v.isEmpty
+                                ? 'Business type is required'
+                                : null,
+                          ),
+                        ),
+                      ),
+
                       SizedBox(height: Constant.SIZE_10),
 
                       Utils.buildTextField(
                         context,
-                        controller: businessTypeController,
-                        label: Strings.TYPES_OF_BUSINESS,
-                        hint: Strings.TYPES_OF_BUSINESS,
-                        keyboard: TextInputType.text,
-                        validator:(v) => Utils.validateRequired(v, 'Business type'),
-                      ),
-                      SizedBox(height: Constant.SIZE_10),
-                      Utils.buildTextField(
-                        context,
-                        controller: websiteController,
+                        controller: _websiteController,
                         label: Strings.WEBSITE,
                         hint: Strings.WEBSITE,
                         keyboard: TextInputType.text,
-                        validator:(v) => Utils.validateRequired(v, 'Website'),
+                        validator: (v) => Utils.validateRequired(v, 'Website'),
                       ),
                       SizedBox(height: Constant.SIZE_18),
 
@@ -163,10 +266,7 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.add,
-                              color: theme.secondaryHeaderColor,
-                            ),
+                            Icon(Icons.add, color: theme.secondaryHeaderColor),
                             SizedBox(width: Constant.SIZE_06),
                             Text(
                               Strings.ADD_SOCIAL_MEDIA,
@@ -201,6 +301,36 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
     );
   }
 
+  void _showBusinessTypeMenu(BuildContext context) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final selected = await showMenu<String>(
+      context: context,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      position: RelativeRect.fromLTRB(20, overlay.size.height * 0.44, 20, 10),
+      items: _businessTypes.map((type) {
+        return PopupMenuItem<String>(
+          value: type,
+          height: Constant.CONTAINER_SIZE_40,
+
+          child: Text(
+            type,
+            style: TextStyle(color: Colors.black, fontSize: Constant.CONTAINER_SIZE_14),
+          ),
+        );
+      }).toList(),
+    );
+
+    if (selected != null) {
+      setState(() {
+        _selectedBusinessType = selected;
+        _businessTypeController.text = selected;
+      });
+    }
+  }
+
   void _openSocialMediaSheet(BuildContext context) {
     final registrationState = ref.watch(authNotifierProvider);
 
@@ -210,7 +340,9 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
       useSafeArea: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.SIZE_10)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Constant.SIZE_10),
+        ),
       ),
       builder: (_) {
         return SingleChildScrollView(
@@ -242,22 +374,22 @@ class _BusinessInformationScreenState extends ConsumerState<BusinessInformationS
                 alignment: WrapAlignment.center,
                 children: socialMediaOptions.map((item) {
                   final alreadyAdded = registrationState.socialMediaList.any(
-                        (e) => e.socialMediaType == item.type,
+                    (e) => e.socialMediaType == item.type,
                   );
 
                   return GestureDetector(
                     onTap: alreadyAdded
                         ? null
                         : () {
-                      Navigator.pop(context);
-                      registrationState.setSocialMedia(
-                        SocialMediaModel(
-                          socialMediaType: item.type,
-                          controller: TextEditingController(),
-                        ),
-                      );
-                      setState(() {});
-                    },
+                            Navigator.pop(context);
+                            registrationState.setSocialMedia(
+                              SocialMediaModel(
+                                socialMediaType: item.type,
+                                controller: TextEditingController(),
+                              ),
+                            );
+                            setState(() {});
+                          },
                     child: Opacity(
                       opacity: alreadyAdded ? 0.4 : 1,
                       child: Column(

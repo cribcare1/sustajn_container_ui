@@ -133,3 +133,19 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
   print("Provider Response: $responseData");
   return responseData;
 });
+
+
+final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.REFER_A_PARTNER}';
+
+  Utils.printLog("Refer Partner Provider url : $url");
+  final responseData = await apiService.businessInfoService(url, params, "");
+
+  print("Provider Response: $responseData");
+  return responseData;
+});
