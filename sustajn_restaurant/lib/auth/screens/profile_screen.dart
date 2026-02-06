@@ -338,22 +338,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                         ),
                                   );
                                 },
-
-                                // onTap: () async {
-                                //   final result = await showModalBottomSheet<String>(
-                                //     context: context,
-                                //     isScrollControlled: true,
-                                //     backgroundColor: Colors.transparent,
-                                //     builder: (context) => EditRestaurantNameDialog(
-                                //       name: profile.fullName!,
-                                //     ),
-                                //   );
-                                //
-                                //   if (result != null) {
-                                //     _getProfileNetworkCall();
-                                //   }
-                                // },
-
                                 child: Icon(
                                   Icons.edit_outlined,
                                   size: w * 0.045,

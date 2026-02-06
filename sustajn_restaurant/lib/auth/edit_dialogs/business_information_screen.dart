@@ -137,7 +137,7 @@ class _BusinessInformationScreenState
                         hint: Strings.CONTACT_PERSON,
                         keyboard: TextInputType.text,
                         validator: (v) =>
-                            Utils.validateRequired(v, 'Contact person'),
+                            Utils.validateRequired(v, Strings.CONTACT_PERSON),
                       ),
                       SizedBox(height: Constant.SIZE_10),
 
