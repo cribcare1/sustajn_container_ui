@@ -141,7 +141,7 @@ final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>
     ) async {
   final apiService = ref.read(getProfileApiProvider);
 
-  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.REFER_A_PARTNER}';
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.BUSINESS_INFO}';
 
   Utils.printLog("Refer Partner Provider url : $url");
   final responseData = await apiService.businessInfoService(url, params, "");

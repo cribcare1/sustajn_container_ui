@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 
 import '../../constants/number_constants.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/utility.dart';
@@ -67,8 +69,18 @@ class _BusinessInformationScreenState
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
-    if (profile!.bankDetailsResponse != null) {
-      final business = profile.bankDetailsResponse;
+    if (profile!.contactAndRegistrationDetailsResponse != null || profile!.bankDetailsResponse != null) {
+      final business = profile.contactAndRegistrationDetailsResponse;
+      final website = profile.businessDetailsResponse;
+
+      _contactPersonController.text = business!.contactPersonName ?? "";
+      _contactNumberController.text = business.contactNumber ?? "";
+      _contactEmailController.text = business.contactEmail ?? "";
+      _licenceController.text = business.treadLicenseNumber ?? "";
+      _vatController.text = business.vatNumber ?? "";
+      _websiteController.text = website!.website ?? "";
+
+
     }
   }
 
@@ -195,57 +207,74 @@ class _BusinessInformationScreenState
 
                       SizedBox(height: Constant.SIZE_08),
 
-                      GestureDetector(
-                        onTap: () => _showBusinessTypeMenu(context),
-                        child: AbsorbPointer(
-                          child: TextFormField(
-                            controller: _businessTypeController,
-                            style: const TextStyle(color: Colors.white70),
-                            decoration: InputDecoration(
-                              labelText: Strings.TYPES_OF_BUSINESS,
-                              labelStyle: const TextStyle(
-                                color: Colors.white70,
-                              ),
-                              hintText: Strings.TYPES_OF_BUSINESS,
-                              hintStyle: const TextStyle(color: Colors.white70),
-                              filled: true,
-                              fillColor: theme.primaryColor,
-                              suffixIcon: const Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.white70,
-                              ),
+                      DropdownButtonFormField2<String>(
+                        value: _selectedBusinessType,
 
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: Constant.CONTAINER_SIZE_16,
-                                vertical: Constant.CONTAINER_SIZE_10,
+                        selectedItemBuilder: (context) {
+                          return _businessTypes.map((item) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                item,
+                                style: TextStyle(color: Colors.white70),
                               ),
+                            );
+                          }).toList();
+                        },
 
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                  Constant.SIZE_08,
-                                ),
-                                borderSide: BorderSide(color: Constant.grey),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                  Constant.CONTAINER_SIZE_14,
-                                ),
-                                borderSide: BorderSide(color: Constant.grey),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(
-                                  Constant.CONTAINER_SIZE_14,
-                                ),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFD1AE31),
-                                ),
-                              ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: theme.primaryColor,
+                          labelText: Strings.TYPES_OF_BUSINESS,
+                          labelStyle: const TextStyle(color: Colors.white70),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: Constant.CONTAINER_SIZE_16,
+                            vertical: Constant.CONTAINER_SIZE_10,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Constant.SIZE_08,
                             ),
-                            validator: (v) => v == null || v.isEmpty
-                                ? 'Business type is required'
-                                : null,
+                            borderSide: BorderSide(color: Constant.grey),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Constant.CONTAINER_SIZE_14,
+                            ),
+                            borderSide: BorderSide(color: Constant.grey),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              Constant.CONTAINER_SIZE_14,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFD1AE31),
+                            ),
                           ),
                         ),
+
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white70,
+                          ),
+                        ),
+
+                        items: _businessTypes.map((type) {
+                          return DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(
+                              type,
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+
+                        onChanged: (value) {
+                          setState(() => _selectedBusinessType = value);
+                        },
                       ),
 
                       SizedBox(height: Constant.SIZE_10),
@@ -262,21 +291,24 @@ class _BusinessInformationScreenState
 
                       InkWell(
                         onTap: () => _openSocialMediaSheet(context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, color: theme.secondaryHeaderColor),
-                            SizedBox(width: Constant.SIZE_06),
-                            Text(
-                              Strings.ADD_SOCIAL_MEDIA,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                                color: Constant.gold,
-                                fontWeight: FontWeight.w500,
+                        child: Padding(
+                          padding: EdgeInsets.all(Constant.SIZE_08),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add, color: theme.secondaryHeaderColor),
+                              SizedBox(width: Constant.SIZE_06),
+                              Text(
+                                Strings.ADD_SOCIAL_MEDIA,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_14,
+                                  color: Constant.gold,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_70),
@@ -286,49 +318,23 @@ class _BusinessInformationScreenState
               ),
             ),
 
-            SubmitButton(
-              rightText: Strings.SAVE_CHANGES,
-              onRightTap: () {
-                if (!_key.currentState!.validate()) {
-                  return;
-                }
-                Utils.showToast("Information uploaded successful");
-              },
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
+
+              child: SubmitButton(
+                rightText: Strings.SAVE_CHANGES,
+                onRightTap: () {
+                  if (!_key.currentState!.validate()) {
+                    return;
+                  }
+                  Utils.showToast("Information uploaded successful");
+                },
+              ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  void _showBusinessTypeMenu(BuildContext context) async {
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
-
-    final selected = await showMenu<String>(
-      context: context,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      position: RelativeRect.fromLTRB(20, overlay.size.height * 0.44, 20, 10),
-      items: _businessTypes.map((type) {
-        return PopupMenuItem<String>(
-          value: type,
-          height: Constant.CONTAINER_SIZE_40,
-
-          child: Text(
-            type,
-            style: TextStyle(color: Colors.black, fontSize: Constant.CONTAINER_SIZE_14),
-          ),
-        );
-      }).toList(),
-    );
-
-    if (selected != null) {
-      setState(() {
-        _selectedBusinessType = selected;
-        _businessTypeController.text = selected;
-      });
-    }
   }
 
   void _openSocialMediaSheet(BuildContext context) {
@@ -417,4 +423,59 @@ class _BusinessInformationScreenState
       },
     );
   }
+
+
+
+  Map<String, dynamic> getJsonData(String regdNo) {
+    final data = {
+      "userId": Utils.userId,
+
+      "basicDetails": {
+        "businessType": "Restaurant",
+        "websiteDetails": "https://www.surajrestaurant.com",
+        "cuisine": "Indian"
+      },
+
+      "contactAndRegistrationDetails": {
+        "contactPersonName": _contactPersonController.text,
+        "contactEmail": _contactEmailController.text,
+        "treadLicenseNumber": _licenceController.text,
+        "vatNumber": _contactNumberController.text,
+        "contactNumber": _contactNumberController.text,
+        "registrationNumber": regdNo
+      },
+
+      "socialMediaList": [
+        {
+          "socialMediaType": "Instagram",
+          "link": "https://instagram.com/surajrestaurant"
+        },
+        {
+          "socialMediaType": "Facebook",
+          "link": "https://facebook.com/surajrestaurant"
+        }
+      ]
+    };
+    return data;
+  }
+
+  _businessInfoNetworkCall(String regdNo) async {
+    Utils.printLog('business info Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+    try {
+      await ref.read(businessInfoProvider(getJsonData(regdNo)).future);
+      Navigator.pop(context);
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
+  }
+
 }

@@ -33,6 +33,7 @@ class NetworkUrls {
   static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
   static const CONTAINER_HISTORY = "orders/orderHistory/";
   static const REFER_A_PARTNER = "auth/referPartner";
+  static const BUSINESS_INFO = "auth/addBusinessInfo";
 
 
   /// Container ///

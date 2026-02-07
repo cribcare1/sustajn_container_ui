@@ -278,7 +278,7 @@ class _EditReferPartnerDialogState
   }
 
   _referPartnerNetworkCall(var orderState) async {
-    Utils.printLog('add container Network call');
+    Utils.printLog('refer a partner Network call');
 
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)
