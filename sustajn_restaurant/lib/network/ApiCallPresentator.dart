@@ -92,13 +92,16 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
 
         Utils.printLog('Response status: $jsonData');
         isViewAttached ? getView().onSuccess(jsonData, requestType) : null;
+        return jsonData;
       } else {
         Utils.printLog('Null response received');
         isViewAttached ? getView().onFailure(response.statusCode) : null;
+        return null;
       }
     } catch (e) {
       Utils.printLog('Error: $e');
       isViewAttached ? getView().onFailure(response.statusCode) : null;
+      rethrow;
     }
   }
 
