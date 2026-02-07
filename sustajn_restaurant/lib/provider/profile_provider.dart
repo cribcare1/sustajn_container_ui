@@ -7,7 +7,6 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/update_address_data.dart';
-import '../models/update_profile_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
 import '../utils/sharedpreference_utils.dart';
@@ -45,7 +44,7 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
 });
 
 final profileUpdateProvider =
-FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
+FutureProvider.family<GetProfileData, Map<String, dynamic>>(
       (ref, params) async {
     final apiService = ref.read(getProfileApiProvider);
     final profileState = ref.watch(profileProvider);
@@ -72,7 +71,7 @@ FutureProvider.family<UpdateProfileData, Map<String, dynamic>>(
 
 
 final profileImgProvider =
-FutureProvider.family<UpdateProfileData, Map<String, dynamic>>((ref, params) async {
+FutureProvider.family<GetProfileData, Map<String, dynamic>>((ref, params) async {
     final serviceProvider = ref.read(getProfileApiProvider);
     final image = params[Strings.IMAGE];
     params.remove(Strings.IMAGE);

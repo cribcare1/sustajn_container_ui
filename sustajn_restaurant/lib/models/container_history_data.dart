@@ -1,4 +1,3 @@
-
 class ContainerHistoryData {
   String? status;
   String? message;
@@ -7,25 +6,19 @@ class ContainerHistoryData {
   ContainerHistoryData({this.status, this.message, this.data});
 
   ContainerHistoryData.fromJson(Map<String, dynamic> json) {
-    if(json["status"] is String) {
-      status = json["status"];
-    }
-    if(json["message"] is String) {
-      message = json["message"];
-    }
-    if(json["data"] is Map) {
-      data = json["data"] == null ? null : Data.fromJson(json["data"]);
-    }
+    status = json['status'] ?? "";
+    message = json['message'] ?? "";
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["status"] = status;
-    _data["message"] = message;
-    if(data != null) {
-      _data["data"] = data?.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
-    return _data;
+    return data;
   }
 }
 
@@ -37,29 +30,170 @@ class Data {
   Data({this.leasedResponses, this.receivedResponses, this.orderedResponses});
 
   Data.fromJson(Map<String, dynamic> json) {
-    if(json["leasedResponses"] is List) {
-      leasedResponses = json["leasedResponses"] == null ? null : (json["leasedResponses"] as List).map((e) => LeasedResponses.fromJson(e)).toList();
+    if (json['leasedResponses'] != null) {
+      leasedResponses = <LeasedResponses>[];
+      json['leasedResponses'].forEach((v) {
+        leasedResponses!.add(new LeasedResponses.fromJson(v));
+      });
     }
-    if(json["receivedResponses"] is List) {
-      receivedResponses = json["receivedResponses"] == null ? null : (json["receivedResponses"] as List).map((e) => ReceivedResponses.fromJson(e)).toList();
+    if (json['receivedResponses'] != null) {
+      receivedResponses = <ReceivedResponses>[];
+      json['receivedResponses'].forEach((v) {
+        receivedResponses!.add(new ReceivedResponses.fromJson(v));
+      });
     }
-    if(json["orderedResponses"] is List) {
-      orderedResponses = json["orderedResponses"] == null ? null : (json["orderedResponses"] as List).map((e) => OrderedResponses.fromJson(e)).toList();
+    if (json['orderedResponses'] != null) {
+      orderedResponses = <OrderedResponses>[];
+      json['orderedResponses'].forEach((v) {
+        orderedResponses!.add(new OrderedResponses.fromJson(v));
+      });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    if(leasedResponses != null) {
-      _data["leasedResponses"] = leasedResponses?.map((e) => e.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.leasedResponses != null) {
+      data['leasedResponses'] =
+          this.leasedResponses!.map((v) => v.toJson()).toList();
     }
-    if(receivedResponses != null) {
-      _data["receivedResponses"] = receivedResponses?.map((e) => e.toJson()).toList();
+    if (this.receivedResponses != null) {
+      data['receivedResponses'] =
+          this.receivedResponses!.map((v) => v.toJson()).toList();
     }
-    if(orderedResponses != null) {
-      _data["orderedResponses"] = orderedResponses?.map((e) => e.toJson()).toList();
+    if (this.orderedResponses != null) {
+      data['orderedResponses'] =
+          this.orderedResponses!.map((v) => v.toJson()).toList();
     }
-    return _data;
+    return data;
+  }
+}
+
+class LeasedResponses {
+  String? productsName;
+  int? orderId;
+  String? transactionId;
+  String? leasedStartDateTime;
+  int? leasedQuantity;
+  List<ProductOrderListResponses>? productOrderListResponses;
+
+  LeasedResponses(
+      {this.productsName,
+        this.orderId,
+        this.transactionId,
+        this.leasedStartDateTime,
+        this.leasedQuantity,
+        this.productOrderListResponses});
+
+  LeasedResponses.fromJson(Map<String, dynamic> json) {
+    productsName = json['productsName'] ?? "";
+    orderId = json['orderId'] ?? 0;
+    transactionId = json['transactionId'] ?? "";
+    leasedStartDateTime = json['leasedStartDateTime'] ?? "";
+    leasedQuantity = json['leasedQuantity'] ?? 0;
+    if (json['productOrderListResponses'] != null) {
+      productOrderListResponses = <ProductOrderListResponses>[];
+      json['productOrderListResponses'].forEach((v) {
+        productOrderListResponses!
+            .add(new ProductOrderListResponses.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['productsName'] = this.productsName;
+    data['orderId'] = this.orderId;
+    data['transactionId'] = this.transactionId;
+    data['leasedStartDateTime'] = this.leasedStartDateTime;
+    data['leasedQuantity'] = this.leasedQuantity;
+    if (this.productOrderListResponses != null) {
+      data['productOrderListResponses'] =
+          this.productOrderListResponses!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class ProductOrderListResponses {
+  int? productId;
+  String? productName;
+  int? capacity;
+  int? containerCount;
+  String? productImageUrl;
+  String? productUniqueId;
+
+  ProductOrderListResponses(
+      {this.productId,
+        this.productName,
+        this.capacity,
+        this.containerCount,
+        this.productImageUrl,
+        this.productUniqueId});
+
+  ProductOrderListResponses.fromJson(Map<String, dynamic> json) {
+    productId = json['productId'] ?? 0;
+    productName = json['productName'] ?? "";
+    capacity = json['capacity'] ?? 0;
+    containerCount = json['containerCount'] ?? 0;
+    productImageUrl = json['productImageUrl'] ?? "";
+    productUniqueId = json['productUniqueId'] ?? "";
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['productId'] = this.productId;
+    data['productName'] = this.productName;
+    data['capacity'] = this.capacity;
+    data['containerCount'] = this.containerCount;
+    data['productImageUrl'] = this.productImageUrl;
+    data['productUniqueId'] = this.productUniqueId;
+    return data;
+  }
+}
+
+class ReceivedResponses {
+  String? productsName;
+  int? orderId;
+  String? transactionId;
+  String? returnDateTime;
+  int? returnedQuantity;
+  List<ProductOrderListResponses>? productOrderListResponses;
+
+  ReceivedResponses(
+      {this.productsName,
+        this.orderId,
+        this.transactionId,
+        this.returnDateTime,
+        this.returnedQuantity,
+        this.productOrderListResponses});
+
+  ReceivedResponses.fromJson(Map<String, dynamic> json) {
+    productsName = json['productsName'] ?? "";
+    orderId = json['orderId'] ?? "";
+    transactionId = json['transactionId'] ?? "";
+    returnDateTime = json['returnDateTime'] ?? "";
+    returnedQuantity = json['returnedQuantity'] ?? "";
+    if (json['productOrderListResponses'] != null) {
+      productOrderListResponses = <ProductOrderListResponses>[];
+      json['productOrderListResponses'].forEach((v) {
+        productOrderListResponses!
+            .add(new ProductOrderListResponses.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['productsName'] = this.productsName;
+    data['orderId'] = this.orderId;
+    data['transactionId'] = this.transactionId;
+    data['returnDateTime'] = this.returnDateTime;
+    data['returnedQuantity'] = this.returnedQuantity;
+    if (this.productOrderListResponses != null) {
+      data['productOrderListResponses'] =
+          this.productOrderListResponses!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
@@ -70,130 +204,48 @@ class OrderedResponses {
   String? type;
   String? status;
   String? restaurantRemark;
-  dynamic adminRemark;
-  dynamic decisionAt;
+  String? adminRemark;
+  String? decisionAt;
   int? requestedQty;
   int? approvedQty;
 
-  OrderedResponses({this.productName, this.orderId, this.orderDate, this.type, this.status, this.restaurantRemark, this.adminRemark, this.decisionAt, this.requestedQty, this.approvedQty});
+  OrderedResponses(
+      {this.productName,
+        this.orderId,
+        this.orderDate,
+        this.type,
+        this.status,
+        this.restaurantRemark,
+        this.adminRemark,
+        this.decisionAt,
+        this.requestedQty,
+        this.approvedQty});
 
   OrderedResponses.fromJson(Map<String, dynamic> json) {
-    if(json["productName"] is String) {
-      productName = json["productName"];
-    }
-    if(json["orderId"] is String) {
-      orderId = json["orderId"];
-    }
-    if(json["orderDate"] is String) {
-      orderDate = json["orderDate"];
-    }
-    if(json["type"] is String) {
-      type = json["type"];
-    }
-    if(json["status"] is String) {
-      status = json["status"];
-    }
-    if(json["restaurantRemark"] is String) {
-      restaurantRemark = json["restaurantRemark"];
-    }
-    adminRemark = json["adminRemark"];
-    decisionAt = json["decisionAt"];
-    if(json["requestedQty"] is int) {
-      requestedQty = json["requestedQty"];
-    }
-    if(json["approvedQty"] is int) {
-      approvedQty = json["approvedQty"];
-    }
+    productName = json['productName'] ?? "";
+    orderId = json['orderId'] ?? "";
+    orderDate = json['orderDate'] ?? "";
+    type = json['type'] ?? "";
+    status = json['status'] ?? "";
+    restaurantRemark = json['restaurantRemark'] ?? "";
+    adminRemark = json['adminRemark'] ?? "";
+    decisionAt = json['decisionAt'] ?? "";
+    requestedQty = json['requestedQty'] ?? 0;
+    approvedQty = json['approvedQty'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["productName"] = productName;
-    _data["orderId"] = orderId;
-    _data["orderDate"] = orderDate;
-    _data["type"] = type;
-    _data["status"] = status;
-    _data["restaurantRemark"] = restaurantRemark;
-    _data["adminRemark"] = adminRemark;
-    _data["decisionAt"] = decisionAt;
-    _data["requestedQty"] = requestedQty;
-    _data["approvedQty"] = approvedQty;
-    return _data;
-  }
-}
-
-class ReceivedResponses {
-  String? productsName;
-  int? orderId;
-  String? transactionId;
-  String? returnDateTime;
-  int? returnedQuantity;
-
-  ReceivedResponses({this.productsName, this.orderId, this.transactionId, this.returnDateTime, this.returnedQuantity});
-
-  ReceivedResponses.fromJson(Map<String, dynamic> json) {
-    if(json["productsName"] is String) {
-      productsName = json["productsName"];
-    }
-    if(json["orderId"] is int) {
-      orderId = json["orderId"];
-    }
-    if(json["transactionId"] is String) {
-      transactionId = json["transactionId"];
-    }
-    if(json["returnDateTime"] is String) {
-      returnDateTime = json["returnDateTime"];
-    }
-    if(json["returnedQuantity"] is int) {
-      returnedQuantity = json["returnedQuantity"];
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["productsName"] = productsName;
-    _data["orderId"] = orderId;
-    _data["transactionId"] = transactionId;
-    _data["returnDateTime"] = returnDateTime;
-    _data["returnedQuantity"] = returnedQuantity;
-    return _data;
-  }
-}
-
-class LeasedResponses {
-  String? productsName;
-  int? orderId;
-  String? transactionId;
-  String? leasedStartDateTime;
-  int? leasedQuantity;
-
-  LeasedResponses({this.productsName, this.orderId, this.transactionId, this.leasedStartDateTime, this.leasedQuantity});
-
-  LeasedResponses.fromJson(Map<String, dynamic> json) {
-    if(json["productsName"] is String) {
-      productsName = json["productsName"];
-    }
-    if(json["orderId"] is int) {
-      orderId = json["orderId"];
-    }
-    if(json["transactionId"] is String) {
-      transactionId = json["transactionId"];
-    }
-    if(json["leasedStartDateTime"] is String) {
-      leasedStartDateTime = json["leasedStartDateTime"];
-    }
-    if(json["leasedQuantity"] is int) {
-      leasedQuantity = json["leasedQuantity"];
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["productsName"] = productsName;
-    _data["orderId"] = orderId;
-    _data["transactionId"] = transactionId;
-    _data["leasedStartDateTime"] = leasedStartDateTime;
-    _data["leasedQuantity"] = leasedQuantity;
-    return _data;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['productName'] = this.productName;
+    data['orderId'] = this.orderId;
+    data['orderDate'] = this.orderDate;
+    data['type'] = this.type;
+    data['status'] = this.status;
+    data['restaurantRemark'] = this.restaurantRemark;
+    data['adminRemark'] = this.adminRemark;
+    data['decisionAt'] = this.decisionAt;
+    data['requestedQty'] = this.requestedQty;
+    data['approvedQty'] = this.approvedQty;
+    return data;
   }
 }
