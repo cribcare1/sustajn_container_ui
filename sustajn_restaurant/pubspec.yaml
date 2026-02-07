@@ -61,6 +61,7 @@ dependencies:
   firebase_messaging: ^16.1.0
   syncfusion_flutter_charts: ^32.1.23
   encrypt: ^5.0.3
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
