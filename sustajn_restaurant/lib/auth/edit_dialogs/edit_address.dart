@@ -51,8 +51,10 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
     }
     return null;
   }
-double lat = 0.0;
-double long = 0.0;
+
+  double lat = 0.0;
+  double long = 0.0;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -122,20 +124,22 @@ double long = 0.0;
                     labelStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
                     ),
-                    suffixIcon: IconButton(onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => MapScreen()),
-                      ).then((value) {
-                        if (value != null) {
-                          _addressController.text = value['address'];
-                          lat = value['lat'];
-                          long = value['lng'];
-                        }
-                      });
-                    },
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => MapScreen()),
+                        ).then((value) {
+                          if (value != null) {
+                            _addressController.text = value['address'];
+                            lat = value['lat'];
+                            long = value['lng'];
+                          }
+                        });
+                      },
 
-                        icon: Icon(Icons.map,color: theme.secondaryHeaderColor,)),
+                      icon: Icon(Icons.map, color: theme.secondaryHeaderColor),
+                    ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: Constant.CONTAINER_SIZE_16,
                       vertical: Constant.CONTAINER_SIZE_14,

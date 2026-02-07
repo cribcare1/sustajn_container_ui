@@ -194,6 +194,7 @@ class Strings {
   static const String REQUEST_HISTORY = "Request History";
   static const String NO_CONTAINER_REQUESTS_YET = "No container requests yet";
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
+  static const String SOMETHING_WENT_WRONG = "Something went wrong. Please try again ";
   static const String SEARCH_BY_CONTAINER_NAME =
       "Search by container Name or Id";
   static const String DELETE_REQUEST = "Delete Request";

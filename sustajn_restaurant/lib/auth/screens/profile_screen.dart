@@ -26,6 +26,7 @@ import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
+import 'business_information_screen.dart';
 
 class MyProfileScreen extends ConsumerStatefulWidget {
   const MyProfileScreen({super.key});
@@ -39,12 +40,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Email", "icon": Icons.email_outlined},
     {"name": "Address", "icon": Icons.location_on_outlined},
     {"name": "Contact", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined}, //ok
-    {"name": "Business Information", "icon": Icons.business_outlined}, //ok
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined}, //ok
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
+    {"name": "Business Information", "icon": Icons.business_outlined},
+    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
     {"name": "Payment Type", "icon": Icons.payments_outlined},
     {"name": "History", "icon": Icons.history},
-    {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
+    {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];
@@ -172,6 +173,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
+    Utils.userId;
     _getProfileNetworkCall();
   }
 
@@ -530,7 +532,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      // if (!profileState.isValid) return;
       profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)

@@ -28,21 +28,12 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
   int qty = 0;
 
   List<ContainersDetails> container = [];
-  LoginData? loginResponse;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
+    Utils.userId;
   }
 
   @override
@@ -349,7 +340,7 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
 
   Map<String, dynamic> getJsonData(ContainersDetails item) {
     final data = {
-      "restaurantId": loginResponse!.userId,
+      "restaurantId": Utils.userId,
       "type": "RETURN",
       "items": [
         {
