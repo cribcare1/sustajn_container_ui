@@ -46,14 +46,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+bool isDataLoading = false;
+  Future<void> _init() async {
+    setState(() {
+      isDataLoading = true;
+    });
+     await Utils.getUserId();
     _loadProfile();
     if (loginResponse == null) {
       _getProfileNetworkCall();
     }
+    setState(() {
+      isDataLoading = false;
+    });
   }
 
   Future<void> _loadProfile() async {
-    Utils.getUserId();
+
     await Utils.getProfile();
     setState(() {
       loginResponse = Utils.loginData?.data;
@@ -105,7 +116,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
+      body:isDataLoading?Center(child: CircularProgressIndicator()): SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(

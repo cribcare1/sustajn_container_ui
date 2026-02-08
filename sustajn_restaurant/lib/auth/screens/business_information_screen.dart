@@ -115,6 +115,10 @@ class _BusinessInformationDetailsState
 
                     _buildTextField(
                       context,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.MOBILE_NUMBER;
@@ -137,9 +141,15 @@ class _BusinessInformationDetailsState
                     ),
                     _buildTextField(
                       context,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(8),
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.TRADE_LICENSE_NUMBER;
+                        }if (value.length < 5 || value.length > 8) {
+                          return Strings.TRADE_LICENCE_VALIDATE;
                         }
                         return null;
                       },
@@ -148,9 +158,15 @@ class _BusinessInformationDetailsState
                     ),
                     _buildTextField(
                       context,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(15),
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.VAT_NUMBER;
+                        }if (value.length != 15) {
+                          return Strings.VAT_NUMBER_15;
                         }
                         return null;
                       },
@@ -325,7 +341,7 @@ class _BusinessInformationDetailsState
     required String hint,
     String? Function(String?)? validator,
     bool obscure = false,
-    TextInputType keyboard = TextInputType.text,
+    TextInputType? keyboard,
     bool? readOnly = false,
     List<TextInputFormatter>? inputFormatters,
   }) {

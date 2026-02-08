@@ -229,7 +229,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         ),
 
         body: profileState.isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Container(
+            color: theme.primaryColor,
+            height: double.infinity,
+            width: double.infinity,
+            child: Center(child: CircularProgressIndicator()))
             : (profile != null)
             ? SingleChildScrollView(
                 child: Stack(

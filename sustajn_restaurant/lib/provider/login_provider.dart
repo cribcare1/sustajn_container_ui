@@ -9,12 +9,12 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
 import '../auth/screens/business_information_screen.dart';
+import '../auth/screens/dashboard/animation_screen.dart';
 import '../auth/screens/dashboard/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
-import '../models/register.dart';
 import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
 import '../utils/sharedpreference_utils.dart';
@@ -109,10 +109,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
           register.data!.userId!,
         );
         SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
-        Utils.getToken();
-        Utils.getProfile();
-        // Utils.getUserId();
-        NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
+        NavUtil.navigateToWithReplacement(registrationState.context, AccountSuccessScreen());
 
       } else {
         showCustomSnackBar(

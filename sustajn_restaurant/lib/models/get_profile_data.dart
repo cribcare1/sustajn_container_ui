@@ -6,19 +6,19 @@ class GetProfileData {
   GetProfileData({this.data, this.message, this.status});
 
   GetProfileData.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
     message = json['message'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    final Map<String, dynamic> map = {};
+    if (data != null) {
+      map['data'] = data!.toJson();
     }
-    data['message'] = this.message;
-    data['status'] = this.status;
-    return data;
+    map['message'] = message;
+    map['status'] = status;
+    return map;
   }
 }
 
@@ -32,107 +32,125 @@ class Data {
   String? emailId;
   String? profileImageUrl;
   int? subscriptionPlanId;
+
   BankDetailsResponse? bankDetailsResponse;
   CardDetailsResponse? cardDetailsResponse;
   PaymentGetWayResponse? paymentGetWayResponse;
+
   List<AddressResponses>? addressResponses;
   SubscriptionResponse? subscriptionResponse;
   ContactAndRegistrationDetailsResponse? contactAndRegistrationDetailsResponse;
   List<SocialMediaResponse>? socialMediaResponse;
   BusinessDetailsResponse? businessDetailsResponse;
 
-  Data(
-      {this.id,
-        this.fullName,
-        this.mobileNumber,
-        this.secondaryNumber,
-        this.dateOfBirth,
-        this.customerId,
-        this.emailId,
-        this.profileImageUrl,
-        this.subscriptionPlanId,
-        this.bankDetailsResponse,
-        this.cardDetailsResponse,
-        this.paymentGetWayResponse,
-        this.addressResponses,
-        this.subscriptionResponse,
-        this.contactAndRegistrationDetailsResponse,
-        this.socialMediaResponse,
-        this.businessDetailsResponse});
+  Data({
+    this.id,
+    this.fullName,
+    this.mobileNumber,
+    this.secondaryNumber,
+    this.dateOfBirth,
+    this.customerId,
+    this.emailId,
+    this.profileImageUrl,
+    this.subscriptionPlanId,
+    this.bankDetailsResponse,
+    this.cardDetailsResponse,
+    this.paymentGetWayResponse,
+    this.addressResponses,
+    this.subscriptionResponse,
+    this.contactAndRegistrationDetailsResponse,
+    this.socialMediaResponse,
+    this.businessDetailsResponse,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? 0;
-    fullName = json['fullName'] ?? "";
-    mobileNumber = json['mobileNumber'] ?? "";
-    secondaryNumber = json['secondaryNumber'] ?? "";
-    dateOfBirth = json['dateOfBirth'] ?? "";
-    customerId = json['customerId'] ?? "";
-    emailId = json['emailId'] ?? "";
-    profileImageUrl = json['profileImageUrl'] ?? "";
-    subscriptionPlanId = json['subscriptionPlanId'] ?? 0;
-    bankDetailsResponse = json['bankDetailsResponse'];
-    cardDetailsResponse = json['cardDetailsResponse'];
-    paymentGetWayResponse = json['paymentGetWayResponse'];
-    if (json['addressResponses'] != null) {
-      addressResponses = <AddressResponses>[];
-      json['addressResponses'].forEach((v) {
-        addressResponses!.add(new AddressResponses.fromJson(v));
-      });
-    }
-    subscriptionResponse = json['subscriptionResponse'] != null
-        ? new SubscriptionResponse.fromJson(json['subscriptionResponse'])
+    id = json['id'];
+    fullName = json['fullName'];
+    mobileNumber = json['mobileNumber'];
+    secondaryNumber = json['secondaryNumber'];
+    dateOfBirth = json['dateOfBirth'];
+    customerId = json['customerId'];
+    emailId = json['emailId'];
+    profileImageUrl = json['profileImageUrl'];
+    subscriptionPlanId = json['subscriptionPlanId'];
+
+    bankDetailsResponse = json['bankDetailsResponse'] != null
+        ? BankDetailsResponse.fromJson(
+        json['bankDetailsResponse'] as Map<String, dynamic>)
         : null;
+
+    cardDetailsResponse = json['cardDetailsResponse'] != null
+        ? CardDetailsResponse.fromJson(
+        json['cardDetailsResponse'] as Map<String, dynamic>)
+        : null;
+
+    paymentGetWayResponse = json['paymentGetWayResponse'] != null
+        ? PaymentGetWayResponse.fromJson(
+        json['paymentGetWayResponse'] as Map<String, dynamic>)
+        : null;
+
+    if (json['addressResponses'] != null) {
+      addressResponses = (json['addressResponses'] as List)
+          .map((e) => AddressResponses.fromJson(e))
+          .toList();
+    }
+
+    subscriptionResponse = json['subscriptionResponse'] != null
+        ? SubscriptionResponse.fromJson(json['subscriptionResponse'])
+        : null;
+
     contactAndRegistrationDetailsResponse =
     json['contactAndRegistrationDetailsResponse'] != null
-        ? new ContactAndRegistrationDetailsResponse.fromJson(
+        ? ContactAndRegistrationDetailsResponse.fromJson(
         json['contactAndRegistrationDetailsResponse'])
         : null;
+
     if (json['socialMediaResponse'] != null) {
-      socialMediaResponse = <SocialMediaResponse>[];
-      json['socialMediaResponse'].forEach((v) {
-        socialMediaResponse!.add(new SocialMediaResponse.fromJson(v));
-      });
+      socialMediaResponse = (json['socialMediaResponse'] as List)
+          .map((e) => SocialMediaResponse.fromJson(e))
+          .toList();
     }
+
     businessDetailsResponse = json['businessDetailsResponse'] != null
-        ? new BusinessDetailsResponse.fromJson(json['businessDetailsResponse'])
+        ? BusinessDetailsResponse.fromJson(json['businessDetailsResponse'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['fullName'] = this.fullName;
-    data['mobileNumber'] = this.mobileNumber;
-    data['secondaryNumber'] = this.secondaryNumber;
-    data['dateOfBirth'] = this.dateOfBirth;
-    data['customerId'] = this.customerId;
-    data['emailId'] = this.emailId;
-    data['profileImageUrl'] = this.profileImageUrl;
-    data['subscriptionPlanId'] = this.subscriptionPlanId;
-    data['bankDetailsResponse'] = this.bankDetailsResponse;
-    data['cardDetailsResponse'] = this.cardDetailsResponse;
-    data['paymentGetWayResponse'] = this.paymentGetWayResponse;
-    if (this.addressResponses != null) {
-      data['addressResponses'] =
-          this.addressResponses!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> map = {};
+    map['id'] = id;
+    map['fullName'] = fullName;
+    map['mobileNumber'] = mobileNumber;
+    map['secondaryNumber'] = secondaryNumber;
+    map['dateOfBirth'] = dateOfBirth;
+    map['customerId'] = customerId;
+    map['emailId'] = emailId;
+    map['profileImageUrl'] = profileImageUrl;
+    map['subscriptionPlanId'] = subscriptionPlanId;
+
+    map['bankDetailsResponse'] = bankDetailsResponse?.toJson();
+    map['cardDetailsResponse'] = cardDetailsResponse?.toJson();
+    map['paymentGetWayResponse'] = paymentGetWayResponse?.toJson();
+
+    if (addressResponses != null) {
+      map['addressResponses'] =
+          addressResponses!.map((e) => e.toJson()).toList();
     }
-    if (this.subscriptionResponse != null) {
-      data['subscriptionResponse'] = this.subscriptionResponse!.toJson();
+
+    map['subscriptionResponse'] = subscriptionResponse?.toJson();
+    map['contactAndRegistrationDetailsResponse'] =
+        contactAndRegistrationDetailsResponse?.toJson();
+
+    if (socialMediaResponse != null) {
+      map['socialMediaResponse'] =
+          socialMediaResponse!.map((e) => e.toJson()).toList();
     }
-    if (this.contactAndRegistrationDetailsResponse != null) {
-      data['contactAndRegistrationDetailsResponse'] =
-          this.contactAndRegistrationDetailsResponse!.toJson();
-    }
-    if (this.socialMediaResponse != null) {
-      data['socialMediaResponse'] =
-          this.socialMediaResponse!.map((v) => v.toJson()).toList();
-    }
-    if (this.businessDetailsResponse != null) {
-      data['businessDetailsResponse'] = this.businessDetailsResponse!.toJson();
-    }
-    return data;
+
+    map['businessDetailsResponse'] = businessDetailsResponse?.toJson();
+    return map;
   }
 }
+
 
 class AddressResponses {
   int? id;

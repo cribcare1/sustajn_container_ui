@@ -540,17 +540,23 @@ class Utils {
   }
 
   static int? userId = 0;
-  static void loadUserId() async {
+  // static void loadUserId() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getInt(Strings.USER_ID);
+  //   printLog("UserId ++++ ==== $userId");
+  // }
+  //
+  // static Future<int> getUserId() async {
+  //   if (userId == 0) {
+  //     loadUserId();
+  //   }
+  //   return userId!;
+  // }
+  static Future<int?> getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt(Strings.USER_ID);
-    printLog("JWT Token ==== $token");
-  }
-
-  static int getUserId() {
-    if (userId == 0) {
-      loadUserId();
-    }
-    return userId!;
+    printLog("UserId ++++ ==== $userId");
+    return userId;
   }
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");

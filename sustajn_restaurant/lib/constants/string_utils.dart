@@ -307,5 +307,7 @@ class Strings {
   static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
   static const String ENTER_CONTAINER_ID ="Enter Container ID";
   static const String NO_PROFILE ="Your profile information is not available right now";
-
+static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
+static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+static const String ACCOUNT_CREATED_SUCCESSFULLY ='Account Created Successfully!';
 }
