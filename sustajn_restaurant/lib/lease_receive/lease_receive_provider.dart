@@ -16,6 +16,7 @@ final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   try {
     final response = await apiService.leaseContainer((params));
     if(response != null && response['status'] == NetworkUrls.SUCCESS){
+      print("✅ SUCCESS BLOCK EXECUTED");
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],
@@ -54,11 +55,13 @@ final receiveContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   try {
     final response = await apiService.receiveContainer(params);
     if(response != null && response['status'] == NetworkUrls.SUCCESS){
+      print("✅ SUCCESS BLOCK EXECUTED");
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],
         color: Colors.green,
       );
+      Navigator.pop(leaseNotifier.context!);
       Navigator.pop(leaseNotifier.context!);
     }else{
       showCustomSnackBar(

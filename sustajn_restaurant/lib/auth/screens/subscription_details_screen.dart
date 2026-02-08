@@ -3,19 +3,41 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
-import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/imports_util.dart';
+import '../../models/get_profile_data.dart';
 import '../model/plan_model.dart';
 
-class SubscriptionDetailsScreen extends StatelessWidget {
-  final PlanModel planModel;
-  const SubscriptionDetailsScreen({super.key, required this.planModel});
+class SubscriptionDetailsScreen extends StatefulWidget {
+  final PlanModel? planModel;
+  final SubscriptionResponse? subscriptionResponse;
+  final String previousScreen;
+  const SubscriptionDetailsScreen({super.key,  this.planModel,this.subscriptionResponse, this.previousScreen = ""});
+
+  @override
+  State<SubscriptionDetailsScreen> createState() => _SubscriptionDetailsScreenState();
+}
+
+class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
+
+  var data;
+
+  @override
+  void initState() {
+    _getData();
+    super.initState();
+  }
+  _getData(){
+    if(widget.subscriptionResponse != null && widget.previousScreen =="profile"){
+      data = widget.subscriptionResponse;
+    }else if(widget.planModel != null && widget.previousScreen ==""){
+      data = widget.planModel;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return SafeArea(
       top: false,
       bottom: true,
@@ -31,21 +53,25 @@ class SubscriptionDetailsScreen extends StatelessWidget {
             children: [
               _freemiumCard(theme),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
-              Expanded(
-                child: SingleChildScrollView(child: _featureList(theme)),
-              ),
-
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              SizedBox(
-                width: double.infinity,
-                child: SubmitButton(
-                  onRightTap: () => NavUtil.navigateToPushScreen(
-                    context,
-                    TermsAndConditionScreen(),
-                  ),
-                  rightText: "Proceed to Terms & Conditions",
+              if(widget.previousScreen =="profile")...[
+                Text(data.description,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+              ],
+              if(widget.previousScreen =="")...[
+                Expanded(
+                  child: SingleChildScrollView(child: _featureList(theme)),
                 ),
-              ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                SizedBox(
+                  width: double.infinity,
+                  child: SubmitButton(
+                    onRightTap: () => NavUtil.navigateToPushScreen(
+                      context,
+                      TermsAndConditionScreen(),
+                    ),
+                    rightText: "Proceed to Terms & Conditions",
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -69,14 +95,14 @@ class SubscriptionDetailsScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-         Text(planModel.planName,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
+         Text(data.planName,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
           SizedBox(height: Constant.SIZE_10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Image.asset("assets/logo/dirham_icon.png"),
               Text(
-                " ${planModel.totalContainers}",
+                " ${data.totalContainers}",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
                   fontWeight: FontWeight.w700,
@@ -91,7 +117,7 @@ class SubscriptionDetailsScreen extends StatelessWidget {
 
   Widget _featureList(ThemeData theme) {
     return Column(
-      children: planModel.features
+      children: widget.planModel!.features
           .map((e) => _featureItem(theme, e))
           .toList(growable: false),
     );

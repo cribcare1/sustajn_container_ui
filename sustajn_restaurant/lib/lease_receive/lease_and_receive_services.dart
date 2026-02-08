@@ -15,6 +15,7 @@ class LeaseAndReceiveServices {
     try{
       var response = await presenter.postApiData(api, data, "Post");
       if(response != null){
+        print("response   ================ $response");
         return response;
       }else{
         throw Exception("Something went wrong");
@@ -30,6 +31,7 @@ class LeaseAndReceiveServices {
     try{
       var response = await presenter.postApiData(api, data, "");
       if(response != null){
+        print("response   ================ $response");
         return response;
       }else{
         throw Exception("Something went wrong");
