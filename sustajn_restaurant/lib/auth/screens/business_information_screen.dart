@@ -65,9 +65,6 @@ class _BusinessInformationDetailsState
     vatController.dispose();
     websiteController.dispose();
     businessTypeController.dispose();
-    for (final media in widget.authState.socialMediaList) {
-      media.controller.dispose();
-    }
     super.dispose();
   }
 
@@ -108,8 +105,8 @@ class _BusinessInformationDetailsState
         appBar:
         CustomAppBar(
           title: widget.previous == 'profile'
-                ? Strings.BUSINESS_INFORMATION
-                : "",
+              ? Strings.BUSINESS_INFORMATION
+              : "",
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -190,16 +187,16 @@ class _BusinessInformationDetailsState
                       ],
                     ),
                     _buildTextField(
-                      context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.EMAIL_REGISTRATION;
-                        }
-                        return null;
-                      },
-                      controller: contactEmailController,
-                      hint: Strings.EMAIL_REGISTRATION,
-                      keyboard: TextInputType.emailAddress
+                        context,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return Strings.EMAIL_REGISTRATION;
+                          }
+                          return null;
+                        },
+                        controller: contactEmailController,
+                        hint: Strings.EMAIL_REGISTRATION,
+                        keyboard: TextInputType.emailAddress
                     ),
                     _buildTextField(
                       context,
@@ -319,65 +316,65 @@ class _BusinessInformationDetailsState
                     ),
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
-                            children: widget.authState.socialMediaList.map((
-                              item,
-                            ) {
-                              final config = socialMediaOptions.firstWhere(
-                                (e) => e.type == item.socialMediaType,
-                              );
+                      children: widget.authState.socialMediaList.map((
+                          item,
+                          ) {
+                        final config = socialMediaOptions.firstWhere(
+                              (e) => e.type == item.socialMediaType,
+                        );
 
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: Constant.CONTAINER_SIZE_12,
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: Constant.CONTAINER_SIZE_12,
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: config.color,
+                                child: Icon(
+                                  config.icon,
+                                  color: Colors.black,
                                 ),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: config.color,
-                                      child: Icon(
-                                        config.icon,
-                                        color: Colors.black,
+                              ),
+                              SizedBox(width: Constant.CONTAINER_SIZE_12),
+                              Expanded(
+                                child: TextField(
+                                  controller: item.controller,
+                                  decoration: InputDecoration(
+                                    hintText: Strings.LINK,
+                                    hintStyle: theme.textTheme.titleSmall!
+                                        .copyWith(color: Colors.grey),
+                                    filled: true,
+                                    fillColor: theme.primaryColor,
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
                                       ),
+                                      onPressed: () {
+                                        setState(() {
+                                          widget.authState
+                                              .removeSocialMedia(item);
+                                        });
+                                      },
                                     ),
-                                    SizedBox(width: Constant.CONTAINER_SIZE_12),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: item.controller,
-                                        decoration: InputDecoration(
-                                          hintText: Strings.LINK,
-                                          hintStyle: theme.textTheme.titleSmall!
-                                              .copyWith(color: Colors.grey),
-                                          filled: true,
-                                          fillColor: theme.primaryColor,
-                                          suffixIcon: IconButton(
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.authState
-                                                    .removeSocialMedia(item);
-                                              });
-                                            },
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              Constant.CONTAINER_SIZE_25,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                        ),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        Constant.CONTAINER_SIZE_25,
                                       ),
+                                      borderSide: BorderSide.none,
                                     ),
-                                  ],
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              );
-                            }).toList(),
-                          )
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
                         : SizedBox(),
                     InkWell(
                       onTap: () => _openSocialMediaSheet(context),
@@ -441,15 +438,15 @@ class _BusinessInformationDetailsState
   }
 
   Widget _buildTextField(
-    BuildContext context, {
-    required TextEditingController controller,
-    required String hint,
-    String? Function(String?)? validator,
-    bool obscure = false,
-    TextInputType keyboard = TextInputType.text,
-    bool? readOnly = false,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
+      BuildContext context, {
+        required TextEditingController controller,
+        required String hint,
+        String? Function(String?)? validator,
+        bool obscure = false,
+        TextInputType keyboard = TextInputType.text,
+        bool? readOnly = false,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -517,22 +514,22 @@ class _BusinessInformationDetailsState
                 alignment: WrapAlignment.center,
                 children: socialMediaOptions.map((item) {
                   final alreadyAdded = widget.authState.socialMediaList.any(
-                    (e) => e.socialMediaType == item.type,
+                        (e) => e.socialMediaType == item.type,
                   );
 
                   return GestureDetector(
                     onTap: alreadyAdded
                         ? null
                         : () {
-                            Navigator.pop(context);
-                            widget.authState.setSocialMedia(
-                              SocialMediaModel(
-                                socialMediaType: item.type,
-                                controller: TextEditingController(),
-                              ),
-                            );
-                            setState(() {});
-                          },
+                      Navigator.pop(context);
+                      widget.authState.setSocialMedia(
+                        SocialMediaModel(
+                          socialMediaType: item.type,
+                          controller: TextEditingController(),
+                        ),
+                      );
+                      setState(() {});
+                    },
                     child: Opacity(
                       opacity: alreadyAdded ? 0.4 : 1,
                       child: Column(
@@ -604,7 +601,7 @@ class _BusinessInformationDetailsState
       await ref.read(
         businessInfoProvider(getJsonData(regdNo)).future,
       );
-      return true; 
+      return true;
     } catch (e) {
       Utils.printLog('Business info error: $e');
       return false;
