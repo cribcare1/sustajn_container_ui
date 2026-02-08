@@ -240,7 +240,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
       "userId": Utils.userId,
       "fullName": name,
       "dateOfBirth": selectedDob != null
-          ? Utils.formatDob(selectedDob!)
+          ? Utils.formatDate(selectedDob!)
           : widget.dob,
     };
     return data;

@@ -3,12 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../constants/number_constants.dart';
+import '../../models/get_profile_model.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 
 class AddCardDialog extends ConsumerStatefulWidget {
-  const AddCardDialog({super.key});
+  final VoidCallback? onSuccess;
+  final CardDetailsResponse? cardDetails;
+  const AddCardDialog({super.key, this.onSuccess, this.cardDetails});
 
   @override
   ConsumerState<AddCardDialog> createState() => _AddCardDialogState();
@@ -16,6 +19,38 @@ class AddCardDialog extends ConsumerStatefulWidget {
 
 class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   final TextEditingController _expiryController = TextEditingController();
+  final TextEditingController _cardHolder = TextEditingController();
+  final TextEditingController _cardNumber = TextEditingController();
+  final TextEditingController _cvv = TextEditingController();
+
+  late String initialCardHolderName;
+  late String initialCardNumber;
+  late String initialCvv;
+  late String initialExpirationDate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final card = widget.cardDetails;
+    if (card != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _cardHolder.text = card.cardHolderName ?? "";
+          _cardNumber.text = card.cardNumber ?? "";
+          _expiryController.text = card.expiryDate ?? "";
+        });
+
+        final signupState = ref.read(signUpNotifier);
+        signupState.setCardHolderName(card.cardHolderName ?? "");
+        signupState.setCardNumber(card.cardNumber ?? "");
+        signupState.setExpiryDate(card.expiryDate ?? "");
+      });
+    }
+  }
+
+
+
 
   @override
   void dispose() {
@@ -49,6 +84,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               _header(context, theme),
               SizedBox(height: Constant.SIZE_15),
               _cardField(
+                controller: _cardHolder,
                 theme: theme,
                 hint: 'Card Holder Name*',
                 error: signupState.cardHolderError,
@@ -59,6 +95,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               ),
 
               _cardField(
+                controller: _cardNumber,
                 theme: theme,
                 hint: 'Card Number*',
                 error: signupState.cardNumberError,
@@ -88,6 +125,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   SizedBox(width: Constant.SIZE_10),
                   Expanded(
                     child: _cardField(
+                      controller: _cvv,
                       theme: theme,
                       hint: 'CVV*',
                       error: signupState.cvvError,
@@ -116,8 +154,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     final isValid = signupState.validateCardForm();
                     if (!isValid) return;
 
+                    signupState.updateCardDetails();
+
                     Navigator.pop(context);
+
+                    widget.onSuccess?.call();
                   },
+
+
 
                   child: Text(
                     'Add Card & Continue',
@@ -170,6 +214,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
     required ThemeData theme,
     required String hint,
     required Function(String) onChanged,
+    required TextEditingController controller,
     String? error,
     List<TextInputFormatter>? formatters,
   }) {
@@ -179,6 +224,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
+            controller: controller,
             onChanged: onChanged,
             inputFormatters: formatters,
             style: theme.textTheme.bodyLarge?.copyWith(
@@ -193,9 +239,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               filled: true,
               fillColor: Constant.grey.withOpacity(0.1),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  Constant.CONTAINER_SIZE_16,
-                ),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+              focusedBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
               ),
             ),
           ),
@@ -260,9 +311,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               fillColor: Constant.grey.withOpacity(.1),
               hintStyle: const TextStyle(color: Colors.white),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  Constant.CONTAINER_SIZE_16,
-                ),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+              focusedBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
               ),
             ),
             validator: (value) =>

@@ -15,6 +15,11 @@ import '../../provider/profile_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
+enum ProfilePaymentType {
+  bank,
+  card,
+  gateway,
+}
 
 class EditPaymentScreen extends ConsumerStatefulWidget {
   final BankDetailsResponse? bankDetails;
@@ -34,6 +39,8 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   final TextEditingController _accountHolderController = TextEditingController();
   final TextEditingController _bicController = TextEditingController();
   final TextEditingController _ibanController = TextEditingController();
+  ProfilePaymentType? _selectedType;
+
   late String _initialBankName;
   late String _initialAccountHolder;
   late String _initialBic;
@@ -106,7 +113,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _sectionTitle(theme, title: 'Card Details'),
-                    _addCardButton(context, theme),
+                    _addCardButton(context, theme, widget.cardDetails),
                     _orDivider(theme),
                     _sectionTitle(theme, title: 'Online Payment Gateway'),
                     _paypalTile(theme),
@@ -215,7 +222,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     );
   }
 
-  Widget _addCardButton(BuildContext context, ThemeData theme) {
+  Widget _addCardButton(BuildContext context, ThemeData theme, CardDetailsResponse? cardDetails) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       onTap: () {
@@ -223,7 +230,17 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (_) => const AddCardDialog(),
+          builder: (_) {
+            if (cardDetails != null) {
+              final signupState = ref.read(signUpNotifier);
+              signupState.setCardHolderName(cardDetails.cardHolderName ?? "");
+              signupState.setCardNumber(cardDetails.cardNumber ?? "");
+              signupState.setExpiryDate(cardDetails.expiryDate ?? "");
+            }
+
+            return AddCardDialog(cardDetails: cardDetails);
+          },
+
         );
       },
       child: Container(
@@ -274,8 +291,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Pay Pal Account",
-          hint: "Enter your PayPal ID",
+            title: "Link Pay Pal Account",
+            hint: "Enter your PayPal ID",
+            gatewayName: "PAYPAL"
         );
       },
       child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
@@ -287,8 +305,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Apple Pay Account",
-          hint: "Enter your Apple Pay ID",
+            title: "Link Apple Pay Account",
+            hint: "Enter your Apple Pay ID",
+            gatewayName: "GOOGLE_PAY"
         );
       },
       child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
@@ -300,8 +319,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Google Pay Account",
-          hint: "Enter your Google Pay ID",
+            title: "Link Google Pay Account",
+            hint: "Enter your Google Pay ID",
+            gatewayName: 'APPLE_PAY'
         );
       },
       child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
@@ -336,6 +356,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
   void _showLinkBottomSheet({
     required String title,
     required String hint,
+    required String gatewayName,
   }) {
     showModalBottomSheet(
       context: context,
@@ -346,6 +367,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         hint: hint,
         onSubmit: () {
         },
+        gatewayName: gatewayName,
       ),
     );
   }

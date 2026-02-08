@@ -65,6 +65,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     super.initState();
     Utils.getToken();
     ref.read(getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'));
+    ref.read(getSubscriptionProvider('${NetworkUrls.GET_SUBSCRIPTION_PLAN}'));
   }
 
 

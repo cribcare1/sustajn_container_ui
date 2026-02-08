@@ -9,6 +9,7 @@ import '../../../constants/number_constants.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
+import '../../notifier/signup_notifier.dart';
 import '../../provider/login_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../provider/signup_provider.dart';
@@ -179,7 +180,16 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (_) => const AddCardDialog(),
+          builder: (_) => AddCardDialog(
+            onSuccess: () {
+              if (widget.flow == PaymentFlow.signup) {
+                NavUtil.navigateToPushScreen(
+                  context,
+                  SubscriptionScreen(),
+                );
+              }
+            },
+          ),
         );
       },
       child: Container(
@@ -232,6 +242,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _showLinkBottomSheet(
           title: "Link Pay Pal Account",
           hint: "Enter your PayPal ID",
+          gatewayName: "PAYPAL"
         );
       },
       child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
@@ -245,6 +256,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _showLinkBottomSheet(
           title: "Link Apple Pay Account",
           hint: "Enter your Apple Pay ID",
+          gatewayName: "GOOGLE_PAY"
         );
       },
       child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
@@ -258,6 +270,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _showLinkBottomSheet(
           title: "Link Google Pay Account",
           hint: "Enter your Google Pay ID",
+          gatewayName: 'APPLE_PAY'
         );
       },
       child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
@@ -353,6 +366,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   void _showLinkBottomSheet({
     required String title,
     required String hint,
+    required String gatewayName
   }) {
     showModalBottomSheet(
       context: context,
@@ -363,6 +377,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         hint: hint,
         onSubmit: () {
         },
+        gatewayName:gatewayName ,
       ),
     );
   }
@@ -500,32 +515,42 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Map<String, dynamic> getJsonData() {
-    final data = {
-      "bankDetailsRequest": {
+  Map<String, dynamic> getJsonData(SignupNotifier signupState) {
+    final Map<String, dynamic> body = {};
+
+    if (signupState.paymentMethod == "BANK") {
+      body["bankDetailsRequest"] = {
         "userId": Utils.userId,
         "bankName": _bankNameController.text,
         "bicNumber": _bicController.text,
         "accountHolderName": _accountHolderController.text,
         "iBanNumber": _ibanController.text,
-      },
-      "cardDetailsRequest": {
+      };
+    }
+
+    if (signupState.paymentMethod == "CARD") {
+      body["cardDetailsRequest"] = {
         "userId": Utils.userId,
-        "cardHolderName": "",
-        "cardNumber": "",
-        "expiryDate": "",
-        "cvv": "",
+        "cardHolderName": signupState.registrationData?.cardHolderName,
+        "cardNumber": signupState.registrationData?.cardNumber,
+        "expiryDate": signupState.registrationData?.expiryDate,
+        "cvv": signupState.registrationData?.cvv,
         "paymentGatewayId": "",
         "paymentGatewayName": "",
-      },
-      "paymentGetWayRequest": {
+      };
+    }
+
+    if (signupState.paymentMethod == "UPI") {
+      body["paymentGetWayRequest"] = {
         "userId": Utils.userId,
-        "paymentGatewayId": "",
-        "paymentGatewayName": "",
-      },
-    };
-    return data;
+        "paymentGatewayId": signupState.registrationData?.paymentGatewayId,
+        "paymentGatewayName": signupState.registrationData?.paymentGatewayName,
+      };
+    }
+
+    return body;
   }
+
 
   _addBankNetwork(var registrationState) async {
     try {
@@ -537,7 +562,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-             await ref.read(createBankProvider(getJsonData()).future);
+             await ref.read(createBankProvider(getJsonData(registrationState)).future);
               ref.read(profileProvider).clearProfileList();
               await ref.read(
                 getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,

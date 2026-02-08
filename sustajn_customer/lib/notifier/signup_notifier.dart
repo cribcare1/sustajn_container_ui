@@ -46,6 +46,9 @@ class SignupNotifier extends ChangeNotifier {
   String _cardNumber = '';
   String _cvv = '';
   String _expiryDate = '';
+  String _upiId = '';
+  String _paymentGatewayId = '';
+  String _paymentGatewayName = '';
 
 
   String? _bankNameError;
@@ -58,6 +61,8 @@ class SignupNotifier extends ChangeNotifier {
   String? _cardNumberError;
   String? _cvvError;
   String? _expiryError;
+  String? _upiError;
+
 
   bool _showBankErrors = false;
 
@@ -79,9 +84,19 @@ class SignupNotifier extends ChangeNotifier {
   bool get isForgotPassword => _isForgotPassword;
 
   bool get isResend => _isResend;
+  String get cardHolderName => _cardHolderName;
+  String get cardNumber => _cardNumber;
+  String get cvv => _cvv;
+  String get expiryDate => _expiryDate;
+  String get upiId => _upiId;
 
   LoginModel get login => _login!;
   SignUpModel get signup => _signUp!;
+  PaymentMethodType? _paymentMethod;
+  String? get paymentMethod => _paymentMethod?.name;
+  String get paymentGatewayId => _paymentGatewayId;
+  String get paymentGatewayName => _paymentGatewayName;
+
 
   BuildContext get context => _context!;
 
@@ -104,6 +119,7 @@ class SignupNotifier extends ChangeNotifier {
   String? get ibanError => _ibanError;
 
   String? get bicError => _bicError;
+  String? get upiError => _upiError;
 
   bool get showBankErrors => _showBankErrors;
   String? get cardHolderError => _cardHolderError;
@@ -222,6 +238,34 @@ class SignupNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void setUpiId(String value) {
+    _upiId = value;
+    _upiError = null;
+    notifyListeners();
+  }
+
+  void updateUpiDetails({
+    required String gatewayId,
+    required String gatewayName,
+  }) {
+    _registrationData ??= RegistrationData();
+
+    _clearOtherPaymentData(PaymentMethodType.upi);
+    _paymentMethod = PaymentMethodType.upi;
+
+    _paymentGatewayId = gatewayId;
+    _paymentGatewayName = gatewayName;
+
+    _registrationData!
+      ..paymentMethod = "UPI"
+      ..paymentGatewayId = gatewayId
+      ..paymentGatewayName = gatewayName;
+
+    notifyListeners();
+  }
+
+
 
   void _validateBIC() {
     if (_bic.isEmpty) {
@@ -560,9 +604,13 @@ class SignupNotifier extends ChangeNotifier {
 
 
   void updateBankDetails() {
-    if (_registrationData == null) return;
+    _registrationData ??= RegistrationData();
+
+    _paymentMethod = PaymentMethodType.bank;
+    _clearOtherPaymentData(PaymentMethodType.bank);
 
     _registrationData!
+      ..paymentMethod = "BANK"
       ..bankName = _bankName
       ..accountHolderName = _accountHolderName
       ..iban = _iban
@@ -570,6 +618,25 @@ class SignupNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
+  void updateCardDetails() {
+    _registrationData ??= RegistrationData();
+
+    _paymentMethod = PaymentMethodType.card;
+    _clearOtherPaymentData(PaymentMethodType.card);
+
+    _registrationData!
+      ..paymentMethod = "CARD"
+      ..cardHolderName = _cardHolderName
+      ..cardNumber = _cardNumber
+      ..expiryDate = _expiryDate
+      ..cvv = _cvv;
+
+    notifyListeners();
+  }
+
+
 
 
 
@@ -628,6 +695,28 @@ class SignupNotifier extends ChangeNotifier {
       }
     });
   }
+
+  void _clearOtherPaymentData(PaymentMethodType selected) {
+    if (selected != PaymentMethodType.bank) {
+      _bankName = '';
+      _accountHolderName = '';
+      _iban = '';
+      _bic = '';
+    }
+
+    if (selected != PaymentMethodType.card) {
+      _cardHolderName = '';
+      _cardNumber = '';
+      _cvv = '';
+      _expiryDate = '';
+    }
+
+    if (selected != PaymentMethodType.upi) {
+      _upiId = '';
+    }
+  }
+
+
 
 
 

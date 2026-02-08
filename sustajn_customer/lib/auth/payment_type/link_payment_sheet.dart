@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/provider/signup_provider.dart';
 
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
-class LinkPaymentBottomSheet extends StatefulWidget {
+class LinkPaymentBottomSheet extends ConsumerStatefulWidget {
   final String title;
   final String hint;
   final VoidCallback onSubmit;
+  final String gatewayName;
 
   const LinkPaymentBottomSheet({
     super.key,
     required this.title,
     required this.hint,
     required this.onSubmit,
+    required this.gatewayName
   });
 
   @override
-  State<LinkPaymentBottomSheet> createState() =>
+  ConsumerState<LinkPaymentBottomSheet> createState() =>
       _LinkPaymentBottomSheetState();
 }
 
 class _LinkPaymentBottomSheetState
-    extends State<LinkPaymentBottomSheet> {
+    extends ConsumerState<LinkPaymentBottomSheet> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -33,6 +37,7 @@ class _LinkPaymentBottomSheetState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final signupState = ref.watch(signUpNotifier);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -112,7 +117,10 @@ class _LinkPaymentBottomSheetState
                   height: Constant.CONTAINER_SIZE_48,
                   child: ElevatedButton(
                     onPressed: () {
-                      widget.onSubmit();
+                      signupState.updateUpiDetails(
+                        gatewayId: _controller.text.trim(),
+                        gatewayName: widget.gatewayName,
+                      );
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
