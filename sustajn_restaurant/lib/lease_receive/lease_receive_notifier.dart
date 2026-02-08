@@ -8,6 +8,7 @@ class LeaseReceiveNotifier extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSaving = false;
   List<ContainerDetails> _containersDetails = [];
+  List<ContainerDetails> _containersList = [];
 
   BuildContext? get context => _context;
 
@@ -16,6 +17,7 @@ class LeaseReceiveNotifier extends ChangeNotifier {
   bool get isSaving => _isSaving;
 
   List<ContainerDetails> get containersDetails => _containersDetails;
+  List<ContainerDetails> get containersList => _containersList;
 
   void setLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -36,6 +38,17 @@ class LeaseReceiveNotifier extends ChangeNotifier {
     _containersDetails = containerList;
     notifyListeners();
   }
+  void setContainerList(ContainerDetails container) {
+    final exists = _containersList.any(
+          (e) => e.containerUniqueId == container.containerUniqueId,
+    );
+
+    if (!exists) {
+      _containersList.add(container);
+      notifyListeners();
+    }
+  }
+
 }
 
 final leaseReceiveNotifier = ChangeNotifierProvider<LeaseReceiveNotifier>(

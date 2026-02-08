@@ -17,11 +17,14 @@ enum ContactView {
 }
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
+  final String? secondaryNumber;
+
   final int userId;
 
   const EditMobileNumberDialog({
     super.key,
     required this.mobileNumber,
+    required this.secondaryNumber,
     required this.userId,
   });
 
@@ -36,6 +39,8 @@ class _EditMobileNumberDialogState
   final TextEditingController _controller = TextEditingController();
 
   ContactView view = ContactView.display;
+  bool isEditingPrimary = true;
+
 
   @override
   void initState() {
@@ -107,76 +112,86 @@ class _EditMobileNumberDialogState
 
               if (view == ContactView.display) ...[
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            Strings.PRIMARY_NUMBER,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
+                          Text(Strings.PRIMARY_NUMBER,
+                              style: theme.textTheme.bodySmall
+                                  ?.copyWith(color: Colors.white70)),
                           SizedBox(height: Constant.SIZE_04),
-
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.phone_outlined,
-                                color: Colors.white70,
-                                size: Constant.CONTAINER_SIZE_18,
-                              ),
-                              SizedBox(width: Constant.SIZE_08),
-                              Text(
-                                "+91 ${widget.mobileNumber}",
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                          Text("+91 ${widget.mobileNumber}",
+                              style: theme.textTheme.bodyLarge
+                                  ?.copyWith(color: Colors.white)),
                         ],
                       ),
                     ),
-
                     IconButton(
-                      icon: Icon(
-                        Icons.edit_outlined,
-                        color: Colors.white,
-                        size: Constant.CONTAINER_SIZE_18,
-                      ),
+                      icon: Icon(Icons.edit_outlined, color: Colors.white),
                       onPressed: () {
+                        isEditingPrimary = true;
+                        _controller.text = widget.mobileNumber;
                         setState(() => view = ContactView.edit);
                       },
                     ),
                   ],
                 ),
 
-
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                GestureDetector(
-                  onTap: () {
-                    _controller.clear();
-                    setState(() => view = ContactView.add);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                if (widget.secondaryNumber != null &&
+                    widget.secondaryNumber!.isNotEmpty) ...[
+                  SizedBox(height: Constant.CONTAINER_SIZE_16),
+                  Row(
                     children: [
-                      const Icon(Icons.add, color: Constant.gold),
-                      SizedBox(width: Constant.SIZE_08),
-                      Text(
-                        Strings.ADD_SECONDARY_NUMBER,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(color: Constant.gold),
-                      )
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(Strings.SECONDARY_NUMBER,
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(color: Colors.white70)),
+                            SizedBox(height: Constant.SIZE_04),
+                            Text("+91 ${widget.secondaryNumber}",
+                                style: theme.textTheme.bodyLarge
+                                    ?.copyWith(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.edit_outlined, color: Colors.white),
+                        onPressed: () {
+                          isEditingPrimary = false;
+                          _controller.text = widget.secondaryNumber!;
+                          setState(() => view = ContactView.edit);
+                        },
+                      ),
                     ],
                   ),
-                ),
+                ],
+
+                if (widget.secondaryNumber == null ||
+                    widget.secondaryNumber!.isEmpty) ...[
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+                  GestureDetector(
+                    onTap: () {
+                      isEditingPrimary = false;
+                      _controller.clear();
+                      setState(() => view = ContactView.add);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.add, color: Constant.gold),
+                        SizedBox(width: Constant.SIZE_08),
+                        Text(Strings.ADD_SECONDARY_NUMBER,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(color: Constant.gold)),
+                      ],
+                    ),
+                  ),
+                ],
               ],
+
 
               if (view != ContactView.display) ...[
                 Form(
@@ -221,9 +236,27 @@ class _EditMobileNumberDialogState
                     ),
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) return;
-                      await _editMobileNetwork(
-                          _controller.text, profileState);
+
+                      Navigator.pop(context);
+                      await _editMobileNetwork(_controller.text, profileState);
+                      //
+                      // Utils.displayDialog(
+                      //   context: context,
+                      //   icon: Icons.warning,
+                      //   title: "Confirm Update",
+                      //   subTitle: "Are you sure you want to update your contact number?",
+                      //   cancelButtonText: "No",
+                      //   yesButtonText: "Yes",
+                      //   onCancel: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      //   onYes: () async {
+                      //     Navigator.pop(context);
+                      //     await _editMobileNetwork(_controller.text, profileState);
+                      //   },
+                      // );
                     },
+
                     child: Text(
                       view == ContactView.edit
                           ? Strings.SAVE_CHANGES
@@ -243,8 +276,20 @@ class _EditMobileNumberDialogState
 
 
   Map<String, dynamic> getJsonData(String mobileNo) {
-    return {"userId": Utils.userId, "phoneNumber": mobileNo};
+    if (isEditingPrimary) {
+      return {
+        "userId": Utils.userId,
+        "phoneNumber": mobileNo,
+      };
+    } else {
+      return {
+        "userId": Utils.userId,
+        "secondaryNumber": mobileNo,
+      };
+    }
   }
+
+
 
   Future<bool> _editMobileNetwork(String mobile, var profileState) async {
     try {
@@ -256,8 +301,15 @@ class _EditMobileNumberDialogState
         return false;
       }
 
-      profileState.setContext(context);
       profileState.setIsLoading(true);
+      if (profileState.profileList.isNotEmpty) {
+        if (isEditingPrimary) {
+          profileState.profileList.first.mobileNumber = mobile;
+        } else {
+          profileState.profileList.first.secondaryNumber = mobile;
+        }
+      }
+
 
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
@@ -266,10 +318,10 @@ class _EditMobileNumberDialogState
       );
 
       await ref.read(profileUpdateProvider(params).future);
-
-      Navigator.pop(context);
       ref.read(profileProvider).clearProfileList();
-      ref.read(getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'));
+      await ref.read(
+        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}').future,
+      );
 
       return true;
     } finally {

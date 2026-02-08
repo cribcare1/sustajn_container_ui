@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/screens/subscription_details_screen.dart';
+import 'package:sustajn_restaurant/auth/screens/subscription_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:sustajn_restaurant/provider/profile_provider.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
+
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 
-class SubscriptionPlanBottomSheet extends StatelessWidget {
+class SubscriptionPlanBottomSheet extends ConsumerWidget {
   const SubscriptionPlanBottomSheet({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
+    final profileState = ref.watch(profileProvider);
+    final subscription =
+        profileState.getProfileData?.data!.subscriptionResponse;
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(
@@ -31,7 +40,10 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                   shrinkWrap: true,
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                   children: [
-                    _planCard(context),
+                    _planCard(
+                      context,
+                      (subscription != null) ? subscription : null,
+                    ),
                     SizedBox(height: Constant.CONTAINER_SIZE_30),
                     _viewAllPlansButton(context),
                   ],
@@ -59,7 +71,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
               Strings.SUBSCRIPTION_PLAN,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.white
+                color: Colors.white,
               ),
             ),
           ),
@@ -80,7 +92,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _planCard(BuildContext context) {
+  Widget _planCard(BuildContext context, SubscriptionResponse? data) {
     final theme = Theme.of(context);
 
     return Stack(
@@ -90,10 +102,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
           padding: EdgeInsets.all(Constant.SIZE_04),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-            border: Border.all(
-              color: Constant.grey,
-              width: Constant.SIZE_001,
-            ),
+            border: Border.all(color: Constant.grey, width: Constant.SIZE_001),
           ),
           child: Container(
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -103,7 +112,6 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
                   Colors.grey.withOpacity(0.2),
                   theme.scaffoldBackgroundColor.withOpacity(0.3),
                 ],
-
               ),
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
               border: Border.all(
@@ -115,37 +123,46 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pay-per-use',
+                  data!.planName ?? "",
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                _bulletText(context, 'Lorem ipsum dolor sit amet consectetur. Vitae eu s'),
-                _bulletText(context, 'Lorem ipsum dolor sit amet consectetur. Vitae eu'),
-                _bulletText(context, 'Lorem Ipsum'),
-
+                _bulletText(context, data.description ?? ""),
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
 
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Constant.CONTAINER_SIZE_30,
-                      vertical: Constant.SIZE_08,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                      border: Border.all(
-                        color: Constant.gold,
-                        width: Constant.SIZE_01,
+                InkWell(
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      SubscriptionDetailsScreen(
+                        subscriptionResponse: data,
+                        previousScreen: 'profile',
                       ),
-                    ),
-                    child: Text(
-                      'Learn More',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Constant.gold,
+                    );
+                  },
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_30,
+                        vertical: Constant.SIZE_08,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_20,
+                        ),
+                        border: Border.all(
+                          color: Constant.gold,
+                          width: Constant.SIZE_01,
+                        ),
+                      ),
+                      child: Text(
+                        'Learn More',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
                       ),
                     ),
                   ),
@@ -199,9 +216,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
               text,
               maxLines: Constant.MAX_LINE_2,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color:Colors.white,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -217,9 +232,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.2)
-        )
+        border: Border.all(color: Constant.grey.withOpacity(0.2)),
       ),
       child: Row(
         children: [
@@ -244,7 +257,7 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
         Text(
           title,
           style: theme.textTheme.bodySmall?.copyWith(
-            color:Colors.white.withOpacity(0.8),
+            color: Colors.white.withOpacity(0.8),
           ),
         ),
         SizedBox(height: Constant.SIZE_04),
@@ -260,6 +273,8 @@ class SubscriptionPlanBottomSheet extends StatelessWidget {
   }
 
   Widget _viewAllPlansButton(BuildContext context) {
-    return SubmitButton(onRightTap: (){},rightText: "View all plans");
+    return SubmitButton(onRightTap: () {
+      NavUtil.navigateToPushScreen(context, SubscriptionScreen(previousScreen: 'profile',));
+    }, rightText: "View all plans");
   }
 }

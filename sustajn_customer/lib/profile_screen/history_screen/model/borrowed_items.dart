@@ -8,6 +8,8 @@ class BorrowedUiItem {
   final String date;
   final String time;
   final String imageUrl;
+  String? returnedDate;
+  String? returnedTime;
 
   BorrowedUiItem({
     required this.restaurantName,
@@ -19,5 +21,7 @@ class BorrowedUiItem {
     required this.date,
     required this.time,
     required this.imageUrl,
+     this.returnedDate,
+     this.returnedTime
   });
 }
