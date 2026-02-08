@@ -29,6 +29,9 @@ class SignupNotifier extends ChangeNotifier {
   bool _isDisposed = false;
   int _seconds = 120;
   Timer? _otpTimer;
+  RegistrationData? _registrationData;
+  SubscriptionModel? _subscriptionModel;
+  List<SubscriptionData>? data = [];
 
 
   BuildContext? _context;
@@ -36,19 +39,31 @@ class SignupNotifier extends ChangeNotifier {
   String _bankName = '';
   String _accountHolderName = '';
   String _iban = '';
-
   String _bic = '';
   String _taxNumber = '';
   String _accountNumber = '';
+  String _cardHolderName = '';
+  String _cardNumber = '';
+  String _cvv = '';
+  String _expiryDate = '';
+  String _upiId = '';
+  String _paymentGatewayId = '';
+  String _paymentGatewayName = '';
+
+
   String? _bankNameError;
   String? _accountHolderError;
   String? _taxNumberError;
   String? _accountNumberError;
   String? _ibanError;
   String? _bicError;
-  RegistrationData? _registrationData;
-  SubscriptionModel? _subscriptionModel;
-  List<SubscriptionData>? data = [];
+  String? _cardHolderError;
+  String? _cardNumberError;
+  String? _cvvError;
+  String? _expiryError;
+  String? _upiError;
+
+
   bool _showBankErrors = false;
 
 
@@ -69,9 +84,19 @@ class SignupNotifier extends ChangeNotifier {
   bool get isForgotPassword => _isForgotPassword;
 
   bool get isResend => _isResend;
+  String get cardHolderName => _cardHolderName;
+  String get cardNumber => _cardNumber;
+  String get cvv => _cvv;
+  String get expiryDate => _expiryDate;
+  String get upiId => _upiId;
 
   LoginModel get login => _login!;
   SignUpModel get signup => _signUp!;
+  PaymentMethodType? _paymentMethod;
+  String? get paymentMethod => _paymentMethod?.name;
+  String get paymentGatewayId => _paymentGatewayId;
+  String get paymentGatewayName => _paymentGatewayName;
+
 
   BuildContext get context => _context!;
 
@@ -94,8 +119,13 @@ class SignupNotifier extends ChangeNotifier {
   String? get ibanError => _ibanError;
 
   String? get bicError => _bicError;
+  String? get upiError => _upiError;
 
   bool get showBankErrors => _showBankErrors;
+  String? get cardHolderError => _cardHolderError;
+  String? get cardNumberError => _cardNumberError;
+  String? get cvvError => _cvvError;
+  String? get expiryError => _expiryError;
 
   RegistrationData? get registrationData => _registrationData;
 
@@ -186,14 +216,15 @@ class SignupNotifier extends ChangeNotifier {
   void _validateIBAN() {
     if (_iban.isEmpty) {
       _ibanError = 'IBAN is required';
-    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_iban)) {
-      _ibanError = 'Only letters and numbers allowed';
-    } else if (_iban.length < 15 || _iban.length > 34) {
-      _ibanError = 'IBAN must be 15–34 characters';
-    } else {
+    }
+    else if (!RegExp(r'^AE[0-9]{2}[0-9]{3}[0-9]{16}$').hasMatch(_iban)) {
+      _ibanError = 'Invalid UAE IBAN format';
+    }
+    else {
       _ibanError = null;
     }
   }
+
 
 
   void setBic(String value) {
@@ -208,17 +239,46 @@ class SignupNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setUpiId(String value) {
+    _upiId = value;
+    _upiError = null;
+    notifyListeners();
+  }
+
+  void updateUpiDetails({
+    required String gatewayId,
+    required String gatewayName,
+  }) {
+    _registrationData ??= RegistrationData();
+
+    _clearOtherPaymentData(PaymentMethodType.upi);
+    _paymentMethod = PaymentMethodType.upi;
+
+    _paymentGatewayId = gatewayId;
+    _paymentGatewayName = gatewayName;
+
+    _registrationData!
+      ..paymentMethod = "UPI"
+      ..paymentGatewayId = gatewayId
+      ..paymentGatewayName = gatewayName;
+
+    notifyListeners();
+  }
+
+
+
   void _validateBIC() {
     if (_bic.isEmpty) {
       _bicError = 'BIC is required';
-    } else if (!RegExp(r'^[A-Z0-9]+$').hasMatch(_bic)) {
-      _bicError = 'Only letters and numbers allowed';
-    } else if (_bic.length != 8 && _bic.length != 11) {
-      _bicError = 'BIC must be 8 or 11 characters';
-    } else {
+    }
+    else if (!RegExp(r'^[A-Z0-9]{8}([A-Z0-9]{3})?$').hasMatch(_bic)) {
+      _bicError = 'BIC must be 8 or 11 alphanumeric characters';
+    }
+    else {
       _bicError = null;
     }
   }
+
 
 
   void setAccountHolderName(String value) {
@@ -292,6 +352,106 @@ class SignupNotifier extends ChangeNotifier {
       _accountNumberError = null;
     }
   }
+
+  void setCardHolderName(String value) {
+    _cardHolderName = value;
+
+    if (_showBankErrors) {
+      _validateCardHolder();
+    } else {
+      _cardHolderError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCardHolder() {
+    if (_cardHolderName.isEmpty) {
+      _cardHolderError = 'Card holder name is required';
+    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(_cardHolderName)) {
+      _cardHolderError = 'Only letters and spaces allowed';
+    } else {
+      _cardHolderError = null;
+    }
+  }
+
+  void setCardNumber(String value) {
+    _cardNumber = value;
+
+    if (_showBankErrors) {
+      _validateCardNumber();
+    } else {
+      _cardNumberError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCardNumber() {
+    if (_cardNumber.isEmpty) {
+      _cardNumberError = 'Card number is required';
+    } else if (!RegExp(r'^[0-9]{16}$').hasMatch(_cardNumber)) {
+      _cardNumberError = 'Card number must be 16 digits';
+    } else {
+      _cardNumberError = null;
+    }
+  }
+
+  void setCVV(String value) {
+    _cvv = value;
+
+    if (_showBankErrors) {
+      _validateCVV();
+    } else {
+      _cvvError = null;
+    }
+    notifyListeners();
+  }
+
+  void _validateCVV() {
+    if (_cvv.isEmpty) {
+      _cvvError = 'CVV is required';
+    } else if (!RegExp(r'^[0-9]{4}$').hasMatch(_cvv)) {
+      _cvvError = 'CVV must be 4 digits';
+    } else {
+      _cvvError = null;
+    }
+  }
+
+  void setExpiryDate(String value) {
+    _expiryDate = value;
+    _expiryError = null;
+    notifyListeners();
+  }
+
+  bool validateCardForm() {
+    _showBankErrors = true;
+
+    _validateCardHolder();
+    _validateCardNumber();
+    _validateCVV();
+
+    notifyListeners();
+
+    return _cardHolderError == null &&
+        _cardNumberError == null &&
+        _cvvError == null;
+  }
+
+  void resetCardValidation() {
+    _showBankErrors = false;
+
+    _cardHolderName = '';
+    _cardNumber = '';
+    _cvv = '';
+    _expiryDate = '';
+
+    _cardHolderError = null;
+    _cardNumberError = null;
+    _cvvError = null;
+    _expiryError = null;
+
+    notifyListeners();
+  }
+
 
 
   void setAddress({
@@ -444,9 +604,13 @@ class SignupNotifier extends ChangeNotifier {
 
 
   void updateBankDetails() {
-    if (_registrationData == null) return;
+    _registrationData ??= RegistrationData();
+
+    _paymentMethod = PaymentMethodType.bank;
+    _clearOtherPaymentData(PaymentMethodType.bank);
 
     _registrationData!
+      ..paymentMethod = "BANK"
       ..bankName = _bankName
       ..accountHolderName = _accountHolderName
       ..iban = _iban
@@ -454,6 +618,25 @@ class SignupNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
+  void updateCardDetails() {
+    _registrationData ??= RegistrationData();
+
+    _paymentMethod = PaymentMethodType.card;
+    _clearOtherPaymentData(PaymentMethodType.card);
+
+    _registrationData!
+      ..paymentMethod = "CARD"
+      ..cardHolderName = _cardHolderName
+      ..cardNumber = _cardNumber
+      ..expiryDate = _expiryDate
+      ..cvv = _cvv;
+
+    notifyListeners();
+  }
+
+
 
 
 
@@ -512,6 +695,30 @@ class SignupNotifier extends ChangeNotifier {
       }
     });
   }
+
+  void _clearOtherPaymentData(PaymentMethodType selected) {
+    if (selected != PaymentMethodType.bank) {
+      _bankName = '';
+      _accountHolderName = '';
+      _iban = '';
+      _bic = '';
+    }
+
+    if (selected != PaymentMethodType.card) {
+      _cardHolderName = '';
+      _cardNumber = '';
+      _cvv = '';
+      _expiryDate = '';
+    }
+
+    if (selected != PaymentMethodType.upi) {
+      _upiId = '';
+    }
+  }
+
+
+
+
 
 
   void stopTimer() {

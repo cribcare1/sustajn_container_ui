@@ -7,6 +7,7 @@ import 'package:sustajn_customer/auth/screens/reset_password_screen.dart'
     show ResetPasswordScreen;
 import 'package:sustajn_customer/models/signup_model.dart';
 import 'package:sustajn_customer/notifier/signup_notifier.dart';
+import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart' show NavUtil;
 
 import '../auth/dashboard_screen/home_screen.dart';
@@ -398,6 +399,40 @@ FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
       showCustomSnackBar(
         context: signupState.context!,
         message: "Bank details created successfully",
+        color: Colors.green,
+      );
+      Navigator.pop(signupState.context!);
+    }
+  } catch (e) {
+    signupState.setIsLoading(false);
+
+    if (signupState.context.mounted) {
+      Utils.showNetworkErrorToast(
+        signupState.context!,
+        e.toString(),
+      );
+    }
+  }
+});
+
+final updateBankProvider =
+FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.read(bankApiService);
+  final signupState = ref.read(signUpNotifier);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.UPDATE_BANK}';
+
+  try {
+    final responseData = await apiService.createBankService(url, params, "");
+
+    final message = responseData['message'];
+
+    signupState.setIsLoading(false);
+
+    if (signupState.context.mounted) {
+      showCustomSnackBar(
+        context: signupState.context!,
+        message: "Bank details updated successfully",
         color: Colors.green,
       );
 

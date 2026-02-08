@@ -150,35 +150,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         controller: restaurantCtrl,
                         hint: Strings.FULL_NAME,
                         validator: (v) {
-                          if (v!.isEmpty) return Strings.RESTAURANT;
-                          if (Strings.alphaNumericWithSpace.hasMatch(v)) {
+                          if (v == null || v.isEmpty) return Strings.RESTAURANT;
+                          if (!Strings.alphaNumericWithSpace.hasMatch(v)) {
                             return Strings.SPECIAL_CHAR;
                           }
                           return null;
                         },
+
                       ),
 
-                    _buildTextField(
-                      context,
-                      controller: dobCtrl,
-                      hint: Strings.DOB,
-                      readOnly: true,
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return "Date of birth required";
-                        return null;
-                      },
-                      suffixIcon: Icons.calendar_month,
-                      onSuffixTap: () async {
-                        final picked = await Utils.pickDob(context, initialDate: selectedDob);
-
-                        if (picked != null) {
+                      Utils.getDateTimePicker(
+                        context,
+                        Strings.DOB,
+                        dobCtrl,
+                            (date) {
                           setState(() {
-                            selectedDob = picked;
-                            dobCtrl.text = Utils.formatDob(picked);
+                            selectedDob = date;
                           });
-                        }
-                      },
-                    ),
+                        },
+                        theme
+                      ),
+
                     _buildTextField(
                         context,
                         controller: emailCtrl,
