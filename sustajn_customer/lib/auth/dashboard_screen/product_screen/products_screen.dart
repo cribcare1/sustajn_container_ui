@@ -45,7 +45,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
       child: Scaffold(
         backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: CustomAppBar(
-          title: 'Products',
+          title: Strings.PRODUCTS,
           action: [
             IconButton(
               onPressed: () {
@@ -76,7 +76,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
                   Expanded(
                     child: productState.productList.isEmpty && !productState.isLoading ?
                         Center(
-                          child: Utils.getErrorText('No product details found'),
+                          child: Utils.getErrorText(Strings.NO_PRODUCT),
                         ):
                     ListView.builder(
                       padding: EdgeInsets.only(

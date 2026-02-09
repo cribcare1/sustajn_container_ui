@@ -681,7 +681,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             showCustomSnackBar(
               context: context,
-              message: 'User image uploaded successfully',
+              message: Strings.USER_IMAGE_UPLOADED,
               color: Constant.green,
             );
 

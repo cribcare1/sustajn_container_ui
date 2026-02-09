@@ -118,8 +118,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           hintText: Strings.PASSWORD,
                           filled: true,
                           fillColor: themeData!.primaryColor,
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 12),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: Constant.CONTAINER_SIZE_14, horizontal: Constant.CONTAINER_SIZE_12),
                           hintStyle: TextStyle(color: Colors.white70),
                           suffixIcon: IconButton(
                             icon: Icon(
