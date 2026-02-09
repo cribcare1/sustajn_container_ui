@@ -512,6 +512,7 @@ class Utils {
   static showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
+        backgroundColor: Colors.white70,
         toastLength: Toast.LENGTH_LONG);
   }
 
