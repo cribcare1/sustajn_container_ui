@@ -5,21 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
-import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
+
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../edit_dialogs/business_information_screen.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
-import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
@@ -154,7 +151,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   void _showBusinessEditScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(context, BusinessInformationDetails(authState: ref.read(authNotifierProvider), previous: "profile"));
-        // BusinessInformationScreen());
   }
 
   void _showPaymentTypeScreen(BuildContext context) {

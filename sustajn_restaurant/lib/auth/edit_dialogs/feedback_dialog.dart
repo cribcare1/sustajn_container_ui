@@ -1,19 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import '../../constants/number_constants.dart';
-import '../../utils/theme_utils.dart';
+import 'package:flutter/services.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/utility.dart';
 
-class FeedbackBottomSheet extends StatefulWidget {
+class FeedbackBottomSheet extends ConsumerStatefulWidget {
   const FeedbackBottomSheet({super.key});
 
   @override
-  State<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
+  ConsumerState<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
 }
 
-class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
-  int selectedIndex = -1;
+class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
+
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController remarksController = TextEditingController();
+  int? selectedFeedbackIndex;
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Utils.userId;
+  }
 
   final List<Map<String, String>> feedbackOptions = [
     {'label': 'Frustrated', 'emoji': '😡'},
@@ -46,28 +62,32 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               Flexible(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildEmojiRow(context),
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-                      _buildTextField(
-                        context,
-                        controller: subjectController,
-                        hint: 'Subject*',
-                        maxLines: 1,
-                      ),
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-                      _buildTextField(
-                        context,
-                        controller: remarksController,
-                        hint: 'Your Remarks*',
-                        maxLines: 5,
-                        showCounter: true,
-                      ),
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
-                      _buildSubmitButton(context),
-                    ],
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildEmojiRow(context),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _buildTextField(
+                          context,
+                          controller: subjectController,
+                          hint: '${Strings.SUBJECT}*',
+                          maxLines: 1,
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _buildTextField(
+                          context,
+                          controller: remarksController,
+                          hint: '${Strings.YOUR_REMARKS}*',
+                          maxLines: 5,
+                          showCounter: true,
+                          textInputAction: TextInputAction.done
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        _buildSubmitButton(context),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -78,7 +98,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
     );
   }
 
-  // 🔹 Header
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -89,8 +108,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
       ),
       child: Row(
         children: [
-          Text(
-            'Feedback',
+          Text(Strings.FEEDBACK,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -124,18 +142,17 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(feedbackOptions.length, (index) {
-            final isSelected = selectedIndex == index;
+            final isSelected = selectedFeedbackIndex == index;
 
             return GestureDetector(
               onTap: () {
                 setState(() {
-                  selectedIndex = index;
-                  remarksController.text =
-                  '${feedbackOptions[index]['label']} ';
+                  selectedFeedbackIndex = index;
+                  remarksController.text = "";
                 });
               },
               child: Column(
@@ -152,7 +169,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                     alignment: Alignment.center,
                     child: Text(
                       feedbackOptions[index]['emoji']!,
-                      style: const TextStyle(fontSize: 22),
+                      style: TextStyle(fontSize: Constant.CONTAINER_SIZE_22),
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_04),
@@ -177,6 +194,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         required TextEditingController controller,
         required String hint,
         required int maxLines,
+        TextInputAction textInputAction = TextInputAction.next,
         bool showCounter = false,
       }) {
     final theme = Theme.of(context);
@@ -186,6 +204,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
       maxLines: maxLines,
       cursorColor: Colors.white,
       maxLength: showCounter ? 500 : null,
+      textInputAction: textInputAction,
       style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
       decoration: InputDecoration(
         hintText: hint,
@@ -195,14 +214,14 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         counterStyle: TextStyle(color: Colors.white),
         contentPadding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
         ),
         enabledBorder:  OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
         )
       ),
@@ -213,7 +232,65 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
     return SizedBox(
       width: double.infinity,
       height: Constant.CONTAINER_SIZE_48,
-      child: SubmitButton(onRightTap: (){},rightText: "Send Feedback",),
+      child: SubmitButton(
+        onRightTap: _isLoading
+            ? null
+            : () async {
+          if (!_formKey.currentState!.validate()) return;
+
+          setState(() => _isLoading = true);
+          final success = await _feedbackNetworkCall();
+          if (!mounted) return;
+
+          setState(() => _isLoading = false);
+
+          if (success) {
+            Utils.showToast(
+              '${Strings.FEEDBACK_DETAILS} ${Strings.SUCC_MSG}',
+            );
+            Navigator.pop(context);
+          }
+        },
+        rightText: Strings.SEND_FEEDBACK,
+        isLoading: _isLoading,
+      ),
     );
   }
+
+
+  Map<String, dynamic> getJsonData() {
+    final String? selectedLabel = selectedFeedbackIndex != null
+        ? feedbackOptions[selectedFeedbackIndex!]['label']
+        : null;
+
+    final data = {
+      "userId": Utils.userId,
+      "rating": selectedLabel,
+      "subject": subjectController.text,
+      "remark": remarksController.text
+    };
+    return data;
+  }
+
+  _feedbackNetworkCall() async {
+    Utils.printLog('feedback Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+    try {
+      await ref.read(feedbackProvider(getJsonData()).future);
+      Utils.showToast('${Strings.FEEDBACK_DETAILS} ${Strings.SUCC_MSG}');
+      Navigator.pop(context);
+
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
+  }
+
 }
