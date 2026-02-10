@@ -2,8 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common_widgets/submit_button.dart';
 import '../../../constants/imports_util.dart';
+import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
+import '../../../network_provider/network_provider.dart';
+import '../../../provider/profile_provider.dart';
+import '../../../utils/utility.dart';
 import 'edit_mobile_number.dart';
 
 class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
@@ -22,6 +27,13 @@ class _SecondaryMobileNumberDialogState
   final TextEditingController _secondaryController = TextEditingController();
 
   bool showSecondaryField = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    Utils.userId;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -169,32 +181,17 @@ class _SecondaryMobileNumberDialogState
 
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: SubmitButton(
+                    onRightTap:
+                        () {
                       if (showSecondaryField &&
                           !_formKey.currentState!.validate())
                         return;
-
+                      _addSecondaryNoNetworkCall();
+                      Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
                       Navigator.pop(context, _secondaryController.text.trim());
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_10,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      Strings.SAVE_CHANGES,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    rightText: Strings.SAVE_CHANGES,
                   ),
                 ),
               ],
@@ -202,6 +199,34 @@ class _SecondaryMobileNumberDialogState
           ),
         ),
       ),
+    );
+  }
+
+  Map<String, dynamic> getJsonData() {
+    final data = {
+      "userId": Utils.userId,
+      "secondaryNumber": _secondaryController.text
+    };
+    return data;
+  }
+
+  _addSecondaryNoNetworkCall() async {
+    Utils.printLog('edit mobile number Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+
+    ref.read(
+      profileUpdateProvider({
+        NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
+        Strings.USER_DATA: getJsonData(),
+      }),
     );
   }
 }
