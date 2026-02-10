@@ -79,7 +79,8 @@ class _ContactUsDialogState extends ConsumerState<ContactUsDialog> {
                     SizedBox(width: Constant.SIZE_10),
                     Expanded(
                       child: Text(
-                        profile!.emailId!,
+                        "admin@gmail.com",
+                        // profile!.emailId!,
                         style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
                       ),
                     ),

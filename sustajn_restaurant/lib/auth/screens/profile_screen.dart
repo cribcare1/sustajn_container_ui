@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:sustajn_restaurant/notifier/login_notifier.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
@@ -151,7 +153,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showBusinessEditScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, BusinessInformationScreen());
+    NavUtil.navigateToPushScreen(context, BusinessInformationDetails(authState: ref.read(authNotifierProvider), previous: "profile"));
+        // BusinessInformationScreen());
   }
 
   void _showPaymentTypeScreen(BuildContext context) {

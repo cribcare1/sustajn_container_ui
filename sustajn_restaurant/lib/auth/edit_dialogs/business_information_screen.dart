@@ -432,8 +432,7 @@ class _BusinessInformationScreenState
 
       "basicDetails": {
         "businessType": "Restaurant",
-        "websiteDetails": "https://www.surajrestaurant.com",
-        "cuisine": "Indian"
+        "websiteDetails": _websiteController,
       },
 
       "contactAndRegistrationDetails": {
@@ -448,7 +447,8 @@ class _BusinessInformationScreenState
       "socialMediaList": [
         {
           "socialMediaType": "Instagram",
-          "link": "https://instagram.com/surajrestaurant"
+          "link":
+          "https://instagram.com/surajrestaurant"
         },
         {
           "socialMediaType": "Facebook",
