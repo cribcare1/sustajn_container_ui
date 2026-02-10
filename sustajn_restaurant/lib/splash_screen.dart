@@ -1,9 +1,8 @@
-import 'package:sustajn_restaurant/constants/assets_utils.dart';
-import 'package:sustajn_restaurant/utils/app_permissons.dart';
+import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
-
 import 'auth/screens/dashboard/dashboard_screen.dart';
-import 'constants/imports_util.dart';
+import 'auth/screens/login_screen.dart';
+import 'constants/assets_utils.dart';
 import 'constants/string_utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,42 +16,34 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  late Animation<Offset> _logoMoveUpAnimation;
-  late Animation<double> _nameFadeAnimation;
-  late Animation<Offset> _nameSlideAnimation;
+  late Animation<double> _logoFade;
+  late Animation<double> _reflectionOpacity;
+  late Animation<double> _nameFade;
 
   @override
   void initState() {
     super.initState();
-    AppPermissions.handleNotificationPermission();
-    AppPermissions.handleLocationPermission(context);
+
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 3500),
     );
 
-    /// GIF moves slightly UP
-    _logoMoveUpAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0, -0.15),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _logoFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.4, curve: Curves.easeIn)),
+    );
 
-    /// App name fades IN
-    _nameFadeAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    _reflectionOpacity = TweenSequence([
+      TweenSequenceItem(tween: ConstantTween<double>(0.4), weight: 50),
+      TweenSequenceItem(tween: Tween<double>(begin: 0.4, end: 0.0), weight: 50),
+    ]).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.8)),
+    );
 
-    /// App name slides UP
-    _nameSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    /// Start animation AFTER 1 second
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) _controller.forward();
-    });
+    _nameFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.75, 1.0, curve: Curves.easeIn)),
+    );
+    _controller.forward();
     _checkLoginAndNavigate();
   }
 
@@ -78,31 +69,69 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final logoSize = size.width * 0.32;
+    final reflectionTop = logoSize * 1.05;
+    final stackHeight = logoSize * 1.35;
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: const Color(0xFF0E3A2F),
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// GIF Logo (moves up)
-            SlideTransition(
-              position: _logoMoveUpAnimation,
-              child: Image.asset(
-                AppAssets.sustajnLogoGif,
-                height: Constant.CONTAINER_SIZE_200,
-                fit: BoxFit.contain,
+            SizedBox(
+              height: stackHeight,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  FadeTransition(
+                    opacity: _logoFade,
+                    child: Image.asset(
+                      AppAssets.sustajn_logo,
+                      width: logoSize,
+                    ),
+                  ),
+                  Positioned(
+                    top: reflectionTop,
+                    child: FadeTransition(
+                      opacity: _reflectionOpacity,
+                      child: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Colors.white,
+                              Colors.transparent,
+                            ],
+                            stops: [0.0, 0.6, 1.0],
+                          ).createShader(bounds);
+                        },
+                        blendMode: BlendMode.dstIn,
+                        child: Transform(
+                          alignment: Alignment.topCenter,
+                          transform: Matrix4.identity()..scale(1.0, 0.35),
+                          child: Opacity(
+                            opacity: 0.85,
+                            child: Image.asset(
+                              AppAssets.sustajn_logo,
+                              width: logoSize,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
-            /// App Name (appears after 1s)
             FadeTransition(
-              opacity: _nameFadeAnimation,
-              child: SlideTransition(
-                position: _nameSlideAnimation,
-                child: Image.asset(
-                  AppAssets.sustajnLogoName,
-                  height: Constant.CONTAINER_SIZE_70,
-                ),
+              opacity: _nameFade,
+              child: Image.asset(
+                AppAssets.sustajnLogoName,
+                width: size.width * 0.45,
               ),
             ),
           ],
@@ -110,4 +139,5 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
 }

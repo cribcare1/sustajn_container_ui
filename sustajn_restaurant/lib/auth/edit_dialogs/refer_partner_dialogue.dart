@@ -5,7 +5,9 @@ import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 
 import '../../constants/number_constants.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
+import '../../utils/utility.dart';
 
 class EditReferPartnerDialog extends ConsumerStatefulWidget {
   const EditReferPartnerDialog({super.key});
@@ -26,6 +28,7 @@ class _EditReferPartnerDialogState
   @override
   void initState() {
     super.initState();
+    Utils.userId;
     _restaurantNameController = TextEditingController();
     _contactPersonController = TextEditingController();
     _contactNumberController = TextEditingController();
@@ -195,7 +198,9 @@ class _EditReferPartnerDialogState
                   width: double.infinity,
                   child: SubmitButton(
                     onRightTap: () {
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        _referPartnerNetworkCall(context);
+                      }
                     },
                     rightText: Strings.SAVE_CHANGES,
                   ),
@@ -260,4 +265,35 @@ class _EditReferPartnerDialogState
       ),
     );
   }
+
+  Map<String, dynamic> getJsonData() {
+    final data = {
+      "businessName": _restaurantNameController.text,
+      "partnerName": _contactPersonController.text,
+      "partnerEmail": _emailController.text,
+      "partnerPhone": _contactNumberController.text,
+      "referredByUserId": Utils.userId
+    };
+    return data;
+  }
+
+  _referPartnerNetworkCall(var orderState) async {
+    Utils.printLog('refer a partner Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+    try {
+      await ref.read(referPartnerProvider(getJsonData()).future);
+      Navigator.pop(context);
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
+  }
+
 }

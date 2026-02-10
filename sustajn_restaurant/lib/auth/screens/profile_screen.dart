@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:sustajn_restaurant/notifier/login_notifier.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
@@ -22,9 +24,11 @@ import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
+import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
+import 'business_information_screen.dart';
 
 class MyProfileScreen extends ConsumerStatefulWidget {
   const MyProfileScreen({super.key});
@@ -38,12 +42,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Email", "icon": Icons.email_outlined},
     {"name": "Address", "icon": Icons.location_on_outlined},
     {"name": "Contact", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined}, //ok
-    {"name": "Business Information", "icon": Icons.business_outlined}, //ok
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined}, //ok
+    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
+    {"name": "Business Information", "icon": Icons.business_outlined},
+    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
     {"name": "Payment Type", "icon": Icons.payments_outlined},
     {"name": "History", "icon": Icons.history},
-    {"name": "Feedback", "icon": Icons.feedback_outlined}, //ok
+    {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];
@@ -69,10 +73,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         break;
       case 6:
         _showPaymentTypeScreen(context);
-        // _showBankDetailsEdit(context);
         break;
       case 7:
-        ///history
+        _showHistoryScreen(context);
         break;
       case 8:
         _showFeedbackDialog(context);
@@ -150,10 +153,16 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showBusinessEditScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, BusinessInformationScreen());
+    NavUtil.navigateToPushScreen(context, BusinessInformationDetails(authState: ref.read(authNotifierProvider), previous: "profile"));
+        // BusinessInformationScreen());
   }
+
   void _showPaymentTypeScreen(BuildContext context) {
     NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+  }
+
+  void _showHistoryScreen(BuildContext context) {
+    NavUtil.navigateToPushScreen(context, HistoryHomeScreen());
   }
 
   void _showReportScreen(BuildContext context) {
@@ -167,6 +176,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
+    Utils.userId;
     _getProfileNetworkCall();
   }
 
@@ -248,49 +258,63 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   color: Colors.white,
                                   width: w * 0.012,
                                 ),
-                                image: DecorationImage(
+                              ),
+                              child: ClipOval(
+                                child: profileState.isSaving
+                                    ? const Center(
+                                  child: CircularProgressIndicator(color: Colors.red,),
+                                )
+                                    : Image(
+                                  fit: BoxFit.cover,
                                   image: profileImage != null
                                       ? FileImage(profileImage!)
-                                            as ImageProvider
                                       : (profile.profileImageUrl != null &&
-                                            profile.profileImageUrl!.isNotEmpty)
+                                      profile.profileImageUrl!.isNotEmpty)
                                       ? NetworkImage(
-                                          "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                        )
+                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                  )
                                       : const AssetImage(
-                                          "assets/images/default_profile.png",
-                                        ),
-                                  fit: BoxFit.cover,
+                                    "assets/images/default_profile.png",
+                                  ) as ImageProvider,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      "assets/images/default_profile.png",
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                profileImage = await Utils.uploadImage(context);
-                                if (profileImage != null) {
-                                  _profileImgNetworkCall(
-                                    profileState,
-                                    profile.mobileNumber!,
-                                    profile.fullName!,
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: w * 0.09,
-                                width: w * 0.09,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  size: w * 0.045,
-                                  color: theme.primaryColor,
+
+                            if (!profileState.isSaving)
+                              GestureDetector(
+                                onTap: () async {
+                                  profileImage = await Utils.uploadImage(context);
+                                  if (profileImage != null) {
+                                    _profileImgNetworkCall(
+                                      profileState,
+                                      profile.mobileNumber!,
+                                      profile.fullName!,
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: w * 0.09,
+                                  width: w * 0.09,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                  child: Icon(
+                                    Icons.edit_outlined,
+                                    size: w * 0.045,
+                                    color: theme.primaryColor,
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
-                        ),
+                        )
+                        ,
 
                         SizedBox(height: h * 0.015),
                         Row(
@@ -395,12 +419,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFFC8B531),
+                                backgroundColor: theme.secondaryHeaderColor,
                                 padding: EdgeInsets.symmetric(
                                   vertical: h * 0.018,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(w * 0.04),
+                                  side: BorderSide(color: Colors.white)
                                 ),
                               ),
                               onPressed: () {
@@ -424,7 +449,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
               )
             : const Center(
                 child: Text(
-                  "No Data available",
+                  Strings.NO_PROFILE,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -510,8 +535,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      if (!profileState.isValid) return;
-
+      profileState.setIsSaving(true);
       final isNetworkAvailable = await ref
           .read(networkProvider.notifier)
           .isNetworkAvailable();
@@ -522,8 +546,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         return;
       }
 
-      profileState.setIsLoading(true);
-
+      // Prepare multipart parameters using your utility method
       final params = Utils.multipartParams(
         NetworkUrls.UPDATE_PROFILE,
         getJsonData(mobile, name),
@@ -533,10 +556,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       final response = await ref.read(profileImgProvider(params).future);
 
       Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
       FocusScope.of(context).unfocus();

@@ -30,6 +30,13 @@ class Strings {
   static const String LOGIN = "Log In";
   static const String LOGOUT = "Log Out";
   static const String SIGN_UP = "Sign Up";
+  static const String LEASED = "Leased";
+  static const String RECEIVED = "Received";
+  static const String ORDERED = "Ordered";
+  static const String DAMAGED = "Damaged";
+  static const String SOLD = "Sold";
+  static const String HISTORY = "History";
+
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
       "Please provide your details below";
   static const String RESTURANT_TITLE = 'Resturants';
@@ -101,7 +108,7 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
-  static const OR = 'or';
+  static const OR = 'Or';
 
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -187,6 +194,7 @@ class Strings {
   static const String REQUEST_HISTORY = "Request History";
   static const String NO_CONTAINER_REQUESTS_YET = "No container requests yet";
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
+  static const String SOMETHING_WENT_WRONG = "Something went wrong. Please try again ";
   static const String SEARCH_BY_CONTAINER_NAME =
       "Search by container Name or Id";
   static const String DELETE_REQUEST = "Delete Request";
@@ -207,6 +215,7 @@ class Strings {
   static const String TYPES_OF_BUSINESS = "Type of Business";
   static const String CONTINUE = 'Continue';
   static const String BUSINESS_INFO = 'Business Information';
+  static const String BUSINESS_SUCC_MSG = 'Business Information Added Successful';
   static const String BUSINESS_DTLS = 'Business Details';
   static const String ONLINE_PAYMENT_GATEWAY = "Online Payment Gateway";
   static const String PAYPAL = "PayPal";
@@ -215,7 +224,10 @@ class Strings {
   static const String ADD_CARD = "Add Card";
   static const String ACCOUNT_HOLDER_NAME = "Account Holder Name";
   static const String IBAN = "IBAN";
-
+  static const String BIC = "BIC";
+  static const String CLEAR_DTLS = "Clear Details";
+  static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
+  static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -246,7 +258,8 @@ class Strings {
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS = "Logged in successfully";
-  static const String G_MAP_API_KEY = "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
+  static const String G_MAP_API_KEY = "AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q";
+      // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
   static const GO_BACK = 'Are you sure you want to go back?';
   static const VERIFIED_MAIL =
       'You have already verified your email.Going back may interrupt the account setup process';
@@ -285,5 +298,16 @@ class Strings {
   static const String INVENTORY = 'Inventory';
   static const String LEASE = 'Lease';
   static const String RECEIVE = 'Receive';
+  static const String INVALID_QR_CODE ="Invalid or unsupported QR code";
+  static const String ENTER_CUSTOMER_ID ="Enter Customer ID";
+  static const String LEASE_UC ="LEASE";
+  static const String RECEIVE_UC ="RECEIVE";
+  static const String SCAN_FOR_LEASE ="Scan Customer QR to Leased Products";
+  static const String SCAN_FOR_RECEIVE ="Scan Customer QR to Receive Products";
+  static const String SCAN ="Scan";
+  static const String SCAN_PRODUCT ="Scan Product";
+  static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
+  static const String ENTER_CONTAINER_ID ="Enter Container ID";
+  static const String NO_PROFILE ="Your profile information is not available right now";
 
 }

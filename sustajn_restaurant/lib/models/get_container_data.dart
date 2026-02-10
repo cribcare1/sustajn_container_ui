@@ -1,4 +1,3 @@
-
 class GetContainerData {
   List<ContainersDetails>? containersDetails;
   String? message;
@@ -7,25 +6,25 @@ class GetContainerData {
   GetContainerData({this.containersDetails, this.message, this.status});
 
   GetContainerData.fromJson(Map<String, dynamic> json) {
-    if(json["containersDetails"] is List) {
-      containersDetails = json["containersDetails"] == null ? null : (json["containersDetails"] as List).map((e) => ContainersDetails.fromJson(e)).toList();
+    if (json['containersDetails'] != null) {
+      containersDetails = <ContainersDetails>[];
+      json['containersDetails'].forEach((v) {
+        containersDetails!.add(new ContainersDetails.fromJson(v));
+      });
     }
-    if(json["message"] is String) {
-      message = json["message"];
-    }
-    if(json["status"] is String) {
-      status = json["status"];
-    }
+    message = json['message'] ?? "";
+    status = json['status'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    if(containersDetails != null) {
-      _data["containersDetails"] = containersDetails?.map((e) => e.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.containersDetails != null) {
+      data['containersDetails'] =
+          this.containersDetails!.map((v) => v.toJson()).toList();
     }
-    _data["message"] = message;
-    _data["status"] = status;
-    return _data;
+    data['message'] = this.message;
+    data['status'] = this.status;
+    return data;
   }
 }
 
@@ -38,41 +37,34 @@ class ContainersDetails {
   String? containerUniqueId;
   int? quantityAvailable;
 
-  ContainersDetails({this.containerId, this.containerName, this.containerDescription, this.capacity, this.containerImageUrl, this.containerUniqueId, this.quantityAvailable});
+  ContainersDetails(
+      {this.containerId,
+        this.containerName,
+        this.containerDescription,
+        this.capacity,
+        this.containerImageUrl,
+        this.containerUniqueId,
+        this.quantityAvailable});
 
   ContainersDetails.fromJson(Map<String, dynamic> json) {
-    if(json["containerId"] is int) {
-      containerId = json["containerId"];
-    }
-    if(json["containerName"] is String) {
-      containerName = json["containerName"];
-    }
-    if(json["containerDescription"] is String) {
-      containerDescription = json["containerDescription"];
-    }
-    if(json["capacity"] is int) {
-      capacity = json["capacity"];
-    }
-    if(json["containerImageUrl"] is String) {
-      containerImageUrl = json["containerImageUrl"];
-    }
-    if(json["containerUniqueId"] is String) {
-      containerUniqueId = json["containerUniqueId"];
-    }
-    if(json["quantityAvailable"] is int) {
-      quantityAvailable = json["quantityAvailable"];
-    }
+    containerId = json['containerId'] ?? 0;
+    containerName = json['containerName'] ?? "";
+    containerDescription = json['containerDescription'] ?? "";
+    capacity = json['capacity'] ?? 0;
+    containerImageUrl = json['containerImageUrl'] ?? "";
+    containerUniqueId = json['containerUniqueId'] ?? "";
+    quantityAvailable = json['quantityAvailable'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["containerId"] = containerId;
-    _data["containerName"] = containerName;
-    _data["containerDescription"] = containerDescription;
-    _data["capacity"] = capacity;
-    _data["containerImageUrl"] = containerImageUrl;
-    _data["containerUniqueId"] = containerUniqueId;
-    _data["quantityAvailable"] = quantityAvailable;
-    return _data;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['containerId'] = this.containerId;
+    data['containerName'] = this.containerName;
+    data['containerDescription'] = this.containerDescription;
+    data['capacity'] = this.capacity;
+    data['containerImageUrl'] = this.containerImageUrl;
+    data['containerUniqueId'] = this.containerUniqueId;
+    data['quantityAvailable'] = this.quantityAvailable;
+    return data;
   }
 }

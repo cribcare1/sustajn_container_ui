@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/utility.dart';
 
 class EditPaymentTypeScreen extends ConsumerStatefulWidget {
   const EditPaymentTypeScreen({super.key});
@@ -13,6 +14,13 @@ class EditPaymentTypeScreen extends ConsumerStatefulWidget {
 }
 
 class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
+
+  final _key = GlobalKey<FormState>();
+  final bankNameController = TextEditingController();
+  final acHolderNameController = TextEditingController();
+  final ibanController = TextEditingController();
+  final bicController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +53,26 @@ class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
               child: Column(
                 children: [
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
-                  _paymentTile(Strings.PAYPAL, Icons.account_balance_wallet),
+                  _paymentTile(Strings.PAYPAL,
+                    Image.asset('assets/images/paypal.webp'),
+                  ),
 
-                  _paymentTile(Strings.APPLE_PAY, Icons.phone_iphone),
+                  _paymentTile(Strings.APPLE_PAY,
+                      Image.asset('assets/images/apple_pay.png')
+                  ),
 
-                  _paymentTile(Strings.GOOGLE_PAY, Icons.android),
+                  _paymentTile(Strings.GOOGLE_PAY,
+                      Image.asset('assets/images/google_pay.png')
+                  )
                 ],
               ),
             ),
 
             _orDivider(),
 
-            _bankDetails(),
+            Form(key: _key,
+                child: _bankDetails()
+            ),
             SizedBox(height: Constant.CONTAINER_SIZE_24),
             _verifyButton(),
           ],
@@ -111,7 +127,7 @@ class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
     );
   }
 
-  Widget _paymentTile(String title, IconData icon) {
+  Widget _paymentTile(String title, Image image) {
     return Container(
       margin: EdgeInsets.only(
         left: Constant.SIZE_08,
@@ -120,12 +136,16 @@ class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
       ),
       padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_10, horizontal: Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(Constant.SIZE_08),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
         border: Border.all(color: Colors.white24),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white),
+          SizedBox(
+            width: Constant.CONTAINER_SIZE_24,
+            height: Constant.CONTAINER_SIZE_24,
+            child: image,
+          ),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
             title,
@@ -145,73 +165,48 @@ class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
           children: [
             Text(Strings.BANK_DETAILS,
                 style: TextStyle(color: Colors.white70)),
-            Text("Clear Details",
+            Text(Strings.CLEAR_DTLS,
                 style: TextStyle(color: Colors.amber)),
           ],
         ),
         SizedBox(height: Constant.CONTAINER_SIZE_12),
-        _inputField(context, hint: Strings.BANK_NAME, label:Strings.BANK_NAME),
+        Utils.buildTextField(
+          context,
+          controller: bankNameController,
+          label: Strings.BANK_NAME,
+          hint: Strings.BANK_NAME,
+          keyboard: TextInputType.emailAddress,
+          validator: Utils.validateEmailId,
+        ),
         SizedBox(height: Constant.CONTAINER_SIZE_10),
-        _inputField(context, hint: Strings.ACCOUNT_HOLDER_NAME, label: Strings.ACCOUNT_HOLDER_NAME),
+        Utils.buildTextField(
+          context,
+          controller: bankNameController,
+          label: Strings.BANK_NAME,
+          hint: Strings.BANK_NAME,
+          keyboard: TextInputType.emailAddress,
+          validator: Utils.validateEmailId,
+        ),
         SizedBox(height: Constant.CONTAINER_SIZE_10),
-        _inputField(context, hint: Strings.IBAN, label: Strings.IBAN),
+        Utils.buildTextField(
+          context,
+          controller: bankNameController,
+          label: Strings.IBAN,
+          hint: Strings.IBAN,
+          keyboard: TextInputType.emailAddress,
+          validator: Utils.validateEmailId,
+        ),
         SizedBox(height: Constant.CONTAINER_SIZE_10),
-        _inputField(context, hint: "BC", label: "BC"),
 
+        Utils.buildTextField(
+          context,
+          controller: bankNameController,
+          label: Strings.BIC,
+          hint: Strings.BIC,
+          keyboard: TextInputType.emailAddress,
+          validator: Utils.validateEmailId,
+        ),
       ],
-    );
-  }
-
-  Widget _inputField(
-      BuildContext context, {
-        required String hint,
-        required String label,
-        TextInputType keyboardType = TextInputType.text,
-        TextEditingController? controller,
-        String? Function(String?)? validator,
-        List<TextInputFormatter>? inputFormatters,
-      }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
-      keyboardType: keyboardType,
-      textInputAction: TextInputAction.next,
-      inputFormatters: inputFormatters,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: Constant.LABEL_TEXT_SIZE_14,
-      ),
-      cursorColor: Colors.white70,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.white70),
-        hintText: hint,
-        hintStyle: TextStyle(
-          color: Colors.white70,
-          fontSize: Constant.CONTAINER_SIZE_13,
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: Constant.CONTAINER_SIZE_16,
-          vertical: Constant.CONTAINER_SIZE_10,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          borderSide: BorderSide(color: Color(0xFFD1AE31)),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
-      ),
     );
   }
 
@@ -226,7 +221,12 @@ class _EditPaymentTypeScreenState extends ConsumerState<EditPaymentTypeScreen> {
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (!_key.currentState!.validate()) {
+            return;
+          }
+          Utils.showToast("Information uploaded successful");
+        },
         child: Text(
           Strings.VERIFY,
           style: TextStyle(

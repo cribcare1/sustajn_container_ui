@@ -1,26 +1,33 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
-import 'package:sustajn_restaurant/utils/utility.dart';
+import 'package:sustajn_restaurant/utils/qr_crypto_helper.dart';
 
+import '../../network_provider/network_provider.dart';
+import '../../utils/utility.dart';
+import '../lease_receive_notifier.dart';
+import '../lease_receive_provider.dart';
+import '../model/container_list_model.dart';
 import 'lease_product_list_screen.dart';
 
-class LeaseProductScanScreen extends StatefulWidget {
+class LeaseProductScanScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
 
   const LeaseProductScanScreen({super.key, required this.type, this.damage});
 
   @override
-  State<LeaseProductScanScreen> createState() => _QrScannerScreenState();
+  ConsumerState<LeaseProductScanScreen> createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<LeaseProductScanScreen> {
+class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
   final MobileScannerController controller = MobileScannerController(
-    detectionSpeed: DetectionSpeed.noDuplicates, // ensures single scan
+    detectionSpeed: DetectionSpeed.noDuplicates,
     torchEnabled: false,
     autoZoom: true,
   );
@@ -29,7 +36,21 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
   String? scannedValue;
   bool _torchOn = false;
   final textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
 
+    Utils.getUserId();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(leaseReceiveNotifier).setContext(context);
+      await controller.start();
+      _getContainerList(
+        ref.read(leaseReceiveNotifier),
+        restaurantId: Utils.userId.toString(),
+      );
+    });
+  }
   @override
   void dispose() {
     controller.dispose();
@@ -40,7 +61,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
     if (_isScanned) return;
 
     final Barcode? barcode = capture.barcodes.firstWhere(
-      (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
+          (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
       orElse: () => Barcode(
         rawValue: null,
         displayValue: null,
@@ -48,28 +69,81 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
       ),
     );
 
-    if (barcode!.rawValue != null && barcode.rawValue!.isNotEmpty) {
-      final value = barcode.rawValue!;
-      print("✅ QR Code Detected: $value");
+    if (barcode?.rawValue == null || barcode!.rawValue!.isEmpty) return;
+
+    final encryptedValue = barcode.rawValue!;
+    if (!QrCryptoHelper.isBase64(encryptedValue)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+          content: Text(Strings.INVALID_QR_CODE),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final decrypted = QrCryptoHelper.decrypt(encryptedValue);
       if (mounted) {
         setState(() {
           _isScanned = true;
-          scannedValue = value;
+          scannedValue = decrypted;
           textController.text = scannedValue!;
         });
       }
+      _handleContainerId(decrypted);
       await Future.delayed(const Duration(milliseconds: 300));
       await controller.stop();
+    } catch (e) {
+      if(!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(Strings.INVALID_QR_CODE),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
-
   Future<void> _toggleFlash() async {
     await controller.toggleTorch();
     setState(() {
       _torchOn = !_torchOn;
     });
   }
+  void _handleContainerId(String id) {
+    final leaseNotifier = ref.read(leaseReceiveNotifier);
 
+    final matchedContainer = leaseNotifier.containersDetails.firstWhere(
+          (e) => e.containerUniqueId == id,
+      orElse: () => ContainerDetails(
+        containerUniqueId: "",
+        containerId: 0,
+        containerName: '',
+        containerDescription: '',
+        capacity: 0,
+        containerImageUrl: '',
+        quantityAvailable: 0,
+      ),
+    );
+    final alreadyAdded = leaseNotifier.containersList.any(
+          (e) => e.containerUniqueId == id,
+    );
+
+    if (alreadyAdded) {
+      showCustomSnackBar(
+        context: context,
+        message: "Container already scanned",
+        color: Colors.orange,
+      );
+      return;
+    }
+    leaseNotifier.setContainerList(matchedContainer);
+    showCustomSnackBar(
+      context: context,
+      message: "Container added. Total: ${leaseNotifier.containersList.length}",
+      color: Colors.green,
+    );
+  }
   Future<void> _scanAgain() async {
     setState(() {
       scannedValue = null;
@@ -90,7 +164,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Scan Product",
+          title: Strings.SCAN_PRODUCT,
           leading: CustomBackButton(),
           action: [
             IconButton(
@@ -117,8 +191,8 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 300,
-                        width: 300,
+                        height: Constant.CONTAINER_SIZE_300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: MobileScanner(
                             controller: controller,
@@ -130,10 +204,10 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_16),
                       SizedBox(
-                        width: 300,
+                        width: Constant.CONTAINER_SIZE_300,
                         child: GlassSummaryCard(
                           child: Text(
-                            "Scan Container QR to Lease Products",
+                            Strings.SCAN_CONTAINER_QR,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(
@@ -155,9 +229,9 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
                       child: Text(
-                        'Or',
+                        Strings.OR,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -180,12 +254,12 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                   ).textTheme.titleSmall!.copyWith(color: Colors.white),
                   controller: textController,
                   decoration: InputDecoration(
-                    hintText: "Enter Container ID",
+                    hintText: Strings.ENTER_CONTAINER_ID,
                     hintStyle: Theme.of(
                       context,
                     ).textTheme.titleSmall!.copyWith(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     filled: true,
@@ -199,7 +273,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                     onPressed: textController.text.isEmpty
                         ? null
                         : () {
-                            if (widget.type.contains("LEASE")) {
+                            if (widget.type.contains(Strings.LEASE_UC)) {
                               NavUtil.navigateToPushScreen(
                                 context,
                                 LeaseProductListScreen(),
@@ -213,12 +287,12 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
                       foregroundColor: Colors.black,
                       disabledBackgroundColor: Colors.grey.shade300,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                         side: BorderSide(color: Colors.white),
                       ),
                     ),
                     child: Text(
-                      'Verify',
+                      Strings.VERIFY,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: textController.text.isEmpty
                             ? Colors.grey
@@ -239,10 +313,36 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
               color: Theme.of(context).secondaryHeaderColor,
             ),
             padding: EdgeInsetsGeometry.all(Constant.CONTAINER_SIZE_10),
-            child: Icon(Icons.flip_camera_android, size: 20),
+            child: Icon(Icons.flip_camera_android, size: Constant.CONTAINER_SIZE_20),
           ),
         ),
       ),
     );
+  }
+  Future<void> _getContainerList(
+      LeaseReceiveNotifier leasState, {
+        required String restaurantId,
+      }) async {
+    try {
+      leasState.setLoading(true);
+
+      final isNetworkAvailable = await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable();
+
+      if (isNetworkAvailable) {
+        ref.read(containerListProvider(restaurantId));
+      } else {
+        leasState.setLoading(false);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+      }
+    } catch (e) {
+      leasState.setLoading(false);
+      Utils.printLog('Error fetching container list: $e');
+    }
   }
 }

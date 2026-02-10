@@ -6,7 +6,6 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/network_urls.dart';
 import '../models/update_address_data.dart';
-import '../models/update_profile_data.dart';
 import '../network/ApiCallPresentator.dart';
 import '../utils/utility.dart';
 
@@ -31,7 +30,7 @@ class ProfileServices {
     }
   }
 
-  Future<UpdateProfileData> profileUpdateService(
+  Future<GetProfileData> profileUpdateService(
       String url, Map<String, dynamic> requestData, String requestType) async {
     try {
       print("requestData::::::: $requestData");
@@ -39,7 +38,7 @@ class ProfileServices {
       var response = await presenter.postMultipartRequestAdmin(url, null, requestData, requestType, "userData");
       print("Response: $response");
       if (response != null) {
-        var responseData = UpdateProfileData.fromJson(response);
+        var responseData = GetProfileData.fromJson(response);
         Utils.printLog("responseData in Service: ${responseData.status}");
         return responseData;
       } else {
@@ -51,14 +50,14 @@ class ProfileServices {
     }
   }
 
-  Future<UpdateProfileData> updateImageService(String partUrl, Map<String, dynamic> requestData, String requestKey, File? image) async {
+  Future<GetProfileData> updateImageService(String partUrl, Map<String, dynamic> requestData, String requestKey, File? image) async {
     try {
       Utils.printLog("requestData::::::: $requestData");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.postMultipartRequestAdmin(url, image!, requestData, requestKey,"userData");
       if (response != null) {
-        var responseData = UpdateProfileData.fromJson(response);
+        var responseData = GetProfileData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {
@@ -85,6 +84,49 @@ class ProfileServices {
       }
     }catch(e){
       Utils.printLog("profile address update service::::$e");
+      throw Exception(e);
+    }
+  }
+
+  Future<dynamic> referPartnerService(
+      String url,
+      Map<String, dynamic> requestData,
+      String requestType,
+      ) async {
+    try {
+      print("requestData::::::: $requestData");
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.postApiRequest(url, requestData);
+      if (response != null) {
+        Utils.printLog("responseData from Service: $response");
+        return response;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("refer partner add service::::$e");
+      throw Exception(e);
+    }
+  }
+
+
+  Future<dynamic> businessInfoService(
+      String url,
+      Map<String, dynamic> requestData,
+      String requestType,
+      ) async {
+    try {
+      print("requestData::::::: $requestData");
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.postApiRequest(url, requestData);
+      if (response != null) {
+        Utils.printLog("responseData from Service: $response");
+        return response;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("business information added service::::$e");
       throw Exception(e);
     }
   }

@@ -31,6 +31,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(leaseReceiveNotifier).setContext(context);
       _getContainerList(
         ref.read(leaseReceiveNotifier),
         restaurantId:  Utils.userId.toString(),
@@ -86,7 +87,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: leaseNotifier.isLoading
-            ? const Center(child: SingleChildScrollView())
+            ? const Center(child: CircularProgressIndicator())
             : leaseNotifier.containersDetails.isEmpty
             ? Center(
           child: Text(
@@ -161,6 +162,17 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
               ),
             ),
+            SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+            leaseNotifier.isSaving?Center(child: CircularProgressIndicator(),): SizedBox(
+              width: MediaQuery.sizeOf(context).width*0.6,
+              child: SubmitButton(
+                onRightTap: () {
+                  showConfirmIssuePopup(context, leaseNotifier);
+                },
+                rightText: "Confirm Receive",
+              ),
+            ),
+            SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
           ],
         ),
         floatingActionButton: InkWell(onTap: (){
@@ -176,17 +188,17 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
           child: Icon(Icons.qr_code_scanner_rounded,color: Theme.of(context).primaryColor,),
         ),
         ),
-        bottomSheet: Container(
-          // width: double.infinity,
-          color: theme.primaryColor,
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: SubmitButton(
-            onRightTap: () {
-              showConfirmIssuePopup(context, leaseNotifier);
-            },
-            rightText: "Confirm Receive",
-          ),
-        ),
+        // bottomSheet: Container(
+        //   // width: double.infinity,
+        //   color: theme.primaryColor,
+        //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+        //   child: SubmitButton(
+        //     onRightTap: () {
+        //       showConfirmIssuePopup(context, leaseNotifier);
+        //     },
+        //     rightText: "Confirm Receive",
+        //   ),
+        // ),
       ),
     );
   }

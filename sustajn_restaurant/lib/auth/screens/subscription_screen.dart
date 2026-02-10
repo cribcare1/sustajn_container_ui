@@ -19,7 +19,8 @@ import '../../network_provider/network_provider.dart';
 import '../model/plan_model.dart';
 
 class SubscriptionScreen extends ConsumerStatefulWidget {
-  const SubscriptionScreen({super.key});
+  final String? previousScreen;
+  const SubscriptionScreen({super.key,this.previousScreen = ""});
 
   @override
   ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
@@ -152,6 +153,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               authState.setPlanId(selectedPlan.planId);
                             });
                           },
+                          previousScreen:widget.previousScreen??"" ,
                         );
                       },
                     ),
@@ -207,8 +209,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 class PlanCard extends StatelessWidget {
   final PlanModel plan;
   final VoidCallback onTap;
-
-  const PlanCard({super.key, required this.plan, required this.onTap});
+final String previousScreen;
+  const PlanCard({super.key, required this.plan, required this.onTap, required this.previousScreen});
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +284,7 @@ class PlanCard extends StatelessWidget {
                       onPressed: () {
                         NavUtil.navigateToPushScreen(
                           context,
-                          SubscriptionDetailsScreen(planModel: plan),
+                          SubscriptionDetailsScreen(planModel: plan,previousScreen:previousScreen ,),
                         );
                       },
                       style: OutlinedButton.styleFrom(

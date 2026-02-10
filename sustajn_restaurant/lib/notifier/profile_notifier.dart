@@ -4,7 +4,6 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
-import '../models/update_profile_data.dart';
 import '../utils/utility.dart';
 
 class ProfileState extends ChangeNotifier{
@@ -12,7 +11,7 @@ class ProfileState extends ChangeNotifier{
   bool _isLoading = false;
   bool _isSaving = false;
   GetProfileData? _getProfileData;
-  UpdateProfileData? _updateProfileData;
+  // UpdateProfileData? _updateProfileData;
   BuildContext? _context;
   bool _isVerifying = false;
   LoginData? _loginResponse;
@@ -28,7 +27,7 @@ class ProfileState extends ChangeNotifier{
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
   GetProfileData? get getProfileData => _getProfileData;
-  UpdateProfileData? get updateProfileData => _updateProfileData!;
+  // UpdateProfileData? get updateProfileData => _updateProfileData!;
   BuildContext get context => _context!;
   LoginData? get loginResponse => _loginResponse;
 
@@ -59,10 +58,10 @@ void setIsSaving(bool isLoading){
     notifyListeners();
   }
 
-  void setUpdateProfileData(UpdateProfileData updateProfile){
-    _updateProfileData = updateProfile;
-    notifyListeners();
-  }
+  // void setUpdateProfileData(UpdateProfileData updateProfile){
+  //   _updateProfileData = updateProfile;
+  //   notifyListeners();
+  // }
 
   void setContext(BuildContext context) {
     _context = context;

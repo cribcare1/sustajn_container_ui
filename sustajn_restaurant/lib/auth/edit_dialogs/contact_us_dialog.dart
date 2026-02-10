@@ -1,23 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/string_utils.dart';
+import '../../provider/profile_provider.dart';
 
-class ContactUsDialog extends StatefulWidget{
+class ContactUsDialog extends ConsumerStatefulWidget{
   const ContactUsDialog({Key? key}) : super(key: key);
 
   @override
-  State<ContactUsDialog> createState() =>
+  ConsumerState<ContactUsDialog> createState() =>
       _ContactUsDialogState();
 }
 
-class _ContactUsDialogState extends State<ContactUsDialog> {
+class _ContactUsDialogState extends ConsumerState<ContactUsDialog> {
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final profileState = ref.watch(profileProvider);
+    final profile = profileState.getProfileData?.data;
     return SafeArea(
       top: false,
       child: Padding(
@@ -66,7 +69,7 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
               SizedBox(height: Constant.CONTAINER_SIZE_16),
 
               InkWell(
-                onTap: () => Utils.sendEmail('sustajn123@gmail.com'),
+                onTap: () => Utils.sendEmail(profile!.emailId!),
                 child: Row(
                   children: [
                     Icon(Icons.email,
@@ -76,7 +79,8 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                     SizedBox(width: Constant.SIZE_10),
                     Expanded(
                       child: Text(
-                        'sustajn123@gmail.com',
+                        "admin@gmail.com",
+                        // profile!.emailId!,
                         style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
                       ),
                     ),
