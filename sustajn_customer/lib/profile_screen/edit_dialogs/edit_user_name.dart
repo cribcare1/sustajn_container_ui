@@ -162,7 +162,6 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_14),
-
               Utils.getDateTimePicker(
                   context,
                   Strings.DOB,
