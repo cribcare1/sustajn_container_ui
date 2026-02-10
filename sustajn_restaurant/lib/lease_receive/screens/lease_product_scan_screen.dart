@@ -112,7 +112,6 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
   }
   void _handleContainerId(String id) {
     final leaseNotifier = ref.read(leaseReceiveNotifier);
-
     final matchedContainer = leaseNotifier.containersDetails.firstWhere(
           (e) => e.containerUniqueId == id,
       orElse: () => ContainerDetails(
@@ -130,12 +129,11 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
     );
 
     if (alreadyAdded) {
-      showCustomSnackBar(
-        context: context,
-        message: "Container already scanned",
-        color: Colors.orange,
+      final container = leaseNotifier.containersList.firstWhere(
+            (e) => e.containerUniqueId == id,
       );
-      return;
+
+      container.quantity += 1;
     }
     leaseNotifier.setContainerList(matchedContainer);
     showCustomSnackBar(

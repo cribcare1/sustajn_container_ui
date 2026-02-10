@@ -13,7 +13,7 @@ class LeaseAndReceiveServices {
     final data = jsonEncode(body);
     print(data);
     try{
-      var response = await presenter.postApiData(api, data, "Post");
+      var response = await presenter.postApiStringData(api, data, "Post");
       if(response != null){
         print("response   ================ $response");
         return response;
@@ -29,7 +29,7 @@ class LeaseAndReceiveServices {
     final data = jsonEncode(body);
     print(data);
     try{
-      var response = await presenter.postApiData(api, data, "");
+      var response = await presenter.postApiStringData(api, data, "");
       if(response != null){
         print("response   ================ $response");
         return response;
