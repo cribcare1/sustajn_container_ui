@@ -118,11 +118,16 @@ class ApiHelper {
     try {
       var body = json.encode(jsonMap);
       Utils.printLog("body====$body");
-      response = await http.post(Uri.parse(url),
-          headers: _getHeader(token), body: jsonMap).timeout(const Duration(seconds: 20),);
+
+      response = await http.post(
+        Uri.parse(url),
+        headers: _getHeader(token),
+        body: body,
+      ).timeout(const Duration(seconds: 20));
+
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
-    }  on TimeoutException catch (_) {
+    } on TimeoutException catch (_) {
       Utils.printLog('Timed out');
       return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
     } catch (excetion) {
@@ -130,6 +135,7 @@ class ApiHelper {
       return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
     }
   }
+
 
   Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
     final token = Utils.authToken();
