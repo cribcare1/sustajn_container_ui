@@ -311,6 +311,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       length: 6,
       // Change to 6 if needed
       controller: controller,
+
       keyboardType: TextInputType.number,
       autofocus: true,
       defaultPinTheme: defaultPinTheme,

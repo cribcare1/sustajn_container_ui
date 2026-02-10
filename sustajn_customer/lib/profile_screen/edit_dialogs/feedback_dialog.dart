@@ -272,8 +272,7 @@ class _FeedbackBottomSheetState
       if (isNetworkAvailable) {
         feedbackState.setIsLoading(true);
         feedbackState.setContext(context);
-
-         ref.read(feedbackProvider({
+        ref.read(feedbackProvider({
           "userId": widget.userId,
           "rating": null,
           "subject": subjectController.text,

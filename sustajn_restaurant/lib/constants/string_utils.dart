@@ -215,6 +215,7 @@ class Strings {
   static const String TYPES_OF_BUSINESS = "Type of Business";
   static const String CONTINUE = 'Continue';
   static const String BUSINESS_INFO = 'Business Information';
+  static const String BUSINESS_SUCC_MSG = 'Business Information Added Successful';
   static const String BUSINESS_DTLS = 'Business Details';
   static const String ONLINE_PAYMENT_GATEWAY = "Online Payment Gateway";
   static const String PAYPAL = "PayPal";
@@ -225,7 +226,8 @@ class Strings {
   static const String IBAN = "IBAN";
   static const String BIC = "BIC";
   static const String CLEAR_DTLS = "Clear Details";
-
+  static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
+  static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';

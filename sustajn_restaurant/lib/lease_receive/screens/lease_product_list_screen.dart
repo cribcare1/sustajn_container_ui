@@ -29,12 +29,13 @@ class _LeaseProductListScreenState
   @override
   void initState() {
     Utils.getUserId();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getContainerList(
-        ref.read(leaseReceiveNotifier),
-        restaurantId: Utils.userId.toString(),
-      );
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   ref.read(leaseReceiveNotifier).setContext(context);
+    //   _getContainerList(
+    //     ref.read(leaseReceiveNotifier),
+    //     restaurantId: Utils.userId.toString(),
+    //   );
+    // });
 
     super.initState();
   }
@@ -86,8 +87,8 @@ class _LeaseProductListScreenState
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: leaseNotifier.isLoading
-            ? const Center(child: SingleChildScrollView())
-            : leaseNotifier.containersDetails.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : leaseNotifier.containersList.isEmpty
             ? Center(
                 child: Text(
                   "No Containers found",
@@ -125,7 +126,7 @@ class _LeaseProductListScreenState
                               ),
                               SizedBox(width: Constant.SIZE_08),
                               Text(
-                                leaseNotifier.containersDetails.length
+                                leaseNotifier.containersList.length
                                     .toString(),
                                 style: const TextStyle(
                                   color: Colors.amber,
@@ -151,13 +152,14 @@ class _LeaseProductListScreenState
                       padding: EdgeInsets.symmetric(
                         horizontal: Constant.CONTAINER_SIZE_16,
                       ),
-                      itemCount: leaseNotifier.containersDetails.length,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemCount: leaseNotifier.containersList.length,
                       itemBuilder: (context, index) {
                         return _containerCard(
-                          item: leaseNotifier.containersDetails[index],
+                          item: leaseNotifier.containersList[index],
                           onRemove: () {
                             setState(() {
-                              leaseNotifier.containersDetails.removeAt(index);
+                              leaseNotifier.containersList.removeAt(index);
                             });
                           },
                         );
@@ -166,13 +168,14 @@ class _LeaseProductListScreenState
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
                     ),
                   ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_100,)
                 ],
               ),
         bottomSheet: Container(
           width: double.infinity,
           color: theme.primaryColor,
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: leaseNotifier.containersDetails.isEmpty
+          child: leaseNotifier.containersList.isEmpty
               ? SizedBox.shrink()
               : leaseNotifier.isSaving
               ? Center(child: CircularProgressIndicator())
@@ -345,7 +348,7 @@ class _LeaseProductListScreenState
                       onRightTap: () {
                         Navigator.pop(context);
                         final List<Map<String, dynamic>> items = leaseState
-                            .containersDetails
+                            .containersList
                             .map(
                               (i) => {
                                 "productId": i.containerId,

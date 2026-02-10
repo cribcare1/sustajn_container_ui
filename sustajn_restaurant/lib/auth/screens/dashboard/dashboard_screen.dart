@@ -53,6 +53,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> _loadProfile() async {
+    Utils.getUserId();
     await Utils.getProfile();
     setState(() {
       loginResponse = Utils.loginData?.data;

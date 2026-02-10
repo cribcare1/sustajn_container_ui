@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
@@ -7,19 +8,24 @@ import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/qr_crypto_helper.dart';
 
+import '../../network_provider/network_provider.dart';
+import '../../utils/utility.dart';
+import '../lease_receive_notifier.dart';
+import '../lease_receive_provider.dart';
+import '../model/container_list_model.dart';
 import 'lease_product_list_screen.dart';
 
-class LeaseProductScanScreen extends StatefulWidget {
+class LeaseProductScanScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
 
   const LeaseProductScanScreen({super.key, required this.type, this.damage});
 
   @override
-  State<LeaseProductScanScreen> createState() => _QrScannerScreenState();
+  ConsumerState<LeaseProductScanScreen> createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<LeaseProductScanScreen> {
+class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
   final MobileScannerController controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
     torchEnabled: false,
@@ -30,7 +36,21 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
   String? scannedValue;
   bool _torchOn = false;
   final textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
 
+    Utils.getUserId();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(leaseReceiveNotifier).setContext(context);
+      await controller.start();
+      _getContainerList(
+        ref.read(leaseReceiveNotifier),
+        restaurantId: Utils.userId.toString(),
+      );
+    });
+  }
   @override
   void dispose() {
     controller.dispose();
@@ -71,7 +91,7 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
           textController.text = scannedValue!;
         });
       }
-
+      _handleContainerId(decrypted);
       await Future.delayed(const Duration(milliseconds: 300));
       await controller.stop();
     } catch (e) {
@@ -90,7 +110,40 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
       _torchOn = !_torchOn;
     });
   }
+  void _handleContainerId(String id) {
+    final leaseNotifier = ref.read(leaseReceiveNotifier);
 
+    final matchedContainer = leaseNotifier.containersDetails.firstWhere(
+          (e) => e.containerUniqueId == id,
+      orElse: () => ContainerDetails(
+        containerUniqueId: "",
+        containerId: 0,
+        containerName: '',
+        containerDescription: '',
+        capacity: 0,
+        containerImageUrl: '',
+        quantityAvailable: 0,
+      ),
+    );
+    final alreadyAdded = leaseNotifier.containersList.any(
+          (e) => e.containerUniqueId == id,
+    );
+
+    if (alreadyAdded) {
+      showCustomSnackBar(
+        context: context,
+        message: "Container already scanned",
+        color: Colors.orange,
+      );
+      return;
+    }
+    leaseNotifier.setContainerList(matchedContainer);
+    showCustomSnackBar(
+      context: context,
+      message: "Container added. Total: ${leaseNotifier.containersList.length}",
+      color: Colors.green,
+    );
+  }
   Future<void> _scanAgain() async {
     setState(() {
       scannedValue = null;
@@ -265,5 +318,31 @@ class _QrScannerScreenState extends State<LeaseProductScanScreen> {
         ),
       ),
     );
+  }
+  Future<void> _getContainerList(
+      LeaseReceiveNotifier leasState, {
+        required String restaurantId,
+      }) async {
+    try {
+      leasState.setLoading(true);
+
+      final isNetworkAvailable = await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable();
+
+      if (isNetworkAvailable) {
+        ref.read(containerListProvider(restaurantId));
+      } else {
+        leasState.setLoading(false);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.NO_INTERNET_CONNECTION,
+          color: Colors.red,
+        );
+      }
+    } catch (e) {
+      leasState.setLoading(false);
+      Utils.printLog('Error fetching container list: $e');
+    }
   }
 }

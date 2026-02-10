@@ -334,7 +334,7 @@ class _BorrowedTabScreenState extends ConsumerState<BorrowedTabScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) =>
-          ReceiveDetailsDialog(title: 'Borrowed Details', item: [item]),
+          ReceiveDetailsDialog(title: 'Borrowed Details', items: [item]),
     );
   }
 

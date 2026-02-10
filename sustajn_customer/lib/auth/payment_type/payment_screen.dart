@@ -9,12 +9,15 @@ import '../../../constants/number_constants.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
+import '../../notifier/signup_notifier.dart';
 import '../../provider/login_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utils.dart';
 import '../screens/subscription_screen.dart';
 import 'add_card_dialog.dart';
+import 'link_payment_sheet.dart';
 enum PaymentFlow {
   signup,
   profile,
@@ -177,7 +180,16 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (_) => const AddCardDialog(),
+          builder: (_) => AddCardDialog(
+            onSuccess: () {
+              if (widget.flow == PaymentFlow.signup) {
+                NavUtil.navigateToPushScreen(
+                  context,
+                  SubscriptionScreen(),
+                );
+              }
+            },
+          ),
         );
       },
       child: Container(
@@ -225,30 +237,48 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _paypalTile(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/paypal.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'PayPal',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Pay Pal Account",
+          hint: "Enter your PayPal ID",
+          gatewayName: "PAYPAL"
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
     );
   }
+
 
   Widget _applePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Apple Pay Account",
+          hint: "Enter your Apple Pay ID",
+          gatewayName: "GOOGLE_PAY"
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
+    );
+  }
+
+
+  Widget _googlePay(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        _showLinkBottomSheet(
+          title: "Link Google Pay Account",
+          hint: "Enter your Google Pay ID",
+          gatewayName: 'APPLE_PAY'
+        );
+      },
+      child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
+    );
+  }
+
+
+  Widget _gatewayTile(ThemeData theme, String icon, String title) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -258,10 +288,10 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ),
       child: Row(
         children: [
-          Image.asset('assets/icons/apple_pay.png'),
+          Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
-            'Apple Pay',
+            title,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -272,29 +302,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _googlePay(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Image.asset('assets/icons/google_pay.png'),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            'Google Pay',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _bankFields(ThemeData theme, var signupState) {
     return Column(
@@ -349,12 +356,32 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           onChanged: signupState.setIban,
           inputFormatters: [
             FilteringTextInputFormatter.allow(Strings.number_validation),
-            LengthLimitingTextInputFormatter(Constant.MAX_LINE_34),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_23),
           ],
         ),
       ],
     );
   }
+
+  void _showLinkBottomSheet({
+    required String title,
+    required String hint,
+    required String gatewayName
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => LinkPaymentBottomSheet(
+        title: title,
+        hint: hint,
+        onSubmit: () {
+        },
+        gatewayName:gatewayName ,
+      ),
+    );
+  }
+
 
 
 
@@ -375,6 +402,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           cursorColor: Colors.white,
           onChanged: onChanged,
           inputFormatters: inputFormatters,
+          textCapitalization: TextCapitalization.characters,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: theme.textTheme.bodyMedium?.copyWith(
@@ -466,7 +494,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 signupState.updateBankDetails();
                 NavUtil.navigateToPushScreen(context, SubscriptionScreen());
               } else {
-                await _getNetworkDataVerify(signupState);
+                await _addBankNetwork(signupState);
               }
               },
             style: ElevatedButton.styleFrom(
@@ -487,34 +515,44 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Map<String, dynamic> getJsonData() {
-    final data = {
-      "bankDetailsRequest": {
+  Map<String, dynamic> getJsonData(SignupNotifier signupState) {
+    final Map<String, dynamic> body = {};
+
+    if (signupState.paymentMethod == "BANK") {
+      body["bankDetailsRequest"] = {
         "userId": Utils.userId,
         "bankName": _bankNameController.text,
         "bicNumber": _bicController.text,
         "accountHolderName": _accountHolderController.text,
         "iBanNumber": _ibanController.text,
-      },
-      "cardDetailsRequest": {
+      };
+    }
+
+    if (signupState.paymentMethod == "CARD") {
+      body["cardDetailsRequest"] = {
         "userId": Utils.userId,
-        "cardHolderName": "",
-        "cardNumber": "",
-        "expiryDate": "",
-        "cvv": "",
+        "cardHolderName": signupState.registrationData?.cardHolderName,
+        "cardNumber": signupState.registrationData?.cardNumber,
+        "expiryDate": signupState.registrationData?.expiryDate,
+        "cvv": signupState.registrationData?.cvv,
         "paymentGatewayId": "",
         "paymentGatewayName": "",
-      },
-      "paymentGetWayRequest": {
+      };
+    }
+
+    if (signupState.paymentMethod == "UPI") {
+      body["paymentGetWayRequest"] = {
         "userId": Utils.userId,
-        "paymentGatewayId": "",
-        "paymentGatewayName": "",
-      },
-    };
-    return data;
+        "paymentGatewayId": signupState.registrationData?.paymentGatewayId,
+        "paymentGatewayName": signupState.registrationData?.paymentGatewayName,
+      };
+    }
+
+    return body;
   }
 
-  _getNetworkDataVerify(var registrationState) async {
+
+  _addBankNetwork(var registrationState) async {
     try {
       if (registrationState.isValid) {
         await ref.read(networkProvider.notifier).isNetworkAvailable().then((
@@ -524,7 +562,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
               registrationState.setContext(context);
-              ref.read(createBankProvider(getJsonData()));
+             await ref.read(createBankProvider(getJsonData(registrationState)).future);
+              ref.read(profileProvider).clearProfileList();
+              await ref.read(
+                getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
+              );
             } else {
               registrationState.setIsLoading(false);
               if (!mounted) return;
