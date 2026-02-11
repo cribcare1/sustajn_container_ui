@@ -67,7 +67,7 @@ class _FeedbackBottomSheetState
                       _buildTextField(
                         context,
                         controller: subjectController,
-                        hint: 'Subject*',
+                        hint: Strings.SUBJECT,
                         maxLines: 1,
                         enabled: !feedbackState.isLoading,
                       ),
@@ -76,7 +76,7 @@ class _FeedbackBottomSheetState
                       _buildTextField(
                         context,
                         controller: remarksController,
-                        hint: 'Your Remarks*',
+                        hint: Strings.YOUR_REMARK,
                         maxLines: 5,
                         showCounter: true,
                         enabled: !feedbackState.isLoading,
@@ -113,7 +113,7 @@ class _FeedbackBottomSheetState
       child: Row(
         children: [
           Text(
-            'Feedback',
+            Strings.FEEDBACK,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -216,15 +216,15 @@ class _FeedbackBottomSheetState
         contentPadding:
         EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide:
           BorderSide(color: Constant.grey.withOpacity(0.4)),
         ),
@@ -253,7 +253,7 @@ class _FeedbackBottomSheetState
           ),
         ),
         child: Text(
-          'Send Feedback',
+          Strings.SEND_FEEDBACK,
           style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: theme.primaryColor,

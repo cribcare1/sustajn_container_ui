@@ -170,7 +170,7 @@ class _FreemiumBottomSheetState
           child: Icon(
             Icons.check_circle,
             color: isSelected ? Constant.gold : Constant.grey,
-            size: 26,
+            size: Constant.CONTAINER_SIZE_26,
           ),
         ),
       ],

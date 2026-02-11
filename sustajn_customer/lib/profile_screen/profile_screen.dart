@@ -45,7 +45,7 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Mobile Number", "icon": Icons.phone},
+    {"name": "Contact Number", "icon": Icons.phone},
     {"name": "Saved Address", "icon": Icons.location_on},
     {"name": "History", "icon": Icons.history},
     {"name": "Payment Type", "icon": Icons.currency_rupee},
@@ -681,7 +681,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             showCustomSnackBar(
               context: context,
-              message: 'User image uploaded successfully',
+              message: Strings.USER_IMAGE_UPLOADED,
               color: Constant.green,
             );
 

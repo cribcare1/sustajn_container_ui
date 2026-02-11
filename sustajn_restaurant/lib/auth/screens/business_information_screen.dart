@@ -43,6 +43,7 @@ class _BusinessInformationDetailsState
 
   String? _selectedBusinessType;
 
+
   @override
   void initState() {
     super.initState();
@@ -313,6 +314,7 @@ class _BusinessInformationDetailsState
                       },
                       controller: websiteController,
                       hint: Strings.ENTER_WEBSITE,
+                      textInputAction: TextInputAction.done
                     ),
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
@@ -407,9 +409,9 @@ class _BusinessInformationDetailsState
                         }
 
                         if (widget.previous == 'profile') {
-                          final success = await _businessInfoNetworkCall(regdNo);
+                          final bool success = await _businessInfoNetworkCall(regdNo) ?? false;
                           if (success) {
-                            Utils.showToast(Strings.BUSINESS_SUCC_MSG);
+                            Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
                             Navigator.pop(context);
                           } else {
                             showCustomSnackBar(
@@ -444,6 +446,7 @@ class _BusinessInformationDetailsState
         String? Function(String?)? validator,
         bool obscure = false,
         TextInputType keyboard = TextInputType.text,
+        TextInputAction textInputAction = TextInputAction.next,
         bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
@@ -455,6 +458,7 @@ class _BusinessInformationDetailsState
         controller: controller,
         keyboardType: keyboard,
         autofocus: false,
+        textInputAction: textInputAction,
         style: TextStyle(color: Colors.white70),
         cursorColor: Colors.white70,
         validator: validator,

@@ -128,7 +128,6 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
 
   Utils.printLog("Refer Partner Provider url : $url");
   final responseData = await apiService.referPartnerService(url, params, "");
-  // Utils.showToast(responseData);
   print("Provider Response: $responseData");
   return responseData;
 });
@@ -148,3 +147,21 @@ final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>
   print("Provider Response: $responseData");
   return responseData;
 });
+
+
+final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FEEDBACK}';
+
+  Utils.printLog("{Feedback Provider url : $url");
+  final responseData = await apiService.feedbackService(url, params, "");
+  print("Provider Response: $responseData");
+  return responseData;
+});
+
+
+

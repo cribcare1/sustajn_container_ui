@@ -117,7 +117,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     _googlePay(theme),
                     SizedBox(height: Constant.SIZE_10),
                     _orDivider(theme),
-                    _sectionTitle(theme, title: 'Bank Details'),
+                    _sectionTitle(theme, title: Strings.BANK_DETAILS),
                     _bankFields(theme, signupState),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_40),
@@ -205,7 +205,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             Icon(Icons.credit_card, color: Constant.gold),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              'Add Card',
+              Strings.ADD_CARD,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: Constant.gold,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -226,7 +226,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
             child: Text(
-              'or',
+              Strings.OR,
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
@@ -240,9 +240,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Pay Pal Account",
-          hint: "Enter your PayPal ID",
-          gatewayName: "PAYPAL"
+          title: Strings.LINK_PAYPAL,
+          hint: Strings.ENTER_PAYPAL,
+          gatewayName: Strings.PAYPAL,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
@@ -254,9 +254,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Apple Pay Account",
-          hint: "Enter your Apple Pay ID",
-          gatewayName: "GOOGLE_PAY"
+          title: Strings.LINK_APPLE,
+          hint: Strings.ENTER_APPLE,
+          gatewayName: Strings.APPLE,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
@@ -268,9 +268,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-          title: "Link Google Pay Account",
-          hint: "Enter your Google Pay ID",
-          gatewayName: 'APPLE_PAY'
+          title: Strings.LINK_GOOGLE,
+          hint: Strings.ENTER_GOOGLE,
+          gatewayName: Strings.GOOGLE,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
@@ -336,20 +336,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
         _field(
           theme: theme,
-          controller: _bicController,
-          hint: Strings.BIC,
-          error: signupState.bicError,
-          onChanged: signupState.setBic,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(Strings.number_validation),
-            LengthLimitingTextInputFormatter(Constant.MAX_LINE_11),
-          ],
-        ),
-
-        SizedBox(height: Constant.SIZE_10),
-
-        _field(
-          theme: theme,
           controller: _ibanController,
           hint: Strings.IBAN,
           error: signupState.ibanError,
@@ -357,6 +343,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           inputFormatters: [
             FilteringTextInputFormatter.allow(Strings.number_validation),
             LengthLimitingTextInputFormatter(Constant.MAX_LINE_23),
+          ],
+        ),
+
+        SizedBox(height: Constant.SIZE_10),
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: Strings.BIC,
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(Strings.number_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_11),
           ],
         ),
       ],
