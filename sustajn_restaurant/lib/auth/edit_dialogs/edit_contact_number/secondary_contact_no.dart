@@ -157,14 +157,6 @@ class _SecondaryMobileNumberDialogState
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (_) => EditMobileNumberDialog(
-                              mobileNumber: widget.secondaryMobileNumber,
-                            ),
-                          );
                         },
                         child: Icon(
                           Icons.edit_outlined,
