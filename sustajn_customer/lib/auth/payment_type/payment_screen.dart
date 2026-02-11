@@ -185,7 +185,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               if (widget.flow == PaymentFlow.signup) {
                 NavUtil.navigateToPushScreen(
                   context,
-                  SubscriptionScreen(),
+                  SubscriptionScreen(flow: SubscriptionFlow.registration),
                 );
               }
             },
@@ -461,7 +461,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                         ref.read(signUpNotifier).resetBankValidation();
                         _clearBankControllers();
 
-                        NavUtil.navigateWithReplacement(SubscriptionScreen());
+                        NavUtil.navigateWithReplacement(SubscriptionScreen(flow: SubscriptionFlow.registration));
                       },
 
                     );
@@ -492,7 +492,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
               if (widget.flow == PaymentFlow.signup) {
                 signupState.updateBankDetails();
-                NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+                NavUtil.navigateToPushScreen(context, SubscriptionScreen(flow: SubscriptionFlow.registration));
               } else {
                 await _addBankNetwork(signupState);
               }

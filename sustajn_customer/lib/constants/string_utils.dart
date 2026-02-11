@@ -207,6 +207,7 @@ class Strings {
   static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
   static const String LEARN_MORE = 'Learn More';
   static const String UPGRADE = 'Upgrade';
+  static const String VIEW_ALL_PLANS = 'View All Plans';
 
 
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
