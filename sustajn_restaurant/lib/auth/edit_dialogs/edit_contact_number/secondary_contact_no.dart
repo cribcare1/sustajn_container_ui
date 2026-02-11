@@ -2,14 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common_widgets/submit_button.dart';
 import '../../../constants/imports_util.dart';
+import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
+import '../../../network_provider/network_provider.dart';
+import '../../../provider/profile_provider.dart';
+import '../../../utils/utility.dart';
 import 'edit_mobile_number.dart';
 
 class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
+  final String secondaryMobileNumber;
 
-  const SecondaryMobileNumberDialog({super.key, required this.mobileNumber});
+  const SecondaryMobileNumberDialog({super.key, required this.secondaryMobileNumber, required this.mobileNumber});
 
   @override
   ConsumerState<SecondaryMobileNumberDialog> createState() =>
@@ -22,6 +28,13 @@ class _SecondaryMobileNumberDialogState
   final TextEditingController _secondaryController = TextEditingController();
 
   bool showSecondaryField = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    Utils.userId;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -123,78 +136,94 @@ class _SecondaryMobileNumberDialogState
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_25),
-
-                if (!showSecondaryField)
+                if (widget.secondaryMobileNumber.isNotEmpty) ...[
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() => showSecondaryField = true);
-                        },
+                      Icon(
+                        Icons.call,
+                        color: Colors.white,
+                        size: Constant.CONTAINER_SIZE_18,
+                      ),
+                      SizedBox(width: Constant.SIZE_08),
+                      Expanded(
                         child: Text(
-                          Strings.ADD_SECONDARY_NO,
+                          "+91 ${widget.secondaryMobileNumber}",
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Constant.gold,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-
-                Visibility(
-                  visible: showSecondaryField,
-                  child: Column(
-                    children: [
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-                      TextFormField(
-                        controller: _secondaryController,
-                        keyboardType: TextInputType.number,
-                        validator: _validateMobile,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: Strings.SECONDARY_NO,
-                          labelStyle: const TextStyle(color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.edit_outlined,
+                          color: Colors.white,
+                          size: Constant.CONTAINER_SIZE_18,
                         ),
                       ),
                     ],
                   ),
-                ),
+                ] else ...[
+                  if (!showSecondaryField)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() => showSecondaryField = true);
+                          },
+                          child: Text(
+                            Strings.ADD_SECONDARY_NO,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Constant.gold,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  Visibility(
+                    visible: showSecondaryField,
+                    child: Column(
+                      children: [
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        TextFormField(
+                          controller: _secondaryController,
+                          keyboardType: TextInputType.number,
+                          validator: _validateMobile,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: Strings.SECONDARY_NO,
+                            labelStyle: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 SizedBox(height: Constant.CONTAINER_SIZE_28),
 
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: SubmitButton(
+                    onRightTap:
+                        () {
                       if (showSecondaryField &&
                           !_formKey.currentState!.validate())
                         return;
-
+                      _addSecondaryNoNetworkCall();
+                      Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
                       Navigator.pop(context, _secondaryController.text.trim());
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC8B531),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Constant.CONTAINER_SIZE_14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_10,
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      Strings.SAVE_CHANGES,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    rightText: Strings.SAVE_CHANGES,
                   ),
                 ),
               ],
@@ -202,6 +231,34 @@ class _SecondaryMobileNumberDialogState
           ),
         ),
       ),
+    );
+  }
+
+  Map<String, dynamic> getJsonData() {
+    final data = {
+      "userId": Utils.userId,
+      "secondaryNumber": _secondaryController.text
+    };
+    return data;
+  }
+
+  _addSecondaryNoNetworkCall() async {
+    Utils.printLog('edit mobile number Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+
+    ref.read(
+      profileUpdateProvider({
+        NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
+        Strings.USER_DATA: getJsonData(),
+      }),
     );
   }
 }

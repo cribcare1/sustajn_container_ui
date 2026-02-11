@@ -110,23 +110,31 @@ class ApiHelper {
   ///        the respone body of the api it will return
   ///
 
-  Future<dynamic> apiPostLoginRequest(String url, var jsonMap) async {
+  Future<dynamic> apiPostLoginRequest(String url, Map<String, dynamic> jsonMap) async {
     Utils.printLog("Post call started==url==$url");
-    var token = Utils.authToken();
+
+    final token = Utils.authToken();
     Utils.printLog('Token : $token');
-    http.Response? response;
+
     try {
-      var body = json.encode(jsonMap);
+      final body = jsonEncode(jsonMap);
       Utils.printLog("body====$body");
-      response = await http.post(Uri.parse(url),
-          headers: _getHeader(token), body: jsonMap).timeout(const Duration(seconds: 20),);
+
+      final response = await http
+          .post(
+        Uri.parse(url),
+        headers: _getHeader(token),
+        body: body,
+      )
+          .timeout(const Duration(seconds: 20));
+
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
-    }  on TimeoutException catch (_) {
+    } on TimeoutException catch (_) {
       Utils.printLog('Timed out');
       return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
-    } catch (excetion) {
-      Utils.printLog("Network call failed, excetion==$excetion");
+    } catch (exception) {
+      Utils.printLog("Network call failed, exception==$exception");
       return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
     }
   }

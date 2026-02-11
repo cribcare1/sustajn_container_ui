@@ -5,21 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
-import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/provider/profile_provider.dart';
+
 import '../../common_widgets/custom_profile_paint.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../edit_dialogs/business_information_screen.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
-import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
@@ -52,7 +49,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];
 
-  void _handleItemTap(int index, BuildContext context, String mobileNo) {
+  void _handleItemTap(
+    int index,
+    BuildContext context,
+    String mobileNo,
+    String secondaryNo,
+  ) {
     switch (index) {
       case 0:
         break;
@@ -60,7 +62,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showAddressDialog(context);
         break;
       case 2:
-        _showMobileNoDialog(context, mobileNo);
+        _showMobileNoDialog(context, mobileNo, secondaryNo);
         break;
       case 3:
         _showReportScreen(context);
@@ -116,13 +118,19 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showMobileNoDialog(BuildContext context, String mobile) {
+  void _showMobileNoDialog(
+    BuildContext context,
+    String mobile,
+    String secondaryNo,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          SecondaryMobileNumberDialog(mobileNumber: mobile ?? ""),
+      builder: (context) => SecondaryMobileNumberDialog(
+        mobileNumber: mobile ?? "",
+        secondaryMobileNumber: secondaryNo ?? "",
+      ),
     );
   }
 
@@ -143,6 +151,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       builder: (_) => EditReferPartnerDialog(),
     );
   }
+
   void _showContactUsDialogue(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -153,8 +162,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showBusinessEditScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, BusinessInformationDetails(authState: ref.read(authNotifierProvider), previous: "profile"));
-        // BusinessInformationScreen());
+    NavUtil.navigateToPushScreen(
+      context,
+      BusinessInformationDetails(
+        authState: ref.read(authNotifierProvider),
+        previous: "profile",
+      ),
+    );
   }
 
   void _showPaymentTypeScreen(BuildContext context) {
@@ -262,34 +276,42 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               child: ClipOval(
                                 child: profileState.isSaving
                                     ? const Center(
-                                  child: CircularProgressIndicator(color: Colors.red,),
-                                )
+                                        child: CircularProgressIndicator(
+                                          color: Colors.red,
+                                        ),
+                                      )
                                     : Image(
-                                  fit: BoxFit.cover,
-                                  image: profileImage != null
-                                      ? FileImage(profileImage!)
-                                      : (profile.profileImageUrl != null &&
-                                      profile.profileImageUrl!.isNotEmpty)
-                                      ? NetworkImage(
-                                    "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
-                                  )
-                                      : const AssetImage(
-                                    "assets/images/default_profile.png",
-                                  ) as ImageProvider,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.asset(
-                                      "assets/images/default_profile.png",
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
+                                        fit: BoxFit.cover,
+                                        image: profileImage != null
+                                            ? FileImage(profileImage!)
+                                            : (profile.profileImageUrl !=
+                                                      null &&
+                                                  profile
+                                                      .profileImageUrl!
+                                                      .isNotEmpty)
+                                            ? NetworkImage(
+                                                "${NetworkUrls.IMAGE_BASE_URL}profile/${profile.profileImageUrl}",
+                                              )
+                                            : const AssetImage(
+                                                    "assets/images/default_profile.png",
+                                                  )
+                                                  as ImageProvider,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Image.asset(
+                                            "assets/images/default_profile.png",
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      ),
                               ),
                             ),
 
                             if (!profileState.isSaving)
                               GestureDetector(
                                 onTap: () async {
-                                  profileImage = await Utils.uploadImage(context);
+                                  profileImage = await Utils.uploadImage(
+                                    context,
+                                  );
                                   if (profileImage != null) {
                                     _profileImgNetworkCall(
                                       profileState,
@@ -313,8 +335,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                               ),
                           ],
-                        )
-                        ,
+                        ),
 
                         SizedBox(height: h * 0.015),
                         Row(
@@ -394,6 +415,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   index,
                                   context,
                                   profile.mobileNumber ?? "",
+                                  profile.secondaryNumber ?? "",
                                 ),
                               );
                             },
@@ -425,7 +447,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(w * 0.04),
-                                  side: BorderSide(color: Colors.white)
+                                  side: BorderSide(color: Colors.white),
                                 ),
                               ),
                               onPressed: () {
