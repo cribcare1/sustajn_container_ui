@@ -70,9 +70,18 @@ class Data {
     emailId = json['emailId'] ?? "";
     profileImageUrl = json['profileImageUrl'] ?? "";
     subscriptionPlanId = json['subscriptionPlanId'] ?? 0;
-    bankDetailsResponse = json['bankDetailsResponse'];
-    cardDetailsResponse = json['cardDetailsResponse'];
-    paymentGetWayResponse = json['paymentGetWayResponse'];
+    bankDetailsResponse = json['bankDetailsResponse'] != null
+        ? BankDetailsResponse.fromJson(json['bankDetailsResponse'])
+        : null;
+
+    cardDetailsResponse = json['cardDetailsResponse'] != null
+        ? CardDetailsResponse.fromJson(json['cardDetailsResponse'])
+        : null;
+
+    paymentGetWayResponse = json['paymentGetWayResponse'] != null
+        ? PaymentGetWayResponse.fromJson(json['paymentGetWayResponse'])
+        : null;
+
     if (json['addressResponses'] != null) {
       addressResponses = <AddressResponses>[];
       json['addressResponses'].forEach((v) {
