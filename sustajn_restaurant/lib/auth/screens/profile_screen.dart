@@ -20,7 +20,6 @@ import '../edit_dialogs/business_information_screen.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_bankdetails_dialog.dart';
 import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
-import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
@@ -52,7 +51,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];
 
-  void _handleItemTap(int index, BuildContext context, String mobileNo) {
+  void _handleItemTap(int index, BuildContext context, String? mobileNo, String? secondaryMobile, int userId) {
     switch (index) {
       case 0:
         break;
@@ -60,7 +59,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showAddressDialog(context);
         break;
       case 2:
-        _showMobileNoDialog(context, mobileNo);
+        _showMobileNoDialog(context, mobileNo??"",secondaryMobile??"",  userId);
         break;
       case 3:
         _showReportScreen(context);
@@ -116,13 +115,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showMobileNoDialog(BuildContext context, String mobile) {
+  void _showMobileNoDialog(BuildContext context, String mobile, String secondayMobile, int userId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          SecondaryMobileNumberDialog(mobileNumber: mobile ?? ""),
+      builder: (_) => EditMobileNumberDialog(mobileNumber: mobile,
+        secondaryNumber: secondayMobile,
+        userId: userId,),
     );
   }
 
@@ -394,6 +394,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   index,
                                   context,
                                   profile.mobileNumber ?? "",
+                                  profile.secondaryNumber ?? "",
+                                  profile.id ??0
                                 ),
                               );
                             },
