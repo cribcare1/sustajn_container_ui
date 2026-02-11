@@ -128,7 +128,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     child: _cardField(
                       controller: _cvv,
                       theme: theme,
-                      hint: 'CVV*',
+                      hint: 'CVV',
                       error: signupState.cvvError,
                       onChanged: signupState.setCVV,
                       formatters: [
@@ -195,7 +195,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12,),
               Text(
-                'We accept Credit, Debit, Visa and Mastercard',
+                'Credit, Debit, Visa and Mastercard',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                 ),

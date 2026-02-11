@@ -45,7 +45,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
       onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: theme.primaryColor,
-        appBar: CustomAppBar(title: 'Terms & Conditions',
+        appBar: CustomAppBar(title: Strings.TERMS_CONDITIONS,
             leading: CustomBackButton()).getAppBar(context),
         body: SafeArea(
           child: Stack(
@@ -71,7 +71,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
 
                         if (snapshot.hasError) {
                           return const Text(
-                            "Failed to load terms & conditions",
+                            Strings.FAILED_TO_LOAD,
                             style: TextStyle(color: Colors.red),
                           );
                         }
@@ -124,7 +124,7 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
                         ),
                       ),
                       child: Text(
-                        "Agree & Create Account",
+                        Strings.AGREE_AND_CREATE,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: theme.primaryColor,
                           fontWeight: FontWeight.w700,

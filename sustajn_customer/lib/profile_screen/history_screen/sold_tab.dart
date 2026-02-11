@@ -1,5 +1,6 @@
 import '../../constants/imports_util.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import 'model/detail_model.dart';
 
 class SoldTab extends StatelessWidget {
@@ -9,43 +10,43 @@ class SoldTab extends StatelessWidget {
 
    final List<BorrowedDetails> containers = [
      BorrowedDetails(
-       resturantName: "Sfumato Gastro Atelier",
-       containerName: "Dip Cups",
-       code: "ST-DC-50",
-       volume: "50ml",
+       resturantName: Strings.RESTAURANT_1,
+       containerName: Strings.CONTAINER_1,
+       code: Strings.CODE_1,
+       volume: Strings.VOLUME_1,
        qty: 3,
        image: "assets/images/cups.png",
-       date: "22/11/2025 | 10:00am",
+       date: Strings.DATE_1,
        price: "120"
      ),
      BorrowedDetails(
-       resturantName: "Ancora Mediterranean",
-       containerName: "Round Container",
-       code: "ST-RDC-500",
-       volume: "500ml",
+       resturantName: Strings.RESTAURANT_2,
+       containerName: Strings.CONTAINER_2,
+       code: Strings.CODE_2,
+       volume: Strings.VOLUME_2,
        qty: 5,
        image: "assets/images/cups.png",
-       date: "01/12/2025 | 10:00am",
+       date: Strings.DATE_2,
          price: "120"
      ),
      BorrowedDetails(
-       resturantName: "Ancora Mediterranean",
-       containerName: 'Rectangular Container',
-       code: "ST-RC-600",
-       volume: "900ml",
+       resturantName: Strings.RESTAURANT_2,
+       containerName: Strings.CONTAINER_3,
+       code: Strings.CODE_3,
+       volume: Strings.VOLUME_3,
        qty: 2,
        image: "assets/images/cups.png",
-       date: "27/11/2025 | 04:11pm",
+       date: Strings.DATE_3,
          price: "120"
      ),
      BorrowedDetails(
-       resturantName: " Kimura-ya Authentic Japanese Resta",
-       containerName: "Dip Cup | Round container",
-       code: "ST-RC-600",
-       volume: '600kl',
+       resturantName: Strings.RESTAURANT_3,
+       containerName: Strings.CONTAINER_4,
+       code: Strings.CODE_3,
+       volume: Strings.VOLUME_4,
        qty: 5,
        image: 'assets/images/cups.png',
-       date: "27/11/2025 | 04:11pm",
+       date: Strings.DATE_3,
          price: "120"
      ),
    ];

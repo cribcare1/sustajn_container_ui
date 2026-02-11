@@ -91,7 +91,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
       resizeToAvoidBottomInset: true,
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CustomAppBar(
-        title: 'Payment Type',
+        title: Strings.PAYMENT_TYPE,
         leading: CustomBackButton(),
       ).getAppBar(context),
 
@@ -112,10 +112,10 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _sectionTitle(theme, title: 'Card Details'),
+                    _sectionTitle(theme, title: Strings.CARD_DETAILS),
                     _addCardButton(context, theme, widget.cardDetails),
                     _orDivider(theme),
-                    _sectionTitle(theme, title: 'Online Payment Gateway'),
+                    _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
                     _paypalTile(theme),
                     SizedBox(height: Constant.SIZE_10),
                     _applePay(theme),
@@ -147,7 +147,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Bank Details',
+            Strings.BANK_DETAILS,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -169,7 +169,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
               }
             },
             child: Text(
-              "Clear fields",
+              Strings.CLEAR_FIELDS,
 
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Constant.gold,
@@ -256,7 +256,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
             Icon(Icons.credit_card, color: Constant.gold),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              'Add Card',
+              Strings.ADD_CARD,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: Constant.gold,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -277,7 +277,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
             child: Text(
-              'or',
+              Strings.OR,
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
@@ -291,9 +291,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-            title: "Link Pay Pal Account",
-            hint: "Enter your PayPal ID",
-            gatewayName: "PAYPAL"
+            title: Strings.LINK_PAYPAL,
+            hint: Strings.ENTER_PAYPAL,
+            gatewayName: Strings.PAYPAL,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
@@ -305,9 +305,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-            title: "Link Apple Pay Account",
-            hint: "Enter your Apple Pay ID",
-            gatewayName: "GOOGLE_PAY"
+            title: Strings.LINK_APPLE,
+            hint: Strings.ENTER_APPLE,
+            gatewayName: Strings.APPLE,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
@@ -319,9 +319,9 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
-            title: "Link Google Pay Account",
-            hint: "Enter your Google Pay ID",
-            gatewayName: 'APPLE_PAY'
+            title: Strings.LINK_GOOGLE,
+            hint: Strings.ENTER_GOOGLE,
+            gatewayName: Strings.GOOGLE,
         );
       },
       child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
@@ -378,7 +378,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         _field(
           theme: theme,
           controller: _bankNameController,
-          hint: 'Bank Name',
+          hint: Strings.BANK_NAME,
           error: signupState.bankNameError,
           onChanged: signupState.setBankName,
           inputFormatters: [
@@ -392,7 +392,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         _field(
           theme: theme,
           controller: _accountHolderController,
-          hint: 'Account Holder Name',
+          hint: Strings.ACCOUNT_HOLDER_NAME,
           error: signupState.accountHolderError,
           onChanged: signupState.setAccountHolderName,
           inputFormatters: [
@@ -406,7 +406,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         _field(
           theme: theme,
           controller: _bicController,
-          hint: 'BIC',
+          hint: Strings.BIC,
           error: signupState.bicError,
           onChanged: signupState.setBic,
           inputFormatters: [
@@ -420,7 +420,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
         _field(
           theme: theme,
           controller: _ibanController,
-          hint: 'IBAN',
+          hint: Strings.IBAN,
           error: signupState.ibanError,
           onChanged: signupState.setIban,
           inputFormatters: [
@@ -510,7 +510,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
           child: signupState.isLoading
               ? Utils.showProgressBar()
               : Text(
-            'Verify',
+            Strings.VERIFY,
             style: theme.textTheme.labelLarge?.copyWith(
               color: theme.primaryColor,
             ),
@@ -595,7 +595,7 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
                             ),
                           ),
                           child: Text(
-                            'Cancel',
+                            Strings.CANCEL,
                             style: theme.textTheme.labelLarge?.copyWith(
                               color: Constant.gold,
                             ),

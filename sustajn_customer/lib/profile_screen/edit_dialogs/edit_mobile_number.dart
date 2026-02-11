@@ -66,7 +66,7 @@ class _EditMobileNumberDialogState
     final profileState = ref.watch(profileProvider);
 
     String title = switch (view) {
-      ContactView.display => Strings.CONTACT_NUMBER,
+      ContactView.display => Strings.MOBILE_NUMBER,
       ContactView.edit =>Strings.EDIT_CONTACT_NUMBER,
       ContactView.add => Strings.ADD_CONTACT_NUMBER,
     };

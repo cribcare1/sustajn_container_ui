@@ -62,7 +62,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Choose Plan",
+                        Strings.CHOOSE_PLAN,
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -70,7 +70,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                       ),
                       SizedBox(height: Constant.SIZE_06),
                       Text(
-                        "Select a subscription plan to unlock the functionality of the application",
+                        Strings.PLEASE_SELECT,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.white70,
                         ),
@@ -93,7 +93,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             if (_selectedIndex == null) {
                               showCustomSnackBar(
                                 context: context,
-                                message: "Please select a plan",
+                                message: Strings.PLEASE_SELECT,
                                 color: Colors.green,
                               );
                               return;
@@ -120,7 +120,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             ),
                           ),
                           child: Text(
-                            "Proceed to Terms & Conditions",
+                            Strings.PROCEED_TERMS,
                             style: theme.textTheme.labelLarge?.copyWith(
                               color: theme.primaryColor,
                               fontWeight: FontWeight.w600,
@@ -316,7 +316,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_40),
       child: Center(
         child: Text(
-          "No subscription plans found",
+          Strings.NO_PLAN,
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70),
         ),
@@ -346,7 +346,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
         ),
       ),
       child: Text(
-        "Learn More",
+        Strings.LEARN_MORE,
         style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
       ),
     );
