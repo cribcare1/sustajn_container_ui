@@ -1,6 +1,7 @@
 import '../../constants/imports_util.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import 'model/borrowed_items.dart';
 
 class ReceiveDetailsDialog extends StatelessWidget {
@@ -151,7 +152,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text("Borrowed On",
+                Text(Strings.BORROWED_ON,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: Colors.white70)),
                 Text(borrowedOn ?? '',
@@ -161,7 +162,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
             ),
             Column(
               children: [
-                Text("Returned On",
+                Text(Strings.RETURNED_ON,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: Colors.white70)),
                 Text(returnedOn ?? '',
@@ -193,25 +194,25 @@ class ReceiveDetailsDialog extends StatelessWidget {
               ? ClipOval(
             child: Image.network(
               NetworkUrls.BASE_IMAGE_URL + item.imageUrl,
-              width: 60,
-              height: 60,
+              width: Constant.CONTAINER_SIZE_60,
+              height: Constant.CONTAINER_SIZE_60,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) {
                 return Image.asset(
                   'assets/images/cups.png',
-                  width: 60,
-                  height: 60,
+                  width: Constant.CONTAINER_SIZE_60,
+                  height: Constant.CONTAINER_SIZE_60,
                 );
               },
             ),
           )
               : Image.asset(
             'assets/images/cups.png',
-            width: 60,
-            height: 60,
+            width: Constant.CONTAINER_SIZE_60,
+            height: Constant.CONTAINER_SIZE_60,
           ),
 
-          SizedBox(width: 12),
+          SizedBox(width: Constant.CONTAINER_SIZE_12),
 
           Expanded(
             child: Column(
@@ -240,7 +241,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
             ),
           ),
 
-          SizedBox(width: 8),
+          SizedBox(width: Constant.CONTAINER_SIZE_8),
 
           Text(
             item.containerCount.toString(),
@@ -271,8 +272,8 @@ class ReceiveDetailsDialog extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.location_on,
-                  color: Colors.white, size: 14),
-              SizedBox(width: 6),
+                  color: Colors.white, size: Constant.CONTAINER_SIZE_14),
+              SizedBox(width: Constant.CONTAINER_SIZE_6),
               Expanded(
                 child: Text(item.resturantAddress,
                     maxLines: 1,

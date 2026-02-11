@@ -40,7 +40,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Address Options",
+                Strings.ADDRESS_OPTION,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -52,7 +52,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.edit_outlined,
-                text: "Edit Address",
+                text: Strings.EDIT_ADDRESS,
                 onTap: () {
                   Navigator.pop(context);
                   NavUtil.navigateToPushScreen(
@@ -71,7 +71,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.delete_forever,
-                text: "Remove Address",
+                text: Strings.REMOVE_ADDRESS,
                 onTap: () async {
                   Navigator.pop(context);
                   _deleteAddress(profileState, widget.address.id ?? 0);

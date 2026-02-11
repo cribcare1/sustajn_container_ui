@@ -336,20 +336,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
         _field(
           theme: theme,
-          controller: _bicController,
-          hint: Strings.BIC,
-          error: signupState.bicError,
-          onChanged: signupState.setBic,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(Strings.number_validation),
-            LengthLimitingTextInputFormatter(Constant.MAX_LINE_11),
-          ],
-        ),
-
-        SizedBox(height: Constant.SIZE_10),
-
-        _field(
-          theme: theme,
           controller: _ibanController,
           hint: Strings.IBAN,
           error: signupState.ibanError,
@@ -357,6 +343,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           inputFormatters: [
             FilteringTextInputFormatter.allow(Strings.number_validation),
             LengthLimitingTextInputFormatter(Constant.MAX_LINE_23),
+          ],
+        ),
+
+        SizedBox(height: Constant.SIZE_10),
+
+        _field(
+          theme: theme,
+          controller: _bicController,
+          hint: Strings.BIC,
+          error: signupState.bicError,
+          onChanged: signupState.setBic,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(Strings.number_validation),
+            LengthLimitingTextInputFormatter(Constant.MAX_LINE_11),
           ],
         ),
       ],

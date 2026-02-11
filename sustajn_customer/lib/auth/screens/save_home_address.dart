@@ -576,7 +576,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                         ),
                       ),
                       child: Text(
-                        "Go back",
+                        Strings.GO_BACKS,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),

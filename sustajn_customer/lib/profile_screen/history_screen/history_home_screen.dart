@@ -5,6 +5,7 @@ import 'package:sustajn_customer/profile_screen/history_screen/sold_tab.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../common_widgets/filter_screen.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 import 'borrowed_tab.dart';
 
@@ -43,10 +44,10 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
-          'History',
+          Strings.HISTORY,
           style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(
@@ -64,8 +65,8 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
                 child: Row(
                   children: [
                     Icon(Icons.call_made_outlined),
-                    SizedBox(width: 6),
-                    Text('Borrowed'),
+                    SizedBox(width: Constant.SIZE_06),
+                    Text(Strings.BORROWED),
                   ],
                 ),
               ),
@@ -78,7 +79,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
                   children: [
                     Icon(Icons.call_received, size: Constant.CONTAINER_SIZE_18),
                     SizedBox(width: Constant.SIZE_06),
-                    Text('Returned'),
+                    Text(Strings.RETURNED),
                   ],
                 ),
               ),
@@ -94,7 +95,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
                       size: Constant.CONTAINER_SIZE_16,
                     ),
                     SizedBox(width: Constant.SIZE_06),
-                    Text('Sold'),
+                    Text(Strings.SOLD),
                   ],
                 ),
               ),
