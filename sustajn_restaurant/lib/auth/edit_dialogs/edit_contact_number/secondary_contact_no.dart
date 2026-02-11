@@ -13,8 +13,9 @@ import 'edit_mobile_number.dart';
 
 class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
+  final String secondaryMobileNumber;
 
-  const SecondaryMobileNumberDialog({super.key, required this.mobileNumber});
+  const SecondaryMobileNumberDialog({super.key, required this.secondaryMobileNumber, required this.mobileNumber});
 
   @override
   ConsumerState<SecondaryMobileNumberDialog> createState() =>
@@ -135,48 +136,87 @@ class _SecondaryMobileNumberDialogState
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_25),
-
-                if (!showSecondaryField)
+                if (widget.secondaryMobileNumber.isNotEmpty) ...[
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() => showSecondaryField = true);
-                        },
+                      Icon(
+                        Icons.call,
+                        color: Colors.white,
+                        size: Constant.CONTAINER_SIZE_18,
+                      ),
+                      SizedBox(width: Constant.SIZE_08),
+                      Expanded(
                         child: Text(
-                          Strings.ADD_SECONDARY_NO,
+                          "+91 ${widget.secondaryMobileNumber}",
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Constant.gold,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-
-                Visibility(
-                  visible: showSecondaryField,
-                  child: Column(
-                    children: [
-                      SizedBox(height: Constant.CONTAINER_SIZE_16),
-                      TextFormField(
-                        controller: _secondaryController,
-                        keyboardType: TextInputType.number,
-                        validator: _validateMobile,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: Strings.SECONDARY_NO,
-                          labelStyle: const TextStyle(color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => EditMobileNumberDialog(
+                              mobileNumber: widget.secondaryMobileNumber,
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.edit_outlined,
+                          color: Colors.white,
+                          size: Constant.CONTAINER_SIZE_18,
                         ),
                       ),
                     ],
                   ),
-                ),
+                ] else ...[
+                  if (!showSecondaryField)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() => showSecondaryField = true);
+                          },
+                          child: Text(
+                            Strings.ADD_SECONDARY_NO,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Constant.gold,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  Visibility(
+                    visible: showSecondaryField,
+                    child: Column(
+                      children: [
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        TextFormField(
+                          controller: _secondaryController,
+                          keyboardType: TextInputType.number,
+                          validator: _validateMobile,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: Strings.SECONDARY_NO,
+                            labelStyle: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 SizedBox(height: Constant.CONTAINER_SIZE_28),
 
                 SizedBox(

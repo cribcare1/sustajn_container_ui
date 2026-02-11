@@ -524,6 +524,7 @@ class Utils {
   static showToast(String msg) {
     Fluttertoast.showToast(
       msg: msg,
+
       backgroundColor: Colors.white,
       toastLength: Toast.LENGTH_LONG,
       textColor: Colors.black,
