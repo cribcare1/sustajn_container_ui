@@ -284,7 +284,7 @@ class Strings {
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
   static const String RESTAURANT_NAME = "Restaurant Name";
-  static const String EXISTING_USER = "Existing user?";
+  static const String EXISTING_USER = "Existing user? ";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
   static const String CONTACT_US = 'Contact Us';
