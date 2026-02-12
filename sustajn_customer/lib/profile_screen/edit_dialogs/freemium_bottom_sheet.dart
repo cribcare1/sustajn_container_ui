@@ -223,11 +223,11 @@ class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
           padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
         ),
         child:  Text(
-                Strings.VIEW_ALL_PLANS,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.primaryColor,
-                ),
-              ),
+          Strings.VIEW_ALL_PLANS,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.primaryColor,
+          ),
+        ),
       ),
     );
   }
