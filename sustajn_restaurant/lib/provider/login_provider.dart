@@ -96,8 +96,6 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
     if(response != null){
       LoginModel register = LoginModel.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
-        showCustomSnackBar(context: registrationState.context,
-            message: register.message??"Register successfully", color: Colors.green);
         Utils.printLog(register.data!.toJson().toString());
         registrationState.setIsLoading(false);
         registrationState.setUserId(register.data!.userId!);

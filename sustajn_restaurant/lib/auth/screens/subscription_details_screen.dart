@@ -58,7 +58,7 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
               ],
               if(widget.previousScreen =="")...[
                 Expanded(
-                  child: SingleChildScrollView(child: _featureList(theme)),
+                  child: SingleChildScrollView(child: _featureList(theme,widget.planModel?.description??"")),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 SizedBox(
@@ -100,11 +100,23 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset("assets/logo/dirham_icon.png"),
+              Image.asset(
+                'assets/images/diarhm.png',
+                height: Constant.CONTAINER_SIZE_20,
+                color: Constant.gold,
+                colorBlendMode: BlendMode.srcIn,
+              ),
               Text(
-                " ${data.totalContainers}",
+                " ${data.feeType.toString()}/",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                " ${data.billingCycle.toLowerCase()}",
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -115,11 +127,15 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     );
   }
 
-  Widget _featureList(ThemeData theme) {
+  Widget _featureList(ThemeData theme, String description) {
+    if (description.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
-      children: widget.planModel!.features
-          .map((e) => _featureItem(theme, e))
-          .toList(growable: false),
+      children: [
+        _featureItem(theme, description),
+      ],
     );
   }
 

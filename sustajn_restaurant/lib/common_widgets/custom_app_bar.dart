@@ -22,7 +22,7 @@ class CustomAppBar {
     return AppBar(
       backgroundColor: themeData!.primaryColor,
       surfaceTintColor: themeData.primaryColor,
-      centerTitle: true,
+      centerTitle: false,
       elevation: 0,
       title: Text(
         title??"",

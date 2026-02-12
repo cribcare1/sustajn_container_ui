@@ -29,6 +29,17 @@ class AuthState extends ChangeNotifier{
   int _seconds = 120;
   Timer? _otpTimer;
   bool _isDisposed = false;
+  String _bankName = '';
+  String _accountHolder = '';
+  String _iban = '';
+  String _bic = '';
+
+  String? _bankNameError;
+  String? _accountHolderError;
+  String? _ibanError;
+  String? _bicError;
+
+  bool _showBankErrors = false;
 
   bool get isVerifying => _isVerifying;
 
@@ -45,6 +56,15 @@ class AuthState extends ChangeNotifier{
   BuildContext get context => _context!;
   bool get isVisible => _isVisible;
   int get userId => _userID;
+  String? get bankNameError => _bankNameError;
+  String? get accountHolderError => _accountHolderError;
+  String? get ibanError => _ibanError;
+  String? get bicError => _bicError;
+
+  String get bankName => _bankName;
+  String get accountHolder => _accountHolder;
+  String get iban => _iban;
+  String get bic => _bic;
 
   // Error messages
   String? _nameError;
@@ -293,6 +313,128 @@ bool get isPlanLoading  => _isPlanLoading;
     _planError = error;
     notifyListeners();
   }
+
+  void setBankName(String value) {
+    _bankName = value;
+
+    if (_showBankErrors) {
+      _validateBankName();
+    } else {
+      _bankNameError = null;
+    }
+
+    notifyListeners();
+  }
+
+  void setAccountHolder(String value) {
+    _accountHolder = value;
+
+    if (_showBankErrors) {
+      _validateAccountHolder();
+    } else {
+      _accountHolderError = null;
+    }
+
+    notifyListeners();
+  }
+
+  void setIban(String value) {
+    _iban = value.toUpperCase();
+
+    if (_showBankErrors) {
+      _validateIBAN();
+    } else {
+      _ibanError = null;
+    }
+
+    notifyListeners();
+  }
+
+  void setBic(String value) {
+    _bic = value.toUpperCase();
+
+    if (_showBankErrors) {
+      _validateBIC();
+    } else {
+      _bicError = null;
+    }
+
+    notifyListeners();
+  }
+
+  void _validateBankName() {
+    if (_bankName.isEmpty) {
+      _bankNameError = 'Bank name is required';
+    }
+    else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(_bankName)) {
+      _bankNameError = 'Only letters and spaces allowed';
+    }
+    else {
+      _bankNameError = null;
+    }
+  }
+
+  void _validateAccountHolder() {
+    if (_accountHolder.isEmpty) {
+      _accountHolderError = 'Account holder name is required';
+    }
+    else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(_accountHolder)) {
+      _accountHolderError = 'Only letters and spaces allowed';
+    }
+    else {
+      _accountHolderError = null;
+    }
+  }
+
+  void _validateIBAN() {
+    if (_iban.isEmpty) {
+      _ibanError = 'IBAN is required';
+    }
+    else if (!RegExp(r'^AE[0-9]{2}[0-9]{3}[0-9]{16}$').hasMatch(_iban)) {
+      _ibanError = 'Invalid UAE IBAN format';
+    }
+    else {
+      _ibanError = null;
+    }
+  }
+
+  void _validateBIC() {
+    if (_bic.isEmpty) {
+      _bicError = 'BIC is required';
+    }
+    else if (!RegExp(r'^[A-Z0-9]{8}([A-Z0-9]{3})?$').hasMatch(_bic)) {
+      _bicError = 'BIC must be 8 or 11 characters';
+    }
+    else {
+      _bicError = null;
+    }
+  }
+
+  bool validateBankDetails() {
+    _showBankErrors = true;
+
+    _validateBankName();
+    _validateAccountHolder();
+    _validateIBAN();
+    _validateBIC();
+
+    notifyListeners();
+
+    return _bankNameError == null &&
+        _accountHolderError == null &&
+        _ibanError == null &&
+        _bicError == null;
+  }
+
+  void clearBankErrors() {
+    _showBankErrors = false;
+    _bankNameError = null;
+    _accountHolderError = null;
+    _ibanError = null;
+    _bicError = null;
+    notifyListeners();
+  }
+
 
   @override
   void dispose() {

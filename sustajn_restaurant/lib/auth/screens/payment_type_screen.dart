@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
@@ -33,6 +34,15 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController bicController = TextEditingController();
 
   final TextEditingController ibanController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).clearBankErrors();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -228,22 +238,28 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 title: 'Google Pay', asset: 'assets/images/google_pay.png',),
               _orDivider(theme),
               _sectionTitle(theme, title: 'Bank Details'),
-              _bankFields(theme),
+              _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () {
-                    if (!_validateBankDetails(context)) return;
+                    final auth = ref.read(authNotifierProvider);
+
+                    if (!auth.validateBankDetails()) return;
+
                     final bankData = BankDetailsModel(
-                      bankName: bankNameController.text,
-                      bicNumber: bicController.text,
-                      accountHolderName: accountHolderNameController.text,
-                      ibanNumber: ibanController.text,
+                      bankName: auth.bankName,
+                      accountHolderName: auth.accountHolder,
+                      ibanNumber: auth.iban,
+                      bicNumber: auth.bic,
                     );
-                    authState.setBankDetails(bankData);
+
+                    auth.setBankDetails(bankData);
+
                     NavUtil.navigateToPushScreen(context, SubscriptionScreen());
                   },
+
                   rightText: "Verify and Continue",
                 ),
               ),
@@ -311,6 +327,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
+
+
   Widget _orDivider(ThemeData theme) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
@@ -375,7 +393,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: const Color(0xFF1E4636),
           borderRadius: BorderRadius.circular(16),
@@ -416,7 +434,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
+  Widget _bankFields(ThemeData theme, var auth) {
     return Column(
       children: [
         _inputField(
@@ -424,13 +442,23 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'Bank Name',
           controller: bankNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.bankNameError,
+          onChanged: auth.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: 'Account Holder Name*',
+          hint: 'Account Holder Name',
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.accountHolderError,
+          onChanged: auth.setAccountHolder,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
@@ -438,6 +466,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'IBAN',
           controller: ibanController,
           keyboardType: TextInputType.text,
+          errorText: auth.ibanError,
+          onChanged: auth.setIban,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(23),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
@@ -445,6 +478,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'BIC',
           controller: bicController,
           keyboardType: TextInputType.text,
+          errorText: auth.bicError,
+          onChanged: auth.setBic,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(11),
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          ],
         ),
       ],
     );
@@ -454,32 +493,31 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ThemeData theme, {
         required String hint,
         required TextEditingController controller,
+        required String? errorText,
+        required Function(String) onChanged,
         TextInputType keyboardType = TextInputType.text,
         List<TextInputFormatter>? inputFormatters,
       }) {
     return TextField(
-      controller: controller,
-      autofocus: false,
+      onChanged: onChanged,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
       cursorColor: Colors.white,
+      textCapitalization: TextCapitalization.characters,
       decoration: InputDecoration(
         hintText: hint,
+        errorText: errorText,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
         ),
-        enabledBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
-        focusedBorder:
-        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
       ),
     );
   }
+
   bool _validateBankDetails(BuildContext context) {
     final bankName = bankNameController.text.trim();
     final accountNo = accountHolderNameController.text.trim();

@@ -27,7 +27,7 @@ class SubmitClearButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.amber, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(16),
               ),
               padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
             ),
@@ -51,7 +51,7 @@ class SubmitClearButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD1AE31), // Gold color
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(16),
                 side: BorderSide(color: Colors.white),
               ),
               elevation: 0,

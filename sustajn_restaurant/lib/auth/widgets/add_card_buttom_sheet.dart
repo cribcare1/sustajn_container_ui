@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
@@ -102,26 +103,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: _cardField(
-                          isReadOnly: true,
-                          theme,
-                          'Expiration Date',
+                        child: getDatePicker(
+                          context,
+                          "Expiration Date",
                           _expiryDateController,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Expiry date required';
-                            }
-                            return null;
+                              (date) {
+                            _expiryDateController.text =
+                            "${date.month.toString().padLeft(2, '0')}/${date.year}";
                           },
-                          onTap: ()async{
-                            final date = await showDatePicker(context: context,
-                                firstDate: DateTime.now(),
-                                initialDate: DateTime.now(),
-                                lastDate: DateTime(3000));
-                            if(date != null){
-                              _expiryDateController.text = "${date.month}/${date.year}";
-                            }
-                          }
+                          theme,
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_10),
@@ -244,6 +234,79 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
           Constant.grey.withOpacity(0.3),
         ),
         errorStyle: const TextStyle(color: Colors.redAccent),
+      ),
+    );
+  }
+
+  static Widget getDatePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme,
+      ) {
+    return Padding(
+      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              cancelStyle:  TextStyle(
+                color: theme.primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+
+              doneStyle:  TextStyle(
+                color: theme.primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onConfirm: (date) {
+              final value = "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: labelText,
+              filled: true,
+              fillColor: Constant.grey.withOpacity(.1),
+              hintStyle: const TextStyle(color: Colors.white),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+              focusedBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
       ),
     );
   }

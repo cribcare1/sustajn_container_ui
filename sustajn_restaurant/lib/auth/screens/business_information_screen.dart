@@ -2,8 +2,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
@@ -96,7 +98,15 @@ class _BusinessInformationDetailsState
   @override
   Widget build(BuildContext context) {
     final profileState = ref.read(profileProvider);
-    final regdNo = profileState.getProfileData!.data!.contactAndRegistrationDetailsResponse!.registrationNumber!;
+    String? regdNo;
+
+    if (widget.previous == 'profile') {
+      final profileState = ref.watch(profileProvider);
+      regdNo = profileState.getProfileData?.data
+          ?.contactAndRegistrationDetailsResponse
+          ?.registrationNumber;
+    }
+
 
     final theme = Theme.of(context);
     return SafeArea(
@@ -108,12 +118,7 @@ class _BusinessInformationDetailsState
           title: widget.previous == 'profile'
               ? Strings.BUSINESS_INFORMATION
               : "",
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.keyboard_arrow_left, color: Colors.white),
-          ),
+          leading: CustomBackButton()
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
@@ -140,8 +145,11 @@ class _BusinessInformationDetailsState
                   }),
                 ),
               ],
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+              Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+              Text(Strings.BUSINESS_INFO_TXT,
+                style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+              SizedBox(height: Constant.CONTAINER_SIZE_25),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -238,7 +246,7 @@ class _BusinessInformationDetailsState
                         ).textTheme.titleMedium!.copyWith(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: Constant.SIZE_05),
+                    SizedBox(height: Constant.CONTAINER_SIZE_15),
                     DropdownButtonFormField2<String>(
                       value: _selectedBusinessType,
 
@@ -397,10 +405,20 @@ class _BusinessInformationDetailsState
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
                     SubmitClearButton(
                       onLeftTap: () {
-                        NavUtil.navigateToPushScreen(
-                          context,
-                          PaymentTypeScreen(),
-                        );
+                        Utils.skipDialog(
+                            context: context,
+                            icon: Icons.warning_amber,
+                            subTitle: Strings.SKIP_BUSINESS_DETAILS,
+                            cancelButtonText: Strings.CANCEL,
+                            yesButtonText: Strings.SKIP_CONTINUE,
+                            onCancel: (){
+                              Navigator.pop(context);
+                            },
+                            onYes: (){
+                              NavUtil.navigateToPushScreen(context,
+                              PaymentTypeScreen());
+                            });
+
                       },
                       leftText: Strings.SKIP,
                       onRightTap: () async {
@@ -409,7 +427,18 @@ class _BusinessInformationDetailsState
                         }
 
                         if (widget.previous == 'profile') {
-                          final bool success = await _businessInfoNetworkCall(regdNo) ?? false;
+
+                          if (regdNo == null || regdNo.isEmpty) {
+                            showCustomSnackBar(
+                              context: context,
+                              message: Strings.SOMETHING_WENT_WRONG,
+                              color: Colors.red,
+                            );
+                            return;
+                          }
+
+                          final bool success = await _businessInfoNetworkCall(regdNo);
+
                           if (success) {
                             Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
                             Navigator.pop(context);
@@ -420,8 +449,10 @@ class _BusinessInformationDetailsState
                               color: Colors.red,
                             );
                           }
+
                           return;
                         }
+
                         NavUtil.navigateToPushScreen(
                           context,
                           PaymentTypeScreen(),
@@ -539,10 +570,25 @@ class _BusinessInformationDetailsState
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircleAvatar(
-                            backgroundColor: item.color,
-                            child: Icon(item.icon, color: Colors.black),
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: item.color,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                item.icon,
+                                color: item.type == SocialMediaType.snapchat ||
+                                    item.type == SocialMediaType.x
+                                    ? Colors.black
+                                    : Colors.white,
+                                size: 26,
+                              ),
+                            ),
                           ),
+
                           SizedBox(height: Constant.SIZE_06),
                           Text(
                             item.label,
