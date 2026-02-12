@@ -160,16 +160,27 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
   _deleteAddress(var profileState, int addressId) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,
+          ) async {
         try {
           if (isNetworkAvailable) {
             profileState.setIsLoading(true);
 
-            await ref.read(
+            final response = await ref.read(
               deleteAddressProvider({"addressId": addressId}).future,
             );
-            ref.read(profileProvider).removeAddressById(addressId);
+
+            if (response.data != null) {
+              ref.read(profileProvider).setProfileList(response.data!);
+              profileState.setIsLoading(false);
+
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: "Address deleted successfully",
+                color: Colors.green,
+              );
+            }
           } else {
             profileState.setIsLoading(false);
             if (!mounted) return;
@@ -180,14 +191,20 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             );
           }
         } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
+          Utils.printLog('Error on delete: $e');
           profileState.setIsLoading(false);
+          if (!mounted) return;
+          showCustomSnackBar(
+            context: context,
+            message: "Error deleting address",
+            color: Colors.red,
+          );
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
+      Utils.printLog('Error in delete: $e');
       profileState.setIsLoading(false);
     }
   }
