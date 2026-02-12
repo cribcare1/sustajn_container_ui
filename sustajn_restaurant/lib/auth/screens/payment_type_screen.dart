@@ -11,8 +11,9 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../common_widgets/custom_app_bar.dart';
-import '../../common_widgets/custom_back_button.dart';
 import '../../constants/string_utils.dart';
+import '../../notifier/profile_notifier.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/global_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../screens/subscription_screen.dart';
@@ -20,7 +21,6 @@ import '../widgets/add_card_buttom_sheet.dart';
 
 class PaymentTypeScreen extends ConsumerStatefulWidget {
   final String? profile;
-
   const PaymentTypeScreen({super.key, this.profile = ""});
 
   @override
@@ -36,6 +36,28 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController bicController = TextEditingController();
 
   final TextEditingController ibanController = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    _getData();
+  }
+
+  _getData(){
+    final profileState =  ref.read(profileProvider);
+    print("Full Data: ${profileState.getProfileData?.data}");
+
+    final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
+
+    if (bankResponse != null) {
+      bankNameController.text = bankResponse.bankName ?? "";
+      accountHolderNameController.text =
+          bankResponse.accountHolderName ?? "";
+      ibanController.text = bankResponse.iBanNumber ?? "";
+      bicController.text = bankResponse.bicNumber ?? "";
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +247,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
               _orDivider(theme),
               _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
-              // _paypalTile(theme),
               paymentGatewayTile(
                 context: context,
                 theme: theme,
@@ -257,7 +278,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () async {
-                    if (!_validateBankDetails(context)) return;
+                    // if (!_validateBankDetails(context)) return;
+                    if (!_validatePaymentSelection(context, authState)) return;
 
                     if (widget.profile == 'profile') {
                       // final bool success = await _businessInfoNetworkCall(regdNo) ?? false;
@@ -273,10 +295,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                       //     color: Colors.red,
                       //   );
                       // }
-
                       return;
                     }
-
                     final bankData = BankDetailsModel(
                       bankName: bankNameController.text,
                       bicNumber: bicController.text,
@@ -297,6 +317,25 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ),
       ),
     );
+  }
+
+  bool _validatePaymentSelection(BuildContext context, AuthState authState) {
+    final hasCard = authState.cardDetails != null;
+    final hasGateway = authState.gateway != null;
+
+    final hasBankDetails =
+        bankNameController.text.trim().isNotEmpty &&
+            accountHolderNameController.text.trim().isNotEmpty &&
+            ibanController.text.trim().isNotEmpty &&
+            bicController.text.trim().isNotEmpty;
+
+    // ❌ If all empty → show toast
+    if (!hasCard && !hasGateway && !hasBankDetails) {
+      Utils.showToast("Please add at least one payment method");
+      return false;
+    }
+
+    return true; // ✅ At least one section filled
   }
 
   Widget _sectionTitle(ThemeData theme, {String? title}) {
@@ -465,6 +504,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _inputField(
           theme,
           hint: Strings.BANK_NAME,
+          label: Strings.BANK_NAME,
           controller: bankNameController,
           keyboardType: TextInputType.text,
         ),
@@ -472,6 +512,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _inputField(
           theme,
           hint: Strings.ACCOUNT_HOLDER_NAME,
+          label: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
         ),
@@ -479,6 +520,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _inputField(
           theme,
           hint: Strings.IBAN,
+          label: Strings.IBAN,
           controller: ibanController,
           keyboardType: TextInputType.text,
         ),
@@ -486,6 +528,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         _inputField(
           theme,
           hint: Strings.BIC,
+          label: Strings.BIC,
           controller: bicController,
           keyboardType: TextInputType.text,
         ),
@@ -496,7 +539,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   Widget _inputField(
     ThemeData theme, {
     required String hint,
-    required TextEditingController controller,
+        required String label,
+        required TextEditingController controller,
     TextInputType keyboardType = TextInputType.text,
     List<TextInputFormatter>? inputFormatters,
   }) {
@@ -505,11 +549,13 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       autofocus: false,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+        labelText: label,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
         border: OutlineInputBorder(

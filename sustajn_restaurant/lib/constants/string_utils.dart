@@ -36,6 +36,7 @@ class Strings {
   static const String DAMAGED = "Damaged";
   static const String SOLD = "Sold";
   static const String HISTORY = "History";
+  static const String LEARN_MORE = "Learn More";
 
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
       "Please provide your details below";
@@ -52,6 +53,7 @@ class Strings {
   static const String DIRECTION = 'Direction';
   static const String CALL = 'Call';
   static const String VIEW_ALL = 'View All';
+  static const String VIEW_ALL_PLAN = "View all plans";
   static const String RESTURANT_HISTORY = 'Resturant History';
   static const String VIEW_RESTURANT_DETAILS = 'View Resturant Details';
   static const String RESTURANT_DETAILS_TITLE = 'Resturant Details';

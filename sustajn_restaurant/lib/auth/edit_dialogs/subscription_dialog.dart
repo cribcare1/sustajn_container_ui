@@ -159,7 +159,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
                         ),
                       ),
                       child: Text(
-                        'Learn More',
+                        Strings.LEARN_MORE,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -275,6 +275,6 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
   Widget _viewAllPlansButton(BuildContext context) {
     return SubmitButton(onRightTap: () {
       NavUtil.navigateToPushScreen(context, SubscriptionScreen(previousScreen: 'profile',));
-    }, rightText: "View all plans");
+    }, rightText: Strings.VIEW_ALL_PLAN);
   }
 }
