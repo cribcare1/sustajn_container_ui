@@ -27,7 +27,7 @@ class Strings {
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
   static const PRIMARY_NO = "Primary Number";
-  static const String LOGIN = "Log In";
+  static const String LOGIN = "LogIn";
   static const String LOGOUT = "Log Out";
   static const String SIGN_UP = "Sign Up";
   static const String LEASED = "Leased";
@@ -116,14 +116,14 @@ class Strings {
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number';
+  static const MOBILE_NUMBER = 'Contact Number*';
   static const EDIT_MOBILE_NUMBER = 'Edit Mobile Number';
   static const EDIT_PAYMENT_TYPE = "Edit Payment Type";
-  static const EMAIL = 'Email ID';
+  static const EMAIL = 'Email ID*';
   static const CONTACT_NUMBER = 'Contact Number';
   static const REFER_PARTNER = 'Refer a Partner';
-  static const PASSWORD = 'Password';
-  static const CONFIRM_PASSWORD = 'Confirm Password';
+  static const PASSWORD = 'Password*';
+  static const CONFIRM_PASSWORD = 'Confirm Password*';
   static const CONTACT_PERSON = 'Contact Person';
   static const EMAIL_REGISTRATION = 'Email Registration';
   static const TRADE_LICENSE_NUMBER = 'Trade License Number';
@@ -251,7 +251,7 @@ class Strings {
       'Please prove the details below to create your account';
   static const String RESTURANT_NAME = 'Resturant Name';
   static const String REPORTS = 'Reports';
-  static const String RESTURANT_ADDRESS = 'Resturant Address';
+  static const String RESTURANT_ADDRESS = 'Resturant Address*';
   static const MSG = 'message';
   static const SUCCESS = 'success';
   static const ERROR = 'Error';
@@ -285,7 +285,7 @@ class Strings {
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
-  static const String RESTAURANT_NAME = "Restaurant Name";
+  static const String RESTAURANT_NAME = " Name of the Business*";
   static const String EXISTING_USER = "Existing user? ";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";

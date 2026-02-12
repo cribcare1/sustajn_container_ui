@@ -355,7 +355,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               registrationState.setContext(context);
               ref.read(
                 verifyOtpProvider({
-                  "email": registrationState.email,
+                  "email": widget.registrationData?.email
+                      ?? widget.email
+                      ?? registrationState.email,
                   "token": _otpController.text.trim(),
                   "previous": widget.previousScreen,
                 }),
@@ -393,7 +395,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             registrationState.setResendLoading(true);
             ref.read(
               validateEmail({
-                "email":  registrationState?.email,
+                "email": widget.registrationData?.email
+                    ?? widget.email
+                    ?? registrationState.email,
+
                 "previous": widget.previousScreen,
               }),
             );

@@ -193,7 +193,7 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((ref,
       if (!registrationState.context.mounted) return null;
       showCustomSnackBar(
         context: registrationState.context,
-        message: responseData["message"],
+        message: "token sent to your email address",
         color: Colors.grey,
       );
       registrationState.setIsLoading(false);
@@ -249,7 +249,7 @@ final verifyOtpProvider =
           registrationState.startTimer();
           showCustomSnackBar(
             context: registrationState.context,
-            message: message ?? "OTP verified successfully",
+            message:  "OTP verified successfully",
             color: Colors.grey,
           );
           if (registrationState.isForgotPassword) {
@@ -305,7 +305,7 @@ final resetPasswordProvider =
           registrationState.setIsLoading(false);
           showCustomSnackBar(
             context: registrationState.context,
-            message: message ?? "Password reset successfully",
+            message: "Password reset successfully",
             color: Colors.grey,
           );
           NavUtil.navigationToWithReplacement(
