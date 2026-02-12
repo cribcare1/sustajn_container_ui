@@ -196,7 +196,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                       _buildTextField(
                         context,
                         controller: mobileCtrl,
-                        hint: Strings.MOBILE_NUMBER,
+                        hint: Strings.CONTACT_NUMBER,
                         keyboard: TextInputType.phone,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -246,7 +246,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         color: Constant.gold,
                       ),):SizedBox(
                         width: double.infinity,
-                        height: 48,
+                        height: Constant.CONTAINER_SIZE_48,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFD0A52C),

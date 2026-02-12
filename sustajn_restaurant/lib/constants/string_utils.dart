@@ -110,6 +110,7 @@ class Strings {
   static const VERIFY = 'Verify';
   static const OR = 'Or';
 
+  static const SEND_FEEDBACK = 'Send Feedback';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
   static const FILL_DETAILS =
@@ -170,6 +171,7 @@ class Strings {
   static const IMAGES = 'Images';
   static const DESCRIPTION = 'Description';
   static const SUBJECT = 'Subject';
+  static const YOUR_REMARKS = 'Your Remarks';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
   static const FEEDBACK_DETAILS = 'Feedback Details';
@@ -215,7 +217,7 @@ class Strings {
   static const String TYPES_OF_BUSINESS = "Type of Business";
   static const String CONTINUE = 'Continue';
   static const String BUSINESS_INFO = 'Business Information';
-  static const String BUSINESS_SUCC_MSG = 'Business Information Added Successful';
+  static const String SUCC_MSG = ' Added Successful';
   static const String BUSINESS_DTLS = 'Business Details';
   static const String ONLINE_PAYMENT_GATEWAY = "Online Payment Gateway";
   static const String PAYPAL = "PayPal";

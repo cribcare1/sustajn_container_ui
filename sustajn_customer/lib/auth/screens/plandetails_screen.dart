@@ -19,7 +19,7 @@ class PlandetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.primaryColor,
-      appBar: CustomAppBar(title: 'Plan Details',
+      appBar: CustomAppBar(title: Strings.PLAN_DETAILS,
           leading: CustomBackButton()).getAppBar(context),
       body: SafeArea(
         child: Padding(

@@ -127,7 +127,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> wit
                   color: Constant.gold,
                 ),): SizedBox(
                   width: double.infinity,
-                  height: 45,
+                  height: Constant.CONTAINER_SIZE_45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFD0A52C),

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
@@ -213,7 +214,7 @@ class _EditMobileNumberDialogState
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                NavUtil.popScreen(context, 1);
               },
               child: Text(
                 Strings.NO,
@@ -225,11 +226,8 @@ class _EditMobileNumberDialogState
                 backgroundColor: Color(0xFFC8B531),
               ),
               onPressed: () async{
-                await _editMobileNetworkCall(
-                      _mobileController.text.trim(),
-                    );
-                Navigator.pop(context);
-                Navigator.pop(context);
+                await _editMobileNetworkCall();
+                NavUtil.popScreen(context, 2);
               },
               child: Text(
                 Strings.UPDATE,
@@ -242,15 +240,15 @@ class _EditMobileNumberDialogState
     );
   }
 
-  Map<String, dynamic> getJsonData(String mobileNo) {
+  Map<String, dynamic> getJsonData() {
     final data = {
       "userId": Utils.userId,
-      "phoneNumber": mobileNo
+      "phoneNumber": _mobileController.text
     };
     return data;
   }
 
-  _editMobileNetworkCall(String mobileNo) async {
+  _editMobileNetworkCall() async {
     Utils.printLog('edit mobile number Network call');
 
     final isNetworkAvailable = await ref
@@ -265,7 +263,7 @@ class _EditMobileNumberDialogState
     ref.read(
       profileUpdateProvider({
         NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
-        Strings.USER_DATA: getJsonData(mobileNo),
+        Strings.USER_DATA: getJsonData(),
       }),
     );
   }
