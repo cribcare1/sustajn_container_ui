@@ -102,7 +102,7 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
             children: [
               // Image.asset("assets/logo/dirham_icon.png"),
               Text(
-                " ${data?.totalContainers ?? 0}",
+                "${data?.totalContainers ?? 0}",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
                   fontWeight: FontWeight.w700,

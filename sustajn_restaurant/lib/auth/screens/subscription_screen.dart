@@ -70,7 +70,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 onRightTap: () {
                   _refreshIndicator();
                 },
-                rightText: "Retry",
+                rightText: Strings.RETRY,
               ),
             ],
           ),
@@ -164,27 +164,29 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         );
                       },
                     ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              SizedBox(
-                width: double.infinity,
-                child: SubmitButton(
-                  onRightTap: () {
-                    if (authState.planId != 0) {
-                      NavUtil.navigateToPushScreen(
-                        context,
-                        TermsAndConditionScreen(),
-                      );
-                    } else {
-                      showCustomSnackBar(
-                        context: context,
-                        message: Strings.SELECT_SUBSCRIPTION,
-                        color: Colors.red,
-                      );
-                    }
-                  },
-                  rightText: "Proceed to Terms & Conditions",
+              if (widget.previousScreen == "") ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                SizedBox(
+                  width: double.infinity,
+                  child: SubmitButton(
+                    onRightTap: () {
+                      if (authState.planId != 0) {
+                        NavUtil.navigateToPushScreen(
+                          context,
+                          TermsAndConditionScreen(),
+                        );
+                      } else {
+                        showCustomSnackBar(
+                          context: context,
+                          message: Strings.SELECT_SUBSCRIPTION,
+                          color: Colors.red,
+                        );
+                      }
+                    },
+                    rightText: "Proceed to Terms & Conditions",
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
@@ -237,14 +239,14 @@ class PlanCard extends StatelessWidget {
           SubscriptionCard(
             padding: 4.0,
             child: Container(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_24),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [Color(0xFF0A4D2E), Color(0xFF052F1E)],
                 ),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_24),
                 border: Border.all(
                   color: Theme.of(context).secondaryHeaderColor,
                   width: 1.5,
@@ -258,9 +260,9 @@ class PlanCard extends StatelessWidget {
                     children: [
                       Text(
                         plan.planName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 22,
+                          fontSize: Constant.CONTAINER_SIZE_22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -277,15 +279,15 @@ class PlanCard extends StatelessWidget {
                           Icon(
                             Icons.check,
                             color: Theme.of(context).secondaryHeaderColor,
-                            size: 18,
+                            size: Constant.CONTAINER_SIZE_18,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: Constant.CONTAINER_SIZE_12),
                           Expanded(
                             child: Text(
                               feature,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 14,
+                                fontSize: Constant.CONTAINER_SIZE_14,
                               ),
                             ),
                           ),
@@ -320,7 +322,7 @@ class PlanCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        "Learn More",
+                        Strings.LEARN_MORE,
                         style: TextStyle(
                           color: Theme.of(context).secondaryHeaderColor,
                         ),
@@ -333,19 +335,22 @@ class PlanCard extends StatelessWidget {
           ),
           Positioned(
             top: -18,
-            right: 20,
+            right: Constant.CONTAINER_SIZE_20,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: Constant.CONTAINER_SIZE_16,
+                vertical: Constant.SIZE_08,
+              ),
               decoration: BoxDecoration(
                 color: const Color(0xFFD4AF37),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
               ),
               child: Text(
-                plan.totalContainers.toString(),
-                style: const TextStyle(
+                "Ð${plan.totalContainers.toString()}",
+                style: TextStyle(
                   color: Color(0xFF052F1E),
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: Constant.CONTAINER_SIZE_16,
                 ),
               ),
             ),

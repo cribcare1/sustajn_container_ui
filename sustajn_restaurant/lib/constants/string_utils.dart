@@ -252,6 +252,7 @@ class Strings {
   static const String SELECT_PLAN =
       'Select a subscription plan to unlock the functionality\nof the application';
   static const String CHOOSE_PLAN = 'Choose Plan';
+  static const String RETRY = "Retry";
   static const String PROVE_DETAILS =
       'Please prove the details below to create your account';
   static const String RESTURANT_NAME = 'Resturant Name';
