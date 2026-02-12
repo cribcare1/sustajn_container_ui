@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final addressCtrl = TextEditingController();
   final dobCtrl = TextEditingController();
   DateTime? selectedDob;
+  String? selectedGender;
+
 
 
   bool passwordVisible = false;
@@ -171,7 +174,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         theme
                       ),
 
-                    _buildTextField(
+
+                      _buildGenderDropdown(context),
+
+
+                      _buildTextField(
                         context,
                         controller: emailCtrl,
                         hint: Strings.EMAIL_ID,
@@ -259,6 +266,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               dateOfBirth: selectedDob == null
                                   ? null
                                   : Utils.formatDob(selectedDob!),
+                              gender: selectedGender,
                               flatDoorHouseDetails: "",
                               areaStreetCityBlockDetails: addressCtrl.text,
                               poBoxOrPostalCode: postalCode,
@@ -411,6 +419,62 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
       ),
     );
   }
+
+  Widget _buildGenderDropdown(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final List<String> genderItems = ['Male', 'Female'];
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: DropdownButtonFormField2<String>(
+        value: selectedGender,
+        isExpanded: true,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: theme.primaryColor,
+          hintText: "Select Gender",
+          hintStyle: const TextStyle(color: Colors.white70),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+        ),
+        dropdownStyleData: DropdownStyleData(
+          decoration: BoxDecoration(
+            color: theme.primaryColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        style: const TextStyle(color: Colors.white),
+        items: genderItems
+            .map(
+              (item) => DropdownMenuItem<String>(
+            value: item,
+            child: Text(
+              item,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        )
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedGender = value;
+          });
+        },
+        validator: (value) {
+          if (value == null) {
+            return "Please select gender";
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
 
   _getNetworkDataVerify(var registrationState) async {
     try {

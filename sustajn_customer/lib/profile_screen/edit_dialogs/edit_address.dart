@@ -72,25 +72,27 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
                 theme: theme,
                 icon: Icons.delete_forever,
                 text: "Remove Address",
-                onTap: () async {
-                  Navigator.pop(context);
-                  _deleteAddress(profileState, widget.address.id ?? 0);
-                  // Utils.displayDialog(
-                  //   context: context,
-                  //   icon: Icons.warning,
-                  //   title: "Delete Address",
-                  //   subTitle: "This address will be permanently removed from your saved list.You can't undo this action",
-                  //   cancelButtonText: "No",
-                  //   yesButtonText: "Delete",
-                  //   onCancel: () {
-                  //     Navigator.pop(context);
-                  //   },
-                  //   onYes: () async {
-                  //     Navigator.pop(context);
-                  //     _deleteAddress(profileState, widget.address.id ?? 0);
-                  //   },
-                  // );
-                },
+                  onTap: () async {
+                    Utils.displayDialog(
+                      context: context,
+                      icon: Icons.warning,
+                      title: "Delete Address",
+                      subTitle:
+                      "This address will be permanently removed from your saved list. You can't undo this action",
+                      cancelButtonText: "No",
+                      yesButtonText: "Delete",
+                      onCancel: () {
+                        Navigator.pop(context); // close dialog only
+                      },
+                      onYes: () async {
+                        Navigator.pop(context); // close dialog
+                        Navigator.pop(context); // close bottom sheet
+
+                        await _deleteAddress(profileState, widget.address.id ?? 0);
+                      },
+                    );
+                  }
+
               ),
             ],
           ),
@@ -155,24 +157,21 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     );
   }
 
-  _deleteAddress(var registrationState, int addressId) async {
+  _deleteAddress(var profileState, int addressId) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) async {
         try {
           if (isNetworkAvailable) {
-            registrationState.setIsLoading(true);
+            profileState.setIsLoading(true);
+
             await ref.read(
               deleteAddressProvider({"addressId": addressId}).future,
             );
-
-            ref.read(profileProvider).clearProfileList();
-            await ref.read(
-              getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
-            );
+            ref.read(profileProvider).removeAddressById(addressId);
           } else {
-            registrationState.setIsLoading(false);
+            profileState.setIsLoading(false);
             if (!mounted) return;
             showCustomSnackBar(
               context: context,
@@ -182,14 +181,14 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
           }
         } catch (e) {
           Utils.printLog('Error on button onPressed: $e');
-          registrationState.setIsLoading(false);
+          profileState.setIsLoading(false);
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      profileState.setIsLoading(false);
     }
   }
 }

@@ -489,6 +489,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 : () async {
               final isValid = signupState.validateBankForm();
               if (!isValid) return;
+              signupState.updateBankDetails();
 
               if (widget.flow == PaymentFlow.signup) {
                 signupState.updateBankDetails();
@@ -518,7 +519,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   Map<String, dynamic> getJsonData(SignupNotifier signupState) {
     final Map<String, dynamic> body = {};
 
-    if (signupState.paymentMethod == "BANK") {
+    if (signupState.paymentMethod == "bank") {
       body["bankDetailsRequest"] = {
         "userId": Utils.userId,
         "bankName": _bankNameController.text,
@@ -528,7 +529,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       };
     }
 
-    if (signupState.paymentMethod == "CARD") {
+    if (signupState.paymentMethod == "card") {
       body["cardDetailsRequest"] = {
         "userId": Utils.userId,
         "cardHolderName": signupState.registrationData?.cardHolderName,
@@ -540,7 +541,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       };
     }
 
-    if (signupState.paymentMethod == "UPI") {
+    if (signupState.paymentMethod == "upi") {
       body["paymentGetWayRequest"] = {
         "userId": Utils.userId,
         "paymentGatewayId": signupState.registrationData?.paymentGatewayId,

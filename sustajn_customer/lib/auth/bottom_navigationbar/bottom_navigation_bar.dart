@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -15,30 +15,30 @@ class CustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size.width;
+    var theme = CustomTheme.getTheme(true);
 
     return SafeArea(
       top: false,
       child: SizedBox(
-        height: Constant.CONTAINER_SIZE_90,
+        height:  MediaQuery.of(context).size.height * 0.12,
         child: Stack(
-          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
           children: [
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+
+            /// Main Curved Background
+            ClipPath(
+              clipper: BottomNavClipper(),
               child: Container(
-                height: Constant.CONTAINER_SIZE_65,
-                decoration:  BoxDecoration(
-                  color: Color(0xFFD6B24C),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(Constant.CONTAINER_SIZE_22),
-                    topRight: Radius.circular(Constant.CONTAINER_SIZE_22),
-                  ),
-                ),
+                height: MediaQuery.of(context).size.height * 0.09,
+
+                width: double.infinity,
+                color: Constant.gold,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+
+                    /// Home
                     _NavItem(
                       icon: Icons.home_filled,
                       label: "Home",
@@ -46,8 +46,9 @@ class CustomBottomNav extends StatelessWidget {
                       onTap: () => onTabChange(0),
                     ),
 
-                    SizedBox(width: width * 0.22),
+                    SizedBox(width: width * 0.20),
 
+                    /// Products
                     _NavItem(
                       imageAsset: 'assets/images/img.png',
                       label: "Products",
@@ -59,24 +60,43 @@ class CustomBottomNav extends StatelessWidget {
               ),
             ),
 
+            /// Center QR Button
+            Padding(
+              padding: const EdgeInsets.only(bottom: 45),
+              child: Positioned(
+                top: 0,
+                child: GestureDetector(
+                  onTap: () => onTabChange(2),
+                  child: Container(
+                    height: size * 0.15,
+                    width: size * 0.15,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Constant.gold,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    child:  Icon(
+                      Icons.qr_code_scanner,
+                      size: 30,
+                      color: theme!.scaffoldBackgroundColor
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            /// Bottom Dark Green Line Indicator
             Positioned(
-              top: -28,
-              left: width / 2 - 30,
-              child: GestureDetector(
-                onTap: () => onTabChange(2),
-                child: Container(
-                  height: Constant.CONTAINER_SIZE_60,
-                  width: Constant.CONTAINER_SIZE_60,
-                  decoration: BoxDecoration(
-                    color:  Color(0xFFD6B24C),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: Constant.SIZE_04),
-                  ),
-                  child: const Icon(
-                    Icons.qr_code_scanner,
-                    size: 28,
-                    color: Color(0xFF0E3B2E),
-                  ),
+              bottom: 8,
+              child: Container(
+                height: 4,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -86,6 +106,10 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 }
+
+
+
+
 
 class _NavItem extends StatelessWidget {
   final IconData? icon;
@@ -144,3 +168,60 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+
+class BottomNavClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+
+    final double width = size.width;
+    final double height = size.height;
+    final double center = width / 2;
+
+    // Wider + deeper curve (UX match)
+    final double curveWidth = width * 0.14;
+    final double curveDepth = height * 0.50;
+
+    path.lineTo(center - curveWidth, 0);
+
+    /// Left smooth curve
+    path.quadraticBezierTo(
+      center - curveWidth * 0.75,
+      0,
+      center - curveWidth * 0.55,
+      curveDepth * 0.45,
+    );
+
+    /// Deep center curve
+    path.quadraticBezierTo(
+      center,
+      curveDepth,
+      center + curveWidth * 0.55,
+      curveDepth * 0.45,
+    );
+
+    /// Right smooth curve
+    path.quadraticBezierTo(
+      center + curveWidth * 0.75,
+      0,
+      center + curveWidth,
+      0,
+    );
+
+    path.lineTo(width, 0);
+    path.lineTo(width, height);
+    path.lineTo(0, height);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+
+
+
+
+

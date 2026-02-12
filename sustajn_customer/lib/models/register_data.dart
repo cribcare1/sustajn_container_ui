@@ -20,6 +20,7 @@ class RegistrationData {
 
   int? subscriptionPlanId;
   String? dateOfBirth;
+  String? gender;
 
   String? bankName;
   String? iban;
@@ -53,6 +54,7 @@ class RegistrationData {
     this.longitude,
     this.subscriptionPlanId,
     this.dateOfBirth,
+    this.gender,
 
     this.bankName,
     this.iban,
@@ -83,6 +85,7 @@ class RegistrationData {
       "phoneNumber": phoneNumber,
       "password": password,
       "dateOfBirth": dateOfBirth,
+      "gender":gender,
 
       "address": {
         "addressType": addressType ?? "HOME",
