@@ -20,7 +20,8 @@ import '../model/plan_model.dart';
 
 class SubscriptionScreen extends ConsumerStatefulWidget {
   final String? previousScreen;
-  const SubscriptionScreen({super.key,this.previousScreen = ""});
+
+  const SubscriptionScreen({super.key, this.previousScreen = ""});
 
   @override
   ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
@@ -81,42 +82,48 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "",
-          leading: CustomBackButton(),
+          title: widget.previousScreen == 'profile' ? Strings.CHOOSE_PLAN : '',
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.keyboard_arrow_left, color: Colors.white),
+          ),
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              Row(
-                children: List.generate(4, (index) {
-                  bool active = index <= 3;
-                  return Expanded(
-                    child: Container(
-                      height: Constant.SIZE_05,
-                      margin: EdgeInsets.only(
-                        right: index == 3 ? 0 : Constant.SIZE_10,
+              if (widget.previousScreen == "") ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Row(
+                  children: List.generate(4, (index) {
+                    bool active = index <= 3;
+                    return Expanded(
+                      child: Container(
+                        height: Constant.SIZE_05,
+                        margin: EdgeInsets.only(
+                          right: index == 3 ? 0 : Constant.SIZE_10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: active ? Constant.gold : Colors.white,
+                          borderRadius: BorderRadius.circular(Constant.SIZE_10),
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: active ? Constant.gold : Colors.white,
-                        borderRadius: BorderRadius.circular(Constant.SIZE_10),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-
-              Text(
-                Strings.CHOOSE_PLAN,
-                style: theme.textTheme.titleLarge!.copyWith(
-                  color: Colors.white,
+                    );
+                  }),
                 ),
-              ),
 
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+
+                Text(
+                  Strings.CHOOSE_PLAN,
+                  style: theme.textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
               SizedBox(height: Constant.PADDING_HEIGHT_10),
 
               Text(
@@ -153,7 +160,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               authState.setPlanId(selectedPlan.planId);
                             });
                           },
-                          previousScreen:widget.previousScreen??"" ,
+                          previousScreen: widget.previousScreen ?? "",
                         );
                       },
                     ),
@@ -162,16 +169,18 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () {
-                    if(authState.planId != 0){
+                    if (authState.planId != 0) {
                       NavUtil.navigateToPushScreen(
                         context,
                         TermsAndConditionScreen(),
                       );
-                    }else{
-                      showCustomSnackBar(context: context,
-                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.red);
+                    } else {
+                      showCustomSnackBar(
+                        context: context,
+                        message: Strings.SELECT_SUBSCRIPTION,
+                        color: Colors.red,
+                      );
                     }
-
                   },
                   rightText: "Proceed to Terms & Conditions",
                 ),
@@ -209,8 +218,14 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 class PlanCard extends StatelessWidget {
   final PlanModel plan;
   final VoidCallback onTap;
-final String previousScreen;
-  const PlanCard({super.key, required this.plan, required this.onTap, required this.previousScreen});
+  final String previousScreen;
+
+  const PlanCard({
+    super.key,
+    required this.plan,
+    required this.onTap,
+    required this.previousScreen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +299,10 @@ final String previousScreen;
                       onPressed: () {
                         NavUtil.navigateToPushScreen(
                           context,
-                          SubscriptionDetailsScreen(planModel: plan,previousScreen:previousScreen ,),
+                          SubscriptionDetailsScreen(
+                            planModel: plan,
+                            previousScreen: previousScreen,
+                          ),
                         );
                       },
                       style: OutlinedButton.styleFrom(
