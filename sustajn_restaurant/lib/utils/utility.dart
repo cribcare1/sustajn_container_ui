@@ -784,7 +784,7 @@ void showCustomSnackBar({
       content: Text(
         message,
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: Constant.CONTAINER_SIZE_14,
         ),
       ),

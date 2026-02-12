@@ -140,7 +140,7 @@ class Strings {
   static const DONT_HAVE_ACC = "Don't have an account? ";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE =
-      'Please enter your email address to receive confirmation code';
+      'Please enter your registered email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
   static const FEEDBACK = 'Feedback';
   static const CLEAR = 'Clear';

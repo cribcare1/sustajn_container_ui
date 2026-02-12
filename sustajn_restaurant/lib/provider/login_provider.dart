@@ -39,7 +39,7 @@ final loginDetailProvider =
             showCustomSnackBar(
               context: registrationState.context,
               message: Strings.LOGGED_SUCCESS,
-              color: Colors.green,
+              color: Colors.grey,
             );
           }
           registrationState.setUserId(responseData.data!.userId!);
@@ -137,48 +137,47 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
 });
 
 final forgotPasswordProvider =
-    FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
-      final apiService = ref.watch(loginApiProvider);
-      final registrationState = ref.watch(authNotifierProvider);
+FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+  final apiService = ref.watch(loginApiProvider);
+  final registrationState = ref.watch(authNotifierProvider);
 
-      var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
-      try {
-        var responseData = await apiService.forgetPassword(url, params, "");
+  var url = '${NetworkUrls.BASE_URL}${NetworkUrls.FORGOT_PASSWORD}';
+  try {
+    var responseData = await apiService.forgetPassword(url, params, "");
+    final status = responseData['status'];
+    final message = responseData['message'];
 
-        final status = responseData['status'];
-        final message = responseData['message'];
-
-        if (status != null &&
-            status.isNotEmpty &&
-            status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-          registrationState.setIsLoading(false);
-          if (!registrationState.context.mounted) return;
-          showCustomSnackBar(
-            context: registrationState.context,
-            message: message,
-            color: Colors.green,
-          );
-          NavUtil.navigateToPushScreen(
-            registrationState.context,
-            ResetPasswordScreen(),
-          );
-        } else {
-          if (!registrationState.context.mounted) return;
-          showCustomSnackBar(
-            context: registrationState.context,
-            message: message,
-            color: Colors.red,
-          );
-          registrationState.setIsLoading(false);
-        }
-      } catch (e) {
-        registrationState.setIsLoading(false);
-        Utils.showNetworkErrorToast(registrationState.context, e.toString());
-      } finally {
-        registrationState.setIsLoading(false);
-      }
-      return null;
-    });
+    if (status != null &&
+        status.isNotEmpty &&
+        status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
+      registrationState.setIsLoading(false);
+      if (!registrationState.context.mounted) return;
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: message,
+        color: Colors.grey,
+      );
+      NavUtil.navigateToPushScreen(
+        registrationState.context,
+        VerifyEmailScreen(previousScreen: 'forgotPassword'),
+      );
+    } else {
+      if (!registrationState.context.mounted) return;
+      showCustomSnackBar(
+        context: registrationState.context,
+        message: responseData.message!,
+        color: Colors.red,
+      );
+      registrationState.setIsLoading(false);
+    }
+  } catch (e) {
+    registrationState.setIsLoading(false);
+    Utils.showNetworkErrorToast(registrationState.context, e.toString());
+  } finally {
+    registrationState.setIsLoading(false);
+  }
+  return null;
+});
 
 final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, args,) async {
   final apiService = ref.watch(loginApiProvider);
@@ -195,7 +194,7 @@ final validateEmail = FutureProvider.family<dynamic, Map<String, dynamic>>((ref,
       showCustomSnackBar(
         context: registrationState.context,
         message: responseData["message"],
-        color: Colors.green,
+        color: Colors.grey,
       );
       registrationState.setIsLoading(false);
       registrationState.setResendLoading(false);
@@ -251,7 +250,7 @@ final verifyOtpProvider =
           showCustomSnackBar(
             context: registrationState.context,
             message: message ?? "OTP verified successfully",
-            color: Colors.green,
+            color: Colors.grey,
           );
           if (registrationState.isForgotPassword) {
             NavUtil.navigateToPushScreen(
@@ -304,6 +303,11 @@ final resetPasswordProvider =
             status.isNotEmpty &&
             status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
           registrationState.setIsLoading(false);
+          showCustomSnackBar(
+            context: registrationState.context,
+            message: message ?? "Password reset successfully",
+            color: Colors.grey,
+          );
           NavUtil.navigationToWithReplacement(
             registrationState.context,
             LoginScreen(),
