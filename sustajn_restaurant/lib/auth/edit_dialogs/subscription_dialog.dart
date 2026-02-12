@@ -185,7 +185,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
             child: Text(
-              '₹ 500/month',
+              'Ð 500/month',
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.w600,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
+import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
@@ -42,7 +43,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
     {"name": "Business Information", "icon": Icons.business_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
-    {"name": "Payment Type", "icon": Icons.payments_outlined},
+    {"name": "Payment Type", "image": "assets/logo/dirham_icon.png"},
     {"name": "History", "icon": Icons.history},
     {"name": "Feedback", "icon": Icons.feedback_outlined},
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
@@ -172,7 +173,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showPaymentTypeScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+    NavUtil.navigateToPushScreen(
+      context,
+      PaymentTypeScreen(profile: "profile"),
+    );
   }
 
   void _showHistoryScreen(BuildContext context) {
@@ -383,11 +387,19 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             itemBuilder: (context, index) {
                               final item = detailList[index];
                               return ListTile(
-                                leading: Icon(
-                                  item['icon'],
-                                  size: w * 0.054,
-                                  color: Constant.gold,
-                                ),
+                                leading: item['icon'] != null
+                                    ? Icon(
+                                        item['icon'],
+                                        size: w * 0.054,
+                                        color: Constant.gold,
+                                      )
+                                    : Image.asset(
+                                        item['image'] as String,
+                                        width: w * 0.054,
+                                        height: w * 0.054,
+                                        color: Constant.gold,
+                                      ),
+
                                 title: Text(
                                   item['name'],
                                   style: TextStyle(

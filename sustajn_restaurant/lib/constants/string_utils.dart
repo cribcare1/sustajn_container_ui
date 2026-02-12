@@ -108,6 +108,8 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
+  static const VERIFY_CONT = "Verify and Continue";
+
   static const OR = 'Or';
 
   static const SEND_FEEDBACK = 'Send Feedback';
@@ -230,6 +232,7 @@ class Strings {
   static const String CLEAR_DTLS = "Clear Details";
   static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
   static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+  static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -281,6 +284,8 @@ class Strings {
   static const PROVIDE_INFORMATION =
       "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
+  static const PAYMENT_SUCCSS = "Payment Successful";
+
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
