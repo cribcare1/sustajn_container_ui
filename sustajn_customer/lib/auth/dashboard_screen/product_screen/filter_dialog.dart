@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
 
 class SortFilterDialog extends StatefulWidget {
   const SortFilterDialog({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class _SortFilterDialogState extends State<SortFilterDialog> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        'Sort by',
+        Strings.SORT_BY,
         style: theme.textTheme.titleLarge?.copyWith(
           color: Colors.white,
           fontSize: Constant.LABEL_TEXT_SIZE_20,
@@ -89,7 +90,7 @@ class _SortFilterDialogState extends State<SortFilterDialog> {
       children: [
         _radioTile(
           theme: theme,
-          title: 'Newest first to oldest',
+          title: Strings.NEWEST_FIRST,
           value: Constant.MAX_LINE_0,
         ),
         //todo this may needed
@@ -168,7 +169,7 @@ class _SortFilterDialogState extends State<SortFilterDialog> {
               });
             },
             child: Text(
-              'Clear',
+              Strings.CLEAR,
               style: theme.textTheme.labelLarge?.copyWith(
                 color: Constant.gold,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -193,7 +194,7 @@ class _SortFilterDialogState extends State<SortFilterDialog> {
               Navigator.pop(context, _selectedIndex);
             },
             child: Text(
-              'Apply',
+              Strings.APPLY,
               style: theme.textTheme.labelLarge?.copyWith(
                 color: theme.primaryColor,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,

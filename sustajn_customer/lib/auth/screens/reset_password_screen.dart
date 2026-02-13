@@ -291,7 +291,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                         ),
                       ),
                       child: Text(
-                        "Go back",
+                        Strings.GO_BACKS,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),

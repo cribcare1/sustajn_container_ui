@@ -45,14 +45,14 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Mobile Number", "icon": Icons.phone},
-    {"name": "Saved Address", "icon": Icons.location_on},
-    {"name": "History", "icon": Icons.history},
-    {"name": "Payment Type", "icon": Icons.currency_rupee},
-    {"name": "QR Code", "icon": Icons.qr_code},
-    {"name": "Feedback", "icon": Icons.star_border},
-    {"name": "Subscription Plan", "icon": Icons.credit_card},
-    {"name": "Contact Us", "icon": Icons.headset_mic},
+    {"name": "Contact Number", "icon":"assets/images/phone.png"},
+    {"name": "Saved Address", "icon": "assets/images/location.png"},
+    {"name": "History", "icon": "assets/images/history.png"},
+    {"name": "Payment Type", "icon": "assets/images/diarhm.png"},
+    {"name": "QR Code", "icon": "assets/images/qr_code.png"},
+    {"name": "Feedback", "icon": "assets/images/feedback.png"},
+    {"name": "Subscription Plan", "icon": "assets/images/subscription.png"},
+    {"name": "Contact Us", "icon": "assets/images/headset.png"},
   ];
 
   bool isLoading = true;
@@ -484,9 +484,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           itemBuilder: (context, index) {
                             final item = detailList[index];
                             return ListTile(
-                              leading: Icon(
+                              leading: Image.asset(
                                 item['icon'],
-                                size: w * 0.054,
+                                width: w * 0.054,
+                                height: w * 0.054,
                                 color: Constant.gold,
                               ),
                               title: Text(
@@ -681,7 +682,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             showCustomSnackBar(
               context: context,
-              message: 'User image uploaded successfully',
+              message: Strings.USER_IMAGE_UPLOADED,
               color: Constant.green,
             );
 

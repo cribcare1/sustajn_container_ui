@@ -180,7 +180,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
                          Icon(Icons.share, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
                         SizedBox(width: Constant.CONTAINER_SIZE_8),
                         Text(
-                          "Share QR",
+                          Strings.SHARE_QR,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -216,7 +216,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
 
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'My QR Code',
+        text: Strings.MY_QR,
       );
     } catch (e) {
       debugPrint("QR Share Error: $e");
@@ -231,7 +231,7 @@ class _QrDialogState extends ConsumerState<QrDialog> {
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       ),
       child: const Text(
-        "Customer ID not found",
+        Strings.CUSTOMER_ID_NOT_FOUND,
         style: TextStyle(color: Colors.red),
       ),
     );

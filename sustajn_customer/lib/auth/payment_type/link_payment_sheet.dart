@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/provider/signup_provider.dart';
 
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 
 class LinkPaymentBottomSheet extends ConsumerStatefulWidget {
@@ -132,7 +133,7 @@ class _LinkPaymentBottomSheetState
                       ),
                     ),
                     child: Text(
-                      "Add & Continue",
+                      Strings.ADD_AND_CONTINUE,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.w600,

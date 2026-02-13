@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/utils.dart';
 
 class ContactUsDialog extends StatefulWidget {
@@ -39,7 +40,7 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Contact Us',
+                      Strings.CONTACT_US,
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -70,7 +71,7 @@ class _ContactUsDialogState extends State<ContactUsDialog> {
                     SizedBox(width: Constant.SIZE_10),
                     Expanded(
                       child: Text(
-                        'example@gmail.com',
+                        Strings.EXAMPLE_EMAIL,
                         style: theme.textTheme.bodyLarge
                             ?.copyWith(color: Colors.white),
                       ),

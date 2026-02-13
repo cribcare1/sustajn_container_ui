@@ -96,7 +96,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Edit Name',
+                      Strings.EDIT_NAME,
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
