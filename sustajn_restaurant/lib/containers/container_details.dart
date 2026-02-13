@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../product_screen/containers_list_screen.dart';
 import '../product_screen/models/assigned_container_list.dart';
+import '../provider/order_provider.dart';
 
-class ContainersDetailsScreen extends StatelessWidget {
+class ContainersDetailsScreen extends ConsumerStatefulWidget {
   const ContainersDetailsScreen({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<ContainersDetailsScreen> createState() => _ContainersDetailsScreenState();
+}
+
+class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScreen> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final orderState = ref.watch(orderProvider);
+    final container = orderState.getContainerData?.containersDetails;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -162,6 +171,7 @@ class ContainersDetailsScreen extends StatelessWidget {
     );
 
   }
+
   void _navigateTotalLeased(BuildContext context){
     Navigator.push(context,
         MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
@@ -185,6 +195,7 @@ class ContainersDetailsScreen extends StatelessWidget {
           ],
         ),));
   }
+
   void _navigateTotalReceived(BuildContext context){
     Navigator.push(context,
         MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(

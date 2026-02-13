@@ -203,7 +203,7 @@ class Strings {
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
   static const String SOMETHING_WENT_WRONG = "Something went wrong. Please try again ";
   static const String SEARCH_BY_CONTAINER_NAME =
-      "Search by container Name or Id";
+      "Search by container name or ID";
   static const String DELETE_REQUEST = "Delete Request";
   static const String REQUESTED = "Requested";
   static const String APPROVED = "Approved";
@@ -328,4 +328,6 @@ class Strings {
   static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
   static const String SKIP_BUSINESS_DETAILS = 'If you skip adding business details now, some features may be limited.You can complete this later from your profile';
 static const String SKIP_CONTINUE = 'Skip & Continue';
+static const String THANK_YOU_TXT = "Thank you for your order.";
+static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
 }

@@ -111,7 +111,9 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
         Utils.getToken();
         Utils.getProfile();
         // Utils.getUserId();
-        NavUtil.navigateToWithReplacement(registrationState.context, AccountSuccessScreen());
+        NavUtil.navigateToWithReplacement(registrationState.context, AccountSuccessScreen(
+          message: 'Your subscription is now active!',
+        ));
 
       } else {
         showCustomSnackBar(
@@ -163,7 +165,7 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       if (!registrationState.context.mounted) return;
       showCustomSnackBar(
         context: registrationState.context,
-        message: responseData.message!,
+        message: responseData.title!,
         color: Colors.red,
       );
       registrationState.setIsLoading(false);

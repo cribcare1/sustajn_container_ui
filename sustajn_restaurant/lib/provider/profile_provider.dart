@@ -112,7 +112,7 @@ FutureProvider.family<UpdateProfAddressData, Map<String, dynamic>>(
 
     print("Provider Response: $responseData");
     if (responseData.status == null || responseData.status!.isEmpty) {
-      throw Exception(responseData.message ?? 'Update failed');
+      throw Exception(responseData.title ?? 'Update failed');
     }
     return responseData;
   },

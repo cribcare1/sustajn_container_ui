@@ -7,8 +7,11 @@ import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import 'history_filter_bottom_sheet.dart';
+import 'order_details_screen.dart';
 
 class OrderHistoryScreen extends ConsumerStatefulWidget {
   const OrderHistoryScreen({super.key});
@@ -20,36 +23,6 @@ class OrderHistoryScreen extends ConsumerStatefulWidget {
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   final searchController = TextEditingController();
 
-  final Map<String, List<Map<String, dynamic>>> orders = {
-    'December-2025': [
-      {
-        'title': 'Dip Cups-150',
-        'orderId': '#ORD-00234',
-        'date': 'Ordered on: 10/12/2025',
-        'status': 'Pending',
-      },
-      {
-        'title': 'Round Container-200',
-        'orderId': '#ORD-00233',
-        'date': 'Confirmed on: 01/12/2025',
-        'status': 'Confirmed',
-      },
-    ],
-    'November-2025': [
-      {
-        'title': 'Round Container-200, Dip Cup-15, ..',
-        'orderId': '#ORD-00232',
-        'date': 'Delivered on: 26/11/2025',
-        'status': 'Delivered',
-      },
-      {
-        'title': 'Rectangular Container-300',
-        'orderId': '#ORD-00231',
-        'date': 'Rejected on: 10/11/2025',
-        'status': 'Rejected',
-      },
-    ],
-  };
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -87,6 +60,15 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
               CustomTheme.searchField(
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
+                onFilterTap: (){
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => const OrderFilterBottomSheet(),
+                  );
+
+                }
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(
@@ -187,20 +169,28 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   ) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        color: Constant.grey.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        border: Border.all(color: Constant.grey.withOpacity(0.2)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: _buildOrderDetails(context, title, orderId, date)),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          _buildStatusChip(context, status),
-        ],
+    return InkWell(
+      onTap: (){
+        NavUtil.navigateToPushScreen(context, OrderDetailsScreen(
+          orderId: orderId,
+          status: status,
+        ));
+      },
+      child: Container(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+        decoration: BoxDecoration(
+          color: Constant.grey.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          border: Border.all(color: Constant.grey.withOpacity(0.2)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildOrderDetails(context, title, orderId, date)),
+            SizedBox(width: Constant.CONTAINER_SIZE_12),
+            _buildStatusChip(context, status),
+          ],
+        ),
       ),
     );
   }
@@ -224,12 +214,12 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         ),
         SizedBox(height: Constant.SIZE_04),
         Text(
-          'Order ID: $orderId',
+          'Order ID: #$orderId',
           style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
         ),
         SizedBox(height: Constant.SIZE_04),
         Text(
-          date,
+          'Confirmed on: ${date}',
           style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
         ),
       ],

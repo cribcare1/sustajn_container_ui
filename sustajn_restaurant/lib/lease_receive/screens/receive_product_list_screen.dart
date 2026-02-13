@@ -361,7 +361,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
                       .toList();
 
                   Map<String, dynamic> data = {
-                    "userId": int.parse(scannedId),
+                    "userId": scannedId,
                     "restaurantId": Utils.userId,
                     "items": items,
                   };
