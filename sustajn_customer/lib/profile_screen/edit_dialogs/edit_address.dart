@@ -33,7 +33,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
             color: const Color(0xFF0D402C),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius:  BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -71,22 +71,22 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.delete_forever,
-                text: "Remove Address",
+                text: Strings.REMOVE_ADDRESS_TITLE,
                   onTap: () async {
                     Utils.displayDialog(
                       context: context,
                       icon: Icons.warning,
-                      title: "Delete Address",
+                      title: Strings.DELETE_ADDRESS,
                       subTitle:
-                      "This address will be permanently removed from your saved list. You can't undo this action",
-                      cancelButtonText: "No",
-                      yesButtonText: "Delete",
+                      Strings.REMOVE_ADDRESS_TXT,
+                      cancelButtonText: Strings.NO,
+                      yesButtonText: Strings.DELETE,
                       onCancel: () {
-                        Navigator.pop(context); // close dialog only
+                        Navigator.pop(context);
                       },
                       onYes: () async {
-                        Navigator.pop(context); // close dialog
-                        Navigator.pop(context); // close bottom sheet
+                        Navigator.pop(context);
+                        Navigator.pop(context);
 
                         await _deleteAddress(profileState, widget.address.id ?? 0);
                       },

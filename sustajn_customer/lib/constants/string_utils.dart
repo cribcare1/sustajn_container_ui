@@ -353,9 +353,12 @@ class Strings {
   static const String DATE_2 = '01/12/2025 | 10:00am';
   static const String DATE_3 = '27/11/2025 | 04:11pm';
   static const String PRICE = '120';
+  static const String REMOVE_ADDRESS_TITLE = "Remove Address";
+  static const String DELETE_ADDRESS = 'Delete Address';
+  static const String  REMOVE_ADDRESS_TXT =  "This address will be permanently removed from your saved list. You can't undo this action";
 
-  static final RegExp alphaNumericWithSpace =
-  RegExp(r'^[a-zA-Z0-9 ]+$');
+
+  static final RegExp alphaNumericWithSpace = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   static final RegExp email =
   RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');

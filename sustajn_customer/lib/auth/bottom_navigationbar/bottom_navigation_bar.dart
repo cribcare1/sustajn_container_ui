@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 
@@ -21,11 +22,10 @@ class CustomBottomNav extends StatelessWidget {
     return SafeArea(
       top: false,
       child: SizedBox(
-        height:  MediaQuery.of(context).size.height * 0.12,
+        height: MediaQuery.of(context).size.height * 0.12,
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-
             /// Main Curved Background
             ClipPath(
               clipper: BottomNavClipper(),
@@ -37,8 +37,6 @@ class CustomBottomNav extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
-                    /// Home
                     _NavItem(
                       icon: Icons.home_filled,
                       label: "Home",
@@ -48,7 +46,6 @@ class CustomBottomNav extends StatelessWidget {
 
                     SizedBox(width: width * 0.20),
 
-                    /// Products
                     _NavItem(
                       imageAsset: 'assets/images/img.png',
                       label: "Products",
@@ -60,9 +57,8 @@ class CustomBottomNav extends StatelessWidget {
               ),
             ),
 
-            /// Center QR Button
             Padding(
-              padding: const EdgeInsets.only(bottom: 45),
+              padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_45),
               child: Positioned(
                 top: 0,
                 child: GestureDetector(
@@ -73,30 +69,26 @@ class CustomBottomNav extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Constant.gold,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
-                    child:  Icon(
+                    child: Icon(
                       Icons.qr_code_scanner,
-                      size: 30,
-                      color: theme!.scaffoldBackgroundColor
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: theme!.scaffoldBackgroundColor,
                     ),
                   ),
                 ),
               ),
             ),
 
-            /// Bottom Dark Green Line Indicator
             Positioned(
-              bottom: 8,
+              bottom: Constant.SIZE_08,
               child: Container(
-                height: 4,
-                width: 120,
+                height: Constant.SIZE_04,
+                width: Constant.CONTAINER_SIZE_120,
                 decoration: BoxDecoration(
                   color: theme.scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(Constant.SIZE_10),
                 ),
               ),
             ),
@@ -106,10 +98,6 @@ class CustomBottomNav extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 class _NavItem extends StatelessWidget {
   final IconData? icon;
@@ -134,27 +122,28 @@ class _NavItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_14, vertical: Constant.SIZE_08),
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_14,
+              vertical: Constant.SIZE_08,
+            ),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected
-                  ? const Color(0xFF0E3B2E)
-                  : Colors.transparent,
+              color: isSelected ? const Color(0xFF0E3B2E) : Colors.transparent,
             ),
             child: imageAsset != null
                 ? Image.asset(
-              imageAsset!,
-              height: Constant.CONTAINER_SIZE_22,
-              width: Constant.CONTAINER_SIZE_22,
-              color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
-            )
+                    imageAsset!,
+                    height: Constant.CONTAINER_SIZE_22,
+                    width: Constant.CONTAINER_SIZE_22,
+                    color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
+                  )
                 : Icon(
-              icon,
-              size: Constant.CONTAINER_SIZE_22,
-              color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
-            ),
+                    icon,
+                    size: Constant.CONTAINER_SIZE_22,
+                    color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
+                  ),
           ),
-           SizedBox(height: Constant.SIZE_02),
+          SizedBox(height: Constant.SIZE_02),
           Text(
             label,
             style: TextStyle(
@@ -207,21 +196,12 @@ class BottomNavClipper extends CustomClipper<Path> {
       center + curveWidth,
       0,
     );
-
     path.lineTo(width, 0);
     path.lineTo(width, height);
     path.lineTo(0, height);
     path.close();
-
     return path;
   }
-
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
-
-
-
-
-
