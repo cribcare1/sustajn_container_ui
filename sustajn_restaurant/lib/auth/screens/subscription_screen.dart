@@ -4,10 +4,10 @@ import 'package:sustajn_restaurant/auth/screens/subscription_details_screen.dart
 import 'package:sustajn_restaurant/auth/screens/terms_and_condition_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
+import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
@@ -161,6 +161,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             });
                           },
                           previousScreen: widget.previousScreen ?? "",
+                          onPlanNameTap: (planId) {
+                            showConfirmationDialog(context, planId);
+                          },
                         );
                       },
                     ),
@@ -194,6 +197,58 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     );
   }
 
+  Future<void> showConfirmationDialog(BuildContext context, int planId) async {
+    final theme = Theme.of(context);
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          ),
+          title: Text(
+            Strings.CONFIRM_UPDATE,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: Text(
+            Strings.UPDATE_SUBSCRIPTION_PLAN,
+            style: TextStyle(color: Colors.grey.shade300),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                NavUtil.popScreen(context, 1);
+              },
+              child: Text(
+                Strings.NO,
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFC8B531),
+              ),
+              onPressed: () async{
+                await _upgradeSubscriptionPlanNetworkCall(planId);
+                NavUtil.popScreen(context, 4);
+              },
+              child: Text(
+                Strings.UPDATE,
+                style: TextStyle(color: theme.primaryColor),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _getNetworkData(AuthState state) async {
     try {
       state.setIsPlanLoading(true);
@@ -215,18 +270,52 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
       Utils.printLog("API Error: $e");
     }
   }
+
+  Map<String, dynamic> getJsonData(int planId){
+    final data = {
+      "userId": Utils.userId,
+      "subscriptionPlanId": planId
+    };
+    return data;
+  }
+
+  _upgradeSubscriptionPlanNetworkCall(int planId) async {
+    Utils.printLog('upgrade Subscription Plan Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return false;
+    }
+
+    try {
+      await ref.read(
+        updateSubscriptionPlanProvider(getJsonData(planId)).future,
+      );
+      return true;
+    } catch (e) {
+      Utils.printLog('update Subscription Plan error: $e');
+      return false;
+    }
+  }
 }
 
 class PlanCard extends StatelessWidget {
   final PlanModel plan;
   final VoidCallback onTap;
   final String previousScreen;
+  final void Function(int planId)? onPlanNameTap;
+
 
   const PlanCard({
     super.key,
     required this.plan,
     required this.onTap,
     required this.previousScreen,
+    this.onPlanNameTap,
   });
 
   @override
@@ -267,7 +356,13 @@ class PlanCard extends StatelessWidget {
                         ),
                       ),
                       if (plan.isSelected)
-                        const Icon(Icons.check_circle, color: Colors.white),
+
+                        GestureDetector(
+                            onTap: (){
+                              onPlanNameTap?.call(plan.planId);
+                            },
+                            child: Icon(Icons.check_circle, color: Colors.white)
+                        ),
                     ],
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
