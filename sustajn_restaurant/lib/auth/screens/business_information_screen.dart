@@ -571,8 +571,8 @@ class _BusinessInformationDetailsState
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: 60,
-                            height: 60,
+                            width: Constant.CONTAINER_SIZE_60,
+                            height: Constant.CONTAINER_SIZE_60,
                             decoration: BoxDecoration(
                               color: item.color,
                               shape: BoxShape.circle,
@@ -584,7 +584,7 @@ class _BusinessInformationDetailsState
                                     item.type == SocialMediaType.x
                                     ? Colors.black
                                     : Colors.white,
-                                size: 26,
+                                size: Constant.CONTAINER_SIZE_26,
                               ),
                             ),
                           ),

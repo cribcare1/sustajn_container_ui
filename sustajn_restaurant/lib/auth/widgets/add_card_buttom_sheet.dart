@@ -257,20 +257,20 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
-              itemStyle: const TextStyle(
+              itemStyle:  TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
               ),
               cancelStyle:  TextStyle(
                 color: theme.primaryColor,
-                fontSize: 16,
+                fontSize: Constant.LABEL_TEXT_SIZE_16,
                 fontWeight: FontWeight.w600,
               ),
 
               doneStyle:  TextStyle(
                 color: theme.primaryColor,
-                fontSize: 16,
+                fontSize: Constant.LABEL_TEXT_SIZE_16,
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -900,12 +900,12 @@ class Utils {
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
-              itemStyle: const TextStyle(
+              itemStyle:  TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
               ),
-              doneStyle: const TextStyle( fontSize: 16),
+              doneStyle:  TextStyle( fontSize: Constant.LABEL_TEXT_SIZE_16),
             ),
             onConfirm: (date) {
               final value =
@@ -926,7 +926,7 @@ class Utils {
               labelStyle: TextStyle(color: Colors.white70),
               suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
               ),
               enabledBorder: CustomTheme.roundedBorder(Constant.grey),
               focusedBorder: CustomTheme.roundedBorder(Constant.grey),

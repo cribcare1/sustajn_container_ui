@@ -23,7 +23,7 @@ class CustomBackButton extends StatelessWidget {
         margin: EdgeInsets.all(Constant.SIZE_10),
         decoration: BoxDecoration(
           color: theme.primaryColor,
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_100),
           border: Border.all(color: Constant.grey, width: 0.3),
         ),
         child: Icon(Icons.keyboard_arrow_left, color: Colors.white70),

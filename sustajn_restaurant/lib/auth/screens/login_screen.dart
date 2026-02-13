@@ -9,6 +9,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import 'forget_password.dart';
@@ -168,12 +169,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ForgetPasswordScreen(),
-                          ),
-                        );
+                        NavUtil.navigateToPushScreen(context, ForgetPasswordScreen());
                       },
                       child: Text(
                         Strings.FORGOT_PASSWORD,
@@ -219,12 +215,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ..onTap = authState.isLoading
                                   ? null
                                   : () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const SignUpScreen(),
-                                        ),
-                                      );
+                                     NavUtil.navigateToPushScreen(context, SignUpScreen());
                                     },
                           ),
                         ],
