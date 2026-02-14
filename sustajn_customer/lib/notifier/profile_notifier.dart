@@ -37,6 +37,16 @@ class ProfileNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAddressById(int addressId) {
+    if (_profileList.isEmpty) return;
+
+    _profileList.first.addressResponses = List<AddressResponses>.from(
+      _profileList.first.addressResponses ?? [],
+    )..removeWhere((element) => element.id == addressId);
+
+    notifyListeners();
+  }
+
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
     notifyListeners();

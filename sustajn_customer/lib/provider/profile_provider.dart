@@ -70,16 +70,17 @@ final deleteAddressProvider = FutureProvider.family<dynamic, Map<String, dynamic
         responseData.status!.trim().toString().toLowerCase() ==
             NetworkUrls.SUCCESS) {
       deleteState.setIsLoading(false);
-      if (!deleteState.context!.mounted) return;
-      showCustomSnackBar(
-        context: deleteState!.context,
-        message: responseData.message!,
-        color: Colors.green,
-      );
+      if (!deleteState.context.mounted) {
+        showCustomSnackBar(
+          context: deleteState.context,
+          message: responseData.message!,
+          color: Colors.green,
+        );
+      }
     } else {
-      if (!deleteState.context!.mounted) return;
+      if (!deleteState.context.mounted) return;
       showCustomSnackBar(
-        context: deleteState!.context,
+        context: deleteState.context,
         message: responseData.message!,
         color: Colors.black,
       );
@@ -127,9 +128,12 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       return true;
     }
     else {
-      Utils.showToast(
-        responseData.message ?? "Update failed",
-      );
+      if(profileState.context.mounted) {
+      showCustomSnackBar(
+        context: profileState.context,
+        message : responseData.message ?? "Update failed",
+        color: Colors.black
+      );}
     }
   } catch (e) {
     Utils.printLog(" provider error called: $e");
