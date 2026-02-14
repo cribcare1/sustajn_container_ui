@@ -159,7 +159,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
                         ),
                       ),
                       child: Text(
-                        'Learn More',
+                        Strings.LEARN_MORE,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -185,7 +185,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
             child: Text(
-              '₹ 500/month',
+              'Ð 500/month',
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.w600,
@@ -275,6 +275,6 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
   Widget _viewAllPlansButton(BuildContext context) {
     return SubmitButton(onRightTap: () {
       NavUtil.navigateToPushScreen(context, SubscriptionScreen(previousScreen: 'profile',));
-    }, rightText: "View all plans");
+    }, rightText: Strings.VIEW_ALL_PLAN);
   }
 }

@@ -35,7 +35,6 @@ class _EditReferPartnerDialogState
     _contactPersonController = TextEditingController();
     _contactNumberController = TextEditingController();
     _emailController = TextEditingController();
-    _getData();
   }
 
   @override
@@ -86,18 +85,6 @@ class _EditReferPartnerDialogState
     }
 
     return null;
-  }
-
-  _getData() {
-    final profileState = ref.read(profileProvider);
-    final profile = profileState.getProfileData?.data;
-    if (profile!.bankDetailsResponse != null) {
-      final bank = profile.bankDetailsResponse;
-      _restaurantNameController.text = bank!.bankName ?? "";
-      _contactPersonController.text = bank.accountNumber ?? "";
-      _contactNumberController.text = bank.taxNumber ?? "";
-      _emailController.text = bank.emailId ?? "";
-    }
   }
 
   @override

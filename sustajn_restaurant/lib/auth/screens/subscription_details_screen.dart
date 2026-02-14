@@ -54,7 +54,7 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
               _freemiumCard(theme),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
               if(widget.previousScreen =="profile")...[
-                Text(data.description,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                Text(data?.description ?? "",style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
               ],
               if(widget.previousScreen =="")...[
                 Expanded(
@@ -95,14 +95,14 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-         Text(data.planName,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
+         Text(data?.planName ?? "",style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
           SizedBox(height: Constant.SIZE_10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Image.asset("assets/logo/dirham_icon.png"),
               Text(
-                " ${data.totalContainers}",
+                "${data?.totalContainers ?? 0}",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
                   fontWeight: FontWeight.w700,

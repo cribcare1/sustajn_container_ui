@@ -70,8 +70,8 @@ class _EditBankDetailsDialogState extends ConsumerState<EditBankDetailsDialog> {
     if (profile!.bankDetailsResponse != null) {
       final bank = profile.bankDetailsResponse;
       _bankNameController.text = bank!.bankName ?? "";
-      _accountNumberController.text = bank.accountNumber ?? "";
-      _taxNumberController.text = bank.taxNumber ?? "";
+      _accountNumberController.text = bank.accountHolderName ?? "";
+      _taxNumberController.text = bank.bicNumber ?? "";
     }
   }
 
