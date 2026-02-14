@@ -356,6 +356,11 @@ class Strings {
   static const String REMOVE_ADDRESS_TITLE = "Remove Address";
   static const String DELETE_ADDRESS = 'Delete Address';
   static const String  REMOVE_ADDRESS_TXT =  "This address will be permanently removed from your saved list. You can't undo this action";
+  static const String GENDER = 'Gender*';
+  static const String MALE = 'Male';
+  static const String FEMALE = 'Female';
+  static const String OTHERS = 'Others';
+  static const String SIGNUP = 'SIGNUP';
 
 
   static final RegExp alphaNumericWithSpace = RegExp(r'^[a-zA-Z0-9 ]+$');
