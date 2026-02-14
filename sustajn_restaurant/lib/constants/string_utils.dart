@@ -37,6 +37,7 @@ class Strings {
   static const String SOLD = "Sold";
   static const String HISTORY = "History";
   static const String BUSINESS_INFO_TXT ='Provide information to help customers find you.';
+  static const String LEARN_MORE = "Learn More";
 
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
       "Please provide your details below";
@@ -53,6 +54,7 @@ class Strings {
   static const String DIRECTION = 'Direction';
   static const String CALL = 'Call';
   static const String VIEW_ALL = 'View All';
+  static const String VIEW_ALL_PLAN = "View all plans";
   static const String RESTURANT_HISTORY = 'Resturant History';
   static const String VIEW_RESTURANT_DETAILS = 'View Resturant Details';
   static const String RESTURANT_DETAILS_TITLE = 'Resturant Details';
@@ -109,6 +111,8 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
+  static const VERIFY_CONT = "Verify and Continue";
+
   static const OR = 'Or';
 
   static const SEND_FEEDBACK = 'Send Feedback';
@@ -235,6 +239,7 @@ class Strings {
   static const String CLEAR_DTLS = "Clear Details";
   static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
   static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+  static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -252,6 +257,7 @@ class Strings {
   static const String SELECT_PLAN =
       'Select a subscription plan to unlock the functionality\nof the application';
   static const String CHOOSE_PLAN = 'Choose Plan';
+  static const String RETRY = "Retry";
   static const String PROVE_DETAILS =
       'Please prove the details below to create your account';
   static const String RESTURANT_NAME = 'Resturant Name';
@@ -278,6 +284,8 @@ class Strings {
   static const String CONFIRM = 'Confirm';
   static const String CONFIRM_UPDATE = 'Confirm Update';
   static const String UPDATE_CONTACT_NO = "Are you sure you want to update your contact number?";
+  static const String UPDATE_SUBSCRIPTION_PLAN = "Are you sure you want to update your subscription plan?";
+
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';
@@ -286,6 +294,8 @@ class Strings {
   static const PROVIDE_INFORMATION =
       "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
+  static const PAYMENT_SUCCSS = "Payment Successful";
+
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";

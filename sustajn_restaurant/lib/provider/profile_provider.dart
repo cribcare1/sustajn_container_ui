@@ -164,4 +164,17 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
 });
 
 
+final updateSubscriptionPlanProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
 
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.UPGRADE_SUBSCRIPTION_PLAN}';
+
+  Utils.printLog("Upgrade Subscription plan Provider url : $url");
+  final responseData = await apiService.updateSubscriptionPlanService(url, params, "");
+
+  print("Provider Response: $responseData");
+  return responseData;
+});
