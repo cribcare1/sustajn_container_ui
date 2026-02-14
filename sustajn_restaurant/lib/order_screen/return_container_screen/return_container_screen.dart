@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_dialog.dart';
+import 'package:sustajn_restaurant/order_screen/return_container_screen/review_return_screen.dart';
 
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -9,6 +10,7 @@ import '../../constants/string_utils.dart';
 import '../../models/get_container_data.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
+import '../../notifier/order_notifier.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -54,56 +56,119 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
       top: false,
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
-        body: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
-            children: [
-              CustomTheme.searchField(
-                searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                children: [
+                  CustomTheme.searchField(
+                    searchController,
+                    Strings.SEARCH_BY_CONTAINER_NAME,
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
 
-              Expanded(
-                child: orderState.isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : (orderState.getContainerData == null)?
-                    Center(child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Return container list is not available",
-                          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
-                        ),
-                      ],
-                    ),)
-                    :orderState.getContainerData!.containersDetails!.isEmpty
-                    ? Center(
-                        child: Text(
-                          Strings.NO_CONTAINER_AVAILABLE,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    : ListView.separated(
-                        itemCount: orderState
-                            .getContainerData!
-                            .containersDetails!
-                            .length,
-                        separatorBuilder: (_, __) =>
-                            SizedBox(height: Constant.CONTAINER_SIZE_12),
-                        itemBuilder: (context, index) {
-                          final item = orderState
-                              .getContainerData!
-                              .containersDetails![index];
-                          return _containerCard(context, item, theme);
-                        },
-                      ),
+                  Expanded(
+                    child: orderState.isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : (orderState.getContainerData == null)?
+                        Center(child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Return container list is not available",
+                              style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),)
+                        :orderState.getContainerData!.containersDetails!.isEmpty
+                        ? Center(
+                            child: Text(
+                              Strings.NO_CONTAINER_AVAILABLE,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : ListView.separated(
+                            itemCount: orderState
+                                .getContainerData!
+                                .containersDetails!
+                                .length,
+                            separatorBuilder: (_, __) =>
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                            itemBuilder: (context, index) {
+                              final item = orderState
+                                  .getContainerData!
+                                  .containersDetails![index];
+                              return _containerCard(context, item, theme);
+                            },
+                          ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            if (orderState.selectedContainers.isNotEmpty)
+              Positioned(
+                left: Constant.CONTAINER_SIZE_16,
+                right: Constant.CONTAINER_SIZE_16,
+                bottom: Constant.CONTAINER_SIZE_16,
+                child: _bottomBar(context, orderState),
+              ),
+          ],
         ),
       ),
     );
   }
+
+  Widget _bottomBar(BuildContext context, OrderState orderState) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_16,
+        vertical: Constant.CONTAINER_SIZE_14,
+      ),
+      decoration: BoxDecoration(
+        color: Constant.gold,
+        borderRadius:
+        BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "${orderState.selectedContainers.length} Item Added",
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.primaryColor,
+              fontWeight: FontWeight.bold
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                  const ReviewReturnScreen(),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                Text("View",
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.bold
+                    )),
+                Icon(Icons.arrow_forward_ios,
+                    size: Constant.CONTAINER_SIZE_14,
+                    color: theme.primaryColor),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 
   Widget _containerCard(
     BuildContext context,
@@ -163,7 +228,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "Available Qty",
+                "In-Stock",
                 style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
               ),
               Text(

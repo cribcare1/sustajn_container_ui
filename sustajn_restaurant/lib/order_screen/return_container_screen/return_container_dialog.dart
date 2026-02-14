@@ -119,15 +119,17 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                     vertical: Constant.SIZE_06,
                   ),
                   decoration: BoxDecoration(
+                    color: Constant.grey.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(
-                      Constant.CONTAINER_SIZE_20,
+                      Constant.CONTAINER_SIZE_16,
                     ),
-                    border: Border.all(color: Constant.gold),
+                    border: Border.all(color: Constant.grey.withOpacity(0.2)),
                   ),
                   child: Text(
-                    "Available Quantity: ${widget.item.quantityAvailable!}",
+                    "In-Stock: ${widget.item.quantityAvailable!}",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Constant.gold,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
@@ -231,10 +233,10 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                       child: OutlinedButton(
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.amber, width: 1.5),
+                          side: BorderSide(color: Constant.gold, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_30,
+                              Constant.CONTAINER_SIZE_16,
                             ),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -252,13 +254,11 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (qty > 0) {
-                            _returnContainerNetworkCall(
-                              widget.item,
-                              orderState,
-                            );
-                            // Navigator.pop(context, qty);
+                            orderState.addContainerToOrder(widget.item, qty);
+                            Navigator.pop(context);
                           }
                         },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Constant.gold,
                           disabledBackgroundColor: Constant.gold,
@@ -267,6 +267,7 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                               Constant.CONTAINER_SIZE_16,
                             ),
                           ),
+                          side: BorderSide(color: Colors.white),
                           padding: EdgeInsets.symmetric(
                             vertical: Constant.CONTAINER_SIZE_12,
                           ),

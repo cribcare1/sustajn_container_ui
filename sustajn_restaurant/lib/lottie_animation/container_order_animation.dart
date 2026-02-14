@@ -25,7 +25,7 @@ class _ContainerOrderScreenState extends State<ContainerOrderScreen> {
   }
 
   Future<void> _showDashboardScreen() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 5));
     NavUtil.navigationToWithReplacement(context,
         DashboardScreen());
   }

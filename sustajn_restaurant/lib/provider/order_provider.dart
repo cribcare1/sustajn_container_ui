@@ -103,6 +103,8 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
     final success = responseData['success'];
     final message = responseData['message'];
+    final String type =
+    (params["type"] ?? "").toString().toUpperCase();
 
     if (success == true) {
 
@@ -110,11 +112,15 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       orderState.setOrdering(false);
       orderState.clearSelectedContainers();
       if (!orderState.context.mounted) return ;
+      final String title =
+      type == "RETURN"
+          ? Strings.RETURN_ANIMATION_TITLE
+          : Strings.THANK_YOU_TXT;
 
       NavUtil.navigateToPushScreen(
         orderState.context,
         ContainerOrderScreen(
-          title: Strings.THANK_YOU_TXT,
+          title: title,
           subTitle:
           Strings.ADD_ORDER_TXT,
         ),

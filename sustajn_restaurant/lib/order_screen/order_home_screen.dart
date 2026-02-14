@@ -44,7 +44,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
           'Order',

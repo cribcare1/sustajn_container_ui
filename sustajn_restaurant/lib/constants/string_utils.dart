@@ -340,4 +340,8 @@ class Strings {
 static const String SKIP_CONTINUE = 'Skip & Continue';
 static const String THANK_YOU_TXT = "Thank you for your order.";
 static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
+static const String ORDER_WARNING_TXT =  "Please review your container types and quantities before confirming. This action cannot be changed later.";
+static const String RETURN_TXT =  "Confirm Container Return";
+static const String RETURN_ANIMATION_TITLE = 'Thank you for your return request';
+
 }
