@@ -97,51 +97,15 @@ class _TermsAndConditionScreenState
                     child: SizedBox(
                       width: double.infinity,
                       child: SubmitButton(
-                        onRightTap:  ()  {
-                          if(!signUpState.isLoading){
-                            _onCreateAccount(signUpState);
-                          }
-
-                      },
-                      rightText: "Agree & Create Account",
+                        onRightTap: signUpState.isLoading
+                            ? null
+                            : () {
+                          _onCreateAccount(signUpState);
+                        },
+                        rightText: "Agree & Create Account",
                       )
-                      // ElevatedButton(
-                      //   onPressed: signUpState.isLoading
-                      //       ? null
-                      //       : () async {
-                      //     final confirmed = await termsDialog(
-                      //       context,
-                      //       Icons.warning_amber_outlined,
-                      //       Strings.CONFIRM_ACCOUNT,
-                      //       Strings.CONFIRM_MESSAGE,
-                      //       Strings.CANCEL,
-                      //       Strings.CREATE,
-                      //     );
-                      //
-                      //     if (confirmed == true) {
-                      //       _getNetworkData(signUpState);
-                      //     }
-                      //   },
-                      //
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Constant.gold,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(
-                      //         Constant.CONTAINER_SIZE_20,
-                      //       ),
-                      //     ),
-                      //     padding: EdgeInsets.symmetric(
-                      //       vertical: Constant.CONTAINER_SIZE_16,
-                      //     ),
-                      //   ),
-                      //   child: Text(
-                      //     "Agree & Create Account",
-                      //     style: theme.textTheme.labelLarge?.copyWith(
-                      //       color: theme.primaryColor,
-                      //       fontWeight: FontWeight.w700,
-                      //     ),
-                      //   ),
-                      // ),
+
+
                     ),
                   ),
                 ],
@@ -392,28 +356,28 @@ class _TermsAndConditionScreenState
       registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
 
-      if(registrationState.isValid) {
-        Map<String, dynamic> mapData = _getPayload(registrationState);
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
-            if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-
-              ref.read(registerProvider(mapData));
-            } else {
-              registrationState.setIsLoading(false);
-              Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-            }
-          });
-        });
-      }else {
+      if (!registrationState.isValid) {
         Utils.showToast("Not valid data for Registration");
+        return;
       }
+
+      final mapData = _getPayload(registrationState);
+
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
+
+      if (!isNetworkAvailable) {
+        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        return;
+      }
+
+      await ref.read(registerProvider(mapData).future);
+
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
-    }finally{
+    } finally {
       registrationState.setIsLoading(false);
     }
   }
+
 }

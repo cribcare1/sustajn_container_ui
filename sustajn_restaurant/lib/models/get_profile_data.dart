@@ -28,7 +28,7 @@ class Data {
   String? mobileNumber;
   String? secondaryNumber;
   String? dateOfBirth;
-  dynamic customerId;
+  String? customerId;
   String? emailId;
   String? profileImageUrl;
   int? subscriptionPlanId;

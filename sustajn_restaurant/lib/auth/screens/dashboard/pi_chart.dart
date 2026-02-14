@@ -8,7 +8,8 @@ import '../../../utils/utility.dart';
 import 'option_file.dart';
 
 class FilterPopupWidget extends StatefulWidget {
-  const FilterPopupWidget({super.key});
+  final String customerId;
+  const FilterPopupWidget({super.key, required this.customerId});
 
   @override
   State<FilterPopupWidget> createState() => _FilterPopupWidgetState();
@@ -105,6 +106,7 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                             LeaseScanScreen(
                               type: selectedType ?? "",
                               damage: selectedValue,
+                              customerId: widget.customerId,
                             ),
                           );
                       },

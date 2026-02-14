@@ -17,7 +17,8 @@ import '../lease_receive_provider.dart';
 import '../model/container_list_model.dart';
 
 class LeaseProductListScreen extends ConsumerStatefulWidget {
-  const LeaseProductListScreen({super.key});
+  final String customerId;
+  const LeaseProductListScreen({super.key, required this.customerId});
 
   @override
   ConsumerState<LeaseProductListScreen> createState() =>
@@ -29,13 +30,13 @@ class _LeaseProductListScreenState
   @override
   void initState() {
     Utils.getUserId();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref.read(leaseReceiveNotifier).setContext(context);
-    //   _getContainerList(
-    //     ref.read(leaseReceiveNotifier),
-    //     restaurantId: Utils.userId.toString(),
-    //   );
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(leaseReceiveNotifier).setContext(context);
+      _getContainerList(
+        ref.read(leaseReceiveNotifier),
+        restaurantId: Utils.userId.toString(),
+      );
+    });
 
     super.initState();
   }
@@ -78,6 +79,8 @@ class _LeaseProductListScreenState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final leaseNotifier = ref.watch(leaseReceiveNotifier);
+    print("Containers count: ${leaseNotifier.containersList.length}");
+
     return SafeArea(
       bottom: true,
       top: false,
@@ -109,7 +112,7 @@ class _LeaseProductListScreenState
                             Icon(Icons.badge, color: Colors.white, size: 18),
                             SizedBox(width: 6),
                             Text(
-                              'Customer ID: $scannedId',
+                              'Customer ID: ${widget.customerId}',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -162,6 +165,7 @@ class _LeaseProductListScreenState
                               leaseNotifier.containersList.removeAt(index);
                             });
                           },
+                          leaseNotifier: leaseNotifier
                         );
                       },
                       separatorBuilder: (context, index) =>
@@ -193,6 +197,7 @@ class _LeaseProductListScreenState
   Widget _containerCard({
     required ContainerDetails item,
     required VoidCallback onRemove,
+    var leaseNotifier
   }) {
     return GlassSummaryCard(
       child: Row(
@@ -208,7 +213,7 @@ class _LeaseProductListScreenState
             child: Image.network(
               "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
               errorBuilder: (context, obj, stack){
-                return Image.asset("assets/images/no_image_container.png");
+                return Image.asset("assets/images/cups.png");
               },
               fit: BoxFit.contain,
             ),
@@ -217,33 +222,41 @@ class _LeaseProductListScreenState
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   item.containerName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
+
                 Text(
-                  item.containerUniqueId,
+                  " ${item.containerUniqueId}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
                   ),
                 ),
+
                 Text(
-                  item.capacity.toString(),
+                  "${item.capacity} ml",
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withOpacity(0.8),
                     fontSize: 12,
                   ),
                 ),
               ],
             ),
           ),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -253,15 +266,6 @@ class _LeaseProductListScreenState
                   color: Colors.amber,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              InkWell(
-                onTap: onRemove,
-                child: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                  size: 20,
                 ),
               ),
             ],
@@ -349,19 +353,22 @@ class _LeaseProductListScreenState
                         Navigator.pop(context);
                         final List<Map<String, dynamic>> items = leaseState
                             .containersList
+                            .where((i) => i.containerId != 0)
                             .map(
                               (i) => {
-                                "productId": i.containerId,
-                                "quantity": i.quantityAvailable,
-                              },
-                            )
+                            "productId": i.containerId,
+                            "quantity": 1,
+                          },
+                        )
                             .toList();
 
+
                         Map<String, dynamic> data = {
-                          "userId": scannedId,
+                          "userId": widget.customerId,
                           "restaurantId": Utils.userId,
                           "items": items,
                         };
+
                         _leaseContainer(leaseState, data);
                       },
                       rightText: "Confirm",

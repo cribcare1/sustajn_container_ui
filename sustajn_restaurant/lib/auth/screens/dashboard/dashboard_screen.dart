@@ -102,6 +102,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (profileState.loginResponse != null) {
       loginResponse = profileState.loginResponse;
     }
+
+    final customerId =
+        profileState.getProfileData?.data?.customerId ?? "";
     final theme = Theme.of(context);
     final mq = MediaQuery.of(context);
     final width = mq.size.width;
@@ -241,7 +244,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               width: cardWidth,
                               icon: Icons.qr_code_scanner_rounded,
                               onTap: () {
-                                _showFilterPopup(context);
+                                _showFilterPopup(context, customerId);
                               },
                               label: 'Scan',
                             ),
@@ -619,7 +622,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  void _showFilterPopup(BuildContext context) {
+  void _showFilterPopup(BuildContext context, String customerId) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -627,7 +630,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       useSafeArea: true,
       isDismissible: true,
       builder: (_) {
-        return const FilterPopupWidget();
+        return  FilterPopupWidget(customerId: customerId,);
       },
     );
   }

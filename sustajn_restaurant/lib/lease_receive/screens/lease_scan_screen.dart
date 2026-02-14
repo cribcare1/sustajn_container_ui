@@ -13,8 +13,9 @@ import 'lease_product_scan_screen.dart';
 class LeaseScanScreen extends StatefulWidget {
   final String type;
   final String? damage;
+  final String customerId;
 
-  const LeaseScanScreen({super.key, required this.type, this.damage});
+  const LeaseScanScreen({super.key, required this.type, this.damage, required this.customerId});
 
   @override
   State<LeaseScanScreen> createState() => _QrScannerScreenState();
@@ -210,6 +211,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                 LeaseProductScanScreen(
                                   type: widget.type,
                                   damage: widget.damage,
+                                  customerId: widget.customerId,
                                 ),
                               );
                             } else if (widget.type.contains(Strings.RECEIVE_UC)) {
@@ -218,6 +220,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                 ReceiveProductListScreen(
                                   type: widget.type,
                                   damage: widget.damage,
+                                  customerId: widget.customerId,
                                 ),
                               );
                             }

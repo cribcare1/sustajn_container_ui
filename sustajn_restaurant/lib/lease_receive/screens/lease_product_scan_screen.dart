@@ -18,8 +18,9 @@ import 'lease_product_list_screen.dart';
 class LeaseProductScanScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
+  final String customerId;
 
-  const LeaseProductScanScreen({super.key, required this.type, this.damage});
+  const LeaseProductScanScreen({super.key, required this.type, this.damage, required this.customerId});
 
   @override
   ConsumerState<LeaseProductScanScreen> createState() => _QrScannerScreenState();
@@ -276,7 +277,9 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
                             if (widget.type.contains(Strings.LEASE_UC)) {
                               NavUtil.navigateToPushScreen(
                                 context,
-                                LeaseProductListScreen(),
+                                LeaseProductListScreen(
+                                  customerId: widget.customerId,
+                                ),
                               );
                             }
                           },

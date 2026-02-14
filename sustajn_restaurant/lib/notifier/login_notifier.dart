@@ -390,7 +390,8 @@ bool get isPlanLoading  => _isPlanLoading;
     if (_iban.isEmpty) {
       _ibanError = 'IBAN is required';
     }
-    else if (!RegExp(r'^AE[0-9]{2}[0-9]{3}[0-9]{16}$').hasMatch(_iban)) {
+    else if (!RegExp(r'^[A-Z]{2}[0-9A-Z]{13,32}$').hasMatch(_iban))
+    {
       _ibanError = 'Invalid UAE IBAN format';
     }
     else {

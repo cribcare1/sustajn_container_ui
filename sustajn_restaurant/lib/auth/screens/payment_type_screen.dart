@@ -46,12 +46,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authNotifierProvider).clearBankErrors();
     });
-    _getData();
   }
 
-  _getData(){
-    final profileState =  ref.read(profileProvider);
-    print("Full Data: ${profileState.getProfileData?.data}");
+  void _getData() {
+    final profileState = ref.read(profileProvider);
+    final auth = ref.read(authNotifierProvider);
 
     final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
 
@@ -61,14 +60,27 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           bankResponse.accountHolderName ?? "";
       ibanController.text = bankResponse.iBanNumber ?? "";
       bicController.text = bankResponse.bicNumber ?? "";
+
+      auth.setBankName(bankNameController.text);
+      auth.setAccountHolder(accountHolderNameController.text);
+      auth.setIban(ibanController.text);
+      auth.setBic(bicController.text);
     }
   }
+
 
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    final profileState = ref.watch(profileProvider);
+
+    if (profileState.getProfileData != null &&
+        bankNameController.text.isEmpty) {
+      _getData();
+    }
+
     return SafeArea(
       top: false,
       bottom: true,
@@ -279,41 +291,41 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               _orDivider(theme),
               _sectionTitle(theme, title: 'Bank Details'),
               _bankFields(theme, authState),
-              _sectionTitle(theme, title: Strings.BANK_DETAILS),
-              _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
-                  onRightTap: () async {
+                  onRightTap: () {
                     final auth = ref.read(authNotifierProvider);
 
-                    // Validate bank details
-                    if (!auth.validateBankDetails()) return;
+                    final bankName = bankNameController.text.trim();
+                    final holder = accountHolderNameController.text.trim();
+                    final iban = ibanController.text.trim();
+                    final bic = bicController.text.trim();
 
-                    // Validate payment selection
-                    if (!_validatePaymentSelection(context, authState)) return;
+                    auth.setBankName(bankName);
+                    auth.setAccountHolder(holder);
+                    auth.setIban(iban);
+                    auth.setBic(bic);
 
-                    // If profile screen, stop here
-                    if (widget.profile == 'profile') {
-                      return;
-                    }
-
-                    final bankData = BankDetailsModel(
-                      bankName: auth.bankName,
-                      accountHolderName: auth.accountHolder,
-                      ibanNumber: auth.iban,
-                      bicNumber: auth.bic,
+                    // ⭐ ALWAYS store bank details
+                    auth.setBankDetails(
+                      BankDetailsModel(
+                        bankName: bankName,
+                        accountHolderName: holder,
+                        ibanNumber: iban,
+                        bicNumber: bic,
+                      ),
                     );
 
-                    auth.setBankDetails(bankData);
-                    authState.setBankDetails(bankData);
+                    if (!_validatePaymentSelection(context, auth)) return;
 
                     NavUtil.navigateToPushScreen(
                       context,
                       SubscriptionScreen(),
                     );
                   },
+
 
                   rightText: widget.profile == 'profile'
                       ? Strings.VERIFY
@@ -328,24 +340,33 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  bool _validatePaymentSelection(BuildContext context, AuthState authState) {
-    final hasCard = authState.cardDetails != null;
-    final hasGateway = authState.gateway != null;
+  bool _validatePaymentSelection(BuildContext context, AuthState auth) {
 
-    final hasBankDetails =
-        bankNameController.text.trim().isNotEmpty &&
-            accountHolderNameController.text.trim().isNotEmpty &&
-            ibanController.text.trim().isNotEmpty &&
+    final hasCard = auth.cardDetails != null;
+    final hasGateway = auth.gateway != null;
+
+    final anyBankFilled =
+        bankNameController.text.trim().isNotEmpty ||
+            accountHolderNameController.text.trim().isNotEmpty ||
+            ibanController.text.trim().isNotEmpty ||
             bicController.text.trim().isNotEmpty;
 
-    // ❌ If all empty → show toast
-    if (!hasCard && !hasGateway && !hasBankDetails) {
+    if (!hasCard && !hasGateway && !anyBankFilled) {
       Utils.showToast("Please add at least one payment method");
       return false;
     }
 
-    return true; // ✅ At least one section filled
+    if (anyBankFilled) {
+      if (!auth.validateBankDetails()) {
+        return false; // field errors already shown
+      }
+    }
+
+    return true;
   }
+
+
+
 
   Widget _sectionTitle(ThemeData theme, {String? title}) {
     return Align(
@@ -557,7 +578,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           onChanged: auth.setBic,
           inputFormatters: [
             LengthLimitingTextInputFormatter(11),
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+
           ],
         ),
       ],
@@ -600,28 +622,33 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   bool _validateBankDetails(BuildContext context) {
     final bankName = bankNameController.text.trim();
-    final accountNo = accountHolderNameController.text.trim();
-    final tax = bicController.text.trim();
+    final holder = accountHolderNameController.text.trim();
     final iban = ibanController.text.trim();
+    final bic = bicController.text.trim();
 
-    // ✅ Case 1: All empty → allowed
-    if (bankName.isEmpty && accountNo.isEmpty && tax.isEmpty && iban.isEmpty) {
-      return true;
-    }
+    final anyFilled =
+        bankName.isNotEmpty ||
+            holder.isNotEmpty ||
+            iban.isNotEmpty ||
+            bic.isNotEmpty;
 
-    // ❌ Case 2: Some filled but account number empty
-    if (accountNo.isEmpty) {
+    if (!anyFilled) return true;
+
+    if (bankName.isEmpty ||
+        holder.isEmpty ||
+        iban.isEmpty ||
+        bic.isEmpty) {
       showCustomSnackBar(
         context: context,
-        message: 'Account holder name is required',
+        message: "Please fill all bank details",
         color: Colors.red,
       );
       return false;
     }
 
-
     return true;
   }
+
 
 }
 class AddGatewayDialog extends StatefulWidget {

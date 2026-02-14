@@ -21,7 +21,8 @@ import '../model/container_list_model.dart';
 class ReceiveProductListScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
-  const ReceiveProductListScreen({super.key, required this.type,this.damage});
+  final String? customerId;
+  const ReceiveProductListScreen({super.key, required this.type,this.damage, required this.customerId});
 
   @override
   ConsumerState<ReceiveProductListScreen> createState() => _ReceiveProductListScreenState();
@@ -109,7 +110,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
                       Icon(Icons.badge, color: Colors.white, size: 18),
                       SizedBox(width: 6),
                       Text(
-                        'Customer ID: $scannedId',
+                        'Customer ID: ${widget.customerId}',
                         style: TextStyle(color: Colors.white),
                       ),
                     ],
@@ -219,7 +220,7 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
             padding: const EdgeInsets.all(6),
             child: Image.network("${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
                 errorBuilder: (context, obj, stack){
-              return Image.asset("assets/images/no_image_container.png");
+              return Image.asset("assets/images/cups.png");
                 },
                 fit: BoxFit.contain),
           ),
@@ -351,17 +352,18 @@ class _ReceiveProductListScreenState extends ConsumerState<ReceiveProductListScr
                 onRightTap: () {
                   Navigator.pop(context);
                   final List<Map<String, dynamic>> items = leaseState
-                      .containersDetails
+                      .containersList
+                      .where((i) => i.containerId != 0)
                       .map(
                         (i) => {
                       "productId": i.containerId,
-                      "quantity": i.quantityAvailable,
+                      "quantity": 1,
                     },
                   )
                       .toList();
 
                   Map<String, dynamic> data = {
-                    "userId": scannedId,
+                    "userId": widget.customerId,
                     "restaurantId": Utils.userId,
                     "items": items,
                   };

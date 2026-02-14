@@ -7,23 +7,24 @@ import 'package:sustajn_restaurant/network/ApiCallPresentator.dart';
 import 'model/container_list_model.dart';
 class LeaseAndReceiveServices {
   ApiCallPresenter presenter = ApiCallPresenter();
-  Future<dynamic> leaseContainer(Map<String,dynamic> body)async{
+  Future<dynamic> leaseContainer(Map<String,dynamic> body) async {
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LEASE}";
     print(api);
-    final data = jsonEncode(body);
-    print(data);
-    try{
-      var response = await presenter.postApiData(api, data, "Post");
-      if(response != null){
-        print("response   ================ $response");
+    print(body);
+
+    try {
+      var response = await presenter.postApiData(api, body, "Post");
+      if (response != null) {
+        print("response ================ $response");
         return response;
-      }else{
+      } else {
         throw Exception("Something went wrong");
       }
-    }catch(e){
+    } catch (e) {
       throw Exception(e);
     }
   }
+
   Future<dynamic> receiveContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE}";
     final data = jsonEncode(body);

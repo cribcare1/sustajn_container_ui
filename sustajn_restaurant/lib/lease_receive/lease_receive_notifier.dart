@@ -36,8 +36,12 @@ class LeaseReceiveNotifier extends ChangeNotifier {
 
   void setContainer(List<ContainerDetails> containerList) {
     _containersDetails = containerList;
+
+    _containersList = List.from(containerList);
+
     notifyListeners();
   }
+
   void setContainerList(ContainerDetails container) {
     final exists = _containersList.any(
           (e) => e.containerUniqueId == container.containerUniqueId,
@@ -48,6 +52,7 @@ class LeaseReceiveNotifier extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
 }
 
