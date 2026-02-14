@@ -185,7 +185,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
             child: Text(
-              'Ð 500/month',
+              "Ð ${data.totalContainers.toString()}",
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.w600,
@@ -273,8 +273,14 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
   }
 
   Widget _viewAllPlansButton(BuildContext context) {
-    return SubmitButton(onRightTap: () {
-      NavUtil.navigateToPushScreen(context, SubscriptionScreen(previousScreen: 'profile',));
-    }, rightText: Strings.VIEW_ALL_PLAN);
+    return SubmitButton(
+      onRightTap: () {
+        NavUtil.navigateToPushScreen(
+          context,
+          SubscriptionScreen(previousScreen: 'profile'),
+        );
+      },
+      rightText: Strings.VIEW_ALL_PLAN,
+    );
   }
 }

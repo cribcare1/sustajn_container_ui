@@ -199,51 +199,79 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
   Future<void> showConfirmationDialog(BuildContext context, int planId) async {
     final theme = Theme.of(context);
+    bool isLoading = false;
 
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          ),
-          title: Text(
-            Strings.CONFIRM_UPDATE,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          content: Text(
-            Strings.UPDATE_SUBSCRIPTION_PLAN,
-            style: TextStyle(color: Colors.grey.shade300),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                NavUtil.popScreen(context, 1);
-              },
-              child: Text(
-                Strings.NO,
-                style: TextStyle(color: Colors.grey),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
               ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFC8B531),
+              title: Text(
+                Strings.CONFIRM_UPDATE,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              onPressed: () async{
-                await _upgradeSubscriptionPlanNetworkCall(planId);
-                NavUtil.popScreen(context, 4);
-              },
-              child: Text(
-                Strings.UPDATE,
-                style: TextStyle(color: theme.primaryColor),
+
+              content: Text(
+                Strings.UPDATE_SUBSCRIPTION_PLAN,
+                style: TextStyle(color: Colors.grey.shade300),
               ),
-            ),
-          ],
+
+              actions: [
+                TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          NavUtil.popScreen(context, 1);
+                        },
+                  child: Text(Strings.NO, style: TextStyle(color: Colors.grey)),
+                ),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFC8B531),
+                    minimumSize: Size(
+                      Constant.CONTAINER_SIZE_110,
+                      Constant.CONTAINER_SIZE_40,
+                    ),
+                  ),
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          setState(() => isLoading = true);
+
+                          try {
+                            await _upgradeSubscriptionPlanNetworkCall(planId);
+                            NavUtil.popScreen(context, 4);
+                          } catch (e) {
+                            setState(() => isLoading = false);
+                          }
+                        },
+                  child: isLoading
+                      ? SizedBox(
+                          height: Constant.CONTAINER_SIZE_20,
+                          width: Constant.CONTAINER_SIZE_20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: theme.primaryColor,
+                          ),
+                        )
+                      : Text(
+                          Strings.UPDATE,
+                          style: TextStyle(color: theme.primaryColor),
+                        ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -271,11 +299,8 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     }
   }
 
-  Map<String, dynamic> getJsonData(int planId){
-    final data = {
-      "userId": Utils.userId,
-      "subscriptionPlanId": planId
-    };
+  Map<String, dynamic> getJsonData(int planId) {
+    final data = {"userId": Utils.userId, "subscriptionPlanId": planId};
     return data;
   }
 
@@ -308,7 +333,6 @@ class PlanCard extends StatelessWidget {
   final VoidCallback onTap;
   final String previousScreen;
   final void Function(int planId)? onPlanNameTap;
-
 
   const PlanCard({
     super.key,
@@ -356,12 +380,11 @@ class PlanCard extends StatelessWidget {
                         ),
                       ),
                       if (plan.isSelected)
-
                         GestureDetector(
-                            onTap: (){
-                              onPlanNameTap?.call(plan.planId);
-                            },
-                            child: Icon(Icons.check_circle, color: Colors.white)
+                          onTap: () {
+                            onPlanNameTap?.call(plan.planId);
+                          },
+                          child: Icon(Icons.check_circle, color: Colors.white),
                         ),
                     ],
                   ),

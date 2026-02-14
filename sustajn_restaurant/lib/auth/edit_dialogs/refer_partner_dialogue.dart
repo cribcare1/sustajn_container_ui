@@ -26,6 +26,11 @@ class _EditReferPartnerDialogState
   late TextEditingController _emailController;
 
   bool _isLoading = false;
+  late FocusNode focusNode;
+  late FocusNode _restaurantNameFocus;
+  late FocusNode _contactPersonFocus;
+  late FocusNode _contactNumberFocus;
+  late FocusNode _emailFocus;
 
   @override
   void initState() {
@@ -35,6 +40,16 @@ class _EditReferPartnerDialogState
     _contactPersonController = TextEditingController();
     _contactNumberController = TextEditingController();
     _emailController = TextEditingController();
+
+    _restaurantNameFocus = FocusNode();
+    _contactPersonFocus = FocusNode();
+    _contactNumberFocus = FocusNode();
+    _emailFocus = FocusNode();
+
+    _restaurantNameFocus.addListener(() => setState(() {}));
+    _contactPersonFocus.addListener(() => setState(() {}));
+    _contactNumberFocus.addListener(() => setState(() {}));
+    _emailFocus.addListener(() => setState(() {}));
   }
 
   @override
@@ -43,6 +58,11 @@ class _EditReferPartnerDialogState
     _contactPersonController.dispose();
     _contactNumberController.dispose();
     _emailController.dispose();
+    focusNode.dispose();
+    _restaurantNameFocus.dispose();
+    _contactPersonFocus.dispose();
+    _contactNumberFocus.dispose();
+    _emailFocus.dispose();
     super.dispose();
   }
 
@@ -142,6 +162,7 @@ class _EditReferPartnerDialogState
                   context,
                   label: "${Strings.RESTAURANT_NAME}*",
                   hint: "${Strings.RESTAURANT_NAME}*",
+                  focusNode: _restaurantNameFocus,
                   keyboardType: TextInputType.text,
                   controller: _restaurantNameController,
                   validator: _validateRestaurantName,
@@ -153,6 +174,7 @@ class _EditReferPartnerDialogState
                   context,
                   label: "${Strings.CONTACT_PERSON}*",
                   hint: "${Strings.CONTACT_PERSON}*",
+                  focusNode: _contactPersonFocus,
                   keyboardType: TextInputType.text,
                   controller: _contactPersonController,
                   validator: _validateContactPerson,
@@ -164,6 +186,7 @@ class _EditReferPartnerDialogState
                   context,
                   label: "${Strings.CONTACT_NUMBER}*",
                   hint: "${Strings.CONTACT_NUMBER}*",
+                  focusNode: _contactNumberFocus,
                   keyboardType: TextInputType.number,
                   controller: _contactNumberController,
                   validator: _validateContactNumber,
@@ -178,6 +201,7 @@ class _EditReferPartnerDialogState
                   context,
                   label: "${Strings.EMAIL}*",
                   hint: "${Strings.EMAIL}*",
+                  focusNode: _emailFocus,
                   keyboardType: TextInputType.text,
                   controller: _emailController,
                   textInputAction: TextInputAction.done,
@@ -191,21 +215,21 @@ class _EditReferPartnerDialogState
                     onRightTap: _isLoading
                         ? null
                         : () async {
-                      if (!_formKey.currentState!.validate()) return;
+                            if (!_formKey.currentState!.validate()) return;
 
-                      setState(() => _isLoading = true);
-                      final success = await _referPartnerNetworkCall();
-                      if (!mounted) return;
+                            setState(() => _isLoading = true);
+                            final success = await _referPartnerNetworkCall();
+                            if (!mounted) return;
 
-                      setState(() => _isLoading = false);
+                            setState(() => _isLoading = false);
 
-                      if (success) {
-                        Utils.showToast(
-                          '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
-                        );
-                        Navigator.pop(context);
-                      }
-                    },
+                            if (success) {
+                              Utils.showToast(
+                                '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
+                              );
+                              Navigator.pop(context);
+                            }
+                          },
                     rightText: Strings.SAVE_CHANGES,
                     isLoading: _isLoading,
                   ),
@@ -222,6 +246,7 @@ class _EditReferPartnerDialogState
     BuildContext context, {
     required String hint,
     required String label,
+    required FocusNode focusNode,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
     TextEditingController? controller,
@@ -230,6 +255,7 @@ class _EditReferPartnerDialogState
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       validator: validator,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -240,9 +266,12 @@ class _EditReferPartnerDialogState
       ),
       cursorColor: Colors.white70,
       decoration: InputDecoration(
-        labelText: label,
+        labelText:
+            (focusNode.hasFocus || (controller?.text.isNotEmpty ?? false))
+            ? label
+            : null,
         labelStyle: TextStyle(color: Colors.white70),
-        hintText: hint,
+        hintText: focusNode.hasFocus ? null : hint,
         hintStyle: TextStyle(
           color: Colors.white70,
           fontSize: Constant.CONTAINER_SIZE_13,

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
-import 'package:sustajn_restaurant/utils/nav_utils.dart';
+
 import '../../constants/number_constants.dart';
-import 'package:flutter/services.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
@@ -13,22 +12,35 @@ class FeedbackBottomSheet extends ConsumerStatefulWidget {
   const FeedbackBottomSheet({super.key});
 
   @override
-  ConsumerState<FeedbackBottomSheet> createState() => _FeedbackBottomSheetState();
+  ConsumerState<FeedbackBottomSheet> createState() =>
+      _FeedbackBottomSheetState();
 }
 
 class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController subjectController = TextEditingController();
   final TextEditingController remarksController = TextEditingController();
   int? selectedFeedbackIndex;
 
   bool _isLoading = false;
+  late FocusNode focusNode;
+  late FocusNode _subjectFocus;
+  late FocusNode _remarksFocus;
 
   @override
   void initState() {
     super.initState();
     Utils.userId;
+
+    _subjectFocus = FocusNode();
+    _remarksFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subjectFocus.dispose();
+    _remarksFocus.dispose();
   }
 
   final List<Map<String, String>> feedbackOptions = [
@@ -38,6 +50,20 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     {'label': 'Happy', 'emoji': '😊'},
     {'label': 'Excellent', 'emoji': '😍'},
   ];
+
+  String? _validateSubject(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Fill the subjects';
+    }
+    return null;
+  }
+
+  String? _validateRemarks(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Fill the remarks';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +98,23 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                         _buildTextField(
                           context,
                           controller: subjectController,
+                          validator: _validateSubject,
                           hint: '${Strings.SUBJECT}*',
+                          label: '${Strings.SUBJECT}*',
+                          focusNode: _subjectFocus,
                           maxLines: 1,
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_16),
                         _buildTextField(
                           context,
                           controller: remarksController,
+                          validator: _validateRemarks,
                           hint: '${Strings.YOUR_REMARKS}*',
+                          label: '${Strings.YOUR_REMARKS}*',
+                          focusNode: _remarksFocus,
                           maxLines: 5,
                           showCounter: true,
-                          textInputAction: TextInputAction.done
+                          textInputAction: TextInputAction.done,
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
                         _buildSubmitButton(context),
@@ -108,7 +140,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
       ),
       child: Row(
         children: [
-          Text(Strings.FEEDBACK,
+          Text(
+            Strings.FEEDBACK,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -142,7 +175,6 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(feedbackOptions.length, (index) {
@@ -190,40 +222,49 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
   }
 
   Widget _buildTextField(
-      BuildContext context, {
-        required TextEditingController controller,
-        required String hint,
-        required int maxLines,
-        TextInputAction textInputAction = TextInputAction.next,
-        bool showCounter = false,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String hint,
+    required String label,
+    required int maxLines,
+    required FocusNode focusNode,
+    String? Function(String?)? validator,
+    TextInputAction textInputAction = TextInputAction.next,
+    bool showCounter = false,
+  }) {
     final theme = Theme.of(context);
 
-    return TextField(
+    return TextFormField(
+      focusNode: focusNode,
       controller: controller,
+      validator: validator,
       maxLines: maxLines,
       cursorColor: Colors.white,
       maxLength: showCounter ? 500 : null,
       textInputAction: textInputAction,
       style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
       decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium
-            ?.copyWith(color: Colors.white70),
+        hintText: focusNode.hasFocus ? null : hint,
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+        labelText:
+            (focusNode.hasFocus || (controller?.text.isNotEmpty ?? false))
+            ? label
+            : null,
+        labelStyle: TextStyle(color: Colors.white70),
         counterText: showCounter ? null : '',
         counterStyle: TextStyle(color: Colors.white),
         contentPadding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
         ),
-        enabledBorder:  OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           borderSide: BorderSide(color: Constant.grey),
-        )
+        ),
       ),
     );
   }
@@ -236,27 +277,26 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
         onRightTap: _isLoading
             ? null
             : () async {
-          if (!_formKey.currentState!.validate()) return;
+                if (!_formKey.currentState!.validate()) return;
 
-          setState(() => _isLoading = true);
-          final success = await _feedbackNetworkCall();
-          if (!mounted) return;
+                setState(() => _isLoading = true);
+                final success = await _feedbackNetworkCall();
+                if (!mounted) return;
 
-          setState(() => _isLoading = false);
+                setState(() => _isLoading = false);
 
-          if (success) {
-            Utils.showToast(
-              '${Strings.FEEDBACK_DETAILS} ${Strings.SUCC_MSG}',
-            );
-            Navigator.pop(context);
-          }
-        },
+                if (success) {
+                  Utils.showToast(
+                    '${Strings.FEEDBACK_DETAILS} ${Strings.SUCC_MSG}',
+                  );
+                  Navigator.pop(context);
+                }
+              },
         rightText: Strings.SEND_FEEDBACK,
         isLoading: _isLoading,
       ),
     );
   }
-
 
   Map<String, dynamic> getJsonData() {
     final String? selectedLabel = selectedFeedbackIndex != null
@@ -267,7 +307,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
       "userId": Utils.userId,
       "rating": selectedLabel,
       "subject": subjectController.text,
-      "remark": remarksController.text
+      "remark": remarksController.text,
     };
     return data;
   }
@@ -287,10 +327,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
       await ref.read(feedbackProvider(getJsonData()).future);
       Utils.showToast('${Strings.FEEDBACK_DETAILS} ${Strings.SUCC_MSG}');
       Navigator.pop(context);
-
     } catch (e) {
       Utils.printLog(e.toString());
     }
   }
-
 }
