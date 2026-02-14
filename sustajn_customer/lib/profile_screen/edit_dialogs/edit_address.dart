@@ -33,14 +33,14 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
             color: const Color(0xFF0D402C),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius:  BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                Strings.ADDRESS_OPTION,
+                "Address Options",
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -52,7 +52,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.edit_outlined,
-                text: Strings.EDIT_ADDRESS,
+                text: "Edit Address",
                 onTap: () {
                   Navigator.pop(context);
                   NavUtil.navigateToPushScreen(
@@ -71,26 +71,28 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.delete_forever,
-                text: Strings.REMOVE_ADDRESS,
-                onTap: () async {
-                  Navigator.pop(context);
-                  _deleteAddress(profileState, widget.address.id ?? 0);
-                  // Utils.displayDialog(
-                  //   context: context,
-                  //   icon: Icons.warning,
-                  //   title: "Delete Address",
-                  //   subTitle: "This address will be permanently removed from your saved list.You can't undo this action",
-                  //   cancelButtonText: "No",
-                  //   yesButtonText: "Delete",
-                  //   onCancel: () {
-                  //     Navigator.pop(context);
-                  //   },
-                  //   onYes: () async {
-                  //     Navigator.pop(context);
-                  //     _deleteAddress(profileState, widget.address.id ?? 0);
-                  //   },
-                  // );
-                },
+                text: Strings.REMOVE_ADDRESS_TITLE,
+                  onTap: () async {
+                    Utils.displayDialog(
+                      context: context,
+                      icon: Icons.warning,
+                      title: Strings.DELETE_ADDRESS,
+                      subTitle:
+                      Strings.REMOVE_ADDRESS_TXT,
+                      cancelButtonText: Strings.NO,
+                      yesButtonText: Strings.DELETE,
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                      onYes: () async {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+
+                        await _deleteAddress(profileState, widget.address.id ?? 0);
+                      },
+                    );
+                  }
+
               ),
             ],
           ),
@@ -155,24 +157,32 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     );
   }
 
-  _deleteAddress(var registrationState, int addressId) async {
+  _deleteAddress(var profileState, int addressId) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,
+          ) async {
         try {
           if (isNetworkAvailable) {
-            registrationState.setIsLoading(true);
-            await ref.read(
+            profileState.setIsLoading(true);
+
+            final response = await ref.read(
               deleteAddressProvider({"addressId": addressId}).future,
             );
 
-            ref.read(profileProvider).clearProfileList();
-            await ref.read(
-              getProfileProvider('${NetworkUrls.GET_PROFILE}${Utils.userId}').future,
-            );
+            if (response.data != null) {
+              ref.read(profileProvider).setProfileList(response.data!);
+              profileState.setIsLoading(false);
+
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: "Address deleted successfully",
+                color: Colors.green,
+              );
+            }
           } else {
-            registrationState.setIsLoading(false);
+            profileState.setIsLoading(false);
             if (!mounted) return;
             showCustomSnackBar(
               context: context,
@@ -181,15 +191,21 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             );
           }
         } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          registrationState.setIsLoading(false);
+          Utils.printLog('Error on delete: $e');
+          profileState.setIsLoading(false);
+          if (!mounted) return;
+          showCustomSnackBar(
+            context: context,
+            message: "Error deleting address",
+            color: Colors.red,
+          );
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog('Error in delete: $e');
+      profileState.setIsLoading(false);
     }
   }
 }

@@ -64,6 +64,8 @@ dependencies:
   get: ^4.6.6
   flutter_local_notifications_platform_interface: ^8.0.0
   flutter_local_notifications: ^18.0.1
+  dropdown_button2: ^2.3.9
+
 
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ import '../auth/screens/dashboard/dashboard_screen.dart';
 import '../auth/screens/reset_password.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lottie_animation/account_create_animation.dart';
 import '../models/login_model.dart';
 import '../models/register.dart';
 import '../notifier/login_notifier.dart';
@@ -112,7 +113,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
         Utils.getToken();
         Utils.getProfile();
         // Utils.getUserId();
-        NavUtil.navigateToWithReplacement(registrationState.context, DashboardScreen());
+        NavUtil.navigateToWithReplacement(registrationState.context, AccountSuccessScreen());
 
       } else {
         showCustomSnackBar(
