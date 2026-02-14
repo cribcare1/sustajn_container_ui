@@ -28,6 +28,8 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
+  List<ContainersDetails> _filteredContainers = [];
+
   LoginData? loginResponse;
   bool isLoading = true;
 
@@ -46,10 +48,41 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
     });
   }
 
+  void _filterContainers(
+      String query,
+      List<ContainersDetails> containers,
+      ) {
+    final lowerQuery = query.toLowerCase();
+
+    setState(() {
+      if (query.isEmpty) {
+        _filteredContainers = List.from(containers);
+        return;
+      }
+
+      _filteredContainers = containers.where((item) {
+        final name = item.containerName?.toLowerCase() ?? "";
+        final id = item.containerUniqueId?.toString().toLowerCase() ?? "";
+
+        return name.contains(lowerQuery) || id.contains(lowerQuery);
+      }).toList();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
+    final containers =
+        orderState.getContainerData?.containersDetails ?? [];
+
+    if (_filteredContainers.isEmpty &&
+        searchController.text.isEmpty &&
+        containers.isNotEmpty) {
+      _filteredContainers = List.from(containers);
+    }
+
 
     return SafeArea(
       bottom: true,
@@ -65,6 +98,9 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                   CustomTheme.searchField(
                     searchController,
                     Strings.SEARCH_BY_CONTAINER_NAME,
+                    onChanged: (value) {
+                      _filterContainers(value, containers);
+                    },
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
 
@@ -88,16 +124,11 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                             ),
                           )
                         : ListView.separated(
-                            itemCount: orderState
-                                .getContainerData!
-                                .containersDetails!
-                                .length,
+                            itemCount: _filteredContainers.length,
                             separatorBuilder: (_, __) =>
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
                             itemBuilder: (context, index) {
-                              final item = orderState
-                                  .getContainerData!
-                                  .containersDetails![index];
+                              final item = _filteredContainers[index];
                               return _containerCard(context, item, theme);
                             },
                           ),
