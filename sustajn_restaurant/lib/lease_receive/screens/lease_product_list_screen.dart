@@ -169,7 +169,7 @@ class _LeaseProductListScreenState
               errorBuilder: (context, obj, stack){
                 return Image.asset("assets/images/no_image_container.png");
               },
-              fit: BoxFit.contain,
+              fit: BoxFit.fill,
             ),
           ),
           const SizedBox(width: 12),

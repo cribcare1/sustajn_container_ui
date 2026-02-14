@@ -132,6 +132,7 @@ class CustomTheme {
       }) {
     return TextField(
       controller: controller,
+      autofocus: false,
       style: const TextStyle(fontSize: 14, color: Colors.white),
       onChanged: onChanged,
       cursorColor: Colors.white,

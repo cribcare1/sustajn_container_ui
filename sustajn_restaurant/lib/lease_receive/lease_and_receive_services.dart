@@ -5,6 +5,7 @@ import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/network/ApiCallPresentator.dart';
 
 import 'model/container_list_model.dart';
+import 'model/container_return_list_model.dart';
 class LeaseAndReceiveServices {
   ApiCallPresenter presenter = ApiCallPresenter();
   Future<dynamic> leaseContainer(Map<String,dynamic> body)async{
@@ -54,6 +55,23 @@ class LeaseAndReceiveServices {
       throw Exception(e);
     }
   }
+  Future<ContainerReturnListModel> fetchReturnContainerList(String userId) async {
+    try {
+      var api =
+          "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE_LIST}?userId=$userId";
+
+      var response = await presenter.getAPIData(api);
+
+      if (response != null) {
+        return ContainerReturnListModel.fromJson(response);
+      } else {
+        throw Exception("Unable to fetch container list");
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
 }
 
 final leaseAPIServices = Provider<LeaseAndReceiveServices>((ref) =>LeaseAndReceiveServices());
