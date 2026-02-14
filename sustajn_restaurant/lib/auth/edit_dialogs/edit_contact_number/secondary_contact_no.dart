@@ -96,7 +96,7 @@ class _SecondaryMobileNumberDialogState
                     color: Colors.grey,
                   ),
                 ),
-                SizedBox(height: Constant.SIZE_08),
+                SizedBox(height: Constant.SIZE_05),
                 Row(
                   children: [
                     Icon(
@@ -137,6 +137,13 @@ class _SecondaryMobileNumberDialogState
 
                 SizedBox(height: Constant.CONTAINER_SIZE_25),
                 if (widget.secondaryMobileNumber.isNotEmpty) ...[
+                  Text(
+                    Strings.SECONDARY_NO,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_05),
                   Row(
                     children: [
                       Icon(
