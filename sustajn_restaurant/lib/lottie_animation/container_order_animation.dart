@@ -7,15 +7,16 @@ import '../constants/string_utils.dart';
 import '../utils/nav_utils.dart';
 import '../utils/sharedpreference_utils.dart';
 
-class AccountSuccessScreen extends StatefulWidget {
-  final String message;
-  const AccountSuccessScreen({Key? key, required this.message}) : super(key: key);
+class ContainerOrderScreen extends StatefulWidget {
+  final String title;
+  final String subTitle;
+  const ContainerOrderScreen({Key? key, required this.title, required this.subTitle}) : super(key: key);
 
   @override
-  State<AccountSuccessScreen> createState() => _AccountSuccessScreenState();
+  State<ContainerOrderScreen> createState() => _ContainerOrderScreenState();
 }
 
-class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
+class _ContainerOrderScreenState extends State<ContainerOrderScreen> {
 
   @override
   void initState() {
@@ -49,8 +50,16 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_20),
               Text(
-                widget.message,
+                widget.title,
                 style: theme.textTheme.titleMedium?.copyWith(
+                  color: Constant.gold,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                widget.subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleSmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),

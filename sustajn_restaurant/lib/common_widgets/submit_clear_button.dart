@@ -27,15 +27,15 @@ class SubmitClearButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.amber, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
               padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
             ),
             child: Text(
               leftText!,
-              style: const TextStyle(
+              style:  TextStyle(
                 color: Constant.gold,
-                fontSize: 15,
+                fontSize: Constant.LABEL_TEXT_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -51,7 +51,7 @@ class SubmitClearButton extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD1AE31), // Gold color
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                 side: BorderSide(color: Colors.white),
               ),
               elevation: 0,
@@ -61,7 +61,7 @@ class SubmitClearButton extends StatelessWidget {
               rightText!,
               style:  TextStyle(
                 color: theme.scaffoldBackgroundColor,
-                fontSize: 15,
+                fontSize: Constant.LABEL_TEXT_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),
             ),

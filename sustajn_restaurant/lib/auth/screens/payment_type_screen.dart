@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
@@ -37,9 +38,14 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   final TextEditingController ibanController = TextEditingController();
 
+
+
   @override
   void initState(){
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).clearBankErrors();
+    });
     _getData();
   }
 
@@ -271,47 +277,50 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 asset: 'assets/images/google_pay.png',
               ),
               _orDivider(theme),
+              _sectionTitle(theme, title: 'Bank Details'),
+              _bankFields(theme, authState),
               _sectionTitle(theme, title: Strings.BANK_DETAILS),
-              _bankFields(theme),
+              _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () async {
-                    // if (!_validateBankDetails(context)) return;
+                    final auth = ref.read(authNotifierProvider);
+
+                    // Validate bank details
+                    if (!auth.validateBankDetails()) return;
+
+                    // Validate payment selection
                     if (!_validatePaymentSelection(context, authState)) return;
 
+                    // If profile screen, stop here
                     if (widget.profile == 'profile') {
-                      // final bool success = await _businessInfoNetworkCall(regdNo) ?? false;
-                      //
-                      // if (success) {
-                      //   Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
-                      //   Navigator.pop(context);
-                      // }
-                      // else {
-                      //   showCustomSnackBar(
-                      //     context: context,
-                      //     message: Strings.SOMETHING_WENT_WRONG,
-                      //     color: Colors.red,
-                      //   );
-                      // }
                       return;
                     }
+
                     final bankData = BankDetailsModel(
-                      bankName: bankNameController.text,
-                      bicNumber: bicController.text,
-                      accountHolderName: accountHolderNameController.text,
-                      ibanNumber: ibanController.text,
+                      bankName: auth.bankName,
+                      accountHolderName: auth.accountHolder,
+                      ibanNumber: auth.iban,
+                      bicNumber: auth.bic,
                     );
 
+                    auth.setBankDetails(bankData);
                     authState.setBankDetails(bankData);
-                    NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      SubscriptionScreen(),
+                    );
                   },
+
                   rightText: widget.profile == 'profile'
                       ? Strings.VERIFY
                       : Strings.VERIFY_CONT,
                 ),
               ),
+
             ],
           ),
         ),
@@ -394,6 +403,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ),
     );
   }
+
+
 
   Widget _orDivider(ThemeData theme) {
     return Padding(
@@ -498,76 +509,91 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
+  Widget _bankFields(ThemeData theme, var auth) {
     return Column(
       children: [
         _inputField(
           theme,
-          hint: Strings.BANK_NAME,
-          label: Strings.BANK_NAME,
+          hint: 'Bank Name',
           controller: bankNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.bankNameError,
+          onChanged: auth.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.ACCOUNT_HOLDER_NAME,
-          label: Strings.ACCOUNT_HOLDER_NAME,
+          hint: 'Account Holder Name',
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.accountHolderError,
+          onChanged: auth.setAccountHolder,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.IBAN,
-          label: Strings.IBAN,
+          hint: 'IBAN',
           controller: ibanController,
           keyboardType: TextInputType.text,
+          errorText: auth.ibanError,
+          onChanged: auth.setIban,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(23),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.BIC,
-          label: Strings.BIC,
+          hint: 'BIC',
           controller: bicController,
           keyboardType: TextInputType.text,
+          errorText: auth.bicError,
+          onChanged: auth.setBic,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(11),
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          ],
         ),
       ],
     );
   }
 
   Widget _inputField(
-    ThemeData theme, {
-    required String hint,
-        required String label,
+      ThemeData theme, {
+        required String hint,
         required TextEditingController controller,
-    TextInputType keyboardType = TextInputType.text,
-    List<TextInputFormatter>? inputFormatters,
-  }) {
+        required String? errorText,
+        required Function(String) onChanged,
+        TextInputType keyboardType = TextInputType.text,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
     return TextField(
-      controller: controller,
-      autofocus: false,
+      onChanged: onChanged,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
       cursorColor: Colors.white,
+      textCapitalization: TextCapitalization.characters,
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
-        labelText: label,
-        labelStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+        errorText: errorText,
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
         ),
-        enabledBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
-        focusedBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
+        enabledBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
+        focusedBorder:
+        CustomTheme.roundedBorder(Constant.grey.withOpacity(0.3)),
       ),
     );
   }
@@ -593,10 +619,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       return false;
     }
 
+
     return true;
   }
-}
 
+}
 class AddGatewayDialog extends StatefulWidget {
   final String title;
   final String asset;

@@ -159,17 +159,30 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: Constant.LABEL_TEXT_SIZE_16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white70,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontSize: Constant.LABEL_TEXT_SIZE_16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+
+                        Text(
+                          "In-Stock",
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: Constant.SIZE_04),
+
                     Row(
                       children: [
                         Expanded(
@@ -179,7 +192,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: Constant.LABEL_TEXT_SIZE_14,
-                              color: Colors.white70,
+                              color: Colors.white,
                             ),
                           ),
                         ),

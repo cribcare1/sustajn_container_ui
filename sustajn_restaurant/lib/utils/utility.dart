@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -479,6 +480,113 @@ class Utils {
         false;
   }
 
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget _optionButton(
     BuildContext context, {
     required IconData icon,
@@ -772,6 +880,72 @@ class Utils {
       ),
     );
   }
+
+  static Widget getDateTimePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme
+      ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle:  TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
+              ),
+              doneStyle:  TextStyle( fontSize: Constant.LABEL_TEXT_SIZE_16),
+            ),
+            onConfirm: (date) {
+              final value =
+                  "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white70),
+              suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
 }
 
 void showCustomSnackBar({
@@ -784,7 +958,7 @@ void showCustomSnackBar({
       content: Text(
         message,
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: Constant.CONTAINER_SIZE_14,
         ),
       ),

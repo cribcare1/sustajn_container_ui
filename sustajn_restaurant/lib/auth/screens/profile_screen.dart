@@ -17,8 +17,7 @@ import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/edit_address.dart';
-import '../edit_dialogs/edit_bankdetails_dialog.dart';
-import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
+import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
@@ -50,12 +49,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];
 
-  void _handleItemTap(
-    int index,
-    BuildContext context,
-    String mobileNo,
-    String secondaryNo,
-  ) {
+  void _handleItemTap(int index, BuildContext context, String? mobileNo, String? secondaryMobile, int userId) {
     switch (index) {
       case 0:
         break;
@@ -63,7 +57,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showAddressDialog(context);
         break;
       case 2:
-        _showMobileNoDialog(context, mobileNo, secondaryNo);
+        _showMobileNoDialog(context, mobileNo??"",secondaryMobile??"",  userId);
         break;
       case 3:
         _showReportScreen(context);
@@ -119,30 +113,17 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showMobileNoDialog(
-    BuildContext context,
-    String mobile,
-    String secondaryNo,
-  ) {
+  void _showMobileNoDialog(BuildContext context, String mobile, String secondayMobile, int userId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => SecondaryMobileNumberDialog(
-        mobileNumber: mobile ?? "",
-        secondaryMobileNumber: secondaryNo ?? "",
-      ),
+      builder: (_) => EditMobileNumberDialog(mobileNumber: mobile,
+        secondaryNumber: secondayMobile,
+        userId: userId,),
     );
   }
 
-  void _showBankDetailsEdit(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const EditBankDetailsDialog(),
-    );
-  }
 
   void _showReferPartnerDialogue(BuildContext context) {
     showModalBottomSheet(
@@ -428,6 +409,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   context,
                                   profile.mobileNumber ?? "",
                                   profile.secondaryNumber ?? "",
+                                  profile.id ??0
                                 ),
                               );
                             },
