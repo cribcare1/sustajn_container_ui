@@ -38,18 +38,14 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   final TextEditingController ibanController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(authNotifierProvider).clearBankErrors();
-    });
-  }
 
 
   @override
   void initState(){
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).clearBankErrors();
+    });
     _getData();
   }
 
@@ -284,36 +280,25 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               _sectionTitle(theme, title: 'Bank Details'),
               _bankFields(theme, authState),
               _sectionTitle(theme, title: Strings.BANK_DETAILS),
-              _bankFields(theme),
+              _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
-                  onRightTap: () {
+                  onRightTap: () async {
                     final auth = ref.read(authNotifierProvider);
 
+                    // Validate bank details
                     if (!auth.validateBankDetails()) return;
 
-                  onRightTap: () async {
-                    // if (!_validateBankDetails(context)) return;
+                    // Validate payment selection
                     if (!_validatePaymentSelection(context, authState)) return;
 
+                    // If profile screen, stop here
                     if (widget.profile == 'profile') {
-                      // final bool success = await _businessInfoNetworkCall(regdNo) ?? false;
-                      //
-                      // if (success) {
-                      //   Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
-                      //   Navigator.pop(context);
-                      // }
-                      // else {
-                      //   showCustomSnackBar(
-                      //     context: context,
-                      //     message: Strings.SOMETHING_WENT_WRONG,
-                      //     color: Colors.red,
-                      //   );
-                      // }
                       return;
                     }
+
                     final bankData = BankDetailsModel(
                       bankName: auth.bankName,
                       accountHolderName: auth.accountHolder,
@@ -322,18 +307,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     );
 
                     auth.setBankDetails(bankData);
-
-
                     authState.setBankDetails(bankData);
-                    NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      SubscriptionScreen(),
+                    );
                   },
 
-                  rightText: "Verify and Continue",
                   rightText: widget.profile == 'profile'
                       ? Strings.VERIFY
                       : Strings.VERIFY_CONT,
                 ),
               ),
+
             ],
           ),
         ),
