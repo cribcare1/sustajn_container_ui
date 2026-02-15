@@ -64,7 +64,6 @@ final receiveContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
       );
       Navigator.pop(leaseNotifier.context!);
       Navigator.pop(leaseNotifier.context!);
-      Navigator.pop(leaseNotifier.context!);
     }else{
       showCustomSnackBar(
         context: leaseNotifier.context!,
