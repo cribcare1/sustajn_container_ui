@@ -103,24 +103,30 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
       productId: 0, productName: '', containerCount: 0, productImageUrl: '', productUniqueId: '', containerQuantity: 0,
       ),
     );
-    final alreadyAdded = leaseNotifier.containersList.any(
-          (e) => e.containerUniqueId == id,
-    );
-
-    if (alreadyAdded) {
-      final container = leaseNotifier.containersList.firstWhere(
-            (e) => e.containerUniqueId == id,
+    if(leaseNotifier.containersDetailsList.isNotEmpty) {
+      leaseNotifier.setCustomerUserId(leaseNotifier.containerReturnList[0].userId!);
+      final alreadyAdded = leaseNotifier.containerReturnListAdded.any(
+            (e) => e.productUniqueId == id,
       );
 
-      container.quantity += 1;
+      if (alreadyAdded) {
+        final container = leaseNotifier.containerReturnListAdded.firstWhere(
+              (e) => e.productUniqueId == id,
+        );
+
+        container.containerCount += 1;
+      }
+      leaseNotifier.setContainerReturnList(matchedContainer);
+      showCustomSnackBar(
+        context: context,
+        message: "Container added. Total: ${leaseNotifier.containerReturnListAdded
+            .length}",
+        color: Colors.white,
+      );
+    }else{
+      showCustomSnackBar(context: context, message: "No container available to return", color: Colors.white,);
     }
-    leaseNotifier.setContainerReturnList(matchedContainer);
-    leaseNotifier.setCustomerUserId(leaseNotifier.containerReturnList[0].userId!);
-    showCustomSnackBar(
-      context: context,
-      message: "Container added. Total: ${leaseNotifier.containersList.length}",
-      color: Colors.green,
-    );
+
   }
 
   Future<void> _scanAgain() async {

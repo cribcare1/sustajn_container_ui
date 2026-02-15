@@ -28,58 +28,61 @@ class CustomerBorrowedData {
 }
 
 class ProductOrderListResponseList {
-  int? userId;
-  int? orderId;
-  int? productId;
-  String? productName;
-  int? quantity;
-  String? productImageUrl;
-  int? daysLeft;
-  String? productUniqueId;
-  int? containerQuantity;
-  String? dueDate;
-  int? containerCount;
+  final int userId;
+  final int orderId;
+  final int productId;
+  final String productName;
+  final int quantity;
+  final String productImageUrl;
+  final int daysLeft;
+  final String productUniqueId;
+  final int containerQuantity;
+  final String dueDate;
+  int containerCount;
 
-  ProductOrderListResponseList(
-      {this.userId,
-        this.orderId,
-        this.productId,
-        this.productName,
-        this.quantity,
-        this.productImageUrl,
-        this.daysLeft,
-        this.productUniqueId,
-        this.containerQuantity,
-        this.dueDate,
-      this.containerCount});
+  ProductOrderListResponseList({
+    required this.userId,
+    required this.orderId,
+    required this.productId,
+    required this.productName,
+    required this.quantity,
+    required this.productImageUrl,
+    required this.daysLeft,
+    required this.productUniqueId,
+    required this.containerQuantity,
+    required this.dueDate,
+    this.containerCount = 1,
+  });
 
-  ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
-    userId = json['userId'];
-    orderId = json['orderId'];
-    productId = json['productId'];
-    productName = json['productName'];
-    quantity = json['quantity'];
-    productImageUrl = json['productImageUrl'];
-    daysLeft = json['daysLeft'];
-    productUniqueId = json['productUniqueId'];
-    containerQuantity = json['containerQuantity'];
-    dueDate = json['dueDate'];
-    containerCount =json['containerCount']??0;
+  factory ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
+    return ProductOrderListResponseList(
+      userId: json['userId'] ?? 0,
+      orderId: json['orderId'] ?? 0,
+      productId: json['productId'] ?? 0,
+      productName: json['productName'] ?? '',
+      quantity: json['quantity'] ?? 0,
+      productImageUrl: json['productImageUrl'] ?? '',
+      daysLeft: json['daysLeft'] ?? 0,
+      productUniqueId: json['productUniqueId'] ?? '',
+      containerQuantity: json['containerQuantity'] ?? 0,
+      dueDate: json['dueDate'] ?? '',
+      containerCount: json['containerCount'] ?? 1,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userId'] = this.userId;
-    data['orderId'] = this.orderId;
-    data['productId'] = this.productId;
-    data['productName'] = this.productName;
-    data['quantity'] = this.quantity;
-    data['productImageUrl'] = this.productImageUrl;
-    data['daysLeft'] = this.daysLeft;
-    data['productUniqueId'] = this.productUniqueId;
-    data['containerQuantity'] = this.containerQuantity;
-    data['dueDate'] = this.dueDate;
-    data['containerCount'] = this.containerCount;
-    return data;
+    return {
+      'userId': userId,
+      'orderId': orderId,
+      'productId': productId,
+      'productName': productName,
+      'quantity': quantity,
+      'productImageUrl': productImageUrl,
+      'daysLeft': daysLeft,
+      'productUniqueId': productUniqueId,
+      'containerQuantity': containerQuantity,
+      'dueDate': dueDate,
+      'containerCount': containerCount,
+    };
   }
 }

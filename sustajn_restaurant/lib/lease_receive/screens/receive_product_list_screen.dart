@@ -100,16 +100,11 @@ class _ReceiveProductListScreenState
             ? const Center(child: CircularProgressIndicator())
             : leaseNotifier.containerReturnList.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "There are no return containers available for this user.",
-                      style: theme.textTheme.titleMedium!.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  "There are no return containers available for this user.",
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               )
             : Column(
