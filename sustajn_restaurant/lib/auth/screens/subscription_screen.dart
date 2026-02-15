@@ -170,7 +170,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                       );
                     }else{
                       showCustomSnackBar(context: context,
-                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.red);
+                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.grey);
                     }
 
                   },
@@ -215,6 +215,14 @@ ThemeData theme;
    PlanCard({super.key, required this.plan, required this.onTap, required this.previousScreen,
   required this.theme});
 
+  String formatFee(num? value) {
+    final fee = value ?? 0;
+    return fee % 1 == 0
+        ? fee.toInt().toString()
+        : fee.toString();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -242,46 +250,32 @@ ThemeData theme;
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        plan.planName??"",
-                        style:  TextStyle(
-                          color: Colors.white,
-                          fontSize: Constant.CONTAINER_SIZE_22,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            plan.planName ?? "",
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: Constant.CONTAINER_SIZE_22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                      if (plan.isSelected)
-                        const Icon(Icons.check_circle, color: Colors.white),
+
+                      if (plan.isSelected) ...[
+                        SizedBox(width: Constant.SIZE_08),
+                         Icon(Icons.check_circle, color: Colors.white),
+                      ],
                     ],
                   ),
+
+
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
-                  //todo this may needed
-                  // ...plan.features.map(
-                  //   (feature) => Padding(
-                  //     padding: EdgeInsets.only(bottom: Constant.SIZE_08),
-                  //     child: Row(
-                  //       children: [
-                  //         Icon(
-                  //           Icons.check,
-                  //           color: Theme.of(context).secondaryHeaderColor,
-                  //           size: 18,
-                  //         ),
-                  //         const SizedBox(width: 12),
-                  //         Expanded(
-                  //           child: Text(
-                  //             feature,
-                  //             style: const TextStyle(
-                  //               color: Colors.white70,
-                  //               fontSize: 14,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Row(
                     children: [
                               Icon(
@@ -357,8 +351,15 @@ ThemeData theme;
                     colorBlendMode: BlendMode.srcIn,
                   ),
                   Text(
-                    " ${plan.feeType.toString()}/ ${plan.billingCycle.toLowerCase()}",
+                    " ${formatFee(plan.feeType)}/",
                     style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(
+                    " ${plan.billingCycle.toLowerCase()}",
+                    style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.black,
                     ),
                   ),

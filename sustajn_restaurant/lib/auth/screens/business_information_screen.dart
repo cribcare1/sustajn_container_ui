@@ -21,9 +21,13 @@ import '../model/social_media_model.dart';
 
 class BusinessInformationDetails extends ConsumerStatefulWidget {
   final AuthState authState;
-  final String? previous ;
+  final String? previous;
 
-  const BusinessInformationDetails({super.key, required this.authState, this.previous = ""});
+  const BusinessInformationDetails({
+    super.key,
+    required this.authState,
+    this.previous = "",
+  });
 
   @override
   ConsumerState<BusinessInformationDetails> createState() =>
@@ -32,7 +36,6 @@ class BusinessInformationDetails extends ConsumerStatefulWidget {
 
 class _BusinessInformationDetailsState
     extends ConsumerState<BusinessInformationDetails> {
-
   final _key = GlobalKey<FormState>();
 
   late TextEditingController websiteController;
@@ -45,6 +48,27 @@ class _BusinessInformationDetailsState
 
   String? _selectedBusinessType;
 
+  final Map<String, bool> _fieldTouched = {
+    'contactPerson': false,
+    'contactNumber': false,
+    'email': false,
+    'licence': false,
+    'vat': false,
+    'website': false,
+    'businessType': false,
+  };
+
+  final Map<String, String?> _fieldErrors = {
+    'contactPerson': null,
+    'contactNumber': null,
+    'email': null,
+    'licence': null,
+    'vat': null,
+    'website': null,
+    'businessType': null,
+  };
+
+  bool _formSubmitted = false;
 
   @override
   void initState() {
@@ -57,6 +81,44 @@ class _BusinessInformationDetailsState
     vatController = TextEditingController();
     websiteController = TextEditingController();
     businessTypeController = TextEditingController();
+
+    contactPersonController.addListener(() {
+      _validateFieldRealTime('contactPerson', contactPersonController.text, _validateContactPerson);
+    });
+    contactNumberController.addListener(() {
+      _validateFieldRealTime('contactNumber', contactNumberController.text, _validateContactNumber);
+    });
+    contactEmailController.addListener(() {
+      _validateFieldRealTime('email', contactEmailController.text, _validateEmail);
+    });
+    licenceController.addListener(() {
+      _validateFieldRealTime('licence', licenceController.text, _validateTradeLicense);
+    });
+    vatController.addListener(() {
+      _validateFieldRealTime('vat', vatController.text, _validateVAT);
+    });
+    websiteController.addListener(() {
+      _validateFieldRealTime('website', websiteController.text, _validateWebsite);
+    });
+  }
+
+  void _validateFieldRealTime(
+      String fieldName,
+      String value,
+      String? Function(String?) validator,
+      ) {
+    if (!_fieldTouched[fieldName]! && !_formSubmitted) {
+      return;
+    }
+
+    final error = validator(value);
+
+    if (_fieldErrors[fieldName] != error) {
+      setState(() {
+        _fieldTouched[fieldName] = true;
+        _fieldErrors[fieldName] = error;
+      });
+    }
   }
 
   @override
@@ -71,22 +133,6 @@ class _BusinessInformationDetailsState
     super.dispose();
   }
 
-  _getData() {
-    final profileState = ref.read(profileProvider);
-    final profile = profileState.getProfileData?.data;
-    if (profile!.contactAndRegistrationDetailsResponse != null || profile.bankDetailsResponse != null) {
-      final business = profile.contactAndRegistrationDetailsResponse;
-      final website = profile.businessDetailsResponse;
-
-      contactPersonController.text = business!.contactPersonName ?? "";
-      contactNumberController.text = business.contactNumber ?? "";
-      contactEmailController.text = business.contactEmail ?? "";
-      licenceController.text = business.treadLicenseNumber ?? "";
-      vatController.text = business.vatNumber ?? "";
-      websiteController.text = website!.website ?? "";
-    }
-  }
-
   final List<String> _businessTypes = [
     'Restaurant',
     'Cafe',
@@ -94,6 +140,145 @@ class _BusinessInformationDetailsState
     'Food court Cloud kitchen',
   ];
 
+  String? _validateContactPerson(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.CONTACT_PERSON_ERROR_TXT;
+    }
+
+    final RegExp nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+    if (!nameRegex.hasMatch(value.trim())) {
+      return 'Contact person name should contain only letters and spaces';
+    }
+
+    if (value.trim().length < 2) {
+      return 'Contact person name should be at least 2 characters';
+    }
+
+    if (value.length > 20) {
+      return 'Contact person name should not exceed 50 characters';
+    }
+
+    return null;
+  }
+
+  String? _validateContactNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.MOBILE_NUMBER_ERROR_TXT;
+    }
+
+    final cleanedNumber = value.replaceAll(RegExp(r'[^\d]'), '');
+
+    if (cleanedNumber.length != 10) {
+      return 'Mobile number must be exactly 10 digits';
+    }
+
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return Strings.EMAIL_REGISTRATION_ERROR_TXT;
+    }
+
+    final email = value.trim();
+
+    if (email.split('@').length != 2) {
+      return 'Please enter a valid email address';
+    }
+
+    final RegExp emailRegex =
+    RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$');
+
+    if (!emailRegex.hasMatch(email)) {
+      return 'Please enter a valid email address';
+    }
+
+    if (email.contains('..')) {
+      return 'Please enter a valid email address';
+    }
+
+    if (email.startsWith('@') || email.endsWith('@')) {
+      return 'Please enter a valid email address';
+    }
+
+    return null;
+  }
+
+  String? _validateTradeLicense(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Trade License number is required';
+    }
+
+    final cleanedValue = value.trim();
+
+    if (cleanedValue.length < 5) {
+      return 'Trade License number should be at least 5 characters';
+    }
+
+    if (cleanedValue.length > 12) {
+      return 'Trade License number should not exceed 12 characters';
+    }
+
+    final RegExp licenseRegex = RegExp(r'^[a-zA-Z0-9\s\-]+$');
+    if (!licenseRegex.hasMatch(cleanedValue)) {
+      return 'Trade License contains invalid characters';
+    }
+
+    return null;
+  }
+
+  String? _validateVAT(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'VAT number is required';
+    }
+
+    final cleanedValue = value.replaceAll(' ', '');
+
+    if (!RegExp(r'^\d+$').hasMatch(cleanedValue)) {
+      return 'VAT number should contain only digits';
+    }
+
+    if (cleanedValue.length != 15) {
+      return 'UAE VAT number must be exactly 15 digits';
+    }
+
+    return null;
+  }
+
+  String? _validateWebsite(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Website URL is required';
+    }
+
+    final cleanedValue = value.trim();
+
+    final RegExp urlRegex = RegExp(
+      r'^(https?:\/\/)?'
+      r'(www\.)?'
+      r'[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b'
+      r'([-a-zA-Z0-9()@:%_\+.~#?&/=]*)$',
+    );
+
+    if (!urlRegex.hasMatch(cleanedValue)) {
+      return 'Please enter a valid website URL (e.g., www.example.com or https://example.com)';
+    }
+
+    if (!cleanedValue.startsWith('http://') &&
+        !cleanedValue.startsWith('https://')) {
+      if (!cleanedValue.startsWith('www.')) {
+        return 'Website should start with www. or http:// or https://';
+      }
+    }
+
+    return null;
+  }
+
+  String? _validateBusinessType(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.BUSINESS_TYPE_ERROR_TXT;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,25 +292,23 @@ class _BusinessInformationDetailsState
           ?.registrationNumber;
     }
 
-
     final theme = Theme.of(context);
     return SafeArea(
       top: false,
       bottom: true,
       child: Scaffold(
-        appBar:
-        CustomAppBar(
+        appBar: CustomAppBar(
           title: widget.previous == 'profile'
               ? Strings.BUSINESS_INFORMATION
               : "",
-          leading: CustomBackButton()
+          leading: CustomBackButton(),
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if(widget.previous == "")...[
+              if (widget.previous == "") ...[
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 Row(
                   children: List.generate(4, (index) {
@@ -138,7 +321,8 @@ class _BusinessInformationDetailsState
                         ),
                         decoration: BoxDecoration(
                           color: active ? Constant.gold : Colors.white,
-                          borderRadius: BorderRadius.circular(Constant.SIZE_10),
+                          borderRadius:
+                          BorderRadius.circular(Constant.SIZE_10),
                         ),
                       ),
                     );
@@ -146,18 +330,26 @@ class _BusinessInformationDetailsState
                 ),
               ],
               SizedBox(height: Constant.CONTAINER_SIZE_20),
-              Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
-              Text(Strings.BUSINESS_INFO_TXT,
-                style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+              Text(
+                Strings.BUSINESS_INFORMATION,
+                style: theme.textTheme.titleLarge!
+                    .copyWith(color: Colors.white),
+              ),
+              Text(
+                Strings.BUSINESS_INFO_TXT,
+                style: theme.textTheme.titleSmall!
+                    .copyWith(color: Colors.white),
+              ),
               SizedBox(height: Constant.CONTAINER_SIZE_25),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
                   Strings.CONTACT_REGISTRATION,
                   textAlign: TextAlign.left,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Colors.white),
                 ),
               ),
               SizedBox(height: Constant.SIZE_05),
@@ -166,74 +358,61 @@ class _BusinessInformationDetailsState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Contact Person Field
                     _buildTextField(
                       context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.CONTACT_PERSON;
-                        }
-                        return null;
-                      },
-                      keyboard: TextInputType.name,
                       controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
+                      fieldName: 'contactPerson',
+                      validator: _validateContactPerson,
+                      keyboard: TextInputType.name,
                     ),
 
+                    // Contact Number Field
                     _buildTextField(
                       context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.MOBILE_NUMBER;
-                        }
-                        return null;
-                      },
                       controller: contactNumberController,
                       hint: Strings.MOBILE_NUMBER,
+                      fieldName: 'contactNumber',
+                      validator: _validateContactNumber,
                       keyboard: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(10),
                       ],
                     ),
-                    _buildTextField(
-                        context,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return Strings.EMAIL_REGISTRATION;
-                          }
-                          return null;
-                        },
-                        controller: contactEmailController,
-                        hint: Strings.EMAIL_REGISTRATION,
-                        keyboard: TextInputType.emailAddress
-                    ),
+
                     _buildTextField(
                       context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.TRADE_LICENSE_NUMBER;
-                        }
-                        return null;
-                      },
+                      controller: contactEmailController,
+                      hint: Strings.EMAIL_REGISTRATION,
+                      fieldName: 'email',
+                      validator: _validateEmail,
+                      keyboard: TextInputType.emailAddress,
+                    ),
+
+                    _buildTextField(
+                      context,
                       controller: licenceController,
                       hint: Strings.TRADE_LICENSE_NUMBER,
+                      fieldName: 'licence',
+                      validator: _validateTradeLicense,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(12),
+                      ],
                     ),
+
                     _buildTextField(
                       context,
-                      keyboard: TextInputType.number,
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(15),
-                      ],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.VAT_NUMBER;
-                        }if (value.length != 15) {
-                          return Strings.VAT_NUMBER_15;
-                        }
-                        return null;
-                      },
                       controller: vatController,
                       hint: Strings.VAT_NUMBER,
+                      fieldName: 'vat',
+                      validator: _validateVAT,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(15),
+                      ],
                     ),
 
                     Align(
@@ -241,94 +420,31 @@ class _BusinessInformationDetailsState
                       child: Text(
                         Strings.BUSINESS_DTLS,
                         textAlign: TextAlign.left,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.white),
                       ),
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_15),
-                    DropdownButtonFormField2<String>(
-                      value: _selectedBusinessType,
-
-                      selectedItemBuilder: (context) {
-                        return _businessTypes.map((item) {
-                          return Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              item,
-                              style: const TextStyle(color: Colors.white70),
-                            ),
-                          );
-                        }).toList();
-                      },
-
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: theme.primaryColor,
-                        labelText: Strings.TYPES_OF_BUSINESS,
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: Constant.CONTAINER_SIZE_16,
-                          vertical: Constant.CONTAINER_SIZE_14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                          borderSide: const BorderSide(color: Color(0xFFD1AE31)),
-                        ),
-                      ),
-
-                      iconStyleData: const IconStyleData(
-                        icon: Icon(Icons.arrow_drop_down, color: Colors.white70),
-                      ),
-
-                      items: _businessTypes.map((type) {
-                        return DropdownMenuItem<String>(
-                          value: type,
-                          child: Text(
-                            type,
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        );
-                      }).toList(),
-
-                      onChanged: (value) {
-                        setState(() => _selectedBusinessType = value);
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.ENTER_BUSINESSTYPE;
-                        }
-                        return null;
-                      },
-                    ),
+                    _buildBusinessTypeDropdown(context, theme),
 
                     SizedBox(height: Constant.SIZE_10),
 
                     _buildTextField(
                       context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.ENTER_WEBSITE;
-                        }
-                        return null;
-                      },
                       controller: websiteController,
                       hint: Strings.ENTER_WEBSITE,
-                      textInputAction: TextInputAction.done
+                      fieldName: 'website',
+                      validator: _validateWebsite,
+                      keyboard: TextInputType.url,
+                      textInputAction: TextInputAction.done,
                     ),
+
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
-                      children: widget.authState.socialMediaList.map((
-                          item,
-                          ) {
+                      children:
+                      widget.authState.socialMediaList.map((item) {
                         final config = socialMediaOptions.firstWhere(
                               (e) => e.type == item.socialMediaType,
                         );
@@ -346,14 +462,18 @@ class _BusinessInformationDetailsState
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(width: Constant.CONTAINER_SIZE_12),
+                              SizedBox(
+                                  width:
+                                  Constant.CONTAINER_SIZE_12),
                               Expanded(
                                 child: TextField(
                                   controller: item.controller,
                                   decoration: InputDecoration(
                                     hintText: Strings.LINK,
-                                    hintStyle: theme.textTheme.titleSmall!
-                                        .copyWith(color: Colors.grey),
+                                    hintStyle: theme.textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                        color: Colors.grey),
                                     filled: true,
                                     fillColor: theme.primaryColor,
                                     suffixIcon: IconButton(
@@ -364,13 +484,16 @@ class _BusinessInformationDetailsState
                                       onPressed: () {
                                         setState(() {
                                           widget.authState
-                                              .removeSocialMedia(item);
+                                              .removeSocialMedia(
+                                              item);
                                         });
                                       },
                                     ),
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        Constant.CONTAINER_SIZE_25,
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                        Constant
+                                            .CONTAINER_SIZE_25,
                                       ),
                                       borderSide: BorderSide.none,
                                     ),
@@ -386,13 +509,15 @@ class _BusinessInformationDetailsState
                       }).toList(),
                     )
                         : SizedBox(),
+
                     InkWell(
                       onTap: () => _openSocialMediaSheet(context),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.add, color: theme.secondaryHeaderColor),
+                          Icon(Icons.add,
+                              color: theme.secondaryHeaderColor),
                           Text(
                             Strings.ADD_SOCIAL_MEDIA,
                             style: theme.textTheme.titleSmall!.copyWith(
@@ -403,32 +528,60 @@ class _BusinessInformationDetailsState
                       ),
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
+
                     SubmitClearButton(
                       onLeftTap: () {
                         Utils.skipDialog(
-                            context: context,
-                            icon: Icons.warning_amber,
-                            subTitle: Strings.SKIP_BUSINESS_DETAILS,
-                            cancelButtonText: Strings.CANCEL,
-                            yesButtonText: Strings.SKIP_CONTINUE,
-                            onCancel: (){
-                              Navigator.pop(context);
-                            },
-                            onYes: (){
-                              NavUtil.navigateToPushScreen(context,
-                              PaymentTypeScreen());
-                            });
-
+                          context: context,
+                          icon: Icons.warning_amber,
+                          subTitle: Strings.SKIP_BUSINESS_DETAILS,
+                          cancelButtonText: Strings.CANCEL,
+                          yesButtonText: Strings.SKIP_CONTINUE,
+                          onCancel: () {
+                            Navigator.pop(context);
+                          },
+                          onYes: () {
+                            NavUtil.navigateToPushScreen(
+                              context,
+                              PaymentTypeScreen(),
+                            );
+                          },
+                        );
                       },
                       leftText: Strings.SKIP,
                       onRightTap: () async {
-                        if (!_key.currentState!.validate()) {
+                        setState(() {
+                          _formSubmitted = true;
+                          _fieldErrors['contactPerson'] =
+                              _validateContactPerson(
+                                  contactPersonController.text);
+                          _fieldErrors['contactNumber'] =
+                              _validateContactNumber(
+                                  contactNumberController.text);
+                          _fieldErrors['email'] =
+                              _validateEmail(contactEmailController.text);
+                          _fieldErrors['licence'] = _validateTradeLicense(
+                              licenceController.text);
+                          _fieldErrors['vat'] =
+                              _validateVAT(vatController.text);
+                          _fieldErrors['website'] =
+                              _validateWebsite(websiteController.text);
+                          _fieldErrors['businessType'] =
+                              _validateBusinessType(_selectedBusinessType);
+                        });
+
+                        final hasErrors = _fieldErrors.values.any((e) => e != null);
+
+                        if (hasErrors) {
                           return;
                         }
 
-                        if (widget.previous == 'profile') {
+                        setState(() {
+                          _formSubmitted = false;
+                        });
 
-                          if (regdNo == null || regdNo.isEmpty) {
+                        if (widget.previous == 'profile') {
+                          if (regdNo == null || regdNo!.isEmpty) {
                             showCustomSnackBar(
                               context: context,
                               message: Strings.SOMETHING_WENT_WRONG,
@@ -437,15 +590,18 @@ class _BusinessInformationDetailsState
                             return;
                           }
 
-                          final bool success = await _businessInfoNetworkCall(regdNo);
+                          final bool success =
+                          await _businessInfoNetworkCall(regdNo!);
 
                           if (success) {
-                            Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
+                            Utils.showToast(
+                                '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
                             Navigator.pop(context);
                           } else {
                             showCustomSnackBar(
                               context: context,
-                              message: Strings.SOMETHING_WENT_WRONG,
+                              message:
+                              Strings.SOMETHING_WENT_WRONG,
                               color: Colors.red,
                             );
                           }
@@ -474,39 +630,192 @@ class _BusinessInformationDetailsState
       BuildContext context, {
         required TextEditingController controller,
         required String hint,
-        String? Function(String?)? validator,
-        bool obscure = false,
+        required String fieldName,
+        required String? Function(String?) validator,
         TextInputType keyboard = TextInputType.text,
         TextInputAction textInputAction = TextInputAction.next,
-        bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
+    final error = _fieldErrors[fieldName];
 
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboard,
-        autofocus: false,
-        textInputAction: textInputAction,
-        style: TextStyle(color: Colors.white70),
-        cursorColor: Colors.white70,
-        validator: validator,
-        inputFormatters: inputFormatters,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(color: Colors.white70),
-          filled: true,
-          fillColor: theme.primaryColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: controller,
+            keyboardType: keyboard,
+            autofocus: false,
+            textInputAction: textInputAction,
+            style: const TextStyle(color: Colors.white70),
+            cursorColor: Colors.white70,
+            inputFormatters: inputFormatters,
+            // Don't use validator here, we handle it manually
+            validator: (_) => null,
+            onChanged: (value) {
+              if (!_fieldTouched[fieldName]!) {
+                setState(() {
+                  _fieldTouched[fieldName] = true;
+                });
+              }
+              _validateFieldRealTime(fieldName, value, validator);
+            },
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(color: Colors.white70),
+              filled: true,
+              fillColor: theme.primaryColor,
+              border: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(
+                  color: error != null ? Colors.red : Constant.grey,
+                  width: error != null ? 1.5 : 1.0,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(
+                  color: error != null ? Colors.red : Constant.grey,
+                  width: 1.5,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
+            ),
           ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-        ),
+          if (error != null)
+            Padding(
+              padding: EdgeInsets.only(
+                top: Constant.SIZE_08,
+                left: Constant.CONTAINER_SIZE_12,
+              ),
+              child: Text(
+                error,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildBusinessTypeDropdown(
+      BuildContext context,
+      ThemeData theme,
+      ) {
+    final error = _fieldErrors['businessType'];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DropdownButtonFormField2<String>(
+          value: _selectedBusinessType,
+          selectedItemBuilder: (context) {
+            return _businessTypes.map((item) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  item,
+                  style: const TextStyle(color: Colors.white70),
+                ),
+              );
+            }).toList();
+          },
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: theme.primaryColor,
+            labelText: Strings.TYPES_OF_BUSINESS,
+            labelStyle: const TextStyle(color: Colors.white70),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_16,
+              vertical: Constant.CONTAINER_SIZE_14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+              borderSide: BorderSide(color: Constant.grey),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: BorderSide(
+                color: error != null ? Colors.red : Constant.grey,
+                width: error != null ? 1.5 : 1.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: BorderSide(
+                color: error != null
+                    ? Colors.red
+                    : const Color(0xFFD1AE31),
+                width: 1.5,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+            ),
+          ),
+          iconStyleData: const IconStyleData(
+            icon: Icon(Icons.arrow_drop_down, color: Colors.white70),
+          ),
+          items: _businessTypes.map((type) {
+            return DropdownMenuItem<String>(
+              value: type,
+              child: Text(
+                type,
+                style: const TextStyle(color: Colors.black),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedBusinessType = value;
+              _fieldTouched['businessType'] = true;
+              _fieldErrors['businessType'] =
+                  _validateBusinessType(value);
+            });
+          },
+          validator: (_) => null,
+        ),
+        if (error != null)
+          Padding(
+            padding: EdgeInsets.only(
+              top: Constant.SIZE_08,
+              left: Constant.CONTAINER_SIZE_12,
+            ),
+            child: Text(
+              error,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -517,7 +826,9 @@ class _BusinessInformationDetailsState
       useSafeArea: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_10)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Constant.CONTAINER_SIZE_10),
+        ),
       ),
       builder: (_) {
         return SingleChildScrollView(
@@ -536,9 +847,10 @@ class _BusinessInformationDetailsState
                 children: [
                   Text(
                     Strings.SOCIAL_MEDIA,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium!.copyWith(color: Colors.white),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: Colors.white),
                   ),
                   CloseButton(color: Colors.white),
                 ],
@@ -548,7 +860,8 @@ class _BusinessInformationDetailsState
                 spacing: Constant.CONTAINER_SIZE_20,
                 alignment: WrapAlignment.center,
                 children: socialMediaOptions.map((item) {
-                  final alreadyAdded = widget.authState.socialMediaList.any(
+                  final alreadyAdded =
+                  widget.authState.socialMediaList.any(
                         (e) => e.socialMediaType == item.type,
                   );
 
@@ -580,7 +893,8 @@ class _BusinessInformationDetailsState
                             child: Center(
                               child: FaIcon(
                                 item.icon,
-                                color: item.type == SocialMediaType.snapchat ||
+                                color:
+                                item.type == SocialMediaType.snapchat ||
                                     item.type == SocialMediaType.x
                                     ? Colors.black
                                     : Colors.white,
@@ -588,11 +902,11 @@ class _BusinessInformationDetailsState
                               ),
                             ),
                           ),
-
                           SizedBox(height: Constant.SIZE_06),
                           Text(
                             item.label,
-                            style: const TextStyle(color: Colors.white),
+                            style:
+                            const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -608,26 +922,22 @@ class _BusinessInformationDetailsState
     );
   }
 
-
   Map<String, dynamic> getJsonData(String regdNo) {
     final authState = ref.read(authNotifierProvider);
     final data = {
       "userId": Utils.userId,
-
       "basicDetails": {
-        "businessType": "Restaurant",
-        "websiteDetails": websiteController.text,
+        "businessType": _selectedBusinessType ?? "Restaurant",
+        "websiteDetails": websiteController.text.trim(),
       },
-
       "contactAndRegistrationDetails": {
-        "contactPersonName": contactPersonController.text,
-        "contactEmail": contactEmailController.text,
-        "treadLicenseNumber": licenceController.text,
-        "vatNumber": vatController.text,
-        "contactNumber": contactNumberController.text,
+        "contactPersonName": contactPersonController.text.trim(),
+        "contactEmail": contactEmailController.text.trim(),
+        "treadLicenseNumber": licenceController.text.trim(),
+        "vatNumber": vatController.text.replaceAll(' ', ''),
+        "contactNumber": contactNumberController.text.trim(),
         "registrationNumber": regdNo
       },
-
       "socialMediaList": authState.socialMediaList.isEmpty
           ? []
           : authState.socialMediaList.map((e) => e.toJson()).toList(),

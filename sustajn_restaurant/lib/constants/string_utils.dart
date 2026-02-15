@@ -75,6 +75,7 @@ class Strings {
   static const ENTER_QUANTITY = 'Quantity*';
   static const ENTER_WEBSITE = ' Website';
   static const ENTER_BUSINESSTYPE = 'Enter business type';
+  static const BUSINESS_TYPE_ERROR_TXT = 'Business type is required';
   static const ENTER_BUSINESS_DETAILS = 'Enter business details';
   static const CONTAINER_PRICE = 'Price of the container*';
   static const CONTAINER_IMAGE = 'Container Image';
@@ -122,6 +123,7 @@ class Strings {
       'Please fill the below details to create your account';
   static const NAME = 'Name';
   static const MOBILE_NUMBER = 'Contact Number';
+  static const MOBILE_NUMBER_ERROR_TXT = 'Contact number is required';
   static const CONTACT_NUMBER_SPCL = 'Contact Number*';
   static const EDIT_MOBILE_NUMBER = 'Edit Mobile Number';
   static const EDIT_PAYMENT_TYPE = "Edit Payment Type";
@@ -134,7 +136,9 @@ class Strings {
   static const PASSWORD_SPCL = 'Password*';
   static const CONFIRM_PASSWORD_SPCL = 'Confirm Password*';
   static const CONTACT_PERSON = 'Contact Person';
+  static const CONTACT_PERSON_ERROR_TXT = 'Contact Person is required';
   static const EMAIL_REGISTRATION = 'Email Registration';
+  static const EMAIL_REGISTRATION_ERROR_TXT = 'Email is required';
   static const TRADE_LICENSE_NUMBER = 'Trade License Number';
   static const VAT_NUMBER = 'VAT Number';
   static const LOCATION = 'Location';

@@ -58,6 +58,7 @@ final loginDetailProvider =
               registrationState.context,
               MaterialPageRoute(builder: (_) => const DashboardScreen()),
             );
+
           }
         } else {
           if (registrationState.context.mounted) {
