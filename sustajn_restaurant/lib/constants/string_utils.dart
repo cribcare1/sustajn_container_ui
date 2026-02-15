@@ -340,7 +340,5 @@ class Strings {
 static const String SKIP_CONTINUE = 'Skip & Continue';
 static const String THANK_YOU_TXT = "Thank you for your order.";
 static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
-static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
-static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
 static const String ACCOUNT_CREATED_SUCCESSFULLY ='Account Created Successfully!';
 }

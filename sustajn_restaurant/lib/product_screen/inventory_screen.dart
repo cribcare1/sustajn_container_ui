@@ -98,6 +98,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                     subTitle: item.containerUniqueId ?? "-",
                     volume: item.capacity?.toString() ?? "0",
                     qty: item.quantityAvailable ?? 0,
+                    details: item
                   );
                 },
               ),
@@ -114,6 +115,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     required String subTitle,
     required String volume,
     required int qty,
+        required ContainersDetails details,
   }) {
     final theme = Theme.of(context);
 
@@ -122,7 +124,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ContainersDetailsScreen()),
+          MaterialPageRoute(builder: (context) => ContainersDetailsScreen(details: details,)),
         );
       },
       child: Container(
