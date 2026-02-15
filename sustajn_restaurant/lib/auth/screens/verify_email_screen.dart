@@ -424,7 +424,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   @override
   void dispose() {
-    ref.read(authNotifierProvider).stopTimer();
+    // ref.read(authNotifierProvider).stopTimer();
     _otpController.dispose();
     super.dispose();
   }

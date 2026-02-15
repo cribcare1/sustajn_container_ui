@@ -105,6 +105,32 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
+ Future<dynamic> postApiStringData(String url, var jsonMap, String requestType) async {
+    // checkViewAttached();
+    // Future.delayed(const Duration(seconds: 12));
+    var response;
+
+    try {
+      response = await appDataManager.apiHelper.postAPIStringValue(url, jsonMap);
+      if (response != null && Utils.isReqSuccess(response)) {
+        Utils.printLog("response code == ${response.statusCode}  response == ${response.toString()}");
+        var jsonData = await json.decode(response.body);
+
+        Utils.printLog('Response status: $jsonData');
+        isViewAttached ? getView().onSuccess(jsonData, requestType) : null;
+        return jsonData;
+      } else {
+        Utils.printLog('Null response received');
+        isViewAttached ? getView().onFailure(response.statusCode) : null;
+        return null;
+      }
+    } catch (e) {
+      Utils.printLog('Error: $e');
+      isViewAttached ? getView().onFailure(response.statusCode) : null;
+      rethrow;
+    }
+  }
+
 
   Future<dynamic> putMultipartApiRequest(
       String url, Map<String, dynamic> data, keyName, file) async {
