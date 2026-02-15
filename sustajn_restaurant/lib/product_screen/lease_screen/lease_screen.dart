@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 
+import '../../common_widgets/filter_Screen.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -221,145 +222,41 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
-    final containerState = ref.watch(orderProvider);
-
+    final containerState = ref.read(orderProvider);
     final container =
         containerState.containerHistorydata?.data?.leasedResponses;
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        bool tempAscending = _isQtyAscending;
+      isScrollControlled: true,
+      builder: (_) {
+        return ReusableFilterBottomSheet(
+          title: Strings.SORT_BY,
+          leftTabTitle: "Quantity",
+          options: const [
+            "Low to High",
+            "High to Low",
+          ],
+          selectedValue: _isQtyAscending ? "Low to High" : "High to Low",
+          onApply: (value) {
+            if (container == null) return;
 
-        return SafeArea(
-          top: false,
-          child: StatefulBuilder(
-            builder: (context, setModalState) {
-              return Container(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
-                  color: Color(0xFF0F2E22),
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          Strings.SORT_BY,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Constant.CONTAINER_SIZE_18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.cancel_rounded,
-                            color: Constant.gold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+            setState(() {
+              _isQtyAscending = value == "Low to High";
 
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Quantity : Low to High",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      trailing: Radio<bool>(
-                        value: true,
-                        groupValue: tempAscending,
-                        activeColor: Constant.gold,
-                        fillColor: MaterialStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Constant.gold; // selected
-                          }
-                          return Colors.white; // unselected
-                        }),
-                        onChanged: (value) {
-                          setModalState(() {
-                            tempAscending = value!;
-                          });
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Quantity : High to Low",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      trailing: Radio<bool>(
-                        value: false,
-                        groupValue: tempAscending,
-                        activeColor: Constant.gold,
-                        fillColor: MaterialStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Constant.gold; // selected
-                          }
-                          return Colors.white; // unselected
-                        }),
-                        onChanged: (value) {
-                          setModalState(() {
-                            tempAscending = value!;
-                          });
-                        },
-                      ),
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    SubmitClearButton(
-                      onLeftTap: () {
-                        setState(() {
-                          _isQtyAscending = true;
-                          container!.sort(
-                            (a, b) =>
-                                a.leasedQuantity!.compareTo(b.leasedQuantity!),
-                          );
-                        });
-                        Navigator.pop(context);
-                      },
-                      leftText: Strings.CLEAR,
-                      onRightTap: () {
-                        setState(() {
-                          _isQtyAscending = tempAscending;
-                          container!.sort(
-                            (a, b) => _isQtyAscending
-                                ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
-                                : b.leasedQuantity!.compareTo(
-                                    a.leasedQuantity!,
-                                  ),
-                          );
-                        });
-                        Navigator.pop(context);
-                      },
-                      rightText: Strings.APPLY,
-                    ),
-                  ],
-                ),
+              container.sort(
+                    (a, b) => _isQtyAscending
+                    ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
+                    : b.leasedQuantity!.compareTo(a.leasedQuantity!),
               );
-            },
-          ),
+            });
+          },
         );
       },
     );
   }
+
 
   _getLeaseNetworkCall() async {
     try {

@@ -34,8 +34,8 @@ class NetworkUrls {
   static const CONTAINER_HISTORY = "orders/orderHistory/";
   static const REFER_A_PARTNER = "auth/referPartner";
   static const BUSINESS_INFO = "auth/addBusinessInfo";
-
-
+  static const FEEDBACK = "auth/submitFeedback";
+  static const UPGRADE_SUBSCRIPTION_PLAN = "auth/upgradeSubscription";
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
   static const CONTAINER_LIST = "inventory/getContainerTypes";

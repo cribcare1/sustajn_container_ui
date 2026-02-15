@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
@@ -11,15 +12,17 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../common_widgets/custom_app_bar.dart';
-import '../../common_widgets/custom_back_button.dart';
 import '../../constants/string_utils.dart';
+import '../../notifier/profile_notifier.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/global_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../screens/subscription_screen.dart';
 import '../widgets/add_card_buttom_sheet.dart';
 
 class PaymentTypeScreen extends ConsumerStatefulWidget {
-  const PaymentTypeScreen({super.key});
+  final String? profile;
+  const PaymentTypeScreen({super.key, this.profile = ""});
 
   @override
   ConsumerState<PaymentTypeScreen> createState() => _PaymentTypeScreenState();
@@ -28,11 +31,39 @@ class PaymentTypeScreen extends ConsumerStatefulWidget {
 class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   final TextEditingController bankNameController = TextEditingController();
 
-  final TextEditingController accountHolderNameController = TextEditingController();
+  final TextEditingController accountHolderNameController =
+      TextEditingController();
 
   final TextEditingController bicController = TextEditingController();
 
   final TextEditingController ibanController = TextEditingController();
+
+
+
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).clearBankErrors();
+    });
+    _getData();
+  }
+
+  _getData(){
+    final profileState =  ref.read(profileProvider);
+    print("Full Data: ${profileState.getProfileData?.data}");
+
+    final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
+
+    if (bankResponse != null) {
+      bankNameController.text = bankResponse.bankName ?? "";
+      accountHolderNameController.text =
+          bankResponse.accountHolderName ?? "";
+      ibanController.text = bankResponse.iBanNumber ?? "";
+      bicController.text = bankResponse.bicNumber ?? "";
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,41 +74,49 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: '',
-          leading: CustomBackButton(),
+          title: widget.profile == 'profile' ? Strings.EDIT_PAYMENT_TYPE : '',
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.keyboard_arrow_left, color: Colors.white),
+          ),
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              Row(
-                children: List.generate(4, (index) {
-                  bool active = index <= 2;
-                  return Expanded(
-                    child: Container(
-                      height: Constant.SIZE_05,
-                      margin: EdgeInsets.only(
-                        right: index == 3 ? 0 : Constant.SIZE_10,
+              if (widget.profile == "") ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Row(
+                  children: List.generate(4, (index) {
+                    bool active = index <= 2;
+                    return Expanded(
+                      child: Container(
+                        height: Constant.SIZE_05,
+                        margin: EdgeInsets.only(
+                          right: index == 3 ? 0 : Constant.SIZE_10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: active ? Constant.gold : Colors.white,
+                          borderRadius: BorderRadius.circular(Constant.SIZE_10),
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: active ? Constant.gold : Colors.white,
-                        borderRadius: BorderRadius.circular(Constant.SIZE_10),
-                      ),
-                    ),
-                  );
-                }),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              Text(
-                Strings.PAYMENT_TYPE,
-                style: theme.textTheme.titleLarge!.copyWith(
-                  color: Colors.white,
+                    );
+                  }),
                 ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              _sectionTitle(theme,title: "Card Details"),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Text(
+                  Strings.PAYMENT_TYPE,
+                  style: theme.textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+              ],
+
+              _sectionTitle(theme, title: Strings.CARD_DETAILS),
               (authState.cardDetails == null)
                   ? _addCardButton(context, theme, authState)
                   : GlassSummaryCard(
@@ -213,45 +252,99 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     ),
 
               _orDivider(theme),
-              _sectionTitle(theme, title: 'Online Payment Gateway'),
-              // _paypalTile(theme),
-              paymentGatewayTile(context: context, theme: theme,
+              _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
                 notifier: authState,
-                title: 'PayPal', asset: 'assets/images/paypal.webp',),
+                title: Strings.PAYPAL,
+                asset: 'assets/images/paypal.webp',
+              ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              paymentGatewayTile(context: context, theme: theme,
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
                 notifier: authState,
-                title: 'Apple Pay', asset: 'assets/images/apple_pay.png',),
+                title: Strings.APPLE_PAY,
+                asset: 'assets/images/apple_pay.png',
+              ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              paymentGatewayTile(context: context, theme: theme,
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
                 notifier: authState,
-                title: 'Google Pay', asset: 'assets/images/google_pay.png',),
+                title: Strings.GOOGLE_PAY,
+                asset: 'assets/images/google_pay.png',
+              ),
               _orDivider(theme),
               _sectionTitle(theme, title: 'Bank Details'),
-              _bankFields(theme),
+              _bankFields(theme, authState),
+              _sectionTitle(theme, title: Strings.BANK_DETAILS),
+              _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
                 child: SubmitButton(
-                  onRightTap: () {
-                    if (!_validateBankDetails(context)) return;
+                  onRightTap: () async {
+                    final auth = ref.read(authNotifierProvider);
+
+                    // Validate bank details
+                    if (!auth.validateBankDetails()) return;
+
+                    // Validate payment selection
+                    if (!_validatePaymentSelection(context, authState)) return;
+
+                    // If profile screen, stop here
+                    if (widget.profile == 'profile') {
+                      return;
+                    }
+
                     final bankData = BankDetailsModel(
-                      bankName: bankNameController.text,
-                      bicNumber: bicController.text,
-                      accountHolderName: accountHolderNameController.text,
-                      ibanNumber: ibanController.text,
+                      bankName: auth.bankName,
+                      accountHolderName: auth.accountHolder,
+                      ibanNumber: auth.iban,
+                      bicNumber: auth.bic,
                     );
+
+                    auth.setBankDetails(bankData);
                     authState.setBankDetails(bankData);
-                    NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      SubscriptionScreen(),
+                    );
                   },
-                  rightText: "Verify and Continue",
+
+                  rightText: widget.profile == 'profile'
+                      ? Strings.VERIFY
+                      : Strings.VERIFY_CONT,
                 ),
               ),
+
             ],
           ),
         ),
       ),
     );
+  }
+
+  bool _validatePaymentSelection(BuildContext context, AuthState authState) {
+    final hasCard = authState.cardDetails != null;
+    final hasGateway = authState.gateway != null;
+
+    final hasBankDetails =
+        bankNameController.text.trim().isNotEmpty &&
+            accountHolderNameController.text.trim().isNotEmpty &&
+            ibanController.text.trim().isNotEmpty &&
+            bicController.text.trim().isNotEmpty;
+
+    // ❌ If all empty → show toast
+    if (!hasCard && !hasGateway && !hasBankDetails) {
+      Utils.showToast("Please add at least one payment method");
+      return false;
+    }
+
+    return true; // ✅ At least one section filled
   }
 
   Widget _sectionTitle(ThemeData theme, {String? title}) {
@@ -311,6 +404,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
+
+
   Widget _orDivider(ThemeData theme) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
@@ -353,6 +448,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ),
     );
   }
+
   Widget paymentGatewayTile({
     required BuildContext context,
     required ThemeData theme,
@@ -361,30 +457,27 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     required String asset,
   }) {
     return InkWell(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       onTap: () {
         showModalBottomSheet(
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (_) => AddGatewayDialog(
-            title: title,
-            asset: asset,
-            notifier: notifier,
-          ),
+          builder: (_) =>
+              AddGatewayDialog(title: title, asset: asset, notifier: notifier),
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         decoration: BoxDecoration(
           color: const Color(0xFF1E4636),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           border: Border.all(color: Colors.white24),
         ),
         child: Row(
           children: [
-            Image.asset(asset, height: 30),
-            const SizedBox(width: 12),
+            Image.asset(asset, height: Constant.CONTAINER_SIZE_30),
+            SizedBox(width: Constant.CONTAINER_SIZE_12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +492,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   if (notifier.gateway != null &&
                       notifier.gateway!.name == title)
                     Padding(
-                      padding: const EdgeInsets.only(top: 4),
+                      padding: EdgeInsets.only(top: Constant.SIZE_04),
                       child: Text(
                         notifier.gateway!.id!,
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -416,7 +509,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _bankFields(ThemeData theme) {
+  Widget _bankFields(ThemeData theme, var auth) {
     return Column(
       children: [
         _inputField(
@@ -424,13 +517,23 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'Bank Name',
           controller: bankNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.bankNameError,
+          onChanged: auth.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: 'Account Holder Name*',
+          hint: 'Account Holder Name',
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
+          errorText: auth.accountHolderError,
+          onChanged: auth.setAccountHolder,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
@@ -438,6 +541,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'IBAN',
           controller: ibanController,
           keyboardType: TextInputType.text,
+          errorText: auth.ibanError,
+          onChanged: auth.setIban,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(23),
+          ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _inputField(
@@ -445,6 +553,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: 'BIC',
           controller: bicController,
           keyboardType: TextInputType.text,
+          errorText: auth.bicError,
+          onChanged: auth.setBic,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(11),
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          ],
         ),
       ],
     );
@@ -454,18 +568,21 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ThemeData theme, {
         required String hint,
         required TextEditingController controller,
+        required String? errorText,
+        required Function(String) onChanged,
         TextInputType keyboardType = TextInputType.text,
         List<TextInputFormatter>? inputFormatters,
       }) {
     return TextField(
-      controller: controller,
-      autofocus: false,
+      onChanged: onChanged,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
+      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
       cursorColor: Colors.white,
+      textCapitalization: TextCapitalization.characters,
       decoration: InputDecoration(
         hintText: hint,
+        errorText: errorText,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
@@ -480,6 +597,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       ),
     );
   }
+
   bool _validateBankDetails(BuildContext context) {
     final bankName = bankNameController.text.trim();
     final accountNo = accountHolderNameController.text.trim();
@@ -487,10 +605,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     final iban = ibanController.text.trim();
 
     // ✅ Case 1: All empty → allowed
-    if (bankName.isEmpty &&
-        accountNo.isEmpty &&
-        tax.isEmpty &&
-        iban.isEmpty) {
+    if (bankName.isEmpty && accountNo.isEmpty && tax.isEmpty && iban.isEmpty) {
       return true;
     }
 
@@ -535,10 +650,10 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
 
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+        decoration: BoxDecoration(
           color: Color(0xFF123D2C),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_20)),
         ),
         child: Form(
           key: _formKey,
@@ -552,31 +667,30 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
               TextFormField(
                 controller: _controller,
                 style: const TextStyle(color: Colors.white),
-                validator: (v) =>
-                v == null || v.isEmpty ? 'Required' : null,
+                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
                 decoration: InputDecoration(
                   hintText: 'Enter your ${widget.title} ID',
                   hintStyle: const TextStyle(color: Colors.white70),
                   filled: true,
                   fillColor: Colors.white10,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.amber,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
                     ),
                   ),
                   onPressed: () {
@@ -592,7 +706,7 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                     }
                   },
                   child: const Text(
-                    'Add & Continue',
+                    Strings.ADD_CONT,
                     style: TextStyle(color: Colors.black),
                   ),
                 ),

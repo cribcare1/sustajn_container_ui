@@ -1,4 +1,5 @@
 import 'dart:io';
+enum PaymentMethodType { bank, card, upi }
 
 class RegistrationData {
   String? fullName;
@@ -19,11 +20,22 @@ class RegistrationData {
 
   int? subscriptionPlanId;
   String? dateOfBirth;
+  String? gender;
 
   String? bankName;
   String? iban;
   String? accountHolderName;
   String? bic;
+  String? cardHolderName;
+  String? cardNumber;
+  String? expiryDate;
+  String? cvv;
+
+  String? upiId;
+  String? paymentMethod;
+  String? paymentGatewayId;
+  String? paymentGatewayName;
+
 
   RegistrationData({
     this.fullName,
@@ -42,11 +54,21 @@ class RegistrationData {
     this.longitude,
     this.subscriptionPlanId,
     this.dateOfBirth,
+    this.gender,
 
     this.bankName,
     this.iban,
     this.accountHolderName,
-    this.bic
+    this.bic,
+    this.cardHolderName,
+    this.cardNumber,
+    this.cvv,
+    this.expiryDate,
+    this.upiId,
+    this.paymentMethod,
+    this.paymentGatewayId,
+    this.paymentGatewayName
+
   });
 
   bool get hasBankDetails {
@@ -62,6 +84,8 @@ class RegistrationData {
       "email": email,
       "phoneNumber": phoneNumber,
       "password": password,
+      "dateOfBirth": dateOfBirth,
+      "gender":gender,
 
       "address": {
         "addressType": addressType ?? "HOME",
@@ -76,12 +100,28 @@ class RegistrationData {
       "subscriptionPlanId": subscriptionPlanId,
     };
 
-    if (hasBankDetails) {
+    if (paymentMethod == "BANK") {
       body["bankDetails"] = {
         "bankName": bankName,
         "iban": iban,
         "accountHolderName": accountHolderName,
-        "bic": bic
+        "bic": bic,
+      };
+    }
+
+    if (paymentMethod == "CARD") {
+      body["cardDetails"] = {
+        "cardHolderName": cardHolderName,
+        "cardNumber": cardNumber,
+        "expiryDate": expiryDate,
+        "cvv": cvv,
+      };
+    }
+
+    if (paymentMethod == "UPI") {
+      body["paymentGetWay"] = {
+        "paymentGatewayId": paymentGatewayId,
+        "paymentGatewayName": paymentGatewayName,
       };
     }
 

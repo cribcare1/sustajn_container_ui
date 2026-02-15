@@ -1,5 +1,5 @@
 class DeleteAddressModel {
-  Null? data;
+  Map<String, dynamic>? data;
   String? message;
   String? status;
 

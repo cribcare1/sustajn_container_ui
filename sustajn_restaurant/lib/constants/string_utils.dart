@@ -27,7 +27,7 @@ class Strings {
   static const DOCUMENT = 'document';
   static const LISTENER = 'listener';
   static const PRIMARY_NO = "Primary Number";
-  static const String LOGIN = "Log In";
+  static const String LOGIN = "LogIn";
   static const String LOGOUT = "Log Out";
   static const String SIGN_UP = "Sign Up";
   static const String LEASED = "Leased";
@@ -36,6 +36,8 @@ class Strings {
   static const String DAMAGED = "Damaged";
   static const String SOLD = "Sold";
   static const String HISTORY = "History";
+  static const String BUSINESS_INFO_TXT ='Provide information to help customers find you.';
+  static const String LEARN_MORE = "Learn More";
 
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
       "Please provide your details below";
@@ -52,6 +54,7 @@ class Strings {
   static const String DIRECTION = 'Direction';
   static const String CALL = 'Call';
   static const String VIEW_ALL = 'View All';
+  static const String VIEW_ALL_PLAN = "View all plans";
   static const String RESTURANT_HISTORY = 'Resturant History';
   static const String VIEW_RESTURANT_DETAILS = 'View Resturant Details';
   static const String RESTURANT_DETAILS_TITLE = 'Resturant Details';
@@ -70,7 +73,7 @@ class Strings {
   static const ENTER_PRODUCT_ID = 'Enter Product ID*';
   static const ENTER_VOLUME = 'Enter Volume in ml*';
   static const ENTER_QUANTITY = 'Quantity*';
-  static const ENTER_WEBSITE = 'Enter Website';
+  static const ENTER_WEBSITE = ' Website';
   static const ENTER_BUSINESSTYPE = 'Enter business type';
   static const ENTER_BUSINESS_DETAILS = 'Enter business details';
   static const CONTAINER_PRICE = 'Price of the container*';
@@ -108,21 +111,28 @@ class Strings {
   static const VERIFY_EMAIL = 'Verify your email';
   static const SEND_CODE = "We've sent you a code to verify your email id on ";
   static const VERIFY = 'Verify';
+  static const VERIFY_CONT = "Verify and Continue";
+
   static const OR = 'Or';
 
+  static const SEND_FEEDBACK = 'Send Feedback';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number';
+  static const MOBILE_NUMBER = 'Contact Number';
+  static const CONTACT_NUMBER_SPCL = 'Contact Number*';
   static const EDIT_MOBILE_NUMBER = 'Edit Mobile Number';
   static const EDIT_PAYMENT_TYPE = "Edit Payment Type";
   static const EMAIL = 'Email ID';
+  static const EMAIL_SPCL = 'Email ID*';
   static const CONTACT_NUMBER = 'Contact Number';
   static const REFER_PARTNER = 'Refer a Partner';
   static const PASSWORD = 'Password';
   static const CONFIRM_PASSWORD = 'Confirm Password';
+  static const PASSWORD_SPCL = 'Password*';
+  static const CONFIRM_PASSWORD_SPCL = 'Confirm Password*';
   static const CONTACT_PERSON = 'Contact Person';
   static const EMAIL_REGISTRATION = 'Email Registration';
   static const TRADE_LICENSE_NUMBER = 'Trade License Number';
@@ -139,13 +149,13 @@ class Strings {
   static const DONT_HAVE_ACC = "Don't have an account? ";
   static const FORGOT_PASSWORD_TXT = 'Forgot Password';
   static const ENTER_EMAIL_TORCV_CODE =
-      'Please enter your email address to receive confirmation code';
+      'Please enter your registered email address to receive confirmation code';
   static const SEARCH_BY_CUSTOMERNAME = 'Search by customer name';
   static const FEEDBACK = 'Feedback';
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const SORT_BY = 'Sort By';
-  static const CONTACT_REGISTRATION = 'Contact & Registration Detals';
+  static const CONTACT_REGISTRATION = 'Contact & Registration Details';
   static const EDIT = 'Edit';
   static const UPDATE = 'Update';
   static const DELETE = 'Delete';
@@ -170,6 +180,7 @@ class Strings {
   static const IMAGES = 'Images';
   static const DESCRIPTION = 'Description';
   static const SUBJECT = 'Subject';
+  static const YOUR_REMARKS = 'Your Remarks';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
   static const FEEDBACK_DETAILS = 'Feedback Details';
@@ -196,7 +207,7 @@ class Strings {
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
   static const String SOMETHING_WENT_WRONG = "Something went wrong. Please try again ";
   static const String SEARCH_BY_CONTAINER_NAME =
-      "Search by container Name or Id";
+      "Search by container name or ID";
   static const String DELETE_REQUEST = "Delete Request";
   static const String REQUESTED = "Requested";
   static const String APPROVED = "Approved";
@@ -215,6 +226,7 @@ class Strings {
   static const String TYPES_OF_BUSINESS = "Type of Business";
   static const String CONTINUE = 'Continue';
   static const String BUSINESS_INFO = 'Business Information';
+  static const String SUCC_MSG = ' Added Successful';
   static const String BUSINESS_DTLS = 'Business Details';
   static const String ONLINE_PAYMENT_GATEWAY = "Online Payment Gateway";
   static const String PAYPAL = "PayPal";
@@ -225,7 +237,9 @@ class Strings {
   static const String IBAN = "IBAN";
   static const String BIC = "BIC";
   static const String CLEAR_DTLS = "Clear Details";
-
+  static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
+  static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+  static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -243,11 +257,12 @@ class Strings {
   static const String SELECT_PLAN =
       'Select a subscription plan to unlock the functionality\nof the application';
   static const String CHOOSE_PLAN = 'Choose Plan';
+  static const String RETRY = "Retry";
   static const String PROVE_DETAILS =
       'Please prove the details below to create your account';
   static const String RESTURANT_NAME = 'Resturant Name';
   static const String REPORTS = 'Reports';
-  static const String RESTURANT_ADDRESS = 'Resturant Address';
+  static const String RESTURANT_ADDRESS = 'Resturant Address*';
   static const MSG = 'message';
   static const SUCCESS = 'success';
   static const ERROR = 'Error';
@@ -269,6 +284,8 @@ class Strings {
   static const String CONFIRM = 'Confirm';
   static const String CONFIRM_UPDATE = 'Confirm Update';
   static const String UPDATE_CONTACT_NO = "Are you sure you want to update your contact number?";
+  static const String UPDATE_SUBSCRIPTION_PLAN = "Are you sure you want to update your subscription plan?";
+
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
   static const String NO = 'No';
@@ -277,12 +294,14 @@ class Strings {
   static const PROVIDE_INFORMATION =
       "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
+  static const PAYMENT_SUCCSS = "Payment Successful";
+
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
   static const String CREATE = "Create";
-  static const String RESTAURANT_NAME = "Restaurant Name";
-  static const String EXISTING_USER = "Existing user?";
+  static const String RESTAURANT_NAME = " Name of the Business*";
+  static const String EXISTING_USER = "Existing user? ";
   static const String SOCIAL_MEDIA = "Social Media";
   static const String SELECT_SUBSCRIPTION = "Please select Subscription plan";
   static const String CONTACT_US = 'Contact Us';
@@ -307,6 +326,20 @@ class Strings {
   static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
   static const String ENTER_CONTAINER_ID ="Enter Container ID";
   static const String NO_PROFILE ="Your profile information is not available right now";
+  static const String ADD_ADDRESS_TITLE = 'Add Address';
+  static const String EDIT_ADDRESS_TITLE = 'Edit Address';
+  static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
+  static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
+  static const String PRIMARY_NUMBER = 'Primary Number';
+  static const String ADD_SECONDARY_NUMBER = 'Add Secondary Number';
+  static const String SECONDARY_NUMBER = 'Secondary Number';
+  static const String ADD_TEXT = 'Add';
+  static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
+  static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
+  static const String SKIP_BUSINESS_DETAILS = 'If you skip adding business details now, some features may be limited.You can complete this later from your profile';
+static const String SKIP_CONTINUE = 'Skip & Continue';
+static const String THANK_YOU_TXT = "Thank you for your order.";
+static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
 static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
 static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
 static const String ACCOUNT_CREATED_SUCCESSFULLY ='Account Created Successfully!';

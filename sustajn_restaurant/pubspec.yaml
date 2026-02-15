@@ -62,6 +62,8 @@ dependencies:
   syncfusion_flutter_charts: ^32.1.23
   encrypt: ^5.0.3
   dropdown_button2: ^2.3.9
+  font_awesome_flutter: ^10.7.0
+  flutter_datetime_picker_plus: ^2.1.0
 
 dev_dependencies:
   flutter_test:

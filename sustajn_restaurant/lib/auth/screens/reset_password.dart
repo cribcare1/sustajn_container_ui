@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
@@ -56,13 +57,28 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
           Strings.STAY_THIS_PAGE,
         );
 
-        if (shouldGoBack) {
-          Navigator.pop(context);
-        }
-        return false;
+        return shouldGoBack;
       },
       child: Scaffold(
         backgroundColor: theme!.scaffoldBackgroundColor,
+        appBar:  AppBar(
+          leading: CustomBackButton(
+            onTap: () async {
+              final shouldGoBack = await displayDialog(
+                context,
+                Icons.warning_amber,
+                Strings.LEAVE_RESET_PASSWORD,
+                Strings.GO_BACK_RESET_PASSWORD,
+                Strings.STAY_THIS_PAGE,
+              );
+
+              if (shouldGoBack) {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          backgroundColor: theme.scaffoldBackgroundColor,
+          ),
         body: Stack(children: [SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Form(

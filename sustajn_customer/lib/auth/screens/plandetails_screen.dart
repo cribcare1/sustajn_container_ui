@@ -19,7 +19,7 @@ class PlandetailsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.primaryColor,
-      appBar: CustomAppBar(title: 'Plan Details',
+      appBar: CustomAppBar(title: Strings.PLAN_DETAILS,
           leading: CustomBackButton()).getAppBar(context),
       body: SafeArea(
         child: Padding(
@@ -115,8 +115,19 @@ class PlandetailsScreen extends StatelessWidget {
 
             SizedBox(height: Constant.SIZE_08),
 
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/diarhm.png",
+                  height: Constant.CONTAINER_SIZE_22,
+                  color: Constant.gold,
+                ),
+              ],
+            ),
+            SizedBox(width: 4),
             Text(
-              "₹ ${plan.feeType?.toStringAsFixed(2) ?? "0.00"}",
+              plan.feeType?.toStringAsFixed(2) ?? "0.00",
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: Constant.gold,
                 fontWeight: FontWeight.w700,

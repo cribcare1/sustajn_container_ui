@@ -136,8 +136,9 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen>
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFFD0A52C),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+                                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                                 ),
+                                side: const BorderSide(color: Colors.white),
                               ),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
@@ -179,7 +180,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen>
               ref.read(
                 forgotPasswordProvider({
                   "email": _emailController.text,
-                  "previous": "RESET",
+                  "type":"RESET"
                 }),
               );
             } else {

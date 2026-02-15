@@ -23,10 +23,26 @@ class HistoryNotifier extends ChangeNotifier {
   void setBorrowedData(BorrowedData data) {
     _borrowedList = [];
 
-    final decemberList = data.value?.december;
+    final value = data.value;
+    if (value == null) return;
 
-    if (decemberList != null) {
-      for (final order in decemberList) {
+    final Map<String, List<December>> monthMap = {
+      "January": value.january?.cast<December>() ?? [],
+      "February": value.february?.cast<December>() ?? [],
+      "March": value.march?.cast<December>() ?? [],
+      "April": value.april?.cast<December>() ?? [],
+      "May": value.may?.cast<December>() ?? [],
+      "June": value.june?.cast<December>() ?? [],
+      "July": value.july?.cast<December>() ?? [],
+      "August": value.august?.cast<December>() ?? [],
+      "September": value.september?.cast<December>() ?? [],
+      "October": value.october?.cast<December>() ?? [],
+      "November": value.november?.cast<December>() ?? [],
+      "December": value.december ?? [],
+    };
+
+    monthMap.forEach((month, orders) {
+      for (final order in orders) {
         final restaurantName = order.restaurantName ?? '';
         final restaurantAddress = order.restaurantAddress ?? '';
         final date = order.orderDate ?? '';
@@ -42,18 +58,23 @@ class HistoryNotifier extends ChangeNotifier {
               productName: product.productName ?? '',
               capacity: product.capacity ?? 0,
               containerCount: product.containerCount ?? 0,
-              productId: product.productUniqueId ??'',
+              productId: product.productUniqueId ?? '',
               date: date,
               time: time,
               imageUrl: product.productImageUrl ?? '',
+              returnedDate: order.returnedDate,
+              returnedTime: order.returnedTime,
             ),
           );
         }
       }
-    }
+    });
 
     notifyListeners();
   }
+
+
+
 
 
   void clearBorrowedList() {

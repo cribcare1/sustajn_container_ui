@@ -6,7 +6,9 @@ import 'package:sustajn_customer/service/address_service.dart';
 import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
 import '../models/resturant_address_model.dart';
+import '../profile_screen/edit_dialogs/address_screen.dart';
 import '../service/search_res_service.dart';
+import '../utils/nav_utils.dart';
 import '../utils/utils.dart';
 
 
@@ -56,6 +58,7 @@ FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
         color: Colors.green,
       );
 
+
       Navigator.pop(signupState.context!);
     }
   } catch (e) {
@@ -90,7 +93,6 @@ FutureProvider.family<void, Map<String, dynamic>>((ref, params) async {
         message: "Address updated successfully",
         color: Colors.green,
       );
-
       Navigator.pop(signupState.context!);
     }
   } catch (e) {

@@ -113,7 +113,7 @@ class Strings {
   static const FILL_DETAILS =
       'Please fill the below details to create your account';
   static const NAME = 'Name';
-  static const MOBILE_NUMBER = 'Mobile Number*';
+  static const CONTACT_NUMBER = 'Contact Number*';
   static const EMAIL_ID = 'Email ID*';
   static const PASSWORD = 'Password*';
   static const CONFIRM_PASSWORD = 'Confirm Password*';
@@ -155,7 +155,7 @@ class Strings {
   static const APPROVE_TXT = 'Approve';
   static const IMAGES = 'Images';
   static const DESCRIPTION = 'Description';
-  static const SUBJECT = 'Subject';
+  static const SUBJECT = 'Subject*';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
   static const FEEDBACK_DETAILS = 'Feedback Details';
@@ -207,6 +207,7 @@ class Strings {
   static const String NO_SUBSCRIPTION_TEXT = 'No subscription plans available';
   static const String LEARN_MORE = 'Learn More';
   static const String UPGRADE = 'Upgrade';
+  static const String VIEW_ALL_PLANS = 'View All Plans';
 
 
   static const String REMOVE_DETAILS = 'Remove Saved Bank Details?';
@@ -216,7 +217,7 @@ class Strings {
   static const String SELECT_HOME_ADDRESS_TITLE = 'Select Home Address';
   static const String ADD_ADDRESS_TITLE = 'Add Address';
   static const String EDIT_ADDRESS_TITLE = 'Edit Address';
-  static const String CONTACT_NUMBER = 'Contact Number';
+  static const String MOBILE_NUMBER = 'Contact Number';
   static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
   static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
   static const String PRIMARY_NUMBER = 'Primary Number';
@@ -237,7 +238,7 @@ class Strings {
   static const String MOBILE = 'Mobile number required';
   static const String VALID_MOB = 'Enter valid 10-digit mobile number';
   static const String EMAIL_REQ = 'Email required';
-  static const String RESTAURANT = 'Restaurant name required';
+  static const String RESTAURANT = 'Name required';
   static const String TITLE_1 = 'Order Confirmed\nSahara Sizzle';
   static const String TITLE_2 = 'Item Marked as Sold\nYour return window has expired.The full amount of AED[amount] has now been charged.';
   static const String TITLE_3 = 'Friendly reminder\nPlease return the leased product by 08.01.2026.';
@@ -265,7 +266,7 @@ class Strings {
   static const String PAYMENT_TITLE = 'Payment Type';
   static const String CARD_DETAILS = 'Card Details';
   static const String ONLINE_PAYMENT_GATEWAY = 'Online Payment Gateway';
-  static const String ACCOUNT_HOLDER_NAME = 'Account Holder Name';
+  static const String ACCOUNT_HOLDER_NAME = 'Account Holder Name*';
   static const String BIC = 'BIC';
   static const String IBAN = 'IBAN';
   static const String VERIFY_CONTINUE = 'Verify & Continue';
@@ -275,8 +276,94 @@ class Strings {
   static const String BANK_DETAILS_NOT_ADDED = 'You have not added bank details, please add it to view the QR code';
   static const String SUBSCRIPTION_NOT_FOUND = 'subscription details not found';
   static const String IMAGE_UPLOADED = 'User image uploaded successfully';
-  static final RegExp alphaNumericWithSpace =
-  RegExp(r'^[a-zA-Z0-9 ]+$');
+  static const String ADD_CARD = 'Add Card';
+  static const String OR = 'Or';
+  static const String LINK_PAYPAL = 'Link Pay Pal Account';
+  static const String ENTER_PAYPAL = 'Enter your PayPal ID';
+  static const String PAYPAL = 'PAYPAL';
+  static const String LINK_APPLE = 'Link Apple Pay Account';
+  static const String ENTER_APPLE = 'Enter your Apple Pay ID';
+  static const String APPLE = 'APPLE';
+  static const String LINK_GOOGLE = 'Link Google Pay Account';
+  static const String ENTER_GOOGLE = 'Enter your Google Pay ID';
+  static const String GOOGLE = 'Google';
+  static const String PLAN_DETAILS = 'Plan Details';
+  static const String GO_BACKS = 'Go back';
+  static const String CHOOSE_PLAN = 'Choose Plan';
+  static const String SELECT_PLAN = 'Select a subscription plan to unlock the functionality of the application';
+  static const String PLEASE_SELECT = 'Please select a plan';
+  static const String PROCEED_TO_TERMS = 'Proceed to Terms & Conditions';
+  static const String NO_PLAN = 'No subscription plans found';
+  static const String TERMS_CONDITIONS = 'Terms & Conditions';
+  static const String FAILED_TO_LOAD = 'Failed to load terms & conditions';
+  static const String AGREE_AND_CREATE = 'Agree & Create Account';
+  static const String PLEASE_ENTER_OTP = 'Please enter your OTP';
+  static const String VALID_OTP = 'Please enter a valid 6-digit OTP';
+  static const String ADDRESS = 'Address';
+  static const String ADD_NEW_ADDRESS = 'Add New Address';
+  static const String CONTACT_US = 'Contact Us';
+  static const String EXAMPLE_EMAIL = 'example@gmail.com';
+  static const String ADDRESS_OPTION = 'Address Options';
+  static const String EDIT_ADDRESS = 'Edit Address';
+  static const String REMOVE_ADDRESS = 'Remove Address';
+  static const String PAYMENT_TYPE = 'Payment Type';
+  static const String CLEAR_FIELDS = 'Clear fields';
+  static const String EDIT_NAME = 'Edit Name';
+  static const String YOUR_REMARK = 'Your Remarks*';
+  static const String SEND_FEEDBACK = 'Send Feedback';
+  static const String USER_IMAGE_UPLOADED = 'User image uploaded successfully';
+  static const String ADD_AND_CONTINUE = 'Add & Continue';
+  static const String SHARE_QR = 'Share QR';
+  static const String MY_QR = 'My QR Code';
+  static const String CUSTOMER_ID_NOT_FOUND = 'Customer ID not found';
+  static const String JOHN_DEE = 'John Dee';
+  static const String CONTAINER_RETURN = 'Container Return Status';
+  static const String CONTAINER_RETURN_LIST = 'Container Returns List';
+  static const String HII = 'Hi';
+  static const String NO_PRODUCT = 'No product details found';
+  static const String SORT_BY = 'Sort by';
+  static const String NEWEST_FIRST = 'Newest to oldest';
+  static const String CLEAR = 'Clear';
+  static const String APPLY = 'Apply';
+  static const String NO_BORROWED  = 'No borrowed containers found';
+  static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
+  static const String FILTERS = 'Filters';
+  static const String MONTH = 'Month';
+  static const String BORROWED_ON = 'Borrowed On';
+  static const String RETURNED_ON = 'Returned On';
+  static const String HISTORY = 'History';
+  static const String SOLD = 'Sold';
+  static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
+  static const String RETURNED_DETAILS = 'Returned Details';
+  static const String RESTAURANT_1 = 'Sfumato Gastro Atelier';
+  static const String RESTAURANT_2 = 'Ancora Mediterranean';
+  static const String RESTAURANT_3 = 'Kimura-ya Authentic Japanese Resta';
+  static const String CONTAINER_1 = 'Dip Cups';
+  static const String CONTAINER_2 = 'Round Container';
+  static const String CONTAINER_3 = 'Rectangular Container';
+  static const String CONTAINER_4 = 'Dip Cup | Round container';
+  static const String CODE_1 = 'ST-DC-50';
+  static const String CODE_2 = 'ST-RDC-500';
+  static const String CODE_3 = 'ST-RC-600';
+  static const String VOLUME_1 = '50ml';
+  static const String VOLUME_2 = '500ml';
+  static const String VOLUME_3 = '900ml';
+  static const String VOLUME_4 = '600kl';
+  static const String DATE_1 = '22/11/2025 | 10:00am';
+  static const String DATE_2 = '01/12/2025 | 10:00am';
+  static const String DATE_3 = '27/11/2025 | 04:11pm';
+  static const String PRICE = '120';
+  static const String REMOVE_ADDRESS_TITLE = "Remove Address";
+  static const String DELETE_ADDRESS = 'Delete Address';
+  static const String  REMOVE_ADDRESS_TXT =  "This address will be permanently removed from your saved list. You can't undo this action";
+  static const String GENDER = 'Gender*';
+  static const String MALE = 'Male';
+  static const String FEMALE = 'Female';
+  static const String OTHERS = 'Others';
+  static const String SIGNUP = 'SIGNUP';
+
+
+  static final RegExp alphaNumericWithSpace = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   static final RegExp email =
   RegExp(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$');
@@ -286,7 +373,7 @@ class Strings {
 
   static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
 
-  static final RegExp number_validation = RegExp(r'[A-Z0-9]');
+  static final RegExp number_validation = RegExp(r'[A-Za-z0-9]');
 
 
 

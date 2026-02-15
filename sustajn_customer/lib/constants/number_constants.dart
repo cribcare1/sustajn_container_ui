@@ -18,6 +18,7 @@ class Constant {
   static late int MAX_LINE_12 = 12;
   static late int MAX_LINE_15 = 15;
   static late int MAX_LINE_20 = 20;
+  static late int MAX_LINE_23 = 23;
   static late int MAX_LINE_34 = 34;
 
   static late int MAX_LINE_100 = 100;
@@ -59,6 +60,7 @@ class Constant {
   static late double CONTAINER_SIZE_1 = 01.0;
   static late double CONTAINER_SIZE_2 = 02.0;
   static late double CONTAINER_SIZE_4 = 04.0;
+  static late double CONTAINER_SIZE_6 = 06.0;
   static late double CONTAINER_SIZE_8 = 08.0;
   static late double CONTAINER_SIZE_10 = 10.0;
   static late double CONTAINER_SIZE_12 = 12.0;

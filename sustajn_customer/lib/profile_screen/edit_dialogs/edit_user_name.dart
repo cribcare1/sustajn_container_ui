@@ -12,8 +12,9 @@ import '../../utils/utils.dart';
 
 class EditUserNameDialog extends ConsumerStatefulWidget {
   final String userName;
+  final String dob;
   final int userId;
-  const EditUserNameDialog({Key? key, required this.userName, required this.userId}) : super(key: key);
+  const EditUserNameDialog({Key? key, required this.userName, required this.dob,required this.userId}) : super(key: key);
 
   @override
   ConsumerState<EditUserNameDialog> createState() =>
@@ -35,6 +36,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     Utils.userId;
 
     _controller.text = widget.userName;
+    _dobCtrl.text = widget.dob;
 
     _controller.selection = TextSelection.collapsed(
       offset: widget.userName.length,
@@ -94,7 +96,7 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Edit Name',
+                      Strings.EDIT_NAME,
                       style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.w600,
@@ -116,8 +118,6 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-
               SizedBox(height: Constant.SIZE_08),
               TextFormField(
                 controller: _controller,
@@ -162,46 +162,16 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_14),
-
-              TextFormField(
-                controller: _dobCtrl,
-                readOnly: true,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
-                cursorColor: Colors.white70,
-                decoration: InputDecoration(
-                  labelText: Strings.DOB,
-                  labelStyle: const TextStyle(color: Colors.white70),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    borderSide: BorderSide(color: Constant.grey),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.calendar_month, color: Colors.white70),
-                    onPressed: () async {
-                      final picked = await Utils.pickDob(context, initialDate: selectedDob);
-
-                      if (picked != null) {
-                        setState(() {
-                          selectedDob = picked;
-                          _dobCtrl.text = Utils.formatDob(picked);
-                        });
-                      }
-                    },
-                  ),
-                ),
+              Utils.getDateTimePicker(
+                  context,
+                  Strings.DOB,
+                  _dobCtrl,
+                      (date) {
+                    setState(() {
+                      selectedDob = date;
+                    });
+                  },
+                  theme
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
 
@@ -216,12 +186,26 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
+                    Navigator.pop(context);
+                    await _editNameNetwork(_controller.text, profileState);
 
-                    await _editNameNetwork(
-                      _controller.text.trim(),
-                      profileState,
-                    );
+                    // Utils.displayDialog(
+                    //   context: context,
+                    //   icon: Icons.warning,
+                    //   title: "Confirm Update",
+                    //   subTitle: "Are you sure you want to update your userName?",
+                    //   cancelButtonText: "No",
+                    //   yesButtonText: "Yes",
+                    //   onCancel: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    //   onYes: () async {
+                    //     Navigator.pop(context);
+                    //     await _editNameNetwork(_controller.text, profileState);
+                    //   },
+                    // );
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFC8B531),
                     padding: EdgeInsets.symmetric(
@@ -254,7 +238,9 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
     final data = {
       "userId": Utils.userId,
       "fullName": name,
-      "dateOfBirth": selectedDob == null ? null : Utils.formatDob(selectedDob!),
+      "dateOfBirth": selectedDob != null
+          ? Utils.formatDate(selectedDob!)
+          : widget.dob,
     };
     return data;
   }
@@ -268,8 +254,6 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         return false;
       }
-
-      profileState.setContext(context);
       profileState.setIsLoading(true);
 
       if (profileState.profileList.isNotEmpty) {
@@ -281,18 +265,11 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
         getJsonData(name),
         Strings.USER_DATA,
       );
-
       await ref.read(profileUpdateProvider(params).future);
-
-      if (Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
-
       ref.read(profileProvider).clearProfileList();
-      ref.read(
-        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      await ref.read(
+        getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}').future,
       );
-
       return true;
     } catch (e) {
       Utils.printLog('Error in edit name: $e');
@@ -301,8 +278,4 @@ class _EditUserNameDialogState extends ConsumerState<EditUserNameDialog> {
       profileState.setIsLoading(false);
     }
   }
-
-
-
-
 }

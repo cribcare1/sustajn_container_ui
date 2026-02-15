@@ -5,9 +5,11 @@ import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/nav_utils.dart';
+import '../../utils/utils.dart';
 import 'edit_address.dart';
 
 class AddressScreen extends ConsumerStatefulWidget {
@@ -31,25 +33,33 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
       backgroundColor: theme.scaffoldBackgroundColor,
 
       appBar: CustomAppBar(
-        title: "Address",
+        title: Strings.ADDRESS,
         leading: CustomBackButton(),
       ).getAppBar(context),
 
-      body: Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: addressList.length,
-                itemBuilder: (context, index) {
-                  return _addressCard(context, theme, addressList[index]);
-                },
-              ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: addressList.length,
+                    itemBuilder: (context, index) {
+                      return _addressCard(context, theme, addressList[index]);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          if (profileState.isLoading)
+           Utils.showProgressBar()
+        ],
       ),
+
 
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -73,7 +83,7 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
                 ),
               ),
               child: Text(
-                "Add New Address",
+                Strings.ADD_NEW_ADDRESS,
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: theme.primaryColor,
                   fontWeight: FontWeight.w600,

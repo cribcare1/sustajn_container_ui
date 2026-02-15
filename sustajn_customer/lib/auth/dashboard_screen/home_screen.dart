@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants/imports_util.dart';
+import '../../constants/string_utils.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/utils.dart';
 import '../bottom_navigationbar/bottom_navigation_bar.dart';
@@ -26,10 +27,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       if (profileData == null ||
           profileData.bankDetailsResponse == null) {
+        if (!mounted) return;
         showCustomSnackBar(
           context: context,
           message:
-          "You have not added bank details, please add it to view the QR code",
+          Strings.BANK_DETAILS_NOT_ADDED,
           color: Colors.green,
         );
         return;

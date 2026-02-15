@@ -84,7 +84,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
             Expanded(
               child: list.isEmpty && !historyState.isLoading
                   ? Center(
-                child: Utils.getErrorText('No returned containers found'),
+                child: Utils.getErrorText(Strings.NO_RETURNED_CONTAINERS),
               )
                   : ListView.builder(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
@@ -138,7 +138,7 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
         cursorColor: Colors.white,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          hintText: "Search by Resturant Name",
+          hintText: Strings.SEARCH_BY_REST_NAME,
           hintStyle: const TextStyle(color: Colors.white70),
           prefixIcon: const Icon(Icons.search, color: Colors.white70),
           border: OutlineInputBorder(
@@ -165,8 +165,8 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
                 builder: (_) => ReusableFilterBottomSheet(
-                  title: "Filters",
-                  leftTabTitle: "Month",
+                  title: Strings.FILTERS,
+                  leftTabTitle: Strings.MONTH,
                   options: months,
                   selectedValue: selectedMonthYear,
                   onApply: (value) {
@@ -332,7 +332,10 @@ class _BorrowedTabScreenState extends ConsumerState<ReturnedTabScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) =>
-          ReceiveDetailsDialog(title: 'Borrowed Details', item: [item]),
+          ReceiveDetailsDialog(title: Strings.RETURNED_DETAILS, items: [item],
+          isReturned: true,
+          borrowedOn:'${item.date} | ${item.time}' ,
+          returnedOn:'${item.returnedTime} | ${item.returnedTime}'),
     );
   }
 

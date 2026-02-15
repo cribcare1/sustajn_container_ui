@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,9 +22,7 @@ import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 
 class Utils {
-
-
-  static  showProfilePhotoBottomSheet(BuildContext context) {
+  static showProfilePhotoBottomSheet(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
     showModalBottomSheet(
       context: context,
@@ -43,7 +42,6 @@ class Utils {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -53,14 +51,16 @@ class Utils {
                         style: TextStyle(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                     ),
 
                     InkWell(
                       onTap: () => Navigator.of(context).pop(),
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_20,
+                      ),
                       child: Container(
                         height: Constant.CONTAINER_SIZE_36,
                         width: Constant.CONTAINER_SIZE_36,
@@ -83,7 +83,6 @@ class Utils {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     _optionButton(
                       context,
                       icon: Icons.camera_alt_outlined,
@@ -164,7 +163,9 @@ class Utils {
                     ),
                     InkWell(
                       onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_20,
+                      ),
                       child: Container(
                         height: Constant.CONTAINER_SIZE_36,
                         width: Constant.CONTAINER_SIZE_36,
@@ -172,10 +173,7 @@ class Utils {
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                        ),
+                        child: const Icon(Icons.clear, color: Colors.black),
                       ),
                     ),
                   ],
@@ -191,8 +189,9 @@ class Utils {
                       color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () async {
-                        final XFile? image =
-                        await picker.pickImage(source: ImageSource.camera);
+                        final XFile? image = await picker.pickImage(
+                          source: ImageSource.camera,
+                        );
 
                         if (image != null) {
                           Navigator.pop(context, File(image.path));
@@ -208,8 +207,9 @@ class Utils {
                       color: Colors.white70,
                       iconColor: theme.primaryColor,
                       onTap: () async {
-                        final XFile? image =
-                        await picker.pickImage(source: ImageSource.gallery);
+                        final XFile? image = await picker.pickImage(
+                          source: ImageSource.gallery,
+                        );
 
                         if (image != null) {
                           Navigator.pop(context, File(image.path));
@@ -229,6 +229,7 @@ class Utils {
       },
     );
   }
+
   static String maskEmail(String email) {
     if (email.isEmpty || !email.contains('@')) {
       return email;
@@ -247,126 +248,251 @@ class Utils {
 
     return '${localPart.substring(0, 4)}$masked@$domainPart';
   }
-  static  logOutDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String stayButtonText,
-      String noButton
-      ) async {
+
+  static logOutDialog(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subTitle,
+    String stayButtonText,
+    String noButton,
+  ) async {
     final theme = Theme.of(context);
 
     return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => Dialog(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: Constant.PADDING_HEIGHT_10,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
-                  color:Colors.grey.withOpacity(0.1),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(14)
-                ),
-                child: Icon(
-                  icon,
-                  size: Constant.CONTAINER_SIZE_40,
-                  color: Constant.gold,
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title, style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.white
-              )),
-              SizedBox(height: Constant.SIZE_05),
-              Text(
-                subTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Row(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => Dialog(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: Constant.PADDING_HEIGHT_10,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                       Navigator.pop(context);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFC8B531)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        noButton,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Constant.gold,
-                        ),
-                      ),
+                  Container(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      icon,
+                      size: Constant.CONTAINER_SIZE_40,
+                      color: Constant.gold,
                     ),
                   ),
-
-                  SizedBox(width: Constant.CONTAINER_SIZE_12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        SharedPreferenceUtils.clearAll();
-                        NavUtil.navigateToWithReplacement(context, LoginScreen());
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constant.gold,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_05),
+                  Text(
+                    subTitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFFC8B531)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            noButton,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Constant.gold,
+                            ),
                           ),
                         ),
                       ),
-                      child: Text(
-                        stayButtonText,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            SharedPreferenceUtils.clearAll();
+                            NavUtil.navigateToWithReplacement(
+                              context,
+                              LoginScreen(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            stayButtonText,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   static Future<bool> displayDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String stayButtonText,
-      ) async {
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subTitle,
+    String stayButtonText,
+  ) async {
     final theme = Theme.of(context);
 
     return await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => Dialog(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: Constant.PADDING_HEIGHT_10,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
+                      size: Constant.CONTAINER_SIZE_40,
+                      color: Constant.gold,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      // fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_05),
+                  Text(
+                    subTitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                  Row(
+                    children: [
+                      // GO BACK
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFFC8B531)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            "Go back",
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Constant.gold,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                      // STAY
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            stayButtonText,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.scaffoldBackgroundColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ) ??
+        false;
+  }
+
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
@@ -385,9 +511,13 @@ class Utils {
               Container(
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor,
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
                   shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(12)
                 ),
                 child: Icon(
                   icon,
@@ -396,29 +526,19 @@ class Utils {
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  // fontWeight: FontWeight.w600,
-                ),),
-              SizedBox(height: Constant.SIZE_05),
               Text(
                 subTitle,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white
-                ),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
 
               Row(
                 children: [
-                  // GO BACK
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
+                      onPressed: onCancel,
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC8B531)),
                         shape: RoundedRectangleBorder(
@@ -428,7 +548,7 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        "Go back",
+                        cancelButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -441,9 +561,7 @@ class Utils {
                   // STAY
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
+                      onPressed: onYes,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.gold,
                         shape: RoundedRectangleBorder(
@@ -453,9 +571,9 @@ class Utils {
                         ),
                       ),
                       child: Text(
-                        stayButtonText,
+                        yesButtonText,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.scaffoldBackgroundColor,
+                          color: theme.primaryColor,
                         ),
                       ),
                     ),
@@ -466,53 +584,60 @@ class Utils {
           ),
         ),
       ),
-    ) ?? false;
+    );
   }
 
- static  Widget _optionButton(
-     BuildContext context, {
-       required IconData icon,
-       required String label,
-       required Color color,
-       required Color iconColor,
-       required VoidCallback onTap,
-     }) {
-   return Flexible(
-     child: InkWell(
-       onTap: onTap,
-       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-       child: Column(
-         children: [
-           Container(
-             height: Constant.CONTAINER_SIZE_80,
-             width: Constant.CONTAINER_SIZE_80,
-             decoration: BoxDecoration(
-               color: color,
-               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-             ),
-             alignment: Alignment.center,
-             child: Icon(
-               icon,
-               size: Constant.CONTAINER_SIZE_35,
-               color: iconColor,
-             ),
-           ),
-           SizedBox(height: Constant.CONTAINER_SIZE_10),
-           Text(
-             label,
-             style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
-             color: Colors.white),
-           )
-         ],
-       ),
-     ),
-   );
+  static Widget _optionButton(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Flexible(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        child: Column(
+          children: [
+            Container(
+              height: Constant.CONTAINER_SIZE_80,
+              width: Constant.CONTAINER_SIZE_80,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                icon,
+                size: Constant.CONTAINER_SIZE_35,
+                color: iconColor,
+              ),
+            ),
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: Constant.LABEL_TEXT_SIZE_14,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   static showToast(String msg) {
     Fluttertoast.showToast(
-        msg: msg,
-        toastLength: Toast.LENGTH_LONG);
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
   }
 
   static isReqSuccess(var response) {
@@ -522,10 +647,13 @@ class Utils {
       return true;
     }
   }
+
   static void printLog(String message) {
     print(message);
   }
+
   static String? token = "";
+
   static void getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString(Strings.JWT_TOKEN);
@@ -540,24 +668,20 @@ class Utils {
   }
 
   static int? userId = 0;
-  // static void loadUserId() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt(Strings.USER_ID);
-  //   printLog("UserId ++++ ==== $userId");
-  // }
-  //
-  // static Future<int> getUserId() async {
-  //   if (userId == 0) {
-  //     loadUserId();
-  //   }
-  //   return userId!;
-  // }
-  static Future<int?> getUserId() async {
+
+  static void loadUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt(Strings.USER_ID);
-    printLog("UserId ++++ ==== $userId");
-    return userId;
+    printLog("JWT Token ==== $token");
   }
+
+  static int getUserId() {
+    if (userId == 0) {
+      loadUserId();
+    }
+    return userId!;
+  }
+
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");
     const error = "Error:";
@@ -570,23 +694,44 @@ class Utils {
     }
     switch (errorCode) {
       case "${NetworkUrls.NETWORK_CALL_FAILED_CODE}":
-        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.EMPTY_DATA_SERVER_MSG,
+          color: Colors.red,
+        );
         break;
       case "${NetworkUrls.TIME_OUT_CODE}":
-        showCustomSnackBar( context: context, message: Strings.TIME_OUT_ERROR_MSG, color: Colors.red);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.TIME_OUT_ERROR_MSG,
+          color: Colors.red,
+        );
         break;
       case "${NetworkUrls.EMPTY_RESPONSE_CODE}":
-        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.EMPTY_DATA_SERVER_MSG,
+          color: Colors.red,
+        );
         break;
       case "${NetworkUrls.UNAUTHORIZED_ERROR_CODE}":
-        showCustomSnackBar( context: context, message: Strings.SESSION_EXPIRED_MSG, color: Colors.red);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.SESSION_EXPIRED_MSG,
+          color: Colors.red,
+        );
         // sessionExpired(context);
         break;
       default:
-        showCustomSnackBar( context: context, message: Strings.API_ERROR_MSG_TEXT, color: Colors.red);
+        showCustomSnackBar(
+          context: context,
+          message: Strings.API_ERROR_MSG_TEXT,
+          color: Colors.red,
+        );
         break;
     }
   }
+
   static multipartParams(var partUrl, var data, var requestKey, var image) {
     return {
       NetworkUrls.PART_URL: partUrl,
@@ -598,6 +743,7 @@ class Utils {
 
   static LoginModel? loginData;
   static int? societyId = 0;
+
   // static int? userId = 0;
 
   static Future<LoginModel?> getProfile() async {
@@ -626,29 +772,21 @@ class Utils {
   }
 
   static Future<void> sendEmail(String email) async {
-    final Uri uri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
+    final Uri uri = Uri(scheme: 'mailto', path: email);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
   }
 
   static String? validateEmailId(String? value) {
-    if (value == null || value
-        .trim()
-        .isEmpty) {
+    if (value == null || value.trim().isEmpty) {
       return 'Enter email address';
     }
-    if (!RegExp(
-      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-    ).hasMatch(value)) {
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
       return 'Enter valid email address';
     }
     return null;
   }
-
 
   static String? validateMobile(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -688,16 +826,16 @@ class Utils {
   }
 
   static Widget buildTextField(
-      BuildContext context, {
-        required TextEditingController controller,
-        required String label,
-        required String hint,
-        String? Function(String?)? validator,
-        bool obscure = false,
-        TextInputType keyboard = TextInputType.text,
-        bool? readOnly = false,
-        List<TextInputFormatter>? inputFormatters,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    String? Function(String?)? validator,
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+    bool? readOnly = false,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -742,7 +880,74 @@ class Utils {
       ),
     );
   }
+
+  static Widget getDateTimePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme
+      ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle:  TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
+              ),
+              doneStyle:  TextStyle( fontSize: Constant.LABEL_TEXT_SIZE_16),
+            ),
+            onConfirm: (date) {
+              final value =
+                  "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white70),
+              suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
 }
+
 void showCustomSnackBar({
   required BuildContext context,
   required String message,
@@ -752,21 +957,15 @@ void showCustomSnackBar({
     SnackBar(
       content: Text(
         message,
-        style:  TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: Colors.black,
           fontSize: Constant.CONTAINER_SIZE_14,
         ),
       ),
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
-      margin:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       // duration: const Duration(seconds: 2),
     ),
   );
 }
-
-
-
-
-
-

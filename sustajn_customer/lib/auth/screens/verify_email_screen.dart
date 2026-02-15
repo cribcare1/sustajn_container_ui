@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
+import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -62,7 +63,11 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     RegistrationData? registrationData = signUpState.registrationData;
     String? email = signUpState.email;
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: theme!.scaffoldBackgroundColor,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        backgroundColor: theme.scaffoldBackgroundColor,
+      ),
 
       body: WillPopScope(
         onWillPop: () async {
@@ -148,7 +153,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                       if (_otpController.text.isEmpty) {
                                         showCustomSnackBar(
                                           context: context,
-                                          message: "Please enter your OTP",
+                                          message: Strings.PLEASE_ENTER_OTP,
                                           color: Colors.black,
                                         );
                                         return;
@@ -158,7 +163,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                         showCustomSnackBar(
                                           context: context,
                                           message:
-                                              "Please enter a valid 6-digit OTP",
+                                          Strings.VALID_OTP,
                                           color: Colors.black,
                                         );
                                         return;
@@ -220,7 +225,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                                       .LABEL_TEXT_SIZE_16,
                                                 ),
                                           ),
-                                          const SizedBox(width: 4),
+                                          SizedBox(width: Constant.CONTAINER_SIZE_4),
                                           Text(
                                             Strings.RESEND,
                                             style: theme.textTheme.bodyLarge
@@ -328,7 +333,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             ),
                           ),
                           child: Text(
-                            "Go back",
+                            Strings.GO_BACKS,
                             style: theme.textTheme.labelLarge?.copyWith(
                               color: Constant.gold,
                             ),
@@ -375,16 +380,16 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final theme = Theme.of(context);
 
     final defaultPinTheme = PinTheme(
-      width: 55,
-      height: 55,
+      width: Constant.CONTAINER_SIZE_55,
+      height: Constant.CONTAINER_SIZE_55,
       textStyle: theme.textTheme.titleLarge?.copyWith(
-        fontSize: 18,
+        fontSize: Constant.LABEL_TEXT_SIZE_18,
         color: Colors.white70,
       ),
       decoration: BoxDecoration(
         color: theme.primaryColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Constant.grey, width: 1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        border: Border.all(color: Constant.grey, width: Constant.CONTAINER_SIZE_1),
       ),
     );
 
@@ -398,21 +403,21 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: Constant.grey, width: 2),
+          border: Border.all(color: Constant.grey, width: Constant.CONTAINER_SIZE_2),
         ),
       ),
 
       submittedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: Constant.grey, width: 1.2),
+          border: Border.all(color: Constant.grey, width: Constant.CONTAINER_SIZE_1),
         ),
       ),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       showCursor: true,
       cursor: Container(
-        width: 2,
-        height: 18,
-        margin: const EdgeInsets.only(bottom: 4),
+        width: Constant.CONTAINER_SIZE_2,
+        height: Constant.CONTAINER_SIZE_18,
+        margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_4),
         color: Colors.white70,
       ),
 

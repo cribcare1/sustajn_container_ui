@@ -45,43 +45,30 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Mobile Number", "icon": Icons.phone},
-    {"name": "Saved Address", "icon": Icons.location_on},
-    {"name": "History", "icon": Icons.history},
-    {"name": "Payment Type", "icon": Icons.currency_rupee},
-    {"name": "QR Code", "icon": Icons.qr_code},
-    {"name": "Feedback", "icon": Icons.star_border},
-    {"name": "Subscription Plan", "icon": Icons.credit_card},
-    {"name": "Contact Us", "icon": Icons.headset_mic},
+    {"name": "Contact Number", "icon":"assets/images/phone.png"},
+    {"name": "Saved Address", "icon": "assets/images/location.png"},
+    {"name": "History", "icon": "assets/images/history.png"},
+    {"name": "Payment Type", "icon": "assets/images/diarhm.png"},
+    {"name": "QR Code", "icon": "assets/images/qr_code.png"},
+    {"name": "Feedback", "icon": "assets/images/feedback.png"},
+    {"name": "Subscription Plan", "icon": "assets/images/subscription.png"},
+    {"name": "Contact Us", "icon": "assets/images/headset.png"},
   ];
 
   bool isLoading = true;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
-  ProfileData? profileData;
+  int _profileImageVersion = 0;
 
   @override
   void initState() {
     super.initState();
     Utils.getToken();
-    // _getNetworkData();
-    _loadProfile();
+    ref.read(getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'));
+    ref.read(getSubscriptionProvider('${NetworkUrls.GET_SUBSCRIPTION_PLAN}'));
   }
 
-  Future<void> _loadProfile() async {
-    final profile = await Utils.getProfile();
 
-    if (profile == null) {
-      Utils.showToast("Session expired. Please login again.");
-      Navigator.pop(context);
-      return;
-    }
-
-    setState(() {
-      profileData = profile;
-      isLoading = false;
-    });
-  }
 
 
   void _handleItemTap(
@@ -89,12 +76,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     BuildContext context,
     int? planID,
     String? mobileNumber,
+      String? secondaryNumber,
       var profileState,
       int userId
   ) {
     switch (index) {
       case 0:
-        _showMobileEditDialog(context, mobileNumber ?? "", userId );
+        _showMobileEditDialog(context, mobileNumber ?? "", userId, secondaryNumber ??"" );
         break;
       case 1:
         _showEditAddress(context);
@@ -128,12 +116,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     }
   }
 
-  void _showMobileEditDialog(BuildContext context, String mobileNumber, int userId) {
+  void _showMobileEditDialog(BuildContext context, String mobileNumber, int userId, String secondayNumber) {
+    ref.read(profileProvider).setContext(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => EditMobileNumberDialog(mobileNumber: mobileNumber,
+      builder: (_) => EditMobileNumberDialog(mobileNumber: mobileNumber,
+      secondaryNumber: secondayNumber,
       userId: userId,),
     );
   }
@@ -173,7 +163,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     NavUtil.navigateToPushScreen(
       context,
-      EditPaymentScreen(bankDetails: bankDetails),
+      EditPaymentScreen(
+        bankDetails: profile.bankDetailsResponse,
+        cardDetails: profile.cardDetailsResponse,
+        paymentGateway: profile.paymentGetWayResponse,),
     );
   }
 
@@ -198,7 +191,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) =>
-          FreemiumBottomSheet(userID: widget.userId, planID: planId),
+          FreemiumBottomSheet(userID: widget.userId,
+              // planID: planId
+          ),
     );
   }
 
@@ -211,6 +206,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         : null;
 
     if (profile?.bankDetailsResponse == null) {
+      if (!mounted) return;
       showCustomSnackBar(
         context: context,
         message:
@@ -267,12 +263,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final signUpState = ref.watch(signUpNotifier);
     final profileState = ref.watch(profileProvider);
 
-    final planId = signUpState.subscriptionModel?.data?.first.planId;
     final profile = profileState.profileList.isNotEmpty
         ? profileState.profileList.first
+        : null;
+
+    final profileImageUrl =
+    profile?.profileImageUrl != null && profile!.profileImageUrl!.isNotEmpty
+        ? '${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profile.profileImageUrl}?v=$_profileImageVersion'
         : null;
 
     final size = MediaQuery.of(context).size;
@@ -349,16 +348,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               border: Border.all(color: Constant.gold, width: Constant.CONTAINER_SIZE_2),
                               ),
                             child: ClipOval(
-                              child:
-                                  (profileData?.profileImageUrl != null &&
-                                      profileData!.profileImageUrl!.isNotEmpty)
+                              child: profileImageUrl != null
                                   ? Image.network(
-                                      "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${profileData!.profileImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
-                                      fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace){
-                                        return _defaultProfileIcon(w, theme!);
-                                    },
-                                    )
+                                profileImageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return _defaultProfileIcon(w, theme!);
+                                },
+                              )
                                   : _defaultProfileIcon(w, theme!),
                             ),
                           ),
@@ -400,17 +397,21 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             ),
                           ),
                           SizedBox(width: w * 0.015),
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
+                              ref.read(profileProvider).setContext(context);
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
+                                useRootNavigator: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => EditUserNameDialog(
-                                  userName:   profile?.fullName ?? "",
-                                  userId:widget.userId ,
+                                builder: (_) => EditUserNameDialog(
+                                  userName: profile?.fullName ?? "",
+                                  dob: profile?.dateOfBirth ?? "",
+                                  userId: widget.userId,
                                 ),
                               );
+
                             },
                             child: Icon(
                               Icons.edit_outlined,
@@ -420,7 +421,20 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: h * 0.00),
+                      // SizedBox(height: h * 0.01),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                           'DOB - ${profile?.dateOfBirth ?? ""} ',
+                            style: TextStyle(
+                              fontSize: w * 0.045,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: h * 0.03),
                       Container(
                         margin: EdgeInsets.only(
                           left: h*0.02,
@@ -429,76 +443,78 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                         child: ListTile(
                           leading: Icon(
                             Icons.email_outlined,
-                                size: w*0.054,
-                                color: Constant.gold,
+                            size: w*0.054,
+                            color: Constant.gold,
                           ),
-                                title: Text(
-                                  Strings.EMAIL_1,
-                                style: TextStyle(
-                                  fontSize: Constant.CONTAINER_SIZE_14,
-                                  color: Colors.white,
-                                ),
-                                ),
-                                subtitle: Text(profileData!.emailId ?? "",
-                                maxLines:1,
-                                overflow:TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: w*0.040,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                                ),
+                          title: Text(
+                            Strings.EMAIL_1,
+                            style: TextStyle(
+                              fontSize: Constant.CONTAINER_SIZE_14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          subtitle: Text(profile?.emailId ?? "",
+                            maxLines:1,
+                            overflow:TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: w*0.040,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                                _commonDivider(),
-                            Container(
-                              margin: EdgeInsets.only(
-                                left: h*0.02,
-                                right: h*0.02,
-                                top: 0,
+                      _commonDivider(),
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: h*0.02,
+                          right: h*0.02,
+                          top: 0,
+                        ),
+                        child: ListView.separated(
+                          padding: EdgeInsets.zero,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: detailList.length,
+                          separatorBuilder: (context, index) => Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Constant.grey.withOpacity(0.3),
+                          ),
+                          itemBuilder: (context, index) {
+                            final item = detailList[index];
+                            return ListTile(
+                              leading: Image.asset(
+                                item['icon'],
+                                width: w * 0.054,
+                                height: w * 0.054,
+                                color: Constant.gold,
                               ),
-                            child: ListView.separated(
-                              padding: EdgeInsets.zero,
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: detailList.length,
-                              separatorBuilder: (context, index) => Divider(
-                                height: Constant.CONTAINER_SIZE_1,
-                                thickness: Constant.CONTAINER_SIZE_1,
-                                color: Constant.grey.withOpacity(0.3),
+                              title: Text(
+                                item['name'],
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
                               ),
-                              itemBuilder: (context, index) {
-                                final item = detailList[index];
-                                return ListTile(
-                                  leading: Icon(
-                                    item['icon'],
-                                    size: w * 0.054,
-                                    color: Constant.gold,
-                                  ),
-                                  title: Text(
-                                    item['name'],
-                                    style: TextStyle(
-                                      fontSize: Constant.CONTAINER_SIZE_14,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: w * 0.044,
-                                    color: Constant.grey,
-                                  ),
-                                  onTap: () => _handleItemTap(
-                                    index,
-                                    context,
-                                    widget.subScriptionPlanId,
-                                    profileData!.mobileNumber ?? "",
-                                    profileState,
-                                    profile!.id ?? 0,
-                                  ),
-                                );
-                              },
-                            ),
-                            ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
+                                size: w * 0.044,
+                                color: Constant.grey,
+                              ),
+                              onTap: () => _handleItemTap(
+                                index,
+                                context,
+                                widget.subScriptionPlanId,
+                                  profile?.mobileNumber ?? "",
+                                profile?.secondaryNumber ?? "",
+                                profileState,profile?.id ?? 0
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
                       Center(
                         child: Container(
                           width: w * 0.55,
@@ -615,9 +631,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     if (_profileImage == null) return;
 
     try {
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
+      final isNetworkAvailable =
+      await ref.read(networkProvider.notifier).isNetworkAvailable();
 
       if (!isNetworkAvailable) {
         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
@@ -630,31 +645,49 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Strings.PART_URL: '${NetworkUrls.UPLOAD_IMAGE}${widget.userId}',
         Strings.REQUEST_KEY: 'image',
         Strings.IMAGE: _profileImage!,
+        'userId': widget.userId,
       };
 
-      final UpdateImage response = await ref.read(
-        uploadImageProvider(params).future,
-      );
+      final UpdateImage response = await ref.read(uploadImageProvider(params).future);
 
-      if (response.message == "success") {
-        Utils.printLog("Uploaded image path: ${response.data}");
-
-        // Update local UI
-        setState(() {
-          profileData?.profileImageUrl = response.data;
-        });
-
-
-        showCustomSnackBar(context: context,
-            message: Strings.IMAGE_UPLOADED,
-            color: Constant.green);
-
-        ref.read(profileProvider).clearProfileList();
-        ref.read(
-          getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}'),
+      if (response.message?.toLowerCase().contains("success") ?? false) {
+        final profileResponse = await ref.refresh(
+          getProfileProvider('${NetworkUrls.GET_PROFILE}${widget.userId}').future,
         );
-      } else {
-        Utils.showToast(response.status ?? "Image upload failed");
+
+        ref.read(profileProvider.notifier).setProfileList(profileResponse);
+
+        await SharedPreferenceUtils.removeValueFromSF(Strings.PROFILE_DATA);
+        await SharedPreferenceUtils.saveDataInSF(
+          Strings.PROFILE_DATA,
+          jsonEncode(profileResponse.data?.toJson()),
+        );
+
+        final newImageFileName = profileResponse.data?.profileImageUrl;
+        if (newImageFileName != null && newImageFileName.isNotEmpty) {
+          final newUrl =
+              '${NetworkUrls.PROFILE_IMAGE_BASE_URL}$newImageFileName?v=${DateTime.now().millisecondsSinceEpoch}';
+          await NetworkImage(newUrl).evict();
+        }
+
+        imageCache.clear();
+        imageCache.clearLiveImages();
+
+        if (mounted) {
+          setState(() {
+            _profileImageVersion++;
+            _profileImage = null;
+          });
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showCustomSnackBar(
+              context: context,
+              message: Strings.USER_IMAGE_UPLOADED,
+              color: Constant.green,
+            );
+
+          });
+        }
       }
     } catch (e) {
       Utils.printLog('Error in image upload: $e');
@@ -663,4 +696,5 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       ref.read(profileProvider).setIsLoading(false);
     }
   }
+
 }

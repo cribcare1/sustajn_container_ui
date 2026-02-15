@@ -70,16 +70,17 @@ final deleteAddressProvider = FutureProvider.family<dynamic, Map<String, dynamic
         responseData.status!.trim().toString().toLowerCase() ==
             NetworkUrls.SUCCESS) {
       deleteState.setIsLoading(false);
-      if (!deleteState.context!.mounted) return;
-      showCustomSnackBar(
-        context: deleteState!.context,
-        message: responseData.message!,
-        color: Colors.green,
-      );
+      if (!deleteState.context.mounted) {
+        showCustomSnackBar(
+          context: deleteState.context,
+          message: responseData.message!,
+          color: Colors.green,
+        );
+      }
     } else {
-      if (!deleteState.context!.mounted) return;
+      if (!deleteState.context.mounted) return;
       showCustomSnackBar(
-        context: deleteState!.context,
+        context: deleteState.context,
         message: responseData.message!,
         color: Colors.black,
       );
@@ -127,9 +128,12 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
       return true;
     }
     else {
-      Utils.showToast(
-        responseData.message ?? "Update failed",
-      );
+      if(profileState.context.mounted) {
+      showCustomSnackBar(
+        context: profileState.context,
+        message : responseData.message ?? "Update failed",
+        color: Colors.black
+      );}
     }
   } catch (e) {
     Utils.printLog(" provider error called: $e");
@@ -144,31 +148,32 @@ final profileUpdateProvider = FutureProvider.family<dynamic, Map<String, dynamic
 final uploadImageProvider =
 FutureProvider.family<UpdateImage, Map<String, dynamic>>((ref, params) async {
 
+  final profileState = ref.watch(profileProvider);
   final serviceProvider = ref.read(getProfileApiService);
 
-  final String partUrl = params[Strings.PART_URL];
-  final String requestKey = params[Strings.REQUEST_KEY];
-  final File image = params[Strings.IMAGE];
-
   final responseData = await serviceProvider.uploadImage(
-    partUrl,
-    requestKey,
-    image,
+    params[Strings.PART_URL],
+    params[Strings.REQUEST_KEY],
+    params[Strings.IMAGE],
   );
 
-  final isSuccess =
-      responseData.message?.toLowerCase() == "success";
-
-  if (isSuccess) {
-
-  } else {
-    Utils.showToast(
-      responseData.status ?? "Image upload failed",
-    );
+  if (responseData.message?.toLowerCase() == "success") {
+    if (profileState.context.mounted) {
+      showCustomSnackBar(
+        context: profileState.context,
+        message: responseData.message!,
+        color: Colors.green,
+      );
+    }
   }
 
   return responseData;
 });
+
+
+
+
+
 
 
 

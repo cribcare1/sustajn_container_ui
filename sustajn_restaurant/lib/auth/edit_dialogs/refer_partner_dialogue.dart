@@ -25,6 +25,8 @@ class _EditReferPartnerDialogState
   late TextEditingController _contactNumberController;
   late TextEditingController _emailController;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +35,6 @@ class _EditReferPartnerDialogState
     _contactPersonController = TextEditingController();
     _contactNumberController = TextEditingController();
     _emailController = TextEditingController();
-    _getData();
   }
 
   @override
@@ -84,18 +85,6 @@ class _EditReferPartnerDialogState
     }
 
     return null;
-  }
-
-  _getData() {
-    final profileState = ref.read(profileProvider);
-    final profile = profileState.getProfileData?.data;
-    if (profile!.bankDetailsResponse != null) {
-      final bank = profile.bankDetailsResponse;
-      _restaurantNameController.text = bank!.bankName ?? "";
-      _contactPersonController.text = bank.accountNumber ?? "";
-      _contactNumberController.text = bank.taxNumber ?? "";
-      _emailController.text = bank.emailId ?? "";
-    }
   }
 
   @override
@@ -191,18 +180,34 @@ class _EditReferPartnerDialogState
                   hint: "${Strings.EMAIL}*",
                   keyboardType: TextInputType.text,
                   controller: _emailController,
+                  textInputAction: TextInputAction.done,
                   validator: _validateEmail,
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_24),
+
                 SizedBox(
                   width: double.infinity,
                   child: SubmitButton(
-                    onRightTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        _referPartnerNetworkCall(context);
+                    onRightTap: _isLoading
+                        ? null
+                        : () async {
+                      if (!_formKey.currentState!.validate()) return;
+
+                      setState(() => _isLoading = true);
+                      final success = await _referPartnerNetworkCall();
+                      if (!mounted) return;
+
+                      setState(() => _isLoading = false);
+
+                      if (success) {
+                        Utils.showToast(
+                          '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
+                        );
+                        Navigator.pop(context);
                       }
                     },
                     rightText: Strings.SAVE_CHANGES,
+                    isLoading: _isLoading,
                   ),
                 ),
               ],
@@ -215,18 +220,19 @@ class _EditReferPartnerDialogState
 
   Widget _buildTextField(
     BuildContext context, {
-        required String hint,
-        required String label,
-        TextInputType keyboardType = TextInputType.text,
-        TextEditingController? controller,
-        String? Function(String?)? validator,
-        List<TextInputFormatter>? inputFormatters,
-      }) {
+    required String hint,
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    TextInputAction textInputAction = TextInputAction.next,
+    TextEditingController? controller,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     return TextFormField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
-      textInputAction: TextInputAction.next,
+      textInputAction: textInputAction,
       inputFormatters: inputFormatters,
       style: TextStyle(
         color: Colors.white,
@@ -272,12 +278,12 @@ class _EditReferPartnerDialogState
       "partnerName": _contactPersonController.text,
       "partnerEmail": _emailController.text,
       "partnerPhone": _contactNumberController.text,
-      "referredByUserId": Utils.userId
+      "referredByUserId": Utils.userId,
     };
     return data;
   }
 
-  _referPartnerNetworkCall(var orderState) async {
+  _referPartnerNetworkCall() async {
     Utils.printLog('refer a partner Network call');
 
     final isNetworkAvailable = await ref
@@ -290,10 +296,10 @@ class _EditReferPartnerDialogState
     }
     try {
       await ref.read(referPartnerProvider(getJsonData()).future);
+      Utils.showToast('${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}');
       Navigator.pop(context);
     } catch (e) {
       Utils.printLog(e.toString());
     }
   }
-
 }

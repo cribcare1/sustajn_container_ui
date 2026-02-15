@@ -112,7 +112,7 @@ FutureProvider.family<UpdateProfAddressData, Map<String, dynamic>>(
 
     print("Provider Response: $responseData");
     if (responseData.status == null || responseData.status!.isEmpty) {
-      throw Exception(responseData.message ?? 'Update failed');
+      throw Exception(responseData.title ?? 'Update failed');
     }
     return responseData;
   },
@@ -128,7 +128,6 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
 
   Utils.printLog("Refer Partner Provider url : $url");
   final responseData = await apiService.referPartnerService(url, params, "");
-
   print("Provider Response: $responseData");
   return responseData;
 });
@@ -142,8 +141,39 @@ final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>
 
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.BUSINESS_INFO}';
 
-  Utils.printLog("Refer Partner Provider url : $url");
+  Utils.printLog("Business Info Provider url : $url");
   final responseData = await apiService.businessInfoService(url, params, "");
+
+  print("Provider Response: $responseData");
+  return responseData;
+});
+
+
+final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.FEEDBACK}';
+
+  Utils.printLog("{Feedback Provider url : $url");
+  final responseData = await apiService.feedbackService(url, params, "");
+  print("Provider Response: $responseData");
+  return responseData;
+});
+
+
+final updateSubscriptionPlanProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
+
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.UPGRADE_SUBSCRIPTION_PLAN}';
+
+  Utils.printLog("Upgrade Subscription plan Provider url : $url");
+  final responseData = await apiService.updateSubscriptionPlanService(url, params, "");
 
   print("Provider Response: $responseData");
   return responseData;

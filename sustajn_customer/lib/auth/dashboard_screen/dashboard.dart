@@ -146,7 +146,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Hi,',
+                Strings.HII,
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: Constant.subtitleText,
                   fontSize: Constant.LABEL_TEXT_SIZE_14,

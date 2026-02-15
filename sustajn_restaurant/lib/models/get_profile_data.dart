@@ -6,19 +6,19 @@ class GetProfileData {
   GetProfileData({this.data, this.message, this.status});
 
   GetProfileData.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     message = json['message'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = {};
-    if (data != null) {
-      map['data'] = data!.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
-    map['message'] = message;
-    map['status'] = status;
-    return map;
+    data['message'] = this.message;
+    data['status'] = this.status;
+    return data;
   }
 }
 
@@ -32,125 +32,166 @@ class Data {
   String? emailId;
   String? profileImageUrl;
   int? subscriptionPlanId;
-
   BankDetailsResponse? bankDetailsResponse;
   CardDetailsResponse? cardDetailsResponse;
   PaymentGetWayResponse? paymentGetWayResponse;
-
   List<AddressResponses>? addressResponses;
   SubscriptionResponse? subscriptionResponse;
   ContactAndRegistrationDetailsResponse? contactAndRegistrationDetailsResponse;
   List<SocialMediaResponse>? socialMediaResponse;
   BusinessDetailsResponse? businessDetailsResponse;
 
-  Data({
-    this.id,
-    this.fullName,
-    this.mobileNumber,
-    this.secondaryNumber,
-    this.dateOfBirth,
-    this.customerId,
-    this.emailId,
-    this.profileImageUrl,
-    this.subscriptionPlanId,
-    this.bankDetailsResponse,
-    this.cardDetailsResponse,
-    this.paymentGetWayResponse,
-    this.addressResponses,
-    this.subscriptionResponse,
-    this.contactAndRegistrationDetailsResponse,
-    this.socialMediaResponse,
-    this.businessDetailsResponse,
-  });
+  Data(
+      {this.id,
+        this.fullName,
+        this.mobileNumber,
+        this.secondaryNumber,
+        this.dateOfBirth,
+        this.customerId,
+        this.emailId,
+        this.profileImageUrl,
+        this.subscriptionPlanId,
+        this.bankDetailsResponse,
+        this.cardDetailsResponse,
+        this.paymentGetWayResponse,
+        this.addressResponses,
+        this.subscriptionResponse,
+        this.contactAndRegistrationDetailsResponse,
+        this.socialMediaResponse,
+        this.businessDetailsResponse});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    fullName = json['fullName'];
-    mobileNumber = json['mobileNumber'];
-    secondaryNumber = json['secondaryNumber'];
-    dateOfBirth = json['dateOfBirth'];
-    customerId = json['customerId'];
-    emailId = json['emailId'];
-    profileImageUrl = json['profileImageUrl'];
-    subscriptionPlanId = json['subscriptionPlanId'];
+    id = json['id'] ?? 0;
+    fullName = json['fullName'] ?? "";
+    mobileNumber = json['mobileNumber'] ?? "";
+    secondaryNumber = json['secondaryNumber'] ?? "";
+    dateOfBirth = json['dateOfBirth'] ?? "";
+    customerId = json['customerId'] ?? "";
+    emailId = json['emailId'] ?? "";
+    profileImageUrl = json['profileImageUrl'] ?? "";
+    subscriptionPlanId = json['subscriptionPlanId'] ?? 0;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     bankDetailsResponse = json['bankDetailsResponse'] != null
-        ? BankDetailsResponse.fromJson(
-        json['bankDetailsResponse'] as Map<String, dynamic>)
+        ? BankDetailsResponse.fromJson(json['bankDetailsResponse'])
         : null;
 
     cardDetailsResponse = json['cardDetailsResponse'] != null
-        ? CardDetailsResponse.fromJson(
-        json['cardDetailsResponse'] as Map<String, dynamic>)
+        ? CardDetailsResponse.fromJson(json['cardDetailsResponse'])
         : null;
 
     paymentGetWayResponse = json['paymentGetWayResponse'] != null
-        ? PaymentGetWayResponse.fromJson(
-        json['paymentGetWayResponse'] as Map<String, dynamic>)
+        ? PaymentGetWayResponse.fromJson(json['paymentGetWayResponse'])
         : null;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     if (json['addressResponses'] != null) {
-      addressResponses = (json['addressResponses'] as List)
-          .map((e) => AddressResponses.fromJson(e))
-          .toList();
+      addressResponses = <AddressResponses>[];
+      json['addressResponses'].forEach((v) {
+        addressResponses!.add(new AddressResponses.fromJson(v));
+      });
     }
-
     subscriptionResponse = json['subscriptionResponse'] != null
-        ? SubscriptionResponse.fromJson(json['subscriptionResponse'])
+        ? new SubscriptionResponse.fromJson(json['subscriptionResponse'])
         : null;
-
     contactAndRegistrationDetailsResponse =
     json['contactAndRegistrationDetailsResponse'] != null
-        ? ContactAndRegistrationDetailsResponse.fromJson(
+        ? new ContactAndRegistrationDetailsResponse.fromJson(
         json['contactAndRegistrationDetailsResponse'])
         : null;
-
     if (json['socialMediaResponse'] != null) {
-      socialMediaResponse = (json['socialMediaResponse'] as List)
-          .map((e) => SocialMediaResponse.fromJson(e))
-          .toList();
+      socialMediaResponse = <SocialMediaResponse>[];
+      json['socialMediaResponse'].forEach((v) {
+        socialMediaResponse!.add(new SocialMediaResponse.fromJson(v));
+      });
     }
-
     businessDetailsResponse = json['businessDetailsResponse'] != null
-        ? BusinessDetailsResponse.fromJson(json['businessDetailsResponse'])
+        ? new BusinessDetailsResponse.fromJson(json['businessDetailsResponse'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = {};
-    map['id'] = id;
-    map['fullName'] = fullName;
-    map['mobileNumber'] = mobileNumber;
-    map['secondaryNumber'] = secondaryNumber;
-    map['dateOfBirth'] = dateOfBirth;
-    map['customerId'] = customerId;
-    map['emailId'] = emailId;
-    map['profileImageUrl'] = profileImageUrl;
-    map['subscriptionPlanId'] = subscriptionPlanId;
-
-    map['bankDetailsResponse'] = bankDetailsResponse?.toJson();
-    map['cardDetailsResponse'] = cardDetailsResponse?.toJson();
-    map['paymentGetWayResponse'] = paymentGetWayResponse?.toJson();
-
-    if (addressResponses != null) {
-      map['addressResponses'] =
-          addressResponses!.map((e) => e.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['fullName'] = this.fullName;
+    data['mobileNumber'] = this.mobileNumber;
+    data['secondaryNumber'] = this.secondaryNumber;
+    data['dateOfBirth'] = this.dateOfBirth;
+    data['customerId'] = this.customerId;
+    data['emailId'] = this.emailId;
+    data['profileImageUrl'] = this.profileImageUrl;
+    data['subscriptionPlanId'] = this.subscriptionPlanId;
+    data['bankDetailsResponse'] = this.bankDetailsResponse;
+    data['cardDetailsResponse'] = this.cardDetailsResponse;
+    data['paymentGetWayResponse'] = this.paymentGetWayResponse;
+    if (this.addressResponses != null) {
+      data['addressResponses'] =
+          this.addressResponses!.map((v) => v.toJson()).toList();
     }
-
-    map['subscriptionResponse'] = subscriptionResponse?.toJson();
-    map['contactAndRegistrationDetailsResponse'] =
-        contactAndRegistrationDetailsResponse?.toJson();
-
-    if (socialMediaResponse != null) {
-      map['socialMediaResponse'] =
-          socialMediaResponse!.map((e) => e.toJson()).toList();
+    if (this.subscriptionResponse != null) {
+      data['subscriptionResponse'] = this.subscriptionResponse!.toJson();
     }
-
-    map['businessDetailsResponse'] = businessDetailsResponse?.toJson();
-    return map;
+    if (this.contactAndRegistrationDetailsResponse != null) {
+      data['contactAndRegistrationDetailsResponse'] =
+          this.contactAndRegistrationDetailsResponse!.toJson();
+    }
+    if (this.socialMediaResponse != null) {
+      data['socialMediaResponse'] =
+          this.socialMediaResponse!.map((v) => v.toJson()).toList();
+    }
+    if (this.businessDetailsResponse != null) {
+      data['businessDetailsResponse'] = this.businessDetailsResponse!.toJson();
+    }
+    return data;
   }
 }
 
+class BankDetailsResponse {
+  int? id;
+  int? userId;
+  String? bankName;
+  String? accountHolderName;
+  String? iBanNumber;
+  String? bicNumber;
+
+  BankDetailsResponse({this.id, this.userId, this.bankName, this.accountHolderName, this.iBanNumber, this.bicNumber});
+
+  BankDetailsResponse.fromJson(Map<String, dynamic> json) {
+    if(json["id"] is int) {
+      id = json["id"] ?? 0;
+    }
+    if(json["userId"] is int) {
+      userId = json["userId"] ?? 0;
+    }
+    if(json["bankName"] is String) {
+      bankName = json["bankName"] ?? "";
+    }
+    if(json["accountHolderName"] is String) {
+      accountHolderName = json["accountHolderName"] ?? "";
+    }
+    if(json["iBanNumber"] is String) {
+      iBanNumber = json["iBanNumber"] ?? "";
+    }
+    if(json["bicNumber"] is String) {
+      bicNumber = json["bicNumber"] ?? "";
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["userId"] = userId;
+    _data["bankName"] = bankName;
+    _data["accountHolderName"] = accountHolderName;
+    _data["iBanNumber"] = iBanNumber;
+    _data["bicNumber"] = bicNumber;
+    return _data;
+  }
+}
 
 class AddressResponses {
   int? id;
@@ -202,6 +243,9 @@ class SubscriptionResponse {
   bool? includesAnalytics;
   String? billingCycle;
   String? planStatus;
+  String? userType;
+  String? createdAt;
+  String? updatedAt;
 
   SubscriptionResponse(
       {this.planId,
@@ -219,7 +263,11 @@ class SubscriptionResponse {
         this.includesMarketing,
         this.includesAnalytics,
         this.billingCycle,
-        this.planStatus});
+        this.planStatus,
+        this.userType,
+        this.createdAt,
+        this.updatedAt
+      });
 
   SubscriptionResponse.fromJson(Map<String, dynamic> json) {
     planId = json['planId'] ?? 0;
@@ -238,6 +286,9 @@ class SubscriptionResponse {
     includesAnalytics = json['includesAnalytics'] ?? false;
     billingCycle = json['billingCycle'] ?? "";
     planStatus = json['planStatus'] ?? "";
+    userType = json['userType'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
@@ -258,6 +309,9 @@ class SubscriptionResponse {
     data['includesAnalytics'] = this.includesAnalytics;
     data['billingCycle'] = this.billingCycle;
     data['planStatus'] = this.planStatus;
+    data['userType'] = this.userType;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
     return data;
   }
 }
@@ -403,54 +457,6 @@ class CardDetailsResponse {
     _data["cardHolderName"] = cardHolderName;
     _data["cardNumber"] = cardNumber;
     _data["expiryDate"] = expiryDate;
-    return _data;
-  }
-}
-
-class BankDetailsResponse {
-  int? id;
-  int? userId;
-  String? bankName;
-  String? accountNumber;
-  String? iBanNumber;
-  String? taxNumber;
-  String? emailId;
-
-  BankDetailsResponse({this.id, this.userId, this.bankName, this.accountNumber, this.iBanNumber, this.taxNumber, this.emailId});
-
-  BankDetailsResponse.fromJson(Map<String, dynamic> json) {
-    if(json["id"] is int) {
-      id = json["id"] ?? 0;
-    }
-    if(json["userId"] is int) {
-      userId = json["userId"] ?? 0;
-    }
-    if(json["bankName"] is String) {
-      bankName = json["bankName"] ?? "";
-    }
-    if(json["accountNumber"] is String) {
-      accountNumber = json["accountNumber"] ?? "";
-    }
-    if(json["iBanNumber"] is String) {
-      iBanNumber = json["iBanNumber"] ?? "";
-    }
-    if(json["taxNumber"] is String) {
-      taxNumber = json["taxNumber"] ?? "";
-    }
-    if(json["email"] is String) {
-      emailId = json["email"] ?? "";
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["userId"] = userId;
-    _data["bankName"] = bankName;
-    _data["accountNumber"] = accountNumber;
-    _data["iBanNumber"] = iBanNumber;
-    _data["taxNumber"] = taxNumber;
-    _data["email"] = emailId;
     return _data;
   }
 }

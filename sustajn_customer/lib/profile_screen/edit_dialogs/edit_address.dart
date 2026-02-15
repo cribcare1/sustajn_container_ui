@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../auth/screens/save_home_address.dart';
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
@@ -32,7 +33,7 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
             color: const Color(0xFF0D402C),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius:  BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -70,10 +71,28 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
               _optionItem(
                 theme: theme,
                 icon: Icons.delete_forever,
-                text: "Remove Address",
-                onTap: () {
-                  _getNetworkDataVerify(profileState, widget.address.id ?? 0);
-                },
+                text: Strings.REMOVE_ADDRESS_TITLE,
+                  onTap: () async {
+                    Utils.displayDialog(
+                      context: context,
+                      icon: Icons.warning,
+                      title: Strings.DELETE_ADDRESS,
+                      subTitle:
+                      Strings.REMOVE_ADDRESS_TXT,
+                      cancelButtonText: Strings.NO,
+                      yesButtonText: Strings.DELETE,
+                      onCancel: () {
+                        Navigator.pop(context);
+                      },
+                      onYes: () async {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+
+                        await _deleteAddress(profileState, widget.address.id ?? 0);
+                      },
+                    );
+                  }
+
               ),
             ],
           ),
@@ -138,17 +157,32 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     );
   }
 
-  _getNetworkDataVerify(var registrationState, int addressId) async {
+  _deleteAddress(var profileState, int addressId) async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,
+          ) async {
         try {
           if (isNetworkAvailable) {
-            registrationState.setIsLoading(true);
-            ref.read(deleteAddressProvider({"addressId": addressId}));
+            profileState.setIsLoading(true);
+
+            final response = await ref.read(
+              deleteAddressProvider({"addressId": addressId}).future,
+            );
+
+            if (response.data != null) {
+              ref.read(profileProvider).setProfileList(response.data!);
+              profileState.setIsLoading(false);
+
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: "Address deleted successfully",
+                color: Colors.green,
+              );
+            }
           } else {
-            registrationState.setIsLoading(false);
+            profileState.setIsLoading(false);
             if (!mounted) return;
             showCustomSnackBar(
               context: context,
@@ -157,15 +191,21 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
             );
           }
         } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          registrationState.setIsLoading(false);
+          Utils.printLog('Error on delete: $e');
+          profileState.setIsLoading(false);
+          if (!mounted) return;
+          showCustomSnackBar(
+            context: context,
+            message: "Error deleting address",
+            color: Colors.red,
+          );
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
     } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      registrationState.setIsLoading(false);
+      Utils.printLog('Error in delete: $e');
+      profileState.setIsLoading(false);
     }
   }
 }

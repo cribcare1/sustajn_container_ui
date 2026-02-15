@@ -4,6 +4,7 @@ import 'package:sustajn_customer/auth/dashboard_screen/widgets/header.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/return_card.dart';
 import 'package:sustajn_customer/auth/dashboard_screen/widgets/status_row.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 
 class DashboardScreenTest extends StatelessWidget {
@@ -25,14 +26,14 @@ class DashboardScreenTest extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            HeaderWidget(name: 'John Dee'),
+            HeaderWidget(name: Strings.JOHN_DEE),
             SizedBox(height: Constant.SIZE_08),
             Padding(
               padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Container Return Status',
+                  Text(Strings.CONTAINER_RETURN,
                       style: Theme.of(context).textTheme.titleLarge?.
                       copyWith(color: Constant.profileText,
                           fontSize: Constant.LABEL_TEXT_SIZE_20, fontWeight: FontWeight.w700)),
@@ -49,10 +50,10 @@ class DashboardScreenTest extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Container Returns List', style: Theme.of(context).textTheme.titleMedium?.
+                  Text(Strings.CONTAINER_RETURN_LIST, style: Theme.of(context).textTheme.titleMedium?.
                   copyWith(color: Constant.profileText, fontSize: Constant.LABEL_TEXT_SIZE_18,
                       fontWeight: FontWeight.w600)),
-                  Text('View All', style: Theme.of(context).textTheme.bodySmall?.copyWith
+                  Text(Strings.VIEW_ALL, style: Theme.of(context).textTheme.bodySmall?.copyWith
                     (color: Constant.statusUpcoming, fontSize: Constant.LABEL_TEXT_SIZE_14)),
                 ],
               ),

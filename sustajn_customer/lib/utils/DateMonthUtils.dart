@@ -28,6 +28,32 @@ class DateMonthUtils {
     }
   }
 
+  static String getMonthName(String date) {
+    try {
+      final parsedDate = DateTime.parse(date);
+
+      const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+
+      return months[parsedDate.month - 1];
+    } catch (e) {
+      Utils.printLog('Invalid date format: $date');
+      return 'Unknown';
+    }
+  }
+
   static  getMonthIndex(String monthName) {
     const months = [
       'January',
