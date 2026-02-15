@@ -109,6 +109,7 @@ class OrderState extends ChangeNotifier{
 
   void setContainerHistoryData(ContainerHistoryData containerHistory){
     _containerHistoryData = containerHistory;
+    updateGroupedOrders();
     notifyListeners();
   }
 
@@ -162,6 +163,128 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
+///Lease
+///
+  String _searchQuery = '';
+  Map<String, List<LeasedResponses>> _groupedOrders = {};
 
+  String get searchQuery => _searchQuery;
+  Map<String, List<LeasedResponses>> get groupedOrders => _groupedOrders;
+
+
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    updateGroupedOrders();
+    notifyListeners();
+  }
+
+  void updateGroupedOrders() {
+    if (_containerHistoryData?.data?.leasedResponses == null) {
+      _groupedOrders = {};
+      return;
+    }
+    _groupedOrders = groupOrdersByMonth(
+      _containerHistoryData!.data!.leasedResponses,
+      _searchQuery,
+    );
+  }
+
+  Map<String, List<LeasedResponses>> groupOrdersByMonth(
+      List<LeasedResponses>? orders, String searchQuery) {
+    if (orders == null || orders.isEmpty) return {};
+
+    Map<String, List<LeasedResponses>> grouped = {};
+
+    for (var order in orders) {
+      // Only filter if search query is not empty
+      if (searchQuery.isNotEmpty) {
+        bool matches = false;
+
+        // Check order ID
+        if (order.orderId.toString().contains(searchQuery.toLowerCase())) {
+          matches = true;
+        }
+
+        // Check product IDs and names
+        if (order.productOrderListResponses != null) {
+          for (var product in order.productOrderListResponses!) {
+            if (product.productUniqueId!
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()) ||
+                product.productName!
+                    .toLowerCase()
+                    .contains(searchQuery.toLowerCase())) {
+              matches = true;
+              break;
+            }
+          }
+        }
+
+        if (!matches) continue;
+      }
+
+      String monthYear = getMonthYear(order.leasedStartDateTime ?? '');
+      if (!grouped.containsKey(monthYear)) {
+        grouped[monthYear] = [];
+      }
+      grouped[monthYear]!.add(order);
+    }
+
+    print("========= Grouped Orders: ${grouped.length} months =================");
+    return grouped;
+  }
+
+  String getMonthYear(String dateTimeStr) {
+    try {
+      List<String> parts = dateTimeStr.split('|');
+      if (parts.isEmpty) return 'Unknown';
+
+      List<String> dateParts = parts[0].split('/');
+      if (dateParts.length < 3) return 'Unknown';
+
+      int month = int.parse(dateParts[1]);
+      String year = dateParts[2];
+
+      List<String> monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+
+      return '${monthNames[month - 1]}-$year';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
+// Format product unique IDs
+  String formatProductIds(List<ProductOrderListResponses>? products) {
+    if (products == null || products.isEmpty) return '';
+    return products.map((p) => p.productUniqueId ?? '').join(' | ');
+  }
+
+// Format date time
+  String formatDateTime(String dateTimeStr) {
+    return dateTimeStr.replaceAll('|', ' | ');
+  }
+
+// Calculate total quantity for a month
+  int getMonthTotal(List<LeasedResponses> orders) {
+    return orders.fold(0, (sum, order) => sum + (order.leasedQuantity ?? 0));
+  }
+
+  void clearSearch() {
+    _searchQuery = '';
+    updateGroupedOrders();
+    notifyListeners();
+  }
+
+  void reset() {
+    _containerHistoryData = null;
+    _searchQuery = '';
+    _groupedOrders = {};
+    _isLoading = false;
+    notifyListeners();
+  }
 
 }

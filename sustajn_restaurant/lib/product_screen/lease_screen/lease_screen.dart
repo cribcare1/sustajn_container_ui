@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 
 import '../../common_widgets/filter_Screen.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/container_history_data.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
+import '../../notifier/order_notifier.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -25,29 +28,25 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
 
   bool _isQtyAscending = true;
 
-  LoginData? loginResponse;
-  bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final containerState = ref.read(orderProvider);
+      searchController.text = containerState.searchQuery;
+    });
     _getLeaseNetworkCall();
   }
-
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
-
     final container =
         containerState.containerHistorydata?.data?.leasedResponses;
 
@@ -60,6 +59,9 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
+                onChanged: (value){
+                  containerState.setSearchQuery(value);
+                },
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onFilterTap: () => _showSortBottomSheet(context),
@@ -76,67 +78,118 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : ListView.separated(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_16,
-                      ),
-                      itemCount: container.length,
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: Constant.SIZE_08),
-                      itemBuilder: (context, index) {
-                        final item = container[index];
-                        return _leaseCard(
-                          context,
-                          theme,
-                          item.transactionId!,
-                          item.productsName!,
-                          item.leasedQuantity!,
-                          item.leasedStartDateTime!,
-                        );
-                      },
-                    ),
+                  :
+
+             (containerState.groupedOrders.isEmpty)
+    ? _buildEmptyState(containerState)
+    : ListView.builder(
+               padding: EdgeInsets.symmetric(
+                 horizontal: Constant.CONTAINER_SIZE_16,
+               ),
+               itemCount: containerState.groupedOrders.length,
+               itemBuilder: (context, index) {
+                 String monthYear = containerState.groupedOrders.keys.elementAt(index);
+                 List<LeasedResponses> orders = containerState.groupedOrders[monthYear]!;
+
+                 return Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     // Month Header with Total Count
+                     Container(
+                       padding: EdgeInsets.symmetric(
+                         vertical: Constant.CONTAINER_SIZE_12,
+                       ),
+                       child: Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           Text(
+                             monthYear,
+                             style: theme.textTheme.titleMedium?.copyWith(
+                               fontSize: Constant.LABEL_TEXT_SIZE_16,
+                               fontWeight: FontWeight.w500,
+                               color: Colors.white70,
+                             ),
+                           ),
+                           Row(
+                             children: [
+                               Icon(
+                                 Icons.inventory_2_outlined,
+                                 color: Constant.gold,
+                                 size: Constant.CONTAINER_SIZE_16,
+                               ),
+                               SizedBox(width: Constant.SIZE_06),
+                               Text(
+                                 '${containerState.getMonthTotal(orders)}',
+                                 style: theme.textTheme.titleMedium?.copyWith(
+                                   color: Constant.gold,
+                                   fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                   fontWeight: FontWeight.w600,
+                                 ),
+                               ),
+                             ],
+                           ),
+                         ],
+                       ),
+                     ),
+
+                     // Order Cards for this month
+                     ListView.separated(
+                       shrinkWrap: true,
+                       physics: NeverScrollableScrollPhysics(),
+                       padding: EdgeInsets.zero,
+                       itemCount: orders.length,
+                       separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
+                       itemBuilder: (context, orderIndex) {
+                         return _leaseCard(
+                           context,
+                           theme,
+                           orders[orderIndex],
+                           containerState,
+                         );
+                       },
+                     ),
+                     SizedBox(height: Constant.CONTAINER_SIZE_24),
+                   ],
+                 );
+               },
+             ),
             ),
           ],
         ),
-
-        //// todo needed later
-
-        // floatingActionButton: InkWell(
-        //   onTap: () {
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(builder: (_) => QrCodeScanner()),
-        //     );
-        //   },
-        //   child: Container(
-        //     height: Constant.CONTAINER_SIZE_60,
-        //     width: Constant.CONTAINER_SIZE_60,
-        //     decoration: const BoxDecoration(
-        //       color: Constant.gold,
-        //       shape: BoxShape.circle,
-        //     ),
-        //     child: Icon(
-        //       Icons.qr_code_scanner,
-        //       color: theme.scaffoldBackgroundColor,
-        //       size: Constant.CONTAINER_SIZE_30,
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }
-
+  Widget _buildEmptyState(OrderState notifier) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 64,
+            color: Color(0xFF047857).withOpacity(0.3),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'No orders found',
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
   Widget _leaseCard(
-    BuildContext context,
-    ThemeData theme,
-    String transactionId,
-    String productName,
-    int qty,
-    String date,
-  ) {
+      BuildContext context,
+      ThemeData theme,
+      LeasedResponses data,
+      OrderState containerState,
+      ) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-      onTap: () => _openLeaseDialog(context, transactionId, date),
+      onTap: () => _openLeaseDialog(
+        context,
+        data
+      ),
       child: Container(
         margin: EdgeInsets.only(bottom: Constant.SIZE_08),
         decoration: BoxDecoration(
@@ -150,8 +203,9 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Product IDs
               Text(
-                transactionId,
+                containerState.formatProductIds(data.productOrderListResponses),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -165,8 +219,8 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      productName ?? "",
-                      maxLines: 2,
+                      'Order ID: #${data.orderId.toString().padLeft(8, '0')}',
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: Constant.LABEL_TEXT_SIZE_14,
@@ -176,7 +230,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                   ),
                   SizedBox(width: Constant.SIZE_08),
                   Text(
-                    qty.toString(),
+                    data.leasedQuantity.toString(),
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: Constant.gold,
                       fontWeight: FontWeight.bold,
@@ -192,7 +246,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
               ),
               SizedBox(height: Constant.SIZE_06),
               Text(
-                date ?? "",
+                containerState.formatDateTime(data.leasedStartDateTime ?? ""),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -209,15 +263,23 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
 
   void _openLeaseDialog(
     BuildContext context,
-    String transactionId,
-    String date,
+      LeasedResponses data,
   ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          LeaseDetailsDialog(transactionId: transactionId, dateTime: date),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.8,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) {
+          return SafeArea(
+              top: false,bottom: true,
+              child: LeaseDetailsDialog(data: data));
+        },
+      ),
     );
   }
 

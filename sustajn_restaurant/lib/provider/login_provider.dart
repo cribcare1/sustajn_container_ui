@@ -32,7 +32,8 @@ final loginDetailProvider =
       var responseData = LoginModel();
       try {
         responseData = await apiService.loginUser(url, params, "");
-        if (responseData.data!.userName != null) {
+        if (responseData.data != null) {
+          print("++++++++++++++++++++++++++++");
           registrationState.setIsLoading(false);
           registrationState.setLoginData(responseData);
           if (registrationState.context.mounted) {
@@ -52,12 +53,9 @@ final loginDetailProvider =
             responseData.data!.userId!,
           );
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
-
+print("========================================");
           if (registrationState.context.mounted) {
-            Navigator.pushReplacement(
-              registrationState.context,
-              MaterialPageRoute(builder: (_) => const DashboardScreen()),
-            );
+            NavUtil.navigateWithReplacement(DashboardScreen());
           }
         } else {
           if (registrationState.context.mounted) {
