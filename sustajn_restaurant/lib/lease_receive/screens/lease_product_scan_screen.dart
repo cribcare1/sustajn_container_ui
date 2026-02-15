@@ -112,7 +112,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
   }
   void _handleContainerId(String id) {
     final leaseNotifier = ref.read(leaseReceiveNotifier);
-    final matchedContainer = leaseNotifier.containersDetails.firstWhere(
+    final matchedContainer = leaseNotifier.containersDetailsList.firstWhere(
           (e) => e.containerUniqueId == id,
       orElse: () => ContainerDetails(
         containerUniqueId: "",
@@ -124,23 +124,28 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
         quantityAvailable: 0,
       ),
     );
-    final alreadyAdded = leaseNotifier.containersList.any(
-          (e) => e.containerUniqueId == id,
-    );
-
-    if (alreadyAdded) {
-      final container = leaseNotifier.containersList.firstWhere(
+    if(leaseNotifier.containersDetailsList.isNotEmpty) {
+      final alreadyAdded = leaseNotifier.containersList.any(
             (e) => e.containerUniqueId == id,
       );
 
-      container.quantity += 1;
+      if (alreadyAdded) {
+        final container = leaseNotifier.containersList.firstWhere(
+              (e) => e.containerUniqueId == id,
+        );
+
+        container.quantity += 1;
+      }
+      leaseNotifier.setContainerList(matchedContainer);
+      showCustomSnackBar(
+        context: context,
+        message: "Container added. Total: ${leaseNotifier.containersList
+            .length}",
+        color: Colors.white,
+      );
+    }else{
+      showCustomSnackBar(context: context, message: "No container available to lease", color: Colors.white,);
     }
-    leaseNotifier.setContainerList(matchedContainer);
-    showCustomSnackBar(
-      context: context,
-      message: "Container added. Total: ${leaseNotifier.containersList.length}",
-      color: Colors.green,
-    );
   }
   Future<void> _scanAgain() async {
     setState(() {
@@ -317,30 +322,40 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
       ),
     );
   }
-  Future<void> _getContainerList(
-      LeaseReceiveNotifier leasState, {
-        required String restaurantId,
-      }) async {
+
+  _getContainerList(LeaseReceiveNotifier leasState, {required String restaurantId,}) async {
     try {
-      leasState.setLoading(true);
 
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+            isNetworkAvailable,
+            ) async {
+          try {
+            if (isNetworkAvailable) {
+              leasState.setContext(context);
+              leasState.setLoading(true);
+              ref.read(
+                containerListProvider(restaurantId),
+              );
+            } else {
+              leasState.setLoading(false);
+              if (!mounted) return;
+              showCustomSnackBar(
+                context: context,
+                message: Strings.NO_INTERNET_CONNECTION,
+                color: Colors.white,
+              );
+            }
+          } catch (e) {
+            Utils.printLog('Error on button onPressed: $e');
+            leasState.setLoading(false);
+          }
+          if (!mounted) return;
+          FocusScope.of(context).unfocus();
+        });
 
-      if (isNetworkAvailable) {
-        ref.read(containerListProvider(restaurantId));
-      } else {
-        leasState.setLoading(false);
-        showCustomSnackBar(
-          context: context,
-          message: Strings.NO_INTERNET_CONNECTION,
-          color: Colors.red,
-        );
-      }
     } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
       leasState.setLoading(false);
-      Utils.printLog('Error fetching container list: $e');
     }
   }
 }

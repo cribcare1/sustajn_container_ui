@@ -72,6 +72,14 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                           onTap: () {
                             setState(() {
                               selectedType = 'LEASE';
+                              Navigator.pop(context);
+                              NavUtil.navigateToPushScreen(
+                                context,
+                                LeaseScanScreen(
+                                  type: selectedType ?? "",
+                                  damage: selectedValue,
+                                ),
+                              );
                             });
                           },
                         ),
@@ -85,6 +93,14 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                           onTap: () {
                             setState(() {
                               selectedType = 'RECEIVE';
+                              Navigator.pop(context);
+                              NavUtil.navigateToPushScreen(
+                                context,
+                                LeaseScanScreen(
+                                  type: selectedType ?? "",
+                                  damage: selectedValue,
+                                ),
+                              );
                             });
                           },
                         ),
@@ -93,7 +109,7 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-                  SizedBox(
+                 /* SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: selectedType == null
@@ -129,7 +145,7 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

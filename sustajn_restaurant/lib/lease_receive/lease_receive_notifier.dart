@@ -18,7 +18,7 @@ List<ProductOrderListResponseList> _containerReturnListAdded =[];
 
   bool get isSaving => _isSaving;
 
-  List<ContainerDetails> get containersDetails => _containersDetails;
+  List<ContainerDetails> get containersDetailsList => _containersDetails;
   List<ContainerDetails> get containersList => _containersList;
   List<ProductOrderListResponseList> get containerReturnList => _containerReturnList;
   List<ProductOrderListResponseList> get containerReturnListAdded => _containerReturnListAdded;

@@ -10,11 +10,11 @@ class LeaseAndReceiveServices {
   ApiCallPresenter presenter = ApiCallPresenter();
   Future<dynamic> leaseContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LEASE}";
-    print(api);
-    final data = jsonEncode(body);
-    print(data);
+    // print(api);
+    // final data = jsonEncode(body);
+    // print(data);
     try{
-      var response = await presenter.postApiStringData(api, data, "Post");
+      var response = await presenter.postApiStringData(api, body,"");
       if(response != null){
         print("response   ================ $response");
         return response;

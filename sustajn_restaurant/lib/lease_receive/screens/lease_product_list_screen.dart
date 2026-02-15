@@ -310,7 +310,7 @@ class _LeaseProductListScreenState
                             .toList();
 
                         Map<String, dynamic> data = {
-                          "userId": scannedId,
+                          "customerId": scannedId,
                           "restaurantId": Utils.userId,
                           "items": items,
                         };
@@ -345,7 +345,7 @@ class _LeaseProductListScreenState
             showCustomSnackBar(
               context: context,
               message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
+              color: Colors.white,
             );
           }
         } catch (e) {
