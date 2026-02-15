@@ -21,13 +21,13 @@ import '../model/container_return_list_model.dart';
 class ReceiveProductListScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
-  final int userId;
+  final String customerId;
 
   const ReceiveProductListScreen({
     super.key,
     required this.type,
     this.damage,
-    required this.userId,
+    required this.customerId,
   });
 
   @override
@@ -43,7 +43,7 @@ class _ReceiveProductListScreenState
       ref.read(leaseReceiveNotifier).setContext(context);
       _getContainerList(
         ref.read(leaseReceiveNotifier),
-        userId: widget.userId.toString(),
+        customerId: widget.customerId,
       );
     });
 
@@ -52,7 +52,7 @@ class _ReceiveProductListScreenState
 
   _getContainerList(
     LeaseReceiveNotifier leasState, {
-    required String userId,
+    required String customerId,
   }) async {
     try {
       leasState.setLoading(true);
@@ -61,7 +61,7 @@ class _ReceiveProductListScreenState
       ) async {
         try {
           if (isNetworkAvailable) {
-            ref.read(returnContainerListProvider(userId));
+            ref.read(returnContainerListProvider(customerId));
           } else {
             leasState.setLoading(false);
             if (!mounted) return;
@@ -250,7 +250,7 @@ class _ReceiveProductListScreenState
                   children: [
                     Expanded(
                       child: Text(
-                        item.productName,
+                        item.productName!,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -262,14 +262,14 @@ class _ReceiveProductListScreenState
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.productUniqueId,
+                  item.productUniqueId!,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  item.capacity.toString(),
+                  item.containerQuantity!.toString(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -381,7 +381,7 @@ class _ReceiveProductListScreenState
                             .toList();
 
                         Map<String, dynamic> data = {
-                          "userId": int.parse(scannedId),
+                          "userId": leaseState.customerUserId,
                           "restaurantId": Utils.userId,
                           "items": items,
                         };

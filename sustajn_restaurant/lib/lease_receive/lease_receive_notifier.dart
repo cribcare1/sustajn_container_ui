@@ -8,23 +8,30 @@ class LeaseReceiveNotifier extends ChangeNotifier {
   BuildContext? _context;
   bool _isLoading = false;
   bool _isSaving = false;
+  int _customerUserId = 0;
   List<ContainerDetails> _containersDetails = [];
   List<ContainerDetails> _containersList = [];
 List<ProductOrderListResponseList> _containerReturnList =[];
 List<ProductOrderListResponseList> _containerReturnListAdded =[];
+
+//Get
   BuildContext? get context => _context;
-
   bool get isLoading => _isLoading;
-
   bool get isSaving => _isSaving;
-
+  int get customerUserId => _customerUserId;
   List<ContainerDetails> get containersDetailsList => _containersDetails;
   List<ContainerDetails> get containersList => _containersList;
   List<ProductOrderListResponseList> get containerReturnList => _containerReturnList;
   List<ProductOrderListResponseList> get containerReturnListAdded => _containerReturnListAdded;
 
+  //Set
   void setLoading(bool isLoading) {
     _isLoading = isLoading;
+    notifyListeners();
+  }
+
+  void setCustomerUserId(int userId) {
+    _customerUserId = userId;
     notifyListeners();
   }
 

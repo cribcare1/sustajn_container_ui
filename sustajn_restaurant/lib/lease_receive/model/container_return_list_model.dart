@@ -1,73 +1,85 @@
-class ContainerReturnListModel {
-  String message;
-  String status;
-  List<ProductOrderListResponseList> productList;
+class CustomerBorrowedData {
+  String? status;
+  String? message;
+  List<ProductOrderListResponseList>? data;
 
-  ContainerReturnListModel({
-    required this.message,
-    required this.status,
-    required this.productList,
-  });
+  CustomerBorrowedData({this.status, this.message, this.data});
 
-  factory ContainerReturnListModel.fromJson(Map<String, dynamic> json) {
-    List<ProductOrderListResponseList> tempList = [];
-
-    if (json["value"] != null && json["value"] is Map) {
-      Map<String, dynamic> monthMap = json["value"];
-
-      // Dynamic month handling
-      monthMap.forEach((month, orderList) {
-        if (orderList != null && orderList is List) {
-          for (var order in orderList) {
-            if (order["productOrderListResponseList"] != null &&
-                order["productOrderListResponseList"] is List) {
-              for (var product in order["productOrderListResponseList"]) {
-                tempList.add(
-                  ProductOrderListResponseList.fromJson(product),
-                );
-              }
-            }
-          }
-        }
+  CustomerBorrowedData.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <ProductOrderListResponseList>[];
+      json['data'].forEach((v) {
+        data!.add(new ProductOrderListResponseList.fromJson(v));
       });
     }
+  }
 
-    return ContainerReturnListModel(
-      message: json["message"] ?? "",
-      status: json["status"] ?? "",
-      productList: tempList,
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
 class ProductOrderListResponseList {
-  String productId;
-  String productName;
-  String capacity;
-  String containerCount;
-  String productImageUrl;
-  String productUniqueId;
+  int? userId;
+  int? orderId;
+  int? productId;
+  String? productName;
   int? quantity;
+  String? productImageUrl;
+  int? daysLeft;
+  String? productUniqueId;
+  int? containerQuantity;
+  String? dueDate;
+  int? containerCount;
 
-  ProductOrderListResponseList({
-    required this.productId,
-    required this.productName,
-    required this.capacity,
-    required this.containerCount,
-    required this.productImageUrl,
-    required this.productUniqueId,
-    this.quantity = 1,
-  });
+  ProductOrderListResponseList(
+      {this.userId,
+        this.orderId,
+        this.productId,
+        this.productName,
+        this.quantity,
+        this.productImageUrl,
+        this.daysLeft,
+        this.productUniqueId,
+        this.containerQuantity,
+        this.dueDate,
+      this.containerCount});
 
-  factory ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
-    return ProductOrderListResponseList(
-      productId: json["productId"]?.toString() ?? "",
-      productName: json["productName"] ?? "",
-      capacity: json["capacity"]?.toString() ?? "",
-      containerCount: json["containerCount"]?.toString() ?? "",
-      productImageUrl: json["productImageUrl"] ?? "",
-      productUniqueId: json["productUniqueId"] ?? "",
-      quantity: json["quantity"] ?? "",
-    );
+  ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    orderId = json['orderId'];
+    productId = json['productId'];
+    productName = json['productName'];
+    quantity = json['quantity'];
+    productImageUrl = json['productImageUrl'];
+    daysLeft = json['daysLeft'];
+    productUniqueId = json['productUniqueId'];
+    containerQuantity = json['containerQuantity'];
+    dueDate = json['dueDate'];
+    containerCount =json['containerCount']??0;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userId'] = this.userId;
+    data['orderId'] = this.orderId;
+    data['productId'] = this.productId;
+    data['productName'] = this.productName;
+    data['quantity'] = this.quantity;
+    data['productImageUrl'] = this.productImageUrl;
+    data['daysLeft'] = this.daysLeft;
+    data['productUniqueId'] = this.productUniqueId;
+    data['containerQuantity'] = this.containerQuantity;
+    data['dueDate'] = this.dueDate;
+    data['containerCount'] = this.containerCount;
+    return data;
   }
 }

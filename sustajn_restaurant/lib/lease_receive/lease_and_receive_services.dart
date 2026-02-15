@@ -55,15 +55,15 @@ class LeaseAndReceiveServices {
       throw Exception(e);
     }
   }
-  Future<ContainerReturnListModel> fetchReturnContainerList(String userId) async {
+  Future<CustomerBorrowedData> fetchCustomerBorrowedList(String customerId) async {
     try {
       var api =
-          "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE_LIST}?userId=$userId";
+          "${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_BORROWED_LIST}$customerId";
 
       var response = await presenter.getAPIData(api);
 
       if (response != null) {
-        return ContainerReturnListModel.fromJson(response);
+        return CustomerBorrowedData.fromJson(response);
       } else {
         throw Exception("Unable to fetch container list");
       }

@@ -100,7 +100,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
     final matchedContainer = leaseNotifier.containerReturnList.firstWhere(
           (e) => e.productUniqueId == id,
       orElse: () => ProductOrderListResponseList(
-      productId: '', productName: '', containerCount: '', productImageUrl: '', productUniqueId: '', capacity: '',
+      productId: 0, productName: '', containerCount: 0, productImageUrl: '', productUniqueId: '', containerQuantity: 0,
       ),
     );
     final alreadyAdded = leaseNotifier.containersList.any(
@@ -115,6 +115,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
       container.quantity += 1;
     }
     leaseNotifier.setContainerReturnList(matchedContainer);
+    leaseNotifier.setCustomerUserId(leaseNotifier.containerReturnList[0].userId!);
     showCustomSnackBar(
       context: context,
       message: "Container added. Total: ${leaseNotifier.containersList.length}",

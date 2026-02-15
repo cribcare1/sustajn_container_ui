@@ -51,7 +51,8 @@ class NetworkUrls {
 static const CONTAINER_LIST_LEASE = "inventory/restaurant/getAvailableContainers/";
 static const CONTAINER_LEASE = "orders/borrowContainers";
 static const CONTAINER_RECEIVE = "orders/returnContainers";
-static const CONTAINER_RECEIVE_LIST = "orders/monthWiseReturnedDetails";
+static const CONTAINER_RECEIVE_LIST = "orders/monthWiseBorrowedDetails";
+static const CUSTOMER_BORROWED_LIST = "orders/getBorrowedProduct?customerId=";
 
 
 }
