@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 
-import '../../common_widgets/filter_Screen.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/container_history_data.dart';
-import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/order_notifier.dart';
 import '../../provider/order_provider.dart';
@@ -37,6 +34,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     });
     _getLeaseNetworkCall();
   }
+
   @override
   void dispose() {
     searchController.dispose();
@@ -59,12 +57,12 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
-                onChanged: (value){
+                onChanged: (value) {
                   containerState.setSearchQuery(value);
                 },
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
-                onFilterTap: () => _showSortBottomSheet(context),
+                onFilterTap: () => _showFilterBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_10),
@@ -78,87 +76,98 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  :
+                  : (containerState.groupedOrders.isEmpty)
+                  ? _buildEmptyState(containerState)
+                  : ListView.builder(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: containerState.groupedOrders.length,
+                      itemBuilder: (context, index) {
+                        String monthYear = containerState.groupedOrders.keys
+                            .elementAt(index);
+                        List<LeasedResponses> orders =
+                            containerState.groupedOrders[monthYear]!;
 
-             (containerState.groupedOrders.isEmpty)
-    ? _buildEmptyState(containerState)
-    : ListView.builder(
-               padding: EdgeInsets.symmetric(
-                 horizontal: Constant.CONTAINER_SIZE_16,
-               ),
-               itemCount: containerState.groupedOrders.length,
-               itemBuilder: (context, index) {
-                 String monthYear = containerState.groupedOrders.keys.elementAt(index);
-                 List<LeasedResponses> orders = containerState.groupedOrders[monthYear]!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(6)
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: Constant.CONTAINER_SIZE_10,
+                                horizontal: Constant.CONTAINER_SIZE_10
+                              ),
+                              margin:EdgeInsets.only(bottom:Constant.SIZE_08),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    monthYear,
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white70,
+                                        ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/img.png",
+                                        height: Constant.CONTAINER_SIZE_16,
+                                        width: Constant.CONTAINER_SIZE_16,
+                                      ),
 
-                 return Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     // Month Header with Total Count
-                     Container(
-                       padding: EdgeInsets.symmetric(
-                         vertical: Constant.CONTAINER_SIZE_12,
-                       ),
-                       child: Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         children: [
-                           Text(
-                             monthYear,
-                             style: theme.textTheme.titleMedium?.copyWith(
-                               fontSize: Constant.LABEL_TEXT_SIZE_16,
-                               fontWeight: FontWeight.w500,
-                               color: Colors.white70,
-                             ),
-                           ),
-                           Row(
-                             children: [
-                               Icon(
-                                 Icons.inventory_2_outlined,
-                                 color: Constant.gold,
-                                 size: Constant.CONTAINER_SIZE_16,
-                               ),
-                               SizedBox(width: Constant.SIZE_06),
-                               Text(
-                                 '${containerState.getMonthTotal(orders)}',
-                                 style: theme.textTheme.titleMedium?.copyWith(
-                                   color: Constant.gold,
-                                   fontSize: Constant.LABEL_TEXT_SIZE_18,
-                                   fontWeight: FontWeight.w600,
-                                 ),
-                               ),
-                             ],
-                           ),
-                         ],
-                       ),
-                     ),
+                                      SizedBox(width: Constant.SIZE_06),
+                                      Text(
+                                        '${containerState.getMonthTotal(orders)}',
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              color: Constant.gold,
+                                              fontSize:
+                                                  Constant.LABEL_TEXT_SIZE_18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
 
-                     // Order Cards for this month
-                     ListView.separated(
-                       shrinkWrap: true,
-                       physics: NeverScrollableScrollPhysics(),
-                       padding: EdgeInsets.zero,
-                       itemCount: orders.length,
-                       separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
-                       itemBuilder: (context, orderIndex) {
-                         return _leaseCard(
-                           context,
-                           theme,
-                           orders[orderIndex],
-                           containerState,
-                         );
-                       },
-                     ),
-                     SizedBox(height: Constant.CONTAINER_SIZE_24),
-                   ],
-                 );
-               },
-             ),
+                            // Order Cards for this month
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.zero,
+                              itemCount: orders.length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: Constant.SIZE_08),
+                              itemBuilder: (context, orderIndex) {
+                                return _leaseCard(
+                                  context,
+                                  theme,
+                                  orders[orderIndex],
+                                  containerState,
+                                );
+                              },
+                            ),
+                            SizedBox(height: Constant.CONTAINER_SIZE_24),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ],
         ),
       ),
     );
   }
+
   Widget _buildEmptyState(OrderState notifier) {
     return Center(
       child: Column(
@@ -172,24 +181,24 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
           SizedBox(height: 16),
           Text(
             'No orders found',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: Colors.white),
           ),
         ],
       ),
     );
   }
+
   Widget _leaseCard(
-      BuildContext context,
-      ThemeData theme,
-      LeasedResponses data,
-      OrderState containerState,
-      ) {
+    BuildContext context,
+    ThemeData theme,
+    LeasedResponses data,
+    OrderState containerState,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-      onTap: () => _openLeaseDialog(
-        context,
-        data
-      ),
+      onTap: () => _openLeaseDialog(context, data),
       child: Container(
         margin: EdgeInsets.only(bottom: Constant.SIZE_08),
         decoration: BoxDecoration(
@@ -203,7 +212,6 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Product IDs
               Text(
                 containerState.formatProductIds(data.productOrderListResponses),
                 maxLines: 1,
@@ -261,10 +269,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     );
   }
 
-  void _openLeaseDialog(
-    BuildContext context,
-      LeasedResponses data,
-  ) {
+  void _openLeaseDialog(BuildContext context, LeasedResponses data) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -276,16 +281,18 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
         maxChildSize: 0.95,
         builder: (context, scrollController) {
           return SafeArea(
-              top: false,bottom: true,
-              child: LeaseDetailsDialog(data: data));
+            top: false,
+            bottom: true,
+            child: LeaseDetailsDialog(data: data),
+          );
         },
       ),
     );
   }
 
-  void _showSortBottomSheet(BuildContext context) {
+  void _showFilterBottomSheet(BuildContext context) {
     final containerState = ref.read(orderProvider);
-    final container =
+    final leasedResponses =
         containerState.containerHistorydata?.data?.leasedResponses;
 
     showModalBottomSheet(
@@ -293,32 +300,70 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
-        return ReusableFilterBottomSheet(
-          title: Strings.SORT_BY,
-          leftTabTitle: "Quantity",
-          options: const [
-            "Low to High",
-            "High to Low",
-          ],
-          selectedValue: _isQtyAscending ? "Low to High" : "High to Low",
-          onApply: (value) {
-            if (container == null) return;
-
-            setState(() {
-              _isQtyAscending = value == "Low to High";
-
-              container.sort(
-                    (a, b) => _isQtyAscending
-                    ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
-                    : b.leasedQuantity!.compareTo(a.leasedQuantity!),
-              );
-            });
+        return FilterBottomSheet1(
+          leasedResponses: leasedResponses,
+          onApply: (selectedMonths, selectedContainers) {
+            _applyFilters(selectedMonths, selectedContainers);
           },
         );
       },
     );
   }
 
+  void _applyFilters(
+    List<String> selectedMonths,
+    List<String> selectedContainers,
+  ) {
+    final containerState = ref.read(orderProvider);
+
+    // Get all leased responses
+    List<LeasedResponses>? allResponses =
+        containerState.containerHistorydata?.data?.leasedResponses;
+
+    if (allResponses == null) return;
+
+    // If no filters selected, show all data
+    if (selectedMonths.isEmpty && selectedContainers.isEmpty) {
+      setState(() {
+        containerState.clearFilters();
+      });
+      return;
+    }
+
+    // Filter by selected months and containers
+    List<LeasedResponses> filteredResponses = allResponses.where((response) {
+      bool matchesMonth = true;
+      bool matchesContainer = true;
+
+      // Filter by month if any month is selected
+      if (selectedMonths.isNotEmpty) {
+        String responseMonth = containerState.getMonthYear(
+          response.leasedStartDateTime ?? '',
+        );
+        matchesMonth = selectedMonths.contains(responseMonth);
+      }
+
+      // Filter by container if any container is selected
+      if (selectedContainers.isNotEmpty) {
+        matchesContainer = false;
+        if (response.productOrderListResponses != null) {
+          for (var product in response.productOrderListResponses!) {
+            if (selectedContainers.contains(product.productUniqueId)) {
+              matchesContainer = true;
+              break;
+            }
+          }
+        }
+      }
+
+      return matchesMonth && matchesContainer;
+    }).toList();
+
+    // Update the grouped orders with filtered data
+    setState(() {
+      containerState.applyFilters(filteredResponses);
+    });
+  }
 
   _getLeaseNetworkCall() async {
     try {
@@ -340,5 +385,537 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     } catch (e) {
       Utils.printLog('Error in visitor button onPressed: $e');
     }
+  }
+}
+
+class FilterBottomSheet1 extends ConsumerStatefulWidget {
+  final List<LeasedResponses>? leasedResponses;
+  final Function(List<String> selectedMonths, List<String> selectedContainers)
+  onApply;
+
+  const FilterBottomSheet1({
+    super.key,
+    required this.leasedResponses,
+    required this.onApply,
+  });
+
+  @override
+  ConsumerState<FilterBottomSheet1> createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
+  String _selectedTab = 'Month';
+  final Set<String> _selectedMonths = {};
+  final Set<String> _selectedContainers = {};
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<String> _getUniqueMonths() {
+    if (widget.leasedResponses == null) return [];
+
+    Set<String> months = {};
+    for (var response in widget.leasedResponses!) {
+      String monthYear = _getMonthYear(response.leasedStartDateTime ?? '');
+      if (monthYear != 'Unknown') {
+        months.add(monthYear);
+      }
+    }
+    List<String> sortedMonths = months.toList();
+    sortedMonths.sort((a, b) {
+      DateTime dateA = _parseMonthYear(a);
+      DateTime dateB = _parseMonthYear(b);
+      return dateB.compareTo(dateA);
+    });
+
+    return sortedMonths;
+  }
+
+  List<Map<String, String>> _getUniqueContainers() {
+    if (widget.leasedResponses == null) return [];
+
+    Map<String, String> containersMap = {};
+    for (var response in widget.leasedResponses!) {
+      if (response.productOrderListResponses != null) {
+        for (var product in response.productOrderListResponses!) {
+          String name = product.productName ?? '';
+          String uniqueId = product.productUniqueId ?? '';
+          if (name.isNotEmpty && uniqueId.isNotEmpty) {
+            containersMap[uniqueId] = name;
+          }
+        }
+      }
+    }
+    List<Map<String, String>> containers = containersMap.entries
+        .map((e) => {'name': e.value, 'uniqueId': e.key})
+        .toList();
+
+    containers.sort((a, b) => a['name']!.compareTo(b['name']!));
+
+    return containers;
+  }
+
+  String _getMonthYear(String dateTimeStr) {
+    try {
+      List<String> parts = dateTimeStr.split('|');
+      if (parts.isEmpty) return 'Unknown';
+
+      List<String> dateParts = parts[0].split('/');
+      if (dateParts.length < 3) return 'Unknown';
+
+      int month = int.parse(dateParts[1]);
+      String year = dateParts[2];
+
+      List<String> monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+
+      return '${monthNames[month - 1]}-$year';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
+  DateTime _parseMonthYear(String monthYear) {
+    try {
+      List<String> parts = monthYear.split('-');
+      List<String> monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+
+      int month = monthNames.indexOf(parts[0]) + 1;
+      int year = int.parse(parts[1]);
+
+      return DateTime(year, month);
+    } catch (e) {
+      return DateTime.now();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final notifier = ref.watch(orderProvider);
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: EdgeInsets.all(Constant.SIZE_08),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black,
+                    size: Constant.CONTAINER_SIZE_20,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_30),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildHeader(theme),
+                  _buildTabs(theme),
+                  Divider(
+                    color: Colors.white.withOpacity(0.2),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  if (_selectedTab == 'Containers') _buildSearchBar(theme),
+                  Flexible(child: _buildContent(theme)),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      Constant.CONTAINER_SIZE_16,
+                      0,
+                      Constant.CONTAINER_SIZE_16,
+                      Constant.CONTAINER_SIZE_16,
+                    ),
+                    child: _buildButtons(theme, context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Constant.CONTAINER_SIZE_24,
+        Constant.CONTAINER_SIZE_20,
+        Constant.CONTAINER_SIZE_24,
+        Constant.CONTAINER_SIZE_16,
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: Constant.CONTAINER_SIZE_60,
+            height: Constant.SIZE_05,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(Constant.SIZE_05),
+              color: Colors.white30,
+            ),
+          ),
+          SizedBox(height: Constant.CONTAINER_SIZE_20),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Filters",
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontSize: Constant.LABEL_TEXT_SIZE_20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabs(ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_24,
+        vertical: Constant.CONTAINER_SIZE_12,
+      ),
+      child: Row(
+        children: [
+          _buildTab('Month', theme),
+          SizedBox(width: Constant.CONTAINER_SIZE_24),
+          _buildTab('Containers', theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(String label, ThemeData theme) {
+    bool isSelected = _selectedTab == label;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTab = label;
+          _searchQuery = '';
+          _searchController.clear();
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isSelected ? Colors.white : Colors.white60,
+            fontSize: Constant.LABEL_TEXT_SIZE_15,
+            fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_24),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value.toLowerCase();
+          });
+        },
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: Constant.LABEL_TEXT_SIZE_14,
+        ),
+        decoration: InputDecoration(
+          hintText: 'Container name or ID',
+          hintStyle: TextStyle(
+            color: Colors.white.withOpacity(0.4),
+            fontSize: Constant.LABEL_TEXT_SIZE_14,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.white.withOpacity(0.5),
+            size: Constant.CONTAINER_SIZE_20,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Constant.CONTAINER_SIZE_16,
+            vertical: Constant.CONTAINER_SIZE_12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(ThemeData theme) {
+    if (_selectedTab == 'Month') {
+      return _buildMonthList(theme);
+    } else {
+      return _buildContainersList(theme);
+    }
+  }
+
+  Widget _buildMonthList(ThemeData theme) {
+    List<String> months = _getUniqueMonths();
+
+    if (months.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_40),
+          child: Text(
+            'No months available',
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white54),
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_24,
+        vertical: Constant.CONTAINER_SIZE_16,
+      ),
+      itemCount: months.length,
+      separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
+      itemBuilder: (context, index) {
+        String month = months[index];
+        bool isSelected = _selectedMonths.contains(month);
+
+        return InkWell(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                _selectedMonths.remove(month);
+              } else {
+                _selectedMonths.add(month);
+              }
+            });
+          },
+          borderRadius: BorderRadius.circular(Constant.SIZE_08),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_12,
+              vertical: Constant.CONTAINER_SIZE_14,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  month,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: Constant.LABEL_TEXT_SIZE_15,
+                  ),
+                ),
+                Container(
+                  width: Constant.CONTAINER_SIZE_20,
+                  height: Constant.CONTAINER_SIZE_20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isSelected ? Color(0xFFFBBF24) : Colors.white54,
+                      width: 1.5,
+                    ),
+                    color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
+                  ),
+                  child: isSelected
+                      ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).primaryColor,
+                          size: Constant.CONTAINER_SIZE_12,
+                        )
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContainersList(ThemeData theme) {
+    List<Map<String, String>> containers = _getUniqueContainers();
+
+    if (_searchQuery.isNotEmpty) {
+      containers = containers.where((container) {
+        String name = container['name']!.toLowerCase();
+        String uniqueId = container['uniqueId']!.toLowerCase();
+        return name.contains(_searchQuery) || uniqueId.contains(_searchQuery);
+      }).toList();
+    }
+
+    if (containers.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_40),
+          child: Text(
+            'No containers found',
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white54),
+          ),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_24,
+        vertical: Constant.CONTAINER_SIZE_16,
+      ),
+      itemCount: containers.length,
+      separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
+      itemBuilder: (context, index) {
+        Map<String, String> container = containers[index];
+        String uniqueId = container['uniqueId']!;
+        bool isSelected = _selectedContainers.contains(uniqueId);
+
+        return InkWell(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                _selectedContainers.remove(uniqueId);
+              } else {
+                _selectedContainers.add(uniqueId);
+              }
+            });
+          },
+          borderRadius: BorderRadius.circular(Constant.SIZE_08),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_12,
+              vertical: Constant.CONTAINER_SIZE_12,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        container['name']!,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: Constant.LABEL_TEXT_SIZE_15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: Constant.SIZE_04),
+                      Text(
+                        uniqueId,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white60,
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: Constant.CONTAINER_SIZE_20,
+                  height: Constant.CONTAINER_SIZE_20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isSelected ? Color(0xFFFBBF24) : Colors.white54,
+                      width: 1.5,
+                    ),
+                    color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
+                  ),
+                  child: isSelected
+                      ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).primaryColor,
+                          size: Constant.CONTAINER_SIZE_12,
+                        )
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildButtons(ThemeData theme, BuildContext context) {
+    return SubmitClearButton(
+      onLeftTap: () {
+        setState(() {
+          _selectedMonths.clear();
+          _selectedContainers.clear();
+          _searchQuery = '';
+          _searchController.clear();
+          ref.read(orderProvider).clearFilters();
+        });
+      },
+      leftText: "Clear",
+      rightText: "Apply",
+      onRightTap: () {
+        widget.onApply(_selectedMonths.toList(), _selectedContainers.toList());
+        Navigator.pop(context);
+      },
+    );
   }
 }

@@ -1,11 +1,10 @@
-
 import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 
-class OrderState extends ChangeNotifier{
+class OrderState extends ChangeNotifier {
   String _name = '';
   bool _isLoading = false;
   GetContainerData? _getContainerData;
@@ -17,9 +16,7 @@ class OrderState extends ChangeNotifier{
   bool _isOrdering = false;
 
   bool get isVerifying => _isVerifying;
-
   String get name => _name;
-
   bool get isLoading => _isLoading;
   GetContainerData? get getContainerData => _getContainerData;
   List<ContainersDetails> get filterInventory => _filterInventory;
@@ -28,12 +25,9 @@ class OrderState extends ChangeNotifier{
   List<ContainersDetails> get selectedContainers => _selectedContainers;
   bool get isOrdering => _isOrdering;
 
-  // Error messages
   String? _nameError;
-
   String? get nameError => _nameError;
   bool _isQtyAscending = true;
-
   bool get isQtyAscending => _isQtyAscending;
 
   void setName(String value) {
@@ -42,20 +36,22 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setIsLoading(bool isLoading){
+  void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
     notifyListeners();
   }
 
-  void setOrderData(GetContainerData getContainer){
+  void setOrderData(GetContainerData getContainer) {
     _getContainerData = getContainer;
     _filterInventory = List.from(getContainer.containersDetails ?? []);
     notifyListeners();
   }
-  void setInventoryFilter(List<ContainersDetails> data){
+
+  void setInventoryFilter(List<ContainersDetails> data) {
     _filterInventory = List.from(data);
     notifyListeners();
   }
+
   void filterInventoryByNameOrId(String query) {
     if (query.isEmpty) {
       _filterInventory = _getContainerData?.containersDetails ?? [];
@@ -67,10 +63,9 @@ class OrderState extends ChangeNotifier{
 
     _filterInventory = (_getContainerData?.containersDetails ?? [])
         .where((container) {
-      final nameMatch = container.containerName
-          ?.toLowerCase()
-          .contains(lowerQuery) ??
-          false;
+      final nameMatch =
+          container.containerName?.toLowerCase().contains(lowerQuery) ??
+              false;
 
       final idMatch = container.containerUniqueId
           ?.toLowerCase()
@@ -89,13 +84,10 @@ class OrderState extends ChangeNotifier{
     _filterInventory.sort((a, b) {
       final aQty = a.quantityAvailable ?? 0;
       final bQty = b.quantityAvailable ?? 0;
-      return ascending
-          ? aQty.compareTo(bQty)
-          : bQty.compareTo(aQty);
+      return ascending ? aQty.compareTo(bQty) : bQty.compareTo(aQty);
     });
     notifyListeners();
   }
-
 
   void resetSort() {
     _isQtyAscending = true;
@@ -105,9 +97,7 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
-
-
-  void setContainerHistoryData(ContainerHistoryData containerHistory){
+  void setContainerHistoryData(ContainerHistoryData containerHistory) {
     _containerHistoryData = containerHistory;
     updateGroupedOrders();
     notifyListeners();
@@ -163,15 +153,15 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
-///Lease
-///
+  /// Lease Section
   String _searchQuery = '';
   Map<String, List<LeasedResponses>> _groupedOrders = {};
+  List<LeasedResponses>? _filteredResponses;
 
   String get searchQuery => _searchQuery;
   Map<String, List<LeasedResponses>> get groupedOrders => _groupedOrders;
-
-
+  List<LeasedResponses>? get filteredResponses => _filteredResponses;
+  bool get hasActiveFilters => _filteredResponses != null;
 
   void setSearchQuery(String query) {
     _searchQuery = query;
@@ -180,14 +170,16 @@ class OrderState extends ChangeNotifier{
   }
 
   void updateGroupedOrders() {
-    if (_containerHistoryData?.data?.leasedResponses == null) {
+    List<LeasedResponses>? dataToGroup =
+        _filteredResponses ?? _containerHistoryData?.data?.leasedResponses;
+
+    if (dataToGroup == null) {
       _groupedOrders = {};
       return;
     }
-    _groupedOrders = groupOrdersByMonth(
-      _containerHistoryData!.data!.leasedResponses,
-      _searchQuery,
-    );
+
+    _groupedOrders = groupOrdersByMonth(dataToGroup, _searchQuery);
+    notifyListeners();
   }
 
   Map<String, List<LeasedResponses>> groupOrdersByMonth(
@@ -197,16 +189,13 @@ class OrderState extends ChangeNotifier{
     Map<String, List<LeasedResponses>> grouped = {};
 
     for (var order in orders) {
-      // Only filter if search query is not empty
       if (searchQuery.isNotEmpty) {
         bool matches = false;
 
-        // Check order ID
         if (order.orderId.toString().contains(searchQuery.toLowerCase())) {
           matches = true;
         }
 
-        // Check product IDs and names
         if (order.productOrderListResponses != null) {
           for (var product in order.productOrderListResponses!) {
             if (product.productUniqueId!
@@ -231,7 +220,6 @@ class OrderState extends ChangeNotifier{
       grouped[monthYear]!.add(order);
     }
 
-    print("========= Grouped Orders: ${grouped.length} months =================");
     return grouped;
   }
 
@@ -247,8 +235,18 @@ class OrderState extends ChangeNotifier{
       String year = dateParts[2];
 
       List<String> monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
       ];
 
       return '${monthNames[month - 1]}-$year';
@@ -257,18 +255,15 @@ class OrderState extends ChangeNotifier{
     }
   }
 
-// Format product unique IDs
   String formatProductIds(List<ProductOrderListResponses>? products) {
     if (products == null || products.isEmpty) return '';
     return products.map((p) => p.productUniqueId ?? '').join(' | ');
   }
 
-// Format date time
   String formatDateTime(String dateTimeStr) {
     return dateTimeStr.replaceAll('|', ' | ');
   }
 
-// Calculate total quantity for a month
   int getMonthTotal(List<LeasedResponses> orders) {
     return orders.fold(0, (sum, order) => sum + (order.leasedQuantity ?? 0));
   }
@@ -279,10 +274,24 @@ class OrderState extends ChangeNotifier{
     notifyListeners();
   }
 
+  void applyFilters(List<LeasedResponses> filteredData) {
+    _filteredResponses = filteredData;
+    _groupedOrders = groupOrdersByMonth(filteredData, _searchQuery);
+    notifyListeners();
+  }
+
+  void clearFilters() {
+    _filteredResponses = null;
+    _searchQuery = '';
+    updateGroupedOrders();
+    notifyListeners();
+  }
+
   void reset() {
     _containerHistoryData = null;
     _searchQuery = '';
     _groupedOrders = {};
+    _filteredResponses = null;
     _isLoading = false;
     notifyListeners();
   }
