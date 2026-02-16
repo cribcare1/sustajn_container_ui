@@ -232,7 +232,7 @@ class _ReceiveProductListScreenState
               errorBuilder: (context, obj, stack) {
                 return Image.asset("assets/images/no_image_container.png");
               },
-              fit: BoxFit.contain,
+              fit: BoxFit.fill,
             ),
           ),
           const SizedBox(width: 12),
@@ -245,7 +245,7 @@ class _ReceiveProductListScreenState
                   children: [
                     Expanded(
                       child: Text(
-                        item.productName!,
+                        item.productName,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -257,14 +257,14 @@ class _ReceiveProductListScreenState
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.productUniqueId!,
+                  item.productUniqueId,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  item.containerQuantity!.toString(),
+                  "${item.containerQuantity}ml",
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -277,7 +277,7 @@ class _ReceiveProductListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantity.toString(),
+                item.containerCount.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
