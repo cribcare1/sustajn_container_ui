@@ -131,7 +131,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: "Account Holder: ",
+                                        text: Strings.ACCOUNT_HOLDER,
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(color: Colors.white),
                                       ),
@@ -183,7 +183,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                             TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Card Number: ",
+                                  text: Strings.CRD_NUMBER,
                                   style: theme.textTheme.titleSmall!.copyWith(
                                     color: Colors.white,
                                   ),
@@ -208,7 +208,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: "Expiry: ",
+                                        text: Strings.EXPIRY,
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(color: Colors.white),
                                       ),
@@ -229,12 +229,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                   TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: "CVV: ",
+                                        text: Strings.CVVS,
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(color: Colors.white),
                                       ),
                                       TextSpan(
-                                        text: "***",
+                                        text: Strings.STAR,
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(
                                               color: theme.secondaryHeaderColor,
@@ -277,8 +277,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 asset: 'assets/images/google_pay.png',
               ),
               _orDivider(theme),
-              _sectionTitle(theme, title: 'Bank Details'),
-              _bankFields(theme, authState),
               _sectionTitle(theme, title: Strings.BANK_DETAILS),
               _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
@@ -392,7 +390,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             Icon(Icons.credit_card, color: Constant.gold),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              'Add Card',
+              Strings.ADD_CARD,
               style: theme.textTheme.titleSmall?.copyWith(
                 color: Constant.gold,
                 fontWeight: FontWeight.w600,
@@ -415,7 +413,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
             child: Text(
-              'or',
+              Strings.OR,
               style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
@@ -438,7 +436,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           Icon(Icons.account_balance_wallet, color: Colors.white),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Text(
-            'PayPal',
+            Strings.PAYPAL,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: Colors.white,
               fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -514,7 +512,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       children: [
         _inputField(
           theme,
-          hint: 'Bank Name',
+          hint: Strings.BANK_NAME,
           controller: bankNameController,
           keyboardType: TextInputType.text,
           errorText: auth.bankNameError,
@@ -526,7 +524,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: 'Account Holder Name',
+          hint: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
           errorText: auth.accountHolderError,
@@ -538,7 +536,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: 'IBAN',
+          hint: Strings.IBAN,
           controller: ibanController,
           keyboardType: TextInputType.text,
           errorText: auth.ibanError,
@@ -550,7 +548,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: 'BIC',
+          hint: Strings.BIC,
           controller: bicController,
           keyboardType: TextInputType.text,
           errorText: auth.bicError,
@@ -613,7 +611,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     if (accountNo.isEmpty) {
       showCustomSnackBar(
         context: context,
-        message: 'Account holder name is required',
+        message: Strings.ACCOUNT_HOLDER_NAME_REQ,
         color: Colors.red,
       );
       return false;
