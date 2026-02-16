@@ -295,5 +295,137 @@ class OrderState extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+/// receive
 
+// Add to OrderState class
+
+  /// Receive Section
+  String _searchQueryReceive = '';
+  Map<String, List<ReceivedResponses>> _groupedReceiveOrders = {};
+  List<ReceivedResponses>? _filteredReceiveResponses;
+
+  String get searchQueryReceive => _searchQueryReceive;
+  Map<String, List<ReceivedResponses>> get groupedReceiveOrders =>
+      _groupedReceiveOrders;
+  List<ReceivedResponses>? get filteredReceiveResponses =>
+      _filteredReceiveResponses;
+  bool get hasActiveFiltersReceive => _filteredReceiveResponses != null;
+
+  void setSearchQueryReceive(String query) {
+    _searchQueryReceive = query;
+    updateGroupedReceiveOrders();
+  }
+
+  void updateGroupedReceiveOrders() {
+    List<ReceivedResponses>? dataToGroup = _filteredReceiveResponses ??
+        _containerHistoryData?.data?.receivedResponses;
+
+    if (dataToGroup == null) {
+      _groupedReceiveOrders = {};
+      notifyListeners();
+      return;
+    }
+
+    _groupedReceiveOrders =
+        groupReceiveOrdersByMonth(dataToGroup, _searchQueryReceive);
+    notifyListeners();
+  }
+
+  Map<String, List<ReceivedResponses>> groupReceiveOrdersByMonth(
+      List<ReceivedResponses>? orders, String searchQuery) {
+    if (orders == null || orders.isEmpty) return {};
+
+    Map<String, List<ReceivedResponses>> grouped = {};
+
+    for (var order in orders) {
+      if (searchQuery.isNotEmpty) {
+        bool matches = false;
+
+        if (order.orderId.toString().contains(searchQuery.toLowerCase())) {
+          matches = true;
+        }
+
+        if (order.productOrderListResponses != null) {
+          for (var product in order.productOrderListResponses!) {
+            if (product.productUniqueId!
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()) ||
+                product.productName!
+                    .toLowerCase()
+                    .contains(searchQuery.toLowerCase())) {
+              matches = true;
+              break;
+            }
+          }
+        }
+
+        if (!matches) continue;
+      }
+
+      String monthYear = getMonthYearReceive(order.returnDateTime ?? '');
+      if (!grouped.containsKey(monthYear)) {
+        grouped[monthYear] = [];
+      }
+      grouped[monthYear]!.add(order);
+    }
+
+    return grouped;
+  }
+
+  String getMonthYearReceive(String dateTimeStr) {
+    try {
+      List<String> parts = dateTimeStr.split('|');
+      if (parts.isEmpty) return 'Unknown';
+
+      List<String> dateParts = parts[0].split('/');
+      if (dateParts.length < 3) return 'Unknown';
+
+      int month = int.parse(dateParts[1]);
+      String year = dateParts[2];
+
+      List<String> monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ];
+
+      return '${monthNames[month - 1]}-$year';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
+  int getMonthTotalReceive(List<ReceivedResponses> orders) {
+    return orders.fold(0, (sum, order) => sum + (order.returnedQuantity ?? 0));
+  }
+
+  void clearSearchReceive() {
+    _searchQueryReceive = '';
+    updateGroupedReceiveOrders();
+  }
+
+  void applyFiltersReceive(List<ReceivedResponses> filteredData) {
+    _filteredReceiveResponses = filteredData;
+    _groupedReceiveOrders =
+        groupReceiveOrdersByMonth(filteredData, _searchQueryReceive);
+    notifyListeners();
+  }
+
+  void clearFiltersReceive() {
+    _filteredReceiveResponses = null;
+    _searchQueryReceive = '';
+    updateGroupedReceiveOrders();
+    notifyListeners();
+  }
+
+///
 }
