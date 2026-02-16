@@ -113,14 +113,14 @@ FutureProvider.family<ContainerListModel, String>((ref, restaurantId) async {
 });
 
 final returnContainerListProvider =
-FutureProvider.family<ContainerReturnListModel, String>((ref, userId) async {
+FutureProvider.family<CustomerBorrowedData, String>((ref, customerId) async {
   final apiService = ref.watch(leaseAPIServices);
   final leaseNotifier = ref.watch(leaseReceiveNotifier);
 
   try {
-    final response = await apiService.fetchReturnContainerList(userId);
-    if  (response.status == NetworkUrls.SUCCESS && response.productList.isNotEmpty) {
-      leaseNotifier.setReturnContainer(response.productList);
+    final response = await apiService.fetchCustomerBorrowedList(customerId);
+    if  (response.status == NetworkUrls.SUCCESS && response.data!.isNotEmpty) {
+      leaseNotifier.setReturnContainer(response.data!);
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message: "Please Scan container",
@@ -129,7 +129,7 @@ FutureProvider.family<ContainerReturnListModel, String>((ref, userId) async {
     }else{
       showCustomSnackBar(
         context: leaseNotifier.context!,
-        message: response.message,
+        message: response.message!,
         color: Colors.red,
       );
     }

@@ -37,16 +37,18 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
   String? scannedValue;
   bool _torchOn = false;
   final textController = TextEditingController();
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
+
   Future<void> _onDetect(BarcodeCapture capture) async {
     final leaseNotifier = ref.read(leaseReceiveNotifier);
     if (_isScanned) return;
     final Barcode? barcode = capture.barcodes.firstWhere(
-          (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
+      (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
       orElse: () => Barcode(
         rawValue: null,
         displayValue: null,
@@ -57,7 +59,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
     final encryptedValue = barcode.rawValue!;
     if (!QrCryptoHelper.isBase64(encryptedValue)) {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        SnackBar(
           content: Text(Strings.INVALID_QR_CODE),
           backgroundColor: Colors.red,
         ),
@@ -78,7 +80,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
       await Future.delayed(const Duration(milliseconds: 300));
       await controller.stop();
     } catch (e) {
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(Strings.INVALID_QR_CODE),
@@ -96,30 +98,53 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
   }
 
   void _handleContainerId(String id) {
+    print("============ $id ==============");
     final leaseNotifier = ref.read(leaseReceiveNotifier);
     final matchedContainer = leaseNotifier.containerReturnList.firstWhere(
-          (e) => e.productUniqueId == id,
+      (e) => e.productUniqueId == id,
       orElse: () => ProductOrderListResponseList(
-      productId: '', productName: '', containerCount: '', productImageUrl: '', productUniqueId: '', capacity: '',
+        productId: 0,
+        productName: '',
+        containerCount: 0,
+        productImageUrl: '',
+        productUniqueId: '',
+        containerQuantity: 0,
+        userId: 0,
+        orderId: 0,
+        quantity: 0,
+        daysLeft: 0,
+        dueDate: "",
       ),
     );
-    final alreadyAdded = leaseNotifier.containersList.any(
-          (e) => e.containerUniqueId == id,
-    );
-
-    if (alreadyAdded) {
-      final container = leaseNotifier.containersList.firstWhere(
-            (e) => e.containerUniqueId == id,
+    if (leaseNotifier.containerReturnList.isNotEmpty) {
+      leaseNotifier.setCustomerUserId(
+        leaseNotifier.containerReturnList[0].userId,
+      );
+      final alreadyAdded = leaseNotifier.containerReturnListAdded.any(
+        (e) => e.productUniqueId == id,
       );
 
-      container.quantity += 1;
+      if (alreadyAdded) {
+        final container = leaseNotifier.containerReturnListAdded.firstWhere(
+          (e) => e.productUniqueId == id,
+        );
+
+        container.containerCount += 1;
+      }
+      leaseNotifier.setContainerReturnList(matchedContainer);
+      showCustomSnackBar(
+        context: context,
+        message:
+            "Container added. Total: ${leaseNotifier.containerReturnListAdded.length}",
+        color: Colors.white,
+      );
+    } else {
+      showCustomSnackBar(
+        context: context,
+        message: "No container available to return",
+        color: Colors.white,
+      );
     }
-    leaseNotifier.setContainerReturnList(matchedContainer);
-    showCustomSnackBar(
-      context: context,
-      message: "Container added. Total: ${leaseNotifier.containersList.length}",
-      color: Colors.green,
-    );
   }
 
   Future<void> _scanAgain() async {
@@ -207,7 +232,9 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                       ),
                     ),
                     Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.SIZE_08,
+                      ),
                       child: Text(
                         Strings.OR,
                         style: TextStyle(
@@ -237,7 +264,9 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                       context,
                     ).textTheme.titleSmall!.copyWith(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_10,
+                      ),
                       borderSide: BorderSide(color: Colors.white),
                     ),
                     filled: true,
@@ -260,7 +289,9 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                       foregroundColor: Colors.black,
                       disabledBackgroundColor: Colors.grey.shade300,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_12,
+                        ),
                         side: BorderSide(color: Colors.white),
                       ),
                     ),
@@ -286,7 +317,10 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
               color: Theme.of(context).secondaryHeaderColor,
             ),
             padding: EdgeInsetsGeometry.all(Constant.CONTAINER_SIZE_10),
-            child: Icon(Icons.flip_camera_android, size: Constant.CONTAINER_SIZE_20),
+            child: Icon(
+              Icons.flip_camera_android,
+              size: Constant.CONTAINER_SIZE_20,
+            ),
           ),
         ),
       ),
