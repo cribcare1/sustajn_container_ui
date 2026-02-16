@@ -10,13 +10,9 @@ class LeaseAndReceiveServices {
   ApiCallPresenter presenter = ApiCallPresenter();
   Future<dynamic> leaseContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LEASE}";
-    // print(api);
-    // final data = jsonEncode(body);
-    // print(data);
     try{
       var response = await presenter.postApiStringData(api, body,"");
       if(response != null){
-        print("response   ================ $response");
         return response;
       }else{
         throw Exception("Something went wrong");
@@ -27,12 +23,9 @@ class LeaseAndReceiveServices {
   }
   Future<dynamic> receiveContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE}";
-    final data = jsonEncode(body);
-    print(data);
     try{
-      var response = await presenter.postApiStringData(api, data, "");
+      var response = await presenter.postApiData(api, body, "");
       if(response != null){
-        print("response   ================ $response");
         return response;
       }else{
         throw Exception("Something went wrong");
