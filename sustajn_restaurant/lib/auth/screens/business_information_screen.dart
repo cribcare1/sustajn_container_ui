@@ -88,10 +88,10 @@ class _BusinessInformationDetailsState
   }
 
   final List<String> _businessTypes = [
-    'Restaurant',
-    'Cafe',
-    'Fast food Shop',
-    'Food court Cloud kitchen',
+    Strings.RESTAURANT,
+    Strings.CAFE,
+    Strings.FAST_FOOD,
+    Strings.FOOD_COURT,
   ];
 
 
@@ -100,7 +100,7 @@ class _BusinessInformationDetailsState
     final profileState = ref.read(profileProvider);
     String? regdNo;
 
-    if (widget.previous == 'profile') {
+    if (widget.previous == Strings.PROFILE) {
       final profileState = ref.watch(profileProvider);
       regdNo = profileState.getProfileData?.data
           ?.contactAndRegistrationDetailsResponse
@@ -115,7 +115,7 @@ class _BusinessInformationDetailsState
       child: Scaffold(
         appBar:
         CustomAppBar(
-          title: widget.previous == 'profile'
+          title: widget.previous == Strings.PROFILE
               ? Strings.BUSINESS_INFORMATION
               : "",
           leading: CustomBackButton()
@@ -166,17 +166,23 @@ class _BusinessInformationDetailsState
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     _buildTextField(
                       context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.CONTACT_PERSON;
-                        }
-                        return null;
-                      },
-                      keyboard: TextInputType.name,
                       controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
+                      keyboard: TextInputType.text,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                      ],
+                      validator: (value) {
+                          if (value == null || value
+                              .trim()
+                              .isEmpty) {
+                            return Strings.CONTACT_PERSON;
+                          }
+                          return null;
+                      },
                     ),
 
                     _buildTextField(
@@ -184,6 +190,8 @@ class _BusinessInformationDetailsState
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.MOBILE_NUMBER;
+                        }if (value.length != 10){
+                          return Strings.MOBILE_VALIDATE;
                         }
                         return null;
                       },
@@ -198,11 +206,25 @@ class _BusinessInformationDetailsState
                     _buildTextField(
                         context,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return Strings.EMAIL_REGISTRATION;
                           }
+
+                          final email = value.trim();
+
+                          if (email.contains(' ')) {
+                            return Strings.ENTER_EMAIL_ADDRESS;
+                          }
+
+                          final regex = Strings.email;
+
+                          if (!regex.hasMatch(email)) {
+                            return Strings.ENTER_EMAIL_ADDRESS;
+                          }
+
                           return null;
                         },
+
                         controller: contactEmailController,
                         hint: Strings.EMAIL_REGISTRATION,
                         keyboard: TextInputType.emailAddress
@@ -212,11 +234,18 @@ class _BusinessInformationDetailsState
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.TRADE_LICENSE_NUMBER;
+                        }if (value.length != 5){
+                          return Strings.TRADE_LICENSE_VALIDATE;
                         }
                         return null;
                       },
                       controller: licenceController,
                       hint: Strings.TRADE_LICENSE_NUMBER,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(5),
+                      ]
                     ),
                     _buildTextField(
                       context,
@@ -426,7 +455,7 @@ class _BusinessInformationDetailsState
                           return;
                         }
 
-                        if (widget.previous == 'profile') {
+                        if (widget.previous == Strings.PROFILE) {
 
                           if (regdNo == null || regdNo.isEmpty) {
                             showCustomSnackBar(
@@ -494,6 +523,7 @@ class _BusinessInformationDetailsState
         cursorColor: Colors.white70,
         validator: validator,
         inputFormatters: inputFormatters,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(color: Colors.white70),
@@ -615,7 +645,7 @@ class _BusinessInformationDetailsState
       "userId": Utils.userId,
 
       "basicDetails": {
-        "businessType": "Restaurant",
+        "businessType": Strings.RESTAURANT,
         "websiteDetails": websiteController.text,
       },
 

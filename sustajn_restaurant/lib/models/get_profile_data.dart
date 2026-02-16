@@ -70,10 +70,10 @@ class Data {
     emailId = json['emailId'] ?? "";
     profileImageUrl = json['profileImageUrl'] ?? "";
     subscriptionPlanId = json['subscriptionPlanId'] ?? 0;
-<<<<<<< HEAD
-=======
+// <<<<<<< HEAD
+// =======
 
->>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
+// >>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     bankDetailsResponse = json['bankDetailsResponse'] != null
         ? BankDetailsResponse.fromJson(json['bankDetailsResponse'])
         : null;
@@ -85,10 +85,10 @@ class Data {
     paymentGetWayResponse = json['paymentGetWayResponse'] != null
         ? PaymentGetWayResponse.fromJson(json['paymentGetWayResponse'])
         : null;
-<<<<<<< HEAD
+// <<<<<<< HEAD
 
-=======
->>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
+// =======
+// >>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     if (json['addressResponses'] != null) {
       addressResponses = <AddressResponses>[];
       json['addressResponses'].forEach((v) {

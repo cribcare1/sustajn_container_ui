@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
+import 'package:sustajn_restaurant/utils/date_month_utils.dart';
 
 import '../../common_widgets/filter_Screen.dart';
 import '../../constants/network_urls.dart';
@@ -23,7 +24,7 @@ class LeaseScreen extends ConsumerStatefulWidget {
 class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   final searchController = TextEditingController();
 
-  bool _isQtyAscending = true;
+  String? selectedMonthYear;
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -225,31 +226,28 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     final containerState = ref.read(orderProvider);
     final container =
         containerState.containerHistorydata?.data?.leasedResponses;
-
+    final months = DateMonthUtils.getCurrentYearMonths();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
         return ReusableFilterBottomSheet(
-          title: Strings.SORT_BY,
-          leftTabTitle: "Quantity",
-          options: const [
-            "Low to High",
-            "High to Low",
-          ],
-          selectedValue: _isQtyAscending ? "Low to High" : "High to Low",
+          title: Strings.FILTER,
+          leftTabTitle: Strings.MONTH,
+          options: months ,
+          selectedValue: selectedMonthYear,
           onApply: (value) {
-            if (container == null) return;
+            if (value == null) return;
 
             setState(() {
-              _isQtyAscending = value == "Low to High";
+              selectedMonthYear = value;
 
-              container.sort(
-                    (a, b) => _isQtyAscending
-                    ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
-                    : b.leasedQuantity!.compareTo(a.leasedQuantity!),
-              );
+              // container.sort(
+              //       (a, b) => _isQtyAscending
+              //       ? a.leasedQuantity!.compareTo(b.leasedQuantity!)
+              //       : b.leasedQuantity!.compareTo(a.leasedQuantity!),
+              // );
             });
           },
         );

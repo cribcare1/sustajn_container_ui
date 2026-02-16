@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../constants/imports_util.dart';
+import '../../constants/string_utils.dart';
 
 enum SocialMediaType { instagram, facebook, snapchat, x }
 
@@ -30,25 +31,25 @@ class SocialMediaConfig {
 final socialMediaOptions = [
   SocialMediaConfig(
     SocialMediaType.instagram,
-    'Instagram',
+    Strings.INSTAGRAM,
     FontAwesomeIcons.instagram,
     Colors.pink,
   ),
   SocialMediaConfig(
     SocialMediaType.facebook,
-    'Facebook',
+    Strings.FACEBOOK,
     FontAwesomeIcons.facebook,
     Colors.blue,
   ),
   SocialMediaConfig(
     SocialMediaType.snapchat,
-    'Snapchat',
+    Strings.SNAPCHAT,
     FontAwesomeIcons.snapchat,
     Colors.yellow,
   ),
   SocialMediaConfig(
     SocialMediaType.x,
-    'X',
+    Strings.TWITTER,
     FontAwesomeIcons.xTwitter,
     Colors.white,
   ),
