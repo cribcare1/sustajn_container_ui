@@ -100,20 +100,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   String? _validateBankName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Bank name is required';
+      return Strings.BANK_NAME_REQUIRED;
     }
 
     if (value.trim().length < 3) {
-      return 'Bank name should be at least 3 characters';
+      return Strings.BANK_NAME_3CHARS;
     }
 
     if (value.trim().length > 50) {
-      return 'Bank name should not exceed 50 characters';
+      return Strings.BANK_NAME_NOT_EXCEED;
     }
 
     final RegExp bankNameRegex = RegExp(r'^[a-zA-Z\s]+$');
     if (!bankNameRegex.hasMatch(value.trim())) {
-      return 'Bank name should contain only letters and spaces';
+      return Strings.BANK_NAME_VALIDATION;
     }
 
     return null;
@@ -121,20 +121,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   String? _validateAccountHolder(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Account holder name is required';
+      return Strings.ACCOUNT_HOLDER_ERROR_TXT;
     }
 
     if (value.trim().length < 3) {
-      return 'Account holder name should be at least 3 characters';
+      return Strings.ACCOUNT_HOLDER_CHARS;
     }
 
     if (value.trim().length > 50) {
-      return 'Account holder name should not exceed 50 characters';
+      return Strings.ACCOUNT_HOLDER_NOT_EXCEED;
     }
 
     final RegExp holderNameRegex = RegExp(r'^[a-zA-Z\s]+$');
     if (!holderNameRegex.hasMatch(value.trim())) {
-      return 'Account holder name should contain only letters and spaces';
+      return Strings.ACCOUNT_HOLDER_VALIDATION;
     }
 
     return null;
@@ -142,22 +142,22 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   String? _validateIban(String? value) {
     if (value == null || value.isEmpty) {
-      return 'IBAN is required';
+      return Strings.IBAN_ERRO;
     }
 
     final cleanedValue = value.replaceAll(RegExp(r'\s'), '');
 
     if (cleanedValue.length != 23) {
-      return 'IBAN must be exactly 23 characters';
+      return Strings.IBAN_VALID;
     }
 
     if (!RegExp(r'^[A-Z]{2}').hasMatch(cleanedValue)) {
-      return 'IBAN should start with 2 letters (country code)';
+      return Strings.IBAN_START_WITH;
     }
 
     final restDigits = cleanedValue.substring(2);
     if (!RegExp(r'^\d+$').hasMatch(restDigits)) {
-      return 'IBAN should contain only digits after country code';
+      return Strings.IBAN_VALIDATION;
     }
 
     return null;
@@ -165,23 +165,23 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   String? _validateBic(String? value) {
     if (value == null || value.isEmpty) {
-      return 'BIC is required';
+      return Strings.BIC_ERROR_TXT;
     }
 
     final cleanedValue = value.replaceAll(RegExp(r'\s'), '').toUpperCase();
 
     if (cleanedValue.length != 11) {
-      return 'BIC must be exactly 11 characters';
+      return Strings.BIC_VALID;
     }
 
     final firstEight = cleanedValue.substring(0, 8);
     if (!RegExp(r'^[A-Z]{8}$').hasMatch(firstEight)) {
-      return 'First 8 characters of BIC should be letters';
+      return Strings.BIC_FIRST_8CHARS;
     }
 
     final lastThree = cleanedValue.substring(8);
     if (!RegExp(r'^[0-9]{3}$').hasMatch(lastThree)) {
-      return 'Last 3 characters of BIC should be digits';
+      return Strings.LAST_CHARS_BIC;
     }
 
     return null;
@@ -453,7 +453,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     if (!hasCardDetails && !hasGateway && !hasBankDetails) {
                       showCustomSnackBar(
                         context: context,
-                        message: 'Please select at least one payment method',
+                        message: Strings.SELECT_ONE_PAYMENT,
                         color: Colors.grey,
                       );
                       return;
@@ -481,7 +481,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                         showCustomSnackBar(
                           context: context,
                           message: 'Please fix bank details errors',
-                          color: Colors.red,
+                          color: Colors.grey,
                         );
                         return;
                       }
@@ -562,7 +562,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             Icon(Icons.credit_card, color: Constant.gold),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              'Add Card',
+              Strings.ADD_CARD,
               style: theme.textTheme.titleSmall?.copyWith(
                 color: Constant.gold,
                 fontWeight: FontWeight.w600,
@@ -658,48 +658,48 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       children: [
         _buildBankTextField(
           theme,
-          hint: 'Bank Name',
+          hint: Strings.BANK_NAME,
           controller: bankNameController,
           fieldName: 'bankName',
           validator: _validateBankName,
           keyboardType: TextInputType.text,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+            FilteringTextInputFormatter.allow(RegExp(Strings.TEXT_REGX_ERROR)),
           ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _buildBankTextField(
           theme,
-          hint: 'Account Holder Name',
+          hint: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           fieldName: 'accountHolder',
           validator: _validateAccountHolder,
           keyboardType: TextInputType.text,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+            FilteringTextInputFormatter.allow(RegExp(Strings.TEXT_REGX_ERROR)),
           ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _buildBankTextField(
           theme,
-          hint: 'IBAN',
+          hint: Strings.IBAN,
           controller: ibanController,
           fieldName: 'iban',
           validator: _validateIban,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9 ]')),
+            FilteringTextInputFormatter.allow(RegExp(Strings.NUMBER_REGX_ERROR)),
             LengthLimitingTextInputFormatter(23),
           ],
         ),
         SizedBox(height: Constant.SIZE_10),
         _buildBankTextField(
           theme,
-          hint: 'BIC',
+          hint: Strings.BIC,
           controller: bicController,
           fieldName: 'bic',
           validator: _validateBic,
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9 ]')),
+            FilteringTextInputFormatter.allow(RegExp(Strings.NUMBER_REGX_ERROR)),
             LengthLimitingTextInputFormatter(11),
           ],
         ),
@@ -817,20 +817,20 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
 
   String? _validatePayPalId(String? value) {
     if (value == null || value.isEmpty) {
-      return 'PayPal ID is required';
+      return Strings.PAYPAL_ERROR;
     }
 
     if (value.contains('@')) {
       final RegExp emailRegex = RegExp(
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+        Strings.EMAIL_REGX,
       );
       if (!emailRegex.hasMatch(value.trim())) {
-        return 'Please enter a valid PayPal email';
+        return Strings.ENTER_VALID_MAIL;
       }
     } else {
-      final RegExp idRegex = RegExp(r'^[a-zA-Z0-9\-_]{6,}$');
+      final RegExp idRegex = RegExp(Strings.ID_REGX);
       if (!idRegex.hasMatch(value.trim())) {
-        return 'Invalid PayPal ID format';
+        return Strings.INVALID_PAYPAL_ID;
       }
     }
 
@@ -839,14 +839,14 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
 
   String? _validateGooglePayId(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Google Pay ID is required';
+      return Strings.GOOGLE_PAY_ERROR;
     }
 
-    final email = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-    final phone = RegExp(r'^\+?[0-9]{10,15}$');
+    final email = RegExp(Strings.EMAIL_REGX);
+    final phone = RegExp(Strings.PHONE_REGX);
 
     if (!email.hasMatch(value.trim()) && !phone.hasMatch(value.trim())) {
-      return 'Please enter a valid email or phone number';
+      return Strings.VALID_EMAIL_PHONE;
     }
 
     return null;
@@ -854,26 +854,26 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
 
   String? _validateApplePayId(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Apple Pay ID is required';
+      return Strings.APPLE_PAY_ERROR;
     }
 
     final RegExp emailRegex = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+      Strings.EMAIL_REGX,
     );
 
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'Please enter a valid Apple ID email';
+      return Strings.VALID_APPLE_ID;
     }
 
     return null;
   }
 
   String? _validateGatewayId(String? value) {
-    if (widget.title == 'PayPal') {
+    if (widget.title == Strings.PAYPAL) {
       return _validatePayPalId(value);
-    } else if (widget.title == 'Google Pay') {
+    } else if (widget.title == Strings.GOOGLE_PAY) {
       return _validateGooglePayId(value);
-    } else if (widget.title == 'Apple Pay') {
+    } else if (widget.title == Strings.APPLE_PAY) {
       return _validateApplePayId(value);
     }
     return null;

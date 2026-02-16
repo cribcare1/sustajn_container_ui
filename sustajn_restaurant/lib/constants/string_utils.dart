@@ -344,4 +344,86 @@ class Strings {
 static const String SKIP_CONTINUE = 'Skip & Continue';
 static const String THANK_YOU_TXT = "Thank you for your order.";
 static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
+static const String BANK_NAME_REQUIRED = 'Bank name is required';
+static const String BANK_NAME_3CHARS = 'Bank name should be at least 3 characters';
+  static const String BANK_NAME_NOT_EXCEED = 'Bank name should not exceed 50 characters';
+  static const String BANK_NAME_VALIDATION = 'Bank name should only contain letters and spaces';
+  static const String ACCOUNT_HOLDER_ERROR_TXT = 'Account holder name is required';
+  static const String ACCOUNT_HOLDER_CHARS = 'Account holder name should be at least 3 characters';
+  static const String ACCOUNT_HOLDER_NOT_EXCEED = 'Account holder name should not exceed 50 characters';
+  static const String ACCOUNT_HOLDER_VALIDATION = 'Account holder name should contain only letters and spaces';
+  static const String IBAN_ERRO = 'IBAN is required';
+  static const String IBAN_VALID = 'IBAN must be exactly 23 characters';
+  static const String IBAN_START_WITH = 'IBAN should start with 2 letters (country code)';
+  static const String IBAN_VALIDATION = 'IBAN should contain only digits after country code';
+  static const String BIC_ERROR_TXT = 'BIC is required';
+  static const String BIC_VALID = 'BIC must be exactly 11 characters';
+  static const String BIC_FIRST_8CHARS = 'First 8 characters of BIC should be letters';
+  static const String LAST_CHARS_BIC = 'Last 3 characters of BIC should be digits';
+  static const String SELECT_ONE_PAYMENT = 'Please select at least one payment method';
+  static const String PAYPAL_ERROR = 'PayPal ID is required';
+  static const String EMAIL_REGX =  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+  static const String ENTER_VALID_MAIL = 'Please enter a valid PayPal email';
+  static const String ID_REGX = r'^[a-zA-Z0-9\-_]{6,}$';
+  static const String INVALID_PAYPAL_ID = 'Invalid PayPal ID format';
+  static const String GOOGLE_PAY_ERROR = 'Google Pay ID is required';
+  static const String PHONE_REGX = r'^\+?[0-9]{10,15}$';
+  static const String VALID_EMAIL_PHONE = 'Please enter a valid email or phone number';
+  static const String APPLE_PAY_ERROR = 'Apple Pay ID is required';
+  static const String VALID_APPLE_ID = 'Please enter a valid Apple ID email';
+  static const String PROCEDD_TERMS_CONDITIONS = 'Proceed To Terms & Conditions';
+  static const String TEXT_REGX = r'^[a-zA-Z\s]+$';
+  static const String CONTACT_PERSON_CONTAINE = 'Contact person name should contain only letters and spaces';
+  static const String CONTACT_PERSON_CHAR= 'Contact person name should be at least 2 characters';
+  static const String CONTACT_PERSON_20 = 'Contact person name should not exceed 20 characters';
+  static const String MOBILE_NUMBER_10 = 'Mobile number must be exactly 10 digits';
+  static const String ENTER_VALID_EMAIL = 'Please enter a valid email address';
+  static const String TRADE_LICENASE_REQUIRED= 'Trade License number is required';
+  static const String TRADE_LICENSE_5 = 'Trade License number should be at least 5 characters';
+  static const String TRADE_LICENSE_NUMBER_12 = 'Trade License number should not exceed 12 characters';
+  static const String LICENSE_REGX = r'^[a-zA-Z0-9\s\-]+$';
+  static const String TRADE_LICENSE_INVALID = 'Trade License contains invalid characters';
+  static const String VAT_REQUIRED = 'VAT number is required';
+  static const String VAT_DIGITS = 'VAT number should contain only digits';
+  static const String VAT_15 = 'VAT number must be exactly 15 digits';
+  static const String WEBSITE_REQUIRED = 'Website URL is required';
+  static const String URL_REGX =  r'^(https?:\/\/)?'
+      r'(www\.)?'
+      r'[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b'
+      r'([-a-zA-Z0-9()@:%_\+.~#?&/=]*)$';
+  static const String VALID_URL = 'Please enter a valid website URL (e.g., www.example.com or https://example.com)';
+  static const String WEBSITE_START_WITH = 'Website should start with www. or http:// or https://';
+  static const String CONTACT_PERSON_FIELD_NAME = 'contactPerson';
+  static const String CONTACT_NUMBER_FIELD_NAME = 'contactNumber';
+  static const String EMAIL_FIELD_NAME = 'email';
+  static const String LICENE_FELD_NAME = 'license';
+  static const String VAT_FIELD_NAME = 'vat';
+  static const String WEBSITE_FIELD_NAME = 'website';
+  static const String TEXT_REGX_ERROR = r'[a-zA-Z ]';
+  static const String NUMBER_REGX_ERROR = r'[A-Z0-9 ]';
+  static const String CARD_HOLDER_NAME= 'Card Holder Name*';
+  static const String CARD_NUMBER = 'Card Number*';
+  static const String EXPIRATION_DATE = 'Expiration Date';
+  static const String CVV = 'CVV';
+  static const String ADD_CARD_CONTINUE = 'Add Card & Continue';
+  static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
+  static const String CARD_NUMBER_REQUIRED = 'Card no required';
+  static const String CARD_NUMBER_12 = 'Card number must be  exactly 12 digits';
+  static const String CVV_REQUIRED = 'CVV is required';
+  static const String CVV_3 = 'CVV must be 3 digits';
+  static const String NAME_REGX = r'^[a-zA-Z\s]+$';
+  static const String CARD_HOLER_VALID = 'Card holder name should only contain letters, spaces';
+  static const String CARD_HOLDER_3 = 'Card holder name should be at least 3 characters';
+  static const String CARD_HOLDER_NOT_EXCEED = 'Card holder name should not exceed 50 characters';
+  static const String CARD_NUMBER_CONTAIN = 'Card number should contain only digits';
+  static const String INVALID_CARD_NUMBER = 'Invalid card number';
+  static const String EXP_DATE = 'Expiry date is required';
+  static const String VALID_DATE = 'Please select a valid expiry date';
+  static const String CVV_CONTAIN= 'CVV should contain only digits';
+
+
+
+
+
+
 }

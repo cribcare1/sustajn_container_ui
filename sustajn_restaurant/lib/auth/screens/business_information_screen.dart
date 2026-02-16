@@ -145,17 +145,17 @@ class _BusinessInformationDetailsState
       return Strings.CONTACT_PERSON_ERROR_TXT;
     }
 
-    final RegExp nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+    final RegExp nameRegex = RegExp(Strings.TEXT_REGX);
     if (!nameRegex.hasMatch(value.trim())) {
-      return 'Contact person name should contain only letters and spaces';
+      return Strings.CONTACT_PERSON_CONTAINE;
     }
 
     if (value.trim().length < 2) {
-      return 'Contact person name should be at least 2 characters';
+      return Strings.CONTACT_PERSON_CHAR;
     }
 
     if (value.length > 20) {
-      return 'Contact person name should not exceed 50 characters';
+      return Strings.CONTACT_PERSON_20;
     }
 
     return null;
@@ -169,7 +169,7 @@ class _BusinessInformationDetailsState
     final cleanedNumber = value.replaceAll(RegExp(r'[^\d]'), '');
 
     if (cleanedNumber.length != 10) {
-      return 'Mobile number must be exactly 10 digits';
+      return Strings.MOBILE_NUMBER_10;
     }
 
     return null;
@@ -183,22 +183,22 @@ class _BusinessInformationDetailsState
     final email = value.trim();
 
     if (email.split('@').length != 2) {
-      return 'Please enter a valid email address';
+      return Strings.ENTER_VALID_EMAIL;
     }
 
     final RegExp emailRegex =
-    RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$');
+    RegExp(Strings.EMAIL_REGX);
 
     if (!emailRegex.hasMatch(email)) {
-      return 'Please enter a valid email address';
+      return Strings.ENTER_VALID_EMAIL;
     }
 
     if (email.contains('..')) {
-      return 'Please enter a valid email address';
+      return Strings.ENTER_VALID_EMAIL;
     }
 
     if (email.startsWith('@') || email.endsWith('@')) {
-      return 'Please enter a valid email address';
+      return Strings.ENTER_VALID_EMAIL;
     }
 
     return null;
@@ -206,22 +206,22 @@ class _BusinessInformationDetailsState
 
   String? _validateTradeLicense(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Trade License number is required';
+      return Strings.TRADE_LICENASE_REQUIRED;
     }
 
     final cleanedValue = value.trim();
 
     if (cleanedValue.length < 5) {
-      return 'Trade License number should be at least 5 characters';
+      return Strings.TRADE_LICENSE_5;
     }
 
     if (cleanedValue.length > 12) {
-      return 'Trade License number should not exceed 12 characters';
+      return Strings.TRADE_LICENSE_NUMBER_12;
     }
 
-    final RegExp licenseRegex = RegExp(r'^[a-zA-Z0-9\s\-]+$');
+    final RegExp licenseRegex = RegExp(Strings.LICENSE_REGX);
     if (!licenseRegex.hasMatch(cleanedValue)) {
-      return 'Trade License contains invalid characters';
+      return Strings.TRADE_LICENSE_INVALID;
     }
 
     return null;
@@ -229,17 +229,17 @@ class _BusinessInformationDetailsState
 
   String? _validateVAT(String? value) {
     if (value == null || value.isEmpty) {
-      return 'VAT number is required';
+      return Strings.VAT_REQUIRED;
     }
 
     final cleanedValue = value.replaceAll(' ', '');
 
     if (!RegExp(r'^\d+$').hasMatch(cleanedValue)) {
-      return 'VAT number should contain only digits';
+      return Strings.VAT_DIGITS;
     }
 
     if (cleanedValue.length != 15) {
-      return 'UAE VAT number must be exactly 15 digits';
+      return Strings.VAT_15;
     }
 
     return null;
@@ -247,26 +247,23 @@ class _BusinessInformationDetailsState
 
   String? _validateWebsite(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Website URL is required';
+      return Strings.WEBSITE_REQUIRED;
     }
 
     final cleanedValue = value.trim();
 
     final RegExp urlRegex = RegExp(
-      r'^(https?:\/\/)?'
-      r'(www\.)?'
-      r'[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b'
-      r'([-a-zA-Z0-9()@:%_\+.~#?&/=]*)$',
+      Strings.URL_REGX,
     );
 
     if (!urlRegex.hasMatch(cleanedValue)) {
-      return 'Please enter a valid website URL (e.g., www.example.com or https://example.com)';
+      return Strings.VALID_URL;
     }
 
     if (!cleanedValue.startsWith('http://') &&
         !cleanedValue.startsWith('https://')) {
       if (!cleanedValue.startsWith('www.')) {
-        return 'Website should start with www. or http:// or https://';
+        return Strings.WEBSITE_START_WITH;
       }
     }
 
@@ -363,7 +360,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
-                      fieldName: 'contactPerson',
+                      fieldName: Strings.CONTACT_PERSON_FIELD_NAME,
                       validator: _validateContactPerson,
                       keyboard: TextInputType.name,
                     ),
@@ -373,7 +370,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: contactNumberController,
                       hint: Strings.MOBILE_NUMBER,
-                      fieldName: 'contactNumber',
+                      fieldName:Strings.CONTACT_NUMBER_FIELD_NAME,
                       validator: _validateContactNumber,
                       keyboard: TextInputType.number,
                       inputFormatters: [
@@ -386,7 +383,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: contactEmailController,
                       hint: Strings.EMAIL_REGISTRATION,
-                      fieldName: 'email',
+                      fieldName: Strings.EMAIL_FIELD_NAME,
                       validator: _validateEmail,
                       keyboard: TextInputType.emailAddress,
                     ),
@@ -395,7 +392,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: licenceController,
                       hint: Strings.TRADE_LICENSE_NUMBER,
-                      fieldName: 'licence',
+                      fieldName: Strings.LICENE_FELD_NAME,
                       validator: _validateTradeLicense,
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(12),
@@ -406,7 +403,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: vatController,
                       hint: Strings.VAT_NUMBER,
-                      fieldName: 'vat',
+                      fieldName: Strings.VAT_FIELD_NAME,
                       validator: _validateVAT,
                       keyboard: TextInputType.number,
                       inputFormatters: [
@@ -435,7 +432,7 @@ class _BusinessInformationDetailsState
                       context,
                       controller: websiteController,
                       hint: Strings.ENTER_WEBSITE,
-                      fieldName: 'website',
+                      fieldName: Strings.WEBSITE_FIELD_NAME,
                       validator: _validateWebsite,
                       keyboard: TextInputType.url,
                       textInputAction: TextInputAction.done,
