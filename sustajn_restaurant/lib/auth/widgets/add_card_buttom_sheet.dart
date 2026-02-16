@@ -7,6 +7,7 @@ import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 
 import '../../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 
 class AddCardDialog extends ConsumerStatefulWidget {
@@ -69,11 +70,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   SizedBox(height: Constant.SIZE_15),
                   _cardField(
                     theme,
-                    'Card Holder Name*',
+                    Strings.CARD_HOLDER_NAME,
                     _cardHolderNameController,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Card holder name required';
+                        return Strings.CARD_HOLDER_REQUIRED;
                       }
                       return null;
                     },
@@ -81,7 +86,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   SizedBox(height: Constant.SIZE_10),
                   _cardField(
                     theme,
-                    'Card Number*',
+                    Strings.CARD_NUMBER,
                     _cardNumberController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -90,11 +95,11 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Card no. required';
+                        return Strings.CARD_NO_REQ;
                       }
                       final digitsOnly = value.replaceAll(' ', '');
                       if (digitsOnly.length != 12) {
-                        return 'Card number must be 12 digits';
+                        return Strings.CARD_NUMBER_12;
                       }
                       return null;
                     },
@@ -105,7 +110,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                       Expanded(
                         child: getDatePicker(
                           context,
-                          "Expiration Date",
+                          Strings.EXPIRATION_DATE,
                           _expiryDateController,
                               (date) {
                             _expiryDateController.text =
@@ -118,7 +123,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                       Expanded(
                         child: _cardField(
                           theme,
-                          'CVV',
+                          Strings.CVV,
                           _cvvController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -127,10 +132,10 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                           ],
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'CVV is required';
+                              return Strings.CVV_REQUIRED;
                             }
                             if (value.length != 3) {
-                              return 'CVV must be 3 digits';
+                              return Strings.THREE_DIGIT;
                             }
                             return null;
                           },
@@ -154,7 +159,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                           Navigator.pop(context);
                         }
                       },
-                      rightText: "Add Card & Continue",
+                      rightText: Strings.ADD_CARD_CONTINUE,
                     ),
                   ),
                 ],
@@ -174,14 +179,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Add Card Details',
+                Strings.ADD_CARD_DETAILS,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                'We accept Credit, Debit, Visa and Mastercard',
+                Strings.WE_ACCEPT,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                 ),
@@ -218,6 +223,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
       obscureText: obscureText,
       validator: validator,
       inputFormatters: inputFormatters,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
