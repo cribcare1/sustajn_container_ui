@@ -9,7 +9,7 @@ class GetContainerData {
     if (json['containersDetails'] != null) {
       containersDetails = <ContainersDetails>[];
       json['containersDetails'].forEach((v) {
-        containersDetails!.add(new ContainersDetails.fromJson(v));
+        containersDetails!.add(ContainersDetails.fromJson(v));
       });
     }
     message = json['message'] ?? "";
@@ -17,13 +17,13 @@ class GetContainerData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.containersDetails != null) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (containersDetails != null) {
       data['containersDetails'] =
-          this.containersDetails!.map((v) => v.toJson()).toList();
+          containersDetails!.map((v) => v.toJson()).toList();
     }
-    data['message'] = this.message;
-    data['status'] = this.status;
+    data['message'] = message;
+    data['status'] = status;
     return data;
   }
 }
@@ -58,13 +58,13 @@ class ContainersDetails {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['containerId'] = this.containerId;
-    data['containerName'] = this.containerName;
-    data['containerDescription'] = this.containerDescription;
-    data['capacity'] = this.capacity;
-    data['containerImageUrl'] = this.containerImageUrl;
-    data['containerUniqueId'] = this.containerUniqueId;
-    data['quantityAvailable'] = this.quantityAvailable;
+    data['containerId'] = containerId;
+    data['containerName'] = containerName;
+    data['containerDescription'] = containerDescription;
+    data['capacity'] = capacity;
+    data['containerImageUrl'] = containerImageUrl;
+    data['containerUniqueId'] = containerUniqueId;
+    data['quantityAvailable'] = quantityAvailable;
     return data;
   }
 }

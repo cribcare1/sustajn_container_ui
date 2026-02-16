@@ -29,6 +29,7 @@ class ContainerDetails {
   String containerImageUrl;
   String containerUniqueId;
   int quantityAvailable;
+  int quantity;
 
   ContainerDetails({
     required this.containerId,
@@ -38,6 +39,7 @@ class ContainerDetails {
     required this.containerImageUrl,
     required this.containerUniqueId,
     required this.quantityAvailable,
+    this.quantity = 1,
   });
 
   factory ContainerDetails.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class ContainerDetails {
       containerImageUrl: json['containerImageUrl'] ?? "",
       containerUniqueId: json['containerUniqueId'] ?? "",
       quantityAvailable: json['quantityAvailable'] ?? 0,
+      quantity: json['quantity'] ?? 1,
     );
   }
 }

@@ -29,50 +29,9 @@ class _LeaseProductListScreenState
   @override
   void initState() {
     Utils.getUserId();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   ref.read(leaseReceiveNotifier).setContext(context);
-    //   _getContainerList(
-    //     ref.read(leaseReceiveNotifier),
-    //     restaurantId: Utils.userId.toString(),
-    //   );
-    // });
-
     super.initState();
   }
 
-  _getContainerList(
-    LeaseReceiveNotifier leasState, {
-    required String restaurantId,
-  }) async {
-    try {
-      leasState.setLoading(true);
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
-        try {
-          if (isNetworkAvailable) {
-            ref.read(containerListProvider(restaurantId));
-          } else {
-            leasState.setLoading(false);
-            if (!mounted) return;
-            showCustomSnackBar(
-              context: context,
-              message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
-            );
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          leasState.setLoading(false);
-        }
-        if (!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
-    } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      leasState.setLoading(false);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +169,7 @@ class _LeaseProductListScreenState
               errorBuilder: (context, obj, stack){
                 return Image.asset("assets/images/no_image_container.png");
               },
-              fit: BoxFit.contain,
+              fit: BoxFit.fill,
             ),
           ),
           const SizedBox(width: 12),
@@ -234,13 +193,6 @@ class _LeaseProductListScreenState
                     fontSize: 12,
                   ),
                 ),
-                Text(
-                  item.capacity.toString(),
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontSize: 12,
-                  ),
-                ),
               ],
             ),
           ),
@@ -248,7 +200,7 @@ class _LeaseProductListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantityAvailable.toString(),
+                item.quantity.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -352,13 +304,13 @@ class _LeaseProductListScreenState
                             .map(
                               (i) => {
                                 "productId": i.containerId,
-                                "quantity": i.quantityAvailable,
+                                "quantity": i.quantity,
                               },
                             )
                             .toList();
 
                         Map<String, dynamic> data = {
-                          "userId": scannedId,
+                          "customerId": scannedId,
                           "restaurantId": Utils.userId,
                           "items": items,
                         };
@@ -393,7 +345,7 @@ class _LeaseProductListScreenState
             showCustomSnackBar(
               context: context,
               message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
+              color: Colors.white,
             );
           }
         } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
@@ -6,7 +7,11 @@ import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/utils/qr_crypto_helper.dart';
 
-class ReceiveScanScreen extends StatefulWidget {
+import '../../utils/utility.dart';
+import '../lease_receive_notifier.dart';
+import '../model/container_return_list_model.dart';
+
+class ReceiveScanScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
   final String? previous;
@@ -19,10 +24,10 @@ class ReceiveScanScreen extends StatefulWidget {
   });
 
   @override
-  State<ReceiveScanScreen> createState() => _QrScannerScreenState();
+  ConsumerState<ReceiveScanScreen> createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<ReceiveScanScreen> {
+class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
   final MobileScannerController controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates, // ensures single scan
     torchEnabled: false,
@@ -38,6 +43,7 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
     super.dispose();
   }
   Future<void> _onDetect(BarcodeCapture capture) async {
+    final leaseNotifier = ref.read(leaseReceiveNotifier);
     if (_isScanned) return;
     final Barcode? barcode = capture.barcodes.firstWhere(
           (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
@@ -68,7 +74,7 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
           textController.text = scannedValue!;
         });
       }
-
+      _handleContainerId(decrypted);
       await Future.delayed(const Duration(milliseconds: 300));
       await controller.stop();
     } catch (e) {
@@ -87,6 +93,33 @@ class _QrScannerScreenState extends State<ReceiveScanScreen> {
     setState(() {
       _torchOn = !_torchOn;
     });
+  }
+
+  void _handleContainerId(String id) {
+    final leaseNotifier = ref.read(leaseReceiveNotifier);
+    final matchedContainer = leaseNotifier.containerReturnList.firstWhere(
+          (e) => e.productUniqueId == id,
+      orElse: () => ProductOrderListResponseList(
+      productId: '', productName: '', containerCount: '', productImageUrl: '', productUniqueId: '', capacity: '',
+      ),
+    );
+    final alreadyAdded = leaseNotifier.containersList.any(
+          (e) => e.containerUniqueId == id,
+    );
+
+    if (alreadyAdded) {
+      final container = leaseNotifier.containersList.firstWhere(
+            (e) => e.containerUniqueId == id,
+      );
+
+      container.quantity += 1;
+    }
+    leaseNotifier.setContainerReturnList(matchedContainer);
+    showCustomSnackBar(
+      context: context,
+      message: "Container added. Total: ${leaseNotifier.containersList.length}",
+      color: Colors.green,
+    );
   }
 
   Future<void> _scanAgain() async {
