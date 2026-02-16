@@ -375,4 +375,6 @@ static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
 static final RegExp email = RegExp(
   r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$",
 );
+  static const String ACCOUNT_CREATED_SUCCESSFULLY ='Account Created Successfully!';
+
 }
