@@ -14,6 +14,8 @@ class OrderState extends ChangeNotifier {
   bool _isVerifying = false;
   List<ContainersDetails> _selectedContainers = [];
   bool _isOrdering = false;
+  int _leasedContainerCount = 0;
+  int _returnedContainerCount = 0;
 
   bool get isVerifying => _isVerifying;
   String get name => _name;
@@ -29,7 +31,16 @@ class OrderState extends ChangeNotifier {
   String? get nameError => _nameError;
   bool _isQtyAscending = true;
   bool get isQtyAscending => _isQtyAscending;
+  int get leasedContainerCount => _leasedContainerCount;
+  int get returnedContainerCount => _returnedContainerCount;
 
+  void setLeaseCount(int count){
+    _leasedContainerCount = count;
+    notifyListeners();
+  } void setReturnCount(int count){
+    _returnedContainerCount = count;
+    notifyListeners();
+  }
   void setName(String value) {
     _name = value;
     _validateName();
