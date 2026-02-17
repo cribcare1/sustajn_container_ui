@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import '../common_widgets/card_widget.dart';
+import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
+import '../models/get_container_data.dart';
 import '../product_screen/containers_list_screen.dart';
 import '../product_screen/models/assigned_container_list.dart';
-import '../provider/order_provider.dart';
 
-class ContainersDetailsScreen extends ConsumerStatefulWidget {
-  const ContainersDetailsScreen({Key? key}) : super(key: key);
+class ContainersDetailsScreen extends StatelessWidget {
+  final ContainersDetails details;
+  const ContainersDetailsScreen({super.key, required this.details});
 
-  @override
-  ConsumerState<ContainersDetailsScreen> createState() => _ContainersDetailsScreenState();
-}
-
-class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
-    final container = orderState.getContainerData?.containersDetails;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CustomAppBar(title:'Container Details',
           leading: CustomBackButton()).getAppBar(context),
       body: SafeArea(
@@ -31,7 +25,7 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
           child: ListView(
             children: [
               Center(
-                child: _productCard(theme),
+                child: _productCard(theme, context),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               _statsList(theme),
@@ -43,80 +37,95 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
     );
   }
 
-  Widget _productCard(ThemeData theme) {
-    return Container(
-      height: Constant.CONTAINER_SIZE_250,
-      width: Constant.CONTAINER_SIZE_210,
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-        border: Border.all(color: Constant.gold, width: Constant.SIZE_01),
-        gradient: LinearGradient(
-          colors: [
-            Constant.grey.withOpacity(0.2),
-            theme.primaryColor.withOpacity(0.4),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget _productCard(ThemeData theme, BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(
+          height: Constant.CONTAINER_SIZE_250,
+          width: Constant.CONTAINER_SIZE_210,
+          child: SubscriptionCard(
+            padding: 4.0,
+            child: Container(
+
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF0A4D2E), Color(0xFF052F1E)],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  width: 1.5,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    height: Constant.CONTAINER_SIZE_100,
+                    width: Constant.CONTAINER_SIZE_100,
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                    ),
+                    child: Image.network(
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${details.containerImageUrl}",
+                      errorBuilder: (context, obj, stack) {
+                        return Image.asset(
+                          "assets/images/no_image_container.png",
+                        );
+                      },
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.SIZE_10),
+
+                  Text(
+                    details.containerName??"",
+                    maxLines: Constant.MAX_LINE_1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_04),
+                  Text(
+                    details.containerUniqueId??"",
+                    maxLines: Constant.MAX_LINE_1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_02),
+                  Text(
+                    "${details.capacity}ml",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: Constant.CONTAINER_SIZE_100,
-            width: Constant.CONTAINER_SIZE_100,
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-            ),
-            child: Image.asset(
-              "assets/images/cups.png",
-              fit: BoxFit.contain,
-            ),
-          ),
-
-          SizedBox(height: Constant.SIZE_10),
-
-          Text(
-            "Dip Cup",
-            maxLines: Constant.MAX_LINE_1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: Constant.SIZE_04),
-          Text(
-            "ST-DC-50",
-            maxLines: Constant.MAX_LINE_1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.white70,
-            ),
-          ),
-          SizedBox(height: Constant.SIZE_02),
-          Text(
-            "50ml",
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: Colors.white70,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 
   Widget _statsList(ThemeData theme) {
     final stats = [
-      {"title": "Assigned Containers", "value": "5,000", "arrow": true},
-      {"title": "Total Leased", "value": "3,986", "arrow": true},
-      {"title": "Total Received", "value": "254", "arrow": true},
-      {"title": "Available", "value": "1268", "arrow": false},
+      {"title": "Leased", "value": "${details.quantityAvailable}", "arrow": true},
+      {"title": "Received", "value": "254", "arrow": true},
+      {"title": "In-Stock", "value": "${details.quantityAvailable}", "arrow": false},
     ];
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: stats.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -128,18 +137,16 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
           value: stats[index]["value"] as String,
           showArrow: stats[index]["arrow"] as bool,
           onTap: (){
-            if(title == 'Assigned Containers'){
-              _navigateAssignedContainer(context);
-            }
-            else if (title == 'Total Leased'){
+              if (title == 'Leased'){
               _navigateTotalLeased(context);
             }
-            else if (title == 'Total Received'){
+            else if (title == 'Received'){
               _navigateTotalReceived(context);
             }
           }
         );
       },
+      separatorBuilder: (context,index) =>SizedBox(height: Constant.CONTAINER_SIZE_10),
     );
   }
 
@@ -150,9 +157,9 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
         builder: (_) => AssignedContainerListScreen(
           title: "Assigned Containers",
           items: [
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 25, 10, 0),
-                quantity: 350),
+            // AssignedContainerItem(
+            //     dateTime: DateTime(2025, 11, 25, 10, 0),
+            //     quantity: 350),
             AssignedContainerItem(
                 dateTime: DateTime(2025, 11, 15, 11, 23),
                 quantity: 400),
@@ -171,7 +178,6 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
     );
 
   }
-
   void _navigateTotalLeased(BuildContext context){
     Navigator.push(context,
         MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
@@ -195,7 +201,6 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
           ],
         ),));
   }
-
   void _navigateTotalReceived(BuildContext context){
     Navigator.push(context,
         MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
@@ -229,15 +234,10 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
       }) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: Constant.SIZE_10),
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          border: Border.all(color: Colors.white24),
-        ),
+      child: GlassSummaryCard(
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: Column(
@@ -268,10 +268,17 @@ class _ContainersDetailsScreenState extends ConsumerState<ContainersDetailsScree
 
             if (showArrow) ...[
               SizedBox(width: Constant.SIZE_08),
-              Icon(
-                Icons.call_made_outlined,
-                size: Constant.CONTAINER_SIZE_18,
-                color: Colors.white70,
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.secondaryHeaderColor
+                ),
+                padding: EdgeInsets.all(Constant.SIZE_04),
+                child: Icon(
+                  Icons.call_made_outlined,
+                  size: Constant.CONTAINER_SIZE_16,
+                  color: Colors.white70,
+                ),
               ),
             ],
           ],

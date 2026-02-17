@@ -118,16 +118,11 @@ class ApiHelper {
     try {
       var body = json.encode(jsonMap);
       Utils.printLog("body====$body");
-
-      response = await http.post(
-        Uri.parse(url),
-        headers: _getHeader(token),
-        body: body,
-      ).timeout(const Duration(seconds: 20));
-
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
-    } on TimeoutException catch (_) {
+    }  on TimeoutException catch (_) {
       Utils.printLog('Timed out');
       return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
     } catch (excetion) {
@@ -135,8 +130,26 @@ class ApiHelper {
       return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
     }
   }
-
-
+  Future<dynamic> postAPIStringValue(String url, var jsonMap) async {
+    Utils.printLog("Post call started==url==$url");
+    var token = Utils.authToken();
+    Utils.printLog('Token : $token');
+    http.Response? response;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
+      Utils.printLog("Network call success. response==${response.statusCode}");
+      return response;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
   Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
     final token = Utils.authToken();
     Utils.printLog("Get call started==url==$url");

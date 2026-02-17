@@ -418,7 +418,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   Widget _buildGenderDropdown(BuildContext context) {
     final theme = Theme.of(context);
 
-    final List<String> genderItems = ['Male', 'Female'];
+    final List<String> genderItems = [Strings.MALE, Strings.FEMALE, Strings.OTHERS];
     return Padding(
       padding: EdgeInsets.only(bottom: Constant.SIZE_15),
       child: DropdownButtonFormField2<String>(
@@ -427,7 +427,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
         decoration: InputDecoration(
           filled: true,
           fillColor: theme.primaryColor,
-          hintText: "Select Gender",
+          hintText: Strings.GENDER,
           hintStyle: const TextStyle(color: Colors.white70),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -480,7 +480,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
               ref.read(
                 getOtpToVerifyProvider({
                   "email": emailCtrl.text,
-                  "type": "SIGNUP",
+                  "type": Strings.SIGNUP,
                 }),
               );
             } else {

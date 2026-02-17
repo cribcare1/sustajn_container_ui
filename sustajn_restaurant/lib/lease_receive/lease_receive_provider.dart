@@ -6,6 +6,7 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../constants/imports_util.dart';
 import 'model/container_list_model.dart';
+import 'model/container_return_list_model.dart';
 
 final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   ref,
@@ -95,6 +96,40 @@ FutureProvider.family<ContainerListModel, String>((ref, restaurantId) async {
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message: response.message,
+        color: Colors.red,
+      );
+    }
+    return response;
+  } catch (e) {
+    showCustomSnackBar(
+      context: leaseNotifier.context!,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  } finally {
+    leaseNotifier.setLoading(false);
+  }
+});
+
+final returnContainerListProvider =
+FutureProvider.family<CustomerBorrowedData, String>((ref, customerId) async {
+  final apiService = ref.watch(leaseAPIServices);
+  final leaseNotifier = ref.watch(leaseReceiveNotifier);
+
+  try {
+    final response = await apiService.fetchCustomerBorrowedList(customerId);
+    if  (response.status == NetworkUrls.SUCCESS && response.data!.isNotEmpty) {
+      leaseNotifier.setReturnContainer(response.data!);
+      showCustomSnackBar(
+        context: leaseNotifier.context!,
+        message: "Please Scan container",
+        color: Colors.green
+      );
+    }else{
+      showCustomSnackBar(
+        context: leaseNotifier.context!,
+        message: response.message!,
         color: Colors.red,
       );
     }

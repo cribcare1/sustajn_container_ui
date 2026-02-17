@@ -15,7 +15,6 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
-import '../../utils/sharedpreference_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 

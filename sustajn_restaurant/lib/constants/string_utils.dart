@@ -73,7 +73,7 @@ class Strings {
   static const ENTER_PRODUCT_ID = 'Enter Product ID*';
   static const ENTER_VOLUME = 'Enter Volume in ml*';
   static const ENTER_QUANTITY = 'Quantity*';
-  static const ENTER_WEBSITE = ' Website';
+  static const ENTER_WEBSITE = ' Website(e.g.http://example.com)';
   static const ENTER_BUSINESSTYPE = 'Enter business type';
   static const BUSINESS_TYPE_ERROR_TXT = 'Business type is required';
   static const ENTER_BUSINESS_DETAILS = 'Enter business details';
@@ -141,6 +141,9 @@ class Strings {
   static const EMAIL_REGISTRATION_ERROR_TXT = 'Email is required';
   static const TRADE_LICENSE_NUMBER = 'Trade License Number';
   static const VAT_NUMBER = 'VAT Number';
+  static const EMAIL_REGISTRATION = 'Email Registration(e.g.abc@gmail.com)';
+  static const TRADE_LICENSE_NUMBER = 'Trade License Number(e.g.12345)';
+  static const VAT_NUMBER = 'VAT Number(e.g.100123456700003)';
   static const LOCATION = 'Location';
   static const CONTINUE_VERIFICATION = 'Continue to verify';
   static const ALREADY_HAVE_ACC = 'Already have an account? ';
@@ -237,12 +240,12 @@ class Strings {
   static const String APPLE_PAY = "Apple Pay";
   static const String GOOGLE_PAY = "Google Pay";
   static const String ADD_CARD = "Add Card";
-  static const String ACCOUNT_HOLDER_NAME = "Account Holder Name";
-  static const String IBAN = "IBAN";
+  static const String ACCOUNT_HOLDER_NAME = "Account Holder Name*";
+  static const String IBAN = "IBAN(e.g.AE125478963547896541235)";
   static const String BIC = "BIC";
   static const String CLEAR_DTLS = "Clear Details";
   static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
-  static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+  static const String TRADE_LICENSE_VALIDATE ='Trade License Number must be 5 digits';
   static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
@@ -426,4 +429,39 @@ static const String BANK_NAME_3CHARS = 'Bank name should be at least 3 character
 
 
 
+static const String ENTER_EMAIL_ADDRESS = 'Enter a valid email address';
+static const String PROFILE = 'profile';
+static const String RESTAURANT = 'Restaurant';
+static const String CAFE = 'Cafe';
+static const String FAST_FOOD = 'Fast food Shop';
+static const String FOOD_COURT = 'Food court Cloud kitchen';
+static const String CARD_HOLDER_NAME = 'Card Holder Name*';
+static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
+static const String CARD_NUMBER = 'Card Number*';
+static const String CARD_NO_REQ = 'Card no. required';
+static const String CARD_NUMBER_12 = 'Card number must be 12 digits';
+static const String EXPIRATION_DATE = 'Expiration Date';
+static const String CVV = 'CVV';
+static const String CVV_REQUIRED = 'CVV is required';
+static const String THREE_DIGIT = 'CVV must be 3 digits';
+static const String ADD_CARD_CONTINUE = 'Add Card & Continue';
+static const String ADD_CARD_DETAILS = 'Add Card Details';
+static const String WE_ACCEPT = 'We accept Credit, Debit, Visa and Mastercard';
+static const String ACCOUNT_HOLDER_NAME_REQ = 'Account holder name is required';
+static const String ACCOUNT_HOLDER = 'Account Holder: ';
+static const String CRD_NUMBER = 'Card Number: ';
+static const String EXPIRY = 'Expiry: ';
+static const String CVVS = 'CVV: ';
+static const String STAR = '***';
+static const String CONTACT_PERSON_REQ = 'Contact person required';
+static const String INSTAGRAM = 'Instagram';
+static const String FACEBOOK = 'Facebook';
+static const String SNAPCHAT = 'Snapchat';
+static const String TWITTER = 'X';
+static const String MONTH = 'Month';
+static const String FILTER = 'Filters';
+static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
+static final RegExp email = RegExp(
+  r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$",
+);
 }

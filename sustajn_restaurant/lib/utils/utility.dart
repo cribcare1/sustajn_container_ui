@@ -953,19 +953,29 @@ void showCustomSnackBar({
   required String message,
   required Color color,
 }) {
+  final mediaQuery = MediaQuery.of(context);
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: Constant.CONTAINER_SIZE_14,
+      content: Center(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Constant.CONTAINER_SIZE_14,
+          ),
         ),
       ),
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
-      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      margin: EdgeInsets.only(
+        left: Constant.CONTAINER_SIZE_16,
+        right: Constant.CONTAINER_SIZE_16,
+        bottom: mediaQuery.size.height / 2 - 40, // center vertically
+      ),
+      duration: const Duration(seconds: 2),
     ),
   );
 }
+

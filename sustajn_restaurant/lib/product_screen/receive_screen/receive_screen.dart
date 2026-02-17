@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_details.dart';
 
+import '../../common_widgets/filter_Screen.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
+import '../../utils/date_month_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 
@@ -22,7 +24,7 @@ class ReceiveScreen extends ConsumerStatefulWidget {
 class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   final searchController = TextEditingController();
 
-  bool _isQtyAscending = true;
+  String? selectedMonthYear;
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -196,147 +198,35 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
-    final containerState = ref.watch(orderProvider);
-
+    final containerState = ref.read(orderProvider);
     final container =
         containerState.containerHistorydata?.data?.receivedResponses;
+
+    final months = DateMonthUtils.getCurrentYearMonths();
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        bool tempAscending = _isQtyAscending;
+      isScrollControlled: true,
+      builder: (_) {
+        return ReusableFilterBottomSheet(
+          title: Strings.FILTER,
+          leftTabTitle: Strings.MONTH,
+          options: months,
+          selectedValue: selectedMonthYear,
+          onApply: (value) {
+            if (value == null) return;
 
-        return SafeArea(
-          top: false,
-          child: StatefulBuilder(
-            builder: (context, setModalState) {
-              return Container(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          Strings.SORT_BY,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Constant.CONTAINER_SIZE_18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(
-                            Icons.cancel_rounded,
-                            color: Constant.gold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+            setState(() {
+              selectedMonthYear = value;
 
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Quantity : Low to High",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      trailing: Radio<bool>(
-                        value: true,
-                        groupValue: tempAscending,
-                        activeColor: Constant.gold,
-                        fillColor: MaterialStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Constant.gold; // selected
-                          }
-                          return Colors.white; // unselected
-                        }),
-                        onChanged: (value) {
-                          setModalState(() {
-                            tempAscending = value!;
-                          });
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Quantity : High to Low",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      trailing: Radio<bool>(
-                        value: false,
-                        groupValue: tempAscending,
-                        activeColor: Constant.gold,
-                        fillColor: MaterialStateProperty.resolveWith<Color>((
-                          states,
-                        ) {
-                          if (states.contains(MaterialState.selected)) {
-                            return Constant.gold; // selected
-                          }
-                          return Colors.white; // unselected
-                        }),
-                        onChanged: (value) {
-                          setModalState(() {
-                            tempAscending = value!;
-                          });
-                        },
-                      ),
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    SubmitClearButton(
-                      onLeftTap: () {
-                        setState(() {
-                          _isQtyAscending = true;
-                          container!.sort(
-                            (a, b) => a.returnedQuantity!.compareTo(
-                              b.returnedQuantity!,
-                            ),
-                          );
-                        });
-                        Navigator.pop(context);
-                      },
-                      leftText: Strings.CLEAR,
-                      onRightTap: () {
-                        setState(() {
-                          _isQtyAscending = tempAscending;
-                          container!.sort(
-                            (a, b) => _isQtyAscending
-                                ? a.returnedQuantity!.compareTo(
-                                    b.returnedQuantity!,
-                                  )
-                                : b.returnedQuantity!.compareTo(
-                                    a.returnedQuantity!,
-                                  ),
-                          );
-                        });
-                        Navigator.pop(context);
-                      },
-                      rightText: Strings.APPLY,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+            });
+          },
         );
       },
     );
   }
+
 
   _getReceiveNetworkCall() async {
     try {

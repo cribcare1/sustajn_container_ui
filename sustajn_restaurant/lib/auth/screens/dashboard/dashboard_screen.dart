@@ -49,6 +49,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+     Utils.getUserId();
     _init();
   }
 
@@ -62,7 +63,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
 
   Future<void> _loadProfile() async {
-    await Utils.getUserId();
+
     await Utils.getProfile();
 
     if (!mounted) return;
