@@ -334,7 +334,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                         widget.state.setCardDetails(cardData);
                         Navigator.pop(context);
                       },
-                      rightText: "Add Card & Continue",
+                      rightText: Strings.ADD_CARD_CONTINUE,
                     ),
                   ),
                 ],
