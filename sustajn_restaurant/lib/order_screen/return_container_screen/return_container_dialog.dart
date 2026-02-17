@@ -252,13 +252,11 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (qty > 0) {
-                            _returnContainerNetworkCall(
-                              widget.item,
-                              orderState,
-                            );
-                            // Navigator.pop(context, qty);
+                            orderState.addContainerToOrder(widget.item, qty);
+                            Navigator.pop(context);
                           }
                         },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Constant.gold,
                           disabledBackgroundColor: Constant.gold,
@@ -338,39 +336,4 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
     });
   }
 
-  Map<String, dynamic> getJsonData(ContainersDetails item) {
-    final data = {
-      "restaurantId": Utils.userId,
-      "type": "RETURN",
-      "items": [
-        {
-          "containerTypeId": item.containerId,
-          "requestedQty": item.quantityAvailable,
-        },
-      ],
-    };
-    return data;
-  }
-
-  _returnContainerNetworkCall(ContainersDetails item, var orderState) async {
-    Utils.printLog('add container Network call');
-
-    final isNetworkAvailable = await ref
-        .read(networkProvider.notifier)
-        .isNetworkAvailable();
-
-    if (!isNetworkAvailable) {
-      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-      return;
-    }
-    try {
-      await ref.read(addReturnProvider(getJsonData(item)).future);
-      Navigator.pop(context);
-      setState(() {
-        container = orderState.setOrderData!;
-      });
-    } catch (e) {
-      Utils.printLog(e.toString());
-    }
-  }
 }
