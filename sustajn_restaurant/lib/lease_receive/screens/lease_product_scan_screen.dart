@@ -124,7 +124,8 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
         quantityAvailable: 0,
       ),
     );
-    if(leaseNotifier.containersDetailsList.isNotEmpty) {
+    Utils.printLog("matchedContainer:::${matchedContainer.containerUniqueId}");
+    if(leaseNotifier.containersDetailsList.isNotEmpty && matchedContainer.containerUniqueId.isNotEmpty) {
       final alreadyAdded = leaseNotifier.containersList.any(
             (e) => e.containerUniqueId == id,
       );

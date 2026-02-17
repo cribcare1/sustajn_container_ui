@@ -369,7 +369,7 @@ class _ReceiveProductListScreenState
                             .containerReturnListAdded
                             .map(
                               (i) => {
-                                "productId": i.productUniqueId,
+                                "productId": i.productId,
                                 "quantity": i.containerCount,
                               },
                             )
