@@ -35,7 +35,7 @@ class Strings {
   static const String G_MAP_API_KEY = "AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q";
   // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
   //Sign Up & Login
-  static const String LOGIN = "LogIn";
+  static const String LOGIN = "Login";
   static const String SIGN_UP = "Sign Up";
   static const String FULL_NAME = "Full Name*";
   static const String EMAIL = 'Email ID*';
