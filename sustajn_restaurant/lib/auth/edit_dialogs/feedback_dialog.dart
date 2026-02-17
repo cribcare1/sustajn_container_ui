@@ -72,63 +72,136 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Constant.CONTAINER_SIZE_20),
-          ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          _buildBottomSheetContent(context),
+          Utils.buildFloatingHeader(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomSheetContent(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_24), // space for ❌
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(Constant.CONTAINER_SIZE_20),
         ),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildHeader(context),
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildEmojiRow(context),
-                        SizedBox(height: Constant.CONTAINER_SIZE_16),
-                        _buildTextField(
-                          context,
-                          controller: subjectController,
-                          validator: _validateSubject,
-                          hint: '${Strings.SUBJECT}*',
-                          label: '${Strings.SUBJECT}*',
-                          focusNode: _subjectFocus,
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_16),
-                        _buildTextField(
-                          context,
-                          controller: remarksController,
-                          validator: _validateRemarks,
-                          hint: '${Strings.YOUR_REMARKS}*',
-                          label: '${Strings.YOUR_REMARKS}*',
-                          focusNode: _remarksFocus,
-                          maxLines: 5,
-                          showCounter: true,
-                          textInputAction: TextInputAction.done,
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_20),
-                        _buildSubmitButton(context),
-                      ],
-                    ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeaders(context),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildEmojiRow(context),
+                      SizedBox(height: Constant.CONTAINER_SIZE_16),
+                      _buildTextField(
+                        context,
+                        controller: subjectController,
+                        validator: _validateSubject,
+                        hint: '${Strings.SUBJECT}*',
+                        label: '${Strings.SUBJECT}*',
+                        focusNode: _subjectFocus,
+                        maxLines: 1,
+                      ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_16),
+                      _buildTextField(
+                        context,
+                        controller: remarksController,
+                        validator: _validateRemarks,
+                        hint: '${Strings.YOUR_REMARKS}*',
+                        label: '${Strings.YOUR_REMARKS}*',
+                        focusNode: _remarksFocus,
+                        maxLines: 5,
+                        showCounter: true,
+                        textInputAction: TextInputAction.done,
+                      ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_20),
+                      _buildSubmitButton(context),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  Widget _buildFloatingHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Positioned(
+      top: -10,
+      left: Constant.CONTAINER_SIZE_16,
+      right: Constant.CONTAINER_SIZE_16,
+      child: Row(
+        children: [
+          const Spacer(),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              padding: EdgeInsets.all(Constant.SIZE_06),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.cardColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.close,
+                size: Constant.SIZE_18,
+                color: theme.iconTheme.color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaders(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Constant.CONTAINER_SIZE_16,
+          ),
+          child:
+            Text(
+            Strings.FEEDBACK,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);

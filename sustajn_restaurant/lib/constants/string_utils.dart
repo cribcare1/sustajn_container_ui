@@ -200,7 +200,8 @@ class Strings {
   static const String REQUEST_HISTORY = "Request History";
   static const String NO_CONTAINER_REQUESTS_YET = "No container requests yet";
   static const String NO_CONTAINER_AVAILABLE = "No containers available";
-  static const String SOMETHING_WENT_WRONG = "Something went wrong. Please try again ";
+  static const String SOMETHING_WENT_WRONG =
+      "Something went wrong. Please try again ";
   static const String SEARCH_BY_CONTAINER_NAME =
       "Search by container Name or Id";
   static const String DELETE_REQUEST = "Delete Request";
@@ -232,8 +233,9 @@ class Strings {
   static const String IBAN = "IBAN";
   static const String BIC = "BIC";
   static const String CLEAR_DTLS = "Clear Details";
-  static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
-  static const String TRADE_LICENCE_VALIDATE ='Trade License Number must be 5 to 8 digits';
+  static const String VAT_NUMBER_15 = "VAT Number must be exactly 15 digits";
+  static const String TRADE_LICENCE_VALIDATE =
+      'Trade License Number must be 5 to 8 digits';
   static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
@@ -267,7 +269,8 @@ class Strings {
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS = "Logged in successfully";
   static const String G_MAP_API_KEY = "AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q";
-      // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
+
+  // "AIzaSyDHgAYBqqOgvAANsObQOaX1ZNPyElqVtas";
   static const GO_BACK = 'Are you sure you want to go back?';
   static const VERIFIED_MAIL =
       'You have already verified your email.Going back may interrupt the account setup process';
@@ -278,8 +281,10 @@ class Strings {
   static const String CONFIRM_LOGOUT = 'Confirm Logout';
   static const String CONFIRM = 'Confirm';
   static const String CONFIRM_UPDATE = 'Confirm Update';
-  static const String UPDATE_CONTACT_NO = "Are you sure you want to update your contact number?";
-  static const String UPDATE_SUBSCRIPTION_PLAN = "Are you sure you want to update your subscription plan?";
+  static const String UPDATE_CONTACT_NO =
+      "Are you sure you want to update your contact number?";
+  static const String UPDATE_SUBSCRIPTION_PLAN =
+      "Are you sure you want to update your subscription plan?";
 
   static const String SURE_LOG_OUT = 'Are you sure you want to logout?';
   static const String YES = 'Yes';
@@ -303,23 +308,25 @@ class Strings {
   static const String ENTER_OTP = "Please enter your OTP";
   static const String VALID_OTP = "Please enter a valid 6-digit OTP";
   static const String RESEND_IN = "Resend code in ";
-  static const String RESTAURANT_NAME_NOT_EMPTY = 'Restaurant name cannot be empty';
-  static const String ONLY_LETTERS_NUMBERS = 'Only letters, numbers and spaces allowed';
+  static const String RESTAURANT_NAME_NOT_EMPTY =
+      'Restaurant name cannot be empty';
+  static const String ONLY_LETTERS_NUMBERS =
+      'Only letters, numbers and spaces allowed';
   static const String EDIT_RESTAURANT_NAME = 'Edit Restaurant Name';
   static const String PRODUCTS = 'Products';
   static const String INVENTORY = 'Inventory';
   static const String LEASE = 'Lease';
   static const String RECEIVE = 'Receive';
-  static const String INVALID_QR_CODE ="Invalid or unsupported QR code";
-  static const String ENTER_CUSTOMER_ID ="Enter Customer ID";
-  static const String LEASE_UC ="LEASE";
-  static const String RECEIVE_UC ="RECEIVE";
-  static const String SCAN_FOR_LEASE ="Scan Customer QR to Leased Products";
-  static const String SCAN_FOR_RECEIVE ="Scan Customer QR to Receive Products";
-  static const String SCAN ="Scan";
-  static const String SCAN_PRODUCT ="Scan Product";
-  static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
-  static const String ENTER_CONTAINER_ID ="Enter Container ID";
-  static const String NO_PROFILE ="Your profile information is not available right now";
-
+  static const String INVALID_QR_CODE = "Invalid or unsupported QR code";
+  static const String ENTER_CUSTOMER_ID = "Enter Customer ID";
+  static const String LEASE_UC = "LEASE";
+  static const String RECEIVE_UC = "RECEIVE";
+  static const String SCAN_FOR_LEASE = "Scan Customer QR to Leased Products";
+  static const String SCAN_FOR_RECEIVE = "Scan Customer QR to Receive Products";
+  static const String SCAN = "Scan";
+  static const String SCAN_PRODUCT = "Scan Product";
+  static const String SCAN_CONTAINER_QR = "Scan Container QR to Lease Products";
+  static const String ENTER_CONTAINER_ID = "Enter Container ID";
+  static const String NO_PROFILE =
+      "Your profile information is not available right now";
 }

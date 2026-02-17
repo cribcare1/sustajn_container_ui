@@ -54,189 +54,191 @@ class _SecondaryMobileNumberDialogState
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Container(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Constant.CONTAINER_SIZE_16),
-            ),
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_16),
+                ),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        Strings.MOBILE_NUMBER,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.close, color: Colors.white),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                Text(
-                  Strings.PRIMARY_NO,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(height: Constant.SIZE_05),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.call,
-                      color: Colors.white,
-                      size: Constant.CONTAINER_SIZE_18,
-                    ),
-                    SizedBox(width: Constant.SIZE_08),
-                    Expanded(
-                      child: Text(
-                        "+91 ${widget.mobileNumber}",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => EditMobileNumberDialog(
-                            mobileNumber: widget.mobileNumber,
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.edit_outlined,
-                        color: Colors.white,
-                        size: Constant.CONTAINER_SIZE_18,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_25),
-                if (widget.secondaryMobileNumber.isNotEmpty) ...[
-                  Text(
-                    Strings.SECONDARY_NO,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(height: Constant.SIZE_05),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.call,
-                        color: Colors.white,
-                        size: Constant.CONTAINER_SIZE_18,
-                      ),
-                      SizedBox(width: Constant.SIZE_08),
-                      Expanded(
-                        child: Text(
-                          "+91 ${widget.secondaryMobileNumber}",
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.edit_outlined,
-                          color: Colors.white,
-                          size: Constant.CONTAINER_SIZE_18,
-                        ),
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  if (!showSecondaryField)
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() => showSecondaryField = true);
-                          },
+                        Expanded(
                           child: Text(
-                            Strings.ADD_SECONDARY_NO,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Constant.gold,
-                              fontWeight: FontWeight.w500,
+                            Strings.MOBILE_NUMBER,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ],
                     ),
 
-                  Visibility(
-                    visible: showSecondaryField,
-                    child: Column(
+                    SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+                    Text(
+                      Strings.PRIMARY_NO,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(height: Constant.SIZE_05),
+                    Row(
                       children: [
-                        SizedBox(height: Constant.CONTAINER_SIZE_16),
-                        TextFormField(
-                          controller: _secondaryController,
-                          keyboardType: TextInputType.number,
-                          validator: _validateMobile,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            labelText: Strings.SECONDARY_NO,
-                            labelStyle: const TextStyle(color: Colors.white),
+                        Icon(
+                          Icons.call,
+                          color: Colors.white,
+                          size: Constant.CONTAINER_SIZE_18,
+                        ),
+                        SizedBox(width: Constant.SIZE_08),
+                        Expanded(
+                          child: Text(
+                            "+91 ${widget.mobileNumber}",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => EditMobileNumberDialog(
+                                mobileNumber: widget.mobileNumber,
+                              ),
+                            );
+                          },
+                          child: Icon(
+                            Icons.edit_outlined,
+                            color: Colors.white,
+                            size: Constant.CONTAINER_SIZE_18,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-                SizedBox(height: Constant.CONTAINER_SIZE_28),
 
-                SizedBox(
-                  width: double.infinity,
-                  child: SubmitButton(
-                    onRightTap:
-                        () {
-                      if (showSecondaryField &&
-                          !_formKey.currentState!.validate())
-                        return;
-                      _addSecondaryNoNetworkCall();
-                      Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
-                      Navigator.pop(context, _secondaryController.text.trim());
-                    },
-                    rightText: Strings.SAVE_CHANGES,
-                  ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_25),
+                    if (widget.secondaryMobileNumber.isNotEmpty) ...[
+                      Text(
+                        Strings.SECONDARY_NO,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(height: Constant.SIZE_05),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.call,
+                            color: Colors.white,
+                            size: Constant.CONTAINER_SIZE_18,
+                          ),
+                          SizedBox(width: Constant.SIZE_08),
+                          Expanded(
+                            child: Text(
+                              "+91 ${widget.secondaryMobileNumber}",
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Icon(
+                              Icons.edit_outlined,
+                              color: Colors.white,
+                              size: Constant.CONTAINER_SIZE_18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else ...[
+                      if (!showSecondaryField)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() => showSecondaryField = true);
+                              },
+                              child: Text(
+                                Strings.ADD_SECONDARY_NO,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Constant.gold,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                      Visibility(
+                        visible: showSecondaryField,
+                        child: Column(
+                          children: [
+                            SizedBox(height: Constant.CONTAINER_SIZE_16),
+                            TextFormField(
+                              controller: _secondaryController,
+                              keyboardType: TextInputType.number,
+                              validator: _validateMobile,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                labelText: Strings.SECONDARY_NO,
+                                labelStyle: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    SizedBox(height: Constant.CONTAINER_SIZE_28),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: SubmitButton(
+                        onRightTap:
+                            () {
+                          if (showSecondaryField &&
+                              !_formKey.currentState!.validate())
+                            return;
+                          _addSecondaryNoNetworkCall();
+                          Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
+                          Navigator.pop(context, _secondaryController.text.trim());
+                        },
+                        rightText: Strings.SAVE_CHANGES,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          Utils.buildFloatingHeader(context)
+        ],
       ),
     );
   }
