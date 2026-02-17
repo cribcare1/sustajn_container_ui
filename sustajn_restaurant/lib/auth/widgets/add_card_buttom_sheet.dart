@@ -20,25 +20,188 @@ class AddCardDialog extends ConsumerStatefulWidget {
 }
 
 class _AddCardDialogState extends ConsumerState<AddCardDialog> {
+  late TextEditingController _cardHolderNameController;
+  late TextEditingController _cardNumberController;
+  late TextEditingController _expiryDateController;
+  late TextEditingController _cvvController;
+
+  final Map<String, String?> _fieldErrors = {
+    'cardHolderName': null,
+    'cardNumber': null,
+    'cvv': null,
+  };
+
+  final Map<String, bool> _fieldTouched = {
+    'cardHolderName': false,
+    'cardNumber': false,
+    'cvv': false,
+  };
+
+  bool _formSubmitted = false;
+
   @override
   void initState() {
+    _cardHolderNameController = TextEditingController();
+    _cardNumberController = TextEditingController();
+    _expiryDateController = TextEditingController();
+    _cvvController = TextEditingController();
+
     _getData();
+
+    _cardHolderNameController.addListener(() {
+      _validateFieldRealTime(
+        'cardHolderName',
+        _cardHolderNameController.text,
+        _validateCardHolderName,
+      );
+    });
+
+    _cardNumberController.addListener(() {
+      _validateFieldRealTime(
+        'cardNumber',
+        _cardNumberController.text,
+        _validateCardNumber,
+      );
+    });
+
+
+    _cvvController.addListener(() {
+      _validateFieldRealTime(
+        'cvv',
+        _cvvController.text,
+        _validateCVV,
+      );
+    });
+
     super.initState();
   }
 
-  final _cardHolderNameController = TextEditingController();
-  final _cardNumberController = TextEditingController();
-  final _expiryDateController = TextEditingController();
-  final _cvvController = TextEditingController();
-
-  _getData() {
+  void _getData() {
     if (widget.state.cardDetails != null) {
       _cardHolderNameController.text =
-          widget.state.cardDetails!.cardHolderName!;
+      widget.state.cardDetails!.cardHolderName!;
       _cardNumberController.text = widget.state.cardDetails!.cardNumber!;
       _expiryDateController.text = widget.state.cardDetails!.expiryDate!;
       _cvvController.text = widget.state.cardDetails!.cvv!;
     }
+  }
+
+
+  String? _validateCardHolderName(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.CARD_HOLDER_REQUIRED;
+    }
+
+    final RegExp nameRegex = RegExp(Strings.NAME_REGX);
+    if (!nameRegex.hasMatch(value.trim())) {
+      return Strings.CARD_HOLER_VALID;
+    }
+
+    if (value.trim().length < 3) {
+      return Strings.CARD_HOLDER_3;
+    }
+
+    if (value.length > 50) {
+      return Strings.CARD_HOLDER_NOT_EXCEED;
+    }
+
+    return null;
+  }
+
+  String? _validateCardNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.CARD_NUMBER_REQUIRED;
+    }
+
+    final cleanedNumber = value.replaceAll(' ', '');
+
+    if (!RegExp(r'^\d+$').hasMatch(cleanedNumber)) {
+      return Strings.CARD_NUMBER_CONTAIN;
+    }
+
+    if (cleanedNumber.length != 12) {
+      return Strings.CARD_NUMBER_12;
+    }
+
+    if (!_luhnCheck(cleanedNumber)) {
+      return Strings.INVALID_CARD_NUMBER;
+    }
+
+    return null;
+  }
+
+
+  String? _validateCVV(String? value) {
+    if (value == null || value.isEmpty) {
+      return Strings.CVV_REQUIRED;
+    }
+
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
+      return Strings.CVV_CONTAIN;
+    }
+
+    if (value.length != 3) {
+      return Strings.CVV_3;
+    }
+
+    return null;
+  }
+
+  bool _luhnCheck(String cardNumber) {
+    int sum = 0;
+    int isEven = 0;
+
+    for (int i = cardNumber.length - 1; i >= 0; i--) {
+      int digit = int.parse(cardNumber[i]);
+
+      if (isEven == 1) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      isEven ^= 1;
+    }
+
+    return sum % 10 == 0;
+  }
+
+  void _validateFieldRealTime(
+      String fieldName,
+      String value,
+      String? Function(String?) validator,
+      ) {
+    if (!_fieldTouched[fieldName]! && !_formSubmitted) {
+      return;
+    }
+
+    final error = validator(value);
+
+    if (_fieldErrors[fieldName] != error) {
+      setState(() {
+        _fieldTouched[fieldName] = true;
+        _fieldErrors[fieldName] = error;
+      });
+    }
+  }
+
+  bool _isFormValid() {
+    return _fieldErrors.values.every((error) => error == null) &&
+        _cardHolderNameController.text.isNotEmpty &&
+        _cardNumberController.text.isNotEmpty &&
+        _expiryDateController.text.isNotEmpty &&
+        _cvvController.text.isNotEmpty;
+  }
+
+  @override
+  void dispose() {
+    _cardHolderNameController.dispose();
+    _cardNumberController.dispose();
+    _expiryDateController.dispose();
+    _cvvController.dispose();
+    super.dispose();
   }
 
   final _key = GlobalKey<FormState>();
@@ -68,43 +231,34 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 children: [
                   _header(context, theme),
                   SizedBox(height: Constant.SIZE_15),
-                  _cardField(
+
+                  _buildCardFieldWithRealTimeValidation(
                     theme,
-                    Strings.CARD_HOLDER_NAME,
-                    _cardHolderNameController,
-                    keyboardType: TextInputType.text,
+                    hint: Strings.CARD_HOLDER_NAME,
+                    controller: _cardHolderNameController,
+                    fieldName: 'cardHolderName',
+                    validator: _validateCardHolderName,
+                    keyboardType: TextInputType.name,
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
                     ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return Strings.CARD_HOLDER_REQUIRED;
-                      }
-                      return null;
-                    },
                   ),
                   SizedBox(height: Constant.SIZE_10),
-                  _cardField(
+
+                  _buildCardFieldWithRealTimeValidation(
                     theme,
-                    Strings.CARD_NUMBER,
-                    _cardNumberController,
+                    hint: Strings.CARD_NUMBER,
+                    controller: _cardNumberController,
+                    fieldName: 'cardNumber',
+                    validator: _validateCardNumber,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       CardNumberInputFormatter(),
                     ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return Strings.CARD_NO_REQ;
-                      }
-                      final digitsOnly = value.replaceAll(' ', '');
-                      if (digitsOnly.length != 12) {
-                        return Strings.CARD_NUMBER_12;
-                      }
-                      return null;
-                    },
                   ),
                   SizedBox(height: Constant.SIZE_10),
+
                   Row(
                     children: [
                       Expanded(
@@ -121,43 +275,64 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                       ),
                       SizedBox(width: Constant.SIZE_10),
                       Expanded(
-                        child: _cardField(
+                        child: _buildCardFieldWithRealTimeValidation(
                           theme,
-                          Strings.CVV,
-                          _cvvController,
+                          hint: Strings.CVV,
+                          controller: _cvvController,
+                          fieldName: 'cvv',
+                          validator: _validateCVV,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                             LengthLimitingTextInputFormatter(3),
                           ],
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return Strings.CVV_REQUIRED;
-                            }
-                            if (value.length != 3) {
-                              return Strings.THREE_DIGIT;
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_20),
+
                   SizedBox(
                     width: double.infinity,
                     child: SubmitButton(
                       onRightTap: () {
-                        if(_key.currentState!.validate()){
-                          final cardData = CardDetails(
-                            cardHolderName: _cardHolderNameController.text,
-                            cardNumber: _cardNumberController.text,
-                            cvv: _cvvController.text,
-                            expiryDate: _expiryDateController.text,
+                        setState(() {
+                          _formSubmitted = true;
+                          _fieldErrors['cardHolderName'] =
+                              _validateCardHolderName(
+                                _cardHolderNameController.text,
+                              );
+                          _fieldErrors['cardNumber'] = _validateCardNumber(
+                            _cardNumberController.text,
                           );
-                          widget.state.setCardDetails(cardData);
-                          Navigator.pop(context);
+                          _fieldErrors['cvv'] = _validateCVV(
+                            _cvvController.text,
+                          );
+                        });
+
+                        if (!_isFormValid()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                'Please fix all errors before continuing',
+                              ),
+                              backgroundColor: Colors.grey,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                          return;
                         }
+
+                        final cardData = CardDetails(
+                          cardHolderName:
+                          _cardHolderNameController.text.trim(),
+                          cardNumber: _cardNumberController.text
+                              .replaceAll(' ', ''),
+                          cvv: _cvvController.text,
+                          expiryDate: _expiryDateController.text,
+                        );
+                        widget.state.setCardDetails(cardData);
+                        Navigator.pop(context);
                       },
                       rightText: Strings.ADD_CARD_CONTINUE,
                     ),
@@ -179,14 +354,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                Strings.ADD_CARD_DETAILS,
+                'Add Card Details',
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                Strings.WE_ACCEPT,
+                'We accept Credit, Debit, Visa and Mastercard',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                 ),
@@ -195,51 +370,102 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
           ),
         ),
         IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ],
     );
   }
 
-  Widget _cardField(
-      ThemeData theme,
-      String hint,
-      TextEditingController controller, {
-        String? Function(String?)? validator,
+  Widget _buildCardFieldWithRealTimeValidation(
+      ThemeData theme, {
+        required String hint,
+        required TextEditingController controller,
+        required String fieldName,
+        required String? Function(String?) validator,
         TextInputType keyboardType = TextInputType.text,
-        bool obscureText = false,
         List<TextInputFormatter>? inputFormatters,
-        bool isReadOnly = false,
-        VoidCallback? onTap,
       }) {
-    return TextFormField(
-      controller: controller,
-      readOnly: isReadOnly,
-      onTap: onTap,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
-      cursorColor: Colors.white,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: validator,
-      inputFormatters: inputFormatters,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-        filled: true,
-        fillColor: Constant.grey.withOpacity(0.1),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
-        ),
-        enabledBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
-        focusedBorder: CustomTheme.roundedBorder(
-          Constant.grey.withOpacity(0.3),
-        ),
-        errorStyle: const TextStyle(color: Colors.redAccent),
+    final error = _fieldErrors[fieldName];
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: controller,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: Colors.white,
+            ),
+            cursorColor: Colors.white,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            validator: (_) => null,
+            onChanged: (value) {
+              if (!_fieldTouched[fieldName]!) {
+                setState(() {
+                  _fieldTouched[fieldName] = true;
+                });
+              }
+              _validateFieldRealTime(fieldName, value, validator);
+            },
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+              ),
+              filled: true,
+              fillColor: Constant.grey.withOpacity(0.1),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(
+                  color: Constant.grey.withOpacity(0.3),
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(
+                  color: error != null
+                      ? Colors.red
+                      : Constant.grey.withOpacity(0.3),
+                  width: error != null ? 1.5 : 1.0,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(
+                  color: error != null
+                      ? Colors.red
+                      : Constant.grey.withOpacity(0.3),
+                  width: 1.5,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
+            ),
+          ),
+          if (error != null)
+            Padding(
+              padding: EdgeInsets.only(
+                top: Constant.SIZE_06,
+                left: Constant.CONTAINER_SIZE_12,
+              ),
+              child: Text(
+                error,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -258,8 +484,8 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
           picker.DatePicker.showDatePicker(
             context,
             showTitleActions: true,
-            minTime: DateTime(1900, 1, 1),
-            maxTime: DateTime.now(),
+            minTime: DateTime.now(),
+            maxTime: DateTime(DateTime.now().year + 20),
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
@@ -316,7 +542,6 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
       ),
     );
   }
-
 }
 
 class CardNumberInputFormatter extends TextInputFormatter {
@@ -326,7 +551,9 @@ class CardNumberInputFormatter extends TextInputFormatter {
       TextEditingValue newValue,
       ) {
     final text = newValue.text.replaceAll(' ', '');
+
     if (text.length > 12) return oldValue;
+
     final buffer = StringBuffer();
     for (int i = 0; i < text.length; i++) {
       buffer.write(text[i]);
@@ -334,6 +561,7 @@ class CardNumberInputFormatter extends TextInputFormatter {
         buffer.write(' ');
       }
     }
+
     return TextEditingValue(
       text: buffer.toString(),
       selection: TextSelection.collapsed(

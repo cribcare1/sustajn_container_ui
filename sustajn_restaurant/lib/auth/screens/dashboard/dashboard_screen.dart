@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
@@ -17,6 +18,8 @@ import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
 import '../../../provider/profile_provider.dart';
 import '../../../utils/utility.dart';
+import '../business_information_screen.dart';
+import '../payment_type_screen.dart';
 import 'pi_chart.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -100,6 +103,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
+    final authState = ref.watch(authNotifierProvider);
     if (profileState.loginResponse != null) {
       loginResponse = profileState.loginResponse;
     }
@@ -167,7 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     context,
                                     SearchRestaurantScreen(),
                                   );
-                                },
+                                  },
                                 child: CircleCardWidget(
                                   child: Icon(
                                     Icons.search,

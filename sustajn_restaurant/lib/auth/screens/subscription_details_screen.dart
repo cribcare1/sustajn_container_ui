@@ -35,6 +35,13 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     }
   }
 
+  String formatFee(num? value) {
+    final fee = value ?? 0;
+    return fee % 1 == 0
+        ? fee.toInt().toString()
+        : fee.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,14 +114,14 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
                 colorBlendMode: BlendMode.srcIn,
               ),
               Text(
-                " ${data.feeType.toString()}/",
+                " ${formatFee(data.feeType)}/",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
-                " ${data.billingCycle.toLowerCase()}",
+                "${data.billingCycle.toLowerCase()}",
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,

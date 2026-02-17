@@ -160,54 +160,54 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                       ),
                       child: isEditingQty
                           ? TextField(
-                              controller: quantity,
-                              focusNode: qtyFocusNode,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                              autofocus: true,
-                              style: theme.textTheme.displaySmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                              cursorColor: Colors.white,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              decoration: const InputDecoration(
-                                isDense: true,
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                focusedErrorBorder: InputBorder.none,
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              onSubmitted: (_) => _saveQty(),
-                              onEditingComplete: _saveQty,
-                            )
+                        controller: quantity,
+                        focusNode: qtyFocusNode,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        autofocus: true,
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          color: Colors.white,
+                        ),
+                        cursorColor: Colors.white,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.transparent,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        onSubmitted: (_) => _saveQty(),
+                        onEditingComplete: _saveQty,
+                      )
                           : GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                setState(() {
-                                  isEditingQty = true;
-                                  quantity.clear();
-                                });
-                                Future.delayed(
-                                  const Duration(milliseconds: 50),
-                                  () {
-                                    qtyFocusNode.requestFocus();
-                                  },
-                                );
-                              },
-                              child: Text(
-                                qty.toString(),
-                                style: theme.textTheme.displaySmall?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            isEditingQty = true;
+                            quantity.clear();
+                          });
+                          Future.delayed(
+                            const Duration(milliseconds: 50),
+                                () {
+                              qtyFocusNode.requestFocus();
+                            },
+                          );
+                        },
+                        child: Text(
+                          qty.toString(),
+                          style: theme.textTheme.displaySmall?.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
 
                     SizedBox(width: Constant.CONTAINER_SIZE_20),
@@ -252,13 +252,11 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (qty > 0) {
-                            _returnContainerNetworkCall(
-                              widget.item,
-                              orderState,
-                            );
-                            // Navigator.pop(context, qty);
+                            orderState.addContainerToOrder(widget.item, qty);
+                            Navigator.pop(context);
                           }
                         },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Constant.gold,
                           disabledBackgroundColor: Constant.gold,
@@ -338,39 +336,4 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
     });
   }
 
-  Map<String, dynamic> getJsonData(ContainersDetails item) {
-    final data = {
-      "restaurantId": Utils.userId,
-      "type": "RETURN",
-      "items": [
-        {
-          "containerTypeId": item.containerId,
-          "requestedQty": item.quantityAvailable,
-        },
-      ],
-    };
-    return data;
-  }
-
-  _returnContainerNetworkCall(ContainersDetails item, var orderState) async {
-    Utils.printLog('add container Network call');
-
-    final isNetworkAvailable = await ref
-        .read(networkProvider.notifier)
-        .isNetworkAvailable();
-
-    if (!isNetworkAvailable) {
-      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-      return;
-    }
-    try {
-      await ref.read(addReturnProvider(getJsonData(item)).future);
-      Navigator.pop(context);
-      setState(() {
-        container = orderState.setOrderData!;
-      });
-    } catch (e) {
-      Utils.printLog(e.toString());
-    }
-  }
 }

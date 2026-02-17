@@ -70,10 +70,6 @@ class Data {
     emailId = json['emailId'] ?? "";
     profileImageUrl = json['profileImageUrl'] ?? "";
     subscriptionPlanId = json['subscriptionPlanId'] ?? 0;
-// <<<<<<< HEAD
-// =======
-
-// >>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     bankDetailsResponse = json['bankDetailsResponse'] != null
         ? BankDetailsResponse.fromJson(json['bankDetailsResponse'])
         : null;
@@ -85,10 +81,6 @@ class Data {
     paymentGetWayResponse = json['paymentGetWayResponse'] != null
         ? PaymentGetWayResponse.fromJson(json['paymentGetWayResponse'])
         : null;
-// <<<<<<< HEAD
-
-// =======
-// >>>>>>> 837ca3049da93a965c83d633a8ee0c9c4ca6ddf1
     if (json['addressResponses'] != null) {
       addressResponses = <AddressResponses>[];
       json['addressResponses'].forEach((v) {
@@ -400,7 +392,7 @@ class BusinessDetailsResponse {
     return data;
   }
 }
-  class PaymentGetWayResponse {
+class PaymentGetWayResponse {
   int? id;
   String? paymentGatewayId;
   String? paymentGatewayName;
@@ -460,4 +452,3 @@ class CardDetailsResponse {
     return _data;
   }
 }
-
