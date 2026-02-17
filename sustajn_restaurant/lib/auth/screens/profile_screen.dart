@@ -36,10 +36,10 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Email", "icon": Icons.email_outlined},
-    {"name": "Address", "icon": Icons.location_on_outlined},
-    {"name": "Contact", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
+    {"name": "Email", "image": "assets/images/email.png"},
+    {"name": "Address", "image": "assets/images/location.png"},
+    {"name": "Contact", "image": "assets/images/phone.png"},
+    {"name": "Report Damaged Container", "image": "assets/images/report.png"},
     {"name": "Business Information", "icon": Icons.business_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
     {"name": "Payment Type", "image": "assets/logo/dirham_icon.png"},
