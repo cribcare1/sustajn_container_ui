@@ -209,7 +209,7 @@ class _EditMobileNumberDialogState
           actions: [
             TextButton(
               onPressed: () {
-                NavUtil.popScreen(context, 1);
+                NavUtil.popScreen(context, 2);
               },
               child: Text(
                 Strings.NO,
@@ -222,7 +222,7 @@ class _EditMobileNumberDialogState
               ),
               onPressed: () async{
                 await _editMobileNetworkCall();
-                NavUtil.popScreen(context, 2);
+                NavUtil.popScreen(context, 3);
               },
               child: Text(
                 Strings.UPDATE,

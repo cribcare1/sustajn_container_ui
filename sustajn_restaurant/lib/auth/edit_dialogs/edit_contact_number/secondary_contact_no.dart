@@ -162,6 +162,7 @@ class _SecondaryMobileNumberDialogState
                           ),
                           GestureDetector(
                             onTap: () {
+
                               Navigator.pop(context);
                             },
                             child: Icon(
@@ -228,7 +229,8 @@ class _SecondaryMobileNumberDialogState
                           _addSecondaryNoNetworkCall();
                           Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
                           Navigator.pop(context, _secondaryController.text.trim());
-                        },
+                          Navigator.pop(context);
+                            },
                         rightText: Strings.SAVE_CHANGES,
                       ),
                     ),
