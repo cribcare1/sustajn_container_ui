@@ -248,7 +248,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 loginDetailProvider({
                   "userName": _emailController.text,
                   "password": _passwordController.text,
-                  "role":"RESTAURANT"
+                  "role": "RESTAURANT"
                 }),
               );
             } else {

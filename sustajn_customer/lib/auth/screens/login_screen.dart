@@ -31,6 +31,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _showPassword = false;
 
+  @override
+  void initState() {
+    Utils.getDeviceToken();
+    super.initState();
+  }
+
+  Future<void> getDevice() async {
+    final deviceToken = await Utils.getDeviceToken();
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +256,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text, "role":"USER"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

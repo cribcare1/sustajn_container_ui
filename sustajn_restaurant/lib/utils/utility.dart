@@ -22,6 +22,43 @@ import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 
 class Utils {
+
+  static buildFloatingHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Positioned(
+      top: -18,
+      left: Constant.CONTAINER_SIZE_16,
+      right: Constant.CONTAINER_SIZE_16,
+      child: Row(
+        children: [
+          const Spacer(),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              padding: EdgeInsets.all(Constant.SIZE_06),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.cardColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.close,
+                size: Constant.SIZE_18,
+                color: theme.iconTheme.color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static showProfilePhotoBottomSheet(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
     showModalBottomSheet(
@@ -140,90 +177,81 @@ class Utils {
       ),
       builder: (_) {
         return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: Constant.CONTAINER_SIZE_20,
-              horizontal: Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: Constant.CONTAINER_SIZE_20,
+                  horizontal: Constant.CONTAINER_SIZE_20,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        Strings.CHOOSE,
-                        style: TextStyle(
-                          fontSize: Constant.LABEL_TEXT_SIZE_18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            Strings.CHOOSE,
+                            style: TextStyle(
+                              fontSize: Constant.LABEL_TEXT_SIZE_18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_20,
-                      ),
-                      child: Container(
-                        height: Constant.CONTAINER_SIZE_36,
-                        width: Constant.CONTAINER_SIZE_36,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _optionButton(
+                          context,
+                          icon: Icons.camera_alt_outlined,
+                          label: Strings.CAMERA,
+                          color: Colors.white70,
+                          iconColor: theme.primaryColor,
+                          onTap: () async {
+                            final XFile? image = await picker.pickImage(
+                              source: ImageSource.camera,
+                            );
+
+                            if (image != null) {
+                              Navigator.pop(context, File(image.path));
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
                         ),
-                        child: const Icon(Icons.clear, color: Colors.black),
-                      ),
+                        _optionButton(
+                          context,
+                          icon: Icons.image_outlined,
+                          label: Strings.GALLERY,
+                          color: Colors.white70,
+                          iconColor: theme.primaryColor,
+                          onTap: () async {
+                            final XFile? image = await picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+
+                            if (image != null) {
+                              Navigator.pop(context, File(image.path));
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
+                      ],
                     ),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
                   ],
                 ),
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _optionButton(
-                      context,
-                      icon: Icons.camera_alt_outlined,
-                      label: Strings.CAMERA,
-                      color: Colors.white70,
-                      iconColor: theme.primaryColor,
-                      onTap: () async {
-                        final XFile? image = await picker.pickImage(
-                          source: ImageSource.camera,
-                        );
-
-                        if (image != null) {
-                          Navigator.pop(context, File(image.path));
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    _optionButton(
-                      context,
-                      icon: Icons.image_outlined,
-                      label: Strings.GALLERY,
-                      color: Colors.white70,
-                      iconColor: theme.primaryColor,
-                      onTap: () async {
-                        final XFile? image = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-
-                        if (image != null) {
-                          Navigator.pop(context, File(image.path));
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-              ],
-            ),
+              ),
+              Utils.buildFloatingHeader(context)
+            ],
           ),
         );
       },
@@ -953,19 +981,29 @@ void showCustomSnackBar({
   required String message,
   required Color color,
 }) {
+  final mediaQuery = MediaQuery.of(context);
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: Constant.CONTAINER_SIZE_14,
+      content: Center(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Constant.CONTAINER_SIZE_14,
+          ),
         ),
       ),
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
-      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      margin: EdgeInsets.only(
+        left: Constant.CONTAINER_SIZE_16,
+        right: Constant.CONTAINER_SIZE_16,
+        bottom: mediaQuery.size.height / 2 - 40, // center vertically
+      ),
+      duration: const Duration(seconds: 2),
     ),
   );
 }
+

@@ -21,13 +21,13 @@ import '../model/container_return_list_model.dart';
 class ReceiveProductListScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
-  final int userId;
+  final String customerId;
 
   const ReceiveProductListScreen({
     super.key,
     required this.type,
     this.damage,
-    required this.userId,
+    required this.customerId,
   });
 
   @override
@@ -43,7 +43,7 @@ class _ReceiveProductListScreenState
       ref.read(leaseReceiveNotifier).setContext(context);
       _getContainerList(
         ref.read(leaseReceiveNotifier),
-        userId: widget.userId.toString(),
+        customerId: widget.customerId,
       );
     });
 
@@ -52,7 +52,7 @@ class _ReceiveProductListScreenState
 
   _getContainerList(
     LeaseReceiveNotifier leasState, {
-    required String userId,
+    required String customerId,
   }) async {
     try {
       leasState.setLoading(true);
@@ -61,7 +61,7 @@ class _ReceiveProductListScreenState
       ) async {
         try {
           if (isNetworkAvailable) {
-            ref.read(returnContainerListProvider(userId));
+            ref.read(returnContainerListProvider(customerId));
           } else {
             leasState.setLoading(false);
             if (!mounted) return;
@@ -100,16 +100,11 @@ class _ReceiveProductListScreenState
             ? const Center(child: CircularProgressIndicator())
             : leaseNotifier.containerReturnList.isEmpty
             ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "There are no return containers available for this user.",
-                      style: theme.textTheme.titleMedium!.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  "There are no return containers available for this user.",
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               )
             : Column(
@@ -237,7 +232,7 @@ class _ReceiveProductListScreenState
               errorBuilder: (context, obj, stack) {
                 return Image.asset("assets/images/no_image_container.png");
               },
-              fit: BoxFit.contain,
+              fit: BoxFit.fill,
             ),
           ),
           const SizedBox(width: 12),
@@ -269,7 +264,7 @@ class _ReceiveProductListScreenState
                   ),
                 ),
                 Text(
-                  item.capacity.toString(),
+                  "${item.containerQuantity}ml",
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -282,7 +277,7 @@ class _ReceiveProductListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantity.toString(),
+                item.containerCount.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -374,14 +369,14 @@ class _ReceiveProductListScreenState
                             .containerReturnListAdded
                             .map(
                               (i) => {
-                                "productId": i.productUniqueId,
+                                "productId": i.productId,
                                 "quantity": i.containerCount,
                               },
                             )
                             .toList();
 
                         Map<String, dynamic> data = {
-                          "userId": int.parse(scannedId),
+                          "userId": leaseState.customerUserId,
                           "restaurantId": Utils.userId,
                           "items": items,
                         };

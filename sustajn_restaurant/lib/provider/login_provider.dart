@@ -52,6 +52,7 @@ final loginDetailProvider =
             Strings.USER_ID,
             responseData.data!.userId!,
           );
+          Utils.userId = responseData.data!.userId!;
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
 print("========================================");
           if (registrationState.context.mounted) {
@@ -106,6 +107,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
           register.data!.userId!,
         );
         SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
+        Utils.userId = register.data!.userId!;
         Utils.getToken();
         Utils.getProfile();
         // Utils.getUserId();

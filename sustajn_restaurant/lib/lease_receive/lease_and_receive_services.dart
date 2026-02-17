@@ -10,11 +10,11 @@ class LeaseAndReceiveServices {
   ApiCallPresenter presenter = ApiCallPresenter();
   Future<dynamic> leaseContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LEASE}";
-    print(api);
-    final data = jsonEncode(body);
-    print(data);
+    // print(api);
+    // final data = jsonEncode(body);
+    // print(data);
     try{
-      var response = await presenter.postApiStringData(api, data, "Post");
+      var response = await presenter.postApiStringData(api, body,"");
       if(response != null){
         print("response   ================ $response");
         return response;
@@ -55,15 +55,15 @@ class LeaseAndReceiveServices {
       throw Exception(e);
     }
   }
-  Future<ContainerReturnListModel> fetchReturnContainerList(String userId) async {
+  Future<CustomerBorrowedData> fetchCustomerBorrowedList(String customerId) async {
     try {
       var api =
-          "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE_LIST}?userId=$userId";
+          "${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_BORROWED_LIST}$customerId";
 
       var response = await presenter.getAPIData(api);
 
       if (response != null) {
-        return ContainerReturnListModel.fromJson(response);
+        return CustomerBorrowedData.fromJson(response);
       } else {
         throw Exception("Unable to fetch container list");
       }

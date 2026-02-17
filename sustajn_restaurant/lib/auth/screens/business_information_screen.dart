@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
@@ -14,6 +13,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../common_widgets/custom_back_button.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/login_notifier.dart';
 import '../../provider/profile_provider.dart';
@@ -21,9 +21,13 @@ import '../model/social_media_model.dart';
 
 class BusinessInformationDetails extends ConsumerStatefulWidget {
   final AuthState authState;
-  final String? previous ;
+  final String? previous;
 
-  const BusinessInformationDetails({super.key, required this.authState, this.previous = ""});
+  const BusinessInformationDetails({
+    super.key,
+    required this.authState,
+    this.previous = "",
+  });
 
   @override
   ConsumerState<BusinessInformationDetails> createState() =>
@@ -32,7 +36,6 @@ class BusinessInformationDetails extends ConsumerStatefulWidget {
 
 class _BusinessInformationDetailsState
     extends ConsumerState<BusinessInformationDetails> {
-
   final _key = GlobalKey<FormState>();
 
   late TextEditingController websiteController;
@@ -43,8 +46,16 @@ class _BusinessInformationDetailsState
   late TextEditingController licenceController;
   late TextEditingController businessTypeController;
 
-  String? _selectedBusinessType;
+  late FocusNode focusNode;
+  late FocusNode _contactFocus;
+  late FocusNode _vatFocus;
+  late FocusNode _contactNumberFocus;
+  late FocusNode _contactEmailFocus;
+  late FocusNode _licenceFocus;
+  late FocusNode _businessTypeFocus;
+  late FocusNode _websiteFocus;
 
+  String? _selectedBusinessType;
 
   @override
   void initState() {
@@ -57,6 +68,14 @@ class _BusinessInformationDetailsState
     vatController = TextEditingController();
     websiteController = TextEditingController();
     businessTypeController = TextEditingController();
+
+    _contactFocus = FocusNode();
+    _vatFocus = FocusNode();
+    _contactNumberFocus = FocusNode();
+    _contactEmailFocus = FocusNode();
+    _licenceFocus = FocusNode();
+    _websiteFocus = FocusNode();
+    _businessTypeFocus = FocusNode();
   }
 
   @override
@@ -68,13 +87,22 @@ class _BusinessInformationDetailsState
     vatController.dispose();
     websiteController.dispose();
     businessTypeController.dispose();
+
+    _contactFocus.dispose();
+    _vatFocus.dispose();
+    _contactNumberFocus.dispose();
+    _contactEmailFocus.dispose();
+    _licenceFocus.dispose();
+    _websiteFocus.dispose();
+    _businessTypeFocus.dispose();
     super.dispose();
   }
 
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
-    if (profile!.contactAndRegistrationDetailsResponse != null || profile.bankDetailsResponse != null) {
+    if (profile!.contactAndRegistrationDetailsResponse != null ||
+        profile.bankDetailsResponse != null) {
       final business = profile.contactAndRegistrationDetailsResponse;
       final website = profile.businessDetailsResponse;
 
@@ -88,19 +116,23 @@ class _BusinessInformationDetailsState
   }
 
   final List<String> _businessTypes = [
-    'Restaurant',
-    'Cafe',
-    'Fast food Shop',
-    'Food court Cloud kitchen',
+    Strings.RESTAURANT,
+    Strings.CAFE,
+    Strings.FAST_FOOD,
+    Strings.FOOD_COURT,
   ];
-
 
   @override
   Widget build(BuildContext context) {
     final profileState = ref.read(profileProvider);
+    // final regdNo = profileState
+    //     .getProfileData!
+    //     .data!
+    //     .contactAndRegistrationDetailsResponse!
+    //     .registrationNumber!;
     String? regdNo;
 
-    if (widget.previous == 'profile') {
+    if (widget.previous == Strings.PROFILE) {
       final profileState = ref.watch(profileProvider);
       regdNo = profileState.getProfileData?.data
           ?.contactAndRegistrationDetailsResponse
@@ -115,7 +147,7 @@ class _BusinessInformationDetailsState
       child: Scaffold(
         appBar:
         CustomAppBar(
-          title: widget.previous == 'profile'
+          title: widget.previous == Strings.PROFILE
               ? Strings.BUSINESS_INFORMATION
               : "",
           leading: CustomBackButton()
@@ -137,19 +169,19 @@ class _BusinessInformationDetailsState
                           right: index == 3 ? 0 : Constant.SIZE_10,
                         ),
                         decoration: BoxDecoration(
-                          color: active ? Constant.gold : Colors.white,
+                          color: active ? Constant.grey : Colors.white,
                           borderRadius: BorderRadius.circular(Constant.SIZE_10),
                         ),
                       ),
                     );
                   }),
                 ),
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+                Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+                Text(Strings.BUSINESS_INFO_TXT,
+                  style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                SizedBox(height: Constant.CONTAINER_SIZE_25),
               ],
-              SizedBox(height: Constant.CONTAINER_SIZE_20),
-              Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
-              Text(Strings.BUSINESS_INFO_TXT,
-                style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
-              SizedBox(height: Constant.CONTAINER_SIZE_25),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -169,14 +201,21 @@ class _BusinessInformationDetailsState
                     _buildTextField(
                       context,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.CONTACT_PERSON;
-                        }
-                        return null;
+                          if (value == null || value
+                              .trim()
+                              .isEmpty) {
+                            return Strings.CONTACT_PERSON;
+                          }
+                          return null;
                       },
-                      keyboard: TextInputType.name,
+                      keyboard: TextInputType.text,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                      ],
                       controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
+                      label: Strings.CONTACT_PERSON,
+                      focusNode: _contactFocus,
                     ),
 
                     _buildTextField(
@@ -184,11 +223,15 @@ class _BusinessInformationDetailsState
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.MOBILE_NUMBER;
+                        }if (value.length != 10){
+                          return Strings.MOBILE_VALIDATE;
                         }
                         return null;
                       },
                       controller: contactNumberController,
                       hint: Strings.MOBILE_NUMBER,
+                      label: Strings.MOBILE_NUMBER,
+                      focusNode: _contactNumberFocus,
                       keyboard: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -196,27 +239,49 @@ class _BusinessInformationDetailsState
                       ],
                     ),
                     _buildTextField(
-                        context,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return Strings.EMAIL_REGISTRATION;
-                          }
-                          return null;
-                        },
-                        controller: contactEmailController,
-                        hint: Strings.EMAIL_REGISTRATION,
-                        keyboard: TextInputType.emailAddress
+                      context,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return Strings.EMAIL_REGISTRATION;
+                        }
+                        final email = value.trim();
+
+                        if (email.contains(' ')) {
+                          return Strings.ENTER_EMAIL_ADDRESS;
+                        }
+
+                        final regex = Strings.email;
+
+                        if (!regex.hasMatch(email)) {
+                          return Strings.ENTER_EMAIL_ADDRESS;
+                        }
+                        return null;
+                      },
+                      controller: contactEmailController,
+                      hint: Strings.EMAIL_REGISTRATION,
+                      label: Strings.EMAIL_REGISTRATION,
+                      focusNode: _contactEmailFocus,
+                      keyboard: TextInputType.emailAddress,
                     ),
                     _buildTextField(
                       context,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.TRADE_LICENSE_NUMBER;
+                        }if (value.length != 5){
+                          return Strings.TRADE_LICENSE_VALIDATE;
                         }
                         return null;
                       },
                       controller: licenceController,
                       hint: Strings.TRADE_LICENSE_NUMBER,
+                      label: Strings.TRADE_LICENSE_NUMBER,
+                      focusNode: _licenceFocus,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(5),
+                      ]
                     ),
                     _buildTextField(
                       context,
@@ -234,6 +299,8 @@ class _BusinessInformationDetailsState
                       },
                       controller: vatController,
                       hint: Strings.VAT_NUMBER,
+                      label: Strings.VAT_NUMBER,
+                      focusNode: _vatFocus,
                     ),
 
                     Align(
@@ -272,7 +339,9 @@ class _BusinessInformationDetailsState
                           vertical: Constant.CONTAINER_SIZE_14,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_20,
+                          ),
                           borderSide: BorderSide(color: Constant.grey),
                         ),
                         enabledBorder: OutlineInputBorder(
@@ -286,7 +355,10 @@ class _BusinessInformationDetailsState
                       ),
 
                       iconStyleData: const IconStyleData(
-                        icon: Icon(Icons.arrow_drop_down, color: Colors.white70),
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white70,
+                        ),
                       ),
 
                       items: _businessTypes.map((type) {
@@ -322,69 +394,71 @@ class _BusinessInformationDetailsState
                       },
                       controller: websiteController,
                       hint: Strings.ENTER_WEBSITE,
-                      textInputAction: TextInputAction.done
+                      label: Strings.ENTER_WEBSITE,
+                      focusNode: _websiteFocus,
+                      textInputAction: TextInputAction.done,
                     ),
                     widget.authState.socialMediaList.isNotEmpty
                         ? Column(
-                      children: widget.authState.socialMediaList.map((
-                          item,
-                          ) {
-                        final config = socialMediaOptions.firstWhere(
-                              (e) => e.type == item.socialMediaType,
-                        );
+                            children: widget.authState.socialMediaList.map((
+                              item,
+                            ) {
+                              final config = socialMediaOptions.firstWhere(
+                                (e) => e.type == item.socialMediaType,
+                              );
 
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            bottom: Constant.CONTAINER_SIZE_12,
-                          ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: config.color,
-                                child: Icon(
-                                  config.icon,
-                                  color: Colors.black,
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: Constant.CONTAINER_SIZE_12,
                                 ),
-                              ),
-                              SizedBox(width: Constant.CONTAINER_SIZE_12),
-                              Expanded(
-                                child: TextField(
-                                  controller: item.controller,
-                                  decoration: InputDecoration(
-                                    hintText: Strings.LINK,
-                                    hintStyle: theme.textTheme.titleSmall!
-                                        .copyWith(color: Colors.grey),
-                                    filled: true,
-                                    fillColor: theme.primaryColor,
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(
-                                        Icons.close,
-                                        color: Colors.white,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: config.color,
+                                      child: Icon(
+                                        config.icon,
+                                        color: Colors.black,
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          widget.authState
-                                              .removeSocialMedia(item);
-                                        });
-                                      },
                                     ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        Constant.CONTAINER_SIZE_25,
+                                    SizedBox(width: Constant.CONTAINER_SIZE_12),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: item.controller,
+                                        decoration: InputDecoration(
+                                          hintText: Strings.LINK,
+                                          hintStyle: theme.textTheme.titleSmall!
+                                              .copyWith(color: Colors.grey),
+                                          filled: true,
+                                          fillColor: theme.primaryColor,
+                                          suffixIcon: IconButton(
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                widget.authState
+                                                    .removeSocialMedia(item);
+                                              });
+                                            },
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              Constant.CONTAINER_SIZE_25,
+                                            ),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                        ),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                      borderSide: BorderSide.none,
                                     ),
-                                  ),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    )
+                              );
+                            }).toList(),
+                          )
                         : SizedBox(),
                     InkWell(
                       onTap: () => _openSocialMediaSheet(context),
@@ -427,18 +501,7 @@ class _BusinessInformationDetailsState
                         }
 
                         if (widget.previous == 'profile') {
-
-                          if (regdNo == null || regdNo.isEmpty) {
-                            showCustomSnackBar(
-                              context: context,
-                              message: Strings.SOMETHING_WENT_WRONG,
-                              color: Colors.red,
-                            );
-                            return;
-                          }
-
-                          final bool success = await _businessInfoNetworkCall(regdNo);
-
+                          final bool success = await _businessInfoNetworkCall(regdNo!) ?? false;
                           if (success) {
                             Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
                             Navigator.pop(context);
@@ -449,10 +512,8 @@ class _BusinessInformationDetailsState
                               color: Colors.red,
                             );
                           }
-
                           return;
                         }
-
                         NavUtil.navigateToPushScreen(
                           context,
                           PaymentTypeScreen(),
@@ -474,39 +535,55 @@ class _BusinessInformationDetailsState
       BuildContext context, {
         required TextEditingController controller,
         required String hint,
+        required String label,
+        required FocusNode focusNode,
         String? Function(String?)? validator,
         bool obscure = false,
         TextInputType keyboard = TextInputType.text,
         TextInputAction textInputAction = TextInputAction.next,
-        bool? readOnly = false,
         List<TextInputFormatter>? inputFormatters,
       }) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboard,
-        autofocus: false,
-        textInputAction: textInputAction,
-        style: TextStyle(color: Colors.white70),
-        cursorColor: Colors.white70,
-        validator: validator,
-        inputFormatters: inputFormatters,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(color: Colors.white70),
-          filled: true,
-          fillColor: theme.primaryColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-            borderSide: BorderSide(color: Constant.grey),
+    return AnimatedBuilder(
+      animation: Listenable.merge([focusNode, controller]),
+      builder: (context, _) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+          child: TextFormField(
+            focusNode: focusNode,
+            controller: controller,
+            keyboardType: keyboard,
+            textInputAction: textInputAction,
+            obscureText: obscure,
+            style: TextStyle(color: Colors.white70),
+            cursorColor: Colors.white70,
+            validator: validator,
+            inputFormatters: inputFormatters,
+            decoration: InputDecoration(
+              hintText: focusNode.hasFocus ? null : hint,
+              hintStyle: TextStyle(color: Colors.white70),
+
+              labelText: (focusNode.hasFocus || controller.text.isNotEmpty)
+                  ? label
+                  : null,
+
+              labelStyle: TextStyle(color: Colors.white70),
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+
+              filled: true,
+              fillColor: theme.primaryColor,
+              border: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+            ),
           ),
-          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-          focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -588,7 +665,6 @@ class _BusinessInformationDetailsState
                               ),
                             ),
                           ),
-
                           SizedBox(height: Constant.SIZE_06),
                           Text(
                             item.label,
@@ -615,7 +691,7 @@ class _BusinessInformationDetailsState
       "userId": Utils.userId,
 
       "basicDetails": {
-        "businessType": "Restaurant",
+        "businessType": Strings.RESTAURANT,
         "websiteDetails": websiteController.text,
       },
 
