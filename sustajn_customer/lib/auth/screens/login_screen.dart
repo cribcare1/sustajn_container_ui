@@ -40,9 +40,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> getDevice() async {
     final deviceToken = await Utils.getDeviceToken();
 
-    setState(() {
-
-    });
   }
 
 
