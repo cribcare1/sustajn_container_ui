@@ -166,8 +166,8 @@ class _EditReferPartnerDialogState
 
                   _buildTextField(
                     context,
-                    label: "${Strings.RESTAURANT_NAME}*",
-                    hint: "${Strings.RESTAURANT_NAME}*",
+                    label: "${Strings.RESTAURANT_NAME}",
+                    hint: "${Strings.RESTAURANT_NAME}",
                     focusNode: _restaurantNameFocus,
                     keyboardType: TextInputType.text,
                     controller: _restaurantNameController,

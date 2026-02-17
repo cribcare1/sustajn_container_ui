@@ -169,19 +169,19 @@ class _BusinessInformationDetailsState
                           right: index == 3 ? 0 : Constant.SIZE_10,
                         ),
                         decoration: BoxDecoration(
-                          color: active ? Constant.gold : Colors.white,
+                          color: active ? Constant.grey : Colors.white,
                           borderRadius: BorderRadius.circular(Constant.SIZE_10),
                         ),
                       ),
                     );
                   }),
                 ),
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+                Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+                Text(Strings.BUSINESS_INFO_TXT,
+                  style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                SizedBox(height: Constant.CONTAINER_SIZE_25),
               ],
-              SizedBox(height: Constant.CONTAINER_SIZE_20),
-              Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
-              Text(Strings.BUSINESS_INFO_TXT,
-                style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
-              SizedBox(height: Constant.CONTAINER_SIZE_25),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
