@@ -4,10 +4,10 @@ import 'package:sustajn_restaurant/auth/screens/subscription_details_screen.dart
 import 'package:sustajn_restaurant/auth/screens/terms_and_condition_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
-import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
@@ -16,12 +16,12 @@ import '../../common_widgets/empty_list_place_holder.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../model/plan_model.dart';
 
 class SubscriptionScreen extends ConsumerStatefulWidget {
   final String? previousScreen;
-
-  const SubscriptionScreen({super.key, this.previousScreen = ""});
+  const SubscriptionScreen({super.key,this.previousScreen = ""});
 
   @override
   ConsumerState<SubscriptionScreen> createState() => _SubscriptionScreenState();
@@ -372,8 +372,8 @@ class PlanCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        plan.planName,
-                        style: TextStyle(
+                        plan.planName??"",
+                        style:  TextStyle(
                           color: Colors.white,
                           fontSize: Constant.CONTAINER_SIZE_22,
                           fontWeight: FontWeight.bold,

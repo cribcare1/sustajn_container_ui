@@ -218,6 +218,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
                                 ReceiveProductListScreen(
                                   type: widget.type,
                                   damage: widget.damage,
+                                  customerId: textController.text,
                                 ),
                               );
                             }

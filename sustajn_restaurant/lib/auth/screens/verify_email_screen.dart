@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/models/registration_data.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 
@@ -18,13 +19,13 @@ import '../../utils/utility.dart';
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   final String previousScreen;
   final RegistrationData? registrationData;
-  final String email;
+  final String? email;
 
   const VerifyEmailScreen({
     super.key,
     required this.previousScreen,
     this.registrationData,
-    required this.email,
+     this.email,
   });
 
   @override
@@ -77,13 +78,14 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signUpState = ref.watch(authNotifierProvider);
-    final email = widget.registrationData?.email ?? widget.email;
+    RegistrationData? registrationData = signUpState.registrationData;
+    String? email = signUpState.email;
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: "",
-        leading: IconButton(
-          onPressed: () async {
+        leading: CustomBackButton(
+          onTap: () async {
             final shouldGoBack = await Utils.displayDialog(
               context,
               Icons.warning_amber,
@@ -97,11 +99,6 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               Navigator.pop(context);
             }
           },
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-            size: Constant.LABEL_TEXT_SIZE_20,
-          ),
         ),
       ).getAppBar(context),
       body: WillPopScope(
@@ -150,7 +147,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
                           Text(
-                            "${Strings.SEND_CODE}${Utils.maskEmail(email)}",
+                            "${Strings.SEND_CODE}${Utils.maskEmail(widget.email??"")}",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontSize: Constant.LABEL_TEXT_SIZE_15,
@@ -176,8 +173,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                       backgroundColor: Color(0xFFD0A52C),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                          Constant.CONTAINER_SIZE_12,
+                                          Constant.CONTAINER_SIZE_16,
                                         ),
+                                        side: BorderSide(color: Colors.white)
                                       ),
                                     ),
                                     onPressed: () async {
@@ -267,6 +265,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                                                   fontSize: Constant
                                                       .LABEL_TEXT_SIZE_16,
                                                   fontWeight: FontWeight.bold,
+                                              decorationColor: Constant.gold
                                                 ),
                                           ),
                                         ],
@@ -356,7 +355,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               registrationState.setContext(context);
               ref.read(
                 verifyOtpProvider({
-                  "email": widget.registrationData?.email ?? widget.email,
+                  "email": widget.registrationData?.email
+                      ?? widget.email
+                      ?? registrationState.email,
                   "token": _otpController.text.trim(),
                   "previous": widget.previousScreen,
                 }),
@@ -394,7 +395,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             registrationState.setResendLoading(true);
             ref.read(
               validateEmail({
-                "email": widget.email,
+                "email": widget.registrationData?.email
+                    ?? widget.email
+                    ?? registrationState.email,
+
                 "previous": widget.previousScreen,
               }),
             );
@@ -420,7 +424,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   @override
   void dispose() {
-    ref.read(authNotifierProvider).stopTimer();
+    // ref.read(authNotifierProvider).stopTimer();
     _otpController.dispose();
     super.dispose();
   }

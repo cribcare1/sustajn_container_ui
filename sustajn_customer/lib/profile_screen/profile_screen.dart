@@ -453,7 +453,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          subtitle: Text(profile!.emailId ?? "",
+                          subtitle: Text(profile?.emailId ?? "",
                             maxLines:1,
                             overflow:TextOverflow.ellipsis,
                             style: TextStyle(
@@ -508,7 +508,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                 widget.subScriptionPlanId,
                                   profile?.mobileNumber ?? "",
                                 profile?.secondaryNumber ?? "",
-                                profileState, profile!.id ??0
+                                profileState,profile?.id ?? 0
                               ),
                             );
                           },

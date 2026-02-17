@@ -170,10 +170,13 @@ class _TermsAndConditionScreenState
     );
 
     if (confirmed == true) {
-      _getNetworkData(signUpState);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        signUpState.setIsLoading(true);
+        _getNetworkData(signUpState);
+      });
     }
-  }
 
+  }
 
   termsDialog(
       BuildContext context,

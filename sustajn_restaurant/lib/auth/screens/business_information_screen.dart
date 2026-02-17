@@ -12,6 +12,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../common_widgets/custom_back_button.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/login_notifier.dart';
 import '../../provider/profile_provider.dart';
@@ -114,43 +115,48 @@ class _BusinessInformationDetailsState
   }
 
   final List<String> _businessTypes = [
-    'Restaurant',
-    'Cafe',
-    'Fast food Shop',
-    'Food court Cloud kitchen',
+    Strings.RESTAURANT,
+    Strings.CAFE,
+    Strings.FAST_FOOD,
+    Strings.FOOD_COURT,
   ];
 
   @override
   Widget build(BuildContext context) {
     final profileState = ref.read(profileProvider);
-    final regdNo = profileState
-        .getProfileData!
-        .data!
-        .contactAndRegistrationDetailsResponse!
-        .registrationNumber!;
+    // final regdNo = profileState
+    //     .getProfileData!
+    //     .data!
+    //     .contactAndRegistrationDetailsResponse!
+    //     .registrationNumber!;
+    String? regdNo;
+
+    if (widget.previous == Strings.PROFILE) {
+      final profileState = ref.watch(profileProvider);
+      regdNo = profileState.getProfileData?.data
+          ?.contactAndRegistrationDetailsResponse
+          ?.registrationNumber;
+    }
+
 
     final theme = Theme.of(context);
     return SafeArea(
       top: false,
       bottom: true,
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: widget.previous == 'profile'
+        appBar:
+        CustomAppBar(
+          title: widget.previous == Strings.PROFILE
               ? Strings.BUSINESS_INFORMATION
               : "",
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.keyboard_arrow_left, color: Colors.white),
-          ),
+          leading: CustomBackButton()
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.previous == "") ...[
+              if(widget.previous == "")...[
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 Row(
                   children: List.generate(4, (index) {
@@ -170,8 +176,11 @@ class _BusinessInformationDetailsState
                   }),
                 ),
               ],
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
+              Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+              Text(Strings.BUSINESS_INFO_TXT,
+                style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+              SizedBox(height: Constant.CONTAINER_SIZE_25),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
@@ -191,12 +200,17 @@ class _BusinessInformationDetailsState
                     _buildTextField(
                       context,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.CONTACT_PERSON;
-                        }
-                        return null;
+                          if (value == null || value
+                              .trim()
+                              .isEmpty) {
+                            return Strings.CONTACT_PERSON;
+                          }
+                          return null;
                       },
-                      keyboard: TextInputType.name,
+                      keyboard: TextInputType.text,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                      ],
                       controller: contactPersonController,
                       hint: Strings.CONTACT_PERSON,
                       label: Strings.CONTACT_PERSON,
@@ -208,6 +222,8 @@ class _BusinessInformationDetailsState
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.MOBILE_NUMBER;
+                        }if (value.length != 10){
+                          return Strings.MOBILE_VALIDATE;
                         }
                         return null;
                       },
@@ -227,6 +243,17 @@ class _BusinessInformationDetailsState
                         if (value == null || value.isEmpty) {
                           return Strings.EMAIL_REGISTRATION;
                         }
+                        final email = value.trim();
+
+                        if (email.contains(' ')) {
+                          return Strings.ENTER_EMAIL_ADDRESS;
+                        }
+
+                        final regex = Strings.email;
+
+                        if (!regex.hasMatch(email)) {
+                          return Strings.ENTER_EMAIL_ADDRESS;
+                        }
                         return null;
                       },
                       controller: contactEmailController,
@@ -240,6 +267,8 @@ class _BusinessInformationDetailsState
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.TRADE_LICENSE_NUMBER;
+                        }if (value.length != 5){
+                          return Strings.TRADE_LICENSE_VALIDATE;
                         }
                         return null;
                       },
@@ -247,16 +276,22 @@ class _BusinessInformationDetailsState
                       hint: Strings.TRADE_LICENSE_NUMBER,
                       label: Strings.TRADE_LICENSE_NUMBER,
                       focusNode: _licenceFocus,
+                      keyboard: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(5),
+                      ]
                     ),
                     _buildTextField(
                       context,
                       keyboard: TextInputType.number,
-                      inputFormatters: [LengthLimitingTextInputFormatter(15)],
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(15),
+                      ],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.VAT_NUMBER;
-                        }
-                        if (value.length != 15) {
+                        }if (value.length != 15) {
                           return Strings.VAT_NUMBER_15;
                         }
                         return null;
@@ -277,7 +312,7 @@ class _BusinessInformationDetailsState
                         ).textTheme.titleMedium!.copyWith(color: Colors.white),
                       ),
                     ),
-                    SizedBox(height: Constant.SIZE_05),
+                    SizedBox(height: Constant.CONTAINER_SIZE_15),
                     DropdownButtonFormField2<String>(
                       value: _selectedBusinessType,
 
@@ -309,18 +344,12 @@ class _BusinessInformationDetailsState
                           borderSide: BorderSide(color: Constant.grey),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
+                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                           borderSide: BorderSide(color: Constant.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFD1AE31),
-                          ),
+                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                          borderSide: const BorderSide(color: Color(0xFFD1AE31)),
                         ),
                       ),
 
@@ -449,10 +478,20 @@ class _BusinessInformationDetailsState
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
                     SubmitClearButton(
                       onLeftTap: () {
-                        NavUtil.navigateToPushScreen(
-                          context,
-                          PaymentTypeScreen(),
-                        );
+                        Utils.skipDialog(
+                            context: context,
+                            icon: Icons.warning_amber,
+                            subTitle: Strings.SKIP_BUSINESS_DETAILS,
+                            cancelButtonText: Strings.CANCEL,
+                            yesButtonText: Strings.SKIP_CONTINUE,
+                            onCancel: (){
+                              Navigator.pop(context);
+                            },
+                            onYes: (){
+                              NavUtil.navigateToPushScreen(context,
+                              PaymentTypeScreen());
+                            });
+
                       },
                       leftText: Strings.SKIP,
                       onRightTap: () async {
@@ -461,12 +500,9 @@ class _BusinessInformationDetailsState
                         }
 
                         if (widget.previous == 'profile') {
-                          final bool success =
-                              await _businessInfoNetworkCall(regdNo) ?? false;
+                          final bool success = await _businessInfoNetworkCall(regdNo!) ?? false;
                           if (success) {
-                            Utils.showToast(
-                              '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}',
-                            );
+                            Utils.showToast('${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}');
                             Navigator.pop(context);
                           } else {
                             showCustomSnackBar(
@@ -557,9 +593,7 @@ class _BusinessInformationDetailsState
       useSafeArea: true,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Constant.CONTAINER_SIZE_10),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_10)),
       ),
       builder: (_) {
         return SingleChildScrollView(
@@ -591,30 +625,44 @@ class _BusinessInformationDetailsState
                 alignment: WrapAlignment.center,
                 children: socialMediaOptions.map((item) {
                   final alreadyAdded = widget.authState.socialMediaList.any(
-                    (e) => e.socialMediaType == item.type,
+                        (e) => e.socialMediaType == item.type,
                   );
 
                   return GestureDetector(
                     onTap: alreadyAdded
                         ? null
                         : () {
-                            Navigator.pop(context);
-                            widget.authState.setSocialMedia(
-                              SocialMediaModel(
-                                socialMediaType: item.type,
-                                controller: TextEditingController(),
-                              ),
-                            );
-                            setState(() {});
-                          },
+                      Navigator.pop(context);
+                      widget.authState.setSocialMedia(
+                        SocialMediaModel(
+                          socialMediaType: item.type,
+                          controller: TextEditingController(),
+                        ),
+                      );
+                      setState(() {});
+                    },
                     child: Opacity(
                       opacity: alreadyAdded ? 0.4 : 1,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircleAvatar(
-                            backgroundColor: item.color,
-                            child: Icon(item.icon, color: Colors.black),
+                          Container(
+                            width: Constant.CONTAINER_SIZE_60,
+                            height: Constant.CONTAINER_SIZE_60,
+                            decoration: BoxDecoration(
+                              color: item.color,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: FaIcon(
+                                item.icon,
+                                color: item.type == SocialMediaType.snapchat ||
+                                    item.type == SocialMediaType.x
+                                    ? Colors.black
+                                    : Colors.white,
+                                size: Constant.CONTAINER_SIZE_26,
+                              ),
+                            ),
                           ),
                           SizedBox(height: Constant.SIZE_06),
                           Text(
@@ -635,13 +683,14 @@ class _BusinessInformationDetailsState
     );
   }
 
+
   Map<String, dynamic> getJsonData(String regdNo) {
     final authState = ref.read(authNotifierProvider);
     final data = {
       "userId": Utils.userId,
 
       "basicDetails": {
-        "businessType": "Restaurant",
+        "businessType": Strings.RESTAURANT,
         "websiteDetails": websiteController.text,
       },
 
@@ -651,7 +700,7 @@ class _BusinessInformationDetailsState
         "treadLicenseNumber": licenceController.text,
         "vatNumber": vatController.text,
         "contactNumber": contactNumberController.text,
-        "registrationNumber": regdNo,
+        "registrationNumber": regdNo
       },
 
       "socialMediaList": authState.socialMediaList.isEmpty
@@ -674,7 +723,9 @@ class _BusinessInformationDetailsState
     }
 
     try {
-      await ref.read(businessInfoProvider(getJsonData(regdNo)).future);
+      await ref.read(
+        businessInfoProvider(getJsonData(regdNo)).future,
+      );
       return true;
     } catch (e) {
       Utils.printLog('Business info error: $e');

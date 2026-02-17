@@ -245,7 +245,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text, "role":"USER"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

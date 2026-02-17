@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 
 import '../../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
 
 class AddCardDialog extends ConsumerStatefulWidget {
@@ -68,11 +70,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   SizedBox(height: Constant.SIZE_15),
                   _cardField(
                     theme,
-                    'Card Holder Name*',
+                    Strings.CARD_HOLDER_NAME,
                     _cardHolderNameController,
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                    ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Card holder name required';
+                        return Strings.CARD_HOLDER_REQUIRED;
                       }
                       return null;
                     },
@@ -80,7 +86,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   SizedBox(height: Constant.SIZE_10),
                   _cardField(
                     theme,
-                    'Card Number*',
+                    Strings.CARD_NUMBER,
                     _cardNumberController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
@@ -89,11 +95,11 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     ],
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Card no. required';
+                        return Strings.CARD_NO_REQ;
                       }
                       final digitsOnly = value.replaceAll(' ', '');
                       if (digitsOnly.length != 12) {
-                        return 'Card number must be 12 digits';
+                        return Strings.CARD_NUMBER_12;
                       }
                       return null;
                     },
@@ -102,33 +108,22 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   Row(
                     children: [
                       Expanded(
-                        child: _cardField(
-                          isReadOnly: true,
-                          theme,
-                          'Expiration Date',
+                        child: getDatePicker(
+                          context,
+                          Strings.EXPIRATION_DATE,
                           _expiryDateController,
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Expiry date required';
-                            }
-                            return null;
+                              (date) {
+                            _expiryDateController.text =
+                            "${date.month.toString().padLeft(2, '0')}/${date.year}";
                           },
-                          onTap: ()async{
-                            final date = await showDatePicker(context: context,
-                                firstDate: DateTime.now(),
-                                initialDate: DateTime.now(),
-                                lastDate: DateTime(3000));
-                            if(date != null){
-                              _expiryDateController.text = "${date.month}/${date.year}";
-                            }
-                          }
+                          theme,
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_10),
                       Expanded(
                         child: _cardField(
                           theme,
-                          'CVV',
+                          Strings.CVV,
                           _cvvController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -137,10 +132,10 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                           ],
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'CVV is required';
+                              return Strings.CVV_REQUIRED;
                             }
                             if (value.length != 3) {
-                              return 'CVV must be 3 digits';
+                              return Strings.THREE_DIGIT;
                             }
                             return null;
                           },
@@ -164,7 +159,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                           Navigator.pop(context);
                         }
                       },
-                      rightText: "Add Card & Continue",
+                      rightText: Strings.ADD_CARD_CONTINUE,
                     ),
                   ),
                 ],
@@ -184,14 +179,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Add Card Details',
+                Strings.ADD_CARD_DETAILS,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                 ),
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                'We accept Credit, Debit, Visa and Mastercard',
+                Strings.WE_ACCEPT,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                 ),
@@ -228,6 +223,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
       obscureText: obscureText,
       validator: validator,
       inputFormatters: inputFormatters,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
@@ -244,6 +240,79 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
           Constant.grey.withOpacity(0.3),
         ),
         errorStyle: const TextStyle(color: Colors.redAccent),
+      ),
+    );
+  }
+
+  static Widget getDatePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme,
+      ) {
+    return Padding(
+      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle:  TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
+              ),
+              cancelStyle:  TextStyle(
+                color: theme.primaryColor,
+                fontSize: Constant.LABEL_TEXT_SIZE_16,
+                fontWeight: FontWeight.w600,
+              ),
+
+              doneStyle:  TextStyle(
+                color: theme.primaryColor,
+                fontSize: Constant.LABEL_TEXT_SIZE_16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onConfirm: (date) {
+              final value = "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: labelText,
+              filled: true,
+              fillColor: Constant.grey.withOpacity(.1),
+              hintStyle: const TextStyle(color: Colors.white),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+              focusedBorder: CustomTheme.roundedBorder(
+                Constant.grey.withOpacity(0.3),
+              ),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import 'forget_password.dart';
@@ -43,434 +44,192 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     double height = MediaQuery.sizeOf(context).height;
     var themeData = CustomTheme.getTheme(true);
     final authState = ref.watch(authNotifierProvider);
-
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.only(
-                left: Constant.CONTAINER_SIZE_16,
-                right: Constant.CONTAINER_SIZE_16,
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Center(
-                              child: Image.asset(
-                                AppAssets.sustajnAppLogo,
-                                height: height * 0.17,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Text(
-                              Strings.WELCOME,
-                              style: themeData?.textTheme.titleLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: height * 0.005),
-                            Text(
-                              Strings.LOGIN_YOUR_ACC,
-                              style: themeData?.textTheme.bodyMedium!.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: height * 0.03),
-                            TextFormField(
-                              controller: _emailController,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              keyboardType: TextInputType.emailAddress,
-                              style: TextStyle(color: Colors.white70),
-                              cursorColor: Colors.white70,
-                              decoration: InputDecoration(
-                                hintText: Strings.EMAIL,
-                                filled: true,
-                                fillColor: themeData!.primaryColor,
-                                hintStyle: TextStyle(color: Colors.white70),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    Constant.CONTAINER_SIZE_20,
-                                  ),
-                                  borderSide: BorderSide(color: Constant.grey),
-                                ),
-                                enabledBorder: CustomTheme.roundedBorder(
-                                  Constant.grey,
-                                ),
-                                focusedBorder: CustomTheme.roundedBorder(
-                                  Constant.grey,
-                                ),
-                              ),
-                              onChanged: (value) {
-                                if (_formKey.currentState != null) {
-                                  _formKey.currentState!.validate();
-                                }
-                              },
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return 'Enter your email';
-                                }
-                                if (!v.contains('@') || v.trim().length < 5) {
-                                  return 'Enter a valid email';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: height * 0.02),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: !_showPassword,
-                              style: TextStyle(color: Colors.white70),
-                              cursorColor: Colors.white70,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: InputDecoration(
-                                hintText: Strings.PASSWORD,
-                                filled: true,
-                                fillColor: themeData!.primaryColor,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 12,
-                                ),
-                                hintStyle: TextStyle(color: Colors.white70),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _showPassword
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.white70,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _showPassword = !_showPassword;
-                                    });
-                                  },
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    Constant.CONTAINER_SIZE_16,
-                                  ),
-                                ),
-                                enabledBorder: CustomTheme.roundedBorder(
-                                  Constant.grey,
-                                ),
-                                focusedBorder: CustomTheme.roundedBorder(
-                                  Constant.grey,
-                                ),
-                              ),
-                              onChanged: (value) {
-                                if (_formKey.currentState != null) {
-                                  _formKey.currentState!.validate();
-                                }
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Enter your password";
-                                }
-                                if (value.length < 8) {
-                                  return "Password must be at least 8 characters";
-                                }
-                                return null;
-                              },
-                            ),
-
-                            SizedBox(height: height * 0.01),
-
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          const ForgetPasswordScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  Strings.FORGOT_PASSWORD,
-                                  style: themeData.textTheme.titleSmall!
-                                      .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: height * 0.02),
-                            authState.isLoading
-                                ? Center(child: CircularProgressIndicator())
-                                : SizedBox(
-                                    width: double.infinity,
-                                    child: SubmitButton(
-                                      onRightTap: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          _getNetworkData(authState);
-                                        }
-                                      },
-                                      rightText: Strings.LOGIN,
-                                    ),
-                                  ),
-                            SizedBox(height: height * 0.02),
-                            Center(
-                              child: Text.rich(
-                                TextSpan(
-                                  text: Strings.DONT_HAVE_ACC,
-                                  style: themeData.textTheme.bodyMedium!
-                                      .copyWith(color: Colors.white),
-                                  children: [
-                                    TextSpan(
-                                      text: Strings.SIGN_UP,
-                                      style: TextStyle(
-                                        color: Constant.gold,
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline,
-                                        decorationColor:
-                                            themeData.secondaryHeaderColor,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = authState.isLoading
-                                            ? null
-                                            : () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        const SignUpScreen(),
-                                                  ),
-                                                );
-                                              },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+      body: Padding(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      AppAssets.sustajnAppLogo,
+                      height: height * 0.17,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                ),
+                  Text(
+                    Strings.WELCOME,
+                    style: themeData?.textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.005),
+                  Text(
+                    Strings.LOGIN_YOUR_ACC,
+                    style: themeData?.textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.03),
+                  TextFormField(
+                    controller: _emailController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
+                    decoration: InputDecoration(
+                      hintText: Strings.EMAIL,
+                      filled: true,
+                      fillColor: themeData!.primaryColor,
+                      hintStyle: TextStyle(color: Colors.white70),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_20,
+                        ),
+                        borderSide: BorderSide(color: Constant.grey),
+                      ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+                    ),
+                    onChanged: (value) {
+                      if (_formKey.currentState != null) {
+                        _formKey.currentState!.validate();
+                      }
+                    },
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Enter your email';
+                      }
+                      if (!v.contains('@') || v.trim().length < 5) {
+                        return 'Enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: height * 0.02),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: !_showPassword,
+                    style: TextStyle(color: Colors.white70),
+                    cursorColor: Colors.white70,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      hintText: Strings.PASSWORD,
+                      filled: true,
+                      fillColor: themeData!.primaryColor,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 12,
+                      ),
+                      hintStyle: TextStyle(color: Colors.white70),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          Constant.CONTAINER_SIZE_16,
+                        ),
+                      ),
+                      enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                      focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+                    ),
+                    onChanged: (value) {
+                      if (_formKey.currentState != null) {
+                        _formKey.currentState!.validate();
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter your password";
+                      }
+                      if (value.length < 8) {
+                        return "Password must be at least 8 characters";
+                      }
+                      return null;
+                    },
+                  ),
+              
+                  SizedBox(height: height * 0.01),
+              
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        NavUtil.navigateToPushScreen(context, ForgetPasswordScreen());
+                      },
+                      child: Text(
+                        Strings.FORGOT_PASSWORD,
+                        style: themeData.textTheme.titleSmall!.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: height * 0.02),
+                  authState.isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : SizedBox(
+                          width: double.infinity,
+                          child: SubmitButton(
+                            onRightTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                _getNetworkData(authState);
+                              }
+                            },
+                            rightText: Strings.LOGIN,
+                          ),
+                        ),
+                  SizedBox(height: height * 0.02),
+                  Center(
+                    child: Text.rich(
+                      TextSpan(
+                        text: Strings.DONT_HAVE_ACC,
+                        style: themeData.textTheme.bodyMedium!.copyWith(
+                          color: Colors.white,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: Strings.SIGN_UP,
+                            style: TextStyle(
+                              color: Constant.gold,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                              decorationColor: themeData.secondaryHeaderColor,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = authState.isLoading
+                                  ? null
+                                  : () {
+                                     NavUtil.navigateToPushScreen(context, SignUpScreen());
+                                    },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   double height = MediaQuery.sizeOf(context).height;
-  //   var themeData = CustomTheme.getTheme(true);
-  //   final authState = ref.watch(authNotifierProvider);
-  //   return Scaffold(
-  //     body: Padding(
-  //       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-  //       child: Center(
-  //         child: Form(
-  //           key: _formKey,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               Center(
-  //                 child: Image.asset(
-  //                   AppAssets.sustajnAppLogo,
-  //                   height: height * 0.17,
-  //                   fit: BoxFit.contain,
-  //                 ),
-  //               ),
-  //               Text(
-  //                 Strings.WELCOME,
-  //                 style: themeData?.textTheme.titleLarge!.copyWith(
-  //                   fontWeight: FontWeight.bold,
-  //                   color: Colors.white,
-  //                 ),
-  //               ),
-  //               SizedBox(height: height * 0.005),
-  //               Text(
-  //                 Strings.LOGIN_YOUR_ACC,
-  //                 style: themeData?.textTheme.bodyMedium!.copyWith(
-  //                   color: Colors.white,
-  //                 ),
-  //               ),
-  //               SizedBox(height: height * 0.03),
-  //               TextFormField(
-  //                 controller: _emailController,
-  //                 autovalidateMode: AutovalidateMode.onUserInteraction,
-  //                 keyboardType: TextInputType.emailAddress,
-  //                 style: TextStyle(color: Colors.white70),
-  //                 cursorColor: Colors.white70,
-  //                 decoration: InputDecoration(
-  //                   hintText: Strings.EMAIL,
-  //                   filled: true,
-  //                   fillColor: themeData!.primaryColor,
-  //                   hintStyle: TextStyle(color: Colors.white70),
-  //                   border: OutlineInputBorder(
-  //                     borderRadius: BorderRadius.circular(
-  //                       Constant.CONTAINER_SIZE_20,
-  //                     ),
-  //                     borderSide: BorderSide(color: Constant.grey),
-  //                   ),
-  //                   enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-  //                   focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-  //                 ),
-  //                 onChanged: (value) {
-  //                   if (_formKey.currentState != null) {
-  //                     _formKey.currentState!.validate();
-  //                   }
-  //                 },
-  //                 validator: (v) {
-  //                   if (v == null || v.trim().isEmpty) {
-  //                     return 'Enter your email';
-  //                   }
-  //                   if (!v.contains('@') || v.trim().length < 5) {
-  //                     return 'Enter a valid email';
-  //                   }
-  //                   return null;
-  //                 },
-  //               ),
-  //               SizedBox(height: height * 0.02),
-  //               TextFormField(
-  //                 controller: _passwordController,
-  //                 obscureText: !_showPassword,
-  //                 style: TextStyle(color: Colors.white70),
-  //                 cursorColor: Colors.white70,
-  //                 autovalidateMode: AutovalidateMode.onUserInteraction,
-  //                 decoration: InputDecoration(
-  //                   hintText: Strings.PASSWORD,
-  //                   filled: true,
-  //                   fillColor: themeData!.primaryColor,
-  //                   contentPadding: const EdgeInsets.symmetric(
-  //                     vertical: 14,
-  //                     horizontal: 12,
-  //                   ),
-  //                   hintStyle: TextStyle(color: Colors.white70),
-  //                   suffixIcon: IconButton(
-  //                     icon: Icon(
-  //                       _showPassword ? Icons.visibility : Icons.visibility_off,
-  //                       color: Colors.white70,
-  //                     ),
-  //                     onPressed: () {
-  //                       setState(() {
-  //                         _showPassword = !_showPassword;
-  //                       });
-  //                     },
-  //                   ),
-  //                   border: OutlineInputBorder(
-  //                     borderRadius: BorderRadius.circular(
-  //                       Constant.CONTAINER_SIZE_16,
-  //                     ),
-  //                   ),
-  //                   enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-  //                   focusedBorder: CustomTheme.roundedBorder(Constant.grey),
-  //                 ),
-  //                 onChanged: (value) {
-  //                   if (_formKey.currentState != null) {
-  //                     _formKey.currentState!.validate();
-  //                   }
-  //                 },
-  //                 validator: (value) {
-  //                   if (value == null || value.isEmpty) {
-  //                     return "Enter your password";
-  //                   }
-  //                   if (value.length < 8) {
-  //                     return "Password must be at least 8 characters";
-  //                   }
-  //                   return null;
-  //                 },
-  //               ),
-  //
-  //               SizedBox(height: height * 0.01),
-  //
-  //               Align(
-  //                 alignment: Alignment.centerRight,
-  //                 child: InkWell(
-  //                   onTap: () {
-  //                     Navigator.push(
-  //                       context,
-  //                       MaterialPageRoute(
-  //                         builder: (_) => const ForgetPasswordScreen(),
-  //                       ),
-  //                     );
-  //                   },
-  //                   child: Text(
-  //                     Strings.FORGOT_PASSWORD,
-  //                     style: themeData.textTheme.titleSmall!.copyWith(
-  //                       color: Colors.white,
-  //                       fontWeight: FontWeight.w500,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               SizedBox(height: height * 0.02),
-  //               authState.isLoading
-  //                   ? Center(child: CircularProgressIndicator())
-  //                   : SizedBox(
-  //                       width: double.infinity,
-  //                       child: SubmitButton(
-  //                         onRightTap: () {
-  //                           if (_formKey.currentState!.validate()) {
-  //                             _getNetworkData(authState);
-  //                           }
-  //                         },
-  //                         rightText: Strings.LOGIN,
-  //                       ),
-  //                     ),
-  //               SizedBox(height: height * 0.02),
-  //               Center(
-  //                 child: Text.rich(
-  //                   TextSpan(
-  //                     text: Strings.DONT_HAVE_ACC,
-  //                     style: themeData.textTheme.bodyMedium!.copyWith(
-  //                       color: Colors.white,
-  //                     ),
-  //                     children: [
-  //                       TextSpan(
-  //                         text: Strings.SIGN_UP,
-  //                         style: TextStyle(
-  //                           color: Constant.gold,
-  //                           fontWeight: FontWeight.bold,
-  //                           decoration: TextDecoration.underline,
-  //                           decorationColor: themeData.secondaryHeaderColor,
-  //                         ),
-  //                         recognizer: TapGestureRecognizer()
-  //                           ..onTap = authState.isLoading
-  //                               ? null
-  //                               : () {
-  //                                   Navigator.push(
-  //                                     context,
-  //                                     MaterialPageRoute(
-  //                                       builder: (_) => const SignUpScreen(),
-  //                                     ),
-  //                                   );
-  //                                 },
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   _getNetworkData(var registrationState) async {
     try {
@@ -489,6 +248,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 loginDetailProvider({
                   "userName": _emailController.text,
                   "password": _passwordController.text,
+                  "role": "RESTAURANT"
                 }),
               );
             } else {

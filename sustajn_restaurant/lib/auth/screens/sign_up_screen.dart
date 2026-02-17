@@ -15,7 +15,6 @@ import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/login_provider.dart';
-import '../../utils/sharedpreference_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 
@@ -140,7 +139,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
                 Text(Strings.SIGN_UP,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
                 SizedBox(height: Constant.SIZE_08),
-                Text(Strings.PLEASE_PROVIDE_YOUR_DETAILS_BELOW,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                Text(Strings.PLEASE_PROVIDE_YOUR_DETAILS_BELOW,
+                  style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
                 //Todo:- image upload
                 // Center(
                 //   child: InkWell(
@@ -220,7 +220,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 _buildTextField(
                   context,
                   controller: emailCtrl,
-                  hint: Strings.EMAIL,
+                  hint: Strings.EMAIL_SPCL,
                   keyboard: TextInputType.emailAddress,
                   validator: (v) {
                     if (v!.isEmpty) return "Email required";
@@ -236,7 +236,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 _buildTextField(
                   context,
                   controller: mobileCtrl,
-                  hint: Strings.MOBILE_NUMBER,
+                  hint: Strings.CONTACT_NUMBER_SPCL,
                   keyboard: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -254,7 +254,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 _buildPasswordField(
                   context,
                   controller: passwordCtrl,
-                  hint: Strings.PASSWORD,
+                  hint: Strings.PASSWORD_SPCL,
                   visible: passwordVisible,
                   toggleVisibility: () {
                     setState(() => passwordVisible = !passwordVisible);
@@ -273,7 +273,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 _buildPasswordField(
                   context,
                   controller: confirmPasswordCtrl,
-                  hint: Strings.CONFIRM_PASSWORD,
+                  hint: Strings.CONFIRM_PASSWORD_SPCL,
                   visible: confirmPasswordVisible,
                   toggleVisibility: () {
                     setState(

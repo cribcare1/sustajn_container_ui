@@ -54,11 +54,11 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
               _freemiumCard(theme),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
               if(widget.previousScreen =="profile")...[
-                Text(data?.description ?? "",style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                Text(data.description,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
               ],
               if(widget.previousScreen =="")...[
                 Expanded(
-                  child: SingleChildScrollView(child: _featureList(theme)),
+                  child: SingleChildScrollView(child: _featureList(theme,widget.planModel?.description??"")),
                 ),
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 SizedBox(
@@ -95,16 +95,28 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-         Text(data?.planName ?? "",style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
+         Text(data.planName,style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),),
           SizedBox(height: Constant.SIZE_10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset("assets/logo/dirham_icon.png"),
+              Image.asset(
+                'assets/images/diarhm.png',
+                height: Constant.CONTAINER_SIZE_20,
+                color: Constant.gold,
+                colorBlendMode: BlendMode.srcIn,
+              ),
               Text(
-                "${data?.totalContainers ?? 0}",
+                " ${data.feeType.toString()}/",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Constant.gold,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                " ${data.billingCycle.toLowerCase()}",
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -115,11 +127,15 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     );
   }
 
-  Widget _featureList(ThemeData theme) {
+  Widget _featureList(ThemeData theme, String description) {
+    if (description.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
-      children: widget.planModel!.features
-          .map((e) => _featureItem(theme, e))
-          .toList(growable: false),
+      children: [
+        _featureItem(theme, description),
+      ],
     );
   }
 
