@@ -449,6 +449,7 @@ static const String MONTH = 'Month';
 static const String FILTER = 'Filters';
 static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
 static const String ACCOUNT_CREATED_SUCCESSFULLY = 'Account created successfully';
+static const String ORDER = 'Order';
 static final RegExp email = RegExp(
   r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$",
 );

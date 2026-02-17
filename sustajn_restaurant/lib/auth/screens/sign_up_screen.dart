@@ -478,7 +478,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
         return;
       }
-      ref.read(validateEmail({"email": emailCtrl.text, "previous": "SIGNUP"}));
+      ref.read(validateEmail({"email": emailCtrl.text, "previous": "SIGNUP", "role": "RESTAURANT"}));
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
     }
