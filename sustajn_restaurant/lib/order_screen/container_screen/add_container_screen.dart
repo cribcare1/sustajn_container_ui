@@ -28,6 +28,8 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
+  List<ContainersDetails> _filteredContainers = [];
+
   LoginData? loginResponse;
   bool isLoading = true;
 
@@ -46,13 +48,35 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     });
   }
 
+  void _filterContainers(String query, List<ContainersDetails> containers) {
+    final lowerQuery = query.toLowerCase();
+
+    setState(() {
+      _filteredContainers = containers.where((item) {
+        final name = item.containerName?.toLowerCase() ?? "";
+        final id = item.containerUniqueId?.toString().toLowerCase() ?? "";
+
+        return name.contains(lowerQuery) || id.contains(lowerQuery);
+      }).toList();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
 
     final containerData = orderState.getContainerData;
-    final containers = containerData?.containersDetails;
+    // final containers = containerData?.containersDetails;
+    final containers = containerData?.containersDetails ?? [];
+
+    if (_filteredContainers.isEmpty &&
+        searchController.text.isEmpty &&
+        containers.isNotEmpty) {
+      _filteredContainers = List.from(containers);
+    }
+
 
     return SafeArea(
       bottom: true,
@@ -68,6 +92,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                   CustomTheme.searchField(
                     searchController,
                     Strings.SEARCH_BY_CONTAINER_NAME,
+                    onChanged: (value) {
+                      _filterContainers(value, containers);
+                    },
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
                   Expanded(
@@ -75,20 +102,20 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                         ? const Center(child: CircularProgressIndicator())
                         : (containers == null || containers.isEmpty)
                         ? const Center(
-                            child: Text(
-                              Strings.NO_CONTAINER_AVAILABLE,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
                         : ListView.separated(
-                            itemCount: containers.length,
-                            separatorBuilder: (_, __) =>
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                            itemBuilder: (context, index) {
-                              final item = containers[index];
-                              return _containerCard(context, item, theme);
-                            },
-                          ),
+                      itemCount: _filteredContainers.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+                      itemBuilder: (context, index) {
+                        final item = _filteredContainers[index];
+                        return _containerCard(context, item, theme);
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -126,8 +153,8 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
           Text(
             "${orderState.selectedContainers.length} Item added",
             style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.primaryColor,
-              fontWeight: FontWeight.bold
+                color: theme.primaryColor,
+                fontWeight: FontWeight.bold
             ),
           ),
           GestureDetector(
@@ -143,8 +170,8 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
               children: [
                 Text("View",
                     style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.bold
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.bold
                     )),
                 Icon(Icons.arrow_forward_ios,
                     size: Constant.CONTAINER_SIZE_14,
@@ -159,10 +186,10 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
 
 
   Widget _containerCard(
-    BuildContext context,
-    ContainersDetails item,
-    ThemeData theme,
-  ) {
+      BuildContext context,
+      ContainersDetails item,
+      ThemeData theme,
+      ) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -274,8 +301,8 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   _getOrderNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
+          isNetworkAvailable,
+          ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {

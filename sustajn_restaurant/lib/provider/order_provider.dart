@@ -17,9 +17,9 @@ import '../utils/utility.dart';
 final orderProvider = ChangeNotifierProvider((ref) => OrderState());
 
 final getOrderProvider = FutureProvider.family<dynamic, String>((
-  ref,
-  params,
-) async {
+    ref,
+    params,
+    ) async {
   final orderState = ref.watch(orderProvider);
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
@@ -43,9 +43,9 @@ final getOrderProvider = FutureProvider.family<dynamic, String>((
 });
 
 final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
-  ref,
-  params,
-) async {
+    ref,
+    params,
+    ) async {
   final containerState = ref.watch(orderProvider);
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
@@ -103,18 +103,24 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
     final success = responseData['success'];
     final message = responseData['message'];
+    final String type =
+    (params["type"] ?? "").toString().toUpperCase();
 
     if (success == true) {
 
       orderState.setIsLoading(false);
       orderState.setOrdering(false);
       orderState.clearSelectedContainers();
+      final String title =
+      type == "RETURN"
+          ? "Thank you for your return request"
+          : "Thank you for your order";
       if (!orderState.context.mounted) return ;
 
       NavUtil.navigateToPushScreen(
         orderState.context,
         ContainerOrderScreen(
-          title: Strings.THANK_YOU_TXT,
+          title: title,
           subTitle:
           Strings.ADD_ORDER_TXT,
         ),
@@ -142,4 +148,3 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
   return null;
 });
-
