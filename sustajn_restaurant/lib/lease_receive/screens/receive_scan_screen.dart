@@ -116,7 +116,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
         dueDate: "",
       ),
     );
-    if (leaseNotifier.containerReturnList.isNotEmpty) {
+    if (leaseNotifier.containerReturnList.isNotEmpty && matchedContainer.productUniqueId.isNotEmpty) {
       leaseNotifier.setCustomerUserId(
         leaseNotifier.containerReturnList[0].userId,
       );
