@@ -16,7 +16,7 @@ class Strings {
       'Internet connection failed! Please try after sometime.';
   static const API_ERROR_MSG_TEXT =
       "Request is not successful. Please try again later!";
-
+  static const ACCOUNT_CREATED_SUCCESSFULLY = "Account created successfully";
   static const PART_URL = 'part_url';
   static const REQUEST_TYPE = 'request_type';
   static const REQUEST_KEY = 'request_key';
@@ -36,7 +36,8 @@ class Strings {
   static const String DAMAGED = "Damaged";
   static const String SOLD = "Sold";
   static const String HISTORY = "History";
-  static const String BUSINESS_INFO_TXT ='Provide information to help customers find you.';
+  static const String BUSINESS_INFO_TXT =
+      'Provide information to help customers find you.';
   static const String LEARN_MORE = "Learn More";
 
   static const String PLEASE_PROVIDE_YOUR_DETAILS_BELOW =
@@ -238,8 +239,9 @@ class Strings {
   static const String IBAN = "IBAN(e.g.AE125478963547896541235)";
   static const String BIC = "BIC";
   static const String CLEAR_DTLS = "Clear Details";
-  static const String VAT_NUMBER_15 ="VAT Number must be exactly 15 digits";
-  static const String TRADE_LICENSE_VALIDATE ='Trade License Number must be 5 digits';
+  static const String VAT_NUMBER_15 = "VAT Number must be exactly 15 digits";
+  static const String TRADE_LICENSE_VALIDATE =
+      'Trade License Number must be 5 digits';
   static const String ADD_CONT = 'Add and Continue';
 
   static const String PROVIDE_INFOR =
@@ -321,64 +323,67 @@ class Strings {
   static const String INVENTORY = 'Inventory';
   static const String LEASE = 'Lease';
   static const String RECEIVE = 'Receive';
-  static const String INVALID_QR_CODE ="Invalid or unsupported QR code";
-  static const String ENTER_CUSTOMER_ID ="Enter Customer ID";
-  static const String LEASE_UC ="LEASE";
-  static const String RECEIVE_UC ="RECEIVE";
-  static const String SCAN_FOR_LEASE ="Scan Customer QR to Leased Products";
-  static const String SCAN_FOR_RECEIVE ="Scan Customer QR to Receive Products";
-  static const String SCAN ="Scan";
-  static const String SCAN_PRODUCT ="Scan Product";
-  static const String SCAN_CONTAINER_QR ="Scan Container QR to Lease Products";
-  static const String ENTER_CONTAINER_ID ="Enter Container ID";
-  static const String NO_PROFILE ="Your profile information is not available right now";
+  static const String INVALID_QR_CODE = "Invalid or unsupported QR code";
+  static const String ENTER_CUSTOMER_ID = "Enter Customer ID";
+  static const String LEASE_UC = "LEASE";
+  static const String RECEIVE_UC = "RECEIVE";
+  static const String SCAN_FOR_LEASE = "Scan Customer QR to Leased Products";
+  static const String SCAN_FOR_RECEIVE = "Scan Customer QR to Receive Products";
+  static const String SCAN = "Scan";
+  static const String SCAN_PRODUCT = "Scan Product";
+  static const String SCAN_CONTAINER_QR = "Scan Container QR to Lease Products";
+  static const String ENTER_CONTAINER_ID = "Enter Container ID";
+  static const String NO_PROFILE =
+      "Your profile information is not available right now";
   static const String ADD_ADDRESS_TITLE = 'Add Address';
   static const String EDIT_ADDRESS_TITLE = 'Edit Address';
   static const String ADD_CONTACT_NUMBER = 'Add Contact Number';
-  static const String EDIT_CONTACT_NUMBER= 'Edit Contact Number';
+  static const String EDIT_CONTACT_NUMBER = 'Edit Contact Number';
   static const String PRIMARY_NUMBER = 'Primary Number';
   static const String ADD_SECONDARY_NUMBER = 'Add Secondary Number';
   static const String SECONDARY_NUMBER = 'Secondary Number';
   static const String ADD_TEXT = 'Add';
   static const String ENTER_MOBILE_NUMBER = 'Enter mobile number';
   static const String ENTER_VALID_PHONE = 'Enter valid 10 digit number';
-  static const String SKIP_BUSINESS_DETAILS = 'If you skip adding business details now, some features may be limited.You can complete this later from your profile';
-static const String SKIP_CONTINUE = 'Skip & Continue';
-static const String THANK_YOU_TXT = "Thank you for your order.";
-static const String ADD_ORDER_TXT =  'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
-static const String ENTER_EMAIL_ADDRESS = 'Enter a valid email address';
-static const String PROFILE = 'profile';
-static const String RESTAURANT = 'Restaurant';
-static const String CAFE = 'Cafe';
-static const String FAST_FOOD = 'Fast food Shop';
-static const String FOOD_COURT = 'Food court Cloud kitchen';
-static const String CARD_HOLDER_NAME = 'Card Holder Name*';
-static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
-static const String CARD_NUMBER = 'Card Number*';
-static const String CARD_NO_REQ = 'Card no. required';
-static const String CARD_NUMBER_12 = 'Card number must be 12 digits';
-static const String EXPIRATION_DATE = 'Expiration Date';
-static const String CVV = 'CVV';
-static const String CVV_REQUIRED = 'CVV is required';
-static const String THREE_DIGIT = 'CVV must be 3 digits';
-static const String ADD_CARD_CONTINUE = 'Add Card & Continue';
-static const String ADD_CARD_DETAILS = 'Add Card Details';
-static const String WE_ACCEPT = 'We accept Credit, Debit, Visa and Mastercard';
-static const String ACCOUNT_HOLDER_NAME_REQ = 'Account holder name is required';
-static const String ACCOUNT_HOLDER = 'Account Holder: ';
-static const String CRD_NUMBER = 'Card Number: ';
-static const String EXPIRY = 'Expiry: ';
-static const String CVVS = 'CVV: ';
-static const String STAR = '***';
-static const String CONTACT_PERSON_REQ = 'Contact person required';
-static const String INSTAGRAM = 'Instagram';
-static const String FACEBOOK = 'Facebook';
-static const String SNAPCHAT = 'Snapchat';
-static const String TWITTER = 'X';
-static const String MONTH = 'Month';
-static const String FILTER = 'Filters';
-static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
-static final RegExp email = RegExp(
-  r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$",
-);
+  static const String SKIP_BUSINESS_DETAILS =
+      'If you skip adding business details now, some features may be limited.You can complete this later from your profile';
+  static const String SKIP_CONTINUE = 'Skip & Continue';
+  static const String THANK_YOU_TXT = "Thank you for your order.";
+  static const String ADD_ORDER_TXT =
+      'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
+  static const String ENTER_EMAIL_ADDRESS = 'Enter a valid email address';
+  static const String PROFILE = 'profile';
+  static const String RESTAURANT = 'Restaurant';
+  static const String CAFE = 'Cafe';
+  static const String FAST_FOOD = 'Fast food Shop';
+  static const String FOOD_COURT = 'Food court Cloud kitchen';
+  static const String CARD_HOLDER_NAME = 'Card Holder Name*';
+  static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
+  static const String CARD_NUMBER = 'Card Number*';
+  static const String CARD_NO_REQ = 'Card no. required';
+  static const String CARD_NUMBER_12 = 'Card number must be 12 digits';
+  static const String EXPIRATION_DATE = 'Expiration Date';
+  static const String CVV = 'CVV';
+  static const String CVV_REQUIRED = 'CVV is required';
+  static const String THREE_DIGIT = 'CVV must be 3 digits';
+  static const String ADD_CARD_CONTINUE = 'Add Card & Continue';
+  static const String ADD_CARD_DETAILS = 'Add Card Details';
+  static const String WE_ACCEPT =
+      'We accept Credit, Debit, Visa and Mastercard';
+  static const String ACCOUNT_HOLDER_NAME_REQ =
+      'Account holder name is required';
+  static const String ACCOUNT_HOLDER = 'Account Holder: ';
+  static const String CRD_NUMBER = 'Card Number: ';
+  static const String EXPIRY = 'Expiry: ';
+  static const String CVVS = 'CVV: ';
+  static const String STAR = '***';
+  static const String CONTACT_PERSON_REQ = 'Contact person required';
+  static const String INSTAGRAM = 'Instagram';
+  static const String FACEBOOK = 'Facebook';
+  static const String SNAPCHAT = 'Snapchat';
+  static const String TWITTER = 'X';
+  static const String MONTH = 'Month';
+  static const String FILTER = 'Filters';
+  static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
+  static final RegExp email = RegExp(r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$");
 }

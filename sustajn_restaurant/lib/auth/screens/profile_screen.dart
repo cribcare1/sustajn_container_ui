@@ -119,8 +119,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => EditMobileNumberDialog(mobileNumber: mobile,
-        secondaryNumber: secondayMobile,
-        userId: userId,),
+      ),
     );
   }
 

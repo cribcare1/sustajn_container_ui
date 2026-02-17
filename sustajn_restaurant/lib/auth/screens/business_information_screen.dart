@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
