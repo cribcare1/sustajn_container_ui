@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
@@ -785,6 +786,19 @@ class Utils {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
+  }
+
+  static Future<String?> getDeviceToken() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
+    final token = await fcm.getToken();
+    if (token != null && token.isNotEmpty) {
+      printLog("DEVICE TOKEN: $token");
+      return token;
+    }
+    printLog("DEVICE TOKEN NOT FOUND");
+
+    return null;
   }
 
   static Future<void> sendEmail(String email) async {
