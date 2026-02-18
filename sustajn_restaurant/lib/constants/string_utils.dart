@@ -127,6 +127,7 @@ class Strings {
   static const MOBILE_NUMBER_ERROR_TXT = 'Contact number is required';
   static const CONTACT_NUMBER_SPCL = 'Contact Number*';
   static const EDIT_MOBILE_NUMBER = 'Edit Mobile Number';
+  static const EDIT_SECONDARY_MOBILE_NUMBER = 'Edit Secondary Mobile Number';
   static const EDIT_PAYMENT_TYPE = "Edit Payment Type";
   static const EMAIL = 'Email ID';
   static const EMAIL_SPCL = 'Email ID*';
@@ -204,6 +205,8 @@ class Strings {
   static const String ADDRESS = "Address";
   static const String EDIT_ADDRESS = "Edit Address";
   static const String SAVE_CHANGES = 'Save Changes';
+  static const String SAVE_BUSINESS_DTLS = 'Save Business Details';
+
   static const String RESTAURANT_ADDRESS_COLON = "Restaurant Address:";
   static const String VERIFY_LOCATION_ON_MAP = "Verify Location on Map";
   static const String SUBMIT_REQUEST = "Submit Request";
@@ -293,6 +296,7 @@ class Strings {
   static const String CONFIRM_UPDATE = 'Confirm Update';
   static const String UPDATE_CONTACT_NO =
       "Are you sure you want to update your contact number?";
+
   static const String UPDATE_SUBSCRIPTION_PLAN =
       "Are you sure you want to update your subscription plan?";
 
