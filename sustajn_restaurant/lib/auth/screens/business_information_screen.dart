@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
@@ -14,6 +13,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../common_widgets/custom_back_button.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/login_notifier.dart';
 import '../../provider/profile_provider.dart';
@@ -46,7 +46,14 @@ class _BusinessInformationDetailsState
   late TextEditingController licenceController;
   late TextEditingController businessTypeController;
 
-  String? _selectedBusinessType;
+  late FocusNode focusNode;
+  late FocusNode _contactFocus;
+  late FocusNode _vatFocus;
+  late FocusNode _contactNumberFocus;
+  late FocusNode _contactEmailFocus;
+  late FocusNode _licenceFocus;
+  late FocusNode _businessTypeFocus;
+  late FocusNode _websiteFocus;
 
   final Map<String, bool> _fieldTouched = {
     'contactPerson': false,
@@ -130,6 +137,14 @@ class _BusinessInformationDetailsState
     vatController.dispose();
     websiteController.dispose();
     businessTypeController.dispose();
+
+    _contactFocus.dispose();
+    _vatFocus.dispose();
+    _contactNumberFocus.dispose();
+    _contactEmailFocus.dispose();
+    _licenceFocus.dispose();
+    _websiteFocus.dispose();
+    _businessTypeFocus.dispose();
     super.dispose();
   }
 
@@ -280,6 +295,11 @@ class _BusinessInformationDetailsState
   @override
   Widget build(BuildContext context) {
     final profileState = ref.read(profileProvider);
+    // final regdNo = profileState
+    //     .getProfileData!
+    //     .data!
+    //     .contactAndRegistrationDetailsResponse!
+    //     .registrationNumber!;
     String? regdNo;
 
     if (widget.previous == 'profile') {
@@ -325,6 +345,11 @@ class _BusinessInformationDetailsState
                     );
                   }),
                 ),
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+                Text(Strings.BUSINESS_INFORMATION,style: theme.textTheme.titleLarge!.copyWith(color: Colors.white),),
+                Text(Strings.BUSINESS_INFO_TXT,
+                  style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
+                SizedBox(height: Constant.CONTAINER_SIZE_25),
               ],
               SizedBox(height: Constant.CONTAINER_SIZE_20),
               Text(
@@ -492,19 +517,12 @@ class _BusinessInformationDetailsState
                                         Constant
                                             .CONTAINER_SIZE_25,
                                       ),
-                                      borderSide: BorderSide.none,
                                     ),
-                                  ),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    )
+                              );
+                            }).toList(),
+                          )
                         : SizedBox(),
 
                     InkWell(
@@ -602,10 +620,8 @@ class _BusinessInformationDetailsState
                               color: Colors.red,
                             );
                           }
-
                           return;
                         }
-
                         NavUtil.navigateToPushScreen(
                           context,
                           PaymentTypeScreen(),

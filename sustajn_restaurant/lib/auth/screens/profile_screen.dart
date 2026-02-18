@@ -18,6 +18,7 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/edit_address.dart';
 import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
+import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
 import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
@@ -118,9 +119,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => EditMobileNumberDialog(mobileNumber: mobile,
-        secondaryNumber: secondayMobile,
-        userId: userId,),
+      builder: (_) => SecondaryMobileNumberDialog(mobileNumber: mobile, secondaryMobileNumber: secondayMobile
+      ),
     );
   }
 

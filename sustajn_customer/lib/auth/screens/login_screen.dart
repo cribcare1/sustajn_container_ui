@@ -31,6 +31,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _showPassword = false;
 
+  @override
+  void initState() {
+    Utils.getDeviceToken();
+    super.initState();
+  }
+
+  Future<void> getDevice() async {
+    final deviceToken = await Utils.getDeviceToken();
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
