@@ -12,13 +12,13 @@ import '../../../utils/utility.dart';
 import 'edit_mobile_number.dart';
 
 class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
-  final String mobileNumber;
+  final String primaryMobileNumber;
   final String secondaryMobileNumber;
 
   const SecondaryMobileNumberDialog({
     super.key,
     required this.secondaryMobileNumber,
-    required this.mobileNumber,
+    required this.primaryMobileNumber,
   });
 
   @override
@@ -32,7 +32,6 @@ class _SecondaryMobileNumberDialogState
   final TextEditingController _secondaryController = TextEditingController();
 
   bool showSecondaryField = false;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -110,7 +109,7 @@ class _SecondaryMobileNumberDialogState
                         SizedBox(width: Constant.SIZE_08),
                         Expanded(
                           child: Text(
-                            "+91 ${widget.mobileNumber}",
+                            "+91 ${widget.primaryMobileNumber}",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -125,7 +124,10 @@ class _SecondaryMobileNumberDialogState
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
                               builder: (_) => EditMobileNumberDialog(
-                                mobileNumber: widget.mobileNumber,
+                                primaryMobileNumber: widget.primaryMobileNumber,
+                                secondaryMobileNumber:
+                                    widget.secondaryMobileNumber,
+                                editType: MobileEditType.primary,
                               ),
                             );
                           },
@@ -172,8 +174,11 @@ class _SecondaryMobileNumberDialogState
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (_) => EditMobileNumberDialog(
-                                  mobileNumber: widget.mobileNumber,
-                                  isSecondary: true,
+                                  primaryMobileNumber:
+                                      widget.primaryMobileNumber,
+                                  secondaryMobileNumber:
+                                      widget.secondaryMobileNumber,
+                                  editType: MobileEditType.secondary,
                                 ),
                               );
                             },
@@ -183,17 +188,6 @@ class _SecondaryMobileNumberDialogState
                               size: Constant.CONTAINER_SIZE_18,
                             ),
                           ),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     EditMobileNumberDialog(mobileNumber: widget.mobileNumber, isSecondary: true,);
-                          //     // Navigator.pop(context);
-                          //   },
-                          //   child: Icon(
-                          //     Icons.edit_outlined,
-                          //     color: Colors.white,
-                          //     size: Constant.CONTAINER_SIZE_18,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ] else ...[

@@ -119,7 +119,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => SecondaryMobileNumberDialog(mobileNumber: mobile, secondaryMobileNumber: secondayMobile
+      builder: (_) => SecondaryMobileNumberDialog(primaryMobileNumber: mobile, secondaryMobileNumber: secondayMobile
       ),
     );
   }

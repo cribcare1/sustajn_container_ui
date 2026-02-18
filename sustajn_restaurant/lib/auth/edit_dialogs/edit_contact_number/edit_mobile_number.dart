@@ -13,12 +13,19 @@ import '../../../network_provider/network_provider.dart';
 import '../../../provider/profile_provider.dart';
 import '../../../utils/utility.dart';
 
+enum MobileEditType { primary, secondary }
+
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
-  final String mobileNumber;
-  final bool isSecondary;
+  final String primaryMobileNumber;
+  final String secondaryMobileNumber;
+  final MobileEditType editType;
 
   EditMobileNumberDialog({
-    Key? key, required this.mobileNumber, this.isSecondary = false,});
+    Key? key,
+    required this.primaryMobileNumber,
+    required this.secondaryMobileNumber,
+    required this.editType,
+  });
 
   @override
   ConsumerState<EditMobileNumberDialog> createState() =>
@@ -28,33 +35,33 @@ class EditMobileNumberDialog extends ConsumerStatefulWidget {
 class _EditMobileNumberDialogState
     extends ConsumerState<EditMobileNumberDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _mobileController = TextEditingController();
-
+  final TextEditingController _primaryController = TextEditingController();
+  final TextEditingController _secondaryController = TextEditingController();
   File? imageFile;
+  bool _isUpdating = false;
 
   @override
   void initState() {
     super.initState();
-
     Utils.getToken();
     Utils.userId;
-    _mobileController.text = widget.mobileNumber;
-
-    _mobileController.selection = TextSelection.collapsed(
-      offset: _mobileController.length,
-    );
+    if (widget.editType == MobileEditType.primary) {
+      _primaryController.text = widget.primaryMobileNumber;
+    } else {
+      _secondaryController.text = widget.secondaryMobileNumber;
+    }
   }
 
   @override
   void dispose() {
-    _mobileController.dispose();
+    _primaryController.dispose();
+    _secondaryController.dispose();
+
     super.dispose();
   }
 
   String? _validateMobileNumber(String? value) {
-    if (value == null || value
-        .trim()
-        .isEmpty) {
+    if (value == null || value.trim().isEmpty) {
       return 'Enter your mobile number';
     }
     if (value.length != 10) {
@@ -73,17 +80,13 @@ class _EditMobileNumberDialogState
         clipBehavior: Clip.none,
         children: [
           Padding(
-            padding: MediaQuery
-                .of(context)
-                .viewInsets,
+            padding: MediaQuery.of(context).viewInsets,
             child: Container(
-              width: double.infinity,
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
-                  topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_16),
                 ),
               ),
               child: Form(
@@ -92,86 +95,60 @@ class _EditMobileNumberDialogState
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.isSecondary
-                                ? Strings.EDIT_SECONDARY_MOBILE_NUMBER
-                                : Strings.EDIT_MOBILE_NUMBER,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      widget.editType == MobileEditType.primary
+                          ? Strings.EDIT_MOBILE_NUMBER
+                          : Strings.EDIT_SECONDARY_MOBILE_NUMBER,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                    SizedBox(height: Constant.SIZE_08),
+                    if (widget.editType == MobileEditType.primary)
+                      TextFormField(
+                        controller: _primaryController,
+                        validator: _validateMobileNumber,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                        decoration: _inputDecoration(
+                          theme,
+                          Strings.PRIMARY_NUMBER,
+                        ),
+                        style: TextStyle(color: Colors.white),
+                      ),
 
-                    TextFormField(
-                      controller: _mobileController,
-                      validator: _validateMobileNumber,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      cursorColor: Colors.white,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(10),
-                      ],
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
+                    if (widget.editType == MobileEditType.secondary)
+                      TextFormField(
+                        controller: _secondaryController,
+                        validator: _validateMobileNumber,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                        decoration: _inputDecoration(
+                          theme,
+                          Strings.SECONDARY_NUMBER,
+                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
-                      decoration: InputDecoration(
-                        labelText: Strings.MOBILE_NUMBER,
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: Constant.CONTAINER_SIZE_16,
-                          vertical: Constant.CONTAINER_SIZE_14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
-                          borderSide: BorderSide(color: theme.colorScheme.error),
-                        ),
-                      ),
-                    ),
 
                     SizedBox(height: Constant.CONTAINER_SIZE_24),
 
                     SizedBox(
                       width: double.infinity,
-                      child:SubmitButton(onRightTap: () async {
-                        if (!_formKey.currentState!.validate()) return;
-
+                      child: SubmitButton(
+                        rightText: Strings.SAVE_CHANGES,
+                        onRightTap: () {
+                          if (!_formKey.currentState!.validate()) return;
                           _showConfirmationDialog(context);
                         },
-                        rightText: Strings.SAVE_CHANGES,
                       ),
                     ),
                   ],
@@ -179,8 +156,35 @@ class _EditMobileNumberDialogState
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context)
+          Utils.buildFloatingHeader(context),
         ],
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(ThemeData theme, String label) {
+    return InputDecoration(
+      labelText: label,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      labelStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_16,
+        vertical: Constant.CONTAINER_SIZE_14,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        borderSide: BorderSide(color: Constant.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        borderSide: BorderSide(color: Constant.grey),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        borderSide: BorderSide(color: theme.colorScheme.error),
       ),
     );
   }
@@ -191,58 +195,84 @@ class _EditMobileNumberDialogState
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          ),
-          title: Text(
-            Strings.CONFIRM_UPDATE,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          content: Text(
-           Strings.UPDATE_CONTACT_NO,
-            style: TextStyle(color: Colors.grey.shade300),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                NavUtil.popScreen(context, 2);
-              },
-              child: Text(
-                Strings.NO,
-                style: TextStyle(color: Colors.grey),
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: theme.scaffoldBackgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
               ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFC8B531),
+              title: const Text(
+                Strings.CONFIRM_UPDATE,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              onPressed: () async{
-                await _editMobileNetworkCall();
-                NavUtil.popScreen(context, 3);
-              },
-              child: Text(
-                Strings.UPDATE,
-                style: TextStyle(color: theme.primaryColor),
+              content: Text(
+                Strings.UPDATE_CONTACT_NO,
+                style: TextStyle(color: Colors.grey.shade300),
               ),
-            ),
-          ],
+              actions: [
+                /// NO button
+                TextButton(
+                  onPressed: _isUpdating
+                      ? null
+                      : () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                  child: const Text(
+                    Strings.NO,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+
+                SizedBox(
+                  width: Constant.CONTAINER_SIZE_120,
+                  child: SubmitButton(
+                    rightText: Strings.UPDATE,
+                    isLoading: _isUpdating,
+                    onRightTap: _isUpdating
+                        ? null
+                        : () async {
+                            setDialogState(() => _isUpdating = true);
+
+                            await Future.delayed(Duration(seconds: 2));
+
+                            final result = await _editMobileNetworkCall();
+
+                            if (!mounted) return;
+
+                            setDialogState(() => _isUpdating = false);
+
+                            if (result != false) {
+                              Navigator.of(dialogContext).pop();
+                              NavUtil.popScreen(context, 2);
+                            } else {
+                              Utils.showToast(Strings.SOMETHING_WENT_WRONG);
+                            }
+                          },
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
   Map<String, dynamic> getJsonData() {
-    final data = {
+    return {
       "userId": Utils.userId,
-      "phoneNumber": _mobileController.text
+      "phoneNumber": widget.editType == MobileEditType.primary
+          ? _primaryController.text
+          : widget.primaryMobileNumber,
+      "secondaryNumber": widget.editType == MobileEditType.secondary
+          ? _secondaryController.text
+          : widget.secondaryMobileNumber,
     };
-    return data;
   }
 
   _editMobileNetworkCall() async {
