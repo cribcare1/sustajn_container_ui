@@ -8,6 +8,7 @@ import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../provider/profile_provider.dart';
+import '../../../utils/nav_utils.dart';
 import '../../../utils/utility.dart';
 import 'edit_mobile_number.dart';
 
@@ -118,7 +119,8 @@ class _SecondaryMobileNumberDialogState
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            NavUtil.popScreen(context, 1);
+
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
@@ -168,7 +170,8 @@ class _SecondaryMobileNumberDialogState
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pop(context);
+                              NavUtil.popScreen(context, 1);
+
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -252,7 +255,8 @@ class _SecondaryMobileNumberDialogState
                             context,
                             _secondaryController.text.trim(),
                           );
-                          Navigator.pop(context);
+
+                          NavUtil.popScreen(context, 1);
                         },
                         rightText: Strings.SAVE_CHANGES,
                       ),

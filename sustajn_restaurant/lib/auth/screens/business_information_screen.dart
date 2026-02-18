@@ -14,6 +14,7 @@ import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../common_widgets/custom_back_button.dart';
+import '../../common_widgets/submit_button.dart';
 import '../../network_provider/network_provider.dart';
 import '../../notifier/login_notifier.dart';
 import '../../provider/profile_provider.dart';
@@ -125,12 +126,6 @@ class _BusinessInformationDetailsState
 
   @override
   Widget build(BuildContext context) {
-    final profileState = ref.read(profileProvider);
-    // final regdNo = profileState
-    //     .getProfileData!
-    //     .data!
-    //     .contactAndRegistrationDetailsResponse!
-    //     .registrationNumber!;
     String? regdNo;
 
     if (widget.previous == Strings.PROFILE) {
@@ -492,66 +487,85 @@ class _BusinessInformationDetailsState
                       ),
                     ),
                     SizedBox(height: Constant.CONTAINER_SIZE_16),
-                    SubmitClearButton(
-                      onLeftTap: () {
-                        Utils.skipDialog(
-                          context: context,
-                          icon: Icons.warning_amber,
-                          subTitle: Strings.SKIP_BUSINESS_DETAILS,
-                          cancelButtonText: Strings.CANCEL,
-                          yesButtonText: Strings.SKIP_CONTINUE,
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
-                          onYes: () {
-                            NavUtil.navigateToPushScreen(
-                              context,
-                              PaymentTypeScreen(),
-                            );
-                          },
-                        );
-                      },
-                      leftText: Strings.SKIP,
-                      onRightTap: _isLoading
-                          ? null
-                          : () async {
-                              if (!_key.currentState!.validate()) {
-                                return;
-                              }
-                              setState(() => _isLoading = true);
-                              if (widget.previous == 'profile') {
-                                final bool success =
-                                    await _businessInfoNetworkCall(regdNo!) ??
-                                    false;
+                    if (widget.previous == Strings.PROFILE) ...[
+                      SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          rightText: Strings.SAVE_BUSINESS_DTLS,
+                          isLoading: _isLoading,
+                          onRightTap: _isLoading
+                              ? null
+                              : () async {
+                            if (!_key.currentState!.validate()) return;
 
-                                if (!mounted) return;
+                            setState(() => _isLoading = true);
 
-                                setState(() => _isLoading = false);
+                            /// PROFILE FLOW
+                            if (widget.previous == Strings.PROFILE) {
+                              final bool success =
+                                  await _businessInfoNetworkCall(regdNo!) ?? false;
 
-                                if (success) {
-                                  Utils.showToast(
-                                    '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}',
-                                  );
-                                  Navigator.pop(context);
-                                } else {
-                                  showCustomSnackBar(
-                                    context: context,
-                                    message: Strings.SOMETHING_WENT_WRONG,
-                                    color: Colors.red,
-                                  );
-                                }
-                                return;
-                              }
+                              if (!mounted) return;
+
                               setState(() => _isLoading = false);
 
+                              if (success) {
+                                Utils.showToast(
+                                  '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}',
+                                );
+                                NavUtil.popScreen(context, 1);
+                              } else {
+                                showCustomSnackBar(
+                                  context: context,
+                                  message: Strings.SOMETHING_WENT_WRONG,
+                                  color: Colors.red,
+                                );
+                              }
+                              return;
+                            }
+
+                            setState(() => _isLoading = false);
+                          },
+                        ),
+                      ),
+
+                    ] else ...[
+                      SubmitClearButton(
+                        onLeftTap: () {
+                          Utils.skipDialog(
+                            context: context,
+                            icon: Icons.warning_amber,
+                            subTitle: Strings.SKIP_BUSINESS_DETAILS,
+                            cancelButtonText: Strings.CANCEL,
+                            yesButtonText: Strings.SKIP_CONTINUE,
+                            onCancel: () {
+                              NavUtil.popScreen(context, 1);
+                            },
+                            onYes: () {
                               NavUtil.navigateToPushScreen(
                                 context,
                                 PaymentTypeScreen(),
                               );
                             },
-                      rightText: Strings.CONTINUE,
-                      isLoading: _isLoading,
-                    ),
+                          );
+                        },
+                        leftText: Strings.SKIP,
+                        onRightTap: _isLoading
+                            ? null
+                            : () async {
+                                if (!_key.currentState!.validate()) {
+                                  return;
+                                }
+                                setState(() => _isLoading = true);
+                                NavUtil.navigateToPushScreen(
+                                  context,
+                                  PaymentTypeScreen(),
+                                );
+                              },
+                        rightText: Strings.CONTINUE,
+                        isLoading: _isLoading,
+                      ),
+                    ],
                   ],
                 ),
               ),
