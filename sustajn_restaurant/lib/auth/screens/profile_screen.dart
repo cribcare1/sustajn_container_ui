@@ -119,7 +119,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => SecondaryMobileNumberDialog(mobileNumber: mobile, secondaryMobileNumber: secondayMobile
+      builder: (_) => SecondaryMobileNumberDialog(primaryMobileNumber: mobile, secondaryMobileNumber: secondayMobile
       ),
     );
   }
@@ -216,7 +216,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           surfaceTintColor: const Color(0xFFD1AE31),
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              NavUtil.popScreen(context, 1);
             },
             icon: Icon(Icons.keyboard_arrow_left),
           ),

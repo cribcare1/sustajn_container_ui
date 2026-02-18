@@ -8,14 +8,19 @@ import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../provider/profile_provider.dart';
+import '../../../utils/nav_utils.dart';
 import '../../../utils/utility.dart';
 import 'edit_mobile_number.dart';
 
 class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
-  final String mobileNumber;
+  final String primaryMobileNumber;
   final String secondaryMobileNumber;
 
-  const SecondaryMobileNumberDialog({super.key, required this.secondaryMobileNumber, required this.mobileNumber});
+  const SecondaryMobileNumberDialog({
+    super.key,
+    required this.secondaryMobileNumber,
+    required this.primaryMobileNumber,
+  });
 
   @override
   ConsumerState<SecondaryMobileNumberDialog> createState() =>
@@ -28,7 +33,6 @@ class _SecondaryMobileNumberDialogState
   final TextEditingController _secondaryController = TextEditingController();
 
   bool showSecondaryField = false;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -106,7 +110,7 @@ class _SecondaryMobileNumberDialogState
                         SizedBox(width: Constant.SIZE_08),
                         Expanded(
                           child: Text(
-                            "+91 ${widget.mobileNumber}",
+                            "+91 ${widget.primaryMobileNumber}",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -115,13 +119,17 @@ class _SecondaryMobileNumberDialogState
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            NavUtil.popScreen(context, 1);
+
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
                               builder: (_) => EditMobileNumberDialog(
-                                mobileNumber: widget.mobileNumber,
+                                primaryMobileNumber: widget.primaryMobileNumber,
+                                secondaryMobileNumber:
+                                    widget.secondaryMobileNumber,
+                                editType: MobileEditType.primary,
                               ),
                             );
                           },
@@ -162,8 +170,20 @@ class _SecondaryMobileNumberDialogState
                           ),
                           GestureDetector(
                             onTap: () {
+                              NavUtil.popScreen(context, 1);
 
-                              Navigator.pop(context);
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => EditMobileNumberDialog(
+                                  primaryMobileNumber:
+                                      widget.primaryMobileNumber,
+                                  secondaryMobileNumber:
+                                      widget.secondaryMobileNumber,
+                                  editType: MobileEditType.secondary,
+                                ),
+                              );
                             },
                             child: Icon(
                               Icons.edit_outlined,
@@ -209,7 +229,9 @@ class _SecondaryMobileNumberDialogState
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: Strings.SECONDARY_NO,
-                                labelStyle: const TextStyle(color: Colors.white),
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ],
@@ -221,16 +243,21 @@ class _SecondaryMobileNumberDialogState
                     SizedBox(
                       width: double.infinity,
                       child: SubmitButton(
-                        onRightTap:
-                            () {
+                        onRightTap: () {
                           if (showSecondaryField &&
                               !_formKey.currentState!.validate())
                             return;
                           _addSecondaryNoNetworkCall();
-                          Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
-                          Navigator.pop(context, _secondaryController.text.trim());
-                          Navigator.pop(context);
-                            },
+                          Utils.showToast(
+                            '${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}',
+                          );
+                          Navigator.pop(
+                            context,
+                            _secondaryController.text.trim(),
+                          );
+
+                          NavUtil.popScreen(context, 1);
+                        },
                         rightText: Strings.SAVE_CHANGES,
                       ),
                     ),
@@ -239,7 +266,7 @@ class _SecondaryMobileNumberDialogState
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context)
+          Utils.buildFloatingHeader(context),
         ],
       ),
     );
@@ -248,7 +275,7 @@ class _SecondaryMobileNumberDialogState
   Map<String, dynamic> getJsonData() {
     final data = {
       "userId": Utils.userId,
-      "secondaryNumber": _secondaryController.text
+      "secondaryNumber": _secondaryController.text,
     };
     return data;
   }
