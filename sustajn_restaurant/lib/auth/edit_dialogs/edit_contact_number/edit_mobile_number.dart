@@ -15,9 +15,10 @@ import '../../../utils/utility.dart';
 
 class EditMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
+  final bool isSecondary;
 
-  const EditMobileNumberDialog({
-    Key? key, required this.mobileNumber});
+  EditMobileNumberDialog({
+    Key? key, required this.mobileNumber, this.isSecondary = false,});
 
   @override
   ConsumerState<EditMobileNumberDialog> createState() =>
@@ -66,7 +67,6 @@ class _EditMobileNumberDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final profileState = ref.watch(profileProvider);
     return SafeArea(
       top: false,
       child: Stack(
@@ -96,7 +96,9 @@ class _EditMobileNumberDialogState
                       children: [
                         Expanded(
                           child: Text(
-                            Strings.EDIT_MOBILE_NUMBER,
+                            widget.isSecondary
+                                ? Strings.EDIT_SECONDARY_MOBILE_NUMBER
+                                : Strings.EDIT_MOBILE_NUMBER,
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontSize: Constant.LABEL_TEXT_SIZE_18,
                               fontWeight: FontWeight.w600,

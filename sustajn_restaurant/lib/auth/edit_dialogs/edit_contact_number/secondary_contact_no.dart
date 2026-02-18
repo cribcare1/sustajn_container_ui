@@ -15,7 +15,11 @@ class SecondaryMobileNumberDialog extends ConsumerStatefulWidget {
   final String mobileNumber;
   final String secondaryMobileNumber;
 
-  const SecondaryMobileNumberDialog({super.key, required this.secondaryMobileNumber, required this.mobileNumber});
+  const SecondaryMobileNumberDialog({
+    super.key,
+    required this.secondaryMobileNumber,
+    required this.mobileNumber,
+  });
 
   @override
   ConsumerState<SecondaryMobileNumberDialog> createState() =>
@@ -162,8 +166,16 @@ class _SecondaryMobileNumberDialogState
                           ),
                           GestureDetector(
                             onTap: () {
-
                               Navigator.pop(context);
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => EditMobileNumberDialog(
+                                  mobileNumber: widget.mobileNumber,
+                                  isSecondary: true,
+                                ),
+                              );
                             },
                             child: Icon(
                               Icons.edit_outlined,
@@ -171,6 +183,17 @@ class _SecondaryMobileNumberDialogState
                               size: Constant.CONTAINER_SIZE_18,
                             ),
                           ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     EditMobileNumberDialog(mobileNumber: widget.mobileNumber, isSecondary: true,);
+                          //     // Navigator.pop(context);
+                          //   },
+                          //   child: Icon(
+                          //     Icons.edit_outlined,
+                          //     color: Colors.white,
+                          //     size: Constant.CONTAINER_SIZE_18,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ] else ...[
@@ -209,7 +232,9 @@ class _SecondaryMobileNumberDialogState
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: Strings.SECONDARY_NO,
-                                labelStyle: const TextStyle(color: Colors.white),
+                                labelStyle: const TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ],
@@ -221,16 +246,20 @@ class _SecondaryMobileNumberDialogState
                     SizedBox(
                       width: double.infinity,
                       child: SubmitButton(
-                        onRightTap:
-                            () {
+                        onRightTap: () {
                           if (showSecondaryField &&
                               !_formKey.currentState!.validate())
                             return;
                           _addSecondaryNoNetworkCall();
-                          Utils.showToast('${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}');
-                          Navigator.pop(context, _secondaryController.text.trim());
+                          Utils.showToast(
+                            '${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}',
+                          );
+                          Navigator.pop(
+                            context,
+                            _secondaryController.text.trim(),
+                          );
                           Navigator.pop(context);
-                            },
+                        },
                         rightText: Strings.SAVE_CHANGES,
                       ),
                     ),
@@ -239,7 +268,7 @@ class _SecondaryMobileNumberDialogState
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context)
+          Utils.buildFloatingHeader(context),
         ],
       ),
     );
@@ -248,7 +277,7 @@ class _SecondaryMobileNumberDialogState
   Map<String, dynamic> getJsonData() {
     final data = {
       "userId": Utils.userId,
-      "secondaryNumber": _secondaryController.text
+      "secondaryNumber": _secondaryController.text,
     };
     return data;
   }
