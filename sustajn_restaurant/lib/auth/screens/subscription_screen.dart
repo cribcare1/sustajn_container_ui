@@ -167,23 +167,27 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         );
                       },
                     ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              SizedBox(
-                width: double.infinity,
-                child: SubmitButton(
-                  onRightTap: () {
-                    if(authState.planId != 0){
-                      NavUtil.navigateToPushScreen(
-                        context,
-                        TermsAndConditionScreen(),
-                      );
-                    }else{
-                      showCustomSnackBar(context: context,
-                          message: Strings.SELECT_SUBSCRIPTION, color: Colors.grey);
-                    }
-
-                  },
-                  rightText: "Proceed to Terms & Conditions",
+              if (widget.previousScreen == "") ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                SizedBox(
+                  width: double.infinity,
+                  child: SubmitButton(
+                    onRightTap: () {
+                      if (authState.planId != 0) {
+                        NavUtil.navigateToPushScreen(
+                          context,
+                          TermsAndConditionScreen(),
+                        );
+                      } else {
+                        showCustomSnackBar(
+                          context: context,
+                          message: Strings.SELECT_SUBSCRIPTION,
+                          color: Colors.red,
+                        );
+                      }
+                    },
+                    rightText: "Proceed to Terms & Conditions",
+                  ),
                 ),
               ],
             ],
@@ -338,14 +342,6 @@ class PlanCard extends StatelessWidget {
     this.onPlanNameTap,
   });
 
-  String formatFee(num? value) {
-    final fee = value ?? 0;
-    return fee % 1 == 0
-        ? fee.toInt().toString()
-        : fee.toString();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -373,38 +369,43 @@ class PlanCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            plan.planName ?? "",
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Constant.CONTAINER_SIZE_22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      Text(
+                        plan.planName??"",
+                        style:  TextStyle(
+                          color: Colors.white,
+                          fontSize: Constant.CONTAINER_SIZE_22,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-
-                      if (plan.isSelected) ...[
-                        SizedBox(width: Constant.SIZE_08),
-                         Icon(Icons.check_circle, color: Colors.white),
-                      ],
+                      if (plan.isSelected)
+                        GestureDetector(
+                          onTap: () {
+                            onPlanNameTap?.call(plan.planId);
+                          },
+                          child: Icon(Icons.check_circle, color: Colors.white),
+                        ),
                     ],
                   ),
-
-
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
-                  Row(
-                    children: [
-                              Icon(
-                                Icons.check,
-                                color: Theme.of(context).secondaryHeaderColor,
-                                size: Constant.CONTAINER_SIZE_18,
+                  ...plan.features.map(
+                    (feature) => Padding(
+                      padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check,
+                            color: Theme.of(context).secondaryHeaderColor,
+                            size: Constant.CONTAINER_SIZE_18,
+                          ),
+                          SizedBox(width: Constant.CONTAINER_SIZE_12),
+                          Expanded(
+                            child: Text(
+                              feature,
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: Constant.CONTAINER_SIZE_14,
                               ),
                             ),
                           ),
@@ -462,31 +463,13 @@ class PlanCard extends StatelessWidget {
                 color: const Color(0xFFD4AF37),
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
               ),
-              child:
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/diarhm.png',
-                    height: Constant.CONTAINER_SIZE_14,
-                    color: Colors.black,
-                    colorBlendMode: BlendMode.srcIn,
-                  ),
-                  Text(
-                    " ${formatFee(plan.feeType)}/",
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  Text(
-                    " ${plan.billingCycle.toLowerCase()}",
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+              child: Text(
+                "Ð${plan.totalContainers.toString()}",
+                style: TextStyle(
+                  color: Color(0xFF052F1E),
+                  fontWeight: FontWeight.bold,
+                  fontSize: Constant.CONTAINER_SIZE_16,
+                ),
               ),
             ),
           ),
