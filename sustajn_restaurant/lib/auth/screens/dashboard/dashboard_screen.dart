@@ -216,7 +216,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             _buildDashboardCard(
                               context,
                               width: cardWidth,
-                              icon: Icons.rice_bowl_outlined,
+                              assetPath: 'assets/images/product.png',
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -225,12 +225,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   ),
                                 );
                               },
-                              label: 'Products',
+                              label: Strings.PRODUCTS,
                             ),
                             _buildDashboardCard(
                               context,
                               width: cardWidth,
-                              icon: Icons.call_made_outlined,
+                              assetPath: 'assets/images/orders.png',
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -239,16 +239,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   ),
                                 );
                               },
-                              label: 'Orders',
+                              label: Strings.ORDERS,
                             ),
                             _buildDashboardCard(
                               context,
                               width: cardWidth,
-                              icon: Icons.qr_code_scanner_rounded,
+                              assetPath: 'assets/images/scan.png',
                               onTap: () {
                                 _showFilterPopup(context);
                               },
-                              label: 'Scan',
+                              label: Strings.SCAN,
                             ),
                             _buildDashboardCard(
                               context,
@@ -261,14 +261,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 );
                               },
                               width: cardWidth,
-                              icon: Icons.person_outline,
-                              label: 'Profile',
+                              assetPath: 'assets/images/profile.png',
+                              label: Strings.PROFILE,
                             ),
                           ],
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_30),
                         Text(
-                          'Container Status',
+                          Strings.CONTAINER_STATUS,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
                             fontWeight: FontWeight.bold,
@@ -328,7 +328,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildDashboardCard(
     BuildContext context, {
     required double width,
-    required IconData icon,
+    required String assetPath,
     required String label,
     required VoidCallback onTap,
   }) {
@@ -353,13 +353,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       color: Constant.gold,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      icon,
-                      color: theme.scaffoldBackgroundColor,
-                      size: Constant.CONTAINER_SIZE_22,
+                    child: Padding(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                      child: Image.asset(
+                        assetPath,
+                        fit: BoxFit.contain,
+                        // color: theme.scaffoldBackgroundColor,
+                      // size: Constant.CONTAINER_SIZE_22,
                     ),
                   ),
                 ),
+              ),
               ),
 
               Flexible(
