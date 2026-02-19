@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
 class ProductFilter extends StatefulWidget {
   const ProductFilter({super.key, required String title, required String leftTabTitle, required List<String> options, String? selectedValue, required Null Function(value) onApply});
@@ -59,7 +60,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Filters",
+                Strings.FILTER,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -149,7 +150,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
               Expanded(
                 child: _actionButton(
                   context,
-                  title: "Apply",
+                  title: Strings.APPLY,
                   filled: true,
                   onTap: () {
                     Navigator.pop(context);

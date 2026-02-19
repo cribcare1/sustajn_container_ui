@@ -439,13 +439,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _legendItem('Lease', Color(0xFFCD4400), theme),
+          _legendItem(Strings.LEASE_UC, Color(0xFFCD4400), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Receive', Color(0xFF9C1A00), theme),
+          _legendItem(Strings.RECEIVE_UC, Color(0xFF9C1A00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Available', Color(0xFFF79F00), theme),
+          _legendItem(Strings.AVAILABLE, Color(0xFFF79F00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Damage', Color(0xFF7B8D73), theme),
+          _legendItem(Strings.DAMAGE, Color(0xFF7B8D73), theme),
         ],
       ),
     );
@@ -469,10 +469,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   final List<ChartData> chartData = [
-    ChartData('Available', 600, const Color(0xFFF79F00)),
-    ChartData('Receive', 280, const Color(0xFFCD4400)),
-    ChartData('Lease', 100, const Color(0xFF9C1A00)),
-    ChartData('Damage', 10, const Color(0xFF7B8D73)),
+    ChartData(Strings.AVAILABLE, 600, const Color(0xFFF79F00)),
+    ChartData(Strings.RECEIVE, 280, const Color(0xFFCD4400)),
+    ChartData(Strings.LEASE, 100, const Color(0xFF9C1A00)),
+    ChartData(Strings.DAMAGE, 10, const Color(0xFF7B8D73)),
   ];
 
   Widget _buildChartRings(
@@ -517,12 +517,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Total',
+                          Strings.TOTAL,
                           style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
                         ),
                         SizedBox(height: Constant.SIZE_04),
                         Text(
-                          '1000',
+                          Strings.THOUSAND,
                           style: TextStyle(
                             color: Colors.greenAccent,
                             fontSize: Constant.CONTAINER_SIZE_24,
@@ -538,7 +538,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               _chartLabel(
                 left: 45,
                 top: -20,
-                title: 'Receive',
+                title: Strings.RECEIVE,
                 value: '${getChartItem('Lease').value.toInt()}',
                 color: getChartItem('Lease').color,
               ),
@@ -546,7 +546,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               _chartLabel(
                 left: -30,
                 top: 35,
-                title: 'Lease',
+                title: Strings.LEASE,
                 value: '${getChartItem('Receive').value.toInt()}',
                 color: getChartItem('Receive').color,
                 alignEnd: true,
@@ -556,13 +556,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 right: -15,
                 top: 200,
                 bottom: 0,
-                title: 'Available',
+                title: Strings.AVAILABLE,
                 value: '${getChartItem('Available').value.toInt()}',
                 color: getChartItem('Available').color,
               ),
               _chartLabel(
                 top: -30,
-                title: 'Damage',
+                title: Strings.DAMAGE,
                 value: '${getChartItem('Damage').value.toInt()}',
                 color: getChartItem('Damage').color,
                 alignEnd: true,

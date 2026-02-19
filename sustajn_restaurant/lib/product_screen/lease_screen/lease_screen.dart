@@ -63,7 +63,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_ID_OR_NAME,
                 onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),

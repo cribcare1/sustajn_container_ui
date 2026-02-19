@@ -62,7 +62,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_RECEIVE_ID,
                 onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),

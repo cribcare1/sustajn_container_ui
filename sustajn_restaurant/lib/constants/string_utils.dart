@@ -395,4 +395,12 @@ class Strings {
   static const String PRODUCT = 'Products';
   static const String ORDERS = 'Orders';
   static const String CONTAINER_STATUS = 'Container Status';
+  static const String NAME_OR_ID = 'Search name or ID';
+  static const String AVAILABLE = 'Available';
+  static const String DAMAGE = 'Damage';
+  static const String TOTAL = 'Total';
+  static const String THOUSAND = '1000';
+  static const String SEARCH_BY_ID_OR_NAME = 'Search by order ID or container name';
+  static const String SEARCH_BY_RECEIVE_ID = 'Search by receive ID or container name';
+
 }
