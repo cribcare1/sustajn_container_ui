@@ -402,5 +402,6 @@ class Strings {
   static const String THOUSAND = '1000';
   static const String SEARCH_BY_ID_OR_NAME = 'Search by order ID or container name';
   static const String SEARCH_BY_RECEIVE_ID = 'Search by receive ID or container name';
+  static const String SEARCH_NAME_OR_ID = 'Search name or ID';
 
 }

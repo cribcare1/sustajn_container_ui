@@ -114,7 +114,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
                 ),
 
                 Container(
-                  width: 1,
+                  width: Constant.SIZE_1,
                   margin: EdgeInsets.symmetric(
                     horizontal: Constant.SIZE_10,
                   ),
@@ -136,7 +136,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
               Expanded(
                 child: _actionButton(
                   context,
-                  title: "Clear",
+                  title: Strings.CLEAR,
                   filled: false,
                   onTap: () {
                     setState(() {
@@ -183,7 +183,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
           border: Border(
             bottom: BorderSide(
               color: isSelected ?Constant.gold : Colors.transparent,
-              width: 1,
+              width: Constant.SIZE_1,
             ),
           ),
         ),
@@ -262,7 +262,7 @@ class _OrderFilterBottomSheetState extends State<ProductFilter> {
       children: [
         TextField(
           decoration: InputDecoration(
-            hintText: "Search name or ID",
+            hintText: Strings.SEARCH_NAME_OR_ID,
             hintStyle: TextStyle(color: Colors.white70),
             prefixIcon: Icon(Icons.search, color: Colors.white54),
             filled: true,
