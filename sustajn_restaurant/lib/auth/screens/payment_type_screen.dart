@@ -283,9 +283,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () async {
-                    final auth = ref.read(authNotifierProvider);
 
-                    if (!auth.validateBankDetails()) return;
+                    if (!authState.validateBankDetails()) return;
 
                     if (!_validatePaymentSelection(context, authState)) return;
 
@@ -294,13 +293,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     }
 
                     final bankData = BankDetailsModel(
-                      bankName: auth.bankName,
-                      accountHolderName: auth.accountHolder,
-                      ibanNumber: auth.iban,
-                      bicNumber: auth.bic,
+                      bankName: authState.bankName,
+                      accountHolderName: authState.accountHolder,
+                      ibanNumber: authState.iban,
+                      bicNumber: authState.bic,
                     );
 
-                    auth.setBankDetails(bankData);
                     authState.setBankDetails(bankData);
 
                     NavUtil.navigateToPushScreen(
