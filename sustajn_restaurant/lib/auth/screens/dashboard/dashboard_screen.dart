@@ -350,7 +350,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                      padding: EdgeInsets.all(Constant.SIZE_04),
                       child: Image.asset(
                         assetPath,
                         fit: BoxFit.contain,
