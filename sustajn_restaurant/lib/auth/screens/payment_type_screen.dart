@@ -12,6 +12,7 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
 import '../../constants/string_utils.dart';
 import '../../notifier/profile_notifier.dart';
 import '../../provider/profile_provider.dart';
@@ -38,8 +39,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   final TextEditingController ibanController = TextEditingController();
 
-
-
   @override
   void initState(){
     super.initState();
@@ -48,6 +47,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     });
     _getData();
   }
+
 
   _getData(){
     final profileState =  ref.read(profileProvider);
@@ -64,23 +64,21 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    final profileState = ref.watch(profileProvider);
+    final bankDetails = profileState.getProfileData?.data?.bankDetailsResponse;
+
     return SafeArea(
       top: false,
       bottom: true,
       child: Scaffold(
         appBar: CustomAppBar(
           title: widget.profile == 'profile' ? Strings.EDIT_PAYMENT_TYPE : '',
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.keyboard_arrow_left, color: Colors.white),
-          ),
+          leading: CustomBackButton(),
+
         ).getAppBar(context),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -278,6 +276,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               ),
               _orDivider(theme),
               _sectionTitle(theme, title: Strings.BANK_DETAILS),
+
               _bankFields(theme, authState),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
@@ -286,13 +285,10 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   onRightTap: () async {
                     final auth = ref.read(authNotifierProvider);
 
-                    // Validate bank details
                     if (!auth.validateBankDetails()) return;
 
-                    // Validate payment selection
                     if (!_validatePaymentSelection(context, authState)) return;
 
-                    // If profile screen, stop here
                     if (widget.profile == 'profile') {
                       return;
                     }
@@ -508,11 +504,15 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Widget _bankFields(ThemeData theme, var auth) {
+    final profileState = ref.read(profileProvider);
+    final bankDetails = profileState.getProfileData?.data?.bankDetailsResponse;
+
     return Column(
       children: [
         _inputField(
           theme,
-          hint: Strings.BANK_NAME,
+          hint: bankDetails!.bankName!,
+          label: Strings.BANK_NAME,
           controller: bankNameController,
           keyboardType: TextInputType.text,
           errorText: auth.bankNameError,
@@ -524,7 +524,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.ACCOUNT_HOLDER_NAME,
+          hint: bankDetails.accountHolderName!,
+          label: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
           errorText: auth.accountHolderError,
@@ -536,7 +537,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.IBAN,
+          hint: bankDetails.iBanNumber!,
+          label: Strings.IBAN,
           controller: ibanController,
           keyboardType: TextInputType.text,
           errorText: auth.ibanError,
@@ -548,7 +550,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: Strings.BIC,
+          hint: bankDetails.bicNumber!,
+          label: Strings.BIC,
           controller: bicController,
           keyboardType: TextInputType.text,
           errorText: auth.bicError,
@@ -565,6 +568,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   Widget _inputField(
       ThemeData theme, {
         required String hint,
+        required String label,
         required TextEditingController controller,
         required String? errorText,
         required Function(String) onChanged,
@@ -572,16 +576,19 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         List<TextInputFormatter>? inputFormatters,
       }) {
     return TextField(
+      controller: controller,
       onChanged: onChanged,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
+      style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_14),
       cursorColor: Colors.white,
       textCapitalization: TextCapitalization.characters,
       decoration: InputDecoration(
         hintText: hint,
         errorText: errorText,
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+        labelText: label,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
         filled: true,
         fillColor: Constant.grey.withOpacity(0.1),
         border: OutlineInputBorder(
