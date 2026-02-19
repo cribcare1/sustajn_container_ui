@@ -537,36 +537,47 @@ class _ReceiveFilterBottomSheetState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final bottomSheetHeight =
+    _selectedTab == 'Containers'
+        ? screenHeight * 0.7
+        : screenHeight * 0.7;
 
     return SafeArea(
-      top: false,
+      top: true,
       bottom: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-              child: InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: EdgeInsets.all(Constant.SIZE_08),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black,
-                    size: Constant.CONTAINER_SIZE_20,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: EdgeInsets.all(Constant.SIZE_08),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black,
+                      size: Constant.CONTAINER_SIZE_20,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Flexible(
-            child: Container(
+
+            /// MAIN CONTAINER
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: bottomSheetHeight,
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.vertical(
@@ -574,90 +585,63 @@ class _ReceiveFilterBottomSheetState
                 ),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildHeader(theme),
-                  _buildTabs(theme),
-                  Divider(
-                    color: Colors.white.withOpacity(0.2),
-                    thickness: 1,
-                    height: 1,
-                  ),
-                  if (_selectedTab == 'Containers') _buildSearchBar(theme),
-                  Flexible(child: _buildContent(theme)),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      Constant.CONTAINER_SIZE_16,
-                      0,
-                      Constant.CONTAINER_SIZE_16,
-                      Constant.CONTAINER_SIZE_16,
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLeftSideTabs(theme),
+                        Container(
+                          width: 1,
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                        Expanded(
+                          child: _buildRightSideContent(theme),
+                        ),
+                      ],
                     ),
-                    child: _buildButtons(theme, context),
                   ),
+                  _buildButtons(theme, context),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
   Widget _buildHeader(ThemeData theme) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        Constant.CONTAINER_SIZE_24,
-        Constant.CONTAINER_SIZE_20,
-        Constant.CONTAINER_SIZE_24,
-        Constant.CONTAINER_SIZE_16,
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Filters",
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
+    );
+  }
+  Widget _buildLeftSideTabs(ThemeData theme) {
+    return SizedBox(
+      width: 120,
       child: Column(
         children: [
-          Container(
-            width: Constant.CONTAINER_SIZE_60,
-            height: Constant.SIZE_05,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Constant.SIZE_05),
-              color: Colors.white30,
-            ),
-          ),
-          SizedBox(height: Constant.CONTAINER_SIZE_20),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Filters",
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontSize: Constant.LABEL_TEXT_SIZE_20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          _buildTabItem('Month', theme),
+          _buildTabItem('Containers', theme),
         ],
       ),
     );
   }
 
-  Widget _buildTabs(ThemeData theme) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: Constant.CONTAINER_SIZE_24,
-        vertical: Constant.CONTAINER_SIZE_12,
-      ),
-      child: Row(
-        children: [
-          _buildTab('Month', theme),
-          SizedBox(width: Constant.CONTAINER_SIZE_24),
-          _buildTab('Containers', theme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTab(String label, ThemeData theme) {
+  Widget _buildTabItem(String label, ThemeData theme) {
     bool isSelected = _selectedTab == label;
 
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         setState(() {
           _selectedTab = label;
@@ -666,144 +650,92 @@ class _ReceiveFilterBottomSheetState
         });
       },
       child: Container(
-        padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.white.withOpacity(0.1)
+              : Colors.transparent,
           border: Border(
-            bottom: BorderSide(
-              color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
-              width: 2,
+            left: BorderSide(
+              color: isSelected
+                  ? const Color(0xFFFBBF24)
+                  : Colors.transparent,
+              width: 3,
             ),
           ),
         ),
-        child: Text(
-          label,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: isSelected ? Colors.white : Colors.white60,
-            fontSize: Constant.LABEL_TEXT_SIZE_15,
-            fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white,
+              fontWeight:
+              isSelected ? FontWeight.w500 : FontWeight.w400,
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSearchBar(ThemeData theme) {
-    return Padding(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_24),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value.toLowerCase();
-          });
-        },
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: Constant.LABEL_TEXT_SIZE_14,
+  Widget _buildRightSideContent(ThemeData theme) {
+    return Column(
+      children: [
+        if (_selectedTab == 'Containers')
+          Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+              style: const TextStyle(color: Colors.white),
+              decoration:  InputDecoration(
+                hintText: 'Container name or ID',
+                hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+                border: InputBorder.none,
+                prefixIcon:
+                Icon(Icons.search, color: Colors.white),
+              ),
+            ),
+          ),
+        Expanded(
+          child: _selectedTab == 'Month'
+              ? _buildMonthList(theme)
+              : _buildContainersList(theme),
         ),
-        decoration: InputDecoration(
-          hintText: 'Container name or ID',
-          hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
-            fontSize: Constant.LABEL_TEXT_SIZE_14,
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Colors.white.withOpacity(0.5),
-            size: Constant.CONTAINER_SIZE_20,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: Constant.CONTAINER_SIZE_16,
-            vertical: Constant.CONTAINER_SIZE_12,
-          ),
-        ),
-      ),
+      ],
     );
-  }
-
-  Widget _buildContent(ThemeData theme) {
-    if (_selectedTab == 'Month') {
-      return _buildMonthList(theme);
-    } else {
-      return _buildContainersList(theme);
-    }
   }
 
   Widget _buildMonthList(ThemeData theme) {
     List<String> months = _getUniqueMonths();
 
-    if (months.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_40),
-          child: Text(
-            'No months available',
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white54),
-          ),
-        ),
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(
-        horizontal: Constant.CONTAINER_SIZE_24,
-        vertical: Constant.CONTAINER_SIZE_16,
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       itemCount: months.length,
-      separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
       itemBuilder: (context, index) {
         String month = months[index];
         bool isSelected = _selectedMonths.contains(month);
 
-        return InkWell(
-          onTap: () {
-            setState(() {
-              if (isSelected) {
-                _selectedMonths.remove(month);
-              } else {
-                _selectedMonths.add(month);
-              }
-            });
-          },
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_12,
-              vertical: Constant.CONTAINER_SIZE_14,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  month,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontSize: Constant.LABEL_TEXT_SIZE_15,
-                  ),
-                ),
-                Container(
-                  width: Constant.CONTAINER_SIZE_20,
-                  height: Constant.CONTAINER_SIZE_20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isSelected ? Color(0xFFFBBF24) : Colors.white54,
-                      width: 1.5,
-                    ),
-                    color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
-                  ),
-                  child: isSelected
-                      ? Icon(
-                    Icons.check,
-                    color: Theme.of(context).primaryColor,
-                    size: Constant.CONTAINER_SIZE_12,
-                  )
-                      : null,
-                ),
-              ],
-            ),
+        return ListTile(
+          title: Text(
+            month,
+            style: const TextStyle(color: Colors.white),
+          ),
+          trailing: Checkbox(
+            value: isSelected,
+            activeColor: const Color(0xFFFBBF24),
+            onChanged: (_) {
+              setState(() {
+                isSelected
+                    ? _selectedMonths.remove(month)
+                    : _selectedMonths.add(month);
+              });
+            },
           ),
         );
       },
@@ -811,103 +743,49 @@ class _ReceiveFilterBottomSheetState
   }
 
   Widget _buildContainersList(ThemeData theme) {
-    List<Map<String, String>> containers = _getUniqueContainers();
+    List<Map<String, String>> containers =
+    _getUniqueContainers();
 
     if (_searchQuery.isNotEmpty) {
-      containers = containers.where((container) {
-        String name = container['name']!.toLowerCase();
-        String uniqueId = container['uniqueId']!.toLowerCase();
-        return name.contains(_searchQuery) || uniqueId.contains(_searchQuery);
+      containers = containers.where((c) {
+        return c['name']!
+            .toLowerCase()
+            .contains(_searchQuery) ||
+            c['uniqueId']!
+                .toLowerCase()
+                .contains(_searchQuery);
       }).toList();
     }
 
-    if (containers.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_40),
-          child: Text(
-            'No containers found',
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white54),
-          ),
-        ),
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(
-        horizontal: Constant.CONTAINER_SIZE_24,
-        vertical: Constant.CONTAINER_SIZE_16,
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       itemCount: containers.length,
-      separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_08),
       itemBuilder: (context, index) {
-        Map<String, String> container = containers[index];
-        String uniqueId = container['uniqueId']!;
-        bool isSelected = _selectedContainers.contains(uniqueId);
+        final container = containers[index];
+        final uniqueId = container['uniqueId']!;
+        final isSelected =
+        _selectedContainers.contains(uniqueId);
 
-        return InkWell(
-          onTap: () {
-            setState(() {
-              if (isSelected) {
-                _selectedContainers.remove(uniqueId);
-              } else {
-                _selectedContainers.add(uniqueId);
-              }
-            });
-          },
-          borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_12,
-              vertical: Constant.CONTAINER_SIZE_12,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        container['name']!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                          fontSize: Constant.LABEL_TEXT_SIZE_15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: Constant.SIZE_04),
-                      Text(
-                        uniqueId,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white60,
-                          fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: Constant.CONTAINER_SIZE_20,
-                  height: Constant.CONTAINER_SIZE_20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isSelected ? Color(0xFFFBBF24) : Colors.white54,
-                      width: 1.5,
-                    ),
-                    color: isSelected ? Color(0xFFFBBF24) : Colors.transparent,
-                  ),
-                  child: isSelected
-                      ? Icon(
-                    Icons.check,
-                    color: Theme.of(context).primaryColor,
-                    size: Constant.CONTAINER_SIZE_12,
-                  )
-                      : null,
-                ),
-              ],
-            ),
+        return ListTile(
+          title: Text(
+            container['name']!,
+            style: const TextStyle(color: Colors.white),
+          ),
+          subtitle: Text(
+            uniqueId,
+            style:
+            const TextStyle(color: Colors.white70),
+          ),
+          trailing: Checkbox(
+            value: isSelected,
+            activeColor: const Color(0xFFFBBF24),
+            onChanged: (_) {
+              setState(() {
+                isSelected
+                    ? _selectedContainers.remove(uniqueId)
+                    : _selectedContainers.add(uniqueId);
+              });
+            },
           ),
         );
       },

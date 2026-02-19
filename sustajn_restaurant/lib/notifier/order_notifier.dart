@@ -111,6 +111,7 @@ class OrderState extends ChangeNotifier {
   void setContainerHistoryData(ContainerHistoryData containerHistory) {
     _containerHistoryData = containerHistory;
     updateGroupedOrders();
+    updateGroupedReceiveOrders();
     notifyListeners();
   }
 
@@ -344,26 +345,33 @@ class OrderState extends ChangeNotifier {
 
   Map<String, List<ReceivedResponses>> groupReceiveOrdersByMonth(
       List<ReceivedResponses>? orders, String searchQuery) {
+
     if (orders == null || orders.isEmpty) return {};
+
+    final query = searchQuery.toLowerCase();
 
     Map<String, List<ReceivedResponses>> grouped = {};
 
     for (var order in orders) {
-      if (searchQuery.isNotEmpty) {
+
+      if (query.isNotEmpty) {
         bool matches = false;
 
-        if (order.orderId.toString().contains(searchQuery.toLowerCase())) {
+        // Match order ID
+        if (order.orderId.toString().contains(query)) {
           matches = true;
         }
 
+        // Match product details
         if (order.productOrderListResponses != null) {
           for (var product in order.productOrderListResponses!) {
-            if (product.productUniqueId!
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase()) ||
-                product.productName!
-                    .toLowerCase()
-                    .contains(searchQuery.toLowerCase())) {
+
+            final uniqueId =
+                product.productUniqueId?.toLowerCase() ?? '';
+            final name =
+                product.productName?.toLowerCase() ?? '';
+
+            if (uniqueId.contains(query) || name.contains(query)) {
               matches = true;
               break;
             }
@@ -374,14 +382,14 @@ class OrderState extends ChangeNotifier {
       }
 
       String monthYear = getMonthYearReceive(order.returnDateTime ?? '');
-      if (!grouped.containsKey(monthYear)) {
-        grouped[monthYear] = [];
-      }
+
+      grouped.putIfAbsent(monthYear, () => []);
       grouped[monthYear]!.add(order);
     }
 
     return grouped;
   }
+
 
   String getMonthYearReceive(String dateTimeStr) {
     try {

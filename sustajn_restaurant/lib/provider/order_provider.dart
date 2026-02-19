@@ -49,15 +49,14 @@ final getContainerCount = FutureProvider.family<dynamic, Map<String, dynamic>>((
   final orderState = ref.watch(orderProvider);
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
-    Utils.printLog("params===$params");
     var responseData = await serviceProvider.fetchContainerCount(params['restaurantId'],
       params['productId']
     );
-    if (responseData['status'] != null && responseData['status']!.isNotEmpty && responseData['status'].toLowerCase() == Strings.SUCCESS) {
+    if (responseData['message'] != null && responseData['message']!.isNotEmpty && responseData['message'].toLowerCase() == Strings.SUCCESS) {
       orderState.setIsLoading(false);
       orderState.setLeaseCount(responseData['data']['leasedContainerCount']);
       orderState.setReturnCount(responseData['data']['returnedContainerCount']);
-      print(responseData);
+
     } else {
       orderState.setIsLoading(false);
       Utils.showToast(responseData['message']!);
