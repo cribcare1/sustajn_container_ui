@@ -10,6 +10,7 @@ import '../lottie_animation/container_order_animation.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../notifier/order_notifier.dart';
+import '../product_screen/models/month_wise_history_model.dart';
 import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
@@ -95,28 +96,6 @@ final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
   }
 });
 
-// final addReturnProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
-//   ref,
-//   params,
-// ) async {
-//   final apiService = ref.read(getOrderApiProvider);
-//
-//   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_RETURN_CONTAINER}';
-//
-//   Utils.printLog("Provider url : $url");
-//   final responseData = await apiService.addReturnService(url, params, "");
-//   final status = responseData["status"];
-//   final message = responseData['message'];
-//   if (status != null &&
-//       status.isNotEmpty &&
-//       status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-//
-//   }
-//
-//   print("Provider Response: $responseData");
-//   return responseData;
-// });
-
 final addReturnProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
@@ -170,4 +149,40 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
 
   return null;
 });
+
+final getMonthWiseHistory =
+FutureProvider.family<MonthWiseHistoryModel, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    var responseData =
+    await serviceProvider.getMonthWiseOrder(params);
+
+    if (responseData.status.isNotEmpty &&
+        responseData.status.toLowerCase() == Strings.SUCCESS) {
+      orderState.setIsLoading(false);
+      orderState.setOrderHistory(responseData.data);
+    } else {
+      orderState.setIsLoading(false);
+      Utils.showToast(responseData.message);
+    }
+
+    return responseData;
+
+  } catch (e) {
+    Utils.printLog("Get MonthWiseHistory error: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+    return MonthWiseHistoryModel(
+      status: "",
+      message: e.toString(),
+      data: [],
+    );
+  }
+});
+
 

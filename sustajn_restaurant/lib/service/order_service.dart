@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/network_urls.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../network/ApiCallPresentator.dart';
+import '../product_screen/models/month_wise_history_model.dart';
 import '../utils/utility.dart';
 
 class OrderServices {
@@ -24,6 +27,28 @@ class OrderServices {
       throw Exception(e);
     }
   }
+  Future<MonthWiseHistoryModel> getMonthWiseOrder(
+      Map<String, dynamic> body) async {
+    try {
+      String url =
+          NetworkUrls.BASE_URL + NetworkUrls.ORDER_HISTORY;
+
+      ApiCallPresenter presenter = ApiCallPresenter();
+
+      var response =
+      await presenter.getAPIDataWithBody(url, body);
+      if (response != null) {
+        return MonthWiseHistoryModel.fromJson(response);
+      } else {
+        throw Exception("Unable to fetch history");
+      }
+
+    } catch (e) {
+      Utils.printLog("Get MonthWise service error: $e");
+      throw Exception(e);
+    }
+  }
+
 
   Future<ContainerHistoryData> getContaineHistoryService(String partUrl) async {
     try {

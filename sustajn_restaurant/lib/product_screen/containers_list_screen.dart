@@ -1,102 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
-import '../constants/number_constants.dart';
-import 'models/assigned_container_list.dart';
+import 'package:sustajn_restaurant/provider/order_provider.dart';
 
-class AssignedContainerListScreen extends StatelessWidget {
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
+import '../network_provider/network_provider.dart';
+import '../utils/utility.dart';
+import 'models/month_wise_history_model.dart';
+
+class AssignedContainerListScreen extends ConsumerStatefulWidget {
   final String title;
-  final List<AssignedContainerItem> items;
+  final String type;
+  final int productId;
 
   const AssignedContainerListScreen({
     super.key,
     required this.title,
-    required this.items,
+    required this.type,
+    required this.productId,
   });
+
+  @override
+  ConsumerState<AssignedContainerListScreen> createState() =>
+      _AssignedContainerListScreenState();
+}
+
+class _AssignedContainerListScreenState
+    extends ConsumerState<AssignedContainerListScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getInventoryNetworkCall();
+    });
+    super.initState();
+  }
+
+  _getInventoryNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          ref.read(
+            getMonthWiseHistory({
+              "restaurantId": userId,
+              "productId": widget.productId,
+              "type": widget.type,
+            }),
+          );
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final provider = ref.watch(orderProvider);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(title: title,
-          leading:CustomBackButton() ).getAppBar(context),
-      body: ListView(
-        padding: EdgeInsets.only(
-          bottom: Constant.CONTAINER_SIZE_16,
-        ),
-        children: _buildGroupedList(context),
-      ),
+      appBar: CustomAppBar(
+        title: widget.title,
+        leading: CustomBackButton(),
+      ).getAppBar(context),
+      body: provider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : provider.monthWiseDataList.isEmpty
+          ? Center(
+              child: Text(
+                "Month wise History is not available",
+                style: theme.textTheme.titleMedium!.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            )
+          : ListView.separated(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              itemCount: provider.monthWiseDataList.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                        vertical: Constant.SIZE_10,
+                      ),
+                      color: Constant.grey.withOpacity(0.2),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              provider.monthWiseDataList[index].monthYear,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/img.png',
+                                height: Constant.CONTAINER_SIZE_16,
+                                width: Constant.CONTAINER_SIZE_16,
+                                color: Constant.gold,
+                              ),
+
+                              SizedBox(width: Constant.SIZE_04),
+                              Text(
+                                provider
+                                    .monthWiseDataList[index]
+                                    .totalLeasedOrReturnCount
+                                    .toString(),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Constant.gold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    ...provider.monthWiseDataList[index].dateLeasedReturnCounts
+                        .map(
+                          (item) => GestureDetector(
+                            onTap: () {},
+                            child: _listItem(context, item),
+                          ),
+                        ),
+                  ],
+                );
+              },
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+            ),
     );
   }
 
-  List<Widget> _buildGroupedList(BuildContext context) {
-    final theme = Theme.of(context);
-    final Map<String, List<AssignedContainerItem>> grouped = {};
-
-    for (final item in items) {
-      final key =
-          "${_monthName(item.dateTime.month)}-${item.dateTime.year}";
-      grouped.putIfAbsent(key, () => []).add(item);
-    }
-
-    return grouped.entries.map((entry) {
-      final total = entry.value.fold<int>(
-        0,
-            (sum, e) => sum + e.quantity,
-      );
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_16,
-              vertical: Constant.SIZE_10,
-            ),
-            color: Constant.grey.withOpacity(0.2),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    entry.key,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70
-                    ),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Image.asset('assets/images/img.png',
-                    height: Constant.CONTAINER_SIZE_16,
-                    width: Constant.CONTAINER_SIZE_16,
-                    color: Constant.gold,),
-
-                    SizedBox(width: Constant.SIZE_04),
-                    Text(
-                      total.toString(),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Constant.gold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          ...entry.value.map(
-                (item) => _listItem(context, item),
-          ),
-        ],
-      );
-    }).toList();
-  }
-
-  Widget _listItem(
-      BuildContext context, AssignedContainerItem item) {
+  Widget _listItem(BuildContext context, DateLeasedReturnCounts item) {
     final theme = Theme.of(context);
 
     return Container(
@@ -119,16 +171,16 @@ class AssignedContainerListScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _formatDate(item.dateTime),
+                  _formatDate(item.date),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70
+                    color: Colors.white70,
                   ),
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  _formatTime(item.dateTime),
+                  _formatTime(item.date),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white70
+                    color: Colors.white70,
                   ),
                 ),
               ],
@@ -136,45 +188,38 @@ class AssignedContainerListScreen extends StatelessWidget {
           ),
 
           Text(
-            item.quantity.toString(),
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Constant.gold,
-            ),
+            item.leasedReturnedCount.toString(),
+            style: theme.textTheme.titleMedium?.copyWith(color: Constant.gold),
           ),
         ],
       ),
     );
   }
 
-  String _monthName(int month) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-    return months[month - 1];
+  String _formatDate(String apiDate) {
+    try {
+      final date = DateFormat("dd.MM.yyyy").parse(apiDate);
+      return DateFormat("dd/MM/yyyy").format(date);
+    } catch (e) {
+      return apiDate;
+    }
   }
 
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/"
-        "${date.month.toString().padLeft(2, '0')}/"
-        "${date.year}";
-  }
+  String _formatTime(String apiDate) {
+    try {
+      final date = DateFormat("dd.MM.yyyy").parse(apiDate);
 
-  String _formatTime(DateTime date) {
-    final hour =
-    date.hour > 12 ? date.hour - 12 : date.hour;
-    final period = date.hour >= 12 ? 'pm' : 'am';
-    return "${hour.toString().padLeft(2, '0')}:"
-        "${date.minute.toString().padLeft(2, '0')}$period";
+      final hour = date.hour > 12
+          ? date.hour - 12
+          : date.hour == 0
+          ? 12
+          : date.hour;
+      final period = date.hour >= 12 ? 'pm' : 'am';
+
+      return "${hour.toString().padLeft(2, '0')}:"
+          "${date.minute.toString().padLeft(2, '0')} $period";
+    } catch (e) {
+      return "";
+    }
   }
 }

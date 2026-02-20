@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sustajn_restaurant/product_screen/models/month_wise_history_model.dart';
 
 import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
@@ -447,4 +448,13 @@ class OrderState extends ChangeNotifier {
   }
 
 ///
+/// Month wise order history ///
+  List<MonthWiseData> _monthWiseDataList =[];
+  List<MonthWiseData> get monthWiseDataList => _monthWiseDataList;
+  void setOrderHistory(List<MonthWiseData> data){
+  _monthWiseDataList = data;
+  notifyListeners();
+}
+
+
 }

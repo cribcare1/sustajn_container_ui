@@ -212,66 +212,13 @@ class _ContainersDetailsScreenState
     );
   }
 
-  void _navigateAssignedContainer(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AssignedContainerListScreen(
-          title: "Assigned Containers",
-          items: [
-            // AssignedContainerItem(
-            //     dateTime: DateTime(2025, 11, 25, 10, 0),
-            //     quantity: 350),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 15, 11, 23),
-              quantity: 400,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _navigateTotalLeased(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AssignedContainerListScreen(
-          title: "Total Leased",
-          items: [
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 25, 10, 0),
-              quantity: 350,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 15, 11, 23),
-              quantity: 400,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-          ],
+          title: "Total Leased", type: 'LEASED', productId: widget.details.containerId!,
         ),
       ),
     );
@@ -282,29 +229,7 @@ class _ContainersDetailsScreenState
       context,
       MaterialPageRoute(
         builder: (context) => AssignedContainerListScreen(
-          title: "Total Received",
-          items: [
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 25, 10, 0),
-              quantity: 350,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 15, 11, 23),
-              quantity: 400,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2025, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-            AssignedContainerItem(
-              dateTime: DateTime(2024, 11, 1, 23, 21),
-              quantity: 800,
-            ),
-          ],
+          title: "Total Received", type: 'RETURNED', productId: widget.details.containerId!,
         ),
       ),
     );

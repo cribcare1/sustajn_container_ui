@@ -26,6 +26,7 @@ class NetworkUrls {
   static const VERIFY_OTP = "notification/verify-token";
   static const SUBSCRIPTION_LIST = "inventory/subscription-plans/getPlans?role=RESTAURANT";
   static const CONTAINER_COUNT = "orders/getLeasedReturnedCount";
+  static const ORDER_HISTORY = "orders/getLeasedReturnedMonthYearDetails";
 
   /// Profile ///
   static const GET_PROFILE = "auth/getProfileDetails/";
