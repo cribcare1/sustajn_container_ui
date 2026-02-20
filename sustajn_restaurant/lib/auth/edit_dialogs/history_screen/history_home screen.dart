@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/history_screen/sold_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/product_screen/lease_screen/lease_screen.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
@@ -127,8 +128,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 ReceiveScreen(),
                 OrderHistoryScreen(),
                 DamagedScreen(),
-                // ReceiveScreen(),
-                OrderHistoryScreen(),
+                SoldScreen()
               ],
             ),
           ),

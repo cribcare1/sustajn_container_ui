@@ -5,6 +5,7 @@ import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
 import '../models/damaged_container_data.dart';
 import '../models/get_container_data.dart';
+import '../models/sold_container_data.dart';
 
 class OrderState extends ChangeNotifier{
   String _name = '';
@@ -13,6 +14,7 @@ class OrderState extends ChangeNotifier{
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
   DamagedContainerData? _damagedContainerData;
+  SoldContainerData? _soldContainerData;
   BuildContext? _context;
   bool _isVerifying = false;
   List<ContainersDetails> _selectedContainers = [];
@@ -27,6 +29,7 @@ class OrderState extends ChangeNotifier{
   List<ContainersDetails> get filterInventory => _filterInventory;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
   DamagedContainerData? get damagedContainerData => _damagedContainerData;
+  SoldContainerData? get soldContainerData => _soldContainerData;
   BuildContext get context => _context!;
   List<ContainersDetails> get selectedContainers => _selectedContainers;
   bool get isOrdering => _isOrdering;
@@ -117,6 +120,11 @@ class OrderState extends ChangeNotifier{
 
   void setDamagedContainerData(DamagedContainerData damagedContainer){
     _damagedContainerData = damagedContainer;
+    notifyListeners();
+  }
+
+  void setSoldContainerData(SoldContainerData soldContainer){
+    _soldContainerData = soldContainer;
     notifyListeners();
   }
 
