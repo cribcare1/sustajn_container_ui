@@ -96,7 +96,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ImageIcon(
-                    AssetImage('assets/images/img.png'),
+                    AssetImage(Strings.bowlImg),
                     size: Constant.CONTAINER_SIZE_18,
                   ),
                   SizedBox(width: Constant.SIZE_04),
