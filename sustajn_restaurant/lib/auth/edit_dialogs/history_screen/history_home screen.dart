@@ -8,6 +8,7 @@ import '../../../constants/string_utils.dart';
 import '../../../order_screen/order_screen/order_screen.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
+import 'damaged_screen.dart';
 
 class HistoryHomeScreen extends StatefulWidget {
   const HistoryHomeScreen({super.key});
@@ -125,7 +126,8 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 LeaseScreen(),
                 ReceiveScreen(),
                 OrderHistoryScreen(),
-                ReceiveScreen(),
+                DamagedScreen(),
+                // ReceiveScreen(),
                 OrderHistoryScreen(),
               ],
             ),

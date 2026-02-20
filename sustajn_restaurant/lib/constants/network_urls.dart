@@ -41,6 +41,8 @@ class NetworkUrls {
   static const CONTAINER_LIST = "inventory/getContainerTypes";
   static const DELETE_CONTAINER = "inventory/delete-container-type/";
   static const ADD_RETURN_CONTAINER = "inventory/raiseOrderRequest";
+  static const GET_DAMAGED_CONTAINER = "inventory/getDamagedContainersByRestaurant?restaurantId=";
+
 
   /// Search Restaurant ///
 

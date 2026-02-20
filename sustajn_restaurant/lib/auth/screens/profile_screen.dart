@@ -39,13 +39,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Email", "icon": Icons.email_outlined},
     {"name": "Address", "icon": Icons.location_on_outlined},
-    {"name": "Contact", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
+    {"name": "Contact Number", "icon": Icons.call},
+    {"name": "Report Damaged Container", "icon": Icons.info_outline},
     {"name": "Business Information", "icon": Icons.business_outlined},
     {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
     {"name": "Payment Type", "image": "assets/logo/dirham_icon.png"},
     {"name": "History", "icon": Icons.history},
-    {"name": "Feedback", "icon": Icons.feedback_outlined},
+    {"name": "Feedback", "icon": Icons.stars_outlined},
     {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
     {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
   ];

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
+import '../models/damaged_container_data.dart';
 import '../models/get_container_data.dart';
 
 class OrderState extends ChangeNotifier{
@@ -11,6 +12,7 @@ class OrderState extends ChangeNotifier{
   GetContainerData? _getContainerData;
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
+  DamagedContainerData? _damagedContainerData;
   BuildContext? _context;
   bool _isVerifying = false;
   List<ContainersDetails> _selectedContainers = [];
@@ -24,6 +26,7 @@ class OrderState extends ChangeNotifier{
   GetContainerData? get getContainerData => _getContainerData;
   List<ContainersDetails> get filterInventory => _filterInventory;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
+  DamagedContainerData? get damagedContainerData => _damagedContainerData;
   BuildContext get context => _context!;
   List<ContainersDetails> get selectedContainers => _selectedContainers;
   bool get isOrdering => _isOrdering;
@@ -109,6 +112,11 @@ class OrderState extends ChangeNotifier{
 
   void setContainerHistoryData(ContainerHistoryData containerHistory){
     _containerHistoryData = containerHistory;
+    notifyListeners();
+  }
+
+  void setDamagedContainerData(DamagedContainerData damagedContainer){
+    _damagedContainerData = damagedContainer;
     notifyListeners();
   }
 
