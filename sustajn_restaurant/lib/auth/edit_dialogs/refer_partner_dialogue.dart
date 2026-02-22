@@ -26,7 +26,6 @@ class _EditReferPartnerDialogState
   late TextEditingController _emailController;
 
   bool _isLoading = false;
-  // late FocusNode focusNode;
   late FocusNode _restaurantNameFocus;
   late FocusNode _contactPersonFocus;
   late FocusNode _contactNumberFocus;
