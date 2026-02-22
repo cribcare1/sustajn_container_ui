@@ -305,7 +305,8 @@ class Strings {
       "Provide information to help customers find you.";
   static const PAYMENT_TYPE = "Payment Type";
   static const PAYMENT_SUCCSS = "Payment Successful";
-
+  static const DAMAGED_DTLS = "Damaged Details";
+  static const TOTAL_DAMAGED = "Total Damaged";
   static const String CONFIRM_ACCOUNT = "Confirm Agreement & Create Account";
   static const String CONFIRM_MESSAGE =
       "Looks great! Tap Confirm to finish creating your account with the Freemium plan.";
@@ -390,6 +391,9 @@ class Strings {
   static const String FILTER = 'Filters';
   static const String MOBILE_VALIDATE = 'Contact Number must be 10 digits';
   static final RegExp email = RegExp(r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$");
+
+
+  static final String bowlImg = "assets/images/img.png";
 
   static const String ORDER = 'Order';
   static const String PRODUCT = 'Products';

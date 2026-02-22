@@ -8,7 +8,9 @@ import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../lottie_animation/container_order_animation.dart';
 import '../models/container_history_data.dart';
+import '../models/damaged_container_data.dart';
 import '../models/get_container_data.dart';
+import '../models/sold_container_data.dart';
 import '../notifier/order_notifier.dart';
 import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
@@ -141,5 +143,57 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   }
 
   return null;
+});
+
+
+final getDamagedContainerProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final containerState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    Utils.printLog("params===$params");
+    DamagedContainerData responseData = await serviceProvider
+        .getDamagedContainerService(params);
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
+      containerState.setIsLoading(false);
+      containerState.setDamagedContainerData(responseData);
+    } else {
+      containerState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get damaged provider error called: $e");
+    containerState.setIsLoading(false);
+    Utils.showNetworkErrorToast(containerState.context, e.toString());
+  }
+});
+
+
+final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final containerState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    Utils.printLog("params===$params");
+    SoldContainerData responseData = await serviceProvider
+        .getSoldContainerService(params);
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
+      containerState.setIsLoading(false);
+      containerState.setSoldContainerData(responseData);
+    } else {
+      containerState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get sold provider error called: $e");
+    containerState.setIsLoading(false);
+    Utils.showNetworkErrorToast(containerState.context, e.toString());
+  }
 });
 
