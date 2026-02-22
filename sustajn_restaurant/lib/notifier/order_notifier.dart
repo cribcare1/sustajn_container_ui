@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/product_screen/models/month_wise_history_mode
 import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
+import '../product_screen/models/history_graph_model.dart';
 
 class OrderState extends ChangeNotifier {
   String _name = '';
@@ -455,6 +456,18 @@ class OrderState extends ChangeNotifier {
   _monthWiseDataList = data;
   notifyListeners();
 }
+List<HistoryGraphData> _orderGraph =[];
+  List<HistoryGraphData> get orderGraph => _orderGraph;
+  void setOrderGraph(List<HistoryGraphData> data){
+    _orderGraph = data;
+  notifyListeners();
+}
+bool _isGraphLoading = false;
+  bool get isGraphLoading => _isGraphLoading;
+  void setGraphLoading(bool loading){
+    _isGraphLoading = loading;
+    notifyListeners();
+  }
 
 
 }

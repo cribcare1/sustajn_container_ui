@@ -10,6 +10,7 @@ import '../lottie_animation/container_order_animation.dart';
 import '../models/container_history_data.dart';
 import '../models/get_container_data.dart';
 import '../notifier/order_notifier.dart';
+import '../product_screen/models/history_graph_model.dart';
 import '../product_screen/models/month_wise_history_model.dart';
 import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
@@ -178,6 +179,40 @@ FutureProvider.family<MonthWiseHistoryModel, Map<String, dynamic>>((
     orderState.setIsLoading(false);
     Utils.showNetworkErrorToast(orderState.context, e.toString());
     return MonthWiseHistoryModel(
+      status: "",
+      message: e.toString(),
+      data: [],
+    );
+  }
+});
+final getOrderGraphProvider =
+FutureProvider.family<HistoryGraphModel, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    var responseData =
+    await serviceProvider.getGraphServices(params);
+
+    if (responseData.status.isNotEmpty &&
+        responseData.status.toLowerCase() == Strings.SUCCESS) {
+      orderState.setGraphLoading(false);
+      orderState.setOrderGraph(responseData.data);
+    } else {
+      orderState.setGraphLoading(false);
+      Utils.showToast(responseData.message);
+    }
+
+    return responseData;
+
+  } catch (e) {
+    Utils.printLog("Get MonthWiseHistory error: $e");
+    orderState.setGraphLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+    return HistoryGraphModel(
       status: "",
       message: e.toString(),
       data: [],

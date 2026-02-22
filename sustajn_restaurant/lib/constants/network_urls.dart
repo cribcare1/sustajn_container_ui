@@ -27,6 +27,7 @@ class NetworkUrls {
   static const SUBSCRIPTION_LIST = "inventory/subscription-plans/getPlans?role=RESTAURANT";
   static const CONTAINER_COUNT = "orders/getLeasedReturnedCount";
   static const ORDER_HISTORY = "orders/getLeasedReturnedMonthYearDetails";
+  static const ORDER_GRAPH = "orders/getLeasedReturnedCountWithTimeGraph";
 
   /// Profile ///
   static const GET_PROFILE = "auth/getProfileDetails/";
