@@ -12,6 +12,8 @@ import '../models/damaged_container_data.dart';
 import '../models/get_container_data.dart';
 import '../models/sold_container_data.dart';
 import '../notifier/order_notifier.dart';
+import '../product_screen/models/history_graph_model.dart';
+import '../product_screen/models/month_wise_history_model.dart';
 import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
@@ -43,6 +45,34 @@ final getOrderProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(orderState.context, e.toString());
   }
 });
+/// Container count ///
+final getContainerCount = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    var responseData = await serviceProvider.fetchContainerCount(params['restaurantId'],
+      params['productId']
+    );
+    if (responseData['message'] != null && responseData['message']!.isNotEmpty && responseData['message'].toLowerCase() == Strings.SUCCESS) {
+      orderState.setIsLoading(false);
+      orderState.setLeaseCount(responseData['data']['leasedContainerCount']);
+      orderState.setReturnCount(responseData['data']['returnedContainerCount']);
+
+    } else {
+      orderState.setIsLoading(false);
+      Utils.showToast(responseData['message']!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+///
 
 final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
   ref,
@@ -68,28 +98,6 @@ final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }
 });
-
-// final addReturnProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
-//   ref,
-//   params,
-// ) async {
-//   final apiService = ref.read(getOrderApiProvider);
-//
-//   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.ADD_RETURN_CONTAINER}';
-//
-//   Utils.printLog("Provider url : $url");
-//   final responseData = await apiService.addReturnService(url, params, "");
-//   final status = responseData["status"];
-//   final message = responseData['message'];
-//   if (status != null &&
-//       status.isNotEmpty &&
-//       status.trim().toString().toLowerCase() == NetworkUrls.SUCCESS) {
-//
-//   }
-//
-//   print("Provider Response: $responseData");
-//   return responseData;
-// });
 
 final addReturnProvider =
 FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
@@ -145,7 +153,6 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
   return null;
 });
 
-
 final getDamagedContainerProvider = FutureProvider.family<dynamic, String>((
     ref,
     params,
@@ -170,8 +177,6 @@ final getDamagedContainerProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }
 });
-
-
 final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
     ref,
     params,
@@ -196,4 +201,74 @@ final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }
 });
+
+final getMonthWiseHistory =
+FutureProvider.family<MonthWiseHistoryModel, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    var responseData =
+    await serviceProvider.getMonthWiseOrder(params);
+
+    if (responseData.status.isNotEmpty &&
+        responseData.status.toLowerCase() == Strings.SUCCESS) {
+      orderState.setIsLoading(false);
+      orderState.setOrderHistory(responseData.data);
+    } else {
+      orderState.setIsLoading(false);
+      Utils.showToast(responseData.message);
+    }
+
+    return responseData;
+
+  } catch (e) {
+    Utils.printLog("Get MonthWiseHistory error: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+    return MonthWiseHistoryModel(
+      status: "",
+      message: e.toString(),
+      data: [],
+    );
+  }
+});
+final getOrderGraphProvider =
+FutureProvider.family<HistoryGraphModel, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    var responseData =
+    await serviceProvider.getGraphServices(params);
+
+    if (responseData.status.isNotEmpty &&
+        responseData.status.toLowerCase() == Strings.SUCCESS) {
+      orderState.setGraphLoading(false);
+      orderState.setOrderGraph(responseData.data);
+    } else {
+      orderState.setGraphLoading(false);
+      Utils.showToast(responseData.message);
+    }
+
+    return responseData;
+
+  } catch (e) {
+    Utils.printLog("Get MonthWiseHistory error: $e");
+    orderState.setGraphLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+    return HistoryGraphModel(
+      status: "",
+      message: e.toString(),
+      data: [],
+    );
+  }
+});
+
 
