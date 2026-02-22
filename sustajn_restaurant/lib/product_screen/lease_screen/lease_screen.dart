@@ -12,6 +12,7 @@ import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../product_filter.dart';
 import 'detail_dialo.dart';
 
 class LeaseScreen extends ConsumerStatefulWidget {
@@ -62,7 +63,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_ID_OR_NAME,
                 onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
@@ -232,7 +233,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
-        return ReusableFilterBottomSheet(
+        return ProductFilter(
           title: Strings.FILTER,
           leftTabTitle: Strings.MONTH,
           options: months ,
@@ -241,7 +242,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             if (value == null) return;
 
             setState(() {
-              selectedMonthYear = value;
+              selectedMonthYear = value as String?;
 
               // container.sort(
               //       (a, b) => _isQtyAscending

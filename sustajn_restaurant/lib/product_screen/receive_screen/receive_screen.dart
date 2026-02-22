@@ -13,6 +13,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/date_month_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../product_filter.dart';
 
 class ReceiveScreen extends ConsumerStatefulWidget {
   const ReceiveScreen({super.key});
@@ -61,7 +62,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_RECEIVE_ID,
                 onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
@@ -209,7 +210,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
-        return ReusableFilterBottomSheet(
+        return ProductFilter(
           title: Strings.FILTER,
           leftTabTitle: Strings.MONTH,
           options: months,
@@ -218,7 +219,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             if (value == null) return;
 
             setState(() {
-              selectedMonthYear = value;
+              selectedMonthYear = value as String?;
 
             });
           },

@@ -37,17 +37,17 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Email", "icon": Icons.email_outlined},
-    {"name": "Address", "icon": Icons.location_on_outlined},
-    {"name": "Contact Number", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.info_outline},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
+    {"name": "Email", "image": "assets/images/email.png"},
+    {"name": "Address", "image": "assets/images/location.png"},
+    {"name": "Contact", "image": "assets/images/phone.png"},
+    {"name": "Report Damaged Container", "image": "assets/images/report.png"},
+    {"name": "Business Information", "image": "assets/images/business.png"},
+    {"name": "Subscription Plan", "image": "assets/images/subscription.png"},
     {"name": "Payment Type", "image": "assets/logo/dirham_icon.png"},
-    {"name": "History", "icon": Icons.history},
-    {"name": "Feedback", "icon": Icons.stars_outlined},
-    {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
-    {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
+    {"name": "History", "image": "assets/images/history.png"},
+    {"name": "Feedback", "image": "assets/images/feedback.png"},
+    {"name": "Contact Us", "image": "assets/images/headset.png"},
+    {"name": "Refer a Partner", "image": "assets/images/referal.png"},
   ];
 
   void _handleItemTap(int index, BuildContext context, String? mobileNo, String? secondaryMobile, int userId) {
