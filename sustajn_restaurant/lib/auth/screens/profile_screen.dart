@@ -176,7 +176,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void initState() {
     super.initState();
     Utils.userId;
-    _getProfileNetworkCall();
+    if(ref.read(profileProvider).getProfileData != null){
+      _getProfileNetworkCall();
+    }
   }
 
   @override
@@ -220,6 +222,17 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             },
             icon: Icon(Icons.keyboard_arrow_left),
           ),
+          actions: [
+            IconButton(onPressed: (){Utils.logOutDialog(
+              context,
+              Icons.logout,
+              Strings.CONFIRM_LOGOUT,
+              Strings.SURE_LOG_OUT,
+              Strings.YES,
+              Strings.NO,
+            );},
+                icon: Icon(Icons.logout,color: theme.primaryColor,))
+          ],
           title: Text(
             Strings.MY_PROFILE,
             style: TextStyle(

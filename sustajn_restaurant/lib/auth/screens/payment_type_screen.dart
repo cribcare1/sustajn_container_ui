@@ -509,7 +509,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       children: [
         _inputField(
           theme,
-          hint: bankDetails!.bankName!,
+          hint: Strings.BANK_NAME,
           label: Strings.BANK_NAME,
           controller: bankNameController,
           keyboardType: TextInputType.text,
@@ -522,7 +522,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.accountHolderName!,
+          hint: Strings.ACCOUNT_HOLDER_NAME,
           label: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
@@ -535,7 +535,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.iBanNumber!,
+          hint: Strings.IBAN,
           label: Strings.IBAN,
           controller: ibanController,
           keyboardType: TextInputType.text,
@@ -548,7 +548,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.bicNumber!,
+          hint: Strings.BIC,
           label: Strings.BIC,
           controller: bicController,
           keyboardType: TextInputType.text,

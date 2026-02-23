@@ -135,7 +135,18 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               (authState.plans.isEmpty)
-                  ? EmptyState(title: "No data found")
+                  ? Column(mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      EmptyState(title: "No data found"),
+                      SizedBox(height: Constant.CONTAINER_SIZE_10),
+                      SubmitButton(
+                        onRightTap: () {
+                          _refreshIndicator();
+                        },
+                        rightText: Strings.RETRY,
+                      ),
+                    ],
+                  )
                   : ListView.separated(
                       itemCount: authState.plans.length,
                       shrinkWrap: true,
@@ -167,7 +178,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                         );
                       },
                     ),
-              if (widget.previousScreen == "") ...[
+              if (widget.previousScreen == "" && authState.plans.isNotEmpty) ...[
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 SizedBox(
                   width: double.infinity,

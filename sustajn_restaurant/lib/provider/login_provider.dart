@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
 import 'package:sustajn_restaurant/auth/screens/verify_email_screen.dart';
+import 'package:sustajn_restaurant/firebase_services.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../auth/model/plan_model.dart';
@@ -55,6 +56,7 @@ final loginDetailProvider =
           Utils.userId = responseData.data!.userId!;
           SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
 print("========================================");
+          await FirebaseServices().initialize();
           if (registrationState.context.mounted) {
             NavUtil.navigateWithReplacement(DashboardScreen());
           }

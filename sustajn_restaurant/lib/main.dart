@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
+
+import 'firebase_services.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
@@ -33,21 +35,9 @@ void main() async {
     return true;
   };
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    debugPrint('📩 Foreground message received');
-    if (message.data.isNotEmpty) {
-      await backgroundMessageHandler(message);
-    }
-  });
+  await FirebaseServices().initialize();
 
   Utils.getToken();
   Utils.getProfile();
