@@ -223,15 +223,15 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
             icon: Icon(Icons.keyboard_arrow_left),
           ),
           actions: [
-            IconButton(onPressed: (){Utils.logOutDialog(
-              context,
-              Icons.logout,
-              Strings.CONFIRM_LOGOUT,
-              Strings.SURE_LOG_OUT,
-              Strings.YES,
-              Strings.NO,
-            );},
-                icon: Icon(Icons.logout,color: theme.primaryColor,))
+            // IconButton(onPressed: (){Utils.logOutDialog(
+            //   context,
+            //   Icons.logout,
+            //   Strings.CONFIRM_LOGOUT,
+            //   Strings.SURE_LOG_OUT,
+            //   Strings.YES,
+            //   Strings.NO,
+            // );},
+            //     icon: Icon(Icons.logout,color: theme.primaryColor,))
           ],
           title: Text(
             Strings.MY_PROFILE,
@@ -433,59 +433,68 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ),
                         ),
 
-                        Center(
-                          child: Container(
-                            width: w * 0.55,
-                            margin: EdgeInsets.only(top: h * 0.02),
-                            child: ElevatedButton.icon(
-                              icon: Icon(
-                                Icons.logout,
-                                color: theme.primaryColor,
-                                size: w * 0.05,
-                              ),
-                              label: Text(
-                                Strings.LOGOUT,
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontSize: w * 0.045,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.secondaryHeaderColor,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: h * 0.018,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(w * 0.04),
-                                  side: BorderSide(color: Colors.white),
-                                ),
-                              ),
-                              onPressed: () {
-                                Utils.logOutDialog(
-                                  context,
-                                  Icons.logout,
-                                  Strings.CONFIRM_LOGOUT,
-                                  Strings.SURE_LOG_OUT,
-                                  Strings.YES,
-                                  Strings.NO,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
+                        _getSingOutButton(theme, w, h),
                         SizedBox(height: h * 0.035),
                       ],
                     ),
                   ],
                 ),
               )
-            : const Center(
-                child: Text(
-                  Strings.NO_PROFILE,
-                  style: TextStyle(color: Colors.white),
+            :  Center(
+                child: Column(
+                  children: [
+                    Text(
+                      Strings.NO_PROFILE,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    _getSingOutButton(theme, w, h),
+                  ],
                 ),
               ),
+      ),
+    );
+  }
+
+  _getSingOutButton(theme, w, h){
+    return  Center(
+      child: Container(
+        width: w * 0.55,
+        margin: EdgeInsets.only(top: h * 0.02),
+        child: ElevatedButton.icon(
+          icon: Icon(
+            Icons.logout,
+            color: theme.primaryColor,
+            size: w * 0.05,
+          ),
+          label: Text(
+            Strings.LOGOUT,
+            style: TextStyle(
+              color: theme.primaryColor,
+              fontSize: w * 0.045,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.secondaryHeaderColor,
+            padding: EdgeInsets.symmetric(
+              vertical: h * 0.018,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(w * 0.04),
+              side: BorderSide(color: Colors.white),
+            ),
+          ),
+          onPressed: () {
+            Utils.logOutDialog(
+              context,
+              Icons.logout,
+              Strings.CONFIRM_LOGOUT,
+              Strings.SURE_LOG_OUT,
+              Strings.YES,
+              Strings.NO,
+            );
+          },
+        ),
       ),
     );
   }
@@ -569,27 +578,28 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
     try {
       profileState.setIsSaving(true);
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
-      Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
 
-      if (!isNetworkAvailable) {
-        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        return;
-      }
+        if (!isNetworkAvailable) {
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+          return;
+        }
 
-      // Prepare multipart parameters using your utility method
-      final params = Utils.multipartParams(
-        NetworkUrls.UPDATE_PROFILE,
-        getJsonData(mobile, name),
-        Strings.PROFILE_IMAGE,
-        profileImage,
-      );
-      final response = await ref.read(profileImgProvider(params).future);
+        // Prepare multipart parameters using your utility method
+        final params = Utils.multipartParams(
+          NetworkUrls.UPDATE_PROFILE,
+          getJsonData(mobile, name),
+          Strings.PROFILE_IMAGE,
+          profileImage,
+        );
+        final response = await ref.read(profileImgProvider(params).future);
 
-      Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsSaving(false);
+        Utils.printLog("Profile image uploaded successfully: $response");
+        profileState.setIsSaving(false);
+      });
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
       profileState.setIsSaving(false);
