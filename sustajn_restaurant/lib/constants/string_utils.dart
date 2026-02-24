@@ -407,5 +407,7 @@ class Strings {
   static const String SEARCH_BY_ID_OR_NAME = 'Search by order ID or container name';
   static const String SEARCH_BY_RECEIVE_ID = 'Search by receive ID or container name';
   static const String SEARCH_NAME_OR_ID = 'Search name or ID';
+  static const String REPORT_DAMAGED_CONTAINER = 'Report Damaged Container';
+  static const String SCAN_DAMAGED = 'Scan damaged container.';
 
 }

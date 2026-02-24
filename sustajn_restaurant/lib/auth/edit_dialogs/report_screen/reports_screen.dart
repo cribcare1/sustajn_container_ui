@@ -1,248 +1,263 @@
-import 'package:flutter/material.dart';
-import 'package:sustajn_restaurant/auth/edit_dialogs/report_screen/report_details_screen.dart';
-import 'package:sustajn_restaurant/auth/edit_dialogs/reports_model/report_mode;.dart';
-import '../../../common_widgets/custom_app_bar.dart';
-import '../../../common_widgets/custom_back_button.dart';
-import '../../../common_widgets/filter_Screen.dart';
-import '../../../constants/number_constants.dart';
-import '../../../constants/string_utils.dart';
-import '../../../utils/theme_utils.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
+import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/constants/string_utils.dart';
+import 'package:sustajn_restaurant/lease_receive/screens/receive_product_list_screen.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
-class ReportScreen extends StatefulWidget {
-  const ReportScreen({
-    super.key});
+import '../../../lease_receive/screens/lease_product_scan_screen.dart';
+import '../../../utils/global_utils.dart';
+
+class ReportsScreen extends StatefulWidget {
+  final String type;
+  final String? damage;
+
+  const ReportsScreen({super.key, required this.type, this.damage});
 
   @override
-  State<ReportScreen> createState() => _ReportScreenState();
+  State<ReportsScreen> createState() => _QrScannerScreenState();
 }
 
-class _ReportScreenState extends State<ReportScreen> {
-  int selectedTab = 0;
+class _QrScannerScreenState extends State<ReportsScreen> {
+  final MobileScannerController controller = MobileScannerController(
+    detectionSpeed: DetectionSpeed.noDuplicates, // ensures single scan
+    torchEnabled: false,
+    autoZoom: true,
+  );
+
+  bool _isScanned = false;
+  String? scannedValue;
+  bool _torchOn = false;
+  final textController = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onDetect(BarcodeCapture capture) async {
+    if (_isScanned) return;
+
+    final Barcode? barcode = capture.barcodes.firstWhere(
+          (b) => b.rawValue != null && b.rawValue!.isNotEmpty,
+      orElse: () => Barcode(
+        rawValue: null,
+        displayValue: null,
+        format: BarcodeFormat.unknown,
+      ),
+    );
+
+    if (barcode!.rawValue != null && barcode.rawValue!.isNotEmpty) {
+      final value = barcode.rawValue!;
+      if (mounted) {
+        setState(() {
+          _isScanned = true;
+          scannedValue = value;
+          textController.text = scannedValue!;
+        });
+      }
+      await Future.delayed(const Duration(milliseconds: 300));
+      await controller.stop();
+    }
+  }
 
 
-  final List<Map<String, dynamic>> customerItems = [
-    {
-      "name": "Golden Spoon",
-      "address": "2345678965 ",
-      "date": "28/11/2025",
-      "status": "New ",
-      "statusColor": Colors.white,
-    },
-    {
-      "name": " Al-Aman Restaurant",
-      "address": "7663526332 ",
-      "date": "28/11/2025",
-      "status": "New",
-      "statusColor": Colors.white,
-    },
-    {
-      "name": "Royal Biryani House",
-      "address": "7663526373",
-      "date": "26/11/2025",
-      "status": "In progress",
-      "statusColor": Colors.orange,
-    },
-    {
-      "name": "The Royal Haveli",
-      "address": "2345678934 ",
-      "date": "25/11/2025",
-      "status": "Resolved",
-      "statusColor": Colors.green,
-    },
-    {
-      "name": "Heritage Tandoor",
-      "address": "2345678934 ",
-      "date": "25/11/2025",
-      "status": "Rejected",
-      "statusColor": Colors.red,
-    },
-  ];
+  Future<void> _toggleFlash() async {
+    await controller.toggleTorch();
+    setState(() {
+      _torchOn = !_torchOn;
+    });
+  }
 
-
-  final List<Map<String, dynamic>> restaurantItems = [
-    {
-      "name": "Al-Aman Restaurant",
-      "address": "Al Marsa Street 57, Dubai Marina",
-      "date": "22/11/2025",
-      "status": "Active",
-      "statusColor": Colors.green,
-    },
-    {
-      "name": "Golden Spoon",
-      "address": "Sheikh Zayed Road 301, Dubai",
-      "date": "20/11/2025",
-      "status": "Inactive",
-      "statusColor": Colors.red,
-    },
-    {
-      "name": "Royal Biryani House",
-      "address": "Bur Dubai, Street 11",
-      "date": "19/11/2025",
-      "status": "Active",
-      "statusColor": Colors.green,
-    },
-  ];
+  Future<void> _scanAgain() async {
+    setState(() {
+      scannedValue = null;
+      textController.clear();
+      _isScanned = false;
+    });
+    await controller.start();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final themeData = CustomTheme.getTheme(true);
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
+    final h = size.height;
 
-    final items = selectedTab == 0 ? customerItems : restaurantItems;
-
-    return Scaffold(
-      backgroundColor: themeData?.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: Strings.REPORTS,
-        leading: CustomBackButton(),
-        action: [
-          IconButton(onPressed: (){
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => ReusableFilterBottomSheet(
-                title: "Filters",
-                leftTabTitle: "Month",
-                options: [
-                  "December–2024",
-                  "January–2025",
-                  "February–2024",
-                  "March–2024",
-                  "Apiral–2024",
-                  "May–2024",
-                  "June–2024",
-                  "July–2024",
-                  "August–2024",
-                  "September–2025",
-                  "October–2025",
-                  "November–2025",
-                ],
-                selectedValue: "January–2025",
-                onApply: (value) {
-                  print("Selected Month = $value");
-                },
+    return SafeArea(
+      bottom: true,
+      top: false,
+      child: Scaffold(
+        appBar: CustomAppBar(
+          title: Strings.SCAN,
+          leading: CustomBackButton(),
+          action: [
+            IconButton(
+              onPressed: _toggleFlash,
+              icon: Icon(
+                _torchOn ? Icons.flash_on : Icons.flash_off,
+                color: Colors.white,
               ),
-            );
-          },
-              icon: Icon(Icons.filter_list,
-              color: Colors.white,))
-        ]
-      ).getAppBar(context),
-      body: Column(
-        children: [
-          _buildMonthHeader(context, themeData!),
-          Expanded(child: _buildList(context, themeData, items)),
-        ],
-      ),
-    );
-  }
-  Widget _buildMonthHeader(BuildContext context, ThemeData theme) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: Constant.CONTAINER_SIZE_16,
-        vertical: Constant.CONTAINER_SIZE_12,
-      ),
-      color:Constant.grey.withOpacity(0.2),
-      child: Text(
-        'December - 2025',
-        style: theme.textTheme.bodyLarge?.copyWith(
-          fontSize: Constant.LABEL_TEXT_SIZE_16,
-          fontWeight: FontWeight.w600,
-          color: Colors.white
-        ),
-      ),
-    );
-  }
-
-
-  Widget _buildList(
-      BuildContext context, ThemeData theme, List<Map<String, dynamic>> items) {
-    return ListView.builder(
-      padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return _buildListTile(context, items[index], theme);
-      },
-    );
-  }
-
-
-
-  Widget _buildListTile(
-      BuildContext context, Map<String, dynamic> item, ThemeData theme) {
-    return GestureDetector(
-      onTap: () {
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReportDetailsScreen(
-              status: item["status"],
-              statusColor: item["statusColor"],
             ),
-          ),
-        );
-
-      },
-
-      child: Container(
-        padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            Row(
+          ],
+        ).getAppBar(context),
+        body: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    item["name"],
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: Constant.CONTAINER_SIZE_16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white
+                Padding(
+                  padding: EdgeInsetsGeometry.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: Constant.CONTAINER_SIZE_300,
+                        width: Constant.CONTAINER_SIZE_300,
+                        child: GlassSummaryCard(
+                          child: MobileScanner(
+                            controller: controller,
+                            onDetect: _onDetect,
+                            fit: BoxFit.fill,
+                            tapToFocus: true,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_16),
+                      SizedBox(
+                        width: Constant.CONTAINER_SIZE_300,
+                        child: GlassSummaryCard(
+                          child: Text(
+                            widget.type.contains(Strings.LEASE_UC)
+                                ? Strings.SCAN_FOR_LEASE
+                                : Strings.SCAN_DAMAGED,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleSmall!
+                                .copyWith(
+                              color: Theme.of(context).secondaryHeaderColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.amber, // line color
+                        thickness: 1.2,
+                      ),
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: Constant.SIZE_08),
+                      child: Text(
+                        Strings.OR,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.amber, // line color
+                        thickness: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                TextField(
+                  autofocus: false,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall!.copyWith(color: Colors.white),
+                  controller: textController,
+                  decoration: InputDecoration(
+                    hintText: Strings.ENTER_CUSTOMER_ID,
+                    hintStyle: Theme.of(
+                      context,
+                    ).textTheme.titleSmall!.copyWith(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).primaryColor,
+                  ),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: textController.text.isEmpty
+                        ? null
+                        : () {
+                      scannedId = textController.text;
+                      if (widget.type.contains(Strings.LEASE_UC)) {
+                        NavUtil.navigateToPushScreen(
+                          context,
+                          ReportsScreen(
+                            type: widget.type,
+                            damage: widget.damage,
+                          ),
+                        );
+                      } else if (widget.type.contains(Strings.RECEIVE_UC)) {
+                        NavUtil.navigateToPushScreen(
+                          context,
+                          ReceiveProductListScreen(
+                            type: widget.type,
+                            damage: widget.damage,
+                            customerId: textController.text,
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: textController.text.isEmpty
+                          ? Colors.grey.shade300
+                          : Theme.of(context).secondaryHeaderColor,
+                      foregroundColor: Colors.black,
+                      disabledBackgroundColor: Colors.grey.shade300,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                        side: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    child: Text(
+                      Strings.VERIFY,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: textController.text.isEmpty
+                            ? Colors.grey
+                            : Theme.of(context).primaryColor,
+                      ),
                     ),
                   ),
                 ),
-                Text(
-                  item["status"],
-                  style: TextStyle(
-                    fontSize: Constant.CONTAINER_SIZE_13,
-                    color: item["statusColor"],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(width: Constant.SIZE_06),
-                Icon(Icons.arrow_forward_ios, size: Constant.LABEL_TEXT_SIZE_14, color: Colors.white),
               ],
             ),
-
-            SizedBox(height: Constant.SIZE_04),
-
-
-            Text(
-              item["address"],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.white,
-              ),
+          ),
+        ),
+        floatingActionButton: InkWell(
+          onTap: () => _scanAgain(),
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
-
-            SizedBox(height: Constant.SIZE_04),
-
-
-            Text(
-              item["date"],
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.white,
-              ),
-            ),
-
-            Divider(color: Colors.grey.shade700, height: Constant.CONTAINER_SIZE_20),
-          ],
+            padding: EdgeInsetsGeometry.all(Constant.CONTAINER_SIZE_10),
+            child: Icon(Icons.flip_camera_android, size: Constant.CONTAINER_SIZE_20),
+          ),
         ),
       ),
     );
