@@ -283,24 +283,33 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () async {
-
-                    if (!authState.validateBankDetails()) return;
-
-                    if (!_validatePaymentSelection(context, authState)) return;
+                    final hasCard = authState.cardDetails != null;
+                    final hasGateway = authState.gateway != null;
+                    final hasBankDetails =
+                        bankNameController.text.trim().isNotEmpty &&
+                            accountHolderNameController.text.trim().isNotEmpty &&
+                            ibanController.text.trim().isNotEmpty &&
+                            bicController.text.trim().isNotEmpty;
+                    if (!hasCard && !hasGateway && !hasBankDetails) {
+                      Utils.showToast("Please add at least one payment method");
+                      return;
+                    }
+                    if (hasBankDetails) {
+                      if (!authState.validateBankDetails()) return;
+                      final bankData = BankDetailsModel(
+                        bankName: authState.bankName,
+                        accountHolderName: authState.accountHolder,
+                        ibanNumber: authState.iban,
+                        bicNumber: authState.bic,
+                      );
+                      authState.setBankDetails(bankData);
+                    }
 
                     if (widget.profile == 'profile') {
                       return;
                     }
 
-                    final bankData = BankDetailsModel(
-                      bankName: authState.bankName,
-                      accountHolderName: authState.accountHolder,
-                      ibanNumber: authState.iban,
-                      bicNumber: authState.bic,
-                    );
-
-                    authState.setBankDetails(bankData);
-
+                    // ✅ Navigate
                     NavUtil.navigateToPushScreen(
                       context,
                       SubscriptionScreen(),
