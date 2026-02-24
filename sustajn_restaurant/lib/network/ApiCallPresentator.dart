@@ -28,6 +28,22 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
+  Future<dynamic> getAPIDataWithBody(String url, Map<String, dynamic> body) async {
+    var response = await appDataManager.apiHelper.apiRequestWithBody(url, body);
+    if (Utils.isReqSuccess(response)) {
+      try {
+        final jsonData = json.decode(response.body);
+        Utils.printLog('Response status: $jsonData');
+        return jsonData;
+      } catch (e) {
+        Utils.printLog('Error decoding JSON: $e');
+        throw Exception('Error decoding JSON: $e');
+      }
+    } else {
+      Utils.printLog('Error response status code: ${response.statusCode}');
+      throw Exception('Error: ${response.statusCode}');
+    }
+  }
 
 
 

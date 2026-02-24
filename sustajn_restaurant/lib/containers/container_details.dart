@@ -1,39 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
+
 import '../common_widgets/card_widget.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../models/get_container_data.dart';
+import '../network_provider/network_provider.dart';
 import '../product_screen/containers_list_screen.dart';
 import '../product_screen/models/assigned_container_list.dart';
+import '../provider/order_provider.dart';
+import '../utils/utility.dart';
 
-class ContainersDetailsScreen extends StatelessWidget {
+class ContainersDetailsScreen extends ConsumerStatefulWidget {
   final ContainersDetails details;
+
   const ContainersDetailsScreen({super.key, required this.details});
+
+  @override
+  ConsumerState<ContainersDetailsScreen> createState() =>
+      _ContainersDetailsScreenState();
+}
+
+class _ContainersDetailsScreenState
+    extends ConsumerState<ContainersDetailsScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getInventoryNetworkCall();
+    });
+    super.initState();
+  }
+
+  _getInventoryNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          ref.read(
+            getContainerCount({
+              "restaurantId": userId,
+              "productId": widget.details.containerId ?? 0,
+            }),
+          );
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final orderState = ref.watch(orderProvider);
     return Scaffold(
-      appBar: CustomAppBar(title:'Container Details',
-          leading: CustomBackButton()).getAppBar(context),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: ListView(
-            children: [
-              Center(
-                child: _productCard(theme, context),
+      appBar: CustomAppBar(
+        title: 'Container Details',
+        leading: CustomBackButton(),
+      ).getAppBar(context),
+      body: orderState.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: ListView(
+                  children: [
+                    Center(child: _productCard(theme, context)),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    _statsList(theme),
+                  ],
+                ),
               ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              _statsList(theme),
-            ],
-          ),
-
-        ),
-      ),
+            ),
     );
   }
 
@@ -47,7 +95,6 @@ class ContainersDetailsScreen extends StatelessWidget {
           child: SubscriptionCard(
             padding: 4.0,
             child: Container(
-
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -69,10 +116,12 @@ class ContainersDetailsScreen extends StatelessWidget {
                     padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
                     ),
                     child: Image.network(
-                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${details.containerImageUrl}",
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.details.containerImageUrl}",
                       errorBuilder: (context, obj, stack) {
                         return Image.asset(
                           "assets/images/no_image_container.png",
@@ -85,7 +134,7 @@ class ContainersDetailsScreen extends StatelessWidget {
                   SizedBox(height: Constant.SIZE_10),
 
                   Text(
-                    details.containerName??"",
+                    widget.details.containerName ?? "",
                     maxLines: Constant.MAX_LINE_1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -95,7 +144,7 @@ class ContainersDetailsScreen extends StatelessWidget {
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    details.containerUniqueId??"",
+                    widget.details.containerUniqueId ?? "",
                     maxLines: Constant.MAX_LINE_1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -104,7 +153,7 @@ class ContainersDetailsScreen extends StatelessWidget {
                   ),
                   SizedBox(height: Constant.SIZE_02),
                   Text(
-                    "${details.capacity}ml",
+                    "${widget.details.capacity}ml",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white70,
                     ),
@@ -119,10 +168,23 @@ class ContainersDetailsScreen extends StatelessWidget {
   }
 
   Widget _statsList(ThemeData theme) {
+    final orderState = ref.read(orderProvider);
     final stats = [
-      {"title": "Leased", "value": "${details.quantityAvailable}", "arrow": true},
-      {"title": "Received", "value": "254", "arrow": true},
-      {"title": "In-Stock", "value": "${details.quantityAvailable}", "arrow": false},
+      {
+        "title": "Leased",
+        "value": "${orderState.leasedContainerCount}",
+        "arrow": true,
+      },
+      {
+        "title": "Received",
+        "value": "${orderState.returnedContainerCount}",
+        "arrow": true,
+      },
+      {
+        "title": "In-Stock",
+        "value": "${widget.details.quantityAvailable}",
+        "arrow": false,
+      },
     ];
 
     return ListView.separated(
@@ -136,102 +198,50 @@ class ContainersDetailsScreen extends StatelessWidget {
           title: stats[index]["title"] as String,
           value: stats[index]["value"] as String,
           showArrow: stats[index]["arrow"] as bool,
-          onTap: (){
-              if (title == 'Leased'){
+          onTap: () {
+            if (title == 'Leased') {
               _navigateTotalLeased(context);
-            }
-            else if (title == 'Received'){
+            } else if (title == 'Received') {
               _navigateTotalReceived(context);
             }
-          }
+          },
         );
       },
-      separatorBuilder: (context,index) =>SizedBox(height: Constant.CONTAINER_SIZE_10),
+      separatorBuilder: (context, index) =>
+          SizedBox(height: Constant.CONTAINER_SIZE_10),
     );
   }
 
-  void _navigateAssignedContainer(BuildContext context){
+
+  void _navigateTotalLeased(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AssignedContainerListScreen(
-          title: "Assigned Containers",
-          items: [
-            // AssignedContainerItem(
-            //     dateTime: DateTime(2025, 11, 25, 10, 0),
-            //     quantity: 350),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 15, 11, 23),
-                quantity: 400),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-          ],
+        builder: (context) => AssignedContainerListScreen(
+          title: "Total Leased", type: 'LEASED', productId: widget.details.containerId!,
         ),
       ),
     );
+  }
 
-  }
-  void _navigateTotalLeased(BuildContext context){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
-          title: "Total Leased",
-          items: [
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 25, 10, 0),
-                quantity: 350),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 15, 11, 23),
-                quantity: 400),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-          ],
-        ),));
-  }
-  void _navigateTotalReceived(BuildContext context){
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context)=> AssignedContainerListScreen(
-          title: "Total Received",
-          items: [
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 25, 10, 0),
-                quantity: 350),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 15, 11, 23),
-                quantity: 400),
-            AssignedContainerItem(
-                dateTime: DateTime(2025, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-            AssignedContainerItem(
-                dateTime: DateTime(2024, 11, 1, 23, 21),
-                quantity: 800),
-          ],
-        ),));
+  void _navigateTotalReceived(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AssignedContainerListScreen(
+          title: "Total Received", type: 'RETURNED', productId: widget.details.containerId!,
+        ),
+      ),
+    );
   }
 
   Widget _statCard(
-      ThemeData theme, {
-        required String title,
-        required String value,
-        required bool showArrow,
-        required VoidCallback onTap
-      }) {
+    ThemeData theme, {
+    required String title,
+    required String value,
+    required bool showArrow,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       child: GlassSummaryCard(
@@ -271,7 +281,7 @@ class ContainersDetailsScreen extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: theme.secondaryHeaderColor
+                  color: theme.secondaryHeaderColor,
                 ),
                 padding: EdgeInsets.all(Constant.SIZE_04),
                 child: Icon(

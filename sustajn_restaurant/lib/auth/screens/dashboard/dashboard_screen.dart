@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
 import 'package:sustajn_restaurant/notification/notification_screen.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
@@ -53,7 +54,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _init() async {
     await _loadProfile();
 
-    if (loginResponse == null) {
+    if (ref.read(profileProvider).getProfileData == null) {
       await _getProfileNetworkCall();
     }
   }

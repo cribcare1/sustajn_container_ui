@@ -32,6 +32,40 @@ class ApiHelper {
     }
   }
 
+  Future<http.Response> apiRequestWithBody(
+      String url,
+      Map<String, dynamic> body,
+      ) async {
+
+    final token = Utils.authToken();
+    var header = _getHeader(token);
+    try {
+      final request = http.Request("GET", Uri.parse(url));
+      request.headers.addAll(header);
+      request.body = jsonEncode(body);
+      final streamedResponse =
+      await request.send().timeout(const Duration(minutes: 1));
+      final response =
+      await http.Response.fromStream(streamedResponse);
+
+      Utils.printLog("StatusCode :: ${response.statusCode}");
+      Utils.printLog("Body :: ${response.body}");
+
+      return response;
+
+    } on TimeoutException {
+      return http.Response(
+          Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (e) {
+      Utils.printLog("Network call failed :: $e");
+      return http.Response(
+          Strings.ERROR,
+          NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
+
+
   _getHeader(var token){
     return (token != null && token.toString().isNotEmpty)?{
       'Content-Type': 'application/json',

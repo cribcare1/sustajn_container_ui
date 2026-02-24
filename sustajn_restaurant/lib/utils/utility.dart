@@ -785,7 +785,7 @@ class Utils {
     }
     return null;
   }
-
+static  String deviceToken = "";
   static Future<String?> getDeviceToken() async {
     final fcm = FirebaseMessaging.instance;
     await fcm.requestPermission();

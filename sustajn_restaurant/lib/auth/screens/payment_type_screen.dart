@@ -283,24 +283,33 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 width: double.infinity,
                 child: SubmitButton(
                   onRightTap: () async {
-
-                    if (!authState.validateBankDetails()) return;
-
-                    if (!_validatePaymentSelection(context, authState)) return;
+                    final hasCard = authState.cardDetails != null;
+                    final hasGateway = authState.gateway != null;
+                    final hasBankDetails =
+                        bankNameController.text.trim().isNotEmpty &&
+                            accountHolderNameController.text.trim().isNotEmpty &&
+                            ibanController.text.trim().isNotEmpty &&
+                            bicController.text.trim().isNotEmpty;
+                    if (!hasCard && !hasGateway && !hasBankDetails) {
+                      Utils.showToast("Please add at least one payment method");
+                      return;
+                    }
+                    if (hasBankDetails) {
+                      if (!authState.validateBankDetails()) return;
+                      final bankData = BankDetailsModel(
+                        bankName: authState.bankName,
+                        accountHolderName: authState.accountHolder,
+                        ibanNumber: authState.iban,
+                        bicNumber: authState.bic,
+                      );
+                      authState.setBankDetails(bankData);
+                    }
 
                     if (widget.profile == 'profile') {
                       return;
                     }
 
-                    final bankData = BankDetailsModel(
-                      bankName: authState.bankName,
-                      accountHolderName: authState.accountHolder,
-                      ibanNumber: authState.iban,
-                      bicNumber: authState.bic,
-                    );
-
-                    authState.setBankDetails(bankData);
-
+                    // ✅ Navigate
                     NavUtil.navigateToPushScreen(
                       context,
                       SubscriptionScreen(),
@@ -509,7 +518,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       children: [
         _inputField(
           theme,
-          hint: bankDetails!.bankName!,
+          hint: Strings.BANK_NAME,
           label: Strings.BANK_NAME,
           controller: bankNameController,
           keyboardType: TextInputType.text,
@@ -522,7 +531,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.accountHolderName!,
+          hint: Strings.ACCOUNT_HOLDER_NAME,
           label: Strings.ACCOUNT_HOLDER_NAME,
           controller: accountHolderNameController,
           keyboardType: TextInputType.text,
@@ -535,7 +544,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.iBanNumber!,
+          hint: Strings.IBAN,
           label: Strings.IBAN,
           controller: ibanController,
           keyboardType: TextInputType.text,
@@ -548,7 +557,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         SizedBox(height: Constant.SIZE_10),
         _inputField(
           theme,
-          hint: bankDetails.bicNumber!,
+          hint: Strings.BIC,
           label: Strings.BIC,
           controller: bicController,
           keyboardType: TextInputType.text,

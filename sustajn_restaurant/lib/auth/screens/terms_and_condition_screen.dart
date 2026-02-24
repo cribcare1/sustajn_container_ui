@@ -368,10 +368,9 @@ class _TermsAndConditionScreenState
       },
       "latitude": authState.registrationData!.latitude,
       "longitude": authState.registrationData!.longitude,
-      // "image": authState.registrationData!.image,
       if(authState.businessModel != null)
-        "basicDetails": authState.businessModel!.toJson(),
-      "bankDetails": authState.bankDetails!.toJson(),
+        "basicDetails": authState.businessModel??BusinessModel().toJson(),
+      "bankDetails": authState.bankDetails??BankDetailsModel().toJson(),
       "socialMediaList": authState.socialMediaList.isEmpty
           ? []
           : authState.socialMediaList.map((e) => e.toJson()).toList(),
