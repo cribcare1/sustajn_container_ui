@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import '../../../constants/imports_util.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/utility.dart';
+import 'damaged_container_scan.dart';
 
 class DamagedContainerReportDialog extends StatefulWidget {
   const DamagedContainerReportDialog({super.key});
@@ -15,7 +16,6 @@ class DamagedContainerReportDialog extends StatefulWidget {
 
 class _DamagedContainerReportDialogState
     extends State<DamagedContainerReportDialog> {
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -81,7 +81,7 @@ class _DamagedContainerReportDialogState
                           onTap: () {
                             NavUtil.navigateToPushScreen(
                               context,
-                              ReportScreen(),
+                              DamagedContainerScannerWidget(),
                             );
                           },
                           decoration: _inputDecoration(
@@ -95,7 +95,7 @@ class _DamagedContainerReportDialogState
                           onTap: () {
                             NavUtil.navigateToPushScreen(
                               context,
-                              ReportScreen(),
+                              DamagedContainerScannerWidget(customer: "customer"),
                             );
                           },
                           decoration: _inputDecoration(
