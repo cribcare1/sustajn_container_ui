@@ -3,6 +3,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_screen.dart';
 
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
 import 'order_screen/order_screen.dart';
@@ -44,10 +45,10 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
-          'Order',
+          Strings.ORDER,
           style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(
@@ -68,7 +69,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('Order'),
+                  Text(Strings.ORDER),
                 ],
               ),
             ),
@@ -78,7 +79,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                 children: [
                   Icon(Icons.reset_tv_outlined, size: Constant.CONTAINER_SIZE_18),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('Return'),
+                  Text(Strings.RETURN),
                 ],
               ),
             ),
@@ -88,7 +89,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                 children: [
                   Icon(Icons.history, size: Constant.CONTAINER_SIZE_18),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('History'),
+                  Text(Strings.HISTORY),
                 ],
               ),
             ),

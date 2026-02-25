@@ -407,5 +407,12 @@ class Strings {
   static const String SEARCH_BY_ID_OR_NAME = 'Search by order ID or container name';
   static const String SEARCH_BY_RECEIVE_ID = 'Search by receive ID or container name';
   static const String SEARCH_NAME_OR_ID = 'Search name or ID';
+  static const String SEARCH_BY_CUSTOMER_ID = 'Search by Customer ID';
+  static const String SEARCH_BY_CUSTOMER_NAME = 'Search by Customer Name';
+  static const String NO_ORDERS = 'No orders found';
+  static const String CONTAINER_NAME_ID = 'Container name or ID';
+  static const String NOTIFICATION = 'Notifications';
+  static const String MARK_ALL_READ = 'Mark all as read';
+  static const String RETURN = 'Return';
 
 }

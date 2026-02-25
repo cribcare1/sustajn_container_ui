@@ -3,6 +3,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 
+import '../constants/string_utils.dart';
 import 'notification_model.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -35,13 +36,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Notification",
+        title: Strings.NOTIFICATION,
         leading: CustomBackButton(),
         action: [
           TextButton(
             onPressed: () {},
             child: Text(
-              "Mark al as read",
+              Strings.MARK_ALL_READ,
               style: theme.textTheme.titleSmall!.copyWith(
                 color: theme.secondaryHeaderColor,
               ),
