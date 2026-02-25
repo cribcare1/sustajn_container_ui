@@ -69,7 +69,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             Expanded(
               child: containerState.isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : container == null
+                  : (container == null || container.isEmpty)
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -117,7 +117,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                             Row(
                               children: [
                                 Image.asset(
-                                  "assets/images/img.png",
+                                  Strings.BOWL_IMG,
                                   height: Constant.CONTAINER_SIZE_16,
                                   width: Constant.CONTAINER_SIZE_16,
                                 ),

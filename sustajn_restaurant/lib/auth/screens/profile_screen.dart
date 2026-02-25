@@ -24,6 +24,7 @@ import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
+import '../edit_dialogs/report_screen/damaged_container_report_dialog.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
 import 'business_information_screen.dart';
@@ -165,7 +166,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showReportScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, ReportScreen());
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DamagedContainerReportDialog(),
+    );
   }
 
   List<GetProfileData> profileData = [];

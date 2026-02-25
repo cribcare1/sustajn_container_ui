@@ -202,6 +202,7 @@ class Strings {
   static const String EDIT_ADDRESS = "Edit Address";
   static const String SAVE_CHANGES = 'Save Changes';
   static const String SAVE_BUSINESS_DTLS = 'Save Business Details';
+  static const String REPORT_DAMAGED_CONTAINER = 'Report Damaged Container';
 
   static const String RESTAURANT_ADDRESS_COLON = "Restaurant Address:";
   static const String VERIFY_LOCATION_ON_MAP = "Verify Location on Map";
@@ -393,7 +394,7 @@ class Strings {
   static final RegExp email = RegExp(r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$");
 
 
-  static final String bowlImg = "assets/images/img.png";
+  static final String BOWL_IMG = "assets/images/img.png";
 
   static const String ORDER = 'Order';
   static const String PRODUCT = 'Products';
