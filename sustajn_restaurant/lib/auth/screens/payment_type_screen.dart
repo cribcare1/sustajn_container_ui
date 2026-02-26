@@ -129,9 +129,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                             .copyWith(color: Colors.white),
                                       ),
                                       TextSpan(
-                                        text: authState
-                                            .cardDetails!
-                                            .cardHolderName ?? "",
+                                        text:
+                                            authState
+                                                .cardDetails!
+                                                .cardHolderName ??
+                                            "",
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(
                                               color: theme.secondaryHeaderColor,
@@ -206,7 +208,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                             .copyWith(color: Colors.white),
                                       ),
                                       TextSpan(
-                                        text: authState.cardDetails!.expiryDate ?? "",
+                                        text:
+                                            authState.cardDetails!.expiryDate ??
+                                            "",
                                         style: theme.textTheme.titleSmall!
                                             .copyWith(
                                               color: theme.secondaryHeaderColor,
@@ -648,81 +652,116 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
     final theme = Theme.of(context);
 
     return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-        decoration: BoxDecoration(
-          color: Color(0xFF123D2C),
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(Constant.CONTAINER_SIZE_20),
-          ),
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Link ${widget.title} Account",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: Constant.CONTAINER_SIZE_20,
+              right: Constant.CONTAINER_SIZE_20,
+              top: Constant.CONTAINER_SIZE_20,
+              bottom:
+                  MediaQuery.of(context).viewInsets.bottom +
+                  Constant.CONTAINER_SIZE_20,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+              decoration: BoxDecoration(
+                color: Color(0xFF123D2C),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
                 ),
               ),
-              SizedBox(height: Constant.CONTAINER_SIZE_16),
-              TextFormField(
-                controller: _controller,
-                style: const TextStyle(color: Colors.white),
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-                decoration: InputDecoration(
-                  hintText: 'Enter your ${widget.title} ID',
-                  hintStyle: const TextStyle(color: Colors.white70),
-                  filled: true,
-                  fillColor: Colors.white10,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(
-                      Constant.CONTAINER_SIZE_14,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Link ${widget.title} Account",
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Image.asset(
+                          widget.asset,
+                          height: Constant.CONTAINER_SIZE_28,
+                          width: Constant.CONTAINER_SIZE_28,
+                          fit: BoxFit.contain,
+                        ),
+                      ],
                     ),
-                    borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                    borderSide: BorderSide(color: Constant.grey.withOpacity(0.3), width: 2),
-                  ),
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_14,
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    TextFormField(
+                      controller: _controller,
+                      style: const TextStyle(color: Colors.white),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your ${widget.title} ID',
+                        hintStyle: const TextStyle(color: Colors.white70),
+                        filled: true,
+                        fillColor: Colors.white10,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_14,
+                          ),
+                          borderSide: BorderSide(
+                            color: Constant.grey.withOpacity(0.3),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          borderSide: BorderSide(
+                            color: Constant.grey.withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      widget.notifier.setGateway(
-                        PaymentGatewayModel(
-                          name: widget.title,
-                          id: _controller.text,
-                          asset: widget.asset,
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              Constant.CONTAINER_SIZE_14,
+                            ),
+                          ),
                         ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: const Text(
-                    Strings.ADD_CONT,
-                    style: TextStyle(color: Colors.black),
-                  ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            widget.notifier.setGateway(
+                              PaymentGatewayModel(
+                                name: widget.title,
+                                id: _controller.text,
+                                asset: widget.asset,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: const Text(
+                          Strings.ADD_CONT,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Utils.buildFloatingHeader(context),
+        ],
       ),
     );
   }

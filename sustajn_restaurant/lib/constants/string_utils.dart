@@ -246,7 +246,7 @@ class Strings {
   static const String VAT_NUMBER_15 = "VAT Number must be exactly 15 digits";
   static const String TRADE_LICENSE_VALIDATE =
       'Trade License Number must be 5 digits';
-  static const String ADD_CONT = 'Add and Continue';
+  static const String ADD_CONT = 'Add & Continue';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
