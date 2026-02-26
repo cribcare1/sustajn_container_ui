@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../../utils/theme_utils.dart';
 import '../auth_state/location_state.dart';
@@ -26,6 +27,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
   }
 
+  bool _showMap = true;
+
   final addressController = TextEditingController();
 
   @override
@@ -37,10 +40,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Select Restaurant Address",
+          title: "Edit Restaurant Address",
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              setState(() => _showMap = false);
+              NavUtil.popScreen(context, 2);
             },
             icon: Icon(Icons.arrow_back_ios, color: Colors.white),
           ),
@@ -50,55 +54,64 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             : SingleChildScrollView(
                 child: Column(
                   children: [
+                    _searchBar(context),
                     SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.5,
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: state.position!,
-                          zoom: 17,
-                        ),
-                        markers: state.position == null
-                            ? {}
-                            : {
-                                Marker(
-                                  markerId: const MarkerId('selected_location'),
-                                  position: state.position!,
-                                ),
+                      height: MediaQuery.sizeOf(context).height * 0.3,
+                      child: Stack(
+                        children: [
+                          if (_showMap)
+                            GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: state.position!,
+                                zoom: 17,
+                              ),
+                              markers: state.position == null
+                                  ? {}
+                                  : {
+                                      Marker(
+                                        markerId: const MarkerId(
+                                          'selected_location',
+                                        ),
+                                        position: state.position!,
+                                      ),
+                                    },
+                              myLocationEnabled: true,
+                              myLocationButtonEnabled: true,
+                              zoomControlsEnabled: false,
+                              compassEnabled: true,
+                              onMapCreated: (controller) {
+                                _controller.complete(controller);
                               },
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: true,
-                        zoomControlsEnabled: false,
-                        compassEnabled: true,
-                        onMapCreated: (controller) {
-                          _controller.complete(controller);
-                        },
-                        onTap: (latLng) {
-                          ref
-                              .read(locationProvider.notifier)
-                              .updatePosition(latLng);
-                        },
+                              onTap: (latLng) {
+                                ref
+                                    .read(locationProvider.notifier)
+                                    .updatePosition(latLng);
+                              },
 
-                        onCameraIdle: () async {
-                          final controller = await _controller.future;
-                          final bounds = await controller.getVisibleRegion();
+                              onCameraIdle: () async {
+                                final controller = await _controller.future;
+                                final bounds = await controller
+                                    .getVisibleRegion();
 
-                          final center = LatLng(
-                            (bounds.northeast.latitude +
-                                    bounds.southwest.latitude) /
-                                2,
-                            (bounds.northeast.longitude +
-                                    bounds.southwest.longitude) /
-                                2,
-                          );
+                                final center = LatLng(
+                                  (bounds.northeast.latitude +
+                                          bounds.southwest.latitude) /
+                                      2,
+                                  (bounds.northeast.longitude +
+                                          bounds.southwest.longitude) /
+                                      2,
+                                );
 
-                          ref
-                              .read(locationProvider.notifier)
-                              .updatePosition(center);
-                        },
+                                ref
+                                    .read(locationProvider.notifier)
+                                    .updatePosition(center);
+                              },
+                            ),
+                        ],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                       child: Column(
                         children: [
                           SizedBox(
@@ -109,11 +122,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                   color: theme.secondaryHeaderColor,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
+                                  borderRadius: BorderRadius.circular(
+                                    Constant.CONTAINER_SIZE_30,
+                                  ),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 14,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Constant.CONTAINER_SIZE_24,
+                                  vertical: Constant.CONTAINER_SIZE_14,
                                 ),
                               ),
                               icon: Icon(
@@ -142,33 +157,64 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_16),
                           Container(
-                            padding: const EdgeInsets.all(14),
+                            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
                             decoration: BoxDecoration(
-                              color: const Color(0xff225343),
-                              borderRadius: BorderRadius.circular(12),
+                              color: Color(0xff225343),
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  color: Colors.white,
+                                Container(
+                                  padding: EdgeInsets.all(Constant.SIZE_08),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(color: Colors.black),
+                                    borderRadius: BorderRadius.circular(
+                                      Constant.SIZE_08,
+                                    ),
+                                  ),
+                                  child: Icon(Icons.location_on_outlined),
                                 ),
-                                const SizedBox(width: 10),
+                                SizedBox(width: Constant.CONTAINER_SIZE_10),
                                 Expanded(
                                   child: Text(
                                     state.address,
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_16),
-                          CustomTheme.textField(
-                            isSearch: false,
-                            addressController,
-                            "Enter Restaurant address",
-                            maxLine: 3,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              CustomTheme.textField(
+                                isSearch: false,
+                                addressController,
+                                "Enter Restaurant address",
+                                maxLine: 3,
+                              ),
+
+                              ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: addressController,
+                                builder: (context, value, _) {
+                                  final length = value.text.length;
+                                  return Text(
+                                    "$length/100",
+                                    style: TextStyle(
+                                      fontSize: Constant.CONTAINER_SIZE_12,
+                                      fontWeight: FontWeight.bold,
+                                      color: length >= 100
+                                          ? Colors.red
+                                          : Colors.grey.shade400,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -176,22 +222,60 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
                     // CONFIRM
                     Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SizedBox(width: double.infinity,
-                        child: SubmitButton(onRightTap: (){
-                          Navigator.pop(context, {
-                            "lat": state.position!.latitude,
-                            "lng": state.position!.longitude,
-                            "address":
-                            "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
-                          });
-                        },rightText: Strings.CONFIRM,),
-                      )
-
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          onRightTap: () {
+                            Navigator.pop(context, {
+                              "lat": state.position!.latitude,
+                              "lng": state.position!.longitude,
+                              "address":
+                                  "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
+                            });
+                          },
+                          rightText: Strings.CONFIRM,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+      ),
+    );
+  }
+
+  Widget _searchBar(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      child: Material(
+        elevation: 0,
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+        child: TextField(
+          style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+            hintText: 'Search for area, street name...',
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+            prefixIcon: const Icon(Icons.search, color: Colors.white),
+            filled: true,
+            fillColor: theme.scaffoldBackgroundColor,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              borderSide: const BorderSide(color: Colors.white, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              borderSide: const BorderSide(color: Colors.white, width: 1.5),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: Constant.CONTAINER_SIZE_14,
+            ),
+          ),
+        ),
       ),
     );
   }

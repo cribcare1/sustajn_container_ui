@@ -57,7 +57,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context)
+          Utils.buildFloatingHeader(context),
         ],
       ),
     );
@@ -71,17 +71,16 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      child:
-      Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-            Text(
-              Strings.SUBSCRIPTION_PLAN,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+          Text(
+            Strings.SUBSCRIPTION_PLAN,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
+          ),
         ],
       ),
     );
@@ -179,12 +178,25 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               color: Constant.gold,
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
-            child: Text(
-              "Ð ${data.totalContainers.toString()}",
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.primaryColor,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/diarhm.png',
+                  height: Constant.CONTAINER_SIZE_16,
+                  color: Constant.black,
+                  colorBlendMode: BlendMode.srcIn,
+                ),
+                SizedBox(width: Constant.SIZE_02),
+                Text(
+                  "${data.totalContainers.toString()}/month",
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

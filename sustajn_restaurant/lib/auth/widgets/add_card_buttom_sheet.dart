@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
@@ -9,6 +10,7 @@ import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import '../../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 
 class AddCardDialog extends ConsumerStatefulWidget {
   final AuthState state;
@@ -52,120 +54,135 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Container(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Constant.CONTAINER_SIZE_20),
-            ),
-          ),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _key,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _header(context, theme),
-                  SizedBox(height: Constant.SIZE_15),
-                  _cardField(
-                    theme,
-                    Strings.CARD_HOLDER_NAME,
-                    _cardHolderNameController,
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return Strings.CARD_HOLDER_REQUIRED;
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: Constant.SIZE_10),
-                  _cardField(
-                    theme,
-                    Strings.CARD_NUMBER,
-                    _cardNumberController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      CardNumberInputFormatter(),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return Strings.CARD_NO_REQ;
-                      }
-                      final digitsOnly = value.replaceAll(' ', '');
-                      if (digitsOnly.length != 12) {
-                        return Strings.CARD_NUMBER_12;
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: Constant.SIZE_10),
-                  Row(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+              decoration: BoxDecoration(
+                color: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _key,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: getDatePicker(
-                          context,
-                          Strings.EXPIRATION_DATE,
-                          _expiryDateController,
-                              (date) {
-                            _expiryDateController.text =
-                            "${date.month.toString().padLeft(2, '0')}/${date.year}";
-                          },
-                          theme,
-                        ),
+                      _header(context, theme),
+                      SizedBox(height: Constant.SIZE_15),
+                      _cardField(
+                        theme,
+                        Strings.CARD_HOLDER_NAME,
+                        _cardHolderNameController,
+                        keyboardType: TextInputType.text,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                        ],
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return Strings.CARD_HOLDER_REQUIRED;
+                          }
+                          return null;
+                        },
                       ),
-                      SizedBox(width: Constant.SIZE_10),
-                      Expanded(
-                        child: _cardField(
-                          theme,
-                          Strings.CVV,
-                          _cvvController,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(3),
-                          ],
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return Strings.CVV_REQUIRED;
+                      SizedBox(height: Constant.SIZE_10),
+                      _cardField(
+                        theme,
+                        Strings.CARD_NUMBER,
+                        _cardNumberController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          CardNumberInputFormatter(),
+                        ],
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return Strings.CARD_NO_REQ;
+                          }
+                          final digitsOnly = value.replaceAll(' ', '');
+                          if (digitsOnly.length != 12) {
+                            return Strings.CARD_NUMBER_12;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: Constant.SIZE_10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: _cardField(
+                              theme,
+                              Strings.EXPIRATION_DATE,
+                              _expiryDateController,
+                              onTap: () async {
+                                final date = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(DateTime.now().year + 20),
+                                );
+                                if (date != null) {
+                                  _expiryDateController.text =
+                                      "${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                }
+                              },
+                            ),
+                          ),
+                          SizedBox(width: Constant.SIZE_10),
+                          Expanded(
+                            child: _cardField(
+                              theme,
+                              Strings.CVV,
+                              _cvvController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(3),
+                              ],
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return Strings.CVV_REQUIRED;
+                                }
+                                if (value.length != 3) {
+                                  return Strings.THREE_DIGIT;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: Constant.CONTAINER_SIZE_20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          onRightTap: () {
+                            if (_key.currentState!.validate()) {
+                              final cardData = CardDetails(
+                                cardHolderName: _cardHolderNameController.text,
+                                cardNumber: _cardNumberController.text,
+                                cvv: _cvvController.text,
+                                expiryDate: _expiryDateController.text,
+                              );
+                              widget.state.setCardDetails(cardData);
+                              Navigator.pop(context);
                             }
-                            if (value.length != 3) {
-                              return Strings.THREE_DIGIT;
-                            }
-                            return null;
                           },
+                          rightText: Strings.ADD_CARD_CONTINUE,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: SubmitButton(
-                      onRightTap: () {
-                        if(_key.currentState!.validate()){
-                          final cardData = CardDetails(
-                            cardHolderName: _cardHolderNameController.text,
-                            cardNumber: _cardNumberController.text,
-                            cvv: _cvvController.text,
-                            expiryDate: _expiryDateController.text,
-                          );
-                          widget.state.setCardDetails(cardData);
-                          Navigator.pop(context);
-                        }
-                      },
-                      rightText: Strings.ADD_CARD_CONTINUE,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            Utils.buildFloatingHeader(context),
+          ],
         ),
       ),
     );
@@ -194,25 +211,21 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             ],
           ),
         ),
-        IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
       ],
     );
   }
 
   Widget _cardField(
-      ThemeData theme,
-      String hint,
-      TextEditingController controller, {
-        String? Function(String?)? validator,
-        TextInputType keyboardType = TextInputType.text,
-        bool obscureText = false,
-        List<TextInputFormatter>? inputFormatters,
-        bool isReadOnly = false,
-        VoidCallback? onTap,
-      }) {
+    ThemeData theme,
+    String hint,
+    TextEditingController controller, {
+    String? Function(String?)? validator,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    List<TextInputFormatter>? inputFormatters,
+    bool isReadOnly = false,
+    VoidCallback? onTap,
+  }) {
     return TextFormField(
       controller: controller,
       readOnly: isReadOnly,
@@ -245,14 +258,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   }
 
   static Widget getDatePicker(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      Function(DateTime) onDateSelected,
-      ThemeData theme,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    Function(DateTime) onDateSelected,
+    ThemeData theme,
+  ) {
     return Padding(
-      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
       child: GestureDetector(
         onTap: () {
           picker.DatePicker.showDatePicker(
@@ -263,18 +276,18 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
-              itemStyle:  TextStyle(
+              itemStyle: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: Constant.LABEL_TEXT_SIZE_18,
               ),
-              cancelStyle:  TextStyle(
+              cancelStyle: TextStyle(
                 color: theme.primaryColor,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
                 fontWeight: FontWeight.w600,
               ),
 
-              doneStyle:  TextStyle(
+              doneStyle: TextStyle(
                 color: theme.primaryColor,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
                 fontWeight: FontWeight.w600,
@@ -309,22 +322,20 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 Constant.grey.withOpacity(0.3),
               ),
             ),
-            validator: (value) =>
-            value!.isEmpty ? 'Please select date' : null,
+            validator: (value) => value!.isEmpty ? 'Please select date' : null,
           ),
         ),
       ),
     );
   }
-
 }
 
 class CardNumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue,
-      TextEditingValue newValue,
-      ) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final text = newValue.text.replaceAll(' ', '');
     if (text.length > 12) return oldValue;
     final buffer = StringBuffer();
@@ -336,9 +347,7 @@ class CardNumberInputFormatter extends TextInputFormatter {
     }
     return TextEditingValue(
       text: buffer.toString(),
-      selection: TextSelection.collapsed(
-        offset: buffer.length,
-      ),
+      selection: TextSelection.collapsed(offset: buffer.length),
     );
   }
 }

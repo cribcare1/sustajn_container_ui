@@ -70,6 +70,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       top: false,
       bottom: true,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: CustomAppBar(
           title: widget.profile == 'profile' ? Strings.EDIT_PAYMENT_TYPE : '',
           leading: CustomBackButton(),
@@ -681,7 +682,11 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                     borderRadius: BorderRadius.circular(
                       Constant.CONTAINER_SIZE_14,
                     ),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                    borderSide: BorderSide(color: Constant.grey.withOpacity(0.3), width: 2),
                   ),
                 ),
               ),
