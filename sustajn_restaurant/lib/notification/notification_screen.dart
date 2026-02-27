@@ -44,7 +44,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: Text(
               Strings.MARK_ALL_READ,
               style: theme.textTheme.titleSmall!.copyWith(
-                color: theme.secondaryHeaderColor,
+                color: Constant.gold,
+                decoration: TextDecoration.underline,
+                decorationColor: Constant.gold,
+                decorationThickness: 1.5,
               ),
             ),
           ),
