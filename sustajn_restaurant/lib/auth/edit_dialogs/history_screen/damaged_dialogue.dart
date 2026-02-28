@@ -120,12 +120,12 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
-                        Strings.bowlImg,
+                        Strings.BOWL_IMG,
                         fit: BoxFit.contain,
                       );
                     },
                   )
-                : Image.asset(Strings.bowlImg, fit: BoxFit.contain),
+                : Image.asset(Strings.BOWL_IMG, fit: BoxFit.contain),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),

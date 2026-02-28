@@ -82,7 +82,7 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
             Expanded(
               child: containerState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : damageContainers.isEmpty
+                  : (damageContainers == null || damageContainers.isEmpty)
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,

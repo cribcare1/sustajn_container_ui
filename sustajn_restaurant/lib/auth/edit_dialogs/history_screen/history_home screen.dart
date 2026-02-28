@@ -44,7 +44,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
           Strings.HISTORY,
@@ -96,7 +96,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ImageIcon(
-                    AssetImage(Strings.bowlImg),
+                    AssetImage(Strings.BOWL_IMG),
                     size: Constant.CONTAINER_SIZE_18,
                   ),
                   SizedBox(width: Constant.SIZE_04),

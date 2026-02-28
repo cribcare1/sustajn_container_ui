@@ -77,7 +77,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                   containerState.setSearchQueryReceive(value);
                 },
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_CUSTOMER_NAME,
                 onFilterTap: () => _showFilterBottomSheet(context),
               ),
             ),
@@ -85,7 +85,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             Expanded(
               child: containerState.isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : container == null
+                  : (container == null || container.isEmpty)
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -139,7 +139,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                             Row(
                               children: [
                                 Image.asset(
-                                  "assets/images/img.png",
+                                  Strings.BOWL_IMG,
                                   height:
                                   Constant.CONTAINER_SIZE_16,
                                   width:
@@ -203,9 +203,9 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             size: 64,
             color: Color(0xFF047857).withOpacity(0.3),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: Constant.CONTAINER_SIZE_16),
           Text(
-            'No orders found',
+            Strings.NO_ORDERS,
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
@@ -622,7 +622,7 @@ class _ReceiveFilterBottomSheetState
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Filters",
+          Strings.FILTER,
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -699,7 +699,7 @@ class _ReceiveFilterBottomSheetState
               },
               style: const TextStyle(color: Colors.white),
               decoration:  InputDecoration(
-                hintText: 'Container name or ID',
+                hintText: Strings.CONTAINER_NAME_ID,
                 hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
                 border: InputBorder.none,
                 prefixIcon:
@@ -708,7 +708,7 @@ class _ReceiveFilterBottomSheetState
             ),
           ),
         Expanded(
-          child: _selectedTab == 'Month'
+          child: _selectedTab == Strings.MONTH
               ? _buildMonthList(theme)
               : _buildContainersList(theme),
         ),
@@ -808,8 +808,8 @@ class _ReceiveFilterBottomSheetState
           ref.read(orderProvider).clearFiltersReceive();
         });
       },
-      leftText: "Clear",
-      rightText: "Apply",
+      leftText: Strings.CLEAR,
+      rightText: Strings.APPLY,
       onRightTap: () {
         widget.onApply(_selectedMonths.toList(), _selectedContainers.toList());
         Navigator.pop(context);

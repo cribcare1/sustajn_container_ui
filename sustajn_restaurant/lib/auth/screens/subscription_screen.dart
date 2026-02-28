@@ -355,6 +355,7 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -474,14 +475,38 @@ class PlanCard extends StatelessWidget {
                 color: const Color(0xFFD4AF37),
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
               ),
-              child: Text(
-                "Ð${plan.totalContainers.toString()}",
-                style: TextStyle(
-                  color: Color(0xFF052F1E),
-                  fontWeight: FontWeight.bold,
-                  fontSize: Constant.CONTAINER_SIZE_16,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/diarhm.png',
+                    height: Constant.CONTAINER_SIZE_16,
+                    color: Constant.black,
+                    colorBlendMode: BlendMode.srcIn,
+                  ),
+                  SizedBox(width: Constant.SIZE_02),
+                  Text(
+                    "${plan.totalContainers.toString()}/month",
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       "Ð${plan.totalContainers.toString()}",
+              //       style: TextStyle(
+              //         color: Color(0xFF052F1E),
+              //         fontWeight: FontWeight.bold,
+              //         fontSize: Constant.CONTAINER_SIZE_16,
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ),
           ),
         ],

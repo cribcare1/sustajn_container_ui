@@ -24,6 +24,7 @@ import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
+import '../edit_dialogs/report_screen/damaged_container_report_dialog.dart';
 import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
 import 'business_information_screen.dart';
@@ -39,7 +40,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
     {"name": "Email", "image": "assets/images/email.png"},
     {"name": "Address", "image": "assets/images/location.png"},
-    {"name": "Contact", "image": "assets/images/phone.png"},
+    {"name": "Contact Number", "image": "assets/images/phone.png"},
     {"name": "Report Damaged Container", "image": "assets/images/report.png"},
     {"name": "Business Information", "image": "assets/images/business.png"},
     {"name": "Subscription Plan", "image": "assets/images/subscription.png"},
@@ -165,7 +166,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showReportScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, ReportScreen());
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DamagedContainerReportDialog(),
+    );
   }
 
   List<GetProfileData> profileData = [];
@@ -213,7 +219,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       child: Scaffold(
         backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: AppBar(
-          centerTitle: true,
+          centerTitle: false,
           backgroundColor: const Color(0xFFD1AE31),
           surfaceTintColor: const Color(0xFFD1AE31),
           leading: IconButton(
@@ -550,7 +556,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {
-          profileState.setIsLoading(true);
+          profileState.setIsLoading(false);
           final userId = Utils.userId;
           final url = '${NetworkUrls.GET_PROFILE}$userId';
           ref.read(getProfileProvider(url));

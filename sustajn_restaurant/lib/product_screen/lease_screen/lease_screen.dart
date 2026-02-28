@@ -61,7 +61,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                   containerState.setSearchQuery(value);
                 },
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_CUSTOMER_ID,
                 onFilterTap: () => _showFilterBottomSheet(context),
               ),
             ),
@@ -69,7 +69,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
             Expanded(
               child: containerState.isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : container == null
+                  : (container == null || container.isEmpty)
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -117,7 +117,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                             Row(
                               children: [
                                 Image.asset(
-                                  "assets/images/img.png",
+                                  Strings.BOWL_IMG,
                                   height: Constant.CONTAINER_SIZE_16,
                                   width: Constant.CONTAINER_SIZE_16,
                                 ),
@@ -180,7 +180,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
           ),
           SizedBox(height: 16),
           Text(
-            'No orders found',
+            Strings.NO_ORDERS,
             style: Theme.of(
               context,
             ).textTheme.titleMedium!.copyWith(color: Colors.white),
@@ -584,7 +584,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Filters",
+          Strings.FILTER,
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -662,7 +662,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
               },
               style: const TextStyle(color: Colors.white),
               decoration:  InputDecoration(
-                hintText: 'Container name or ID',
+                hintText: Strings.CONTAINER_NAME_ID,
                 hintStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
                 border: InputBorder.none,
                 prefixIcon:
@@ -671,7 +671,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
             ),
           ),
         Expanded(
-          child: _selectedTab == 'Month'
+          child: _selectedTab == Strings.MONTH
               ? _buildMonthList(theme)
               : _buildContainersList(theme),
         ),
@@ -770,7 +770,7 @@ class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
           _searchController.clear();
           _searchQuery = '';
         });},
-            leftText: "Clear",rightText: "Apply",
+            leftText: Strings.CLEAR,rightText: Strings.APPLY,
             onRightTap: (){ widget.onApply(
               _selectedMonths.toList(),
               _selectedContainers.toList(),
