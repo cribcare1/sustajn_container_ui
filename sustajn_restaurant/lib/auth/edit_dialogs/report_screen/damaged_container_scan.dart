@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import '../../../common_widgets/submit_button.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
+import 'add_damage_container.dart';
 
 class DamagedContainerScannerWidget extends StatefulWidget {
   final String? customer;
@@ -168,7 +169,12 @@ class _DamagedContainerScannerWidgetState
                     )
                   : OutlinedButton.icon(
                       onPressed: () {
-                        // Navigate to manual damage screen
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => AddDamagedContainerSheet(),
+                        );
                       },
                       icon: const Icon(Icons.add, color: Color(0xFFE4C45A)),
                       label: Text(

@@ -6,11 +6,16 @@ import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/constants/string_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 import '../auth_state/location_state.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
-  const MapScreen({super.key});
+  final String? profile;
+
+  const MapScreen({super.key, this.profile = ""});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -18,6 +23,10 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   final Completer<GoogleMapController> _controller = Completer();
+  final _formKey = GlobalKey<FormState>();
+  final addressController = TextEditingController();
+  bool _showMap = true;
+  String _initialAddress = "";
 
   @override
   void initState() {
@@ -27,13 +36,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     });
   }
 
-  bool _showMap = true;
-
-  final addressController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(locationProvider);
+    var profileState = ref.watch(profileProvider);
+    final addresses = profileState.getProfileData?.data?.addressResponses;
+    final address = (addresses != null && addresses.isNotEmpty)
+        ? addresses.first
+        : null;
+    if (addresses != null && addresses.isNotEmpty && _initialAddress.isEmpty) {
+      _initialAddress =
+          addresses.first.areaStreetCityBlockDetails?.trim() ?? '';
+
+      addressController.text = _initialAddress;
+    }
+
     final theme = Theme.of(context);
     return SafeArea(
       bottom: true,
@@ -188,33 +205,36 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             ),
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              CustomTheme.textField(
-                                isSearch: false,
-                                addressController,
-                                "Enter Restaurant address",
-                                maxLine: 3,
-                              ),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CustomTheme.textField(
+                                  isSearch: false,
+                                  addressController,
+                                  "Enter Restaurant address",
+                                  maxLine: 3,
+                                ),
 
-                              ValueListenableBuilder<TextEditingValue>(
-                                valueListenable: addressController,
-                                builder: (context, value, _) {
-                                  final length = value.text.length;
-                                  return Text(
-                                    "$length/100",
-                                    style: TextStyle(
-                                      fontSize: Constant.CONTAINER_SIZE_12,
-                                      fontWeight: FontWeight.bold,
-                                      color: length >= 100
-                                          ? Colors.red
-                                          : Colors.grey.shade400,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: addressController,
+                                  builder: (context, value, _) {
+                                    final length = value.text.length;
+                                    return Text(
+                                      "$length/100",
+                                      style: TextStyle(
+                                        fontSize: Constant.CONTAINER_SIZE_12,
+                                        fontWeight: FontWeight.bold,
+                                        color: length >= 100
+                                            ? Colors.red
+                                            : Colors.grey.shade400,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -226,14 +246,46 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: SubmitButton(
-                          onRightTap: () {
-                            Navigator.pop(context, {
-                              "lat": state.position!.latitude,
-                              "lng": state.position!.longitude,
-                              "address":
-                                  "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
-                            });
+                          onRightTap: () async {
+                            final typedAddress = addressController.text.trim();
+                            final mapAddress = state.address.trim();
+
+                            if (address == null) {
+                              Utils.showToast('Address data not available');
+                              return;
+                            }
+
+                            final finalAddress = typedAddress.isNotEmpty
+                                ? typedAddress
+                                : mapAddress;
+
+                            if (finalAddress.isEmpty) {
+                              Utils.showToast('Please enter or select address');
+                              return;
+                            }
+
+                            if (finalAddress == _initialAddress) {
+                              Utils.showToast('No changes detected');
+                              return;
+                            }
+
+                            await _editAddressNetworkCall(
+                              address.id?.toString() ?? "0",
+                              address.addressType ?? "",
+                              address.flatDoorHouseDetails ?? "",
+                              finalAddress,
+                              address.poBoxOrPostalCode ?? "",
+                            );
+                            NavUtil.popScreen(context, 3);
                           },
+
+
+                            // Navigator.pop(context, {
+                            //   "lat": state.position!.latitude,
+                            //   "lng": state.position!.longitude,
+                            //   "address":
+                            //       "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
+                            // });
                           rightText: Strings.CONFIRM,
                         ),
                       ),
@@ -278,5 +330,44 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
       ),
     );
+  }
+
+  Map<String, dynamic> getJsonData(
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) {
+    final data = {
+      "addressId": addressId,
+      "addressType": addType,
+      "flatDoorHouseDetails": houseDtls,
+      "areaStreetCityBlockDetails": cityDtls,
+      "poBoxOrPostalCode": pin,
+    };
+    return data;
+  }
+
+  _editAddressNetworkCall(
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) async {
+    Utils.printLog('Update Address Network call');
+
+    final isNetworkAvailable = await ref
+        .read(networkProvider.notifier)
+        .isNetworkAvailable();
+
+    if (!isNetworkAvailable) {
+      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      return;
+    }
+
+    final jsonData = getJsonData(addressId, addType, houseDtls, cityDtls, pin);
+    ref.read(addressUpdateProvider(jsonData));
   }
 }

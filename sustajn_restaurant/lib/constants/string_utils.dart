@@ -183,6 +183,7 @@ class Strings {
   static const DESCRIPTION = 'Description';
   static const SUBJECT = 'Subject';
   static const YOUR_REMARKS = 'Your Remarks';
+  static const REMARKS = 'Remarks';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
   static const FEEDBACK_DETAILS = 'Feedback Details';
@@ -395,6 +396,7 @@ class Strings {
 
 
   static final String BOWL_IMG = "assets/images/img.png";
+  static final String CUP_IMG = "assets/images/cups.png";
 
   static const String ORDER = 'Order';
   static const String PRODUCT = 'Products';

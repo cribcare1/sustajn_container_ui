@@ -97,7 +97,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => MapScreen()),
+                              MaterialPageRoute(builder: (_) => MapScreen(profile: 'profile')),
                             ).then((value) {
                               if (value != null) {
                                 _addressController.text = value['address'];
