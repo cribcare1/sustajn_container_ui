@@ -83,15 +83,32 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Text(
-                            Strings.EDIT_ADDRESS,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
+                        Text(
+                          Strings.ADDRESS,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: Constant.LABEL_TEXT_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => MapScreen(profile: 'profile')),
+                            ).then((value) {
+                              if (value != null) {
+                                _addressController.text = value['address'];
+                                lat = value['lat'];
+                                long = value['lng'];
+                              }
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.mode_edit_outlined,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -99,8 +116,18 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
 
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                    SizedBox(height: Constant.SIZE_08),
+                    Text(
+                      [
+                        address?.areaStreetCityBlockDetails,
+                        address?.poBoxOrPostalCode,
+                      ].where((e) => e != null && e.isNotEmpty).join(', '),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
 
+                    //todo needed later
+                    /*
                     TextFormField(
                       controller: _addressController,
                       validator: _validateAddress,
@@ -195,6 +222,7 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                         rightText: Strings.SAVE_CHANGES,
                       ),
                     ),
+                    */
                   ],
                 ),
               ),

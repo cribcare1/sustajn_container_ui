@@ -74,7 +74,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
               Expanded(
                 child: containerState.isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : container == null
+                    : (container == null || container.isEmpty)
                     ? const Center(
                         child: Text(
                           Strings.NO_CONTAINER_AVAILABLE,

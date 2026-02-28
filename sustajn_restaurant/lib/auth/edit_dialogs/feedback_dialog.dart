@@ -86,7 +86,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     final theme = Theme.of(context);
 
     return Container(
-      margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_24), // space for ❌
+      margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
@@ -143,42 +143,6 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     );
   }
 
-  Widget _buildFloatingHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Positioned(
-      top: -10,
-      left: Constant.CONTAINER_SIZE_16,
-      right: Constant.CONTAINER_SIZE_16,
-      child: Row(
-        children: [
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: EdgeInsets.all(Constant.SIZE_06),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.cardColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.close,
-                size: Constant.SIZE_18,
-                color: theme.iconTheme.color,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildHeaders(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -199,45 +163,6 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
           ),
         ),
       ],
-    );
-  }
-
-
-  Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: Constant.CONTAINER_SIZE_16,
-        vertical: Constant.CONTAINER_SIZE_12,
-      ),
-      child: Row(
-        children: [
-          Text(
-            Strings.FEEDBACK,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: EdgeInsets.all(Constant.SIZE_06),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.cardColor,
-              ),
-              child: Icon(
-                Icons.close,
-                size: Constant.SIZE_18,
-                color: theme.iconTheme.color,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

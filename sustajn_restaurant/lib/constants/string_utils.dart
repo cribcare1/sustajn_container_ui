@@ -183,6 +183,7 @@ class Strings {
   static const DESCRIPTION = 'Description';
   static const SUBJECT = 'Subject';
   static const YOUR_REMARKS = 'Your Remarks';
+  static const REMARKS = 'Remarks';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
   static const FEEDBACK_DETAILS = 'Feedback Details';
@@ -202,6 +203,7 @@ class Strings {
   static const String EDIT_ADDRESS = "Edit Address";
   static const String SAVE_CHANGES = 'Save Changes';
   static const String SAVE_BUSINESS_DTLS = 'Save Business Details';
+  static const String REPORT_DAMAGED_CONTAINER = 'Report Damaged Container';
 
   static const String RESTAURANT_ADDRESS_COLON = "Restaurant Address:";
   static const String VERIFY_LOCATION_ON_MAP = "Verify Location on Map";
@@ -245,7 +247,7 @@ class Strings {
   static const String VAT_NUMBER_15 = "VAT Number must be exactly 15 digits";
   static const String TRADE_LICENSE_VALIDATE =
       'Trade License Number must be 5 digits';
-  static const String ADD_CONT = 'Add and Continue';
+  static const String ADD_CONT = 'Add & Continue';
 
   static const String PROVIDE_INFOR =
       'Provide information to help customers find you';
@@ -393,7 +395,8 @@ class Strings {
   static final RegExp email = RegExp(r"^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$");
 
 
-  static final String bowlImg = "assets/images/img.png";
+  static final String BOWL_IMG = "assets/images/img.png";
+  static final String CUP_IMG = "assets/images/cups.png";
 
   static const String ORDER = 'Order';
   static const String PRODUCT = 'Products';

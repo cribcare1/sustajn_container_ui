@@ -20,13 +20,16 @@ class SubscriptionDetailsScreen extends StatefulWidget {
 
 class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
 
-  var data;
+  dynamic data;
 
   @override
   void initState() {
-    _getData();
     super.initState();
+    data = widget.subscriptionResponse ?? widget.planModel;
+    _getData();
   }
+
+
   _getData(){
     if(widget.subscriptionResponse != null && widget.previousScreen =="profile"){
       data = widget.subscriptionResponse;
@@ -37,6 +40,11 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (data == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     final theme = Theme.of(context);
     return SafeArea(
       top: false,
