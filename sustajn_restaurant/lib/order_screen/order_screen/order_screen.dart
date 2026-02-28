@@ -59,7 +59,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             children: [
               CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_CUSTOMER_ID,
                 onFilterTap: (){
                   showModalBottomSheet(
                     context: context,
