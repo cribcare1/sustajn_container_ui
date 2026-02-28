@@ -21,9 +21,15 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
     final subscription =
         profileState.getProfileData?.data!.subscriptionResponse;
     return SafeArea(
-      child: Stack(
-        clipBehavior: Clip.none,
+        top: false,bottom: true,
+        child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          Utils.buildFloatingHeader(context),
+          SizedBox(height: Constant.SIZE_08),
           Padding(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -57,10 +63,9 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context)
         ],
       ),
-    );
+        ));
   }
 
   Widget _header(BuildContext context) {

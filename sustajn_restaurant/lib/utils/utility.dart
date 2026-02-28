@@ -24,37 +24,15 @@ import '../models/login_model.dart';
 class Utils {
 
   static buildFloatingHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Positioned(
-      top: -18,
-      left: Constant.CONTAINER_SIZE_16,
-      right: Constant.CONTAINER_SIZE_16,
-      child: Row(
-        children: [
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: EdgeInsets.all(Constant.SIZE_06),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.cardColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.close,
-                size: Constant.SIZE_18,
-                color: theme.iconTheme.color,
-              ),
-            ),
-          ),
-        ],
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
       ),
     );
   }

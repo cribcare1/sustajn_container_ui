@@ -70,14 +70,18 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     final theme = Theme.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          _buildBottomSheetContent(context),
-          Utils.buildFloatingHeader(context),
-        ],
+    return SafeArea(
+      top: false,bottom: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            _buildBottomSheetContent(context),
+          ],
+        ),
       ),
     );
   }
@@ -86,7 +90,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     final theme = Theme.of(context);
 
     return Container(
-      margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_24), // space for ❌
+      margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(
@@ -101,7 +105,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
             _buildHeaders(context),
             Flexible(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                padding: EdgeInsets.symmetric(horizontal:  Constant.CONTAINER_SIZE_16),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -132,6 +136,7 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                       ),
                       SizedBox(height: Constant.CONTAINER_SIZE_20),
                       _buildSubmitButton(context),
+                      SizedBox(height: Constant.CONTAINER_SIZE_16),
                     ],
                   ),
                 ),
@@ -186,8 +191,8 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: Constant.CONTAINER_SIZE_16,
+          padding: EdgeInsets.all(
+             Constant.CONTAINER_SIZE_16,
           ),
           child:
             Text(

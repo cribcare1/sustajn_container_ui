@@ -57,13 +57,16 @@ class _SecondaryMobileNumberDialogState
     final theme = Theme.of(context);
 
     return SafeArea(
-      top: false,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
+      top: false,bottom: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            SizedBox(height: Constant.SIZE_08),
+            Container(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
@@ -265,9 +268,8 @@ class _SecondaryMobileNumberDialogState
                 ),
               ),
             ),
-          ),
-          Utils.buildFloatingHeader(context),
-        ],
+          ],
+        ),
       ),
     );
   }
