@@ -126,100 +126,103 @@ class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
                       ),
                     ),
 
-                    // TextFormField(
-                    //   controller: _addressController,
-                    //   validator: _validateAddress,
-                    //   keyboardType: TextInputType.text,
-                    //   textInputAction: TextInputAction.done,
-                    //   cursorColor: Colors.white,
-                    //   style: theme.textTheme.bodyMedium?.copyWith(
-                    //     color: Colors.white,
-                    //   ),
-                    //   decoration: InputDecoration(
-                    //     labelText: Strings.ADDRESS,
-                    //     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    //     labelStyle: theme.textTheme.bodyMedium?.copyWith(
-                    //       color: Colors.white,
-                    //     ),
-                    //     suffixIcon: IconButton(
-                    //       onPressed: () {
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(builder: (_) => MapScreen()),
-                    //         ).then((value) {
-                    //           if (value != null) {
-                    //             _addressController.text = value['address'];
-                    //             lat = value['lat'];
-                    //             long = value['lng'];
-                    //           }
-                    //         });
-                    //       },
-                    //
-                    //       icon: Icon(Icons.map, color: theme.secondaryHeaderColor),
-                    //     ),
-                    //     contentPadding: EdgeInsets.symmetric(
-                    //       horizontal: Constant.CONTAINER_SIZE_16,
-                    //       vertical: Constant.CONTAINER_SIZE_14,
-                    //     ),
-                    //     border: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(
-                    //         Constant.CONTAINER_SIZE_12,
-                    //       ),
-                    //     ),
-                    //     enabledBorder: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(
-                    //         Constant.CONTAINER_SIZE_12,
-                    //       ),
-                    //       borderSide: BorderSide(color: Constant.grey),
-                    //     ),
-                    //     focusedBorder: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(
-                    //         Constant.CONTAINER_SIZE_12,
-                    //       ),
-                    //       borderSide: BorderSide(color: Constant.grey),
-                    //     ),
-                    //     errorBorder: OutlineInputBorder(
-                    //       borderRadius: BorderRadius.circular(
-                    //         Constant.CONTAINER_SIZE_12,
-                    //       ),
-                    //       borderSide: BorderSide(color: theme.colorScheme.error),
-                    //     ),
-                    //   ),
-                    // ),
+                    //todo needed later
+                    /*
+                    TextFormField(
+                      controller: _addressController,
+                      validator: _validateAddress,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      cursorColor: Colors.white,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: Strings.ADDRESS,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => MapScreen()),
+                            ).then((value) {
+                              if (value != null) {
+                                _addressController.text = value['address'];
+                                lat = value['lat'];
+                                long = value['lng'];
+                              }
+                            });
+                          },
 
-                    // SizedBox(height: Constant.CONTAINER_SIZE_24),
-                    //
-                    // SizedBox(
-                    //   width: double.infinity,
-                    //   child: SubmitButton(
-                    //     onRightTap: () {
-                    //       if (!_formKey.currentState!.validate()) return;
-                    //
-                    //       final address = widget.selectedAddress;
-                    //       if (address == null) {
-                    //         Utils.showToast('Address data not available');
-                    //         return;
-                    //       }
-                    //
-                    //       if (address.id == null ||
-                    //           address.addressType == null ||
-                    //           address.flatDoorHouseDetails == null ||
-                    //           address.poBoxOrPostalCode == null) {
-                    //         Utils.showToast('Fill address details');
-                    //         return;
-                    //       }
-                    //
-                    //       _editAddressNetworkCall(
-                    //         address.id.toString(),
-                    //         address.addressType!,
-                    //         address.flatDoorHouseDetails!,
-                    //         _addressController.text.trim(),
-                    //         address.poBoxOrPostalCode!,
-                    //       );
-                    //     },
-                    //     rightText: Strings.SAVE_CHANGES,
-                    //   ),
-                    // ),
+                          icon: Icon(Icons.map, color: theme.secondaryHeaderColor),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: Constant.CONTAINER_SIZE_16,
+                          vertical: Constant.CONTAINER_SIZE_14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          borderSide: BorderSide(color: Constant.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          borderSide: BorderSide(color: Constant.grey),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          borderSide: BorderSide(color: theme.colorScheme.error),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: SubmitButton(
+                        onRightTap: () {
+                          if (!_formKey.currentState!.validate()) return;
+
+                          final address = widget.selectedAddress;
+                          if (address == null) {
+                            Utils.showToast('Address data not available');
+                            return;
+                          }
+
+                          if (address.id == null ||
+                              address.addressType == null ||
+                              address.flatDoorHouseDetails == null ||
+                              address.poBoxOrPostalCode == null) {
+                            Utils.showToast('Fill address details');
+                            return;
+                          }
+
+                          _editAddressNetworkCall(
+                            address.id.toString(),
+                            address.addressType!,
+                            address.flatDoorHouseDetails!,
+                            _addressController.text.trim(),
+                            address.poBoxOrPostalCode!,
+                          );
+                        },
+                        rightText: Strings.SAVE_CHANGES,
+                      ),
+                    ),
+                    */
                   ],
                 ),
               ),

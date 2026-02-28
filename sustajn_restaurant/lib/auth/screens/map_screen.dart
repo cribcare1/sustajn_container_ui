@@ -279,13 +279,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             NavUtil.popScreen(context, 3);
                           },
 
-
-                            // Navigator.pop(context, {
-                            //   "lat": state.position!.latitude,
-                            //   "lng": state.position!.longitude,
-                            //   "address":
-                            //       "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
-                            // });
+                          //todo needed later
+                          // Navigator.pop(context, {
+                          //   "lat": state.position!.latitude,
+                          //   "lng": state.position!.longitude,
+                          //   "address":
+                          //       "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
+                          // });
                           rightText: Strings.CONFIRM,
                         ),
                       ),
