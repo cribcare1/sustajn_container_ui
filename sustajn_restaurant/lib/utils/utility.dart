@@ -337,13 +337,12 @@ class Utils {
                       SizedBox(width: Constant.CONTAINER_SIZE_12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: ()async {
                             Navigator.pop(context);
-                            SharedPreferenceUtils.clearAll();
-                            NavUtil.navigateToWithReplacement(
-                              context,
-                              LoginScreen(),
-                            );
+                            await await SharedPreferenceUtils.saveBoolDataInSF(
+                                Strings.IS_LOGGED_IN, false);
+                             await SharedPreferenceUtils.clearAll();
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginScreen(),));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -749,9 +748,6 @@ class Utils {
 
   static LoginModel? loginData;
   static int? societyId = 0;
-
-  // static int? userId = 0;
-
   static Future<LoginModel?> getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = prefs.getString(Strings.PROFILE_DATA);
@@ -759,7 +755,7 @@ class Utils {
     if (data != null) {
       var response = json.decode(data);
       loginData = LoginModel.fromJson(response);
-      // userId = loginData!.data!.userId;
+      return loginData;
     }
     return null;
   }
