@@ -437,6 +437,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
               )
             :  Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       Strings.NO_PROFILE,
