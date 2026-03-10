@@ -136,7 +136,7 @@ class _EditAddressDialogState
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => MapScreen()),
+                                  builder: (_) => MapScreen(profile: "profile",)),
                             ).then((value) {
                               if (value != null) {
                                 setState(() {

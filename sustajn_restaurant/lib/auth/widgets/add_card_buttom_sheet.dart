@@ -50,13 +50,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
     final theme = Theme.of(context);
 
     return SafeArea(
+      bottom: true,top: false,
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Utils.buildFloatingHeader(context),
+            SizedBox(height: Constant.SIZE_08),
             Container(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
               decoration: BoxDecoration(
@@ -181,7 +183,6 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 ),
               ),
             ),
-            Utils.buildFloatingHeader(context),
           ],
         ),
       ),

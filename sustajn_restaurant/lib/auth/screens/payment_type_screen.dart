@@ -650,19 +650,30 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    _controller.text =
+        (widget.notifier.gateway != null &&
+            widget.notifier.gateway!.name!.toLowerCase().contains(
+              widget.title.toLowerCase(),
+            ))
+        ? widget.notifier.gateway!.id.toString()
+        : "";
     return SafeArea(
-      child: Stack(
-        clipBehavior: Clip.none,
+      top: false,
+      bottom: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          Padding(
+            padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_16),
+            child: Utils.buildFloatingHeader(context),
+          ),
+          SizedBox(height: Constant.SIZE_08),
           SingleChildScrollView(
             padding: EdgeInsets.only(
-              left: Constant.CONTAINER_SIZE_20,
-              right: Constant.CONTAINER_SIZE_20,
-              top: Constant.CONTAINER_SIZE_20,
-              bottom:
-                  MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
+              left: Constant.CONTAINER_SIZE_16,
+              right: Constant.CONTAINER_SIZE_16,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -760,7 +771,6 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context),
         ],
       ),
     );
