@@ -1,3 +1,4 @@
+import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
@@ -25,15 +26,23 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.sizeOf(context).height;
     var theme = CustomTheme.getTheme(true);
+    final registrationState = ref.watch(authNotifierProvider);
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
 
 backgroundColor: theme!.scaffoldBackgroundColor,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        backgroundColor: theme!.scaffoldBackgroundColor,
+      ),
       body: Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,15 +69,20 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                 SizedBox(height: Constant.CONTAINER_SIZE_40),
                 TextFormField(
                   controller: _emailController,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: Strings.EMAIL,
                     hintStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: theme.scaffoldBackgroundColor,
+                    fillColor: theme.primaryColor,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
+                    enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                    focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
@@ -83,14 +97,33 @@ backgroundColor: theme!.scaffoldBackgroundColor,
                 SizedBox(height: height * 0.02),
               authState.isLoading?Center(child: CircularProgressIndicator(),):  SizedBox(
                   width: double.infinity,
-                  child: SubmitButton(onRightTap: (){if(_formKey.currentState!.validate()){
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context)=>VerifyEmailScreen(previousScreen: 'forgotPassword',)));
-                    _getNetworkData(authState);
-                  }},rightText: Strings.CONTINUE_VERIFICATION,)
+                  height: Constant.CONTAINER_SIZE_45,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD0A52C),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      side: const BorderSide(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _getNetworkData(registrationState);
+                      }
+                    },
+                    child: Text(
+                      Strings.CONTINUE_VERIFICATION,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
                 ),
+                SizedBox(height: height * 0.03),
               ],
             ),
+          ),
+        ],
           ),
         ),
       ),

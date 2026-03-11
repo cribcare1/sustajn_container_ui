@@ -193,6 +193,8 @@ class Constant {
   static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
+  static const Color gold = Color(0xFFD1AE31);
+
 
 
 

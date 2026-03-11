@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common_provider/network_provider.dart';
+import '../../constants/assets_utils.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/utility.dart';
 import 'forget_password.dart';
 
@@ -37,35 +39,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Center(
           child: Form(
             key: _formKey,
+            child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Center(
+    child: Image.asset(
+    AppAssets.sustajnAppLogo,
+    height: height * 0.17,
+    fit: BoxFit.contain,
+    ),
+    ),
                 Text(
                   Strings.WELCOME,
                   style: themeData?.textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
+    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: height * 0.005),
                 Text(
                   Strings.LOGIN_YOUR_ACC,
-                  style: themeData?.textTheme.bodyMedium,
+                  style: themeData?.textTheme.bodyMedium!.copyWith(
+    color: Colors.white,
+    ),
                 ),
                 SizedBox(height: height * 0.03),
                 TextFormField(
                   controller: _emailController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   decoration: InputDecoration(
                     hintText: Strings.EMAIL,
                     filled: true,
                     fillColor: themeData!.primaryColor,
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: Colors.white70),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      borderSide: BorderSide(color: Constant.grey),
                     ),
+                  enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                  focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -86,19 +103,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
+                  style: TextStyle(color: Colors.white70),
+                  cursorColor: Colors.white70,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     hintText: Strings.PASSWORD,
                     filled: true,
-                    fillColor: themeData.primaryColor,
+                    fillColor: themeData!.primaryColor,
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 14, horizontal: 12),
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: Colors.white70),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _showPassword
                             ? Icons.visibility
                             : Icons.visibility_off,
+                        color: Colors.white70,
                       ),
                       onPressed: () {
                         setState(() {
@@ -107,8 +127,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                     ),
+                  enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                  focusedBorder: CustomTheme.roundedBorder(Constant.grey),
                   ),
                   onChanged: (value) {
                     if (_formKey.currentState != null) {
@@ -132,18 +154,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ForgetPasswordScreen(),
-                        ),
-                      );
+                      NavUtil.navigateToPushScreen(context, ForgetPasswordScreen());
                     },
                     child: Text(
                       Strings.FORGOT_PASSWORD,
                       style: themeData.textTheme.titleSmall!.copyWith(
-                        color:themeData.secondaryHeaderColor,
-                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
@@ -163,23 +180,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Text.rich(
                 TextSpan(
                   text:Strings.DONT_HAVE_ACC ,
-                  style: themeData.textTheme.bodyMedium,
+                  style: themeData.textTheme.bodyMedium!.copyWith(
+                  color: Colors.white,
+                  ),
                   children: [
                     TextSpan(
                       text: Strings.SIGN_UP,
                       style: TextStyle(
-                        color: themeData.secondaryHeaderColor,
+                        color: Constant.gold,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
+                        decorationColor: themeData.secondaryHeaderColor,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SignUpScreen(),
-                            ),
-                          );
+                        ..onTap = authState.isLoading
+                    ? null
+                        : () {
+                        NavUtil.navigateToPushScreen(context, SignUpScreen());
                         },
                     ),
                   ],
@@ -190,6 +207,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
