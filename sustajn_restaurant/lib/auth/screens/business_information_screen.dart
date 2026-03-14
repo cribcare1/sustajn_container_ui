@@ -78,6 +78,7 @@ class _BusinessInformationDetailsState
     _licenceFocus = FocusNode();
     _websiteFocus = FocusNode();
     _businessTypeFocus = FocusNode();
+    _getData();
   }
 
   @override
@@ -89,7 +90,6 @@ class _BusinessInformationDetailsState
     vatController.dispose();
     websiteController.dispose();
     businessTypeController.dispose();
-
     _contactFocus.dispose();
     _vatFocus.dispose();
     _contactNumberFocus.dispose();
@@ -103,18 +103,24 @@ class _BusinessInformationDetailsState
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
-    if (profile!.contactAndRegistrationDetailsResponse != null ||
-        profile.bankDetailsResponse != null) {
-      final business = profile.contactAndRegistrationDetailsResponse;
-      final website = profile.businessDetailsResponse;
+    if(widget.previous == "profile" && profile != null){
+      if (profile.contactAndRegistrationDetailsResponse != null ||
+          profile.bankDetailsResponse != null) {
+        final business = profile.contactAndRegistrationDetailsResponse;
+        final website = profile.businessDetailsResponse;
 
-      contactPersonController.text = business!.contactPersonName ?? "";
-      contactNumberController.text = business.contactNumber ?? "";
-      contactEmailController.text = business.contactEmail ?? "";
-      licenceController.text = business.treadLicenseNumber ?? "";
-      vatController.text = business.vatNumber ?? "";
-      websiteController.text = website!.website ?? "";
+        contactPersonController.text = business!.contactPersonName ?? "";
+        contactNumberController.text = business.contactNumber ?? "";
+        contactEmailController.text = business.contactEmail ?? "";
+        licenceController.text = business.treadLicenseNumber ?? "";
+        vatController.text = business.vatNumber ?? "";
+        websiteController.text = (website != null)? website.website ?? "":"";
+      }
+      // if(profile.socialMediaResponse!.isNotEmpty){
+      //   widget.authState.socialMediaList.add(profile!.socialMediaResponse);
+      // }
     }
+
   }
 
   final List<String> _businessTypes = [

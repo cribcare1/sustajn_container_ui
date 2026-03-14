@@ -185,7 +185,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
             child: Text(
-              "Ð ${data.totalContainers.toString()}",
+              "Ð ${data.feeType.toString()}",
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.w600,

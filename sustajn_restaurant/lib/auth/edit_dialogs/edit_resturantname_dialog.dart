@@ -14,7 +14,7 @@ import '../../utils/utility.dart';
 class EditRestaurantNameDialog extends ConsumerStatefulWidget {
   final String name;
 
-  const EditRestaurantNameDialog({required this.name, Key? key});
+  const EditRestaurantNameDialog({super.key, required this.name,});
 
   @override
   ConsumerState<EditRestaurantNameDialog> createState() =>
@@ -63,119 +63,134 @@ class _EditRestaurantNameDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      top: false,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
-                  topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
-                ),
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SafeArea(
+        top: false, bottom: true,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            Constant.CONTAINER_SIZE_16,
+            Constant.CONTAINER_SIZE_16,
+            Constant.CONTAINER_SIZE_16,
+            0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Utils.buildFloatingHeader(context),
+                SizedBox(height: Constant.SIZE_08),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                  decoration: BoxDecoration(
+                    color: theme.scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
+                      topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
+                    ),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            Strings.EDIT_RESTAURANT_NAME,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                Strings.EDIT_RESTAURANT_NAME,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                        SizedBox(height: Constant.SIZE_08),
+                        TextFormField(
+                          controller: _nameController,
+                          validator: _validateName,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white70,
+                          ),
+                          cursorColor: Colors.white70,
+                          decoration: InputDecoration(
+                            labelText: 'Restaurant Name',
+                            labelStyle: TextStyle(color: Colors.white70),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: Constant.CONTAINER_SIZE_16,
+                              vertical: Constant.CONTAINER_SIZE_14,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              borderSide: BorderSide(color: Constant.grey),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              borderSide: BorderSide(color: Constant.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              borderSide: BorderSide(color: Constant.grey),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              borderSide: BorderSide(
+                                color: theme.colorScheme.error,
+                              ),
                             ),
                           ),
                         ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_24),
+                        _isSaving
+                            ? const Center(child: CircularProgressIndicator())
+                            : SizedBox(
+                                width: double.infinity,
+                                child: SubmitButton(
+                                  onRightTap: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      await _editNameNetworkCall(
+                                        _nameController.text.trim(),
+                                      );
+                                      if (mounted) {
+                                        NavUtil.popScreen(context, 1);
+                                        _getProfileNetworkCall();
+                                      }
+                                    }
+                                  },
+                                  rightText: Strings.SAVE_CHANGES,
+                                ),
+                              ),
                       ],
                     ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                    SizedBox(height: Constant.SIZE_08),
-                    TextFormField(
-                      controller: _nameController,
-                      validator: _validateName,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
-                      cursorColor: Colors.white70,
-                      decoration: InputDecoration(
-                        labelText: 'Restaurant Name',
-                        labelStyle: TextStyle(color: Colors.white70),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: Constant.CONTAINER_SIZE_16,
-                          vertical: Constant.CONTAINER_SIZE_14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: BorderSide(color: Constant.grey),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.error,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_24),
-                    _isSaving
-                        ? const Center(child: CircularProgressIndicator())
-                        : SizedBox(
-                            width: double.infinity,
-                            child: SubmitButton(
-                              onRightTap: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  await _editNameNetworkCall(
-                                    _nameController.text.trim(),
-                                  );
-                                  if (mounted) {
-                                    NavUtil.popScreen(context, 1);
-                                    _getProfileNetworkCall();
-                                  }
-                                }
-                              },
-                              rightText: Strings.SAVE_CHANGES,
-                            ),
-                          ),
-                  ],
+                  ),
                 ),
-              ),
+
+              ],
             ),
           ),
-          Utils.buildFloatingHeader(context),
-        ],
+        ),
       ),
     );
   }

@@ -650,13 +650,13 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    _controller.text =
-        (widget.notifier.gateway != null &&
-            widget.notifier.gateway!.name!.toLowerCase().contains(
-              widget.title.toLowerCase(),
-            ))
-        ? widget.notifier.gateway!.id.toString()
-        : "";
+    // _controller.text =
+    //     (widget.notifier.gateway != null &&
+    //         widget.notifier.gateway!.name!.toLowerCase().contains(
+    //           widget.title.toLowerCase(),
+    //         ))
+    //     ? widget.notifier.gateway!.id.toString()
+    //     : "";
     return SafeArea(
       top: false,
       bottom: true,

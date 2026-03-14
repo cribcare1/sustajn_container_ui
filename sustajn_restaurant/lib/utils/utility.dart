@@ -149,87 +149,104 @@ class Utils {
     return await showModalBottomSheet<File?>(
       context: context,
       isScrollControlled: false,
-      backgroundColor: theme!.scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor:Colors.transparent,
       builder: (_) {
-        return SafeArea(
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: Constant.CONTAINER_SIZE_20,
-                  horizontal: Constant.CONTAINER_SIZE_20,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            Strings.CHOOSE,
-                            style: TextStyle(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _optionButton(
-                          context,
-                          icon: Icons.camera_alt_outlined,
-                          label: Strings.CAMERA,
-                          color: Colors.white70,
-                          iconColor: theme.primaryColor,
-                          onTap: () async {
-                            final XFile? image = await picker.pickImage(
-                              source: ImageSource.camera,
-                            );
-
-                            if (image != null) {
-                              Navigator.pop(context, File(image.path));
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                        _optionButton(
-                          context,
-                          icon: Icons.image_outlined,
-                          label: Strings.GALLERY,
-                          color: Colors.white70,
-                          iconColor: theme.primaryColor,
-                          onTap: () async {
-                            final XFile? image = await picker.pickImage(
-                              source: ImageSource.gallery,
-                            );
-
-                            if (image != null) {
-                              Navigator.pop(context, File(image.path));
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  ],
-                ),
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            top: false, bottom: true,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                0,
               ),
-              Utils.buildFloatingHeader(context)
-            ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Utils.buildFloatingHeader(context),
+                  SizedBox(height: Constant.SIZE_08),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                    decoration: BoxDecoration(
+                      color: theme!.scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
+                        topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                Strings.CHOOSE,
+                                style: TextStyle(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _optionButton(
+                              context,
+                              icon: Icons.camera_alt_outlined,
+                              label: Strings.CAMERA,
+                              color: Colors.white70,
+                              iconColor: theme!.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.camera,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                            _optionButton(
+                              context,
+                              icon: Icons.image_outlined,
+                              label: Strings.GALLERY,
+                              color: Colors.white70,
+                              iconColor: theme.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
           ),
         );
       },

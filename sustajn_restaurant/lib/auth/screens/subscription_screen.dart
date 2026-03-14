@@ -487,7 +487,7 @@ class PlanCard extends StatelessWidget {
                   ),
                   SizedBox(width: Constant.SIZE_02),
                   Text(
-                    "${plan.totalContainers.toString()}/month",
+                    "${plan.feeType.toString()}/ ${plan.billingCycle.toLowerCase()}",
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: theme.primaryColor,
                       fontWeight: FontWeight.w600,
@@ -495,18 +495,6 @@ class PlanCard extends StatelessWidget {
                   ),
                 ],
               ),
-              // Row(
-              //   children: [
-              //     Text(
-              //       "Ð${plan.totalContainers.toString()}",
-              //       style: TextStyle(
-              //         color: Color(0xFF052F1E),
-              //         fontWeight: FontWeight.bold,
-              //         fontSize: Constant.CONTAINER_SIZE_16,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ),
           ),
         ],

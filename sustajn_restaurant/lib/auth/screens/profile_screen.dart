@@ -17,15 +17,12 @@ import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/edit_address.dart';
-import '../edit_dialogs/edit_contact_number/edit_mobile_number.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
-import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
 import '../edit_dialogs/report_screen/damaged_container_report_dialog.dart';
-import '../edit_dialogs/report_screen/reports_screen.dart';
 import '../edit_dialogs/subscription_dialog.dart';
 import 'business_information_screen.dart';
 
@@ -51,7 +48,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     {"name": "Refer a Partner", "image": "assets/images/referal.png"},
   ];
 
-  void _handleItemTap(int index, BuildContext context, String? mobileNo, String? secondaryMobile, int userId) {
+  void _handleItemTap(
+    int index,
+    BuildContext context,
+    String? mobileNo,
+    String? secondaryMobile,
+    int userId,
+  ) {
     switch (index) {
       case 0:
         break;
@@ -59,7 +62,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showAddressDialog(context);
         break;
       case 2:
-        _showMobileNoDialog(context, mobileNo??"",secondaryMobile??"",  userId);
+        _showMobileNoDialog(
+          context,
+          mobileNo ?? "",
+          secondaryMobile ?? "",
+          userId,
+        );
         break;
       case 3:
         _showReportScreen(context);
@@ -115,16 +123,22 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  void _showMobileNoDialog(BuildContext context, String mobile, String secondayMobile, int userId) {
+  void _showMobileNoDialog(
+    BuildContext context,
+    String mobile,
+    String secondayMobile,
+    int userId,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => SecondaryMobileNumberDialog(primaryMobileNumber: mobile, secondaryMobileNumber: secondayMobile
+      builder: (_) => SecondaryMobileNumberDialog(
+        primaryMobileNumber: mobile,
+        secondaryMobileNumber: secondayMobile,
       ),
     );
   }
-
 
   void _showReferPartnerDialogue(BuildContext context) {
     showModalBottomSheet(
@@ -182,7 +196,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void initState() {
     super.initState();
     Utils.userId;
-    if(ref.read(profileProvider).getProfileData != null){
+    if (ref.read(profileProvider).getProfileData != null) {
       _getProfileNetworkCall();
     }
   }
@@ -240,10 +254,11 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         body: profileState.isLoading
             ? Container(
-            color: theme.primaryColor,
-            height: double.infinity,
-            width: double.infinity,
-            child: Center(child: CircularProgressIndicator()))
+                color: theme.primaryColor,
+                height: double.infinity,
+                width: double.infinity,
+                child: Center(child: CircularProgressIndicator()),
+              )
             : (profile != null)
             ? SingleChildScrollView(
                 child: Stack(
@@ -421,7 +436,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   context,
                                   profile.mobileNumber ?? "",
                                   profile.secondaryNumber ?? "",
-                                  profile.id ??0
+                                  profile.id ?? 0,
                                 ),
                               );
                             },
@@ -435,7 +450,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                   ],
                 ),
               )
-            :  Center(
+            : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -451,17 +466,13 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     );
   }
 
-  _getSingOutButton(theme, w, h){
-    return  Center(
+  _getSingOutButton(theme, w, h) {
+    return Center(
       child: Container(
         width: w * 0.55,
         margin: EdgeInsets.only(top: h * 0.02),
         child: ElevatedButton.icon(
-          icon: Icon(
-            Icons.logout,
-            color: theme.primaryColor,
-            size: w * 0.05,
-          ),
+          icon: Icon(Icons.logout, color: theme.primaryColor, size: w * 0.05),
           label: Text(
             Strings.LOGOUT,
             style: TextStyle(
@@ -472,9 +483,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.secondaryHeaderColor,
-            padding: EdgeInsets.symmetric(
-              vertical: h * 0.018,
-            ),
+            padding: EdgeInsets.symmetric(vertical: h * 0.018),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(w * 0.04),
               side: BorderSide(color: Colors.white),
@@ -575,8 +584,8 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     try {
       profileState.setIsSaving(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) async {
+        isNetworkAvailable,
+      ) async {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
 
         if (!isNetworkAvailable) {

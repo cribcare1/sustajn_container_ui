@@ -56,99 +56,52 @@ class _SecondaryMobileNumberDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      top: false,bottom: true,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Utils.buildFloatingHeader(context),
-            SizedBox(height: Constant.SIZE_08),
-            Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_16),
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SafeArea(
+        top: false,bottom: true,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Utils.buildFloatingHeader(context),
+              SizedBox(height: Constant.SIZE_08),
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_16),
+                  ),
                 ),
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            Strings.MOBILE_NUMBER,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                    Text(
-                      Strings.PRIMARY_NO,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    SizedBox(height: Constant.SIZE_05),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.call,
-                          color: Colors.white,
-                          size: Constant.CONTAINER_SIZE_18,
-                        ),
-                        SizedBox(width: Constant.SIZE_08),
-                        Expanded(
-                          child: Text(
-                            "+91 ${widget.primaryMobileNumber}",
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            NavUtil.popScreen(context, 1);
-
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              builder: (_) => EditMobileNumberDialog(
-                                primaryMobileNumber: widget.primaryMobileNumber,
-                                secondaryMobileNumber:
-                                    widget.secondaryMobileNumber,
-                                editType: MobileEditType.primary,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              Strings.MOBILE_NUMBER,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.edit_outlined,
-                            color: Colors.white,
-                            size: Constant.CONTAINER_SIZE_18,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    SizedBox(height: Constant.CONTAINER_SIZE_25),
-                    if (widget.secondaryMobileNumber.isNotEmpty) ...[
+                      SizedBox(height: Constant.CONTAINER_SIZE_24),
+
                       Text(
-                        Strings.SECONDARY_NO,
+                        Strings.PRIMARY_NO,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: Colors.grey,
                         ),
@@ -164,7 +117,7 @@ class _SecondaryMobileNumberDialogState
                           SizedBox(width: Constant.SIZE_08),
                           Expanded(
                             child: Text(
-                              "+91 ${widget.secondaryMobileNumber}",
+                              "+91 ${widget.primaryMobileNumber}",
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -180,11 +133,10 @@ class _SecondaryMobileNumberDialogState
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (_) => EditMobileNumberDialog(
-                                  primaryMobileNumber:
-                                      widget.primaryMobileNumber,
+                                  primaryMobileNumber: widget.primaryMobileNumber,
                                   secondaryMobileNumber:
                                       widget.secondaryMobileNumber,
-                                  editType: MobileEditType.secondary,
+                                  editType: MobileEditType.primary,
                                 ),
                               );
                             },
@@ -196,79 +148,132 @@ class _SecondaryMobileNumberDialogState
                           ),
                         ],
                       ),
-                    ] else ...[
-                      if (!showSecondaryField)
+
+                      SizedBox(height: Constant.CONTAINER_SIZE_25),
+                      if (widget.secondaryMobileNumber.isNotEmpty) ...[
+                        Text(
+                          Strings.SECONDARY_NO,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        SizedBox(height: Constant.SIZE_05),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() => showSecondaryField = true);
-                              },
+                            Icon(
+                              Icons.call,
+                              color: Colors.white,
+                              size: Constant.CONTAINER_SIZE_18,
+                            ),
+                            SizedBox(width: Constant.SIZE_08),
+                            Expanded(
                               child: Text(
-                                Strings.ADD_SECONDARY_NO,
+                                "+91 ${widget.secondaryMobileNumber}",
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Constant.gold,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                            GestureDetector(
+                              onTap: () {
+                                NavUtil.popScreen(context, 1);
 
-                      Visibility(
-                        visible: showSecondaryField,
-                        child: Column(
-                          children: [
-                            SizedBox(height: Constant.CONTAINER_SIZE_16),
-                            TextFormField(
-                              controller: _secondaryController,
-                              keyboardType: TextInputType.number,
-                              validator: _validateMobile,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(10),
-                              ],
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                labelText: Strings.SECONDARY_NO,
-                                labelStyle: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (_) => EditMobileNumberDialog(
+                                    primaryMobileNumber:
+                                        widget.primaryMobileNumber,
+                                    secondaryMobileNumber:
+                                        widget.secondaryMobileNumber,
+                                    editType: MobileEditType.secondary,
+                                  ),
+                                );
+                              },
+                              child: Icon(
+                                Icons.edit_outlined,
+                                color: Colors.white,
+                                size: Constant.CONTAINER_SIZE_18,
                               ),
                             ),
                           ],
                         ),
+                      ] else ...[
+                        if (!showSecondaryField)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() => showSecondaryField = true);
+                                },
+                                child: Text(
+                                  Strings.ADD_SECONDARY_NO,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: Constant.gold,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        Visibility(
+                          visible: showSecondaryField,
+                          child: Column(
+                            children: [
+                              SizedBox(height: Constant.CONTAINER_SIZE_16),
+                              TextFormField(
+                                controller: _secondaryController,
+                                keyboardType: TextInputType.number,
+                                validator: _validateMobile,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                style: const TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  labelText: Strings.SECONDARY_NO,
+                                  labelStyle: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: Constant.CONTAINER_SIZE_28),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          onRightTap: () {
+                            if (showSecondaryField &&
+                                !_formKey.currentState!.validate())
+                              return;
+                            _addSecondaryNoNetworkCall();
+                            Utils.showToast(
+                              '${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}',
+                            );
+                            Navigator.pop(
+                              context,
+                              _secondaryController.text.trim(),
+                            );
+
+                            NavUtil.popScreen(context, 1);
+                          },
+                          rightText: Strings.SAVE_CHANGES,
+                        ),
                       ),
                     ],
-                    SizedBox(height: Constant.CONTAINER_SIZE_28),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: SubmitButton(
-                        onRightTap: () {
-                          if (showSecondaryField &&
-                              !_formKey.currentState!.validate())
-                            return;
-                          _addSecondaryNoNetworkCall();
-                          Utils.showToast(
-                            '${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}',
-                          );
-                          Navigator.pop(
-                            context,
-                            _secondaryController.text.trim(),
-                          );
-
-                          NavUtil.popScreen(context, 1);
-                        },
-                        rightText: Strings.SAVE_CHANGES,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
