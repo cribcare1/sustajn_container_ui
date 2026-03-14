@@ -99,12 +99,12 @@ class _EditAddressDialogState
                   children: [
                     Center(
                       child: Container(
-                        height: 4,
-                        width: 40,
-                        margin: const EdgeInsets.only(bottom: 16),
+                        height: Constant.SIZE_04,
+                        width: Constant.CONTAINER_SIZE_40,
+                        margin:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                         ),
                       ),
                     ),
