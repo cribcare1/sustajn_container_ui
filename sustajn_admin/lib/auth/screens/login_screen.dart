@@ -156,7 +156,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: () {
                       NavUtil.navigateToPushScreen(context, ForgetPasswordScreen());
                     },
-                    child: Text(
+                      child: Text(
                       Strings.FORGOT_PASSWORD,
                       style: themeData.textTheme.titleSmall!.copyWith(
                         color: Colors.white,
@@ -176,33 +176,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),
-            Center(
-              child: Text.rich(
-                TextSpan(
-                  text:Strings.DONT_HAVE_ACC ,
-                  style: themeData.textTheme.bodyMedium!.copyWith(
-                  color: Colors.white,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: Strings.SIGN_UP,
-                      style: TextStyle(
-                        color: Constant.gold,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                        decorationColor: themeData.secondaryHeaderColor,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = authState.isLoading
-                    ? null
-                        : () {
-                        NavUtil.navigateToPushScreen(context, SignUpScreen());
-                        },
-                    ),
-                  ],
-                ),
-              ),
-            )
+            // Center(
+            //   child: Text.rich(
+            //     TextSpan(
+            //       text:Strings.DONT_HAVE_ACC ,
+            //       style: themeData.textTheme.bodyMedium!.copyWith(
+            //       color: Colors.white,
+            //       ),
+            //       children: [
+            //         TextSpan(
+            //           text: Strings.SIGN_UP,
+            //           style: TextStyle(
+            //             color: Constant.gold,
+            //             fontWeight: FontWeight.bold,
+            //             decoration: TextDecoration.underline,
+            //             decorationColor: themeData.secondaryHeaderColor,
+            //           ),
+            //           recognizer: TapGestureRecognizer()
+            //             ..onTap = authState.isLoading
+            //         ? null
+            //             : () {
+            //             NavUtil.navigateToPushScreen(context, SignUpScreen());
+            //             },
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // )
               ],
             ),
           ),
@@ -225,7 +225,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text,"role":"ADMIN"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

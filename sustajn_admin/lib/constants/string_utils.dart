@@ -148,4 +148,30 @@ class Strings {
       'Password must be at least 8 characters long and contain at least one letter and one number';
   static const LOGGED_SUCCESS ="Logged in successfully";
   static const ADDED_CONTAINER ="Container Added Successfully";
+  static const PART_URL = 'part_url';
+  static const REQUEST_TYPE = 'request_type';
+  static const LISTENER = 'listener';
+  static const DATA = 'data';
+  static const REQUEST_KEY = 'request_key';
+  static const IMAGE = 'image';
+  static const DOCUMENT = 'document';
+  static const USER_ID = 'userId';
+  static const NOTIFICATION = 'Notifications';
+  static const MARK_ALL_READ = 'Mark all as read';
+  static const TITLE_1 = 'Customer Feedback';
+  static const TITLE_2 = 'New Container Order';
+  static const TITLE_3 = 'Container return request';
+  static const TITLE_4 = 'Extended Due Fee Received';
+  static const TITLE_5 = 'Container Sold';
+  static const SUBTITLE_1 = 'Container broken during use';
+  static const SUBTITLE_2 = 'Brothaus Bakery & Bistro has placed a container order';
+  static const SUBTITLE_3 = 'Dragonfly Dubai has requested a container return pickup';
+  static const SUBTITLE_4 = 'JOHN-2323 paid AED 6 as an extended usage fee for overdue containers.';
+  static const SUBTITLE_5 = 'KIRAN-2322 purchased the container(s) for AED 200.';
+  static const LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
+  static const GO_BACK_RESET_PASSWORD =
+      'If you go back now, your password reset process will be canceled.Do you still want to go back?';
+  static const STAY_THIS_PAGE = 'Stay on this page';
+
+
 }

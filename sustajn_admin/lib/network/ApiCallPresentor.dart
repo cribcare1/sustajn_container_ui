@@ -79,6 +79,27 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     }
   }
 
+  Future<dynamic> postApiRequest(
+      String url, Map<String, dynamic> data) async {
+    final response = await appDataManager.apiHelper.apiPostLoginRequest(url, data);
+    Utils.printLog(
+        "response code == ${response.statusCode} response == ${response.body}");
+    if (Utils.isReqSuccess(response)) {
+      try {
+        final jsonData = json.decode(response.body);
+        Utils.printLog('Response status: $jsonData');
+        return jsonData;
+      } catch (e) {
+        Utils.printLog('Error decoding JSON: $e');
+        throw Exception('Error decoding JSON: $e');
+      }
+    } else {
+      Utils.printLog('Error response status code: ${response.statusCode}');
+      Utils.printLog('Error response body: ${response.body}');
+      throw Exception('Error: ${response.statusCode}');
+    }
+  }
+
   Future<dynamic> postApiData(String url, var jsonMap, String requestType) async {
     checkViewAttached();
     Future.delayed(const Duration(seconds: 12));

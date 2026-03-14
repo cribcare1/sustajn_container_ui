@@ -26,26 +26,26 @@ final loginDetailProvider =
       try {
         responseData = await apiService.loginUser(url, params, "");
         if (responseData!.status != '' &&
-            responseData.status.toLowerCase() == Strings.SUCCESS) {
+            responseData.status!.toLowerCase() == Strings.SUCCESS) {
           registrationState.setIsLoading(false);
           registrationState.setLoginData(responseData);
           if (registrationState.context.mounted) {
             showCustomSnackBar(
               context: registrationState.context,
-              message: responseData.message,
+              message: responseData.message!,
               color: Colors.green,
             );
           }
 
-          String json = jsonEncode(responseData.data.toJson());
+          String json = jsonEncode(responseData.data!.toJson());
           await SharedPreferenceUtils.saveDataInSF(
             Strings.JWT_TOKEN,
-            responseData.data.jwtToken,
+            responseData.data!.jwtToken,
           );
           await SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
           await SharedPreferenceUtils.saveMapInSF(
             Strings.PROFILE_DATA,
-            responseData.data.toJson(),
+            responseData.data!.toJson(),
           );
           if (registrationState.context.mounted) {
             Navigator.pushReplacement(
