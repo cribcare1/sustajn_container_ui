@@ -11,7 +11,7 @@ import 'product_screen/products_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final int? userId;
-  const HomeScreen({Key? key,  this.userId}) : super(key: key);
+  const HomeScreen({super.key,  this.userId});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
