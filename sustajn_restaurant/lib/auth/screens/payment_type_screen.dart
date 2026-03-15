@@ -43,8 +43,9 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authNotifierProvider).clearBankErrors();
+      _getData();
     });
-    _getData();
+
   }
 
   _getData() {
@@ -60,7 +61,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ibanController.text = bankResponse.iBanNumber ?? "";
         bicController.text = bankResponse.bicNumber ?? "";
       }
-      if(profileState.getProfileData?.data?.cardDetailsResponse != null){
+      if(profileState.getProfileData?.data?.cardDetailsResponse != null && profileState.getProfileData?.data?.cardDetailsResponse!.cardNumber != ""){
         final cardDetails = profileState.getProfileData?.data?.cardDetailsResponse;
         authState.setCardDetails(CardDetails(
             cardHolderName:cardDetails!.cardHolderName??"",
@@ -71,9 +72,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       if(profileState.getProfileData?.data?.paymentGetWayResponse != null){
         final paymentGateWay =  profileState.getProfileData?.data?.paymentGetWayResponse;
         authState.setGateway(PaymentGatewayModel(
-            name: paymentGateWay!.paymentGatewayName,
-            id: paymentGateWay.paymentGatewayId));
+            name: paymentGateWay!.paymentGatewayId,
+            id: paymentGateWay.paymentGatewayName));
       }
+  print(authState.gateway!.name);
+  print(authState.gateway!.id);
     }
 
   }
@@ -499,8 +502,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (notifier.gateway != null &&
-                      notifier.gateway!.name == title)
+                  if (notifier.gateway != null && notifier.gateway!.name == title)
                     Padding(
                       padding: EdgeInsets.only(top: Constant.SIZE_04),
                       child: Text(

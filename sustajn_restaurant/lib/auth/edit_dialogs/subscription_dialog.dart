@@ -21,51 +21,53 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
     final subscription =
         profileState.getProfileData?.data!.subscriptionResponse;
     return SafeArea(
-        top: false,bottom: true,
-        child: Padding(
+      top: false,
+      bottom: true,
+      child: Padding(
         padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Utils.buildFloatingHeader(context),
-          SizedBox(height: Constant.SIZE_08),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.primaryColor,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            SizedBox(height: Constant.SIZE_08),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _header(context),
+                    Flexible(
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                        children: [
+                          _planCard(
+                            context,
+                            (subscription != null) ? subscription : null,
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_30),
+                          _viewAllPlansButton(context),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _header(context),
-                  Flexible(
-                    child: ListView(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                      children: [
-                        _planCard(
-                          context,
-                          (subscription != null) ? subscription : null,
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_30),
-                        _viewAllPlansButton(context),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-        ));
+    );
   }
 
   Widget _header(BuildContext context) {
@@ -76,17 +78,16 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
         horizontal: Constant.CONTAINER_SIZE_16,
         vertical: Constant.CONTAINER_SIZE_12,
       ),
-      child:
-      Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-            Text(
-              Strings.SUBSCRIPTION_PLAN,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
+          Text(
+            Strings.SUBSCRIPTION_PLAN,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
+          ),
         ],
       ),
     );

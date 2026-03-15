@@ -177,12 +177,14 @@ final updateSubscriptionPlanProvider = FutureProvider.family<dynamic, Map<String
     params,
     ) async {
   final apiService = ref.read(getProfileApiProvider);
-
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.UPGRADE_SUBSCRIPTION_PLAN}';
 
   Utils.printLog("Upgrade Subscription plan Provider url : $url");
   final responseData = await apiService.updateSubscriptionPlanService(url, params, "");
 
   print("Provider Response: $responseData");
+  final userId = Utils.userId;
+  final url1 = '${NetworkUrls.GET_PROFILE}$userId';
+  ref.read(getProfileProvider(url1));
   return responseData;
 });

@@ -4,7 +4,6 @@ import 'package:sustajn_restaurant/auth/screens/subscription_details_screen.dart
 import 'package:sustajn_restaurant/auth/screens/terms_and_condition_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
-import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/notifier/login_notifier.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
@@ -170,11 +169,11 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                               );
                               authState.setPlanId(selectedPlan.planId);
                             });
+                            if(widget.previousScreen == Strings.PROFILE){
+                              showConfirmationDialog(context, authState.planId);
+                            }
                           },
                           previousScreen: widget.previousScreen ?? "",
-                          onPlanNameTap: (planId) {
-                            showConfirmationDialog(context, planId);
-                          },
                         );
                       },
                     ),
@@ -261,7 +260,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
                           try {
                             await _upgradeSubscriptionPlanNetworkCall(planId);
-                            NavUtil.popScreen(context, 4);
+                            NavUtil.popScreen(context, 3);
                           } catch (e) {
                             setState(() => isLoading = false);
                           }
@@ -343,14 +342,12 @@ class PlanCard extends StatelessWidget {
   final PlanModel plan;
   final VoidCallback onTap;
   final String previousScreen;
-  final void Function(int planId)? onPlanNameTap;
 
   const PlanCard({
     super.key,
     required this.plan,
     required this.onTap,
     required this.previousScreen,
-    this.onPlanNameTap,
   });
 
   @override
@@ -384,7 +381,7 @@ class PlanCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        plan.planName??"",
+                        plan.planName,
                         style:  TextStyle(
                           color: Colors.white,
                           fontSize: Constant.CONTAINER_SIZE_22,
@@ -394,7 +391,6 @@ class PlanCard extends StatelessWidget {
                       if (plan.isSelected)
                         GestureDetector(
                           onTap: () {
-                            onPlanNameTap?.call(plan.planId);
                           },
                           child: Icon(Icons.check_circle, color: Colors.white),
                         ),
