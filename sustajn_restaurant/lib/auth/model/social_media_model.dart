@@ -68,7 +68,7 @@ class BusinessModel {
   });
 
   Map<String, dynamic> toJson() => {
-    "speciality": speciality,
+    "businessType": speciality,
     "websiteDetails": websiteDetails,
     "cuisine": cuisine,
   };

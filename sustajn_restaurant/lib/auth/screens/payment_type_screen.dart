@@ -49,16 +49,33 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
   _getData() {
     final profileState = ref.read(profileProvider);
+    final authState = ref.read(authNotifierProvider);
     print("Full Data: ${profileState.getProfileData?.data}");
+    if(profileState.getProfileData != null && profileState.getProfileData?.data != null){
+      final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
 
-    final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
-
-    if (bankResponse != null) {
-      bankNameController.text = bankResponse.bankName ?? "";
-      accountHolderNameController.text = bankResponse.accountHolderName ?? "";
-      ibanController.text = bankResponse.iBanNumber ?? "";
-      bicController.text = bankResponse.bicNumber ?? "";
+      if (bankResponse != null) {
+        bankNameController.text = bankResponse.bankName ?? "";
+        accountHolderNameController.text = bankResponse.accountHolderName ?? "";
+        ibanController.text = bankResponse.iBanNumber ?? "";
+        bicController.text = bankResponse.bicNumber ?? "";
+      }
+      if(profileState.getProfileData?.data?.cardDetailsResponse != null){
+        final cardDetails = profileState.getProfileData?.data?.cardDetailsResponse;
+        authState.setCardDetails(CardDetails(
+            cardHolderName:cardDetails!.cardHolderName??"",
+            cardNumber:cardDetails.cardNumber,
+            expiryDate:cardDetails.expiryDate,
+            cvv:cardDetails.id.toString()));
+      }
+      if(profileState.getProfileData?.data?.paymentGetWayResponse != null){
+        final paymentGateWay =  profileState.getProfileData?.data?.paymentGetWayResponse;
+        authState.setGateway(PaymentGatewayModel(
+            name: paymentGateWay!.paymentGatewayName,
+            id: paymentGateWay.paymentGatewayId));
+      }
     }
+
   }
 
   @override
