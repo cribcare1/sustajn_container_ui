@@ -47,6 +47,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(profileProvider).setContext(context);
+    });
+    Utils.getToken();
+    Utils.authToken();
      Utils.getUserId();
     _init();
   }

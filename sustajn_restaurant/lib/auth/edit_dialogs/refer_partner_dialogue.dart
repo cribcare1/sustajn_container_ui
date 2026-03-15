@@ -108,15 +108,18 @@ class _EditReferPartnerDialogState
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,bottom: true,
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            _buildBottomSheet(context),
-          Utils.buildFloatingHeader(context),
+            Utils.buildFloatingHeader(context),
+            Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: _buildBottomSheet(context),
+            ),
       ],
         ),
       ),
@@ -228,12 +231,6 @@ class _EditReferPartnerDialogState
 
                         setState(() => _isLoading = false);
 
-                        if (success) {
-                          Utils.showToast(
-                            '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
-                          );
-                          Navigator.pop(context);
-                        }
                       },
                       rightText: Strings.SAVE_CHANGES,
                       isLoading: _isLoading,
@@ -332,8 +329,6 @@ class _EditReferPartnerDialogState
     }
     try {
       await ref.read(referPartnerProvider(getJsonData()).future);
-      Utils.showToast('${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}');
-      Navigator.pop(context);
     } catch (e) {
       Utils.printLog(e.toString());
     }

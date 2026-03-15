@@ -25,64 +25,83 @@ import '../utils/utility.dart';
 final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
 
 final loginDetailProvider =
-    FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
+FutureProvider.family<LoginModel, Map<String, dynamic>>(
+        (ref, params) async {
       final apiService = ref.watch(loginApiProvider);
-      final registrationState = ref.watch(authNotifierProvider);
+      final registrationState = ref.read(authNotifierProvider);
 
-      var url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
-      var responseData = LoginModel();
+      final url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
+
       try {
-        responseData = await apiService.loginUser(url, params, "");
-        if (responseData.data != null) {
-          print("++++++++++++++++++++++++++++");
-          registrationState.setIsLoading(false);
+        registrationState.setIsLoading(true);
+
+        final responseData = await apiService.loginUser(url, params, "");
+        if (responseData.status == "success" &&
+            responseData.data != null &&
+            responseData.data!.userId != null &&
+            responseData.data!.jwtToken != null) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          final userId = responseData.data!.userId!;
+          final jwtToken = responseData.data!.jwtToken!;
+
           registrationState.setLoginData(responseData);
-          if (registrationState.context.mounted) {
+          registrationState.setUserId(userId);
+
+          await SharedPreferenceUtils.saveDataInSF(
+              Strings.JWT_TOKEN, jwtToken);
+
+          await SharedPreferenceUtils.saveDataInSF(
+              Strings.USER_ID, userId);
+
+          await SharedPreferenceUtils.saveBoolDataInSF(
+              Strings.IS_LOGGED_IN, true);
+          Utils.userId = userId;
+          await SharedPreferenceUtils.saveDataInSF(
+            Strings.PROFILE_DATA,
+            jsonEncode(responseData.toJson()),
+          );
+          try {
+            await FirebaseServices().initialize();
+          } catch (e) {
+            print("Firebase init error: $e");
+          }
+          final context = registrationState.context;
+          if (context.mounted) {
             showCustomSnackBar(
-              context: registrationState.context,
+              context: context,
               message: Strings.LOGGED_SUCCESS,
               color: Colors.grey,
             );
-          }
-          registrationState.setUserId(responseData.data!.userId!);
-          SharedPreferenceUtils.saveDataInSF(
-            Strings.JWT_TOKEN,
-            responseData.data!.jwtToken!,
-          );
-          SharedPreferenceUtils.saveDataInSF(
-            Strings.USER_ID,
-            responseData.data!.userId!,
-          );
-          Utils.userId = responseData.data!.userId!;
-          SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
-print("========================================");
-          await FirebaseServices().initialize();
-          if (registrationState.context.mounted) {
-            NavUtil.navigateWithReplacement(DashboardScreen());
-          }
-        } else {
-          if (registrationState.context.mounted) {
-            showCustomSnackBar(
-              context: registrationState.context,
-              message: "Login failed or response is not success",
-              color: Colors.red,
-            );
+            Utils.getUserId();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DashboardScreen()));
           }
 
-          registrationState.setIsLoading(false);
-          Utils.printLog('Login failed or response is not success');
+        } else {
+          _showError(registrationState, "Login failed");
         }
+
+        return responseData;
+
       } catch (e) {
-        registrationState.setIsLoading(false);
-        if (registrationState.context.mounted) {
-          Utils.showNetworkErrorToast(registrationState.context, e.toString());
-        }
+        print("Login Exception: $e");
+        _showError (registrationState, e.toString());
+        rethrow;
       } finally {
         registrationState.setIsLoading(false);
       }
-      return responseData;
     });
 
+void _showError(registrationState, String message) {
+  final context = registrationState.context;
+
+  if (context != null && context.mounted) {
+    showCustomSnackBar(
+      context: context,
+      message: message,
+      color: Colors.red,
+    );
+  }
+}
 ///Register
 
 final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params,) async {

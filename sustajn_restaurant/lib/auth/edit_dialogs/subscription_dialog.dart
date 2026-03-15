@@ -21,44 +21,51 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
     final subscription =
         profileState.getProfileData?.data!.subscriptionResponse;
     return SafeArea(
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.primaryColor,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+      top: false,
+      bottom: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            SizedBox(height: Constant.SIZE_08),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _header(context),
+                    Flexible(
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                        children: [
+                          _planCard(
+                            context,
+                            (subscription != null) ? subscription : null,
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_30),
+                          _viewAllPlansButton(context),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _header(context),
-                  Flexible(
-                    child: ListView(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                      children: [
-                        _planCard(
-                          context,
-                          (subscription != null) ? subscription : null,
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_30),
-                        _viewAllPlansButton(context),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
             ),
-          ),
-          Utils.buildFloatingHeader(context),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -178,25 +185,12 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               color: Constant.gold,
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/diarhm.png',
-                  height: Constant.CONTAINER_SIZE_16,
-                  color: Constant.black,
-                  colorBlendMode: BlendMode.srcIn,
-                ),
-                SizedBox(width: Constant.SIZE_02),
-                Text(
-                  "${data.totalContainers.toString()}/month",
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            child: Text(
+              "Ð ${data.feeType.toString()}",
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

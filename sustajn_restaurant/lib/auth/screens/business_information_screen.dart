@@ -78,6 +78,7 @@ class _BusinessInformationDetailsState
     _licenceFocus = FocusNode();
     _websiteFocus = FocusNode();
     _businessTypeFocus = FocusNode();
+    _getData();
   }
 
   @override
@@ -89,7 +90,6 @@ class _BusinessInformationDetailsState
     vatController.dispose();
     websiteController.dispose();
     businessTypeController.dispose();
-
     _contactFocus.dispose();
     _vatFocus.dispose();
     _contactNumberFocus.dispose();
@@ -103,18 +103,35 @@ class _BusinessInformationDetailsState
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
-    if (profile!.contactAndRegistrationDetailsResponse != null ||
-        profile.bankDetailsResponse != null) {
-      final business = profile.contactAndRegistrationDetailsResponse;
-      final website = profile.businessDetailsResponse;
+    if(widget.previous == "profile" && profile != null){
+      if (profile.contactAndRegistrationDetailsResponse != null
+          ) {
+        final business = profile.contactAndRegistrationDetailsResponse;
+        final website = profile.businessDetailsResponse;
+        contactPersonController.text = business!.contactPersonName ?? "";
+        contactNumberController.text = business.contactNumber ?? "";
+        contactEmailController.text = business.contactEmail ?? "";
+        licenceController.text = business.treadLicenseNumber ?? "";
+        vatController.text = business.vatNumber ?? "";
+        websiteController.text = (website != null)? website.website ?? "":"";
+      }
+      if (profile.socialMediaResponse != null &&
+          profile.socialMediaResponse!.isNotEmpty) {
 
-      contactPersonController.text = business!.contactPersonName ?? "";
-      contactNumberController.text = business.contactNumber ?? "";
-      contactEmailController.text = business.contactEmail ?? "";
-      licenceController.text = business.treadLicenseNumber ?? "";
-      vatController.text = business.vatNumber ?? "";
-      websiteController.text = website!.website ?? "";
+        widget.authState.socialMediaList.addAll(
+          profile.socialMediaResponse!.map(
+                (e) => SocialMediaModel(
+              socialMediaType: SocialMediaType.values.firstWhere(
+                    (type) => type.name.toUpperCase() == e.socialMediaType,
+              ),
+              controller: TextEditingController(text: e.link ?? ""),
+            ),
+          ),
+        );
+      }
+
     }
+
   }
 
   final List<String> _businessTypes = [
@@ -496,6 +513,7 @@ class _BusinessInformationDetailsState
                           onRightTap: _isLoading
                               ? null
                               : () async {
+
                             if (!_key.currentState!.validate()) return;
 
                             setState(() => _isLoading = true);
@@ -557,6 +575,16 @@ class _BusinessInformationDetailsState
                                   return;
                                 }
                                 setState(() => _isLoading = true);
+                                widget.authState.setRegistrationDetails(ContactAndRegistrationDetails(
+                                    contactPersonName:contactPersonController.text,
+                                    contactEmail:contactEmailController.text,
+                                    treadLicenseNumber: licenceController.text,
+                                  vatNumber : vatController.text,
+                                  contactNumber : contactNumberController.text,
+                                    registrationNumber: "",
+                                ));
+                                widget.authState.setBusinessDetails(BusinessModel(websiteDetails: _selectedBusinessType??"",
+                                    speciality:websiteController.text));
                                 NavUtil.navigateToPushScreen(
                                   context,
                                   PaymentTypeScreen(),

@@ -57,7 +57,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Edit Restaurant Address",
+          title: (widget.profile =="")?"Restaurant Address":"Edit Restaurant Address",
           leading: IconButton(
             onPressed: () {
               setState(() => _showMap = false);
@@ -247,45 +247,48 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         width: double.infinity,
                         child: SubmitButton(
                           onRightTap: () async {
-                            final typedAddress = addressController.text.trim();
-                            final mapAddress = state.address.trim();
+                            if(widget.profile == ""){
+Navigator.pop(context, {
+                                "lat": state.position!.latitude,
+                                "lng": state.position!.longitude,
+                                "address":
+                                    "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
+                              });
+                            }else if(widget.profile =="profile"){
+                              final typedAddress = addressController.text.trim();
+                              final mapAddress = state.address.trim();
 
-                            if (address == null) {
-                              Utils.showToast('Address data not available');
-                              return;
+                              if (address == null) {
+                                Utils.showToast('Address data not available');
+                                return;
+                              }
+
+                              final finalAddress = typedAddress.isNotEmpty
+                                  ? typedAddress
+                                  : mapAddress;
+
+                              if (finalAddress.isEmpty) {
+                                Utils.showToast('Please enter or select address');
+                                return;
+                              }
+
+                              if (finalAddress == _initialAddress) {
+                                Utils.showToast('No changes detected');
+                                return;
+                              }
+
+                              await _editAddressNetworkCall(
+                                address.id?.toString() ?? "0",
+                                address.addressType ?? "",
+                                address.flatDoorHouseDetails ?? "",
+                                finalAddress,
+                                address.poBoxOrPostalCode ?? "",
+                              );
+                              NavUtil.popScreen(context, 3);
                             }
 
-                            final finalAddress = typedAddress.isNotEmpty
-                                ? typedAddress
-                                : mapAddress;
-
-                            if (finalAddress.isEmpty) {
-                              Utils.showToast('Please enter or select address');
-                              return;
-                            }
-
-                            if (finalAddress == _initialAddress) {
-                              Utils.showToast('No changes detected');
-                              return;
-                            }
-
-                            await _editAddressNetworkCall(
-                              address.id?.toString() ?? "0",
-                              address.addressType ?? "",
-                              address.flatDoorHouseDetails ?? "",
-                              finalAddress,
-                              address.poBoxOrPostalCode ?? "",
-                            );
-                            NavUtil.popScreen(context, 3);
                           },
 
-                          //todo needed later
-                          // Navigator.pop(context, {
-                          //   "lat": state.position!.latitude,
-                          //   "lng": state.position!.longitude,
-                          //   "address":
-                          //       "${addressController.text.isNotEmpty ? "${addressController.text}," : ""} ${state.address}",
-                          // });
                           rightText: Strings.CONFIRM,
                         ),
                       ),

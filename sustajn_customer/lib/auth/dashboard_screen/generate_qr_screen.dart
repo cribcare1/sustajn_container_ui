@@ -16,7 +16,7 @@ import '../../utils/shared_preference_utils.dart';
 import '../../utils/utils.dart';
 
 class QrDialog extends ConsumerStatefulWidget {
-  QrDialog({Key? key}) : super(key: key);
+  const QrDialog({super.key});
 
   @override
   ConsumerState<QrDialog> createState() => _QrDialogState();

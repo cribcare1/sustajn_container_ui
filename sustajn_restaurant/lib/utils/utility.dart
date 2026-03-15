@@ -24,37 +24,15 @@ import '../models/login_model.dart';
 class Utils {
 
   static buildFloatingHeader(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Positioned(
-      top: -18,
-      left: Constant.CONTAINER_SIZE_16,
-      right: Constant.CONTAINER_SIZE_16,
-      child: Row(
-        children: [
-          const Spacer(),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: EdgeInsets.all(Constant.SIZE_06),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: theme.cardColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.close,
-                size: Constant.SIZE_18,
-                color: theme.iconTheme.color,
-              ),
-            ),
-          ),
-        ],
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
       ),
     );
   }
@@ -171,87 +149,104 @@ class Utils {
     return await showModalBottomSheet<File?>(
       context: context,
       isScrollControlled: false,
-      backgroundColor: theme!.scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor:Colors.transparent,
       builder: (_) {
-        return SafeArea(
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: Constant.CONTAINER_SIZE_20,
-                  horizontal: Constant.CONTAINER_SIZE_20,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            Strings.CHOOSE,
-                            style: TextStyle(
-                              fontSize: Constant.LABEL_TEXT_SIZE_18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _optionButton(
-                          context,
-                          icon: Icons.camera_alt_outlined,
-                          label: Strings.CAMERA,
-                          color: Colors.white70,
-                          iconColor: theme.primaryColor,
-                          onTap: () async {
-                            final XFile? image = await picker.pickImage(
-                              source: ImageSource.camera,
-                            );
-
-                            if (image != null) {
-                              Navigator.pop(context, File(image.path));
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                        _optionButton(
-                          context,
-                          icon: Icons.image_outlined,
-                          label: Strings.GALLERY,
-                          color: Colors.white70,
-                          iconColor: theme.primaryColor,
-                          onTap: () async {
-                            final XFile? image = await picker.pickImage(
-                              source: ImageSource.gallery,
-                            );
-
-                            if (image != null) {
-                              Navigator.pop(context, File(image.path));
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_20),
-                  ],
-                ),
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            top: false, bottom: true,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                0,
               ),
-              Utils.buildFloatingHeader(context)
-            ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Utils.buildFloatingHeader(context),
+                  SizedBox(height: Constant.SIZE_08),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                    decoration: BoxDecoration(
+                      color: theme!.scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
+                        topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                Strings.CHOOSE,
+                                style: TextStyle(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _optionButton(
+                              context,
+                              icon: Icons.camera_alt_outlined,
+                              label: Strings.CAMERA,
+                              color: Colors.white70,
+                              iconColor: theme!.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.camera,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                            _optionButton(
+                              context,
+                              icon: Icons.image_outlined,
+                              label: Strings.GALLERY,
+                              color: Colors.white70,
+                              iconColor: theme.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -359,13 +354,12 @@ class Utils {
                       SizedBox(width: Constant.CONTAINER_SIZE_12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: ()async {
                             Navigator.pop(context);
-                            SharedPreferenceUtils.clearAll();
-                            NavUtil.navigateToWithReplacement(
-                              context,
-                              LoginScreen(),
-                            );
+                            await await SharedPreferenceUtils.saveBoolDataInSF(
+                                Strings.IS_LOGGED_IN, false);
+                             await SharedPreferenceUtils.clearAll();
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginScreen(),));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -771,9 +765,6 @@ class Utils {
 
   static LoginModel? loginData;
   static int? societyId = 0;
-
-  // static int? userId = 0;
-
   static Future<LoginModel?> getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = prefs.getString(Strings.PROFILE_DATA);
@@ -781,7 +772,7 @@ class Utils {
     if (data != null) {
       var response = json.decode(data);
       loginData = LoginModel.fromJson(response);
-      // userId = loginData!.data!.userId;
+      return loginData;
     }
     return null;
   }

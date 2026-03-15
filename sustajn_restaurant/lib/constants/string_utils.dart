@@ -326,6 +326,7 @@ class Strings {
   static const String ONLY_LETTERS_NUMBERS =
       'Only letters, numbers and spaces allowed';
   static const String EDIT_RESTAURANT_NAME = 'Edit Restaurant Name';
+  static const String RESTAURANT_NAME1 = 'Restaurant Name';
   static const String PRODUCTS = 'Products';
   static const String INVENTORY = 'Inventory';
   static const String LEASE = 'Lease';

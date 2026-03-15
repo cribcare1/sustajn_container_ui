@@ -291,7 +291,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       _focusScopeNode.unfocus();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => MapScreen()),
+                        MaterialPageRoute(builder: (_) => MapScreen(profile: "",)),
                       ).then((value) {
                         if (value != null) {
                           addressCtrl.text = value['address'];

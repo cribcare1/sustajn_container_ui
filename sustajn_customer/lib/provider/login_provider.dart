@@ -12,6 +12,7 @@ import '../auth/screens/login_screen.dart';
 import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../firebase_services.dart';
 import '../models/login_model.dart';
 import '../notifier/login_notifier.dart';
 import '../service/login_service.dart';
@@ -45,6 +46,11 @@ FutureProvider.family<dynamic, Map<String, dynamic>>((ref, params) async {
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
       SharedPreferenceUtils.saveDataInSF(
           Strings.USER_ID, responseData.data!.userId);
+      try {
+        await FirebaseServices().initialize();
+      } catch (e) {
+        print("Firebase init error: $e");
+      }
       if(registrationState.context.mounted){
         Navigator.pushReplacement(
           registrationState.context,

@@ -43,22 +43,42 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authNotifierProvider).clearBankErrors();
+      _getData();
     });
-    _getData();
+
   }
 
   _getData() {
     final profileState = ref.read(profileProvider);
+    final authState = ref.read(authNotifierProvider);
     print("Full Data: ${profileState.getProfileData?.data}");
+    if(profileState.getProfileData != null && profileState.getProfileData?.data != null){
+      final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
 
-    final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
-
-    if (bankResponse != null) {
-      bankNameController.text = bankResponse.bankName ?? "";
-      accountHolderNameController.text = bankResponse.accountHolderName ?? "";
-      ibanController.text = bankResponse.iBanNumber ?? "";
-      bicController.text = bankResponse.bicNumber ?? "";
+      if (bankResponse != null) {
+        bankNameController.text = bankResponse.bankName ?? "";
+        accountHolderNameController.text = bankResponse.accountHolderName ?? "";
+        ibanController.text = bankResponse.iBanNumber ?? "";
+        bicController.text = bankResponse.bicNumber ?? "";
+      }
+      if(profileState.getProfileData?.data?.cardDetailsResponse != null && profileState.getProfileData?.data?.cardDetailsResponse!.cardNumber != ""){
+        final cardDetails = profileState.getProfileData?.data?.cardDetailsResponse;
+        authState.setCardDetails(CardDetails(
+            cardHolderName:cardDetails!.cardHolderName??"",
+            cardNumber:cardDetails.cardNumber,
+            expiryDate:cardDetails.expiryDate,
+            cvv:cardDetails.id.toString()));
+      }
+      if(profileState.getProfileData?.data?.paymentGetWayResponse != null){
+        final paymentGateWay =  profileState.getProfileData?.data?.paymentGetWayResponse;
+        authState.setGateway(PaymentGatewayModel(
+            name: paymentGateWay!.paymentGatewayId,
+            id: paymentGateWay.paymentGatewayName));
+      }
+  print(authState.gateway!.name);
+  print(authState.gateway!.id);
     }
+
   }
 
   @override
@@ -482,8 +502,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (notifier.gateway != null &&
-                      notifier.gateway!.name == title)
+                  if (notifier.gateway != null && notifier.gateway!.name == title)
                     Padding(
                       padding: EdgeInsets.only(top: Constant.SIZE_04),
                       child: Text(
@@ -650,19 +669,30 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    // _controller.text =
+    //     (widget.notifier.gateway != null &&
+    //         widget.notifier.gateway!.name!.toLowerCase().contains(
+    //           widget.title.toLowerCase(),
+    //         ))
+    //     ? widget.notifier.gateway!.id.toString()
+    //     : "";
     return SafeArea(
-      child: Stack(
-        clipBehavior: Clip.none,
+      top: false,
+      bottom: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          Padding(
+            padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_16),
+            child: Utils.buildFloatingHeader(context),
+          ),
+          SizedBox(height: Constant.SIZE_08),
           SingleChildScrollView(
             padding: EdgeInsets.only(
-              left: Constant.CONTAINER_SIZE_20,
-              right: Constant.CONTAINER_SIZE_20,
-              top: Constant.CONTAINER_SIZE_20,
-              bottom:
-                  MediaQuery.of(context).viewInsets.bottom +
-                  Constant.CONTAINER_SIZE_20,
+              left: Constant.CONTAINER_SIZE_16,
+              right: Constant.CONTAINER_SIZE_16,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
@@ -760,7 +790,6 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
               ),
             ),
           ),
-          Utils.buildFloatingHeader(context),
         ],
       ),
     );
