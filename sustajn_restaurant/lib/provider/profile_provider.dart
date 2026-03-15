@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
@@ -58,11 +59,15 @@ FutureProvider.family<GetProfileData, Map<String, dynamic>>(
 
     print("Provider Response: $responseData");
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      final userId = Utils.userId;
+      final url = '${NetworkUrls.GET_PROFILE}$userId';
+      ref.read(getProfileProvider(url));
+      Navigator.pop(profileState.context);
     }else {
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       throw Exception(responseData.message ?? 'Update failed');
     }
     return responseData;
@@ -123,12 +128,15 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
     params,
     ) async {
   final apiService = ref.read(getProfileApiProvider);
-
+  final profileState = ref.watch(profileProvider);
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.REFER_A_PARTNER}';
 
   Utils.printLog("Refer Partner Provider url : $url");
   final responseData = await apiService.referPartnerService(url, params, "");
   print("Provider Response: $responseData");
+  Utils.showToast(
+      responseData['message']);
+  Navigator.pop(profileState.context);
   return responseData;
 });
 

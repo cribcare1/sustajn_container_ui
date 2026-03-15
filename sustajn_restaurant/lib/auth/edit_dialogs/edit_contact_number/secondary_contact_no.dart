@@ -55,7 +55,7 @@ class _SecondaryMobileNumberDialogState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+final profileState = ref.watch(profileProvider);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -117,7 +117,7 @@ class _SecondaryMobileNumberDialogState
                           SizedBox(width: Constant.SIZE_08),
                           Expanded(
                             child: Text(
-                              "+91 ${widget.primaryMobileNumber}",
+                              " ${widget.primaryMobileNumber}",
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -168,7 +168,7 @@ class _SecondaryMobileNumberDialogState
                             SizedBox(width: Constant.SIZE_08),
                             Expanded(
                               child: Text(
-                                "+91 ${widget.secondaryMobileNumber}",
+                                " ${widget.secondaryMobileNumber}",
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -247,7 +247,7 @@ class _SecondaryMobileNumberDialogState
                       ],
                       SizedBox(height: Constant.CONTAINER_SIZE_28),
 
-                      SizedBox(
+                     profileState.isSaving?const Center(child: CircularProgressIndicator(),): SizedBox(
                         width: double.infinity,
                         child: SubmitButton(
                           onRightTap: () {
@@ -258,12 +258,6 @@ class _SecondaryMobileNumberDialogState
                             Utils.showToast(
                               '${Strings.SECONDARY_NO} ${Strings.SUCC_MSG}',
                             );
-                            Navigator.pop(
-                              context,
-                              _secondaryController.text.trim(),
-                            );
-
-                            NavUtil.popScreen(context, 1);
                           },
                           rightText: Strings.SAVE_CHANGES,
                         ),
@@ -289,7 +283,7 @@ class _SecondaryMobileNumberDialogState
 
   _addSecondaryNoNetworkCall() async {
     Utils.printLog('edit mobile number Network call');
-
+    ref.read(profileProvider).setIsSaving(true);
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)
         .isNetworkAvailable();

@@ -73,7 +73,7 @@ class _EditMobileNumberDialogState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+final profileState = ref.read(profileProvider);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -154,13 +154,13 @@ class _EditMobileNumberDialogState
 
                       SizedBox(height: Constant.CONTAINER_SIZE_24),
 
-                      SizedBox(
+                     profileState.isSaving?const Center(child: CircularProgressIndicator(),): SizedBox(
                         width: double.infinity,
                         child: SubmitButton(
                           rightText: Strings.SAVE_CHANGES,
                           onRightTap: () {
                             if (!_formKey.currentState!.validate()) return;
-                            _showConfirmationDialog(context);
+                            _editMobileNetworkCall();
                           },
                         ),
                       ),
@@ -201,80 +201,80 @@ class _EditMobileNumberDialogState
       ),
     );
   }
-
-  Future<void> _showConfirmationDialog(BuildContext context) async {
-    final theme = Theme.of(context);
-
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: theme.scaffoldBackgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-              ),
-              title: const Text(
-                Strings.CONFIRM_UPDATE,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              content: Text(
-                Strings.UPDATE_CONTACT_NO,
-                style: TextStyle(color: Colors.grey.shade300),
-              ),
-              actions: [
-                /// NO button
-                TextButton(
-                  onPressed: _isUpdating
-                      ? null
-                      : () {
-                          Navigator.of(dialogContext).pop();
-                        },
-                  child: const Text(
-                    Strings.NO,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-
-                SizedBox(
-                  width: Constant.CONTAINER_SIZE_120,
-                  child: SubmitButton(
-                    rightText: Strings.UPDATE,
-                    isLoading: _isUpdating,
-                    onRightTap: _isUpdating
-                        ? null
-                        : () async {
-                            setDialogState(() => _isUpdating = true);
-
-                            await Future.delayed(Duration(seconds: 2));
-
-                            final result = await _editMobileNetworkCall();
-
-                            if (!mounted) return;
-
-                            setDialogState(() => _isUpdating = false);
-
-                            if (result != false) {
-                              Navigator.of(dialogContext).pop();
-                              NavUtil.popScreen(context, 2);
-                            } else {
-                              Utils.showToast(Strings.SOMETHING_WENT_WRONG);
-                            }
-                          },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+//TODO:- conformation Dialog
+  // Future<void> _showConfirmationDialog(BuildContext context) async {
+  //   final theme = Theme.of(context);
+  //
+  //   return showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (dialogContext) {
+  //       return StatefulBuilder(
+  //         builder: (context, setDialogState) {
+  //           return AlertDialog(
+  //             backgroundColor: theme.scaffoldBackgroundColor,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+  //             ),
+  //             title: const Text(
+  //               Strings.CONFIRM_UPDATE,
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.w600,
+  //               ),
+  //             ),
+  //             content: Text(
+  //               Strings.UPDATE_CONTACT_NO,
+  //               style: TextStyle(color: Colors.grey.shade300),
+  //             ),
+  //             actions: [
+  //               /// NO button
+  //               TextButton(
+  //                 onPressed: _isUpdating
+  //                     ? null
+  //                     : () {
+  //                         Navigator.of(dialogContext).pop();
+  //                       },
+  //                 child: const Text(
+  //                   Strings.NO,
+  //                   style: TextStyle(color: Colors.grey),
+  //                 ),
+  //               ),
+  //
+  //               SizedBox(
+  //                 width: Constant.CONTAINER_SIZE_120,
+  //                 child: SubmitButton(
+  //                   rightText: Strings.UPDATE,
+  //                   isLoading: _isUpdating,
+  //                   onRightTap: _isUpdating
+  //                       ? null
+  //                       : () async {
+  //                           setDialogState(() => _isUpdating = true);
+  //
+  //                           await Future.delayed(Duration(seconds: 2));
+  //
+  //                           final result = await _editMobileNetworkCall();
+  //
+  //                           if (!mounted) return;
+  //
+  //                           setDialogState(() => _isUpdating = false);
+  //
+  //                           if (result != false) {
+  //                             Navigator.of(dialogContext).pop();
+  //                             NavUtil.popScreen(context, 2);
+  //                           } else {
+  //                             Utils.showToast(Strings.SOMETHING_WENT_WRONG);
+  //                           }
+  //                         },
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Map<String, dynamic> getJsonData() {
     return {
@@ -290,7 +290,7 @@ class _EditMobileNumberDialogState
 
   _editMobileNetworkCall() async {
     Utils.printLog('edit mobile number Network call');
-
+    ref.read(profileProvider).setIsSaving(true);
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)
         .isNetworkAvailable();

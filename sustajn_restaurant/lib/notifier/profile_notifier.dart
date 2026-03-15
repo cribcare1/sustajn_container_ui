@@ -10,6 +10,7 @@ class ProfileState extends ChangeNotifier{
   String _name = '';
   bool _isLoading = false;
   bool _isSaving = false;
+  bool _isImageUploading = false;
   GetProfileData? _getProfileData;
   BuildContext? _context;
   bool _isVerifying = false;
@@ -25,6 +26,7 @@ class ProfileState extends ChangeNotifier{
   String get name => _name;
   bool get isLoading => _isLoading;
   bool get isSaving => _isSaving;
+  bool get isImageUploading => _isImageUploading;
   GetProfileData? get getProfileData => _getProfileData;
   BuildContext get context => _context!;
   LoginData? get loginResponse => _loginResponse;
@@ -48,6 +50,10 @@ class ProfileState extends ChangeNotifier{
   }
 void setIsSaving(bool isLoading){
     _isSaving = isLoading;
+    notifyListeners();
+  }
+void setIsImageSaving(bool isLoading){
+  _isImageUploading = isLoading;
     notifyListeners();
   }
 

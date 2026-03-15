@@ -231,12 +231,6 @@ class _EditReferPartnerDialogState
 
                         setState(() => _isLoading = false);
 
-                        if (success) {
-                          Utils.showToast(
-                            '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
-                          );
-                          Navigator.pop(context);
-                        }
                       },
                       rightText: Strings.SAVE_CHANGES,
                       isLoading: _isLoading,
@@ -335,8 +329,6 @@ class _EditReferPartnerDialogState
     }
     try {
       await ref.read(referPartnerProvider(getJsonData()).future);
-      Utils.showToast('${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}');
-      Navigator.pop(context);
     } catch (e) {
       Utils.printLog(e.toString());
     }

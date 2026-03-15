@@ -70,17 +70,20 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
     final theme = Theme.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return SafeArea(
-      top: false,bottom: true,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Utils.buildFloatingHeader(context),
-            _buildBottomSheetContent(context),
-          ],
+    return Padding(
+      padding:  EdgeInsets.only(bottom: bottomInset),
+      child: SafeArea(
+        top: false,bottom: true,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Utils.buildFloatingHeader(context),
+              _buildBottomSheetContent(context),
+            ],
+          ),
         ),
       ),
     );

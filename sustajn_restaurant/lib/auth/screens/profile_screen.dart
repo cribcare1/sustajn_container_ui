@@ -318,7 +318,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
 
-                            if (!profileState.isSaving)
+                            if (!profileState.isImageUploading)
                               GestureDetector(
                                 onTap: () async {
                                   profileImage = await Utils.uploadImage(
@@ -582,7 +582,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      profileState.setIsSaving(true);
+      profileState.setIsImageSaving(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) async {
@@ -590,10 +590,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
 
         if (!isNetworkAvailable) {
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+          profileState.setIsImageSaving(false);
           return;
         }
-
-        // Prepare multipart parameters using your utility method
         final params = Utils.multipartParams(
           NetworkUrls.UPDATE_PROFILE,
           getJsonData(mobile, name),
@@ -603,13 +602,14 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         final response = await ref.read(profileImgProvider(params).future);
 
         Utils.printLog("Profile image uploaded successfully: $response");
-        profileState.setIsSaving(false);
+        profileState.setIsImageSaving(false);
       });
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsSaving(false);
+      profileState.setIsImageSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
+      profileState.setIsImageSaving(false);
       FocusScope.of(context).unfocus();
     }
   }

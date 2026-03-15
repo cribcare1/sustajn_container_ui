@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
-import 'package:sustajn_restaurant/utils/nav_utils.dart';
+
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -14,7 +14,7 @@ import '../../utils/utility.dart';
 class EditRestaurantNameDialog extends ConsumerStatefulWidget {
   final String name;
 
-  const EditRestaurantNameDialog({super.key, required this.name,});
+  const EditRestaurantNameDialog({super.key, required this.name});
 
   @override
   ConsumerState<EditRestaurantNameDialog> createState() =>
@@ -25,16 +25,12 @@ class _EditRestaurantNameDialogState
     extends ConsumerState<EditRestaurantNameDialog> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-
   File? imageFile;
-  bool _isSaving = false;
-
   @override
   void initState() {
     super.initState();
     Utils.userId;
     _nameController.text = widget.name;
-
     _nameController.selection = TextSelection.collapsed(
       offset: widget.name.length,
     );
@@ -62,13 +58,15 @@ class _EditRestaurantNameDialogState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final profileState = ref.watch(profileProvider);
 
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SafeArea(
-        top: false, bottom: true,
+        top: false,
+        bottom: true,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             Constant.CONTAINER_SIZE_16,
@@ -127,7 +125,7 @@ class _EditRestaurantNameDialogState
                           ),
                           cursorColor: Colors.white70,
                           decoration: InputDecoration(
-                            labelText: 'Restaurant Name',
+                            labelText: Strings.RESTAURANT_NAME1,
                             labelStyle: TextStyle(color: Colors.white70),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             contentPadding: EdgeInsets.symmetric(
@@ -163,7 +161,8 @@ class _EditRestaurantNameDialogState
                           ),
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_24),
-                        _isSaving
+
+                        profileState.isSaving
                             ? const Center(child: CircularProgressIndicator())
                             : SizedBox(
                                 width: double.infinity,
@@ -173,10 +172,6 @@ class _EditRestaurantNameDialogState
                                       await _editNameNetworkCall(
                                         _nameController.text.trim(),
                                       );
-                                      if (mounted) {
-                                        NavUtil.popScreen(context, 1);
-                                        _getProfileNetworkCall();
-                                      }
                                     }
                                   },
                                   rightText: Strings.SAVE_CHANGES,
@@ -186,7 +181,6 @@ class _EditRestaurantNameDialogState
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -195,36 +189,13 @@ class _EditRestaurantNameDialogState
     );
   }
 
-  _getProfileNetworkCall() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final profileState = ref.read(profileProvider);
-        if (isNetworkAvailable) {
-          profileState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_PROFILE}$userId';
-          ref.read(getProfileProvider(url));
-        } else {
-          profileState.setIsLoading(false);
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
-    }
-  }
-
   Map<String, dynamic> getJsonData(String name) {
     final data = {"userId": Utils.userId, "fullName": name};
     return data;
   }
 
   _editNameNetworkCall(String name) async {
-    Utils.printLog('edit restaurant name Network call');
-
+    ref.read(profileProvider).setIsSaving(true);
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)
         .isNetworkAvailable();
