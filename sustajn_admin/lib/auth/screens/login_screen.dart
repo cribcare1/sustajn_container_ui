@@ -176,33 +176,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },rightText: Strings.LOGIN)
                 ),
                 SizedBox(height: height * 0.02),
-            // Center(
-            //   child: Text.rich(
-            //     TextSpan(
-            //       text:Strings.DONT_HAVE_ACC ,
-            //       style: themeData.textTheme.bodyMedium!.copyWith(
-            //       color: Colors.white,
-            //       ),
-            //       children: [
-            //         TextSpan(
-            //           text: Strings.SIGN_UP,
-            //           style: TextStyle(
-            //             color: Constant.gold,
-            //             fontWeight: FontWeight.bold,
-            //             decoration: TextDecoration.underline,
-            //             decorationColor: themeData.secondaryHeaderColor,
-            //           ),
-            //           recognizer: TapGestureRecognizer()
-            //             ..onTap = authState.isLoading
-            //         ? null
-            //             : () {
-            //             NavUtil.navigateToPushScreen(context, SignUpScreen());
-            //             },
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // )
               ],
             ),
           ),

@@ -172,6 +172,6 @@ class Strings {
   static const GO_BACK_RESET_PASSWORD =
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
-
+  static const GO_BACK = 'Go back';
 
 }
