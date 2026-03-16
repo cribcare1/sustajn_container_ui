@@ -73,6 +73,11 @@ class SharedPreferenceUtils {
     await prefs.remove(key);
   }
 
+  static deleteValueFromSF() async {
+    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    sharedPrefs.clear();
+  }
+
   static Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

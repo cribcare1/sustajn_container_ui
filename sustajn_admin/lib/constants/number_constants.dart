@@ -49,6 +49,7 @@ class Constant {
   static late double LABEL_TEXT_SIZE_30 = 30;
   static late double CONTAINER_HEGIHT_SIZE = 35;
   static late double CONTAINER_WIDTH_SIZE = 40;
+  static late double CONTAINER_SIZE_1 = 01.0;
   static late double CONTAINER_SIZE_10 = 10.0;
   static late double CONTAINER_SIZE_12 = 12.0;
   static late double CONTAINER_SIZE_14 = 14.0;
@@ -193,6 +194,8 @@ class Constant {
   static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
+  static const Color gold = Color(0xFFD1AE31);
+
 
 
 

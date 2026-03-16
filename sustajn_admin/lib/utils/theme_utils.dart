@@ -76,6 +76,13 @@ class CustomTheme {
         borderSide: const BorderSide(color: Colors.white));
   }
 
+  static OutlineInputBorder roundedBorder(Color color) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: color),
+    );
+  }
+
   static TextStyle getButtonBoldBlackStyle() {
     return TextStyle(
       fontFamily: 'OpenSans-Semibold',
