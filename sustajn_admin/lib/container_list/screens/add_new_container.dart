@@ -43,9 +43,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
 
   _fetchData() {
     if (widget.inventoryData != null) {
-      _productController.text = widget.inventoryData!.containerName;
-      _productIdController.text = widget.inventoryData!.productId;
-      _desController.text = widget.inventoryData!.containerDescription;
+      _productController.text = widget.inventoryData!.containerName!;
+      _productIdController.text = widget.inventoryData!.productId!;
+      _desController.text = widget.inventoryData!.containerDescription!;
       _volumeController.text = widget.inventoryData!.capacityMl.toString();
       _quantityController.text = widget.inventoryData!.totalContainers
           .toString();

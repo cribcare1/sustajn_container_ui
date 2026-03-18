@@ -31,7 +31,7 @@ class ContainerState extends ChangeNotifier{
   void filterSearch(String value) {
        filteredContainers = containerList.where((item) {
         final searchLower = value.toLowerCase();
-        return item.containerName.toLowerCase().contains(searchLower) ||
+        return item.containerName!.toLowerCase().contains(searchLower) ||
             item.productId.toString().toLowerCase().contains(searchLower);
       }).toList();
       notifyListeners();
