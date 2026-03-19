@@ -27,9 +27,9 @@ Future.microtask((){
       'page=${state.page}&size=${state.size}';
 
   try {
-    RestaurantListModel response = await apiService.fetchRestaurant(url);
+    final response = await apiService.fetchRestaurant(url);
 
-    state.addRestaurants(response.restaurantData);
+    state.addRestaurants(response.data);
     state.incrementPage();
 
   } catch (e) {
