@@ -53,7 +53,6 @@ final loginDetailProvider =
               registrationState.context,
               MaterialPageRoute(builder: (_) =>
                   DashboardScreen()),
-              // HomeScreen()),
             );
           }
         } else {
