@@ -59,6 +59,7 @@ static const CONTAINER_LEASE = "orders/borrowContainers";
 static const CONTAINER_RECEIVE = "orders/returnContainers";
 static const CONTAINER_RECEIVE_LIST = "orders/monthWiseBorrowedDetails";
 static const CUSTOMER_BORROWED_LIST = "orders/getBorrowedProduct?customerId=";
-
+/// Damage container
+static const DAMAGE_CONTAINER = "inventory/reportDamagedContainer";
 
 }

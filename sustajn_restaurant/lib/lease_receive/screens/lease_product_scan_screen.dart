@@ -278,6 +278,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
                         ? null
                         : () {
                             if (widget.type.contains(Strings.LEASE_UC)) {
+                              _handleContainerId(textController.text);
                               NavUtil.navigateToPushScreen(
                                 context,
                                 LeaseProductListScreen(),

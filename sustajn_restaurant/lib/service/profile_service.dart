@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/network_urls.dart';
+import '../lease_receive/model/container_return_list_model.dart';
 import '../models/update_address_data.dart';
 import '../network/ApiCallPresentator.dart';
 import '../utils/utility.dart';
@@ -171,6 +172,31 @@ class ProfileServices {
       Utils.printLog("subscription plan updated service::::$e");
       throw Exception(e);
     }
+  }
+  Future<CustomerBorrowedData> fetchCustomerBorrowedList(String customerId) async {
+    try {
+      var api =
+          "${NetworkUrls.BASE_URL}${NetworkUrls.CUSTOMER_BORROWED_LIST}$customerId";
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(api);
+
+      if (response != null) {
+        return CustomerBorrowedData.fromJson(response);
+      } else {
+        throw Exception("Unable to fetch container list");
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+  Future<dynamic> markDamageContainer(Map<String, dynamic> body, File image)async{
+    var api =
+        "${NetworkUrls.BASE_URL}${NetworkUrls.DAMAGE_CONTAINER}";
+    ApiCallPresenter presenter = ApiCallPresenter();
+    try{
+      var response = presenter.postMultipartRequest(api, image, body, "request", "Post", "images");
+      return response;
+    }catch (e){throw Exception(e);}
   }
 }
 

@@ -227,7 +227,8 @@ class ApiHelper {
 
 
   Future<http.Response> apiMultiPartPostRequest(
-      String url, Map<String, dynamic> jsonMap, var image, String keyName) async {
+      String url, Map<String, dynamic> jsonMap, var image, String keyName,
+      {String fileName = "profile"}) async {
 
     final token = Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
@@ -251,7 +252,7 @@ class ApiHelper {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
         var multiport = http.MultipartFile(
-          'profile',
+          fileName,
           stream,
           length,
           filename: image.path.split('/').last,
