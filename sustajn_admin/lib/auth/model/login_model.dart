@@ -1,12 +1,12 @@
 class LoginModel {
-  final String message;
-  final LoginData data;
-  final String status;
+  final String? message;
+  final LoginData? data;
+  final String? status;
 
   LoginModel({
-    required this.message,
-    required this.data,
-    required this.status,
+     this.message,
+     this.data,
+     this.status,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
