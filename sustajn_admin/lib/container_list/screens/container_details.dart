@@ -140,7 +140,7 @@ class ContainerDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  containerData.containerName,
+                  containerData.containerName!,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class ContainerDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  containerData.productId,
+                  containerData.productId!,
                   style: theme.textTheme.titleSmall?.copyWith(
                     color: Colors.white70,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,

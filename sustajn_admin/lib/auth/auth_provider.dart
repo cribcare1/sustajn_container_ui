@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:container_tracking/auth/auth_state.dart';
 import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:container_tracking/auth/screens/dashboard_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ final loginDetailProvider =
           if (registrationState.context.mounted) {
             Navigator.pushReplacement(
               registrationState.context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              MaterialPageRoute(builder: (_) =>
+                  DashboardScreen()),
             );
           }
         } else {
