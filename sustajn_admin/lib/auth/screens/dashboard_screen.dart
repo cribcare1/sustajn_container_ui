@@ -108,10 +108,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final items = [
       {"title": "Products", "image": "assets/images/round_bowl.png"},
       {"title": "Partners", "image": "assets/images/business.png"},
-      {"title": "Users", "image": "assets/images/people.png"},
-      {"title": "Order Requests", "icon": Icons.file_copy_outlined},
-      {"title": "Transactions", "image": "assets/images/exchange.png"},
-      {"title": "Damaged", "image": "assets/images/bowl.png"},
+      {"title": "Users", "image": "assets/images/Customers.png"},
+      {"title": "Order Requests", "image": "assets/images/orders request.png"},
+      {"title": "Transactions", "image": "assets/images/borrow_return.png"},
+      {"title": "Damaged", "image": "assets/images/Damaged.png"},
     ];
 
     return GridView.builder(
@@ -366,7 +366,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Expanded(
           child: _leasedCard(
             title: "Most Leased",
-            icon: "assets/images/trend.png",
+            icon: "assets/images/streamline_flex.png",
             data: dashboardData["mostLeased"],
           ),
         ),
