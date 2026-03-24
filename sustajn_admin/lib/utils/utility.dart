@@ -60,7 +60,19 @@ class Utils {
     );
   }
 
-
+  static buildFloatingHeader(BuildContext context) {
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
+      ),
+    );
+  }
 
   static displayDialog(BuildContext context, IconData icon,String title, String subTitle, String buttonText) {
     final theme = Theme.of(context);
