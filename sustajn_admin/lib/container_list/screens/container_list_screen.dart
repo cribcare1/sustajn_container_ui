@@ -1,13 +1,11 @@
 import 'package:container_tracking/common_widgets/card_widget.dart';
+import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:container_tracking/container_list/screens/container_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
-import '../../common_widgets/custom_app_bar.dart';
-import '../../common_widgets/filter_screen.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
@@ -43,62 +41,20 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     final state = ref.watch(containerNotifierProvider);
     return Scaffold(
       backgroundColor: themeData?.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: Strings.CONTAINERS_TITLE,
-        leading: SizedBox.shrink(),
-        action: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(
-            onPressed: () async {
-              final result = await showContainerFilterBottomSheet(
-                context,
-                state.containerList,
-              ).then((value){
-                if(value!.isNotEmpty){
-                  state.filteredContainers = value;
-                }
-              });
+      appBar: AppBar(
+        backgroundColor: themeData?.scaffoldBackgroundColor,
+        centerTitle: false,
+        leading: CustomBackButton(),
+        title: Text(
+          Strings.PRODUCTS,
+        ),
+        actions: [
 
-              if (result != null) {
-                print("Selected: $result");
-              }
-            },
-            icon: Icon(Icons.filter_list),
-          ),
         ],
-      ).getAppBar(context),
+      )
+          .getAppBar(context),
       body: state.isLoading
           ? Center(child: CircularProgressIndicator())
-          // : state.errorContainer != null
-          // ? Center(
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text(
-          //           state.errorContainer!,
-          //           style: themeData!.textTheme.titleMedium,
-          //         ),
-          //         ElevatedButton(
-          //           style: ElevatedButton.styleFrom(
-          //             backgroundColor: Colors.green
-          //           ),
-          //           onPressed: () {
-          //             _refreshIndicator();
-          //           },
-          //           child: Padding(
-          //             padding: EdgeInsets.all(Constant.SIZE_08),
-          //             child: Text(
-          //               "Retry",
-          //               style: themeData.textTheme.titleMedium!.copyWith(
-          //                 color: Colors.white,
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   )
           : SafeArea(
               child: state.containerList.isNotEmpty
                   ?  RefreshIndicator(
@@ -153,7 +109,7 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
             'assets/images/bowls.png',
             width: Constant.CONTAINER_SIZE_80,
             height: Constant.CONTAINER_SIZE_80,
-            color: Colors.grey,
+            color: Colors.white,
             fit: BoxFit.contain,
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_20),
@@ -314,4 +270,10 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
     }
   }
 
+}
+
+extension on AppBar {
+  PreferredSizeWidget? getAppBar(BuildContext context) {
+    return this;
+  }
 }
