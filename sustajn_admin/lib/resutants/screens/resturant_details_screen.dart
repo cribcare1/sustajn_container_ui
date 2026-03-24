@@ -12,9 +12,11 @@ import '../models/restaurant_list_model.dart';
 import 'container_count_details.dart';
 
 class RestaurantDetailsScreen extends StatelessWidget {
-  final RestaurantData restaurant;
+  final RestaurantListData restaurant;
 
-  RestaurantDetailsScreen({super.key, required this.restaurant});
+  RestaurantDetailsScreen({super.key,
+    required this.restaurant
+  });
 
   final List<Map<String, dynamic>> containerCards = [
     {'title': "Total Containers Issued", 'value': 2343},
@@ -28,7 +30,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
     final themeData = CustomTheme.getTheme(true);
     return Scaffold(
       appBar: CustomAppBar(
-        title:  restaurant.name,
+        title:  restaurant.data!.fullName!,
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: SafeArea(
@@ -69,7 +71,9 @@ class RestaurantDetailsScreen extends StatelessWidget {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    showRestaurantDetailsSheet(context, restaurant, themeData!);
+                    showRestaurantDetailsSheet(context,
+                        // restaurant,
+                        themeData!);
                   },
                   child: Text(
                     Strings.VIEW_RESTURANT_DETAILS,
@@ -271,7 +275,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
 
   void showRestaurantDetailsSheet(
     BuildContext context,
-      RestaurantData restaurant,
+      // RestaurantData restaurant,
     ThemeData themeData,
   ) {
     showModalBottomSheet(
@@ -315,7 +319,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                         SizedBox(height: Constant.CONTAINER_SIZE_16),
 
                         Text(
-                          restaurant.name,
+                          restaurant.data!.fullName!,
                           style: TextStyle(
                             fontSize: Constant.CONTAINER_SIZE_20,
                             fontWeight: FontWeight.w700,
@@ -334,7 +338,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                             SizedBox(width: Constant.SIZE_06),
                             Expanded(
                               child: Text(
-                                restaurant.address,
+                                restaurant.data!.basicRestaurantDetails!.websiteDetails!,
                                 style: TextStyle(
                                   fontSize: Constant.CONTAINER_SIZE_14,
                                   color: Colors.grey.shade700,
@@ -355,7 +359,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                             ),
                             SizedBox(width: Constant.SIZE_06),
                             Text(
-                              restaurant.phoneNumber,
+                              restaurant.data!.mobileNumber!,
                               style: TextStyle(
                                 fontSize: Constant.CONTAINER_SIZE_14,
                                 color: Colors.grey.shade700,

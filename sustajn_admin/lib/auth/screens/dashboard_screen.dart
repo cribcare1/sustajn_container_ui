@@ -1,16 +1,6 @@
+import 'package:container_tracking/constants/imports.util.dart';
 
-import 'dart:convert';
-
-import 'package:container_tracking/auth/screens/profile_screen.dart';
-import 'package:container_tracking/common_widgets/card_widget.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-
-import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
-import '../../utils/SharedPreferenceUtils.dart';
-import '../../utils/global_utils.dart';
-import '../model/login_model.dart';
+import '../../utils/theme_utils.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -20,61 +10,62 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  Map<String, dynamic> dashboardData = {
+    "containers": "1286",
+    "active": "1120",
+    "overdue": "166",
+    "todayLeased": "542",
+    "todayReturns": "498",
+    "mostLeased": {
+      "percent": "68%",
+      "name": "Round Container",
+      "code": "ST-RDC-500",
+      "capacity": "500ml",
+      "image": "assets/images/round_container.png",
+    },
+    "lessLeased": {
+      "percent": "5%",
+      "name": "Rectangular Containers",
+      "code": "ST-RC-1200",
+      "capacity": "1200ml",
+      "image": "assets/images/rectangular_container.png",
+    },
+  };
 
-  bool isCustomerSelected = false;
-  int topTabIndex = 0;
-  String filterValue = 'All containers';
-  final List<List<int>> weeklyData = [
-    [3876, 1200, 200],
-    [2500, 800, 150],
-    [3200, 1000, 120],
-    [2800, 700, 60],
-    [3000, 900, 70],
-    [2600, 1100, 30],
-    [3900, 1300, 100],
-  ];
-  final List<String> weekLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  @override
-  void initState() {
-    _getUserData();
-    super.initState();
-  }
-  LoginData? loginModel;
-  Future<void> _getUserData() async {
-    final Map<String, dynamic>? json =
-    await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
-print("json    ===============+++++ $json");
-    if (json != null) {
-      loginModel = LoginData.fromJson(json);
-    }
-   setState(() {});
-  }
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
-    final horizontalPad = width * 0.05;
-    final cardRadius = 14.0;
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: Container(
+        decoration: _bgGradient(),
+        child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPad, vertical: Constant.SIZE_10),
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderRow(theme),
-                SizedBox(height: Constant.SIZE_15),
-                _buildEarningsCard(theme, cardRadius),
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                _buildSegmented(theme),
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                _buildStatsSection(theme),
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                if (!isCustomerSelected) _restaurantLowerSection(theme, cardRadius) else _customerLowerSection(theme, cardRadius),
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                Padding(
+                  padding: EdgeInsets.all(Constant.SIZE_08),
+                  child: _header(),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: Constant.CONTAINER_SIZE_10),
+                        _gridMenu(),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        _containerStats(),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _todayStats(),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _revenueStats(),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _timePeriod(),
+                        SizedBox(height: Constant.CONTAINER_SIZE_16),
+                        _leased(),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -83,477 +74,404 @@ print("json    ===============+++++ $json");
     );
   }
 
-
-  Widget _buildHeaderRow(ThemeData theme) {
+  Widget _header() {
     return Row(
       children: [
-        GestureDetector(
-          onTap: (){
-            Navigator.push(context,
-            MaterialPageRoute(builder: (context)=> MyProfileScreen()));
-          },
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person_2_outlined, color: theme.primaryColor,),
-          ),
+        Image.asset(
+          'assets/logo/sustajn_app_logo.png',
+          width: Constant.CONTAINER_SIZE_45,
+          height: Constant.CONTAINER_SIZE_50,
         ),
-        SizedBox(width: Constant.SIZE_07,),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Hi,', style: theme.textTheme.titleMedium?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_16)),
-          SizedBox(height: 2),
-          Text( (loginModel == null)?"":loginModel!.fullName, style: theme.textTheme.titleLarge?.copyWith(fontSize: Constant.LABEL_TEXT_SIZE_22)),
-        ]),
         Spacer(),
-        _iconCircle(theme, Icons.notifications_none),
-        // SizedBox(width: Constant.SIZE_08),
-        // _iconCircle(theme, Icons.menu),
+        _circleIcon(Icons.settings),
+        SizedBox(width: Constant.CONTAINER_SIZE_10),
+        _circleIcon(Icons.notifications_none),
       ],
     );
   }
 
-  Widget _iconCircle(ThemeData theme, IconData icon) {
+  Widget _circleIcon(IconData icon) {
     return Container(
-      height: Constant.CONTAINER_SIZE_45,
-      width: Constant.CONTAINER_SIZE_45,
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8)],
+        shape: BoxShape.circle,
+        color: Colors.white.withOpacity(0.3),
       ),
-      child: Icon(icon, color: theme.primaryColor, size: Constant.CONTAINER_SIZE_20),
+      child: Icon(icon, color: Colors.white),
     );
   }
 
+  Widget _gridMenu() {
+    final items = [
+      {"title": "Products", "image": "assets/images/round_bowl.png"},
+      {"title": "Partners", "image": "assets/images/business.png"},
+      {"title": "Users", "image": "assets/images/people.png"},
+      {"title": "Order Requests", "icon": Icons.file_copy_outlined},
+      {"title": "Transactions", "image": "assets/images/exchange.png"},
+      {"title": "Damaged", "image": "assets/images/bowl.png"},
+    ];
 
-  Widget _buildEarningsCard(ThemeData theme, double radius) {
-    final cardH = MediaQuery.of(context).size.width * 0.22;
-    return GlassSummaryCard(
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(Strings.TOTAL_EARNINGS, style: theme.textTheme.titleSmall?.copyWith(color: Colors.white)),
-              SizedBox(height: Constant.SIZE_08),
-              Text('₹ 4,000', style: theme.textTheme.titleLarge?.copyWith(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800)),
-            ]),
-          ),
-          Container(
-            height: Constant.CONTAINER_SIZE_45,
-            width: Constant.CONTAINER_SIZE_45,
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.18), borderRadius: BorderRadius.circular(10)),
-            child: Icon(Icons.arrow_forward_ios, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
-          ),
-        ],
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: items.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: Constant.SIZE_08,
+        crossAxisSpacing: Constant.SIZE_08,
+        childAspectRatio: 1,
       ),
-    );
-  }
-
-
-  Widget _buildSegmented(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8)],
-      ),
-      child: Row(
-        children: [
-          Expanded(child: _segButton(theme,Strings.RESTURANT, false)),
-          Expanded(child: _segButton(theme, Strings.CUSTOMER, true)),
-        ],
-      ),
-    );
-  }
-
-  Widget _segButton(ThemeData theme, String title, bool forCustomer) {
-    final selected = (isCustomerSelected == forCustomer);
-    return GestureDetector(
-      onTap: () => setState(() => isCustomerSelected = forCustomer),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
-        decoration: BoxDecoration(
-          color: selected ? theme.secondaryHeaderColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(26),
-        ),
-        alignment: Alignment.center,
-        child: Text(title, style: theme.textTheme.titleMedium?.copyWith(color: selected ? theme.primaryColor : Colors.black87, fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
-
-
-  Widget _buildStatsSection(ThemeData theme) {
-    if (!isCustomerSelected) {
-      return Column(children: [
-        Row(children: [
-          _statCard(Strings.TOTAL_REGISTERED_CUST, '534', theme, showArrow: true),
-          SizedBox(width: Constant.SIZE_10),
-          _statCard(Strings.TOTAL_ACTIVE_RESTURANTS, '456', theme),
-        ]),
-        SizedBox(height: Constant.SIZE_10),
-        Row(children: [
-          _statCard(Strings.TOTAL_ISSUED_TITLE, '4,343', theme, showArrow: true),
-          SizedBox(width: Constant.SIZE_10),
-          _statCard(Strings.TOTAL_RETURNED_CONTAINER, '3,344', theme, showArrow: true),
-        ]),
-      ]);
-    } else {
-      return Column(children: [
-        Row(children: [
-          _statCard(Strings.TOTAL_REGISTERED_CUST, '534', theme, showArrow: true),
-          SizedBox(width: Constant.SIZE_10),
-          _statCard(Strings.TOTAL_ACTIVE_CUSTOMER, '456', theme),
-        ]),
-        SizedBox(height: Constant.SIZE_10),
-        Row(children: [
-          _statCard(Strings.TOTAL_BORROWED_CONTAINER, '4,343', theme, showArrow: true),
-          SizedBox(width: Constant.SIZE_10),
-          _statCard(Strings.TOTAL_RETURNED_CONTAINER, '3,344', theme, showArrow: true),
-        ]),
-      ]);
-    }
-  }
-
-  Widget _statCard(
-      String title,
-      String value,
-      ThemeData theme, {
-        bool showArrow = false,
-      }) {
-    return Expanded(
-      child: GlassSummaryCard(
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  ),
-                ),
-                SizedBox(height: Constant.SIZE_08),
-                Text(
-                  value,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: Constant.LABEL_TEXT_SIZE_18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            if (showArrow)
-              Positioned(
-                right: 0,
-                top: 0,
-                child: Container(
-                  height: Constant.CONTAINER_SIZE_30,
-                  width: Constant.CONTAINER_SIZE_30,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 6,
-                      )
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.arrow_outward,
-                    color: theme.primaryColor,
-                    size: Constant.CONTAINER_SIZE_16,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _restaurantLowerSection(ThemeData theme, double cardRadius) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _topTabsRow(theme),
-      SizedBox(height: Constant.CONTAINER_SIZE_12),
-      _filterRow(theme),
-      SizedBox(height: Constant.CONTAINER_SIZE_12),
-      _chartCard(theme, cardRadius),
-      SizedBox(height: Constant.CONTAINER_SIZE_12),
-      _metricsRow(theme),
-    ]);
-  }
-
-
-  Widget _customerLowerSection(ThemeData theme, double cardRadius) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _topTabsRow(theme),
-      SizedBox(height: Constant.SIZE_08),
-      _filterRow(theme),
-      SizedBox(height: Constant.CONTAINER_SIZE_12),
-      _chartCard(theme, cardRadius),
-      SizedBox(height: Constant.CONTAINER_SIZE_12),
-      _metricsRow(theme),
-
-    ]);
-  }
-
-  Widget _topTabsRow(ThemeData theme) {
-    return Row(children: [
-      _topTabButton(Strings.DAILY, 0, theme),
-      SizedBox(width: Constant.CONTAINER_SIZE_12),
-      _topTabButton(Strings.MONTHLY, 1, theme),
-    ]);
-  }
-
-  Widget _topTabButton(String label, int index, ThemeData theme) {
-    final selected = topTabIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => topTabIndex = index),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: Constant.SIZE_10, horizontal: Constant.SIZE_18),
-        decoration: BoxDecoration(
-          color: selected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Text(label,
-            style: theme.textTheme.titleMedium?.copyWith(
-                color: selected ? theme.primaryColor : Colors.white,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
-      ),
-    );
-  }
-
-  Widget _filterRow(ThemeData theme) {
-    return Row(children: [
-      Expanded(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
-          decoration: BoxDecoration(color: Colors.white,
-              borderRadius: BorderRadius.circular(12), boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 6)]),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: filterValue,
-              items: <String>['All containers', 'Container A', 'Container B'].map((e) =>
-                  DropdownMenuItem(value: e, child: Text(e,style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.black),))).toList(),
-              onChanged: (v) => setState(() => filterValue = v ?? filterValue),
-            ),
-          ),
-        ),
-      ),
-    ]);
-  }
-
-
-  Widget _chartCard(ThemeData theme, double radius) {
-    return GlassSummaryCard(
-      // decoration: BoxDecoration(color: Colors.white,
-      //     borderRadius: BorderRadius.circular(radius), boxShadow: [
-      //       BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)]),
-      // padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      child: Column(children: [
-        SizedBox(height: 6),
-        _chartLegendRow(theme),
-        SizedBox(height: Constant.CONTAINER_SIZE_10),
-        SizedBox(height: MediaQuery.of(context).size.height*0.4,
-            child: _barChart(theme)),
-      ]),
-    );
-  }
-
-  Widget _chartLegendRow(ThemeData theme) {
-    return Column(children: [
-      Row(children: [
-        _legendChip(Strings.BORROWED, Colors.blue),
-        SizedBox(width: Constant.CONTAINER_SIZE_12),
-        _legendChip(Strings.RETURNED, Colors.black87),
-        SizedBox(width: Constant.CONTAINER_SIZE_12),
-        _legendChip(Strings.OVERDUE, Colors.redAccent),
-        Spacer(),
-      ]),
-    ]);
-  }
-
-  Widget _legendChip(String label, Color color) {
-    return Row(children: [
-      Container(width: 12, height: 12, decoration: BoxDecoration(
-          color: color, borderRadius: BorderRadius.circular(4))),
-      SizedBox(width: Constant.SIZE_08),
-      Text(label, style: Theme.of(context).textTheme.titleSmall),
-    ]);
-  }
-  Widget _metricsRow(ThemeData theme) {
-    return Row(
-      children: [
-        Expanded(child: _metricCard(Strings.BORROWED, '3,993', Colors.blue)),
-        SizedBox(width: Constant.SIZE_10),
-        Expanded(child: _metricCard(Strings.RETURNED, '1,087', Colors.green)),
-        SizedBox(width: Constant.SIZE_10),
-        Expanded(child: _metricCard(Strings.OVERDUE, '247', Colors.redAccent)),
-      ],
-    );
-  }
-
-
-  Widget _metricCard(String label, String value, Color color) {
-    return GlassSummaryCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
+      itemBuilder: (context, index) {
+        final item = items[index];
+        final themeData = CustomTheme.getTheme(true);
+        return _card(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
+              CircleAvatar(
+                radius: Constant.CONTAINER_SIZE_24,
+                backgroundColor: themeData!.secondaryHeaderColor,
+                child: Padding(
+                  padding: EdgeInsets.all(Constant.SIZE_06),
+                  child: item["image"] != null
+                      ? Image.asset(
+                          item["image"] as String,
+                          color: Colors.black,
+                        )
+                      : Icon(item["icon"] as IconData, color: Colors.black),
                 ),
               ),
-              SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall,
+              SizedBox(height: Constant.SIZE_04),
+              Text(
+                item["title"] as String,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Constant.CONTAINER_SIZE_10,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 6),
-          Text(
-            value,
-            maxLines: 1,textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.w700),
+        );
+      },
+    );
+  }
+
+  Widget _containerStats() {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _title("Containers in Circulation"),
+          SizedBox(height: Constant.SIZE_06),
+          _value(dashboardData["containers"]),
+          SizedBox(height: Constant.CONTAINER_SIZE_12),
+          Row(
+            children: [
+              _statusBox("Active", dashboardData["active"], Colors.green),
+              SizedBox(width: Constant.CONTAINER_SIZE_10),
+              _statusBox("Overdue", dashboardData["overdue"], Colors.red),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _barChart(ThemeData theme) {
-    final maxY = _calcMaxY();
-    final groups = <BarChartGroupData>[];
-
-    for (var i = 0; i < weeklyData.length; i++) {
-      final borrowed = weeklyData[i][0].toDouble();
-      final returned = weeklyData[i][1].toDouble();
-      final overdue = weeklyData[i][2].toDouble();
-
-      groups.add(
-        BarChartGroupData(
-          x: i,
-          barsSpace: 2,
-          barRods: [
-            BarChartRodData(
-              toY: borrowed,
-              width: 6,
-              borderRadius: BorderRadius.circular(6),
-              color: Colors.blue,
-              backDrawRodData: BackgroundBarChartRodData(show: false),
+  Widget _statusBox(String title, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: Constant.CONTAINER_SIZE_12,
+          horizontal: Constant.CONTAINER_SIZE_10,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white30,
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          border: Border.all(color: color.withOpacity(0.6), width: 1.5),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            BarChartRodData(
-              toY: returned,
-              width: 6,
-              borderRadius: BorderRadius.circular(6),
-              color: Colors.white,
-              backDrawRodData: BackgroundBarChartRodData(show: false),
-            ),
-            BarChartRodData(
-              toY: overdue,
-              width: 6,
-              borderRadius: BorderRadius.circular(6),
-              color: Colors.redAccent,
-              backDrawRodData: BackgroundBarChartRodData(show: false),
+            SizedBox(height: Constant.SIZE_06),
+            Text(
+              value,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Constant.CONTAINER_SIZE_16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
-        ),
-      );
-    }
-
-    final monthYearLabel = "${months[DateTime.now().month-1]} - ${DateTime.now().year}";
-
-    return SizedBox(height: MediaQuery.of(context).size.height * 0.4,
-      width: MediaQuery.sizeOf(context).width,
-      child: BarChart(
-        BarChartData(
-          maxY: maxY,
-          groupsSpace: 18,
-          barGroups: groups,
-          alignment: BarChartAlignment.spaceBetween,
-          gridData: FlGridData(show: false),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 25,
-                interval: maxY/6,
-                getTitlesWidget: (val, meta) {
-                  return Text(val.toInt().toString(),maxLines: 1, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12));
-                },
-              ),
-              axisNameWidget: Text(
-                Strings.CONTAINERS_TITLE,
-                // monthYearLabel,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600)
-              ),
-              axisNameSize: 20,
-            ),
-
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (val, meta) {
-                  final idx = val.toInt();
-                  final label = (idx >= 0 && idx < weekLabels.length) ? weekLabels[idx] : '';
-                  return Padding(
-                    padding: EdgeInsets.only(top: 6),
-                    child: Text(label, style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600)),
-                  );
-                },
-              ),
-              axisNameWidget: Text(
-                monthYearLabel,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 12,fontWeight: FontWeight.w600),
-              ),
-              axisNameSize: 20,
-            ),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          ),
-          borderData: FlBorderData(show: false),
-          barTouchData: BarTouchData(enabled: true),
         ),
       ),
     );
   }
 
-
-  double _calcMaxY() {
-    int maxVal = 0;
-    for (var row in weeklyData) {
-      for (var v in row) {
-        if (v > maxVal) maxVal = v;
-      }
-    }
-
-    int step = 1000;
-    if (maxVal <= 1000) step = 200;
-    final capped = ((maxVal + step) / step).ceil() * step;
-    return capped.toDouble();
+  Widget _todayStats() {
+    return Row(
+      children: [
+        Expanded(
+          child: _infoCard(
+            title: "Today's Leased",
+            value: "542",
+            change: "+12%",
+            color: Colors.green,
+          ),
+        ),
+        SizedBox(width: Constant.CONTAINER_SIZE_10),
+        Expanded(
+          child: _infoCard(
+            title: "Today's Returns",
+            value: "498",
+            change: "-4%",
+            color: Colors.red,
+          ),
+        ),
+      ],
+    );
   }
+
+  Widget _infoCard({
+    required String title,
+    required String value,
+    required String change,
+    required Color color,
+  }) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _title(title),
+          SizedBox(height: Constant.SIZE_06),
+          _value(value),
+          SizedBox(height: Constant.SIZE_04),
+          Text(change, style: TextStyle(color: color)),
+        ],
+      ),
+    );
+  }
+
+  Widget _revenueStats() {
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Expanded(child: _revenueCard("Extended Due Fee Revenue", "1,245")),
+          SizedBox(width: Constant.CONTAINER_SIZE_10),
+          Expanded(child: _revenueCard("Sold Revenue", "9,282")),
+        ],
+      ),
+    );
+  }
+
+  Widget _revenueCard(String title, String value) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+
+          Spacer(),
+
+          SizedBox(height: Constant.CONTAINER_SIZE_12),
+          Row(
+            children: [
+              Image.asset(
+                'assets/images/diarhm.png',
+                height: Constant.CONTAINER_SIZE_18,
+              ),
+              SizedBox(width: Constant.SIZE_02),
+              Text(
+                value,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Constant.CONTAINER_SIZE_18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _timePeriod() {
+    return Row(
+      children: [
+        Expanded(child: _timeCard("Average Return Time", "3.2 Days")),
+        SizedBox(width: Constant.CONTAINER_SIZE_10),
+        Expanded(child: _timeCard("Active Users", "742 Active Today")),
+      ],
+    );
+  }
+
+  Widget _timeCard(String title, String value) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _title(title),
+          SizedBox(height: Constant.SIZE_06),
+          Text(
+            value,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _leased() {
+    return Row(
+      children: [
+        Expanded(
+          child: _leasedCard(
+            title: "Most Leased",
+            icon: "assets/images/trend.png",
+            data: dashboardData["mostLeased"],
+          ),
+        ),
+        SizedBox(width: Constant.CONTAINER_SIZE_10),
+        Expanded(
+          child: _leasedCard(
+            title: "Less Leased",
+            icon: "assets/images/down-arrow.png",
+            data: dashboardData["lessLeased"],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _leasedCard({
+    required String title,
+    required String icon,
+    required Map<String, dynamic> data,
+  }) {
+    final themeData = CustomTheme.getTheme(true);
+
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      decoration: _cardDecoration(),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    icon,
+                    height: Constant.CONTAINER_SIZE_18,
+                    color: themeData!.secondaryHeaderColor,
+                  ),
+                  SizedBox(width: Constant.SIZE_04),
+                  Text(
+                    title,
+                    style: _smallText(themeData.secondaryHeaderColor),
+                  ),
+                ],
+              ),
+              Text(
+                data["percent"],
+                style: _smallText(themeData.secondaryHeaderColor, bold: true),
+              ),
+            ],
+          ),
+
+          SizedBox(height: Constant.CONTAINER_SIZE_10),
+
+          Image.asset(data["image"], height: Constant.CONTAINER_SIZE_45),
+          SizedBox(height: Constant.SIZE_08),
+
+          Text(
+            data["name"],
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            data["code"],
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_10,
+            ),
+          ),
+          Text(
+            data["capacity"],
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _card({required Widget child}) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
+      decoration: _cardDecoration(),
+      child: child,
+    );
+  }
+
+  BoxDecoration _cardDecoration() {
+    return BoxDecoration(
+      color: Colors.white.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      border: Border.all(color: Colors.white.withOpacity(0.3)),
+    );
+  }
+
+  BoxDecoration _bgGradient() {
+    return const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Color(0xFF0F3D2E), Color(0xFF0A2F24)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+    );
+  }
+
+  Text _title(String text) => Text(
+    text,
+    maxLines: 2,
+    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  );
+
+  Text _value(String text) => Text(
+    text,
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: Constant.CONTAINER_SIZE_22,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+
+  TextStyle _smallText(Color color, {bool bold = false}) => TextStyle(
+    color: color,
+    fontSize: Constant.CONTAINER_SIZE_12,
+    fontWeight: bold ? FontWeight.bold : FontWeight.w500,
+  );
 }
-
-

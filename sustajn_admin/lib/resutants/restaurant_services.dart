@@ -10,7 +10,7 @@ class RestaurantServices {
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
-        var responseData = RestaurantListModel.fromJson(response);
+        var responseData = RestaurantListData.fromJson(response);
         return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);

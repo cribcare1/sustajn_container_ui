@@ -11,11 +11,11 @@ class RestaurantState extends ChangeNotifier {
   bool _hasMore = true;
   int _size = 10;
   int _page = 0;
-  List<RestaurantData> _restaurantList = [];
+  List<RestaurantListData> _restaurantList = [];
   String _error = "";
   BuildContext? _context;
 
-  List<RestaurantData> get restaurantList => _restaurantList;
+  List<RestaurantListData> get restaurantList => _restaurantList;
 
   int get page => _page;
 
@@ -46,7 +46,7 @@ class RestaurantState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setRestaurant(List<RestaurantData> data) {
+  void setRestaurant(List<RestaurantListData> data) {
     _restaurantList = data;
     notifyListeners();
   }
@@ -70,7 +70,7 @@ class RestaurantState extends ChangeNotifier {
   void incrementPage() {
     _page++;
   }
-  void addRestaurants(List<RestaurantData> data) {
+  void addRestaurants(List<RestaurantListData> data) {
     if (data.length < _size) {
       _hasMore = false;
     }

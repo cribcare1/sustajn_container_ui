@@ -204,13 +204,13 @@ class _ContainersScreenState extends ConsumerState<ContainersScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.containerName,
+                    item.containerName!,
                     overflow: TextOverflow.ellipsis,
                     style: themeData.textTheme.titleMedium,
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item.productId,
+                    item.productId!,
                     style: themeData.textTheme.titleSmall
                   ),
                   Text(
