@@ -14,6 +14,8 @@ import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
 import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
+import '../../../notification/notification_provider.dart';
+import '../../../notification/notification_state.dart';
 import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
 import '../../../provider/profile_provider.dart';
@@ -49,11 +51,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
       ref.read(profileProvider).setContext(context);
+      ref.read(notificationProvider).setContext(context);
     });
     Utils.getToken();
     Utils.authToken();
      Utils.getUserId();
     _init();
+  }
+
+  _getOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        final notificationState = ref.read(notificationProvider);
+        if (isNetworkAvailable) {
+          notificationState.setLoading(true);
+          final userId = Utils.userId;
+          ref.read(getNotification(userId ?? 0));
+        } else {
+          notificationState.setLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 
   Future<void> _init() async {
@@ -62,6 +85,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (ref.read(profileProvider).getProfileData == null) {
       await _getProfileNetworkCall();
     }
+    _getOrderNetworkCall();
   }
 
 

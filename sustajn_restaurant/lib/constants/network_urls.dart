@@ -62,4 +62,9 @@ static const CUSTOMER_BORROWED_LIST = "orders/getBorrowedProduct?customerId=";
 /// Damage container
 static const DAMAGE_CONTAINER = "inventory/reportDamagedContainer";
 
+/// Notification
+static const GET_ALL_NOTIFICATION = "notifications/getAll/";
+static const GET_NOTIFICATION_COUNT = "notifications/unread/count/";
+static const MARK_READ = "notifications/mark-read/";
+
 }
