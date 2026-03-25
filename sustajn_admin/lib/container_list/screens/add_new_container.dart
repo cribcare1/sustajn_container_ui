@@ -97,7 +97,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(containerNotifierProvider).setContext(context);
-      // ref.read(containerNotifierProvider).setImage(null);
       _fetchData();
       _getUserData();
       _productController.addListener(updateProductId);
