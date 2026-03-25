@@ -9,7 +9,6 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../container_list/model/container_list_model.dart';
-import '../containers/container_details.dart';
 import '../provider/order_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
