@@ -1,78 +1,44 @@
+import 'package:container_tracking/Screen/Partner/model/get_all_restaurant_data.dart';
 import 'package:container_tracking/Screen/Partner/partner_details_screen.dart';
+import 'package:container_tracking/Screen/Partner/provider/provider/restaurant_list_provider.dart';
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/imports.util.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/custom_search_bar.dart';
-import '../../common_widgets/filter_screen.dart';
 import '../../constants/network_urls.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 
-class PartnerModel {
-  final String name;
-  final String address;
-  final String image;
-
-  PartnerModel({
-    required this.name,
-    required this.address,
-    required this.image,
-  });
-}
-
-class PartnerScreen extends StatefulWidget {
+class PartnerScreen extends ConsumerStatefulWidget {
   const PartnerScreen({super.key});
 
   @override
-  State<PartnerScreen> createState() => _PartnerScreenState();
+  ConsumerState<PartnerScreen> createState() => _PartnerScreenState();
 }
 
-class _PartnerScreenState extends State<PartnerScreen> {
-  final List<PartnerModel> items = [
-    PartnerModel(
-      name: "Hari Plaza",
-      address: "Balasore, Odisha, 234520",
-      image: "assets/images/resturant.jpeg",
-    ),
-    PartnerModel(
-      name: "Hotel Swad",
-      address: "Gunjur, Karnatak, 327676",
-      image: "assets/images/resturant.jpeg",
-    ),
-    PartnerModel(
-      name: "Pet Puja",
-      address: "Jaipur, Rajasthan, 886733",
-      image: "assets/images/resturant.jpeg",
-    ),
-    PartnerModel(
-      name: "Hotel NH View",
-      address: "Bhubaneswar, Odisha, 544323",
-      image: "assets/images/resturant.jpeg",
-    ),
-    PartnerModel(
-      name: "The Fresh",
-      address: "Marthalli, Karnatak, 763764",
-      image: "assets/images/resturant.jpeg",
-    ),
-    PartnerModel(
-      name: "Hotel Royal",
-      address: "Ameerpet, Hyderabad, Telengana, 767656",
-      image: "assets/images/resturant.jpeg",
-    ),
-  ];
-
-  List<PartnerModel> filteredItems = [];
+class _PartnerScreenState extends ConsumerState<PartnerScreen> {
+  List<Data> filteredItems = [];
 
   @override
   void initState() {
     super.initState();
-    filteredItems = items;
+    _getAllRestaurantCall();
   }
 
   @override
   Widget build(BuildContext context) {
     final themeData = CustomTheme.getTheme(true);
+    final restaurantState = ref.watch(restaurantProvider);
+    final restaurantList = restaurantState.getRestaurantData?.data ?? [];
+    Utils.printLog("List length: ${restaurantList.length}");
+    if (filteredItems.isEmpty && restaurantList.isNotEmpty) {
+      filteredItems = restaurantList;
+    }
     return Scaffold(
       appBar: CustomAppBar(
         title: "Partner",
@@ -85,41 +51,54 @@ class _PartnerScreenState extends State<PartnerScreen> {
             hintText: "Search by Partner Name",
             onChanged: (value) {
               setState(() {
-                filteredItems = items.where((item) {
-                  return item.name.toLowerCase().contains(value.toLowerCase());
-                }).toList();
+                if (value.isEmpty) {
+                  filteredItems = restaurantList;
+                } else {
+                  filteredItems = restaurantList.where((item) {
+                    return item.name!.toLowerCase().contains(
+                      value.toLowerCase(),
+                    );
+                  }).toList();
+                }
               });
-            },
-            onFilterTap: () async {
-              // filter logic
             },
           ),
 
           SizedBox(height: Constant.CONTAINER_SIZE_16),
           Expanded(
-            child: ListView.separated(
-              itemCount: filteredItems.length,
-              separatorBuilder: (context, index) =>
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
-              itemBuilder: (context, index) {
-                final item = filteredItems[index];
-                return _containerTile(item, themeData!);
-              },
-            ),
+            child: restaurantState.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : (restaurantState.getRestaurantData == null)
+                ? SizedBox() : restaurantList.isEmpty
+                ? Center(
+                    child: Text(
+                      "Partner List is not available",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: filteredItems.length,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: Constant.CONTAINER_SIZE_12),
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      return _containerTile(item, themeData!);
+                    },
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget _containerTile(PartnerModel item, ThemeData themeData) {
+  Widget _containerTile(Data item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) =>
-                PartnerDetailsScreen(name: item.name, address: item.address),
+                PartnerDetailsScreen(data: item,),
           ),
         );
       },
@@ -139,12 +118,28 @@ class _PartnerScreenState extends State<PartnerScreen> {
                   borderRadius: BorderRadius.circular(
                     Constant.CONTAINER_SIZE_12,
                   ),
-                  child: Image.asset(
-                    item.image,
-                    width: Constant.CONTAINER_SIZE_50,
-                    height: Constant.CONTAINER_SIZE_50,
-                    fit: BoxFit.cover,
-                  ),
+                  child:
+                      item.profileImageUrl != null &&
+                          item.profileImageUrl!.isNotEmpty
+                      ? Image.network(
+                          "${NetworkUrls.IMAGE_BASE_URL}${item.profileImageUrl}",
+                          width: Constant.CONTAINER_SIZE_40,
+                          height: Constant.CONTAINER_SIZE_40,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              Strings.CUP_IMG,
+                              width: Constant.CONTAINER_SIZE_40,
+                              height: Constant.CONTAINER_SIZE_40,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          Strings.CUP_IMG,
+                          width: Constant.CONTAINER_SIZE_50,
+                          height: Constant.CONTAINER_SIZE_50,
+                        ),
                 ),
               ),
               SizedBox(width: Constant.CONTAINER_SIZE_14),
@@ -153,12 +148,12 @@ class _PartnerScreenState extends State<PartnerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.name,
+                      item.name!,
                       overflow: TextOverflow.ellipsis,
                       style: themeData.textTheme.titleMedium,
                     ),
                     SizedBox(height: Constant.SIZE_04),
-                    Text(item.address, style: themeData.textTheme.titleSmall),
+                    Text(item.address!, style: themeData.textTheme.titleSmall),
                   ],
                 ),
               ),
@@ -173,5 +168,26 @@ class _PartnerScreenState extends State<PartnerScreen> {
         ),
       ),
     );
+  }
+
+  _getAllRestaurantCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(restaurantProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final url = NetworkUrls.ALL_RESTAURANT_LIST;
+          ref.read(getRestaurantListProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 }

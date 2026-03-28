@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../auth/model/login_model.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 
@@ -182,6 +186,19 @@ class Utils {
     );
   }
 
+  static LoginModel? loginData;
+  static Future<LoginModel?> getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString(Strings.PROFILE_DATA);
+    printLog("Profile Data ==== $data");
+    if (data != null) {
+      var response = json.decode(data);
+      loginData = LoginModel.fromJson(response);
+      return loginData;
+    }
+    return null;
+  }
+
   static isReqSuccess(var response) {
     if ((response.statusCode < 200 || response.statusCode >= 300)) {
       return false;
@@ -219,6 +236,17 @@ class Utils {
       loadUserId();
     }
     return userId!;
+  }
+
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
   }
 
 

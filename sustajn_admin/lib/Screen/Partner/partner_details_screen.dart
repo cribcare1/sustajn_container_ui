@@ -1,19 +1,26 @@
+import 'package:container_tracking/Screen/Partner/product/product_home_screen.dart';
 import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'model/get_all_restaurant_data.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
+import 'order_history/order_history_screen.dart';
 
 class PartnerDetailsScreen extends StatefulWidget {
-  final String? name;
-  final String? address;
+  final Data? data;
+  // final int? restaurantId;
+  // final String? name;
+  // final String? address;
 
   const PartnerDetailsScreen({
     super.key,
-    required this.name,
-    required this.address,
+    required this.data,
+    // required this.restaurantId,
+    // required this.name,
+    // required this.address,
   });
 
   @override
@@ -56,7 +63,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: Column(
             children: [
-              _restaurantDetails(widget.name!, widget.address!),
+              _restaurantDetails(widget.data!.name!, widget.data!.address!),
               _viewDetails(),
               SizedBox(height: Constant.SIZE_05),
               _productDetails(),
@@ -102,7 +109,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (_) => PartnerDetailsSheet(),
+            builder: (_) => PartnerDetailsSheet(restaurantId: widget.data!.id!),
           );
         },
         child: Text(
@@ -185,10 +192,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
   void _handleNavigation(String title) {
     switch (title) {
-      // case "Products": NavUtil.navigateToPushScreen(context, ContainersScreen());
-      // break;
-      // case "Partners": NavUtil.navigateToPushScreen(context, PartnerScreen());
-      // break;
+      case "Products": NavUtil.navigateToPushScreen(context, ProductsHomeScreen(restaurantId: widget.data!.id!,));
+      break;
+      case "Order History": NavUtil.navigateToPushScreen(context, OrderHistoryScreen());
+      break;
 
       default:
         break;
