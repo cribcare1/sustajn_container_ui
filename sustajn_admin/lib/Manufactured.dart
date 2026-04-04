@@ -133,7 +133,7 @@ class MonthSection extends StatelessWidget {
             Row(
               children: [
                 Image.asset(
-                  "assets/bowl1.png",
+                  "assets/bowl.png",
                   height: 14,
                   width: 14,
                 ),
