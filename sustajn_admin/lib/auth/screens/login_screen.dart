@@ -1,6 +1,4 @@
-import 'package:container_tracking/RestaurantContainer.dart';
 import 'package:container_tracking/auth/auth_provider.dart';
-import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:container_tracking/auth/screens/sign_up_screen.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
