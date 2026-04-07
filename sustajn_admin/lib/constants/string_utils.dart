@@ -56,9 +56,9 @@ class Strings {
   static const CONTAINER_DETAILS = 'Container Details';
   static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
   static const CONTAINER_INFORMATION = 'Container Information';
-  static const ENTER_PRODUCT = 'Enter Product*';
-  static const ENTER_PRODUCT_ID = 'Enter Product ID*';
-  static const ENTER_VOLUME = 'Enter Volume in ml*';
+  static const SELECT_PRODUCT = 'Select Product*';
+  static const SELECT_PRODUCT_ID = 'Select Product ID*';
+  static const SELECT_VOLUME = 'Select Volume in ml(automatically populated)';
   static const ENTER_QUANTITY = 'Quantity*';
   static const CONTAINER_PRICE = 'Price of the container*';
   static const DESCRIPTION = 'Price of the container*';
@@ -144,7 +144,7 @@ class Strings {
       'Are you sure you want to acknowledge this feedback?';
   static const APPROVE_TXT = 'Approve';
   static const IMAGES = 'Images';
-  static const DESCRIPTION_TEXT = 'Description';
+  static const DESCRIPTION_TEXT = ' Container Description';
   static const SUBJECT = 'Subject';
   static const REPORT_ID = 'Report ID';
   static const DATE_TIME = 'Date & Time';
@@ -191,6 +191,19 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
+  static const CONTAINER_SPEC = 'Container Specification';
+  static const CONTAINER_MATERIAL = 'Container Material';
+  static const CONTAINER_COLOR = 'Container Color';
+  static const LENGTH = 'Dimension Length cm';
+  static const HEIGHT = 'Dimension Height cm';
+  static const WEIGHT = 'Weight Grams';
+  static const FOOD_SAFE = 'Food Safe';
+  static const DISH_WASH = 'Dishwash Safe';
+  static const MICROWAVE = 'Microwave Safe';
+  static const MAX_TEMP = 'Max Temperature';
+  static const MIN_TEMPERATURE = 'Min Temperature';
+  static const LIFESPAN = 'Lifespan Cycle';
+  static const COST = 'Cost Per Unit';
 
 
 
