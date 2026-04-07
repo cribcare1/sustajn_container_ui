@@ -1,27 +1,23 @@
-import 'package:container_tracking/Screen/Partner/product/product_home_screen.dart';
+import 'package:container_tracking/Screen/Partner/screens/damaged_Screen.dart';
+import 'package:container_tracking/Screen/Partner/screens/product_home_screen.dart';
+import 'package:container_tracking/Screen/Partner/screens/returned_screen.dart';
+import 'package:container_tracking/Screen/Partner/screens/sold_screen.dart';
 import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'model/get_all_restaurant_data.dart';
+
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
+import 'model/get_all_restaurant_data.dart';
 import 'order_history/order_history_screen.dart';
+import 'screens/issued_screen.dart';
 
 class PartnerDetailsScreen extends StatefulWidget {
   final Data? data;
-  // final int? restaurantId;
-  // final String? name;
-  // final String? address;
 
-  const PartnerDetailsScreen({
-    super.key,
-    required this.data,
-    // required this.restaurantId,
-    // required this.name,
-    // required this.address,
-  });
+  const PartnerDetailsScreen({super.key, required this.data});
 
   @override
   State<PartnerDetailsScreen> createState() => _PartnerDetailsScreenState();
@@ -86,13 +82,22 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
         children: [
           Text(
             restaurantName,
-            style: TextStyle(fontSize: Constant.CONTAINER_SIZE_18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: Constant.CONTAINER_SIZE_18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: Constant.SIZE_05),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.location_on_outlined, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
-              Text(address),
+              Icon(
+                Icons.location_on_outlined,
+                color: Colors.white,
+                size: Constant.CONTAINER_SIZE_18,
+              ),
+              SizedBox(width: Constant.SIZE_05),
+              Expanded(child: Text(address)),
             ],
           ),
         ],
@@ -192,11 +197,42 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
   void _handleNavigation(String title) {
     switch (title) {
-      case "Products": NavUtil.navigateToPushScreen(context, ProductsHomeScreen(restaurantId: widget.data!.id!,));
-      break;
-      case "Order History": NavUtil.navigateToPushScreen(context, OrderHistoryScreen());
-      break;
-
+      case "Issued":
+        NavUtil.navigateToPushScreen(
+          context,
+          IssuedScreen(restaurantId: widget.data!.id!),
+        );
+        break;
+      case "Products":
+        NavUtil.navigateToPushScreen(
+          context,
+          ProductsHomeScreen(restaurantId: widget.data!.id!),
+        );
+        break;
+      case "Returned":
+        NavUtil.navigateToPushScreen(
+          context,
+          ReturnedScreen(restaurantId: widget.data!.id!),
+        );
+        break;
+      case "Sold":
+        NavUtil.navigateToPushScreen(
+          context,
+          SoldScreen(restaurantId: widget.data!.id!),
+        );
+        break;
+      case "Damaged":
+        NavUtil.navigateToPushScreen(
+          context,
+          DamagedScreen(restaurantId: widget.data!.id!),
+        );
+        break;
+      case "Order History":
+        NavUtil.navigateToPushScreen(
+          context,
+          OrderHistoryScreen(restaurantId: widget.data!.id!),
+        );
+        break;
       default:
         break;
     }
@@ -207,7 +243,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Filters
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -219,7 +254,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
           SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-          /// Legend
           Row(
             children: [
               _legendDot(Color(0xFFFFC107), "Leased"),
@@ -238,7 +272,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                   quarterTurns: -1,
                   child: Text(
                     "Customer",
-                    style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_11),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: Constant.CONTAINER_SIZE_11,
+                    ),
                   ),
                 ),
                 SizedBox(width: Constant.SIZE_08),
@@ -249,7 +286,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                       alignment: BarChartAlignment.spaceBetween,
                       groupsSpace: 14,
 
-                      /// GRID
                       gridData: FlGridData(
                         show: true,
                         horizontalInterval: 20,
@@ -259,10 +295,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                         ),
                       ),
 
-                      /// BORDER
                       borderData: FlBorderData(show: false),
 
-                      /// TITLES
                       titlesData: FlTitlesData(
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(
@@ -340,7 +374,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           Center(
             child: Text(
               "November-2025",
-              style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_11),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Constant.CONTAINER_SIZE_11,
+              ),
             ),
           ),
         ],
@@ -364,7 +401,6 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             color: Color(0xFFFFC107),
           ),
 
-          /// Returned (White)
           BarChartRodData(
             toY: returned[i].toDouble(),
             width: Constant.SIZE_05,
@@ -378,7 +414,10 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
   Widget _filterBox(String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_10, vertical: Constant.SIZE_07),
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_10,
+        vertical: Constant.SIZE_07,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Constant.SIZE_08),
         border: Border.all(color: Colors.white),
@@ -386,7 +425,13 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(text, style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_14)),
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_14,
+            ),
+          ),
           Icon(
             Icons.keyboard_arrow_down_outlined,
             color: Colors.white,
@@ -406,7 +451,13 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         SizedBox(width: Constant.SIZE_06),
-        Text(text, style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_11)),
+        Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: Constant.CONTAINER_SIZE_11,
+          ),
+        ),
       ],
     );
   }

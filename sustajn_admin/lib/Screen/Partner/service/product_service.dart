@@ -37,7 +37,7 @@ class OrderServices {
       var response = await presenter.getAPIData(url);
       if (response != null) {
         var responseData = ContainerHistoryData.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
+        Utils.printLog("responseData in Service: ${responseData.toJson()}");
         return responseData;
       } else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
@@ -49,6 +49,24 @@ class OrderServices {
   }
 
 
+  Future<ContainerHistoryData> returnedContainerService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = ContainerHistoryData.fromJson(response);
+        Utils.printLog("responseData in Service: ${responseData.toJson()}");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Container History service::::$e");
+      throw Exception(e);
+    }
+  }
 
 }
 

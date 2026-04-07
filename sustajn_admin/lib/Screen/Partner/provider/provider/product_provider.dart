@@ -55,7 +55,32 @@ final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
     }
     return responseData;
   } catch (e) {
-    Utils.printLog("Get Profile provider error called: $e");
+    Utils.printLog("lease screens provider error called: $e");
+    containerState.setIsLoading(false);
+    Utils.showNetworkErrorToast(containerState.context, e.toString());
+  }
+});
+
+final returnedContainerProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final containerState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    Utils.printLog("params===$params");
+    ContainerHistoryData responseData = await serviceProvider
+        .returnedContainerService(params);
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
+      containerState.setIsLoading(false);
+      containerState.setContainerHistoryData(responseData);
+    } else {
+      containerState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return responseData;
+  } catch (e) {
+    Utils.printLog("lease screens provider error called: $e");
     containerState.setIsLoading(false);
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }

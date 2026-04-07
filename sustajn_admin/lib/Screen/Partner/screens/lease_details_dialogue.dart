@@ -119,7 +119,7 @@ class LeaseDetailsDialogue extends StatelessWidget {
                     "${data.leasedQuantity}",
                     style: theme.textTheme.headlineLarge?.copyWith(
                       color: Color(0xFFFBBF24),
-                      fontSize: 40,
+                      fontSize: Constant.CONTAINER_SIZE_40,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

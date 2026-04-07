@@ -401,7 +401,7 @@ class OrderState extends ChangeNotifier {
           matches = true;
         }
 
-        // Match product details
+        // Match screens details
         if (order.productOrderListResponses != null) {
           for (var product in order.productOrderListResponses!) {
             final uniqueId = product.productUniqueId?.toLowerCase() ?? '';

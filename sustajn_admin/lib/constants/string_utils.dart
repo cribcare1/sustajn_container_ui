@@ -49,6 +49,7 @@ class Strings {
   static const String STATUS = 'Status';
   static const String SOCIAL_MEDIA = 'Social Media';
   static const SORT_BY = 'Sort By';
+  static const SORT = 'Sort';
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const CONTAINERS_TITLE = 'Containers';

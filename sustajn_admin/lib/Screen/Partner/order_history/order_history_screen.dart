@@ -8,15 +8,16 @@ import '../../../common_widgets/custom_back_button.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
-import '../../../utils/nav_utils.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
-import 'order_filter_bottomsheet.dart';
+import '../model/container_history_data.dart';
 import '../provider/provider/product_provider.dart';
-
+import 'order_filter_bottomsheet.dart';
 
 class OrderHistoryScreen extends ConsumerStatefulWidget {
-  const OrderHistoryScreen({super.key});
+  final int restaurantId;
+
+  const OrderHistoryScreen({super.key, required this.restaurantId});
 
   @override
   ConsumerState<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
@@ -24,7 +25,7 @@ class OrderHistoryScreen extends ConsumerStatefulWidget {
 
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   final searchController = TextEditingController();
-
+  List<OrderedResponses> filteredItems = [];
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -49,12 +50,19 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
 
-    final container =
-        containerState.containerHistorydata?.data?.orderedResponses;
+    final containerList =
+        containerState.containerHistorydata?.data?.orderedResponses ?? [];
+
+    if (filteredItems.isEmpty && containerList.isNotEmpty) {
+      filteredItems = containerList;
+    }
+    Utils.printLog(
+      "Order History Container Length: ${containerList?.length ?? 0}",
+    );
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar:  CustomAppBar(
+      appBar: CustomAppBar(
         title: "Order History",
         leading: CustomBackButton(),
       ).getAppBar(context),
@@ -64,86 +72,69 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
           child: Column(
             children: [
               CustomTheme.searchField(
-                  searchController,
-                  Strings.SEARCH_BY_CUSTOMER_ID,
-                  onFilterTap: (){
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (_) => const OrderFilterBottomSheet(),
-                    );
+                searchController,
+                "Search by name or id",
+                onChanged: (value) {
+                  setState(() {
+                    if (value.isEmpty) {
+                      filteredItems = containerList;
+                    } else {
+                      filteredItems = containerList.where((item) {
+                        final search = value.toLowerCase();
 
-                  }
+                        final orderIdMatch =
+                            item.orderId?.toString().toLowerCase().contains(
+                              search,
+                            ) ??
+                            false;
+
+                        final nameMatch =
+                            item.productName?.toLowerCase().contains(search) ??
+                            false;
+
+                        return orderIdMatch || nameMatch;
+                      }).toList();
+                    }
+                  });
+                },
+                onFilterTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => const OrderFilterBottomSheet(),
+                  );
+                },
               ),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
+              SizedBox(height: Constant.CONTAINER_SIZE_20),
               Expanded(
                 child: containerState.isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : (container == null || container.isEmpty)
+                    ? const Center(child: CircularProgressIndicator())
+                    : (containerList == null || containerList.isEmpty)
                     ? Center(
-                  child: Text(
-                    Strings.NO_CONTAINER_AVAILABLE,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-                    : ListView.builder(
-                  itemCount: container.length,
-                  itemBuilder: (context, index) {
-                    //todo needed later
-                    // final month = container.elementAt(index);
-                    // final monthOrders = container[month];
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //todo needed later
-                        // _buildMonthHeader(context, month),
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: container.length,
-                          separatorBuilder: (_, __) => SizedBox(
-                            height: Constant.CONTAINER_SIZE_12,
-                          ),
-                          itemBuilder: (context, orderIndex) {
-                            final item = container[index];
-                            return _buildOrderCard(
-                              context,
-                              item.status ?? "Unknown",
-                              item.productName ?? "N/A",
-                              item.orderId ?? "-",
-                              item.orderDate ?? "",
-                            );
-                          },
+                        child: Text(
+                          Strings.NO_CONTAINER_AVAILABLE,
+                          style: const TextStyle(color: Colors.white),
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      )
+                    : ListView.separated(
+                        itemCount: filteredItems.length,
+                        separatorBuilder: (_, __) =>
+                            SizedBox(height: Constant.CONTAINER_SIZE_12),
+                        itemBuilder: (context, index) {
+                          final item = filteredItems[index];
+
+                          return _buildOrderCard(
+                            context,
+                            item.status ?? "Unknown",
+                            item.productName ?? "N/A",
+                            item.orderId ?? "-",
+                            item.orderDate ?? "",
+                          );
+                        },
+                      ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: Strings.SEARCH_CONTAINER_NAME,
-          prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
-          suffixIcon: Icon(Icons.tune, color: theme.iconTheme.color),
-          filled: true,
-          fillColor: theme.cardColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-            borderSide: BorderSide.none,
           ),
         ),
       ),
@@ -167,16 +158,16 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   }
 
   Widget _buildOrderCard(
-      BuildContext context,
-      String status,
-      String title,
-      String orderId,
-      String date,
-      ) {
+    BuildContext context,
+    String status,
+    String title,
+    String orderId,
+    String date,
+  ) {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: (){
+      onTap: () {
         // NavUtil.navigateToPushScreen(context, OrderDetailsScreen(
         //   orderId: orderId,
         //   status: status,
@@ -187,7 +178,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         decoration: BoxDecoration(
           color: Constant.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          border: Border.all(color: Constant.grey.withOpacity(0.2)),
+          border: Border.all(color: Colors.white70),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,11 +193,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   }
 
   Widget _buildOrderDetails(
-      BuildContext context,
-      String title,
-      String orderId,
-      String date,
-      ) {
+    BuildContext context,
+    String title,
+    String orderId,
+    String date,
+  ) {
     final theme = Theme.of(context);
 
     return Column(
@@ -238,21 +229,21 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     Color background;
     Color textColor;
 
-    switch (status) {
-      case 'Pending':
-        background = Constant.lightYellow;
+    switch (status.toLowerCase()) {
+      case 'pending':
+        background = Color(0xFFFFDF99);
         textColor = Colors.black;
         break;
-      case 'Confirmed':
-        background = Constant.lightGreen;
+      case 'confirmed':
+        background = Color(0xFFA5FF99);
         textColor = Colors.black;
         break;
-      case 'Delivered':
-        background = Constant.lightBlue;
+      case 'delivered':
+        background = Color(0xFF00DAF7);
         textColor = Colors.black;
         break;
       default:
-        background = Constant.lightPink;
+        background = Color(0xFFFFB2BA);
         textColor = Colors.black;
     }
 
@@ -275,14 +266,13 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   _getContaineHistoryCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.CONTAINER_HISTORY}$userId';
+          final url = '${NetworkUrls.CONTAINER_HISTORY}${widget.restaurantId}';
           ref.read(getContainerHistoryProvider(url));
         } else {
           orderState.setIsLoading(false);
@@ -290,7 +280,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         }
       });
     } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
+      Utils.printLog('Error button onPressed: $e');
     }
   }
 }

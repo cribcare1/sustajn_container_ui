@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common_provider/network_provider.dart';
-import '../../../common_widgets/submit_clear_button.dart';
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
@@ -10,8 +9,8 @@ import '../../../utils/utility.dart';
 import '../model/container_history_data.dart';
 import '../provider/notifier/product_notifier.dart';
 import '../provider/provider/product_provider.dart';
-import 'lease_filter_bottomsheet.dart';
 import 'lease_details_dialogue.dart';
+import 'lease_filter_bottomsheet.dart';
 
 class LeaseScreen extends ConsumerStatefulWidget {
   final int? restaurantId;
@@ -46,7 +45,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
     final container =
-        containerState.containerHistorydata?.data?.leasedResponses;
+        containerState.containerHistorydata?.data?.leasedResponses ?? [];
 
     return SafeArea(
       bottom: true,
@@ -72,7 +71,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                   : (container == null || container.isEmpty)
                   ? const Center(
                       child: Text(
-                        Strings.NO_CONTAINER_AVAILABLE,
+                        "No leased containers found",
                         style: TextStyle(color: Colors.white),
                       ),
                     )
@@ -95,7 +94,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(Constant.SIZE_06),
                               ),
                               padding: EdgeInsets.symmetric(
                                 vertical: Constant.CONTAINER_SIZE_10,
@@ -304,20 +303,18 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
       isScrollControlled: true,
       builder: (_) {
         return CommonFilterBottomSheet(
-          items: leasedResponses!.map((e) => FilterItem(
-            dateTime: e.leasedStartDateTime ?? '',
-            products: e.productOrderListResponses,
-          )).toList(),
+          items: leasedResponses!
+              .map(
+                (e) => FilterItem(
+                  dateTime: e.leasedStartDateTime ?? '',
+                  products: e.productOrderListResponses,
+                ),
+              )
+              .toList(),
           onApply: (selectedMonths, selectedContainers) {
             _applyFilters(selectedMonths, selectedContainers);
           },
         );
-        //   FilterBottomSheet1(
-        //   leasedResponses: leasedResponses,
-        //   onApply: (selectedMonths, selectedContainers) {
-        //     _applyFilters(selectedMonths, selectedContainers);
-        //   },
-        // );
       },
     );
   }
@@ -392,402 +389,3 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     }
   }
 }
-
-// class FilterBottomSheet1 extends ConsumerStatefulWidget {
-//   final List<LeasedResponses>? leasedResponses;
-//   final Function(List<String> selectedMonths, List<String> selectedContainers)
-//   onApply;
-//
-//   const FilterBottomSheet1({
-//     super.key,
-//     required this.leasedResponses,
-//     required this.onApply,
-//   });
-//
-//   @override
-//   ConsumerState<FilterBottomSheet1> createState() => _FilterBottomSheetState();
-// }
-//
-// class _FilterBottomSheetState extends ConsumerState<FilterBottomSheet1> {
-//   String _selectedTab = 'Month';
-//   final Set<String> _selectedMonths = {};
-//   final Set<String> _selectedContainers = {};
-//   final TextEditingController _searchController = TextEditingController();
-//   String _searchQuery = '';
-//
-//   @override
-//   void dispose() {
-//     _searchController.dispose();
-//     super.dispose();
-//   }
-//
-//   List<String> _getUniqueMonths() {
-//     if (widget.leasedResponses == null) return [];
-//
-//     Set<String> months = {};
-//     for (var response in widget.leasedResponses!) {
-//       String monthYear = _getMonthYear(response.leasedStartDateTime ?? '');
-//       if (monthYear != 'Unknown') {
-//         months.add(monthYear);
-//       }
-//     }
-//
-//     List<String> sortedMonths = months.toList();
-//     sortedMonths.sort((a, b) {
-//       DateTime dateA = _parseMonthYear(a);
-//       DateTime dateB = _parseMonthYear(b);
-//       return dateB.compareTo(dateA);
-//     });
-//
-//     return sortedMonths;
-//   }
-//
-//   List<Map<String, String>> _getUniqueContainers() {
-//     if (widget.leasedResponses == null) return [];
-//
-//     Map<String, String> containersMap = {};
-//     for (var response in widget.leasedResponses!) {
-//       if (response.productOrderListResponses != null) {
-//         for (var product in response.productOrderListResponses!) {
-//           String name = product.productName ?? '';
-//           String uniqueId = product.productUniqueId ?? '';
-//           if (name.isNotEmpty && uniqueId.isNotEmpty) {
-//             containersMap[uniqueId] = name;
-//           }
-//         }
-//       }
-//     }
-//
-//     List<Map<String, String>> containers = containersMap.entries
-//         .map((e) => {'name': e.value, 'uniqueId': e.key})
-//         .toList();
-//
-//     containers.sort((a, b) => a['name']!.compareTo(b['name']!));
-//     return containers;
-//   }
-//
-//   String _getMonthYear(String dateTimeStr) {
-//     try {
-//       List<String> parts = dateTimeStr.split('|');
-//       if (parts.isEmpty) return 'Unknown';
-//
-//       List<String> dateParts = parts[0].split('/');
-//       if (dateParts.length < 3) return 'Unknown';
-//
-//       int month = int.parse(dateParts[1]);
-//       String year = dateParts[2];
-//
-//       const monthNames = [
-//         'January',
-//         'February',
-//         'March',
-//         'April',
-//         'May',
-//         'June',
-//         'July',
-//         'August',
-//         'September',
-//         'October',
-//         'November',
-//         'December',
-//       ];
-//
-//       return '${monthNames[month - 1]}-$year';
-//     } catch (e) {
-//       return 'Unknown';
-//     }
-//   }
-//
-//   DateTime _parseMonthYear(String monthYear) {
-//     try {
-//       List<String> parts = monthYear.split('-');
-//       const monthNames = [
-//         'January',
-//         'February',
-//         'March',
-//         'April',
-//         'May',
-//         'June',
-//         'July',
-//         'August',
-//         'September',
-//         'October',
-//         'November',
-//         'December',
-//       ];
-//       int month = monthNames.indexOf(parts[0]) + 1;
-//       int year = int.parse(parts[1]);
-//       return DateTime(year, month);
-//     } catch (e) {
-//       return DateTime.now();
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     final screenHeight = MediaQuery.of(context).size.height;
-//
-//     final bottomSheetHeight = _selectedTab == 'Containers'
-//         ? screenHeight * 0.7
-//         : screenHeight * 0.7;
-//
-//     return SafeArea(
-//       top: true,
-//       bottom: true,
-//       child: SingleChildScrollView(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             Align(
-//               alignment: Alignment.topRight,
-//               child: Padding(
-//                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-//                 child: InkWell(
-//                   onTap: () => Navigator.pop(context),
-//                   child: Container(
-//                     padding: EdgeInsets.all(Constant.SIZE_08),
-//                     decoration: const BoxDecoration(
-//                       color: Colors.white,
-//                       shape: BoxShape.circle,
-//                     ),
-//                     child: Icon(
-//                       Icons.close,
-//                       color: Colors.black,
-//                       size: Constant.CONTAINER_SIZE_20,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//
-//             /// MAIN CONTAINER
-//             Container(
-//               constraints: BoxConstraints(maxHeight: bottomSheetHeight),
-//               decoration: BoxDecoration(
-//                 color: Theme.of(context).primaryColor,
-//                 borderRadius: BorderRadius.vertical(
-//                   top: Radius.circular(Constant.CONTAINER_SIZE_30),
-//                 ),
-//               ),
-//               child: Column(
-//                 children: [
-//                   _buildHeader(theme),
-//                   Expanded(
-//                     child: Row(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         _buildLeftSideTabs(theme),
-//                         Container(
-//                           width: 1,
-//                           color: Colors.white.withOpacity(0.2),
-//                         ),
-//                         Expanded(child: _buildRightSideContent(theme)),
-//                       ],
-//                     ),
-//                   ),
-//                   _buildButtons(theme, context),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildHeader(ThemeData theme) {
-//     return Padding(
-//       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-//       child: Align(
-//         alignment: Alignment.centerLeft,
-//         child: Text(
-//           Strings.FILTER,
-//           style: theme.textTheme.titleLarge?.copyWith(
-//             color: Colors.white,
-//             fontWeight: FontWeight.w600,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildLeftSideTabs(ThemeData theme) {
-//     return SizedBox(
-//       width: 120,
-//       child: Column(
-//         children: [
-//           _buildTabItem('Month', theme),
-//           _buildTabItem('Containers', theme),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildTabItem(String label, ThemeData theme) {
-//     bool isSelected = _selectedTab == label;
-//
-//     return InkWell(
-//       onTap: () {
-//         setState(() {
-//           _selectedTab = label;
-//           _searchQuery = '';
-//           _searchController.clear();
-//         });
-//       },
-//       child: Container(
-//         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-//         decoration: BoxDecoration(
-//           color: isSelected
-//               ? Colors.white.withOpacity(0.1)
-//               : Colors.transparent,
-//           border: Border(
-//             left: BorderSide(
-//               color: isSelected ? const Color(0xFFFBBF24) : Colors.transparent,
-//               width: 3,
-//             ),
-//           ),
-//         ),
-//         child: Align(
-//           alignment: Alignment.centerLeft,
-//           child: Text(
-//             label,
-//             style: theme.textTheme.bodyMedium?.copyWith(
-//               color: Colors.white,
-//               fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildRightSideContent(ThemeData theme) {
-//     return Column(
-//       children: [
-//         if (_selectedTab == 'Containers')
-//           Padding(
-//             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-//             child: TextField(
-//               controller: _searchController,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _searchQuery = value.toLowerCase();
-//                 });
-//               },
-//               style: const TextStyle(color: Colors.white),
-//               decoration: InputDecoration(
-//                 hintText: Strings.CONTAINER_NAME_ID,
-//                 hintStyle: Theme.of(
-//                   context,
-//                 ).textTheme.titleMedium!.copyWith(color: Colors.white),
-//                 border: InputBorder.none,
-//                 prefixIcon: Icon(Icons.search, color: Colors.white),
-//               ),
-//             ),
-//           ),
-//         Expanded(
-//           child: _selectedTab == Strings.MONTH
-//               ? _buildMonthList(theme)
-//               : _buildContainersList(theme),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildMonthList(ThemeData theme) {
-//     List<String> months = _getUniqueMonths();
-//
-//     return ListView.builder(
-//       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-//       itemCount: months.length,
-//       itemBuilder: (context, index) {
-//         String month = months[index];
-//         bool isSelected = _selectedMonths.contains(month);
-//
-//         return ListTile(
-//           title: Text(month, style: const TextStyle(color: Colors.white)),
-//           trailing: Checkbox(
-//             value: isSelected,
-//             activeColor: const Color(0xFFFBBF24),
-//             onChanged: (_) {
-//               setState(() {
-//                 isSelected
-//                     ? _selectedMonths.remove(month)
-//                     : _selectedMonths.add(month);
-//               });
-//             },
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   Widget _buildContainersList(ThemeData theme) {
-//     List<Map<String, String>> containers = _getUniqueContainers();
-//
-//     if (_searchQuery.isNotEmpty) {
-//       containers = containers.where((c) {
-//         return c['name']!.toLowerCase().contains(_searchQuery) ||
-//             c['uniqueId']!.toLowerCase().contains(_searchQuery);
-//       }).toList();
-//     }
-//
-//     return ListView.builder(
-//       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-//       itemCount: containers.length,
-//       itemBuilder: (context, index) {
-//         final container = containers[index];
-//         final uniqueId = container['uniqueId']!;
-//         final isSelected = _selectedContainers.contains(uniqueId);
-//
-//         return ListTile(
-//           title: Text(
-//             container['name']!,
-//             style: const TextStyle(color: Colors.white),
-//           ),
-//           subtitle: Text(
-//             uniqueId,
-//             style: const TextStyle(color: Colors.white70),
-//           ),
-//           trailing: Checkbox(
-//             value: isSelected,
-//             activeColor: const Color(0xFFFBBF24),
-//             onChanged: (_) {
-//               setState(() {
-//                 isSelected
-//                     ? _selectedContainers.remove(uniqueId)
-//                     : _selectedContainers.add(uniqueId);
-//               });
-//             },
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   Widget _buildButtons(ThemeData theme, BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-//       child: SubmitClearButton(
-//         onLeftTap: () {
-//           setState(() {
-//             _selectedMonths.clear();
-//             _selectedContainers.clear();
-//             _searchController.clear();
-//             _searchQuery = '';
-//           });
-//         },
-//         leftText: Strings.CLEAR,
-//         rightText: Strings.APPLY,
-//         onRightTap: () {
-//           widget.onApply(
-//             _selectedMonths.toList(),
-//             _selectedContainers.toList(),
-//           );
-//           Navigator.pop(context);
-//         },
-//       ),
-//     );
-//   }
-// }

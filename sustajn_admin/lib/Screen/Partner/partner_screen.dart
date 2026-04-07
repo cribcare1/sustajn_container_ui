@@ -68,8 +68,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
           Expanded(
             child: restaurantState.isLoading
                 ? Center(child: CircularProgressIndicator())
-                : (restaurantState.getRestaurantData == null)
-                ? SizedBox() : restaurantList.isEmpty
+                : restaurantState.getRestaurantData == null
                 ? Center(
                     child: Text(
                       "Partner List is not available",
@@ -97,8 +96,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                PartnerDetailsScreen(data: item,),
+            builder: (context) => PartnerDetailsScreen(data: item),
           ),
         );
       },

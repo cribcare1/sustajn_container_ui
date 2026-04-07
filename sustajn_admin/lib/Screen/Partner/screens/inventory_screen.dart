@@ -15,6 +15,7 @@ import '../provider/provider/product_provider.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   final int? restaurantId;
+
   const InventoryScreen({super.key, required this.restaurantId});
 
   @override
@@ -45,7 +46,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               child: CustomTheme.searchField(
                 searchController,
                 Strings.SEARCH_CONTAINER_NAME,
-                onChanged: (value){
+                onChanged: (value) {
                   orderState.filterInventoryByNameOrId(value);
                 },
                 onFilterTap: () => _showSortBottomSheet(context),
@@ -57,62 +58,63 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : orderState.getContainerData == null
                   ? Center(
-                child: Text(
-                  Strings.SOMETHING_WENT_WRONG,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
+                      child: Text(
+                        Strings.SOMETHING_WENT_WRONG,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
                   : orderState.getContainerData!.containersDetails == null ||
-                  orderState.getContainerData!.containersDetails!.isEmpty
+                        orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
-                child: Text(
-                  Strings.NO_CONTAINER_AVAILABLE,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : (orderState.filterInventory.isEmpty &&
+                        searchController.text.isNotEmpty)
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
-                  ],
-                ),
-              )
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            Strings.NO_CONTAINER_AVAILABLE,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                          SubmitButton(
+                            onRightTap: () {
+                              searchController.clear();
+                              orderState.filterInventoryByNameOrId('');
+                              setState(() {});
+                            },
+                            rightText: " Clear Filter ",
+                          ),
+                        ],
+                      ),
+                    )
                   : ListView.separated(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_16
-                ),
-                itemCount: orderState.filterInventory.length,
-                itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                        vertical: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: orderState.filterInventory.length,
+                      itemBuilder: (context, index) {
+                        final item = orderState.filterInventory[index];
 
-                  return inventoryItemCard(
-                    context,
-                    image: item.containerImageUrl ?? "",
-                    title: item.containerName ?? "-",
-                    subTitle: item.containerUniqueId ?? "-",
-                    volume: item.capacity?.toString() ?? "0",
-                    qty: item.quantityAvailable ?? 0,
-                    data: item,
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-              ),
+                        return inventoryItemCard(
+                          context,
+                          image: item.containerImageUrl ?? "",
+                          title: item.containerName ?? "-",
+                          subTitle: item.containerUniqueId ?? "-",
+                          volume: item.capacity?.toString() ?? "0",
+                          qty: item.quantityAvailable ?? 0,
+                          data: item,
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    ),
             ),
           ],
         ),
@@ -121,20 +123,19 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   Widget inventoryItemCard(
-      BuildContext context, {
-        required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
-        required ContainersDetails data,
-      }) {
+    BuildContext context, {
+    required String image,
+    required String title,
+    required String subTitle,
+    required String volume,
+    required int qty,
+    required ContainersDetails data,
+  }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
       },
       child: GlassSummaryCard(
         child: Row(
@@ -142,38 +143,38 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           children: [
             (image != "")
                 ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
+                    height: Constant.CONTAINER_SIZE_70,
+                    width: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    padding: EdgeInsets.all(Constant.SIZE_06),
+                    child: Image.network(
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+                      errorBuilder: (context, obj, stack) {
+                        return Image.asset(
+                          "assets/images/no_image_container.png",
+                        );
+                      },
+                      fit: BoxFit.fill,
+                    ),
+                  )
                 : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                    width: Constant.CONTAINER_SIZE_70,
+                    height: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Constant.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.inbox,
+                        size: Constant.CONTAINER_SIZE_30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -211,13 +212,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // SizedBox(width: Constant.SIZE_08),
-                      // IconButton(
-                      //   icon: Icon(Icons.arrow_forward_ios,
-                      //   size: Constant.CONTAINER_SIZE_14,
-                      //   color: Colors.white70),
-                      //   onPressed: (){},
-                      // ),
                     ],
                   ),
                   Text(
@@ -239,8 +233,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
-    // final orderState = ref.watch(orderProvider);
-
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -279,7 +271,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                             ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                              child: Icon(
+                                Icons.cancel_rounded,
+                                color: Constant.gold,
+                              ),
                             ),
                           ],
                         ),
@@ -347,13 +342,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-
-
   _getInventoryNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
