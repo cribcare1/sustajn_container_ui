@@ -22,8 +22,8 @@ class GlassSummaryCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             color: Colors.white.withOpacity(0.01),
             border: Border.all(
-              color: Colors.white.withOpacity(0.25),
-              width: 0.8,
+              color: Colors.white.withOpacity(0.8),
+              width: 1,
             ),
             boxShadow: [
               BoxShadow(

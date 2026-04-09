@@ -1,5 +1,8 @@
+import 'package:container_tracking/Screen/Partner/partner_screen.dart';
 import 'package:container_tracking/constants/imports.util.dart';
+import 'package:container_tracking/utils/nav_utils.dart';
 
+import '../../container_list/screens/container_list_screen.dart';
 import '../../utils/theme_utils.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -105,10 +108,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final items = [
       {"title": "Products", "image": "assets/images/round_bowl.png"},
       {"title": "Partners", "image": "assets/images/business.png"},
-      {"title": "Users", "image": "assets/images/people.png"},
-      {"title": "Order Requests", "icon": Icons.file_copy_outlined},
-      {"title": "Transactions", "image": "assets/images/exchange.png"},
-      {"title": "Damaged", "image": "assets/images/bowl.png"},
+      {"title": "Users", "image": "assets/images/Customers.png"},
+      {"title": "Order Requests", "image": "assets/images/orders request.png"},
+      {"title": "Transactions", "image": "assets/images/borrow_return.png"},
+      {"title": "Damaged", "image": "assets/images/Damaged.png"},
     ];
 
     return GridView.builder(
@@ -124,38 +127,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
       itemBuilder: (context, index) {
         final item = items[index];
         final themeData = CustomTheme.getTheme(true);
-        return _card(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: Constant.CONTAINER_SIZE_24,
-                backgroundColor: themeData!.secondaryHeaderColor,
-                child: Padding(
-                  padding: EdgeInsets.all(Constant.SIZE_06),
-                  child: item["image"] != null
-                      ? Image.asset(
-                          item["image"] as String,
-                          color: Colors.black,
-                        )
-                      : Icon(item["icon"] as IconData, color: Colors.black),
+        return InkWell(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          onTap: (){
+            final title = item["title"]?.toString() ?? "";
+            _handleNavigation(title);
+          },
+          child: _card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: Constant.CONTAINER_SIZE_24,
+                  backgroundColor: themeData!.secondaryHeaderColor,
+                  child: Padding(
+                    padding: EdgeInsets.all(Constant.SIZE_06),
+                    child: item["image"] != null
+                        ? Image.asset(
+                            item["image"] as String,
+                            color: Colors.black,
+                          )
+                        : Icon(item["icon"] as IconData, color: Colors.black),
+                  ),
                 ),
-              ),
-              SizedBox(height: Constant.SIZE_04),
-              Text(
-                item["title"] as String,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: Constant.CONTAINER_SIZE_10,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: Constant.SIZE_04),
+                Text(
+                  item["title"] as String,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constant.CONTAINER_SIZE_10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  void _handleNavigation(String title){
+  switch(title){
+    case "Products": NavUtil.navigateToPushScreen(context, ContainersScreen());
+    break;
+    case "Partners": NavUtil.navigateToPushScreen(context, PartnerScreen());
+    break;
+
+    default:
+      break;
+  }
   }
 
   Widget _containerStats() {
@@ -344,7 +366,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Expanded(
           child: _leasedCard(
             title: "Most Leased",
-            icon: "assets/images/trend.png",
+            icon: "assets/images/streamline_flex.png",
             data: dashboardData["mostLeased"],
           ),
         ),
