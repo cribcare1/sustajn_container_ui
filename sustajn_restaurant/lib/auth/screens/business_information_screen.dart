@@ -117,7 +117,7 @@ class _BusinessInformationDetailsState
       }
       if (profile.socialMediaResponse != null &&
           profile.socialMediaResponse!.isNotEmpty) {
-
+        widget.authState.socialMediaList.clear();
         widget.authState.socialMediaList.addAll(
           profile.socialMediaResponse!.map(
                 (e) => SocialMediaModel(
