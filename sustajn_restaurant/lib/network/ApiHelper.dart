@@ -20,7 +20,7 @@ class ApiHelper {
       var header = _getHeader(token);
       Utils.printLog("Get header :: $header");
       response = await http.get(Uri.parse(url),
-          headers: header).timeout(const Duration(minutes: 1),);
+          headers: header).timeout(const Duration(minutes: 5),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
     }  on TimeoutException catch (_) {
@@ -44,7 +44,7 @@ class ApiHelper {
       request.headers.addAll(header);
       request.body = jsonEncode(body);
       final streamedResponse =
-      await request.send().timeout(const Duration(minutes: 1));
+      await request.send().timeout(const Duration(minutes: 5));
       final response =
       await http.Response.fromStream(streamedResponse);
 

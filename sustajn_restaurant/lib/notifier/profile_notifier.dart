@@ -4,6 +4,7 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 
 import '../constants/string_utils.dart';
 import '../lease_receive/model/container_return_list_model.dart';
+import '../models/chart_model.dart';
 import '../models/login_model.dart';
 import '../utils/utility.dart';
 
@@ -93,4 +94,17 @@ void setIsImageSaving(bool isLoading){
     notifyListeners();
   }
 
+  //Dashboard
+bool _isDashboardLoading = false;
+bool get isDashboardLoading => _isDashboardLoading;
+  void setDashboardLoading(bool loading){
+    _isDashboardLoading = loading;
+    notifyListeners();
+  }
+  ChartModel? _chartModel;
+  ChartModel get chartModel => _chartModel!;
+  void setChartData(ChartModel data){
+    _chartModel = data;
+    notifyListeners();
+  }
 }

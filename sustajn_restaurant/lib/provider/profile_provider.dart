@@ -4,7 +4,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sustajn_restaurant/auth/screens/dashboard/dashboard_screen.dart';
+import 'package:sustajn_restaurant/models/chart_model.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
@@ -248,5 +251,25 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((re
     rethrow;
   }finally{
     leaseNotifier.setIsSaving(false);
+  }
+});
+
+final getChartData = FutureProvider.family<dynamic, String>((ref, param)async{
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+  try{
+    ChartModel response = await apiService.fetchChartData(param);
+    leaseNotifier.setChartData(response);
+    return response;
+  }catch(e){
+    leaseNotifier.setDashboardLoading(false);
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  }finally{
+    leaseNotifier.setDashboardLoading(false);
   }
 });
