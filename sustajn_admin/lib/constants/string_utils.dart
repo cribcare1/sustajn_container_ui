@@ -191,6 +191,18 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
+  static const PRODUCTS = 'Products';
+  static const INVENTORY = 'Inventory';
+  static const IN_CIRCULATION = 'In Circulation';
+  static const WITH_PARTNER = 'With Partner';
+  static const DAMAGED = 'Damaged';
+  static const SOLD = 'Sold';
+  static const APPLY = 'Apply';
+  static const CLEAR = 'Clear';
+  static const SORT_BY = 'Sort by';
+  static const SEARCH_BY_CONTAINER_NAME = 'Search by container name';
+  static const SOMETHING_WENT_WRONG = 'Something went wrong';
+  static const NO_CONTAINER_AVAILABLE = 'No containers available';
   static const CONTAINER_SPEC = 'Container Specification';
   static const CONTAINER_MATERIAL = 'Container Material';
   static const CONTAINER_COLOR = 'Container Color';

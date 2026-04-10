@@ -33,7 +33,7 @@ FutureProvider.family<LoginModel, Map<String, dynamic>>(
       final url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
 
       try {
-        registrationState.setIsLoading(true);
+        // registrationState.setIsLoading(true);
 
         final responseData = await apiService.loginUser(url, params, "");
         if (responseData.status == "success" &&
