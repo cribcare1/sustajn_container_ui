@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../fluttertoast.dart';
 
 class Utils {
   static Future<void> showEditDeleteMenu({
@@ -169,6 +170,16 @@ class Utils {
       ),
     );
   }
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
+  }
 
   static isReqSuccess(var response) {
     if ((response.statusCode < 200 || response.statusCode >= 300)) {
@@ -273,3 +284,4 @@ void showCustomSnackBar({
     ),
   );
 }
+

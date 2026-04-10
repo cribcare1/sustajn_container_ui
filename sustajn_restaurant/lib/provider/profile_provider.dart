@@ -1,12 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sustajn_restaurant/auth/screens/dashboard/dashboard_screen.dart';
+import 'package:sustajn_restaurant/models/chart_model.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lease_receive/model/container_return_list_model.dart';
 import '../models/update_address_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
@@ -187,4 +193,83 @@ final updateSubscriptionPlanProvider = FutureProvider.family<dynamic, Map<String
   final url1 = '${NetworkUrls.GET_PROFILE}$userId';
   ref.read(getProfileProvider(url1));
   return responseData;
+});
+
+final damageContainerList =
+FutureProvider.family<CustomerBorrowedData, String>((ref, customerId) async {
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+
+  try {
+    final response = await apiService.fetchCustomerBorrowedList(customerId);
+    if  (response.status == NetworkUrls.SUCCESS && response.data!.isNotEmpty) {
+      leaseNotifier.setReturnContainer(response.data!);
+
+    }else{
+      showCustomSnackBar(
+        context: leaseNotifier.context,
+        message: response.message!,
+        color: Colors.red,
+      );
+    }
+    return response;
+  } catch (e) {
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  } finally {
+    leaseNotifier.setLoading(false);
+  }
+});
+final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, body)async{
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+  final updatedBody = Map<String, dynamic>.from(body);
+  File image = File(updatedBody['image']);
+  updatedBody.remove('image');
+  try{
+    final response = await apiService.markDamageContainer(updatedBody, image);
+    if(response != null){
+      damageContainerList(body['restaurantId']);
+      showCustomSnackBar(
+        context: leaseNotifier.context,
+        message: response['message'],
+        color: Colors.green,
+      );
+      Navigator.pop(leaseNotifier.context);
+    }
+  }catch(e){
+    leaseNotifier.setIsSaving(false);
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  }finally{
+    leaseNotifier.setIsSaving(false);
+  }
+});
+
+final getChartData = FutureProvider.family<dynamic, String>((ref, param)async{
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+  try{
+    ChartModel response = await apiService.fetchChartData(param);
+    leaseNotifier.setChartData(response);
+    return response;
+  }catch(e){
+    leaseNotifier.setDashboardLoading(false);
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  }finally{
+    leaseNotifier.setDashboardLoading(false);
+  }
 });

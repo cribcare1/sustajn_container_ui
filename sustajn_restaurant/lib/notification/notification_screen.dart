@@ -1,19 +1,24 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
+import 'package:sustajn_restaurant/notification/notification_provider.dart';
+import 'package:sustajn_restaurant/notification/notification_state.dart';
 
 import '../constants/string_utils.dart';
+import '../network_provider/network_provider.dart';
+import '../utils/utility.dart';
 import 'notification_model.dart';
 
-class NotificationScreen extends StatefulWidget {
+class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   List<NotificationModel> notificationList = [
     NotificationModel(
       title: "Order Delivered",
@@ -32,8 +37,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
   ];
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(notificationProvider).setContext(context);
+      _getOrderNetworkCall();
+    });
+    super.initState();
+  }
+
+  _getOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        final notificationState = ref.read(notificationProvider);
+        if (isNetworkAvailable) {
+          notificationState.setLoading(true);
+          final userId = Utils.userId;
+          ref.read(getNotification(userId ?? 0));
+        } else {
+          notificationState.setLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final notificationState = ref.watch(notificationProvider);
     return Scaffold(
       appBar: CustomAppBar(
         title: Strings.NOTIFICATION,
@@ -53,14 +88,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ],
       ).getAppBar(context),
-      body: ListView.separated(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        itemCount: notificationList.length,
-        itemBuilder: (context, index) =>
-            _notificationCard(notificationList[index]),
-        separatorBuilder: (context, index) =>
-            SizedBox(height: Constant.CONTAINER_SIZE_10),
-      ),
+      body: notificationState.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              itemCount: notificationList.length,
+              itemBuilder: (context, index) =>
+                  _notificationCard(notificationList[index]),
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+            ),
     );
   }
 

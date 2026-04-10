@@ -280,6 +280,7 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                     onPressed: textController.text.isEmpty
                         ? null
                         : () {
+                      _handleContainerId(textController.text.trim());
                             Navigator.pop(context);
                           },
                     style: ElevatedButton.styleFrom(

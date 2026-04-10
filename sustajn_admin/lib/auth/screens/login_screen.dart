@@ -1,14 +1,9 @@
-import 'package:container_tracking/RestaurantContainer.dart';
 import 'package:container_tracking/auth/auth_provider.dart';
-import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
-import 'package:container_tracking/auth/screens/sign_up_screen.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:container_tracking/constants/number_constants.dart';
 import 'package:container_tracking/utils/theme_utils.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../constants/assets_utils.dart';
 import '../../constants/string_utils.dart';
@@ -47,25 +42,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Center(
-    child: Image.asset(
-    AppAssets.sustajnAppLogo,
-    height: height * 0.17,
-    fit: BoxFit.contain,
-    ),
-    ),
+                  child: Image.asset(
+                    AppAssets.sustajnAppLogo,
+                    height: height * 0.17,
+                    fit: BoxFit.contain,
+                  ),
+                ),
                 Text(
                   Strings.WELCOME,
                   style: themeData?.textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
-    color: Colors.white,
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: height * 0.005),
                 Text(
                   Strings.LOGIN_YOUR_ACC,
                   style: themeData?.textTheme.bodyMedium!.copyWith(
-    color: Colors.white,
-    ),
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(height: height * 0.03),
                 TextFormField(
