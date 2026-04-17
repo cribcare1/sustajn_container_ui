@@ -167,6 +167,9 @@ class Constant {
   static const Color sky = Color(0xFFABDEE6);
   static const Color blue = Color(0xFF509BE4);
   static const Color blue1 = Color(0xFF608dfd);
+  static const Color lightYellow = Color(0xFFffdf99);
+  static const Color lightGreen = Color(0xFFa5ff99);
+  static const Color lightPink = Color(0xFFffb2ba);
   static const Color blueViolet200 = Color(0xFFFE9090);
   static const Color greyshade200 = Color(0xFFECEFF1);
   static const Color greenrgb = Color.fromARGB(211, 38, 209, 38);

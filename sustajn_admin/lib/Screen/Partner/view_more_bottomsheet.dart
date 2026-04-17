@@ -1,12 +1,35 @@
+import 'package:container_tracking/Screen/Partner/provider/provider/restaurant_list_provider.dart';
 import 'package:container_tracking/constants/imports.util.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../common_provider/network_provider.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/utility.dart';
 
-class PartnerDetailsSheet extends StatelessWidget {
-  const PartnerDetailsSheet({super.key});
+class PartnerDetailsSheet extends ConsumerStatefulWidget {
+  final int? restaurantId;
+
+  const PartnerDetailsSheet({super.key, required this.restaurantId});
+
+  @override
+  ConsumerState<PartnerDetailsSheet> createState() => _PartnerDtlsSheetState();
+}
+
+class _PartnerDtlsSheetState extends ConsumerState<PartnerDetailsSheet> {
+  @override
+  void initState() {
+    super.initState();
+    _restaurantCall();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final restaurantState = ref.watch(restaurantProvider);
+
+    if (restaurantState.restaurantDtlsData == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
       minChildSize: 0.6,
@@ -17,33 +40,42 @@ class PartnerDetailsSheet extends StatelessWidget {
           child: Column(
             children: [
               Utils.buildFloatingHeader(context),
+
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
                     color: Color(0xFF0E3B2E),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_24)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(Constant.CONTAINER_SIZE_24),
+                    ),
                   ),
                   child: SafeArea(
                     top: false,
                     bottom: true,
-                    child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _header(context),
-                            SizedBox(height: Constant.SIZE_04),
-                            _contactCard(),
-                            _planCard(),
-                            _paymentCard(),
-                            _registrationCard(),
-                            _businessCard(),
-                            _socialMediaCard()
-                          ],
+                    child: Column(
+                      children: [
+                        _header(context),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            controller: controller,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _contactCard(),
+                                _planCard(),
+                                _paymentCard(),
+                                _registrationCard(),
+                                _businessCard(),
+                                _socialMediaCard(),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
+              ),
             ],
           ),
         );
@@ -66,6 +98,11 @@ class PartnerDetailsSheet extends StatelessWidget {
   }
 
   Widget _contactCard() {
+    final restaurantState = ref.watch(restaurantProvider);
+    final String primary =
+        restaurantState.restaurantDtlsData!.data!.mobileNumber!;
+    final String secondaryNo =
+        restaurantState.restaurantDtlsData!.data!.secondaryNumber!;
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,10 +110,19 @@ class PartnerDetailsSheet extends StatelessWidget {
           Text("Contact Number", style: _titleStyle),
           SizedBox(height: Constant.CONTAINER_SIZE_10),
           Text("Primary Number", style: _subTitleStyle),
-          Text("+91 9872536434", style: _valueStyle),
-          _divider,
-          Text("Secondary Number", style: _subTitleStyle),
-          Text("+91 9876243543", style: _valueStyle),
+          Text('+91 ${primary}'),
+
+          if (secondaryNo != null && secondaryNo.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _divider,
+                Text("Secondary Number", style: _subTitleStyle),
+                Text(
+                  '+91 ${restaurantState.restaurantDtlsData!.data!.secondaryNumber}',
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -106,17 +152,18 @@ class PartnerDetailsSheet extends StatelessWidget {
           SizedBox(height: Constant.SIZE_06),
           Row(
             children: [
-              Icon(Icons.account_balance_wallet, color: Colors.white),
+              Image.asset("assets/icons/google_pay.png"),
               SizedBox(width: Constant.SIZE_08),
               Text("karan@okicici", style: _valueStyle),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget _registrationCard() {
+    final restaurantState = ref.watch(restaurantProvider);
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,27 +176,48 @@ class PartnerDetailsSheet extends StatelessWidget {
           _divider,
           Text("Contact Number", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("+91 9282727222", style: _valueStyle),
+          Text(
+            '+91 ${restaurantState.restaurantDtlsData!.data!.mobileNumber!}',
+          ),
           _divider,
           Text("Email Registration", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("john@email.com", style: _valueStyle),
+          Text(
+            restaurantState
+                .restaurantDtlsData!
+                .data!
+                .contactAndRegistrationDetailsResponse!
+                .contactEmail!,
+          ),
           _divider,
 
           Text("Trade License Number", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("-", style: _valueStyle),
+          Text(
+            restaurantState
+                .restaurantDtlsData!
+                .data!
+                .contactAndRegistrationDetailsResponse!
+                .treadLicenseNumber!,
+          ),
           _divider,
 
-          Text("Tax Number", style: _subTitleStyle),
+          Text("VAT Number", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("-", style: _valueStyle),
+          Text(
+            restaurantState
+                .restaurantDtlsData!
+                .data!
+                .contactAndRegistrationDetailsResponse!
+                .vatNumber!,
+          ),
         ],
       ),
     );
   }
 
   Widget _businessCard() {
+    final restaurantState = ref.watch(restaurantProvider);
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,36 +226,73 @@ class PartnerDetailsSheet extends StatelessWidget {
           SizedBox(height: Constant.CONTAINER_SIZE_10),
           Text("Type of Business", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("-", style: _valueStyle),
+          Text(
+            restaurantState
+                .restaurantDtlsData!
+                .data!
+                .basicRestaurantDetails!
+                .businessType!,
+          ),
           _divider,
           Text("Website", style: _subTitleStyle),
           SizedBox(height: Constant.SIZE_02),
-          Text("-", style: _valueStyle),
-        ],
-      ),
-    );
-  }
-
-  Widget _socialMediaCard() {
-    return _card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Social Media", style: _titleStyle),
-          SizedBox(height: Constant.CONTAINER_SIZE_12),
-          Row(
-            children: [
-              _socialItem(Icons.camera_alt, "Instagram"),
-              SizedBox(width: Constant.CONTAINER_SIZE_10),
-              _socialItem(Icons.snapchat, "Snapchat"),
-            ],
+          Text(
+            restaurantState
+                .restaurantDtlsData!
+                .data!
+                .basicRestaurantDetails!
+                .websiteDetails!,
           ),
         ],
       ),
     );
   }
 
-  Widget _socialItem(IconData icon, String label) {
+  Widget _socialMediaCard() {
+    final restaurantState = ref.watch(restaurantProvider);
+    final socialMediaTypeList =
+        restaurantState.restaurantDtlsData!.data!.socialMediaDetailsList ?? [];
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(Strings.SOCIAL_MEDIA, style: _titleStyle),
+          SizedBox(height: Constant.CONTAINER_SIZE_12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: socialMediaTypeList.map((item) {
+                return Padding(
+                  padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_10),
+                  child: _socialItem(item.socialMediaType ?? ''),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String getSocialMediaImage(String type) {
+    switch (type.toLowerCase()) {
+      case "instagram":
+        return "assets/icons/instagram.png";
+
+      case "facebook":
+        return "assets/icons/facebook.png";
+
+      case "snapchat":
+        return "assets/icons/snapchat.png";
+
+      default:
+        return "assets/icons/instagram.png";
+    }
+  }
+
+  Widget _socialItem(String type) {
+    final imagePath = getSocialMediaImage(type);
+
     return Column(
       children: [
         Container(
@@ -196,11 +301,15 @@ class PartnerDetailsSheet extends StatelessWidget {
             color: Colors.white10,
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
           ),
-          child: Icon(icon, color: Colors.white, size: Constant.CONTAINER_SIZE_20),
+          child: Image.asset(
+            imagePath,
+            width: Constant.CONTAINER_SIZE_20,
+            height: Constant.CONTAINER_SIZE_20,
+          ),
         ),
         SizedBox(height: Constant.SIZE_06),
         Text(
-          label,
+          type,
           style: TextStyle(
             color: Colors.white70,
             fontSize: Constant.CONTAINER_SIZE_11,
@@ -237,11 +346,31 @@ class PartnerDetailsSheet extends StatelessWidget {
     fontSize: Constant.CONTAINER_SIZE_12,
   );
 
- static final TextStyle _valueStyle = TextStyle(
+  static final TextStyle _valueStyle = TextStyle(
     color: Colors.white,
     fontSize: Constant.CONTAINER_SIZE_13,
   );
 
- static const _divider = Divider(color: Constant.grey, thickness: 0.5);
+  static const _divider = Divider(color: Constant.grey, thickness: 0.5);
 
+  _restaurantCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(restaurantProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final url = '${NetworkUrls.RESTAURANT_DETAILS}${widget.restaurantId}';
+          ref.read(getRestaurantDtlsProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in network function: $e');
+    }
+  }
 }

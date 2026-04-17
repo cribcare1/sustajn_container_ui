@@ -14,6 +14,9 @@ class Strings {
       'Internet connection failed! Please try after sometime.';
   static const API_ERROR_MSG_TEXT =
       "Request is not successful. Please try again later!";
+  static const String SOMETHING_WENT_WRONG =
+      "Something went wrong. Please try again ";
+
   ///
   static const String LOGIN = "Log In";
   static const String SIGN_UP = "Sign Up";
@@ -37,9 +40,18 @@ class Strings {
   static const String LARGE = 'Large';
   static const String MEDIUM = 'Medium';
   static const String SMALL = 'Small';
+  static const String PRODUCTS = 'Products';
+  static const String INVENTORY = 'Inventory';
+  static const String LEASE = 'Lease';
+  static const String RECEIVE = 'Receive';
   static const String RESTURANT_TRANSACTION_HISTORY_TITLE =
       'Resturant Transaction History';
   static const String STATUS = 'Status';
+  static const String SOCIAL_MEDIA = 'Social Media';
+  static const SORT_BY = 'Sort By';
+  static const SORT = 'Sort';
+  static const CLEAR = 'Clear';
+  static const APPLY = 'Apply';
   static const CONTAINERS_TITLE = 'Containers';
   static const CONTAINER_DETAILS = 'Container Details';
   static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
@@ -55,6 +67,10 @@ class Strings {
   static const CHOOSE = 'Choose';
   static const CAMERA = 'Camera';
   static const GALLERY = 'Gallery';
+  static const String MONTH = 'Month';
+  static const String FILTER = 'Filters';
+  static const String NO_ORDERS = 'No orders found';
+  static const String CONTAINER_NAME_ID = 'Container name or ID';
   static const UPLOAD_IMAGE = 'Upload container image (JPG/PNG)';
   static const NO_CONTAINERS = 'No containers added yet';
   static const START_ADD_CONTAINERS =
@@ -140,6 +156,8 @@ class Strings {
   static const RESOLVED_REMARKS = 'Resolved Remarks';
   static const REJECTED_RAMARKS = 'Rejected Remarks';
   static const MSG = 'message';
+  static const String SEARCH_BY_CUSTOMER_ID = 'Search by Customer ID';
+  static const String NO_CONTAINER_AVAILABLE = "No containers available";
   static const SUCCESS = 'success';
   static const ERROR = 'Error';
   static const EMAIL_REQUIRED_TXT = "Email is required.";
@@ -199,4 +217,8 @@ class Strings {
   static const LIFESPAN = 'Lifespan Cycle';
   static const COST = 'Cost Per Unit';
 
+
+
+  static final String BOWL_IMG = "assets/images/img.png";
+  static final String CUP_IMG = "assets/images/cups.png";
 }
