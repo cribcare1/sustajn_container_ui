@@ -43,6 +43,7 @@ final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
       color: Colors.red,
     );
   } finally {
+    leaseNotifier.containersList.clear();
     leaseNotifier.setIsSaving(false);
   }
 });

@@ -325,6 +325,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     }
 
                     if (widget.profile == 'profile') {
+                      Navigator.pop(context);
                       return;
                     }
 
@@ -515,6 +516,25 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                 ],
               ),
             ),
+            if (notifier.gateway != null && notifier.gateway!.name == title)
+            Expanded(child: Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: (){
+                  setState(() {
+                    notifier.gateway!.name= "";
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.secondaryHeaderColor,
+                  ),
+                  padding: EdgeInsets.all(Constant.SIZE_04),
+                  child: Icon(Icons.close,size: Constant.CONTAINER_SIZE_12,color: theme.primaryColor),
+                ),
+              ),
+            ))
           ],
         ),
       ),
@@ -710,11 +730,14 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Link ${widget.title} Account",
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
+                        Expanded(flex: 6,
+                          child: Text(
+                            "Link ${widget.title} Account",
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         Image.asset(
@@ -729,8 +752,35 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                     TextFormField(
                       controller: _controller,
                       style: const TextStyle(color: Colors.white),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) {
+                          return 'Enter your ${widget.title} ID';
+                        }
+
+                        final value = v.trim();
+
+                        switch (widget.title.toLowerCase()) {
+                          case 'paypal':
+                            final emailRegex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
+                            if (!emailRegex.hasMatch(value)) {
+                              return 'Enter a valid PayPal email';
+                            }
+                            break;
+                          case 'google pay':
+                            final gpayRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$');
+                            if (!gpayRegex.hasMatch(value)) {
+                              return 'Enter a valid Google Pay UPI ID';
+                            }
+                            break;
+
+                          case 'apple pay':
+                            return null;
+
+                          default:
+                            return null;
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                         hintText: 'Enter your ${widget.title} ID',
                         hintStyle: const TextStyle(color: Colors.white70),
@@ -758,16 +808,9 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                     SizedBox(height: Constant.CONTAINER_SIZE_20),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_14,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
+                      child: SubmitButton(
+                        rightText: Strings.ADD_CONT,
+                      onRightTap: () {
                           if (_formKey.currentState!.validate()) {
                             widget.notifier.setGateway(
                               PaymentGatewayModel(
@@ -779,10 +822,6 @@ class _AddGatewayDialogState extends State<AddGatewayDialog> {
                             Navigator.pop(context);
                           }
                         },
-                        child: const Text(
-                          Strings.ADD_CONT,
-                          style: TextStyle(color: Colors.black),
-                        ),
                       ),
                     ),
                   ],

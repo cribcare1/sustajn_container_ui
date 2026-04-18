@@ -102,8 +102,8 @@ bool get isDashboardLoading => _isDashboardLoading;
     notifyListeners();
   }
   ChartModel? _chartModel;
-  ChartModel get chartModel => _chartModel!;
-  void setChartData(ChartModel data){
+  ChartModel? get chartModel => _chartModel;
+  void setChartData(ChartModel? data){
     _chartModel = data;
     notifyListeners();
   }

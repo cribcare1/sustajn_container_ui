@@ -114,6 +114,17 @@ class _BusinessInformationDetailsState
         licenceController.text = business.treadLicenseNumber ?? "";
         vatController.text = business.vatNumber ?? "";
         websiteController.text = (website != null)? website.website ?? "":"";
+        final apiValue = website?.businessType?.trim().toLowerCase();
+
+        _selectedBusinessType = _businessTypes.firstWhere(
+              (item) => item.toLowerCase() == apiValue,
+          orElse: () => "",
+        );
+
+        if (_selectedBusinessType == "") {
+          _selectedBusinessType = null;
+        }
+
       }
       if (profile.socialMediaResponse != null &&
           profile.socialMediaResponse!.isNotEmpty) {
@@ -515,9 +526,28 @@ class _BusinessInformationDetailsState
                               : () async {
 
                             if (!_key.currentState!.validate()) return;
-
+                            for (var item in widget.authState.socialMediaList) {
+                              final value = item.controller.text.trim();
+                              if (value.isEmpty) continue;
+                              final isValid = RegExp(r'^(https?:\/\/)[^\s]+$').hasMatch(value);
+                              if (!isValid) {
+                                Utils.showToast("Enter valid ${item.socialMediaType} link");
+                                return;
+                              }
+                            }
                             setState(() => _isLoading = true);
 
+                            widget.authState.setRegistrationDetails(ContactAndRegistrationDetails(
+                              contactPersonName:contactPersonController.text,
+                              contactEmail:contactEmailController.text,
+                              treadLicenseNumber: licenceController.text,
+                              vatNumber : vatController.text,
+                              contactNumber : contactNumberController.text,
+                              registrationNumber: "",
+                            ));
+                            widget.authState.setBusinessDetails(BusinessModel(
+                                websiteDetails: websiteController.text,
+                                speciality:_selectedBusinessType??""));
                             /// PROFILE FLOW
                             if (widget.previous == Strings.PROFILE) {
                               final bool success =
@@ -583,8 +613,9 @@ class _BusinessInformationDetailsState
                                   contactNumber : contactNumberController.text,
                                     registrationNumber: "",
                                 ));
-                                widget.authState.setBusinessDetails(BusinessModel(websiteDetails: _selectedBusinessType??"",
-                                    speciality:websiteController.text));
+                                widget.authState.setBusinessDetails(BusinessModel(
+                                    websiteDetails: websiteController.text,
+                                    speciality:_selectedBusinessType??""));
                                 NavUtil.navigateToPushScreen(
                                   context,
                                   PaymentTypeScreen(),
@@ -765,7 +796,7 @@ class _BusinessInformationDetailsState
       "userId": Utils.userId,
 
       "basicDetails": {
-        "businessType": Strings.RESTAURANT,
+        "businessType": _selectedBusinessType??"",
         "websiteDetails": websiteController.text,
       },
 
@@ -780,13 +811,17 @@ class _BusinessInformationDetailsState
 
       "socialMediaList": authState.socialMediaList.isEmpty
           ? []
-          : authState.socialMediaList.map((e) => e.toJson()).toList(),
+          : authState.socialMediaList
+          .map((e) => e.toJson()).toSet()
+          .toList(),
     };
     return data;
   }
 
   Future<bool> _businessInfoNetworkCall(String regdNo) async {
     Utils.printLog('business info Network call');
+    Utils.printLog('business info Network call ${getJsonData("")}');
+
 
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)

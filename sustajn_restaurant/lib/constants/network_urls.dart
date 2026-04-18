@@ -15,7 +15,7 @@ class NetworkUrls {
   static const SUCCESS = 'success';
   static const REGISTER_USER_KEY = 'data';
 
-  static const BASE_URL = "http://35.154.182.218:9090/";
+  static const BASE_URL = "http://65.0.241.5:9090/";
   static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
   static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
   static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";

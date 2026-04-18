@@ -418,5 +418,6 @@ class Strings {
   static const String NOTIFICATION = 'Notifications';
   static const String MARK_ALL_READ = 'Mark all as read';
   static const String RETURN = 'Return';
+  static const String ADD = 'Add';
 
 }

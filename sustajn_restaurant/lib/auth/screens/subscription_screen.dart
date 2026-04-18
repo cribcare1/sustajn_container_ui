@@ -245,15 +245,18 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                   child: Text(Strings.NO, style: TextStyle(color: Colors.grey)),
                 ),
 
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFC8B531),
-                    minimumSize: Size(
-                      Constant.CONTAINER_SIZE_110,
-                      Constant.CONTAINER_SIZE_40,
-                    ),
+                isLoading
+                    ? SizedBox(
+                  height: Constant.CONTAINER_SIZE_20,
+                  width: Constant.CONTAINER_SIZE_20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: theme.secondaryHeaderColor,
                   ),
-                  onPressed: isLoading
+                )
+                    : SubmitButton(
+                 rightText: Strings.UPDATE,
+                  onRightTap: isLoading
                       ? null
                       : () async {
                           setState(() => isLoading = true);
@@ -265,19 +268,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             setState(() => isLoading = false);
                           }
                         },
-                  child: isLoading
-                      ? SizedBox(
-                          height: Constant.CONTAINER_SIZE_20,
-                          width: Constant.CONTAINER_SIZE_20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: theme.primaryColor,
-                          ),
-                        )
-                      : Text(
-                          Strings.UPDATE,
-                          style: TextStyle(color: theme.primaryColor),
-                        ),
+
                 ),
               ],
             );
@@ -380,12 +371,14 @@ class PlanCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        plan.planName,
-                        style:  TextStyle(
-                          color: Colors.white,
-                          fontSize: Constant.CONTAINER_SIZE_22,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          plan.planName,maxLines: 2,
+                          style:  TextStyle(
+                            color: Colors.white,
+                            fontSize: Constant.CONTAINER_SIZE_20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       if (plan.isSelected)
