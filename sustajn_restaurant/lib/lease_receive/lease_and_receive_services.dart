@@ -27,10 +27,8 @@ class LeaseAndReceiveServices {
   }
   Future<dynamic> receiveContainer(Map<String,dynamic> body)async{
     var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_RECEIVE}";
-    final data = jsonEncode(body);
-    print(data);
     try{
-      var response = await presenter.postApiStringData(api, data, "");
+      var response = await presenter.postApiStringData(api, body, "");
       if(response != null){
         print("response   ================ $response");
         return response;
