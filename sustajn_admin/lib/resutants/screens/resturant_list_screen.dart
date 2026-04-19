@@ -160,7 +160,7 @@ class _RestaurantListScreenState extends ConsumerState<RestaurantListScreen> {
   }
 }
 class RestaurantSearchDelegate extends SearchDelegate {
-  final List<RestaurantData> restaurantList;
+  final List<RestaurantListData> restaurantList;
   final ThemeData theme;
 
   RestaurantSearchDelegate({
@@ -242,13 +242,13 @@ class RestaurantSearchDelegate extends SearchDelegate {
 
     return _buildRestaurantList(suggestions);
   }
-  List<RestaurantData> _filteredList() {
+  List<RestaurantListData> _filteredList() {
     return restaurantList.where((restaurant) {
-      return restaurant.name.toLowerCase().contains(query.toLowerCase()) ||
-          restaurant.address.toLowerCase().contains(query.toLowerCase());
+      return restaurant.data!.fullName!.toLowerCase().contains(query.toLowerCase());
+          // || restaurant.data!.address!.toLowerCase().contains(query.toLowerCase());
     }).toList();
   }
-  Widget _buildRestaurantList(List<RestaurantData> list) {
+  Widget _buildRestaurantList(List<RestaurantListData> list) {
     return ListView.separated(
       padding: const EdgeInsets.all(12),
       itemCount: list.length,
@@ -300,7 +300,7 @@ class RestaurantSearchDelegate extends SearchDelegate {
   }
 }
 class RestaurantCard extends StatelessWidget {
-  final RestaurantData restaurant;
+  final RestaurantListData restaurant;
   final VoidCallback? onTap;
 
   const RestaurantCard({
@@ -344,7 +344,7 @@ class RestaurantCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    restaurant.name,
+                    restaurant.data!.fullName!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium,
@@ -358,16 +358,16 @@ class RestaurantCard extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                       SizedBox(width: Constant.SIZE_04),
-                      Text(
-                        restaurant.containerCount.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
+                      // Text(
+                      //   restaurant.containerCount.toString(),
+                      //   style: Theme.of(context)
+                      //       .textTheme
+                      //       .bodyMedium
+                      //       ?.copyWith(
+                      //     fontSize: Constant.LABEL_TEXT_SIZE_14,
+                      //     color: Colors.grey.shade600,
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(height: Constant.SIZE_02),
@@ -382,7 +382,7 @@ class RestaurantCard extends StatelessWidget {
                       SizedBox(width: Constant.SIZE_04),
                       Expanded(
                         child: Text(
-                          restaurant.address,
+                          restaurant.data!.basicRestaurantDetails!.websiteDetails!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)

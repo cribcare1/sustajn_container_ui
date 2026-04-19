@@ -172,14 +172,14 @@ class _ContainerFilterSheetState extends ConsumerState<_ContainerFilterSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.containerName,
+                  item.containerName!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: Constant.SIZE_06),
                 Text(
-                  item.productId,
+                  item.productId!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -257,7 +257,7 @@ class _ContainerFilterSheetState extends ConsumerState<_ContainerFilterSheet> {
     setState(() {
       filteredContainers = widget.containerList.where((item) {
         final searchLower = value.toLowerCase();
-        return item.containerName.toLowerCase().contains(searchLower) ||
+        return item.containerName!.toLowerCase().contains(searchLower) ||
             item.containerTypeId.toString().toLowerCase().contains(searchLower);
       }).toList();
     });
