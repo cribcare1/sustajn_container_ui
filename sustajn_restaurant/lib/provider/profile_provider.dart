@@ -32,7 +32,8 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     GetProfileData responseData = await serviceProvider.getProfileService(
       params,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+    if (responseData.status != null && responseData.status!.isNotEmpty
+        && responseData.status!.trim().toLowerCase() == NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
@@ -157,7 +158,9 @@ final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>
 
   Utils.printLog("Business Info Provider url : $url");
   final responseData = await apiService.businessInfoService(url, params, "");
-
+  final userId = Utils.userId;
+  final api = '${NetworkUrls.GET_PROFILE}$userId';
+  getProfileProvider(api);
   print("Provider Response: $responseData");
   return responseData;
 });

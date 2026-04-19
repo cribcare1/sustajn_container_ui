@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_container_data.dart';
-import '../../models/login_model.dart';
-import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
-import '../models/add_container_model.dart';
 
 class AddContainerDialog extends ConsumerStatefulWidget {
   final ContainersDetails item;
@@ -141,7 +139,10 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                       icon: Icons.remove,
                       onTap: () {
                         if (qty > 0) {
-                          setState(() => qty--);
+                          setState(() {
+                            qty--;
+                            quantity.text = qty.toString();
+                          });
                         }
                       },
                       theme: theme,
@@ -192,7 +193,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                               onTap: () {
                                 setState(() {
                                   isEditingQty = true;
-                                  quantity.clear();
+                                  quantity.text = qty.toString();
                                 });
                                 Future.delayed(
                                   const Duration(milliseconds: 50),
@@ -215,7 +216,10 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                       icon: Icons.add,
                       onTap: () {
                         if (qty < widget.item.quantityAvailable!) {
-                          setState(() => qty++);
+                          setState(() {
+                            qty++;
+                            quantity.text = qty.toString();
+                          });
                         }
                       },
                       theme: theme,
@@ -249,35 +253,14 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                     ),
                     SizedBox(width: Constant.CONTAINER_SIZE_12),
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
+                      child: SubmitButton(
+                        onRightTap: () {
                           if (qty > 0) {
                             orderState.addContainerToOrder(widget.item, qty);
                             Navigator.pop(context);
                           }
                         },
-
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Constant.gold,
-                          disabledBackgroundColor: Constant.gold,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_16,
-                            ),
-                          ),
-                          side: BorderSide(color: Colors.white),
-                          padding: EdgeInsets.symmetric(
-                            vertical: Constant.CONTAINER_SIZE_12,
-                          ),
-                          elevation: Constant.SIZE_00,
-                        ),
-                        child: Text(
-                          "Add",
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        rightText: Strings.ADD,
                       ),
                     ),
                   ],

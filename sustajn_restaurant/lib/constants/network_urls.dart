@@ -15,10 +15,10 @@ class NetworkUrls {
   static const SUCCESS = 'success';
   static const REGISTER_USER_KEY = 'data';
 
-  static const BASE_URL = "http://35.154.182.218:9090/";
-  static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
-  static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
-  static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";
+  static const BASE_URL = "http://65.0.241.5:9090/";
+  static const PROFILE_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/profile/";
+  static const IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/";
+  static const CONTAINER_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/container/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-restaurant";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -34,6 +34,7 @@ class NetworkUrls {
   static const UPDATE_PROFILE = "auth/updateProfileDetails";
   static const UPDATE_ADDRESS = "auth/updateAddress";
   static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  static const GET_RETURN_CONTAINER = "orders/monthWiseReturnedDetails?userId=";
   static const CONTAINER_HISTORY = "orders/orderHistory/";
   static const REFER_A_PARTNER = "auth/referPartner";
   static const BUSINESS_INFO = "auth/addBusinessInfo";

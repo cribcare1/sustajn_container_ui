@@ -17,17 +17,7 @@ class CustomBackButton extends StatelessWidget {
           Navigator.pop(context);
         }
       },
-      child: Container(
-        width: Constant.CONTAINER_SIZE_25,
-        height: Constant.CONTAINER_SIZE_25,
-        margin: EdgeInsets.all(Constant.SIZE_10),
-        decoration: BoxDecoration(
-          color: theme.primaryColor,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_100),
-          border: Border.all(color: Constant.grey, width: 0.3),
-        ),
-        child: Icon(Icons.keyboard_arrow_left, color: Colors.white70),
-      ),
+      child: Icon(Icons.keyboard_arrow_left, color: Colors.white70),
     );
   }
 }

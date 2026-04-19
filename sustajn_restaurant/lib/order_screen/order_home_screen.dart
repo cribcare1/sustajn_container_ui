@@ -8,7 +8,6 @@ import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
 import 'order_screen/order_screen.dart';
 
-
 class OrderHomeScreen extends StatefulWidget {
   const OrderHomeScreen({super.key});
 
@@ -18,11 +17,8 @@ class OrderHomeScreen extends StatefulWidget {
 
 class _OrderHomeScreenState extends State<OrderHomeScreen>
     with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-
-
 
   @override
   void initState() {
@@ -69,7 +65,10 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  Text(Strings.ORDER),
+                  Expanded(
+                    flex: 1,
+                    child: Text(Strings.ORDER, overflow: TextOverflow.ellipsis),
+                  ),
                 ],
               ),
             ),
@@ -77,7 +76,10 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.reset_tv_outlined, size: Constant.CONTAINER_SIZE_18),
+                  Icon(
+                    Icons.reset_tv_outlined,
+                    size: Constant.CONTAINER_SIZE_18,
+                  ),
                   SizedBox(width: Constant.SIZE_06),
                   Text(Strings.RETURN),
                 ],
@@ -95,7 +97,6 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
             ),
           ],
         ),
-
       ),
 
       body: Column(
@@ -106,7 +107,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               children: [
                 AddContainerScreen(),
                 ReturnContainerScreen(),
-                OrderHistoryScreen()
+                OrderHistoryScreen(),
               ],
             ),
           ),
@@ -114,6 +115,4 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
       ),
     );
   }
-
-
 }

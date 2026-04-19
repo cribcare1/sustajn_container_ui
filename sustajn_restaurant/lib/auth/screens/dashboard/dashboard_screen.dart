@@ -58,26 +58,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     _init();
   }
 
-  _getOrderNetworkCall() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
-        final notificationState = ref.read(notificationProvider);
-        if (isNetworkAvailable) {
-          notificationState.setLoading(true);
-          final userId = Utils.userId;
-          ref.read(getNotification(userId ?? 0));
-        } else {
-          notificationState.setLoading(false);
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
-    }
-  }
-
   Future<void> _init() async {
     await _loadProfile();
 
@@ -85,7 +65,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       await _getProfileNetworkCall();
     }
     _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
-    _getOrderNetworkCall();
   }
 
   Future<void> _loadProfile() async {
@@ -169,9 +148,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: profileState.isDashboardLoading
+        child:
+        profileState.isDashboardLoading
             ? Center(child: CircularProgressIndicator())
-            : LayoutBuilder(
+            :
+        LayoutBuilder(
                 builder: (context, constraints) {
                   return SingleChildScrollView(
                     padding: EdgeInsets.symmetric(
@@ -334,44 +315,46 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               GlassSummaryCard(
                                 child: Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: _buildDropdown(
-                                            context,
-                                            value: selectedDateRange,
-                                            items: dateOptions,
-                                            onChanged: (v) => setState(
-                                              () => selectedDateRange = v!,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: Constant.SIZE_10),
-                                        Expanded(
-                                          flex: 1,
-                                          child: _buildDropdown(
-                                            context,
-                                            value: selectedContainer,
-                                            items: containerOptions,
-                                            onChanged: (v) => setState(
-                                              () => selectedContainer = v!,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: Constant.SIZE_15),
+                                    // Row(
+                                    //   children: [
+                                    //     Expanded(
+                                    //       flex: 1,
+                                    //       child: _buildDropdown(
+                                    //         context,
+                                    //         value: selectedDateRange,
+                                    //         items: dateOptions,
+                                    //         onChanged: (v) => setState(
+                                    //           () => selectedDateRange = v!,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: Constant.SIZE_10),
+                                    //     Expanded(
+                                    //       flex: 1,
+                                    //       child: _buildDropdown(
+                                    //         context,
+                                    //         value: selectedContainer,
+                                    //         items: containerOptions,
+                                    //         onChanged: (v) => setState(
+                                    //           () => selectedContainer = v!,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    // SizedBox(height: Constant.SIZE_15),
                                     _buildLegendRow(context),
                                     SizedBox(
                                       height: Constant.CONTAINER_SIZE_35,
                                     ),
-                                    _buildChartRings(
-                                      context,
-                                      width,
-                                      theme,
-                                      profileState.chartModel,
-                                    ),
+                                    profileState.chartModel == null
+                                        ? const SizedBox()
+                                        : _buildChartRings(
+                                            context,
+                                            width,
+                                            theme,
+                                            profileState.chartModel, // safe
+                                          ),
                                   ],
                                 ),
                               ),
@@ -569,8 +552,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     BuildContext context,
     double screenWidth,
     ThemeData theme,
-    ChartModel model,
+    ChartModel? model,
   ) {
+    if (model == null) {
+      return const SizedBox();
+    }
     double chartSize = screenWidth * 0.65;
     final List<ChartData> chartData = getChartValues(model);
     final receive = getChartItem(Strings.RECEIVE, chartData);
@@ -587,13 +573,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             clipBehavior: Clip.none,
             children: [
               SizedBox(
-                width: chartSize,
-                height: chartSize,
+                // width: chartSize,
+                // height: chartSize,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     SfCircularChart(
                       margin: EdgeInsets.zero,
+                      tooltipBehavior: TooltipBehavior(
+                        enable: true,
+                        color: Colors.grey,
+                        builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                          final ChartData d = data;
+                          return Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '${d.label} : ${d.value.toInt()}',
+                              style: TextStyle(
+                                color: d.color,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                       series: <DoughnutSeries<ChartData, String>>[
                         DoughnutSeries<ChartData, String>(
                           dataSource: chartData,
@@ -634,39 +641,40 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ],
                 ),
               ),
-              _chartLabel(
-                left: 45,
-                top: -20,
-                title: Strings.RECEIVE,
-                value: '${receive.value.toInt()}',
-                color: receive.color,
-              ),
-
-              _chartLabel(
-                left: -30,
-                top: 35,
-                title: Strings.LEASE,
-                value: '${lease.value.toInt()}',
-                color: lease.color,
-                alignEnd: true,
-              ),
-
-              _chartLabel(
-                right: -15,
-                top: 200,
-                bottom: 0,
-                title: Strings.AVAILABLE,
-                value: '${available.value.toInt()}',
-                color: available.color,
-              ),
-
-              _chartLabel(
-                top: -30,
-                title: Strings.DAMAGE,
-                value: '${damage.value.toInt()}',
-                color: damage.color,
-                alignEnd: true,
-              ),
+              //todo
+              // _chartLabel(
+              //   left: 45,
+              //   top: -20,
+              //   title: Strings.RECEIVE,
+              //   value: '${receive.value.toInt()}',
+              //   color: receive.color,
+              // ),
+              //
+              // _chartLabel(
+              //   left: -30,
+              //   top: 35,
+              //   title: Strings.LEASE,
+              //   value: '${lease.value.toInt()}',
+              //   color: lease.color,
+              //   alignEnd: true,
+              // ),
+              //
+              // _chartLabel(
+              //   right: -15,
+              //   top: 200,
+              //   bottom: 0,
+              //   title: Strings.AVAILABLE,
+              //   value: '${available.value.toInt()}',
+              //   color: available.color,
+              // ),
+              //
+              // _chartLabel(
+              //   top: -30,
+              //   title: Strings.DAMAGE,
+              //   value: '${damage.value.toInt()}',
+              //   color: damage.color,
+              //   alignEnd: true,
+              // ),
             ],
           ),
           SizedBox(height: Constant.SIZE_08),
@@ -681,7 +689,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
     );
   }
-
 
   ChartData getChartItem(String label, List<ChartData> data) {
     return data.firstWhere(

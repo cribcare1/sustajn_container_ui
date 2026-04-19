@@ -26,31 +26,10 @@ void main()async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-  //
-  // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //   debugPrint('✅ User granted notification permission');
-  // } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-  //   debugPrint('⚠️ User granted provisional permission');
-  // } else {
-  //   debugPrint('❌ User declined notification permission');
-  // }
+
   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
   await FirebaseServices().initialize();
-  // Foreground message
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  //   debugPrint('📩 Foreground message received');
-  //   if (message.data.isNotEmpty) {
-  //     debugPrint('Title: ${message.notification?.title}');
-  //     debugPrint('Body: ${message.notification?.body}');
-  //     await backgroundMessageHandler(message);
-  //   }
-  // });
+
   runApp(ProviderScope(child: const MyApp()));
 }
 

@@ -26,7 +26,6 @@ class CustomBottomNav extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            /// Main Curved Background
             ClipPath(
               clipper: BottomNavClipper(),
               child: Container(
@@ -59,23 +58,20 @@ class CustomBottomNav extends StatelessWidget {
 
             Padding(
               padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_45),
-              child: Positioned(
-                top: 0,
-                child: GestureDetector(
-                  onTap: () => onTabChange(2),
-                  child: Container(
-                    height: size * 0.15,
-                    width: size * 0.15,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Constant.gold,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                    child: Icon(
-                      Icons.qr_code_scanner,
-                      size: Constant.CONTAINER_SIZE_30,
-                      color: theme!.scaffoldBackgroundColor,
-                    ),
+              child: GestureDetector(
+                onTap: () => onTabChange(2),
+                child: Container(
+                  height: size * 0.15,
+                  width: size * 0.15,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Constant.gold,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: Icon(
+                    Icons.qr_code_scanner,
+                    size: Constant.CONTAINER_SIZE_30,
+                    color: theme!.scaffoldBackgroundColor,
                   ),
                 ),
               ),

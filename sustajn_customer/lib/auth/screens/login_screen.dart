@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/auth/dashboard_screen/dashboard_screen.dart';
-import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/submit_button.dart';
