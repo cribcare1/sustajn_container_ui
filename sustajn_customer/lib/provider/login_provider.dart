@@ -4,12 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-import '../auth/dashboard_screen/dashboard_screen.dart';
 import '../auth/dashboard_screen/home_screen.dart';
-import '../auth/screens/login_screen.dart';
-import '../auth/screens/verify_email_screen.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
 import '../firebase_services.dart';
