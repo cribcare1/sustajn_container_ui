@@ -12,7 +12,7 @@ import '../utils/utility.dart';
 class ApiHelper {
 
   Future apiRequest(String url) async {
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Get call url::$url");
     Utils.printLog("Get token::$token");
     http.Response? response;
@@ -112,7 +112,7 @@ class ApiHelper {
 
   Future<dynamic> apiPostLoginRequest(String url, var jsonMap) async {
     Utils.printLog("Post call started==url==$url");
-    var token = Utils.authToken();
+    var token = await Utils.authToken();
     Utils.printLog('Token : $token');
     http.Response? response;
     try {
@@ -132,7 +132,7 @@ class ApiHelper {
   }
 
   Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Get call started==url==$url");
     http.Response? responseData;
     try {
@@ -176,7 +176,7 @@ class ApiHelper {
   Future<http.Response> apiMultiPartPostRequest(
       String url, Map<String, dynamic> jsonMap, var image, String keyName) async {
 
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
 
     http.Response? responseData;
@@ -229,7 +229,7 @@ class ApiHelper {
   Future<http.Response> apiMultipartRequest(
       String url, Map<String, dynamic> jsonMap, var image, String keyName, var document) async {
 
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
 
     http.Response? responseData;
@@ -311,7 +311,7 @@ class ApiHelper {
   Future<http.Response> apiMultiPartListFilePostRequest(
       String url, Map<String, dynamic> jsonMap, var imageList, String keyName) async {
     Utils.printLog("Image File length: ${imageList.length}");
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("MultipartPost call started==url==$url");
     Utils.printLog("token: $token");
     http.Response? responseData;
@@ -365,7 +365,7 @@ class ApiHelper {
     required Map<String, dynamic> requestJson,
     File? file,
   }) async {
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Multipart call started => URL: $url");
     Utils.printLog("Multipart call started => URL: $requestJson");
 

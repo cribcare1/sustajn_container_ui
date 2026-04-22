@@ -101,7 +101,7 @@ class ProfileService {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }
     } catch (e) {
-      Utils.printLog("login service::::$e");
+      Utils.printLog("login   service::::$e");
       throw Exception(e);
     }
   }

@@ -65,7 +65,9 @@ class _ProductsScreenState extends State<ProductsScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  const Text(Strings.INVENTORY),
+                   Expanded(
+                       flex: 1,
+                       child: Text(Strings.INVENTORY,overflow: TextOverflow.ellipsis,)),
                 ],
               ),
             ),

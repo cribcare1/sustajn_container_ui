@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:container_tracking/auth/auth_state.dart';
 import 'package:container_tracking/auth/screens/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:container_tracking/auth/screens/dashboard_screen.dart';
 import 'package:container_tracking/auth/screens/verify_email_screen.dart';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:flutter/material.dart';
@@ -26,31 +27,32 @@ final loginDetailProvider =
       try {
         responseData = await apiService.loginUser(url, params, "");
         if (responseData!.status != '' &&
-            responseData.status.toLowerCase() == Strings.SUCCESS) {
+            responseData.status!.toLowerCase() == Strings.SUCCESS) {
           registrationState.setIsLoading(false);
           registrationState.setLoginData(responseData);
           if (registrationState.context.mounted) {
             showCustomSnackBar(
               context: registrationState.context,
-              message: responseData.message,
+              message: responseData.message!,
               color: Colors.green,
             );
           }
 
-          String json = jsonEncode(responseData.data.toJson());
+          String json = jsonEncode(responseData.data!.toJson());
           await SharedPreferenceUtils.saveDataInSF(
             Strings.JWT_TOKEN,
-            responseData.data.jwtToken,
+            responseData.data!.jwtToken,
           );
           await SharedPreferenceUtils.saveDataInSF(Strings.IS_LOGGED_IN, true);
           await SharedPreferenceUtils.saveMapInSF(
             Strings.PROFILE_DATA,
-            responseData.data.toJson(),
+            responseData.data!.toJson(),
           );
           if (registrationState.context.mounted) {
             Navigator.pushReplacement(
               registrationState.context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              MaterialPageRoute(builder: (_) =>
+                  DashboardScreen()),
             );
           }
         } else {

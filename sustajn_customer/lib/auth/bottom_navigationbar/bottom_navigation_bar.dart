@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/number_constants.dart';
+import '../../utils/theme_utils.dart';
 
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -15,27 +16,23 @@ class CustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size.width;
+    var theme = CustomTheme.getTheme(true);
 
     return SafeArea(
       top: false,
       child: SizedBox(
-        height: Constant.CONTAINER_SIZE_90,
+        height: MediaQuery.of(context).size.height * 0.12,
         child: Stack(
-          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
           children: [
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+            ClipPath(
+              clipper: BottomNavClipper(),
               child: Container(
-                height: Constant.CONTAINER_SIZE_65,
-                decoration:  BoxDecoration(
-                  color: Color(0xFFD6B24C),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(Constant.CONTAINER_SIZE_22),
-                    topRight: Radius.circular(Constant.CONTAINER_SIZE_22),
-                  ),
-                ),
+                height: MediaQuery.of(context).size.height * 0.09,
+
+                width: double.infinity,
+                color: Constant.gold,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -46,7 +43,7 @@ class CustomBottomNav extends StatelessWidget {
                       onTap: () => onTabChange(0),
                     ),
 
-                    SizedBox(width: width * 0.22),
+                    SizedBox(width: width * 0.20),
 
                     _NavItem(
                       imageAsset: 'assets/images/img.png',
@@ -59,24 +56,35 @@ class CustomBottomNav extends StatelessWidget {
               ),
             ),
 
-            Positioned(
-              top: -28,
-              left: width / 2 - 30,
+            Padding(
+              padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_45),
               child: GestureDetector(
                 onTap: () => onTabChange(2),
                 child: Container(
-                  height: Constant.CONTAINER_SIZE_60,
-                  width: Constant.CONTAINER_SIZE_60,
+                  height: size * 0.15,
+                  width: size * 0.15,
                   decoration: BoxDecoration(
-                    color:  Color(0xFFD6B24C),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: Constant.SIZE_04),
+                    color: Constant.gold,
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.qr_code_scanner,
-                    size: 28,
-                    color: Color(0xFF0E3B2E),
+                    size: Constant.CONTAINER_SIZE_30,
+                    color: theme!.scaffoldBackgroundColor,
                   ),
+                ),
+              ),
+            ),
+
+            Positioned(
+              bottom: Constant.SIZE_08,
+              child: Container(
+                height: Constant.SIZE_04,
+                width: Constant.CONTAINER_SIZE_120,
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(Constant.SIZE_10),
                 ),
               ),
             ),
@@ -110,27 +118,28 @@ class _NavItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding:  EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_14, vertical: Constant.SIZE_08),
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_14,
+              vertical: Constant.SIZE_08,
+            ),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isSelected
-                  ? const Color(0xFF0E3B2E)
-                  : Colors.transparent,
+              color: isSelected ? const Color(0xFF0E3B2E) : Colors.transparent,
             ),
             child: imageAsset != null
                 ? Image.asset(
-              imageAsset!,
-              height: Constant.CONTAINER_SIZE_22,
-              width: Constant.CONTAINER_SIZE_22,
-              color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
-            )
+                    imageAsset!,
+                    height: Constant.CONTAINER_SIZE_22,
+                    width: Constant.CONTAINER_SIZE_22,
+                    color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
+                  )
                 : Icon(
-              icon,
-              size: Constant.CONTAINER_SIZE_22,
-              color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
-            ),
+                    icon,
+                    size: Constant.CONTAINER_SIZE_22,
+                    color: isSelected ? Colors.white : const Color(0xFF0E3B2E),
+                  ),
           ),
-           SizedBox(height: Constant.SIZE_02),
+          SizedBox(height: Constant.SIZE_02),
           Text(
             label,
             style: TextStyle(
@@ -143,4 +152,52 @@ class _NavItem extends StatelessWidget {
       ),
     );
   }
+}
+
+class BottomNavClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+
+    final double width = size.width;
+    final double height = size.height;
+    final double center = width / 2;
+
+    // Wider + deeper curve (UX match)
+    final double curveWidth = width * 0.14;
+    final double curveDepth = height * 0.50;
+
+    path.lineTo(center - curveWidth, 0);
+
+    /// Left smooth curve
+    path.quadraticBezierTo(
+      center - curveWidth * 0.75,
+      0,
+      center - curveWidth * 0.55,
+      curveDepth * 0.45,
+    );
+
+    /// Deep center curve
+    path.quadraticBezierTo(
+      center,
+      curveDepth,
+      center + curveWidth * 0.55,
+      curveDepth * 0.45,
+    );
+
+    /// Right smooth curve
+    path.quadraticBezierTo(
+      center + curveWidth * 0.75,
+      0,
+      center + curveWidth,
+      0,
+    );
+    path.lineTo(width, 0);
+    path.lineTo(width, height);
+    path.lineTo(0, height);
+    path.close();
+    return path;
+  }
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

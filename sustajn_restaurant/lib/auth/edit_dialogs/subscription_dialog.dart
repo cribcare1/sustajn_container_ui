@@ -9,6 +9,7 @@ import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../utils/utility.dart';
 
 class SubscriptionPlanBottomSheet extends ConsumerWidget {
   const SubscriptionPlanBottomSheet({super.key});
@@ -20,37 +21,50 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
     final subscription =
         profileState.getProfileData?.data!.subscriptionResponse;
     return SafeArea(
+      top: false,
+      bottom: true,
       child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.primaryColor,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(Constant.CONTAINER_SIZE_20),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _header(context),
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            SizedBox(height: Constant.SIZE_08),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    _planCard(
-                      context,
-                      (subscription != null) ? subscription : null,
+                    _header(context),
+                    Flexible(
+                      child: ListView(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                        children: [
+                          _planCard(
+                            context,
+                            (subscription != null) ? subscription : null,
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_30),
+                          _viewAllPlansButton(context),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_30),
-                    _viewAllPlansButton(context),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -65,26 +79,13 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
         vertical: Constant.CONTAINER_SIZE_12,
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              Strings.SUBSCRIPTION_PLAN,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: CircleAvatar(
-              radius: Constant.CONTAINER_SIZE_16,
-              backgroundColor: theme.colorScheme.onSurface.withOpacity(0.1),
-              child: Icon(
-                Icons.close,
-                size: Constant.CONTAINER_SIZE_18,
-                color: Colors.white,
-              ),
+          Text(
+            Strings.SUBSCRIPTION_PLAN,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
         ],
@@ -159,7 +160,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
                         ),
                       ),
                       child: Text(
-                        'Learn More',
+                        Strings.LEARN_MORE,
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Constant.gold,
                         ),
@@ -185,7 +186,7 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
             child: Text(
-              '₹ 500/month',
+              "Ð ${data.feeType.toString()}",
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.primaryColor,
                 fontWeight: FontWeight.w600,
@@ -226,7 +227,6 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
 
   Widget _dateSection(BuildContext context) {
     final theme = Theme.of(context);
-
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
@@ -273,8 +273,14 @@ class SubscriptionPlanBottomSheet extends ConsumerWidget {
   }
 
   Widget _viewAllPlansButton(BuildContext context) {
-    return SubmitButton(onRightTap: () {
-      NavUtil.navigateToPushScreen(context, SubscriptionScreen(previousScreen: 'profile',));
-    }, rightText: "View all plans");
+    return SubmitButton(
+      onRightTap: () {
+        NavUtil.navigateToPushScreen(
+          context,
+          SubscriptionScreen(previousScreen: 'profile'),
+        );
+      },
+      rightText: Strings.VIEW_ALL_PLAN,
+    );
   }
 }

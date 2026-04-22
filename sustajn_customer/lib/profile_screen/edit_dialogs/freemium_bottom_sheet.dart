@@ -1,19 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/provider/profile_provider.dart';
 
+import '../../auth/screens/subscription_screen.dart';
 import '../../constants/imports_util.dart';
-import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../models/subscriptionplan_data.dart';
-import '../../network_provider/network_provider.dart';
+import '../../models/get_profile_model.dart';
 import '../../notifier/subscription_notifier.dart';
-import '../../provider/profile_provider.dart';
-import '../../provider/signup_provider.dart';
 import '../../provider/subscription_provider.dart';
-import '../../utils/utils.dart';
+import '../../utils/nav_utils.dart';
 
 class FreemiumBottomSheet extends ConsumerStatefulWidget {
   final int userID;
+
   const FreemiumBottomSheet({super.key, required this.userID});
 
   @override
@@ -21,35 +20,23 @@ class FreemiumBottomSheet extends ConsumerStatefulWidget {
       _FreemiumBottomSheetState();
 }
 
-class _FreemiumBottomSheetState
-    extends ConsumerState<FreemiumBottomSheet> {
-  int selectedIndex = 0;
-  final PageController _pageController =
-  PageController(viewportFraction: 0.9);
-
+class _FreemiumBottomSheetState extends ConsumerState<FreemiumBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final subscriptionState = ref.watch(signUpNotifier);
-    final upgradeState = ref.watch(subscriptionNotifier);
+    final subScriptionState = ref.watch(subscriptionNotifier);
+    final profileState = ref.watch(profileProvider);
+    final SubscriptionResponse? plan =
+        profileState.profileModel?.data?.subscriptionResponse;
 
-    final List<SubscriptionData> plans =
-        subscriptionState.data ?? [];
-
-    final screenHeight = MediaQuery.of(context).size.height;
-    final carouselHeight =
-    (screenHeight * 0.45).clamp(250.0, 420.0);
-
-    if (subscriptionState.isLoading) {
+    if (profileState.isLoading) {
       return const Padding(
         padding: EdgeInsets.all(20),
-        child: Center(
-          child: CircularProgressIndicator(color: Constant.gold),
-        ),
+        child: Center(child: CircularProgressIndicator(color: Constant.gold)),
       );
     }
 
-    if (plans.isEmpty) {
+    if (plan == null) {
       return Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
         child: Text(
@@ -68,36 +55,12 @@ class _FreemiumBottomSheetState
             _header(context),
             SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-            // RESPONSIVE CAROUSEL
-            SizedBox(
-              height: carouselHeight,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: plans.length,
-                onPageChanged: (index) {
-                  setState(() => selectedIndex = index);
-                },
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() => selectedIndex = index);
-                    },
-                    child: _freemiumCard(
-                      theme,
-                      plans[index],
-                      isSelected: index == selectedIndex,
-                    ),
-                  );
-                },
-              ),
+            Flexible(
+              child: SingleChildScrollView(child: _freemiumCard(theme, plan)),
             ),
 
             SizedBox(height: Constant.CONTAINER_SIZE_20),
-            _upgradeButton(
-              theme,
-              upgradeState,
-              plans[selectedIndex].planId!,
-            ),
+            _upgradeButton(theme),
           ],
         ),
       ),
@@ -118,67 +81,47 @@ class _FreemiumBottomSheetState
     );
   }
 
-  Widget _freemiumCard(
-      ThemeData theme,
-      SubscriptionData plan, {
-        required bool isSelected,
-      }) {
-    return Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.all(Constant.SIZE_03),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_24),
-            border: Border.all(
-              color: Constant.grey.withOpacity(0.5),
-            ),
+  Widget _freemiumCard(ThemeData theme, SubscriptionResponse plan) {
+    return Container(
+      padding: EdgeInsets.all(Constant.SIZE_03),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_24),
+        border: Border.all(
+          color: Constant.grey.withOpacity(0.5), // OUTER BORDER
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+          border: Border.all(
+            color: Constant.gold, // INNER BORDER
           ),
-          child: Container(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-              border: Border.all(
-                color: Constant.gold,
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  theme.primaryColor.withOpacity(0.9),
-                  theme.scaffoldBackgroundColor,
-                ],
-              ),
-            ),
-            child: Column(
-              children: [
-                _iconSection(theme, plan),
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                _priceSection(theme, plan),
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-                _featureList(theme, plan),
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-                _learnMoreButton(theme),
-              ],
-            ),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              theme.primaryColor.withOpacity(0.9),
+              theme.scaffoldBackgroundColor,
+            ],
           ),
         ),
-
-        // SELECTION ICON
-        Positioned(
-          top: 10,
-          right: 16,
-          child: Icon(
-            Icons.check_circle,
-            color: isSelected ? Constant.gold : Constant.grey,
-            size: Constant.CONTAINER_SIZE_26,
-          ),
+        child: Column(
+          children: [
+            _iconSection(theme, plan),
+            SizedBox(height: Constant.CONTAINER_SIZE_12),
+            _priceSection(theme, plan),
+            SizedBox(height: Constant.CONTAINER_SIZE_20),
+            _featureList(theme, plan),
+            SizedBox(height: Constant.CONTAINER_SIZE_20),
+            _learnMoreButton(theme),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-
-  Widget _iconSection(ThemeData theme, SubscriptionData plan) {
+  Widget _iconSection(ThemeData theme, SubscriptionResponse plan) {
     return Column(
       children: [
         Icon(
@@ -188,16 +131,14 @@ class _FreemiumBottomSheetState
         ),
         SizedBox(height: Constant.SIZE_10),
         Text(
-          plan.planType ?? '',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
-          ),
+          plan.planName ?? '',
+          style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
         ),
       ],
     );
   }
 
-  Widget _priceSection(ThemeData theme, SubscriptionData plan) {
+  Widget _priceSection(ThemeData theme, SubscriptionResponse plan) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -219,12 +160,8 @@ class _FreemiumBottomSheetState
     );
   }
 
-  Widget _featureList(ThemeData theme, SubscriptionData plan) {
-    return Column(
-      children: [
-        _featureItem(theme, plan.description ?? ''),
-      ],
-    );
+  Widget _featureList(ThemeData theme, SubscriptionResponse plan) {
+    return Column(children: [_featureItem(theme, plan.description ?? '')]);
   }
 
   Widget _featureItem(ThemeData theme, String text) {
@@ -242,9 +179,7 @@ class _FreemiumBottomSheetState
           Expanded(
             child: Text(
               text,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
             ),
           ),
         ],
@@ -267,46 +202,28 @@ class _FreemiumBottomSheetState
       ),
       child: Text(
         Strings.LEARN_MORE,
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: Constant.gold,
-        ),
+        style: theme.textTheme.labelLarge?.copyWith(color: Constant.gold),
       ),
     );
   }
 
-  Widget _upgradeButton(
-      ThemeData theme,
-      SubscriptionNotifier state,
-      int planId,
-      ) {
+  Widget _upgradeButton(ThemeData theme) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: state.isLoading
-            ? null
-            : () {
-          _getNetworkData(planId);
+        onPressed:  () {
+          Navigator.pop(context);
+          NavUtil.navigateToPushScreen(context,SubscriptionScreen(flow: SubscriptionFlow.upgrade));
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Constant.gold,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           ),
-          padding: EdgeInsets.symmetric(
-            vertical: Constant.CONTAINER_SIZE_14,
-          ),
+          padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
         ),
-        child: state.isLoading
-            ? const SizedBox(
-          height: 22,
-          width: 22,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: Colors.white,
-          ),
-        )
-            : Text(
-          Strings.UPGRADE,
+        child:  Text(
+          Strings.VIEW_ALL_PLANS,
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.primaryColor,
           ),
@@ -315,39 +232,6 @@ class _FreemiumBottomSheetState
     );
   }
 
-  _getNetworkData(int planId) async {
-    final registrationState = ref.read(subscriptionNotifier);
-    try {
-      await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable()
-          .then((isNetworkAvailable) async {
-        if (isNetworkAvailable) {
-          registrationState.setIsLoading(true);
-          registrationState.setContext(context);
 
-          await ref.read(feedbackProvider({
-            "userId": widget.userID,
-            "subscriptionPlanId": planId
-          }).future);
 
-          await ref.read(
-            getProfileProvider(
-              '${NetworkUrls.GET_PROFILE}${widget.userID}',
-            ).future,
-          );
-        } else {
-          registrationState.setIsLoading(false);
-          showCustomSnackBar(
-            context: context,
-            message: Strings.NO_INTERNET_CONNECTION,
-            color: Colors.red,
-          );
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Upgrade error: $e');
-      registrationState.setIsLoading(false);
-    }
-  }
 }

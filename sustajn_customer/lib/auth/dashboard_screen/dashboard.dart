@@ -21,7 +21,7 @@ import '../screens/login_screen.dart';
 import '../screens/save_home_address.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
   ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
@@ -32,7 +32,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   bool isLoading = true;
   SignUpData? signUpResponse;
   ProfileData? profile;
-
 
   @override
   void initState() {
@@ -61,32 +60,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
+
     final profileState = ref.watch(profileProvider);
     final ProfileData? profile = profileState.profileData;
+
     final ProfileData? currentProfile =
     profileState.profileList.isNotEmpty
         ? profileState.profileList.first
         : profile;
-    final int? subscriptionPlanId =
-        currentProfile?.subscriptionPlanId ??
-            currentProfile?.subscriptionResponse?.planId;
+
     if (isLoading || profileState.isLoading) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(
-            color: Constant.gold,
-          ),
+          child: CircularProgressIndicator(color: Constant.gold),
         ),
       );
     }
+
     return Scaffold(
       backgroundColor: theme!.scaffoldBackgroundColor,
+
       appBar: AppBar(
         backgroundColor: theme.scaffoldBackgroundColor,
+
         leading: Padding(
           padding: EdgeInsets.only(left: Constant.SIZE_10),
           child: InkWell(
@@ -97,18 +96,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      MyProfileScreen(
-                        userId: currentProfile.id!,
-                        subScriptionPlanId:
-                        currentProfile.subscriptionPlanId ??
-                            currentProfile.subscriptionResponse?.planId ??
-                            0,
-                      ),
+                  builder: (context) => MyProfileScreen(
+                    userId: currentProfile.id!,
+                    subScriptionPlanId:
+                    currentProfile.subscriptionPlanId ??
+                        currentProfile.subscriptionResponse?.planId ??
+                        0,
+                  ),
                 ),
               );
             },
-
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
               backgroundColor: Constant.grey.withOpacity(0.15),
@@ -116,10 +113,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: (currentProfile?.profileImageUrl != null &&
                     currentProfile!.profileImageUrl!.isNotEmpty)
                     ? Image.network(
-                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile
-                      .profileImageUrl}?t=${DateTime
-                      .now()
-                      .millisecondsSinceEpoch}",
+                  "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${currentProfile.profileImageUrl}",
                   fit: BoxFit.cover,
                   width: Constant.CONTAINER_SIZE_40,
                   height: Constant.CONTAINER_SIZE_40,
@@ -141,30 +135,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
 
-        title: Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                Strings.HII,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Constant.subtitleText,
-                  fontSize: Constant.LABEL_TEXT_SIZE_14,
-                ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              Strings.HII,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: Constant.subtitleText,
+                fontSize: Constant.LABEL_TEXT_SIZE_14,
               ),
-              Text(
-                profile?.fullName ?? "",
-                maxLines: Constant.MAX_LINE_1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: Constant.profileText,
-                  fontSize: Constant.LABEL_TEXT_SIZE_20,
-                  fontWeight: FontWeight.w600,
-                ),
+            ),
+            Text(
+              profile?.fullName ?? "",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Constant.profileText,
+                fontSize: Constant.LABEL_TEXT_SIZE_20,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+
         actions: [
           Padding(
             padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_12),
@@ -185,7 +179,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     decoration: BoxDecoration(
                       color: Constant.grey.withOpacity(0.1),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Constant.grey.withOpacity(0.2)),
+                      border: Border.all(
+                        color: Constant.grey.withOpacity(0.2),
+                      ),
                     ),
                     child: Icon(
                       Icons.search,
@@ -194,26 +190,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ),
                   ),
                 ),
+
                 SizedBox(width: Constant.SIZE_10),
+
                 InkWell(
                   borderRadius: BorderRadius.circular(
                     Constant.CONTAINER_SIZE_26,
                   ),
                   onTap: () {
-                    Utils.navigateToPushScreen(context, NotificationScreen());
+                    Utils.navigateToPushScreen(
+                      context,
+                      NotificationScreen(),
+                    );
                   },
-                  child: Container(
-                    padding: EdgeInsets.all(Constant.SIZE_08),
-                    decoration: BoxDecoration(
-                      color: Constant.grey.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Constant.grey.withOpacity(0.2)),
-                    ),
-                    child: Icon(
-                      Icons.notifications_none,
-                      color: Constant.subtitleText,
-                      size: Constant.CONTAINER_SIZE_22,
-                    ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(Constant.SIZE_08),
+                        decoration: BoxDecoration(
+                          color: Constant.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Constant.grey.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.notifications_none,
+                          color: Constant.subtitleText,
+                          size: Constant.CONTAINER_SIZE_22,
+                        ),
+                      ),
+
+                      Positioned(
+                        top: -2,
+                        right: -2,
+                        child: Container(
+                          height: 10,
+                          width: 10,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -221,47 +242,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ],
       ),
-      body: SafeArea(
+
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(
-                          child: Text(
-                            Strings.DASHBOARD_TEXT,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              color: Constant.gold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          ),
-                          Image.asset(
-                            'assets/images/dashboard.png',
-                            height: Constant.CONATAINER_SIZE_380,
-                            width: Constant.CONATAINER_SIZE_380,
-                          ),
-
-
-                          SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-
-                          SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                        ],
-                      ),
-                    ),
-                  );
-                },
+            Text(
+              Strings.DASHBOARD_TEXT,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Constant.gold,
               ),
+              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+            Image.asset(
+              'assets/images/dashboard.png',
+              height: Constant.CONATAINER_SIZE_380,
+              width: Constant.CONATAINER_SIZE_380,
             ),
           ],
         ),
@@ -271,12 +270,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   _getProfileData() async {
     try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,) async {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable()
+          .then((isNetworkAvailable) async {
         if (isNetworkAvailable) {
           ref.read(profileProvider).clearProfileList();
           ref.read(profileProvider).setIsLoading(true);
+
           final int? userId =
           await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
 
@@ -284,8 +285,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             Utils.showToast("User session expired. Please login again.");
             return;
           }
+
           final url = '${NetworkUrls.GET_PROFILE}$userId';
-          Utils.printLog("Fetching URL: $url");
           ref.read(getProfileProvider(url));
         } else {
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
@@ -295,6 +296,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ref.read(profileProvider).setIsLoading(false);
       Utils.showToast(e.toString());
     }
+
     FocusScope.of(context).unfocus();
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/contact_us_dialog.dart';
+import 'package:sustajn_restaurant/auth/screens/payment_type_screen.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import 'package:sustajn_restaurant/provider/login_provider.dart';
@@ -16,14 +17,12 @@ import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../edit_dialogs/edit_address.dart';
-import '../edit_dialogs/edit_bankdetails_dialog.dart';
 import '../edit_dialogs/edit_contact_number/secondary_contact_no.dart';
-import '../edit_dialogs/edit_payment_type_screen.dart';
 import '../edit_dialogs/edit_resturantname_dialog.dart';
 import '../edit_dialogs/feedback_dialog.dart';
 import '../edit_dialogs/history_screen/history_home screen.dart';
 import '../edit_dialogs/refer_partner_dialogue.dart';
-import '../edit_dialogs/report_screen/reports_screen.dart';
+import '../edit_dialogs/report_screen/damaged_container_report_dialog.dart';
 import '../edit_dialogs/subscription_dialog.dart';
 import 'business_information_screen.dart';
 
@@ -36,24 +35,25 @@ class MyProfileScreen extends ConsumerStatefulWidget {
 
 class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   final List<Map<String, dynamic>> detailList = [
-    {"name": "Email", "icon": Icons.email_outlined},
-    {"name": "Address", "icon": Icons.location_on_outlined},
-    {"name": "Contact", "icon": Icons.call},
-    {"name": "Report Damaged Container", "icon": Icons.bar_chart_outlined},
-    {"name": "Business Information", "icon": Icons.business_outlined},
-    {"name": "Subscription Plan", "icon": Icons.credit_card_outlined},
-    {"name": "Payment Type", "icon": Icons.payments_outlined},
-    {"name": "History", "icon": Icons.history},
-    {"name": "Feedback", "icon": Icons.feedback_outlined},
-    {"name": "Contact Us", "icon": Icons.headset_mic_outlined},
-    {"name": "Refer a Partner", "icon": Icons.connect_without_contact},
+    {"name": "Email", "image": "assets/images/email.png"},
+    {"name": "Address", "image": "assets/images/location.png"},
+    {"name": "Contact Number", "image": "assets/images/phone.png"},
+    {"name": "Report Damaged Container", "image": "assets/images/report.png"},
+    {"name": "Business Information", "image": "assets/images/business.png"},
+    {"name": "Subscription Plan", "image": "assets/images/subscription.png"},
+    {"name": "Payment Type", "image": "assets/logo/dirham_icon.png"},
+    {"name": "History", "image": "assets/images/history.png"},
+    {"name": "Feedback", "image": "assets/images/feedback.png"},
+    {"name": "Contact Us", "image": "assets/images/headset.png"},
+    {"name": "Refer a Partner", "image": "assets/images/referal.png"},
   ];
 
   void _handleItemTap(
     int index,
     BuildContext context,
-    String mobileNo,
-    String secondaryNo,
+    String? mobileNo,
+    String? secondaryMobile,
+    int userId,
   ) {
     switch (index) {
       case 0:
@@ -62,7 +62,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         _showAddressDialog(context);
         break;
       case 2:
-        _showMobileNoDialog(context, mobileNo, secondaryNo);
+        _showMobileNoDialog(
+          context,
+          mobileNo ?? "",
+          secondaryMobile ?? "",
+          userId,
+        );
         break;
       case 3:
         _showReportScreen(context);
@@ -121,25 +126,17 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void _showMobileNoDialog(
     BuildContext context,
     String mobile,
-    String secondaryNo,
+    String secondayMobile,
+    int userId,
   ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => SecondaryMobileNumberDialog(
-        mobileNumber: mobile ?? "",
-        secondaryMobileNumber: secondaryNo ?? "",
+      builder: (_) => SecondaryMobileNumberDialog(
+        primaryMobileNumber: mobile,
+        secondaryMobileNumber: secondayMobile,
       ),
-    );
-  }
-
-  void _showBankDetailsEdit(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const EditBankDetailsDialog(),
     );
   }
 
@@ -172,7 +169,10 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showPaymentTypeScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, EditPaymentTypeScreen());
+    NavUtil.navigateToPushScreen(
+      context,
+      PaymentTypeScreen(profile: "profile"),
+    );
   }
 
   void _showHistoryScreen(BuildContext context) {
@@ -180,7 +180,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   }
 
   void _showReportScreen(BuildContext context) {
-    NavUtil.navigateToPushScreen(context, ReportScreen());
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DamagedContainerReportDialog(),
+    );
   }
 
   List<GetProfileData> profileData = [];
@@ -191,7 +196,9 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
   void initState() {
     super.initState();
     Utils.userId;
-    _getProfileNetworkCall();
+    if (ref.read(profileProvider).getProfileData != null) {
+      _getProfileNetworkCall();
+    }
   }
 
   @override
@@ -226,12 +233,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
       child: Scaffold(
         backgroundColor: theme!.scaffoldBackgroundColor,
         appBar: AppBar(
-          centerTitle: true,
+          centerTitle: false,
           backgroundColor: const Color(0xFFD1AE31),
           surfaceTintColor: const Color(0xFFD1AE31),
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              NavUtil.popScreen(context, 1);
             },
             icon: Icon(Icons.keyboard_arrow_left),
           ),
@@ -246,7 +253,12 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         ),
 
         body: profileState.isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Container(
+                color: theme.primaryColor,
+                height: double.infinity,
+                width: double.infinity,
+                child: Center(child: CircularProgressIndicator()),
+              )
             : (profile != null)
             ? SingleChildScrollView(
                 child: Stack(
@@ -306,7 +318,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                               ),
                             ),
 
-                            if (!profileState.isSaving)
+                            if (!profileState.isImageUploading)
                               GestureDetector(
                                 onTap: () async {
                                   profileImage = await Utils.uploadImage(
@@ -383,11 +395,19 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                             itemBuilder: (context, index) {
                               final item = detailList[index];
                               return ListTile(
-                                leading: Icon(
-                                  item['icon'],
-                                  size: w * 0.054,
-                                  color: Constant.gold,
-                                ),
+                                leading: item['icon'] != null
+                                    ? Icon(
+                                        item['icon'],
+                                        size: w * 0.054,
+                                        color: Constant.gold,
+                                      )
+                                    : Image.asset(
+                                        item['image'] as String,
+                                        width: w * 0.054,
+                                        height: w * 0.054,
+                                        color: Constant.gold,
+                                      ),
+
                                 title: Text(
                                   item['name'],
                                   style: TextStyle(
@@ -416,65 +436,70 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                                   context,
                                   profile.mobileNumber ?? "",
                                   profile.secondaryNumber ?? "",
+                                  profile.id ?? 0,
                                 ),
                               );
                             },
                           ),
                         ),
 
-                        Center(
-                          child: Container(
-                            width: w * 0.55,
-                            margin: EdgeInsets.only(top: h * 0.02),
-                            child: ElevatedButton.icon(
-                              icon: Icon(
-                                Icons.logout,
-                                color: theme.primaryColor,
-                                size: w * 0.05,
-                              ),
-                              label: Text(
-                                Strings.LOGOUT,
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontSize: w * 0.045,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.secondaryHeaderColor,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: h * 0.018,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(w * 0.04),
-                                  side: BorderSide(color: Colors.white),
-                                ),
-                              ),
-                              onPressed: () {
-                                Utils.logOutDialog(
-                                  context,
-                                  Icons.logout,
-                                  Strings.CONFIRM_LOGOUT,
-                                  Strings.SURE_LOG_OUT,
-                                  Strings.YES,
-                                  Strings.NO,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
+                        _getSingOutButton(theme, w, h),
                         SizedBox(height: h * 0.035),
                       ],
                     ),
                   ],
                 ),
               )
-            : const Center(
-                child: Text(
-                  Strings.NO_PROFILE,
-                  style: TextStyle(color: Colors.white),
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      Strings.NO_PROFILE,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    _getSingOutButton(theme, w, h),
+                  ],
                 ),
               ),
+      ),
+    );
+  }
+
+  _getSingOutButton(theme, w, h) {
+    return Center(
+      child: Container(
+        width: w * 0.55,
+        margin: EdgeInsets.only(top: h * 0.02),
+        child: ElevatedButton.icon(
+          icon: Icon(Icons.logout, color: theme.primaryColor, size: w * 0.05),
+          label: Text(
+            Strings.LOGOUT,
+            style: TextStyle(
+              color: theme.primaryColor,
+              fontSize: w * 0.045,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.secondaryHeaderColor,
+            padding: EdgeInsets.symmetric(vertical: h * 0.018),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(w * 0.04),
+              side: BorderSide(color: Colors.white),
+            ),
+          ),
+          onPressed: () {
+            Utils.logOutDialog(
+              context,
+              Icons.logout,
+              Strings.CONFIRM_LOGOUT,
+              Strings.SURE_LOG_OUT,
+              Strings.YES,
+              Strings.NO,
+            );
+          },
+        ),
       ),
     );
   }
@@ -530,7 +555,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
         if (isNetworkAvailable) {
-          profileState.setIsLoading(true);
+          profileState.setIsLoading(false);
           final userId = Utils.userId;
           final url = '${NetworkUrls.GET_PROFILE}$userId';
           ref.read(getProfileProvider(url));
@@ -557,33 +582,34 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     Utils.printLog('Profile Image Network call');
 
     try {
-      profileState.setIsSaving(true);
-      final isNetworkAvailable = await ref
-          .read(networkProvider.notifier)
-          .isNetworkAvailable();
-      Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+      profileState.setIsImageSaving(true);
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) async {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
 
-      if (!isNetworkAvailable) {
-        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        return;
-      }
+        if (!isNetworkAvailable) {
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+          profileState.setIsImageSaving(false);
+          return;
+        }
+        final params = Utils.multipartParams(
+          NetworkUrls.UPDATE_PROFILE,
+          getJsonData(mobile, name),
+          Strings.PROFILE_IMAGE,
+          profileImage,
+        );
+        final response = await ref.read(profileImgProvider(params).future);
 
-      // Prepare multipart parameters using your utility method
-      final params = Utils.multipartParams(
-        NetworkUrls.UPDATE_PROFILE,
-        getJsonData(mobile, name),
-        Strings.PROFILE_IMAGE,
-        profileImage,
-      );
-      final response = await ref.read(profileImgProvider(params).future);
-
-      Utils.printLog("Profile image uploaded successfully: $response");
-      profileState.setIsSaving(false);
+        Utils.printLog("Profile image uploaded successfully: $response");
+        profileState.setIsImageSaving(false);
+      });
     } catch (e) {
       Utils.printLog('Error uploading profile image: $e');
-      profileState.setIsSaving(false);
+      profileState.setIsImageSaving(false);
       Utils.showToast('Failed to upload image');
     } finally {
+      profileState.setIsImageSaving(false);
       FocusScope.of(context).unfocus();
     }
   }

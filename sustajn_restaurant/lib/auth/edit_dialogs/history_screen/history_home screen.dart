@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/history_screen/sold_screen.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/product_screen/lease_screen/lease_screen.dart';
 import 'package:sustajn_restaurant/product_screen/receive_screen/receive_screen.dart';
@@ -8,6 +9,7 @@ import '../../../constants/string_utils.dart';
 import '../../../order_screen/order_screen/order_screen.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
+import 'damaged_screen.dart';
 
 class HistoryHomeScreen extends StatefulWidget {
   const HistoryHomeScreen({super.key});
@@ -42,7 +44,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
           Strings.HISTORY,
@@ -94,7 +96,7 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ImageIcon(
-                    AssetImage('assets/images/img.png'),
+                    AssetImage(Strings.BOWL_IMG),
                     size: Constant.CONTAINER_SIZE_18,
                   ),
                   SizedBox(width: Constant.SIZE_04),
@@ -125,8 +127,8 @@ class _HistoryHomeScreenState extends State<HistoryHomeScreen>
                 LeaseScreen(),
                 ReceiveScreen(),
                 OrderHistoryScreen(),
-                ReceiveScreen(),
-                OrderHistoryScreen(),
+                DamagedScreen(),
+                SoldScreen()
               ],
             ),
           ),

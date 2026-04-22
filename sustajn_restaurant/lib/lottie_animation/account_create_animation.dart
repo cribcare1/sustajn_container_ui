@@ -8,7 +8,8 @@ import '../utils/nav_utils.dart';
 import '../utils/sharedpreference_utils.dart';
 
 class AccountSuccessScreen extends StatefulWidget {
-  const AccountSuccessScreen({Key? key}) : super(key: key);
+  final String message;
+  const AccountSuccessScreen({Key? key, required this.message}) : super(key: key);
 
   @override
   State<AccountSuccessScreen> createState() => _AccountSuccessScreenState();
@@ -42,15 +43,13 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
             children: [
 
               Lottie.asset(
-                'assets/lottie/lottie_animation.json',
+                'assets/animations/lottie_animation.json',
                 height: Constant.CONTAINER_SIZE_160,
                 repeat: false,
               ),
-
               SizedBox(height: Constant.CONTAINER_SIZE_20),
-
               Text(
-                'Your subscription is now active!',
+                widget.message,
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

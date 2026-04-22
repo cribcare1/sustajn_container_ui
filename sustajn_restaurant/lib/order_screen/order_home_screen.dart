@@ -3,10 +3,10 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_screen.dart';
 
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
 import 'order_screen/order_screen.dart';
-
 
 class OrderHomeScreen extends StatefulWidget {
   const OrderHomeScreen({super.key});
@@ -17,11 +17,8 @@ class OrderHomeScreen extends StatefulWidget {
 
 class _OrderHomeScreenState extends State<OrderHomeScreen>
     with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-
-
 
   @override
   void initState() {
@@ -44,10 +41,10 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
       appBar: AppBar(
         backgroundColor: const Color(0xFF0E3B2E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         leading: CustomBackButton(),
         title: Text(
-          'Order',
+          Strings.ORDER,
           style: theme!.textTheme.titleMedium!.copyWith(color: Colors.white),
         ),
         bottom: TabBar(
@@ -68,7 +65,10 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('Order'),
+                  Expanded(
+                    flex: 1,
+                    child: Text(Strings.ORDER, overflow: TextOverflow.ellipsis),
+                  ),
                 ],
               ),
             ),
@@ -76,9 +76,12 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.reset_tv_outlined, size: Constant.CONTAINER_SIZE_18),
+                  Icon(
+                    Icons.reset_tv_outlined,
+                    size: Constant.CONTAINER_SIZE_18,
+                  ),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('Return'),
+                  Text(Strings.RETURN),
                 ],
               ),
             ),
@@ -88,13 +91,12 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
                 children: [
                   Icon(Icons.history, size: Constant.CONTAINER_SIZE_18),
                   SizedBox(width: Constant.SIZE_06),
-                  Text('History'),
+                  Text(Strings.HISTORY),
                 ],
               ),
             ),
           ],
         ),
-
       ),
 
       body: Column(
@@ -105,7 +107,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
               children: [
                 AddContainerScreen(),
                 ReturnContainerScreen(),
-                OrderHistoryScreen()
+                OrderHistoryScreen(),
               ],
             ),
           ),
@@ -113,6 +115,4 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
       ),
     );
   }
-
-
 }

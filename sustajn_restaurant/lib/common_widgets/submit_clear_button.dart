@@ -5,8 +5,9 @@ import '../constants/number_constants.dart';
 class SubmitClearButton extends StatelessWidget {
   final String? leftText;
   final String? rightText;
-  final VoidCallback onLeftTap;
-  final VoidCallback onRightTap;
+  final VoidCallback? onLeftTap;
+  final VoidCallback? onRightTap;
+  final bool isLoading;
 
   const SubmitClearButton({
     super.key,
@@ -14,6 +15,7 @@ class SubmitClearButton extends StatelessWidget {
      this.rightText="Apply",
     required this.onLeftTap,
     required this.onRightTap,
+    this.isLoading = false,
   });
 
   @override
@@ -27,15 +29,15 @@ class SubmitClearButton extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.amber, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
               ),
               padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
             ),
             child: Text(
               leftText!,
-              style: const TextStyle(
+              style:  TextStyle(
                 color: Constant.gold,
-                fontSize: 15,
+                fontSize: Constant.LABEL_TEXT_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -47,21 +49,32 @@ class SubmitClearButton extends StatelessWidget {
         // RIGHT FILLED BUTTON
         Expanded(
           child: ElevatedButton(
-            onPressed: onRightTap,
+            onPressed: isLoading ? null : onRightTap,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD1AE31), // Gold color
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                 side: BorderSide(color: Colors.white),
               ),
               elevation: 0,
               padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12),
             ),
-            child: Text(
+            child: isLoading
+                ? SizedBox(
+              height: Constant.CONTAINER_SIZE_22,
+              width: Constant.CONTAINER_SIZE_22,
+              child: CircularProgressIndicator(
+                strokeWidth: 4,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white,
+                ),
+              ),
+            )
+                : Text(
               rightText!,
               style:  TextStyle(
                 color: theme.scaffoldBackgroundColor,
-                fontSize: 15,
+                fontSize: Constant.LABEL_TEXT_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),
             ),

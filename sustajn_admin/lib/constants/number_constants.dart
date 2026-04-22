@@ -49,7 +49,9 @@ class Constant {
   static late double LABEL_TEXT_SIZE_30 = 30;
   static late double CONTAINER_HEGIHT_SIZE = 35;
   static late double CONTAINER_WIDTH_SIZE = 40;
+  static late double CONTAINER_SIZE_1 = 01.0;
   static late double CONTAINER_SIZE_10 = 10.0;
+  static late double CONTAINER_SIZE_11 = 11.0;
   static late double CONTAINER_SIZE_12 = 12.0;
   static late double CONTAINER_SIZE_14 = 14.0;
   static late double CONTAINER_SIZE_13 = 13.0;
@@ -165,6 +167,9 @@ class Constant {
   static const Color sky = Color(0xFFABDEE6);
   static const Color blue = Color(0xFF509BE4);
   static const Color blue1 = Color(0xFF608dfd);
+  static const Color lightYellow = Color(0xFFffdf99);
+  static const Color lightGreen = Color(0xFFa5ff99);
+  static const Color lightPink = Color(0xFFffb2ba);
   static const Color blueViolet200 = Color(0xFFFE9090);
   static const Color greyshade200 = Color(0xFFECEFF1);
   static const Color greenrgb = Color.fromARGB(211, 38, 209, 38);
@@ -193,6 +198,8 @@ class Constant {
   static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
+  static const Color gold = Color(0xFFD1AE31);
+
 
 
 

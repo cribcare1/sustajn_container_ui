@@ -6,6 +6,9 @@ class NetworkUrls {
 
   static const BASE_URL = "http://35.154.182.218:9090/";
   static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
+  static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";
+  static const GET_CONTAINER = "inventory/getAllActiveInventory/";
+  static const CONTAINER_COUNT = "orders/getLeasedReturnedCount";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-user";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -17,7 +20,17 @@ static const CONTAINER_LIST = "inventory/getAllActiveInventory";
 static const DELETE_CONTAINER = "inventory/delete-container-type/123";
 /// Restaurant ///
 static const RESTAURANT_LIST = "auth/activeRestaurants?";
+
 /// Customer ///
 static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
+
+
+/// Partner products
+  static const ALL_RESTAURANT_LIST = "auth/getAllActiveRestaurants";
+  static const CONTAINER_HISTORY = "orders/orderHistory/";
+  static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  static const RETURN_PRODUCTS = "inventory/restaurantOrders/returnedProducts/";
+  static const ISSUED_PRODUCTS = "inventory/restaurantOrders/monthWiseIssuedProducts?restaurantId=&productId=";
+  static const RESTAURANT_DETAILS = "auth/getRestaurantDetailsById/";
 
 }

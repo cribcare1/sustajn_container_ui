@@ -1,11 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:sustajn_restaurant/auth/screens/dashboard/dashboard_screen.dart';
+import 'package:sustajn_restaurant/models/chart_model.dart';
 import 'package:sustajn_restaurant/models/get_profile_data.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lease_receive/model/container_return_list_model.dart';
 import '../models/update_address_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
@@ -25,7 +32,8 @@ final getProfileProvider = FutureProvider.family<dynamic, String>((
     GetProfileData responseData = await serviceProvider.getProfileService(
       params,
     );
-    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+    if (responseData.status != null && responseData.status!.isNotEmpty
+        && responseData.status!.trim().toLowerCase() == NetworkUrls.SUCCESS) {
       profileState.setIsLoading(false);
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
@@ -58,11 +66,15 @@ FutureProvider.family<GetProfileData, Map<String, dynamic>>(
 
     print("Provider Response: $responseData");
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == NetworkUrls.SUCCESS) {
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       String json = jsonEncode(responseData.toJson());
       SharedPreferenceUtils.saveDataInSF(Strings.PROFILE_DATA, json);
+      final userId = Utils.userId;
+      final url = '${NetworkUrls.GET_PROFILE}$userId';
+      ref.read(getProfileProvider(url));
+      Navigator.pop(profileState.context);
     }else {
-      profileState.setIsLoading(false);
+      profileState.setIsSaving(false);
       throw Exception(responseData.message ?? 'Update failed');
     }
     return responseData;
@@ -112,7 +124,7 @@ FutureProvider.family<UpdateProfAddressData, Map<String, dynamic>>(
 
     print("Provider Response: $responseData");
     if (responseData.status == null || responseData.status!.isEmpty) {
-      throw Exception(responseData.message ?? 'Update failed');
+      throw Exception(responseData.title ?? 'Update failed');
     }
     return responseData;
   },
@@ -123,12 +135,15 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
     params,
     ) async {
   final apiService = ref.read(getProfileApiProvider);
-
+  final profileState = ref.watch(profileProvider);
   final url = '${NetworkUrls.BASE_URL}${NetworkUrls.REFER_A_PARTNER}';
 
   Utils.printLog("Refer Partner Provider url : $url");
   final responseData = await apiService.referPartnerService(url, params, "");
   print("Provider Response: $responseData");
+  Utils.showToast(
+      responseData['message']);
+  Navigator.pop(profileState.context);
   return responseData;
 });
 
@@ -143,7 +158,9 @@ final businessInfoProvider = FutureProvider.family<dynamic, Map<String, dynamic>
 
   Utils.printLog("Business Info Provider url : $url");
   final responseData = await apiService.businessInfoService(url, params, "");
-
+  final userId = Utils.userId;
+  final api = '${NetworkUrls.GET_PROFILE}$userId';
+  getProfileProvider(api);
   print("Provider Response: $responseData");
   return responseData;
 });
@@ -164,4 +181,98 @@ final feedbackProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
 });
 
 
+final updateSubscriptionPlanProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
+    ref,
+    params,
+    ) async {
+  final apiService = ref.read(getProfileApiProvider);
+  final url = '${NetworkUrls.BASE_URL}${NetworkUrls.UPGRADE_SUBSCRIPTION_PLAN}';
 
+  Utils.printLog("Upgrade Subscription plan Provider url : $url");
+  final responseData = await apiService.updateSubscriptionPlanService(url, params, "");
+
+  print("Provider Response: $responseData");
+  final userId = Utils.userId;
+  final url1 = '${NetworkUrls.GET_PROFILE}$userId';
+  ref.read(getProfileProvider(url1));
+  return responseData;
+});
+
+final damageContainerList =
+FutureProvider.family<CustomerBorrowedData, String>((ref, customerId) async {
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+
+  try {
+    final response = await apiService.fetchCustomerBorrowedList(customerId);
+    if  (response.status == NetworkUrls.SUCCESS && response.data!.isNotEmpty) {
+      leaseNotifier.setReturnContainer(response.data!);
+
+    }else{
+      showCustomSnackBar(
+        context: leaseNotifier.context,
+        message: response.message!,
+        color: Colors.red,
+      );
+    }
+    return response;
+  } catch (e) {
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  } finally {
+    leaseNotifier.setLoading(false);
+  }
+});
+final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((ref, body)async{
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+  final updatedBody = Map<String, dynamic>.from(body);
+  File image = File(updatedBody['image']);
+  updatedBody.remove('image');
+  try{
+    final response = await apiService.markDamageContainer(updatedBody, image);
+    if(response != null){
+      damageContainerList(body['restaurantId']);
+      showCustomSnackBar(
+        context: leaseNotifier.context,
+        message: response['message'],
+        color: Colors.green,
+      );
+      Navigator.pop(leaseNotifier.context);
+    }
+  }catch(e){
+    leaseNotifier.setIsSaving(false);
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  }finally{
+    leaseNotifier.setIsSaving(false);
+  }
+});
+
+final getChartData = FutureProvider.family<dynamic, String>((ref, param)async{
+  final apiService = ref.watch(getProfileApiProvider);
+  final leaseNotifier = ref.watch(profileProvider);
+  try{
+    ChartModel response = await apiService.fetchChartData(param);
+    leaseNotifier.setChartData(response);
+    return response;
+  }catch(e){
+    leaseNotifier.setDashboardLoading(false);
+    showCustomSnackBar(
+      context: leaseNotifier.context,
+      message: e.toString(),
+      color: Colors.red,
+    );
+    rethrow;
+  }finally{
+    leaseNotifier.setDashboardLoading(false);
+  }
+});

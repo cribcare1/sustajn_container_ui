@@ -1,4 +1,7 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../constants/imports_util.dart';
+import '../../constants/string_utils.dart';
 
 enum SocialMediaType { instagram, facebook, snapchat, x }
 
@@ -28,24 +31,30 @@ class SocialMediaConfig {
 final socialMediaOptions = [
   SocialMediaConfig(
     SocialMediaType.instagram,
-    'Instagram',
-    Icons.camera_alt,
+    Strings.INSTAGRAM,
+    FontAwesomeIcons.instagram,
     Colors.pink,
   ),
   SocialMediaConfig(
     SocialMediaType.facebook,
-    'Facebook',
-    Icons.facebook,
+    Strings.FACEBOOK,
+    FontAwesomeIcons.facebook,
     Colors.blue,
   ),
   SocialMediaConfig(
     SocialMediaType.snapchat,
-    'Snapchat',
-    Icons.snapchat,
+    Strings.SNAPCHAT,
+    FontAwesomeIcons.snapchat,
     Colors.yellow,
   ),
-  SocialMediaConfig(SocialMediaType.x, 'X', Icons.close, Colors.white),
+  SocialMediaConfig(
+    SocialMediaType.x,
+    Strings.TWITTER,
+    FontAwesomeIcons.xTwitter,
+    Colors.white,
+  ),
 ];
+
 
 class BusinessModel {
   final String speciality;
@@ -59,7 +68,7 @@ class BusinessModel {
   });
 
   Map<String, dynamic> toJson() => {
-    "speciality": speciality,
+    "businessType": speciality,
     "websiteDetails": websiteDetails,
     "cuisine": cuisine,
   };

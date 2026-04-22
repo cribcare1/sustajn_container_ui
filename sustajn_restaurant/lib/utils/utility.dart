@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,21 @@ import '../constants/string_utils.dart';
 import '../models/login_model.dart';
 
 class Utils {
+
+  static buildFloatingHeader(BuildContext context) {
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
+      ),
+    );
+  }
+
   static showProfilePhotoBottomSheet(BuildContext context) {
     final theme = CustomTheme.getTheme(true);
     showModalBottomSheet(
@@ -133,95 +149,103 @@ class Utils {
     return await showModalBottomSheet<File?>(
       context: context,
       isScrollControlled: false,
-      backgroundColor: theme!.scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor:Colors.transparent,
       builder: (_) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: Constant.CONTAINER_SIZE_20,
-              horizontal: Constant.CONTAINER_SIZE_20,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        Strings.CHOOSE,
-                        style: TextStyle(
-                          fontSize: Constant.LABEL_TEXT_SIZE_18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SafeArea(
+            top: false, bottom: true,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                Constant.CONTAINER_SIZE_16,
+                0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Utils.buildFloatingHeader(context),
+                  SizedBox(height: Constant.SIZE_08),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                    decoration: BoxDecoration(
+                      color: theme!.scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(Constant.CONTAINER_SIZE_16),
+                        topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                Strings.CHOOSE,
+                                style: TextStyle(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_20,
-                      ),
-                      child: Container(
-                        height: Constant.CONTAINER_SIZE_36,
-                        width: Constant.CONTAINER_SIZE_36,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _optionButton(
+                              context,
+                              icon: Icons.camera_alt_outlined,
+                              label: Strings.CAMERA,
+                              color: Colors.white70,
+                              iconColor: theme!.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.camera,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                            _optionButton(
+                              context,
+                              icon: Icons.image_outlined,
+                              label: Strings.GALLERY,
+                              color: Colors.white70,
+                              iconColor: theme.primaryColor,
+                              onTap: () async {
+                                final XFile? image = await picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
+
+                                if (image != null) {
+                                  Navigator.pop(context, File(image.path));
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                          ],
                         ),
-                        child: const Icon(Icons.clear, color: Colors.black),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _optionButton(
-                      context,
-                      icon: Icons.camera_alt_outlined,
-                      label: Strings.CAMERA,
-                      color: Colors.white70,
-                      iconColor: theme.primaryColor,
-                      onTap: () async {
-                        final XFile? image = await picker.pickImage(
-                          source: ImageSource.camera,
-                        );
+                  ),
 
-                        if (image != null) {
-                          Navigator.pop(context, File(image.path));
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                    _optionButton(
-                      context,
-                      icon: Icons.image_outlined,
-                      label: Strings.GALLERY,
-                      color: Colors.white70,
-                      iconColor: theme.primaryColor,
-                      onTap: () async {
-                        final XFile? image = await picker.pickImage(
-                          source: ImageSource.gallery,
-                        );
-
-                        if (image != null) {
-                          Navigator.pop(context, File(image.path));
-                        } else {
-                          Navigator.pop(context);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -330,13 +354,12 @@ class Utils {
                       SizedBox(width: Constant.CONTAINER_SIZE_12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: ()async {
                             Navigator.pop(context);
-                            SharedPreferenceUtils.clearAll();
-                            NavUtil.navigateToWithReplacement(
-                              context,
-                              LoginScreen(),
-                            );
+                            await await SharedPreferenceUtils.saveBoolDataInSF(
+                                Strings.IS_LOGGED_IN, false);
+                             await SharedPreferenceUtils.clearAll();
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginScreen(),));
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -479,6 +502,113 @@ class Utils {
         false;
   }
 
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static Widget _optionButton(
     BuildContext context, {
     required IconData icon,
@@ -524,7 +654,7 @@ class Utils {
   static showToast(String msg) {
     Fluttertoast.showToast(
       msg: msg,
-
+      gravity: ToastGravity.CENTER,
       backgroundColor: Colors.white,
       toastLength: Toast.LENGTH_LONG,
       textColor: Colors.black,
@@ -635,9 +765,6 @@ class Utils {
 
   static LoginModel? loginData;
   static int? societyId = 0;
-
-  // static int? userId = 0;
-
   static Future<LoginModel?> getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = prefs.getString(Strings.PROFILE_DATA);
@@ -645,11 +772,11 @@ class Utils {
     if (data != null) {
       var response = json.decode(data);
       loginData = LoginModel.fromJson(response);
-      // userId = loginData!.data!.userId;
+      return loginData;
     }
     return null;
   }
-
+static  String deviceToken = "";
   static Future<String?> getDeviceToken() async {
     final fcm = FirebaseMessaging.instance;
     await fcm.requestPermission();
@@ -772,6 +899,72 @@ class Utils {
       ),
     );
   }
+
+  static Widget getDateTimePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme
+      ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle:  TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: Constant.LABEL_TEXT_SIZE_18,
+              ),
+              doneStyle:  TextStyle( fontSize: Constant.LABEL_TEXT_SIZE_16),
+            ),
+            onConfirm: (date) {
+              final value =
+                  "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white70),
+              suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
 }
 
 void showCustomSnackBar({
@@ -779,19 +972,29 @@ void showCustomSnackBar({
   required String message,
   required Color color,
 }) {
+  final mediaQuery = MediaQuery.of(context);
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: Constant.CONTAINER_SIZE_14,
+      content: Center(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: Constant.CONTAINER_SIZE_14,
+          ),
         ),
       ),
       backgroundColor: color,
       behavior: SnackBarBehavior.floating,
-      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      // duration: const Duration(seconds: 2),
+      margin: EdgeInsets.only(
+        left: Constant.CONTAINER_SIZE_16,
+        right: Constant.CONTAINER_SIZE_16,
+        bottom: mediaQuery.size.height / 2 - 40, // center vertically
+      ),
+      duration: const Duration(seconds: 2),
     ),
   );
 }
+

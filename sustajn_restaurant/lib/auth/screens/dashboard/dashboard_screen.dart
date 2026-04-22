@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
-import 'package:sustajn_restaurant/notification/notification_screen.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
-import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../common_widgets/card_widget.dart';
 import '../../../common_widgets/circle_card_widget.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
+import '../../../models/chart_model.dart';
 import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
+import '../../../notification/notification_provider.dart';
+import '../../../notification/notification_state.dart';
 import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
 import '../../../provider/profile_provider.dart';
@@ -46,15 +48,30 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
-    if (loginResponse == null) {
-      _getProfileNetworkCall();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileProvider).setContext(context);
+      ref.read(notificationProvider).setContext(context);
+    });
+    Utils.getToken();
+    Utils.authToken();
+    Utils.getUserId();
+    _init();
+  }
+
+  Future<void> _init() async {
+    await _loadProfile();
+
+    if (ref.read(profileProvider).getProfileData == null) {
+      await _getProfileNetworkCall();
     }
+    _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
   }
 
   Future<void> _loadProfile() async {
-    Utils.getUserId();
     await Utils.getProfile();
+
+    if (!mounted) return;
+
     setState(() {
       loginResponse = Utils.loginData?.data;
       isLoading = false;
@@ -86,6 +103,31 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
+  _getChartNetworkCall(int month, int year) async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final profileState = ref.read(profileProvider);
+
+        if (isNetworkAvailable) {
+          profileState.setDashboardLoading(true);
+          final userId = Utils.userId!;
+          final url =
+              '${NetworkUrls.DASHBOARD_CHART}$userId&month=$month&year=$year';
+          Utils.printLog("url::$url");
+          ref.read(getChartData(url));
+        } else {
+          profileState.setDashboardLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
@@ -106,206 +148,224 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: cardHorizontalPadding,
-                vertical: Constant.PADDING_HEIGHT_10,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 7,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hi,',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: Constant.SIZE_05),
-                            Text(
-                              loginResponse?.fullName ?? "",
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Expanded(
-                        flex: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  NavUtil.navigateToPushScreen(
-                                    context,
-                                    SearchRestaurantScreen(),
-                                  );
-                                },
-                                child: CircleCardWidget(
-                                  child: Icon(
-                                    Icons.search,
-                                    color: Colors.white70,
-                                    size: Constant.CONTAINER_SIZE_20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: w * 0.02),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  NavUtil.navigateToPushScreen(
-                                    context,
-                                    NotificationScreen(),
-                                  );
-                                },
-                                child: CircleCardWidget(
-                                  child: Icon(
-                                    Icons.notifications_none,
-                                    color: Colors.white70,
-                                    size: Constant.CONTAINER_SIZE_20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Constant.SIZE_15),
-                  SingleChildScrollView(
+        child:
+        profileState.isDashboardLoading
+            ? Center(child: CircularProgressIndicator())
+            :
+        LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: cardHorizontalPadding,
+                      vertical: Constant.PADDING_HEIGHT_10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Wrap(
-                          spacing: cardSpacing,
-                          runSpacing: Constant.CONTAINER_SIZE_12,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            _buildDashboardCard(
-                              context,
-                              width: cardWidth,
-                              icon: Icons.rice_bowl_outlined,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductsScreen(),
-                                  ),
-                                );
-                              },
-                              label: 'Products',
-                            ),
-                            _buildDashboardCard(
-                              context,
-                              width: cardWidth,
-                              icon: Icons.call_made_outlined,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => OrderHomeScreen(),
-                                  ),
-                                );
-                              },
-                              label: 'Orders',
-                            ),
-                            _buildDashboardCard(
-                              context,
-                              width: cardWidth,
-                              icon: Icons.qr_code_scanner_rounded,
-                              onTap: () {
-                                _showFilterPopup(context);
-                              },
-                              label: 'Scan',
-                            ),
-                            _buildDashboardCard(
-                              context,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyProfileScreen(),
-                                  ),
-                                );
-                              },
-                              width: cardWidth,
-                              icon: Icons.person_outline,
-                              label: 'Profile',
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_30),
-                        Text(
-                          'Container Status',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: Constant.SIZE_10),
-                        GlassSummaryCard(
-                          child: Column(
-                            children: [
-                              Row(
+                            Expanded(
+                              flex: 7,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: _buildDropdown(
-                                      context,
-                                      value: selectedDateRange,
-                                      items: dateOptions,
-                                      onChanged: (v) => setState(
-                                        () => selectedDateRange = v!,
-                                      ),
+                                  Text(
+                                    'Hi,',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontSize: Constant.LABEL_TEXT_SIZE_14,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                  SizedBox(width: Constant.SIZE_10),
-                                  Expanded(
-                                    flex: 1,
-                                    child: _buildDropdown(
-                                      context,
-                                      value: selectedContainer,
-                                      items: containerOptions,
-                                      onChanged: (v) => setState(
-                                        () => selectedContainer = v!,
-                                      ),
-                                    ),
+                                  SizedBox(height: Constant.SIZE_05),
+                                  Text(
+                                    loginResponse?.fullName ?? "",
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: Constant.SIZE_15),
-                              _buildLegendRow(context),
-                              SizedBox(height: Constant.CONTAINER_SIZE_35),
-                              _buildChartRings(context, width, theme),
+                            ),
+
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        NavUtil.navigateToPushScreen(
+                                          context,
+                                          SearchRestaurantScreen(),
+                                        );
+                                      },
+                                      child: CircleCardWidget(
+                                        child: Icon(
+                                          Icons.search,
+                                          color: Colors.white70,
+                                          size: Constant.CONTAINER_SIZE_20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  //TODO:- Notification Icon
+                                  // SizedBox(width: w * 0.02),
+                                  // Expanded(
+                                  //   child: InkWell(
+                                  //     onTap: () {
+                                  //       NavUtil.navigateToPushScreen(
+                                  //         context,
+                                  //         NotificationScreen(),
+                                  //       );
+                                  //     },
+                                  //     child: CircleCardWidget(
+                                  //       child: Icon(
+                                  //         Icons.notifications_none,
+                                  //         color: Colors.white70,
+                                  //         size: Constant.CONTAINER_SIZE_20,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: Constant.SIZE_15),
+                        SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Wrap(
+                                spacing: cardSpacing,
+                                runSpacing: Constant.CONTAINER_SIZE_12,
+                                children: [
+                                  _buildDashboardCard(
+                                    context,
+                                    width: cardWidth,
+                                    assetPath: 'assets/images/product.png',
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductsScreen(),
+                                        ),
+                                      );
+                                    },
+                                    label: Strings.PRODUCTS,
+                                  ),
+                                  _buildDashboardCard(
+                                    context,
+                                    width: cardWidth,
+                                    assetPath: 'assets/images/orders.png',
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              OrderHomeScreen(),
+                                        ),
+                                      );
+                                    },
+                                    label: Strings.ORDERS,
+                                  ),
+                                  _buildDashboardCard(
+                                    context,
+                                    width: cardWidth,
+                                    assetPath: 'assets/images/scan.png',
+                                    onTap: () {
+                                      _showFilterPopup(context);
+                                    },
+                                    label: Strings.SCAN,
+                                  ),
+                                  _buildDashboardCard(
+                                    context,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyProfileScreen(),
+                                        ),
+                                      );
+                                    },
+                                    width: cardWidth,
+                                    assetPath: 'assets/images/profile.png',
+                                    label: Strings.PROFILE,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: Constant.CONTAINER_SIZE_30),
+                              Text(
+                                Strings.CONTAINER_STATUS,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: Constant.SIZE_10),
+                              GlassSummaryCard(
+                                child: Column(
+                                  children: [
+                                    // Row(
+                                    //   children: [
+                                    //     Expanded(
+                                    //       flex: 1,
+                                    //       child: _buildDropdown(
+                                    //         context,
+                                    //         value: selectedDateRange,
+                                    //         items: dateOptions,
+                                    //         onChanged: (v) => setState(
+                                    //           () => selectedDateRange = v!,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     SizedBox(width: Constant.SIZE_10),
+                                    //     Expanded(
+                                    //       flex: 1,
+                                    //       child: _buildDropdown(
+                                    //         context,
+                                    //         value: selectedContainer,
+                                    //         items: containerOptions,
+                                    //         onChanged: (v) => setState(
+                                    //           () => selectedContainer = v!,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    // SizedBox(height: Constant.SIZE_15),
+                                    _buildLegendRow(context),
+                                    SizedBox(
+                                      height: Constant.CONTAINER_SIZE_35,
+                                    ),
+                                    profileState.chartModel == null
+                                        ? const SizedBox()
+                                        : _buildChartRings(
+                                            context,
+                                            width,
+                                            theme,
+                                            profileState.chartModel, // safe
+                                          ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -313,7 +373,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildDashboardCard(
     BuildContext context, {
     required double width,
-    required IconData icon,
+    required String assetPath,
     required String label,
     required VoidCallback onTap,
   }) {
@@ -338,10 +398,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       color: Constant.gold,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      icon,
-                      color: theme.scaffoldBackgroundColor,
-                      size: Constant.CONTAINER_SIZE_22,
+                    child: Padding(
+                      padding: EdgeInsets.all(Constant.SIZE_04),
+                      child: Image.asset(
+                        assetPath,
+                        fit: BoxFit.contain,
+                        // color: theme.scaffoldBackgroundColor,
+                        // size: Constant.CONTAINER_SIZE_22,
+                      ),
                     ),
                   ),
                 ),
@@ -424,13 +488,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _legendItem('Lease', Color(0xFFCD4400), theme),
+          _legendItem(
+            Strings.LEASE_UC[0].toUpperCase() +
+                Strings.LEASE_UC.substring(1).toLowerCase(),
+            Color(0xFFCD4400),
+            theme,
+          ),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Receive', Color(0xFF9C1A00), theme),
+          _legendItem(
+            Strings.RECEIVE_UC[0].toUpperCase() +
+                Strings.RECEIVE_UC.substring(1).toLowerCase(),
+            Color(0xFF9C1A00),
+            theme,
+          ),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Available', Color(0xFFF79F00), theme),
+          _legendItem(Strings.AVAILABLE, Color(0xFFF79F00), theme),
           SizedBox(width: Constant.SIZE_10),
-          _legendItem('Damage', Color(0xFF7B8D73), theme),
+          _legendItem(Strings.DAMAGE, Color(0xFF7B8D73), theme),
         ],
       ),
     );
@@ -453,19 +527,42 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  final List<ChartData> chartData = [
-    ChartData('Available', 600, const Color(0xFFF79F00)),
-    ChartData('Receive', 280, const Color(0xFFCD4400)),
-    ChartData('Lease', 100, const Color(0xFF9C1A00)),
-    ChartData('Damage', 10, const Color(0xFF7B8D73)),
-  ];
+  List<ChartData> getChartValues(ChartModel model) {
+    return [
+      ChartData(
+        Strings.AVAILABLE,
+        model.available.toDouble(),
+        const Color(0xFFF79F00),
+      ),
+      ChartData(
+        Strings.RECEIVE,
+        model.receive.toDouble(),
+        const Color(0xFFCD4400),
+      ),
+      ChartData(Strings.LEASE, model.lease.toDouble(), const Color(0xFF9C1A00)),
+      ChartData(
+        Strings.DAMAGE,
+        model.damage.toDouble(),
+        const Color(0xFF7B8D73),
+      ),
+    ];
+  }
 
   Widget _buildChartRings(
     BuildContext context,
     double screenWidth,
     ThemeData theme,
+    ChartModel? model,
   ) {
+    if (model == null) {
+      return const SizedBox();
+    }
     double chartSize = screenWidth * 0.65;
+    final List<ChartData> chartData = getChartValues(model);
+    final receive = getChartItem(Strings.RECEIVE, chartData);
+    final lease = getChartItem(Strings.LEASE, chartData);
+    final available = getChartItem(Strings.AVAILABLE, chartData);
+    final damage = getChartItem(Strings.DAMAGE, chartData);
 
     return SizedBox(
       width: double.infinity,
@@ -476,16 +573,38 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             clipBehavior: Clip.none,
             children: [
               SizedBox(
-                width: chartSize,
-                height: chartSize,
+                // width: chartSize,
+                // height: chartSize,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     SfCircularChart(
                       margin: EdgeInsets.zero,
+                      tooltipBehavior: TooltipBehavior(
+                        enable: true,
+                        color: Colors.grey,
+                        builder: (dynamic data, dynamic point, dynamic series, int pointIndex, int seriesIndex) {
+                          final ChartData d = data;
+                          return Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '${d.label} : ${d.value.toInt()}',
+                              style: TextStyle(
+                                color: d.color,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                       series: <DoughnutSeries<ChartData, String>>[
                         DoughnutSeries<ChartData, String>(
                           dataSource: chartData,
+                          // ✅ dynamic data
                           xValueMapper: (d, _) => d.label,
                           yValueMapper: (d, _) => d.value,
                           pointColorMapper: (d, _) => d.color,
@@ -502,12 +621,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Total',
-                          style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_14),
+                          Strings.TOTAL,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: Constant.CONTAINER_SIZE_14,
+                          ),
                         ),
                         SizedBox(height: Constant.SIZE_04),
                         Text(
-                          '1000',
+                          model.total.toString(), // ✅ dynamic total
                           style: TextStyle(
                             color: Colors.greenAccent,
                             fontSize: Constant.CONTAINER_SIZE_24,
@@ -519,53 +641,60 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ],
                 ),
               ),
-
-              _chartLabel(
-                left: 45,
-                top: -20,
-                title: 'Receive',
-                value: '${getChartItem('Lease').value.toInt()}',
-                color: getChartItem('Lease').color,
-              ),
-
-              _chartLabel(
-                left: -30,
-                top: 35,
-                title: 'Lease',
-                value: '${getChartItem('Receive').value.toInt()}',
-                color: getChartItem('Receive').color,
-                alignEnd: true,
-              ),
-
-              _chartLabel(
-                right: -15,
-                top: 200,
-                bottom: 0,
-                title: 'Available',
-                value: '${getChartItem('Available').value.toInt()}',
-                color: getChartItem('Available').color,
-              ),
-              _chartLabel(
-                top: -30,
-                title: 'Damage',
-                value: '${getChartItem('Damage').value.toInt()}',
-                color: getChartItem('Damage').color,
-                alignEnd: true,
-              ),
+              //todo
+              // _chartLabel(
+              //   left: 45,
+              //   top: -20,
+              //   title: Strings.RECEIVE,
+              //   value: '${receive.value.toInt()}',
+              //   color: receive.color,
+              // ),
+              //
+              // _chartLabel(
+              //   left: -30,
+              //   top: 35,
+              //   title: Strings.LEASE,
+              //   value: '${lease.value.toInt()}',
+              //   color: lease.color,
+              //   alignEnd: true,
+              // ),
+              //
+              // _chartLabel(
+              //   right: -15,
+              //   top: 200,
+              //   bottom: 0,
+              //   title: Strings.AVAILABLE,
+              //   value: '${available.value.toInt()}',
+              //   color: available.color,
+              // ),
+              //
+              // _chartLabel(
+              //   top: -30,
+              //   title: Strings.DAMAGE,
+              //   value: '${damage.value.toInt()}',
+              //   color: damage.color,
+              //   alignEnd: true,
+              // ),
             ],
           ),
           SizedBox(height: Constant.SIZE_08),
           Text(
-            '${months[DateTime.now().month - 1]}-${DateTime.now().year}',
-            style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12),
+            model.monthYear,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Constant.CONTAINER_SIZE_12,
+            ),
           ),
         ],
       ),
     );
   }
 
-  ChartData getChartItem(String label) {
-    return chartData.firstWhere((e) => e.label == label);
+  ChartData getChartItem(String label, List<ChartData> data) {
+    return data.firstWhere(
+      (e) => e.label == label,
+      orElse: () => ChartData(label, 0, Colors.grey),
+    );
   }
 
   Widget _chartLabel({
@@ -622,8 +751,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 }
-
-
 
 class ChartData {
   final String label;

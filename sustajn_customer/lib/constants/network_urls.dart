@@ -4,9 +4,9 @@ class NetworkUrls {
   static const int EMPTY_RESPONSE_CODE = 406;
   static const int UNAUTHORIZED_ERROR_CODE = 401;
 
-  static const BASE_URL = "http://35.154.182.218:9090/";
-  static const BASE_IMAGE_URL = 'http://35.154.182.218:9090/auth/images/';
-  static const PROFILE_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/profile/";
+  static const BASE_URL = "http://65.0.241.5:9090/";
+  static const BASE_IMAGE_URL = 'http://65.0.241.5:9090/auth/images/';
+  static const PROFILE_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/profile/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";
   static const FORGOT_PASSWORD = "notification/forgot-password";
@@ -25,7 +25,7 @@ class NetworkUrls {
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
-  static const PRODUCT_DATA = 'orders/productsSummary/';
+  static const PRODUCT_DATA = 'orders/productsSummary?userId=';
   static const SEARCH_RESTAURANT ="auth/searchRestaurant";
   static const GET_PROFILE = 'auth/getProfileDetails/';
   static const UPDATE_PROFILE = 'auth/updateProfileDetails';

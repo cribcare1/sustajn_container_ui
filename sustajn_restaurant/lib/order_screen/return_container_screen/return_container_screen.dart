@@ -76,7 +76,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
                         ),
                       ],
                     ),)
-                    :orderState.getContainerData!.containersDetails!.isEmpty
+                    : orderState.getContainerData!.containersDetails == null || orderState.getContainerData!.containersDetails!.isEmpty
                     ? Center(
                         child: Text(
                           Strings.NO_CONTAINER_AVAILABLE,
@@ -238,7 +238,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_CONTAINER}$userId';
+          final url = '${NetworkUrls.GET_RETURN_CONTAINER}$userId&year=${DateTime.now().year}';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

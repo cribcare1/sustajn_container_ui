@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_customer/auth/dashboard_screen/dashboard_screen.dart';
-import 'package:sustajn_customer/profile_screen/profile_screen.dart';
 import 'package:sustajn_customer/auth/screens/sign_up_screen.dart';
 
 import '../../common_widgets/submit_button.dart';
@@ -30,6 +28,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _showPassword = false;
+
+  @override
+  void initState() {
+    Utils.getDeviceToken();
+    super.initState();
+  }
+
+  Future<void> getDevice() async {
+    final deviceToken = await Utils.getDeviceToken();
+
+  }
 
 
   @override
@@ -245,7 +254,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           try {
             if (isNetworkAvailable) {
               registrationState.setIsLoading(true);
-              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text}));
+              ref.read(loginDetailProvider({"userName":_emailController.text,"password":_passwordController.text, "role":"USER"}));
             } else {
               registrationState.setIsLoading(false);
               if(!mounted) return;

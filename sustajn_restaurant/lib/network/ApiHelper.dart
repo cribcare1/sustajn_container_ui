@@ -20,7 +20,7 @@ class ApiHelper {
       var header = _getHeader(token);
       Utils.printLog("Get header :: $header");
       response = await http.get(Uri.parse(url),
-          headers: header).timeout(const Duration(minutes: 1),);
+          headers: header).timeout(const Duration(minutes: 5),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
     }  on TimeoutException catch (_) {
@@ -31,6 +31,40 @@ class ApiHelper {
       return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
     }
   }
+
+  Future<http.Response> apiRequestWithBody(
+      String url,
+      Map<String, dynamic> body,
+      ) async {
+
+    final token = Utils.authToken();
+    var header = _getHeader(token);
+    try {
+      final request = http.Request("GET", Uri.parse(url));
+      request.headers.addAll(header);
+      request.body = jsonEncode(body);
+      final streamedResponse =
+      await request.send().timeout(const Duration(minutes: 5));
+      final response =
+      await http.Response.fromStream(streamedResponse);
+
+      Utils.printLog("StatusCode :: ${response.statusCode}");
+      Utils.printLog("Body :: ${response.body}");
+
+      return response;
+
+    } on TimeoutException {
+      return http.Response(
+          Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (e) {
+      Utils.printLog("Network call failed :: $e");
+      return http.Response(
+          Strings.ERROR,
+          NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
+
 
   _getHeader(var token){
     return (token != null && token.toString().isNotEmpty)?{
@@ -110,35 +144,46 @@ class ApiHelper {
   ///        the respone body of the api it will return
   ///
 
-  Future<dynamic> apiPostLoginRequest(String url, Map<String, dynamic> jsonMap) async {
+  Future<dynamic> apiPostLoginRequest(String url, var jsonMap) async {
     Utils.printLog("Post call started==url==$url");
-
-    final token = Utils.authToken();
+    var token = Utils.authToken();
     Utils.printLog('Token : $token');
-
+    http.Response? response;
     try {
-      final body = jsonEncode(jsonMap);
+      var body = json.encode(jsonMap);
       Utils.printLog("body====$body");
-
-      final response = await http
-          .post(
-        Uri.parse(url),
-        headers: _getHeader(token),
-        body: body,
-      )
-          .timeout(const Duration(seconds: 20));
-
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
       Utils.printLog("Network call success. response==${response.statusCode}");
       return response;
-    } on TimeoutException catch (_) {
+    }  on TimeoutException catch (_) {
       Utils.printLog('Timed out');
       return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
-    } catch (exception) {
-      Utils.printLog("Network call failed, exception==$exception");
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
       return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
     }
   }
-
+  Future<dynamic> postAPIStringValue(String url, var jsonMap) async {
+    Utils.printLog("Post call started==url==$url");
+    var token = Utils.authToken();
+    Utils.printLog('Token : $token');
+    http.Response? response;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
+      Utils.printLog("Network call success. response==${response.statusCode}");
+      return response;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
   Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
     final token = Utils.authToken();
     Utils.printLog("Get call started==url==$url");
@@ -182,7 +227,8 @@ class ApiHelper {
 
 
   Future<http.Response> apiMultiPartPostRequest(
-      String url, Map<String, dynamic> jsonMap, var image, String keyName) async {
+      String url, Map<String, dynamic> jsonMap, var image, String keyName,
+      {String fileName = "profile"}) async {
 
     final token = Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
@@ -206,7 +252,7 @@ class ApiHelper {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
         var multiport = http.MultipartFile(
-          'profile',
+          fileName,
           stream,
           length,
           filename: image.path.split('/').last,

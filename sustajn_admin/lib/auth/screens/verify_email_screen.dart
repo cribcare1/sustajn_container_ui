@@ -1,10 +1,10 @@
 import 'package:container_tracking/auth/screens/reset_password_screen.dart';
+import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/common_widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:riverpod/src/framework.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -61,6 +61,10 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final authState = ref.watch(authNotifierProvider);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        leading: CustomBackButton(),
+        backgroundColor: theme.scaffoldBackgroundColor,
+      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -184,15 +188,15 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final theme = Theme.of(context);
 
     final defaultPinTheme = PinTheme(
-      width: 55,
-      height: 55,
+      width: Constant.CONTAINER_SIZE_55,
+      height: Constant.CONTAINER_SIZE_55,
       textStyle: theme.textTheme.titleLarge?.copyWith(
-        fontSize: 18,
+        fontSize: Constant.SIZE_18,
         color: theme.textTheme.bodyLarge?.color,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white, width: 1),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+        border: Border.all(color: Colors.white, width: Constant.SIZE_01),
       ),
     );
 
@@ -205,20 +209,20 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: theme.secondaryHeaderColor, width: 2),
+          border: Border.all(color: theme.secondaryHeaderColor, width: Constant.SIZE_02),
         ),
       ),
 
       submittedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: theme.secondaryHeaderColor, width: 1.2),
+          border: Border.all(color: theme.secondaryHeaderColor, width: Constant.SIZE_02),
         ),
       ),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       showCursor: true,
       cursor: Container(
-        width: 2,
-        height: 18,
+        width: Constant.SIZE_02,
+        height: Constant.CONTAINER_SIZE_18,
         margin: const EdgeInsets.only(bottom: 4),
         color: theme.primaryColor,
       ),

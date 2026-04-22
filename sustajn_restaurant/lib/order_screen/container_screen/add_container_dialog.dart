@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_container_data.dart';
-import '../../models/login_model.dart';
-import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
-import '../models/add_container_model.dart';
 
 class AddContainerDialog extends ConsumerStatefulWidget {
   final ContainersDetails item;
@@ -118,13 +116,14 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                     vertical: Constant.SIZE_06,
                   ),
                   decoration: BoxDecoration(
+                    color: Constant.grey.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(
-                      Constant.CONTAINER_SIZE_20,
+                      Constant.CONTAINER_SIZE_10,
                     ),
-                    border: Border.all(color: Constant.gold),
+                    border: Border.all(color: Constant.grey.withOpacity(0.4)),
                   ),
                   child: Text(
-                    "Available Quantity: ${widget.item.quantityAvailable}",
+                    "In-Stock: ${widget.item.quantityAvailable}",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Constant.gold,
                     ),
@@ -140,7 +139,10 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                       icon: Icons.remove,
                       onTap: () {
                         if (qty > 0) {
-                          setState(() => qty--);
+                          setState(() {
+                            qty--;
+                            quantity.text = qty.toString();
+                          });
                         }
                       },
                       theme: theme,
@@ -191,7 +193,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                               onTap: () {
                                 setState(() {
                                   isEditingQty = true;
-                                  quantity.clear();
+                                  quantity.text = qty.toString();
                                 });
                                 Future.delayed(
                                   const Duration(milliseconds: 50),
@@ -214,7 +216,10 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                       icon: Icons.add,
                       onTap: () {
                         if (qty < widget.item.quantityAvailable!) {
-                          setState(() => qty++);
+                          setState(() {
+                            qty++;
+                            quantity.text = qty.toString();
+                          });
                         }
                       },
                       theme: theme,
@@ -233,7 +238,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                           side: BorderSide(color: Colors.amber, width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_30,
+                              Constant.CONTAINER_SIZE_16,
                             ),
                           ),
                           padding: EdgeInsets.symmetric(
@@ -248,32 +253,14 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                     ),
                     SizedBox(width: Constant.CONTAINER_SIZE_12),
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
+                      child: SubmitButton(
+                        onRightTap: () {
                           if (qty > 0) {
-                            _addContainerNetworkCall(widget.item, orderState);
+                            orderState.addContainerToOrder(widget.item, qty);
+                            Navigator.pop(context);
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Constant.gold,
-                          disabledBackgroundColor: Constant.gold,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              Constant.CONTAINER_SIZE_16,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            vertical: Constant.CONTAINER_SIZE_12,
-                          ),
-                          elevation: Constant.SIZE_00,
-                        ),
-                        child: Text(
-                          "Add",
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        rightText: Strings.ADD,
                       ),
                     ),
                   ],
@@ -333,40 +320,40 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
     });
   }
 
-  Map<String, dynamic> getJsonData(ContainersDetails item) {
-    final data = {
-      "restaurantId": Utils.userId,
-      "type": "BORROW",
-      "items": [
-        {
-          "containerTypeId": item.containerId,
-          "requestedQty": item.quantityAvailable,
-        },
-      ],
-    };
-    return data;
-  }
-
-  _addContainerNetworkCall(ContainersDetails item, var orderState) async {
-    Utils.printLog('add container Network call');
-
-    final isNetworkAvailable = await ref
-        .read(networkProvider.notifier)
-        .isNetworkAvailable();
-
-    if (!isNetworkAvailable) {
-      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-      return;
-    }
-    try {
-      await ref.read(addReturnProvider(getJsonData(item)).future);
-      Navigator.pop(context);
-
-      setState(() {
-        container = orderState.setOrderData!;
-      });
-    } catch (e) {
-      Utils.printLog(e.toString());
-    }
-  }
+  // Map<String, dynamic> getJsonData(ContainersDetails item) {
+  //   final data = {
+  //     "restaurantId": Utils.userId,
+  //     "type": "BORROW",
+  //     "items": [
+  //       {
+  //         "containerTypeId": item.containerId,
+  //         "requestedQty": qty,
+  //       },
+  //     ],
+  //   };
+  //   return data;
+  // }
+  //
+  // _addContainerNetworkCall(ContainersDetails item, var orderState) async {
+  //   Utils.printLog('add container Network call');
+  //
+  //   final isNetworkAvailable = await ref
+  //       .read(networkProvider.notifier)
+  //       .isNetworkAvailable();
+  //
+  //   if (!isNetworkAvailable) {
+  //     Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+  //     return;
+  //   }
+  //   try {
+  //     await ref.read(addReturnProvider(getJsonData(item)).future);
+  //     Navigator.pop(context);
+  //
+  //     // setState(() {
+  //     //   container = orderState.setOrderData!;
+  //     // });
+  //   } catch (e) {
+  //     Utils.printLog(e.toString());
+  //   }
+  // }
 }

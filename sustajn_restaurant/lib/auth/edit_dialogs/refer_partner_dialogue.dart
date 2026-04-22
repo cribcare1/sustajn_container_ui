@@ -26,6 +26,10 @@ class _EditReferPartnerDialogState
   late TextEditingController _emailController;
 
   bool _isLoading = false;
+  late FocusNode _restaurantNameFocus;
+  late FocusNode _contactPersonFocus;
+  late FocusNode _contactNumberFocus;
+  late FocusNode _emailFocus;
 
   @override
   void initState() {
@@ -35,7 +39,16 @@ class _EditReferPartnerDialogState
     _contactPersonController = TextEditingController();
     _contactNumberController = TextEditingController();
     _emailController = TextEditingController();
-    _getData();
+
+    _restaurantNameFocus = FocusNode();
+    _contactPersonFocus = FocusNode();
+    _contactNumberFocus = FocusNode();
+    _emailFocus = FocusNode();
+
+    _restaurantNameFocus.addListener(() => setState(() {}));
+    _contactPersonFocus.addListener(() => setState(() {}));
+    _contactNumberFocus.addListener(() => setState(() {}));
+    _emailFocus.addListener(() => setState(() {}));
   }
 
   @override
@@ -44,6 +57,10 @@ class _EditReferPartnerDialogState
     _contactPersonController.dispose();
     _contactNumberController.dispose();
     _emailController.dispose();
+    _restaurantNameFocus.dispose();
+    _contactPersonFocus.dispose();
+    _contactNumberFocus.dispose();
+    _emailFocus.dispose();
     super.dispose();
   }
 
@@ -88,27 +105,37 @@ class _EditReferPartnerDialogState
     return null;
   }
 
-  _getData() {
-    final profileState = ref.read(profileProvider);
-    final profile = profileState.getProfileData?.data;
-    if (profile!.bankDetailsResponse != null) {
-      final bank = profile.bankDetailsResponse;
-      _restaurantNameController.text = bank!.bankName ?? "";
-      _contactPersonController.text = bank.accountNumber ?? "";
-      _contactNumberController.text = bank.taxNumber ?? "";
-      _emailController.text = bank.emailId ?? "";
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SafeArea(
-      top: false,
+      top: false,bottom: true,
       child: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Container(
-          width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Utils.buildFloatingHeader(context),
+            Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: _buildBottomSheet(context),
+            ),
+      ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomSheet(BuildContext context){
+    final theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: constraints.maxHeight * 0.85,
+            ),
+            child:Container(
+          margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_15),
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
           decoration: BoxDecoration(
             color: theme.scaffoldBackgroundColor,
@@ -117,16 +144,16 @@ class _EditReferPartnerDialogState
               topRight: Radius.circular(Constant.CONTAINER_SIZE_16),
             ),
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
                         Strings.REFER_PARTNER,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: Constant.LABEL_TEXT_SIZE_18,
@@ -134,100 +161,88 @@ class _EditReferPartnerDialogState
                           color: Colors.white,
                         ),
                       ),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(
-                        Constant.CONTAINER_SIZE_20,
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: Constant.CONTAINER_SIZE_20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                _buildTextField(
-                  context,
-                  label: "${Strings.RESTAURANT_NAME}*",
-                  hint: "${Strings.RESTAURANT_NAME}*",
-                  keyboardType: TextInputType.text,
-                  controller: _restaurantNameController,
-                  validator: _validateRestaurantName,
-                ),
-
-                SizedBox(height: Constant.SIZE_10),
-
-                _buildTextField(
-                  context,
-                  label: "${Strings.CONTACT_PERSON}*",
-                  hint: "${Strings.CONTACT_PERSON}*",
-                  keyboardType: TextInputType.text,
-                  controller: _contactPersonController,
-                  validator: _validateContactPerson,
-                ),
-
-                SizedBox(height: Constant.SIZE_10),
-
-                _buildTextField(
-                  context,
-                  label: "${Strings.CONTACT_NUMBER}*",
-                  hint: "${Strings.CONTACT_NUMBER}*",
-                  keyboardType: TextInputType.number,
-                  controller: _contactNumberController,
-                  validator: _validateContactNumber,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
-                  ],
-                ),
-                SizedBox(height: Constant.SIZE_10),
-
-                _buildTextField(
-                  context,
-                  label: "${Strings.EMAIL}*",
-                  hint: "${Strings.EMAIL}*",
-                  keyboardType: TextInputType.text,
-                  controller: _emailController,
-                  textInputAction: TextInputAction.done,
-                  validator: _validateEmail,
-                ),
-                SizedBox(height: Constant.CONTAINER_SIZE_24),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: SubmitButton(
-                    onRightTap: _isLoading
-                        ? null
-                        : () async {
-                      if (!_formKey.currentState!.validate()) return;
-
-                      setState(() => _isLoading = true);
-                      final success = await _referPartnerNetworkCall();
-                      if (!mounted) return;
-
-                      setState(() => _isLoading = false);
-
-                      if (success) {
-                        Utils.showToast(
-                          '${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}',
-                        );
-                        Navigator.pop(context);
-                      }
-                    },
-                    rightText: Strings.SAVE_CHANGES,
-                    isLoading: _isLoading,
+                    ],
                   ),
-                ),
-              ],
+
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                  _buildTextField(
+                    context,
+                    label: "${Strings.RESTAURANT_NAME}",
+                    hint: "${Strings.RESTAURANT_NAME}",
+                    focusNode: _restaurantNameFocus,
+                    keyboardType: TextInputType.text,
+                    controller: _restaurantNameController,
+                    validator: _validateRestaurantName,
+                  ),
+
+                  SizedBox(height: Constant.SIZE_10),
+
+                  _buildTextField(
+                    context,
+                    label: "${Strings.CONTACT_PERSON}*",
+                    hint: "${Strings.CONTACT_PERSON}*",
+                    focusNode: _contactPersonFocus,
+                    keyboardType: TextInputType.text,
+                    controller: _contactPersonController,
+                    validator: _validateContactPerson,
+                  ),
+
+                  SizedBox(height: Constant.SIZE_10),
+
+                  _buildTextField(
+                    context,
+                    label: "${Strings.CONTACT_NUMBER}*",
+                    hint: "${Strings.CONTACT_NUMBER}*",
+                    focusNode: _contactNumberFocus,
+                    keyboardType: TextInputType.number,
+                    controller: _contactNumberController,
+                    validator: _validateContactNumber,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
+                    ],
+                  ),
+                  SizedBox(height: Constant.SIZE_10),
+
+                  _buildTextField(
+                    context,
+                    label: "${Strings.EMAIL}*",
+                    hint: "${Strings.EMAIL}*",
+                    focusNode: _emailFocus,
+                    keyboardType: TextInputType.text,
+                    controller: _emailController,
+                    textInputAction: TextInputAction.done,
+                    validator: _validateEmail,
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: SubmitButton(
+                      onRightTap: _isLoading
+                          ? null
+                          : () async {
+                        if (!_formKey.currentState!.validate()) return;
+
+                        setState(() => _isLoading = true);
+                        final success = await _referPartnerNetworkCall();
+                        if (!mounted) return;
+
+                        setState(() => _isLoading = false);
+
+                      },
+                      rightText: Strings.SAVE_CHANGES,
+                      isLoading: _isLoading,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+            )
+        );
+      }
     );
   }
 
@@ -235,6 +250,7 @@ class _EditReferPartnerDialogState
     BuildContext context, {
     required String hint,
     required String label,
+    required FocusNode focusNode,
     TextInputType keyboardType = TextInputType.text,
     TextInputAction textInputAction = TextInputAction.next,
     TextEditingController? controller,
@@ -243,6 +259,7 @@ class _EditReferPartnerDialogState
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       validator: validator,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
@@ -253,9 +270,12 @@ class _EditReferPartnerDialogState
       ),
       cursorColor: Colors.white70,
       decoration: InputDecoration(
-        labelText: label,
+        labelText:
+            (focusNode.hasFocus || (controller?.text.isNotEmpty ?? false))
+            ? label
+            : null,
         labelStyle: TextStyle(color: Colors.white70),
-        hintText: hint,
+        hintText: focusNode.hasFocus ? null : hint,
         hintStyle: TextStyle(
           color: Colors.white70,
           fontSize: Constant.CONTAINER_SIZE_13,
@@ -309,8 +329,6 @@ class _EditReferPartnerDialogState
     }
     try {
       await ref.read(referPartnerProvider(getJsonData()).future);
-      Utils.showToast('${Strings.REFER_PARTNER} ${Strings.SUCC_MSG}');
-      Navigator.pop(context);
     } catch (e) {
       Utils.printLog(e.toString());
     }
