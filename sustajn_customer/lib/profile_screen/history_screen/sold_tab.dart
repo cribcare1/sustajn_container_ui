@@ -1,6 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as ref;
-
 import '../../constants/imports_util.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -283,31 +281,27 @@ class _SoldTabState extends ConsumerState<SoldTab> {
       ),
     );
   }
-   _getSoldNetworkCall() async {
-     try {
-       await ref.read(networkProvider.notifier as Uri).isNetworkAvailable().then((
-           isNetworkAvailable,
-           ) {
-         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-         final orderState = ref.read(historyProvider as Uri);
-         if (isNetworkAvailable) {
-           orderState.setIsLoading(true);
-           final userId = Utils.userId;
-           final url = '${NetworkUrls.GET_SOLD_CONTAINER}$userId';
-           ref.read(getSoldContainerProvider(url) as Uri);
-         } else {
-           orderState.setIsLoading(false);
-           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-         }
-       });
-     } catch (e) {
-       Utils.printLog('Error in visitor button onPressed: $e');
-     }
-   }
+  _getSoldNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(historyProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.GET_SOLD_CONTAINER}$userId';
+          ref.read(getSoldContainerProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }
 
-extension on Future<String> {
-  isNetworkAvailable() {}
 
-  void setIsLoading(bool bool) {}
-}
