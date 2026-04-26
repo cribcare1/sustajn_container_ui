@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:upgrader/upgrader.dart';
 
 import '../../constants/imports_util.dart';
 import '../../constants/string_utils.dart';
@@ -65,11 +66,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       const SizedBox(),
     ];
 
-    return Scaffold(
-      body: screens[_currentIndex],
-      bottomNavigationBar: CustomBottomNav(
-        currentIndex: _currentIndex,
-        onTabChange: _onTabChange,
+    return UpgradeAlert(
+      upgrader: Upgrader(
+          debugLogging: true,
+          debugDisplayAlways: true
+      ),
+      barrierDismissible: false,
+      showIgnore: false,
+      showLater: false,
+      dialogStyle: UpgradeDialogStyle.material,
+      child: Scaffold(
+        body: screens[_currentIndex],
+        bottomNavigationBar: CustomBottomNav(
+          currentIndex: _currentIndex,
+          onTabChange: _onTabChange,
+        ),
       ),
     );
   }
