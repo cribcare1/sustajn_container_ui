@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
+import 'package:upgrader/upgrader.dart';
 
 import 'firebase_services.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -19,8 +20,7 @@ Future<void> backgroundMessageHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // ✅ ADD THIS BLOCK
+await Upgrader.clearSavedSettings();
   if (Platform.isAndroid) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
