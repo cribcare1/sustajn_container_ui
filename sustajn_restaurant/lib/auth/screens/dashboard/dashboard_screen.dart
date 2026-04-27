@@ -149,9 +149,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return UpgradeAlert(
       upgrader: Upgrader(
         debugLogging: true,
-        debugDisplayAlways: true
+        minAppVersion: "1.0.0",
+        debugDisplayAlways: false,
       ),
-      barrierDismissible: false,
       showIgnore: false,
       showLater: false,
       dialogStyle: UpgradeDialogStyle.material,
