@@ -282,7 +282,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             context,
             showTitleActions: true,
             minTime: DateTime.now(),
-            maxTime: DateTime(DateTime.now().year + 20, 12),
+            maxTime: DateTime(DateTime.now().year + 10, 12),
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
