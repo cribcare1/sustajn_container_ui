@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/network/ApiCallPresentator.dart';
 
+import 'notification_model.dart';
+
 class NotificationServices {
   ApiCallPresenter presenter = ApiCallPresenter();
   Future<dynamic> fetchAllNotification(int userId)async{
@@ -9,7 +11,7 @@ class NotificationServices {
     try{
       var response = await presenter.getAPIData(api);
       if(response != null){
-        return response;
+        return NotificationResponseModel.fromJson(response);
       }else {
         throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
       }

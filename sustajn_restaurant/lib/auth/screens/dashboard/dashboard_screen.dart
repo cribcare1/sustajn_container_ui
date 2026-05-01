@@ -15,6 +15,7 @@ import '../../../models/chart_model.dart';
 import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../notification/notification_provider.dart';
+import '../../../notification/notification_screen.dart';
 import '../../../notification/notification_state.dart';
 import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
@@ -76,6 +77,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     setState(() {
       loginResponse = Utils.loginData?.data;
       isLoading = false;
+      Utils.userId = loginResponse!.userId;
     });
   }
 
@@ -201,7 +203,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               ),
 
                               Expanded(
-                                flex: 1,
+                                flex: 3,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -215,33 +217,35 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           );
                                         },
                                         child: CircleCardWidget(
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.search,
+                                              color: Colors.white70,
+                                              size: Constant.CONTAINER_SIZE_20,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    //TODO:- Notification Icon
+                                    SizedBox(width: w * 0.02),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          NavUtil.navigateToPushScreen(
+                                            context,
+                                            NotificationScreen(),
+                                          );
+                                        },
+                                        child: CircleCardWidget(
                                           child: Icon(
-                                            Icons.search,
+                                            Icons.notifications_none,
                                             color: Colors.white70,
                                             size: Constant.CONTAINER_SIZE_20,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    //TODO:- Notification Icon
-                                    // SizedBox(width: w * 0.02),
-                                    // Expanded(
-                                    //   child: InkWell(
-                                    //     onTap: () {
-                                    //       NavUtil.navigateToPushScreen(
-                                    //         context,
-                                    //         NotificationScreen(),
-                                    //       );
-                                    //     },
-                                    //     child: CircleCardWidget(
-                                    //       child: Icon(
-                                    //         Icons.notifications_none,
-                                    //         color: Colors.white70,
-                                    //         size: Constant.CONTAINER_SIZE_20,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ),

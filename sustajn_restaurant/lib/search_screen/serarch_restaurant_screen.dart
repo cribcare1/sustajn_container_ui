@@ -30,8 +30,8 @@ class _SearchRestaurantScreenState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchResProvider).setContext(context);
       ref.read(locationProvider.notifier).initialize().then((value){
-        ref.read(searchResProvider).setContext(context);
         final location = ref.read(locationProvider).position;
         if (location != null) {
           _getNetworkData(_lastKeyword);
