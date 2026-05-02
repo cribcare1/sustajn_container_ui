@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../profile_screen/history_screen/model/borrowed_data.dart';
 import '../profile_screen/history_screen/model/borrowed_items.dart';
+import '../profile_screen/history_screen/model/sold_container_data.dart';
 import '../utils/utils.dart';
 
 class HistoryNotifier extends ChangeNotifier {
   bool _isLoading = false;
+  SoldContainerData? _soldContainerData;
+
   BuildContext? _context;
 
   BorrowedData? _borrowedData;
@@ -19,6 +22,9 @@ class HistoryNotifier extends ChangeNotifier {
   BuildContext get context => _context!;
 
   List<BorrowedUiItem> get borrowedList => _borrowedList;
+
+  SoldContainerData? get soldContainerData => _soldContainerData;
+
 
   void setBorrowedData(BorrowedData data) {
     _borrowedList = [];
@@ -80,6 +86,11 @@ class HistoryNotifier extends ChangeNotifier {
   void clearBorrowedList() {
     _borrowedList.clear();
     Utils.printLog('ownerTenant rejected List cleared');
+    notifyListeners();
+  }
+
+  void setSoldContainerData(SoldContainerData soldContainer){
+    _soldContainerData = soldContainer;
     notifyListeners();
   }
 

@@ -3,6 +3,7 @@ import 'package:sustajn_customer/profile_screen/history_screen/model/borrowed_da
 
 import '../constants/network_urls.dart';
 import '../network/ApiCallPresentator.dart';
+import '../profile_screen/history_screen/model/sold_container_data.dart';
 import '../utils/utils.dart';
 
 class HistoryService {
@@ -21,6 +22,25 @@ class HistoryService {
       }
     } catch (e) {
       Utils.printLog("borrowed service  service::::$e");
+      throw Exception(e);
+    }
+  }
+
+  Future<SoldContainerData> getSoldContainerService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = SoldContainerData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Sold Container History service::::$e");
       throw Exception(e);
     }
   }

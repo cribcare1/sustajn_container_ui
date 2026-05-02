@@ -116,22 +116,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            child: _cardField(
-                              theme,
+                            child: getDatePicker(
+                              context,
                               Strings.EXPIRATION_DATE,
                               _expiryDateController,
-                              onTap: () async {
-                                final date = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(DateTime.now().year + 20),
-                                );
-                                if (date != null) {
+                                  (date){
                                   _expiryDateController.text =
                                       "${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                }
-                              },
+                                },
+                              theme,
                             ),
                           ),
                           SizedBox(width: Constant.SIZE_10),
@@ -273,7 +266,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             context,
             showTitleActions: true,
             minTime: DateTime.now(),
-            maxTime: DateTime(3000),
+            maxTime: DateTime(DateTime.now().year + 10, 12),
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,

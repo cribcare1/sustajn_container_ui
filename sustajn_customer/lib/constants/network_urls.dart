@@ -29,6 +29,8 @@ class NetworkUrls {
   static const SEARCH_RESTAURANT ="auth/searchRestaurant";
   static const GET_PROFILE = 'auth/getProfileDetails/';
   static const UPDATE_PROFILE = 'auth/updateProfileDetails';
+  static const GET_SOLD_CONTAINER = "inventory/getSoldContainersByRestaurant?restaurantId=";
+
 
   /// Container ///
   static const ADD_CONTAINER = "inventory/saveOrUpdateContainerType";
