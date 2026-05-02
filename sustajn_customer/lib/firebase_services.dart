@@ -13,6 +13,7 @@ import 'constants/network_urls.dart';
 class FirebaseServices {
   static final FirebaseServices _instance = FirebaseServices._internal();
   factory FirebaseServices() {
+    Utils.getProfile();
     return _instance;
   }
   FirebaseServices._internal();
@@ -106,6 +107,11 @@ class FirebaseServices {
 
   Future<void> _checkAndUpdateTokenIfNeeded(String newToken) async {
     try {
+      print("Firebase UserId :---- ${Utils.userId}");
+      if (Utils.userId == null || Utils.userId! <= 0) {
+        Utils.printLog('UserId is invalid. Token update skipped.');
+        return;
+      }
       final prefs = await SharedPreferences.getInstance();
       final savedToken = prefs.getString(_tokenKey);
       final lastUpdateTimestamp = prefs.getInt(_lastUpdateKey);
@@ -214,14 +220,13 @@ class FirebaseServices {
     Utils.printLog('Message data: ${message.data}');
     Utils.printLog('Message notification: ${message.notification?.title}');
 
-    if (showNotification && message.notification != null) {
       _showLocalNotification(message);
-    }
+
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
     try {
-      final notification = message.notification;
+      final notification = message.data;
 
       if (notification != null) {
         const androidDetails = AndroidNotificationDetails(
@@ -248,13 +253,13 @@ class FirebaseServices {
 
         await _localNotifications.show(
            notification.hashCode,
-           notification.title,
-           notification.body,
+           notification['title'],
+           notification['body'],
            notificationDetails,
           payload: message.data.toString(),
         );
 
-        Utils.printLog('Local notification shown: ${notification.title}');
+        Utils.printLog('Local notification shown: ${notification['title']}');
       }
     } catch (e) {
       Utils.printLog('Error showing local notification: $e');
