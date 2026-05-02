@@ -76,6 +76,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     setState(() {
       loginResponse = Utils.loginData?.data;
       isLoading = false;
+      Utils.userId = loginResponse!.userId;
     });
   }
 

@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/utility.dart';
 import 'constants/network_urls.dart';
+import 'constants/string_utils.dart';
 
 class FirebaseServices {
   static final FirebaseServices _instance = FirebaseServices._internal();
