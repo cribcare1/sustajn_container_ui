@@ -1,12 +1,29 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/imports_util.dart';
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/history_provider.dart';
+import '../../utils/utils.dart';
 import 'model/detail_model.dart';
 
-class SoldTab extends StatelessWidget {
-   SoldTab({super.key});
+class SoldTab extends ConsumerStatefulWidget {
+  const SoldTab({super.key});
+
+  @override
+  ConsumerState<SoldTab> createState() => _SoldTabState();
+}
+class _SoldTabState extends ConsumerState<SoldTab> {
+
 
   final searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _getSoldNetworkCall();
+  }
 
    final List<BorrowedDetails> containers = [
      BorrowedDetails(
@@ -264,4 +281,27 @@ class SoldTab extends StatelessWidget {
       ),
     );
   }
+  _getSoldNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(historyProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.GET_SOLD_CONTAINER}$userId';
+          ref.read(getSoldContainerProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }
+
+
