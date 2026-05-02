@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/auth/screens/profile_screen.dart';
+import 'package:sustajn_restaurant/firebase_services.dart';
 import 'package:sustajn_restaurant/search_screen/serarch_restaurant_screen.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -31,11 +32,7 @@ class DashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
-  final double borrowed = 300;
-  final double returnedCount = 100;
-  final double available = 800;
-  final double total = 1000;
-  final double damage = 2;
+
 
   String selectedDateRange = 'Today';
   String selectedContainer = 'Container';
@@ -54,6 +51,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ref.read(profileProvider).setContext(context);
       ref.read(notificationProvider).setContext(context);
     });
+
     Utils.getToken();
     Utils.authToken();
     Utils.getUserId();
@@ -61,6 +59,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> _init() async {
+    await FirebaseServices().initialize();
     await _loadProfile();
 
     if (ref.read(profileProvider).getProfileData == null) {
@@ -142,7 +141,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final width = mq.size.width;
     final w = MediaQuery.sizeOf(context).width;
     final cardHorizontalPadding = width * 0.04;
-    final cardSpacing = width * 0.04;
+    final cardSpacing = width * 0.02;
     final cardWidth = (width - (cardHorizontalPadding * 2) - cardSpacing) / 2;
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -312,7 +311,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       },
                                       width: cardWidth,
                                       assetPath: 'assets/images/profile.png',
-                                      label: Strings.PROFILE,
+                                      label: Strings.PROFILE_NAME,
                                     ),
                                   ],
                                 ),
@@ -393,7 +392,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
-    final cardHeight = width * 0.55;
+    final cardHeight = width * 0.65;
 
     return GestureDetector(
       onTap: onTap,

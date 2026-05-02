@@ -361,6 +361,7 @@ class Strings {
       'Please allow 48-72 hours for us to review and process your request. For queries, please contact customer care';
   static const String ENTER_EMAIL_ADDRESS = 'Enter a valid email address';
   static const String PROFILE = 'profile';
+  static const String PROFILE_NAME = 'Profile';
   static const String RESTAURANT = 'Restaurant';
   static const String CAFE = 'Cafe';
   static const String FAST_FOOD = 'Fast food Shop';

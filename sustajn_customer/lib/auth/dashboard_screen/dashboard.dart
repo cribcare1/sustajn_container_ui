@@ -4,6 +4,7 @@ import '../../constants/imports_util.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../firebase_services.dart';
 import '../../models/get_profile_model.dart';
 import '../../models/login_model.dart';
 import '../../models/signup_model.dart';
@@ -53,7 +54,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
       return;
     }
-
+      await FirebaseServices().initialize();
     setState(() {
       profile = data;
       isLoading = false;

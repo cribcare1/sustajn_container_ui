@@ -29,6 +29,9 @@ class _EditRestaurantNameDialogState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(profileProvider).setContext(context);
+    });
     Utils.userId;
     _nameController.text = widget.name;
     _nameController.selection = TextSelection.collapsed(
@@ -208,7 +211,7 @@ class _EditRestaurantNameDialogState
       profileUpdateProvider({
         NetworkUrls.UPDATE_PROFILE: NetworkUrls.UPDATE_PROFILE,
         Strings.USER_DATA: getJsonData(name),
-      }),
+      }).future,
     );
   }
 }

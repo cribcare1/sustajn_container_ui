@@ -25,7 +25,7 @@ class NetworkUrls {
 
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
-  static const PRODUCT_DATA = 'orders/productsSummary?userId=';
+  static const PRODUCT_DATA = 'orders/getBorrowedProduct?userId=';
   static const SEARCH_RESTAURANT ="auth/searchRestaurant";
   static const GET_PROFILE = 'auth/getProfileDetails/';
   static const UPDATE_PROFILE = 'auth/updateProfileDetails';

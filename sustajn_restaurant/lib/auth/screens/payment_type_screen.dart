@@ -67,7 +67,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             cardHolderName:cardDetails!.cardHolderName??"",
             cardNumber:cardDetails.cardNumber,
             expiryDate:cardDetails.expiryDate,
-            cvv:cardDetails.id.toString()));
+            cvv:cardDetails.id.toString()
+        ));
       }
       if(profileState.getProfileData?.data?.paymentGetWayResponse != null){
         final paymentGateWay =  profileState.getProfileData?.data?.paymentGetWayResponse;
@@ -241,27 +242,28 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: Strings.CVVS,
-                                        style: theme.textTheme.titleSmall!
-                                            .copyWith(color: Colors.white),
-                                      ),
-                                      TextSpan(
-                                        text: Strings.STAR,
-                                        style: theme.textTheme.titleSmall!
-                                            .copyWith(
-                                              color: theme.secondaryHeaderColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              //TODO:- Card cvv
+                              // Expanded(
+                              //   child: Text.rich(
+                              //     TextSpan(
+                              //       children: [
+                              //         TextSpan(
+                              //           text: Strings.CVVS,
+                              //           style: theme.textTheme.titleSmall!
+                              //               .copyWith(color: Colors.white),
+                              //         ),
+                              //         TextSpan(
+                              //           text: Strings.STAR,
+                              //           style: theme.textTheme.titleSmall!
+                              //               .copyWith(
+                              //                 color: theme.secondaryHeaderColor,
+                              //                 fontWeight: FontWeight.w600,
+                              //               ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ],
@@ -333,7 +335,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   },
 
                   rightText: widget.profile == 'profile'
-                      ? Strings.VERIFY
+                      ? Strings.UPDATE
                       : Strings.VERIFY_CONT,
                 ),
               ),
@@ -641,29 +643,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  bool _validateBankDetails(BuildContext context) {
-    final bankName = bankNameController.text.trim();
-    final accountNo = accountHolderNameController.text.trim();
-    final tax = bicController.text.trim();
-    final iban = ibanController.text.trim();
-
-    // ✅ Case 1: All empty → allowed
-    if (bankName.isEmpty && accountNo.isEmpty && tax.isEmpty && iban.isEmpty) {
-      return true;
-    }
-
-    // ❌ Case 2: Some filled but account number empty
-    if (accountNo.isEmpty) {
-      showCustomSnackBar(
-        context: context,
-        message: Strings.ACCOUNT_HOLDER_NAME_REQ,
-        color: Colors.red,
-      );
-      return false;
-    }
-
-    return true;
-  }
 }
 
 class AddGatewayDialog extends StatefulWidget {

@@ -78,7 +78,8 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                 },
                 searchController,
                 Strings.SEARCH_BY_CUSTOMER_NAME,
-                onFilterTap: () => _showFilterBottomSheet(context),
+                //TODO:-
+                // onFilterTap: () => _showFilterBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_10),
@@ -798,22 +799,25 @@ class _ReceiveFilterBottomSheetState
   }
 
   Widget _buildButtons(ThemeData theme, BuildContext context) {
-    return SubmitClearButton(
-      onLeftTap: () {
-        setState(() {
-          _selectedMonths.clear();
-          _selectedContainers.clear();
-          _searchQuery = '';
-          _searchController.clear();
-          ref.read(orderProvider).clearFiltersReceive();
-        });
-      },
-      leftText: Strings.CLEAR,
-      rightText: Strings.APPLY,
-      onRightTap: () {
-        widget.onApply(_selectedMonths.toList(), _selectedContainers.toList());
-        Navigator.pop(context);
-      },
+    return Padding(
+      padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      child: SubmitClearButton(
+        onLeftTap: () {
+          setState(() {
+            _selectedMonths.clear();
+            _selectedContainers.clear();
+            _searchQuery = '';
+            _searchController.clear();
+            ref.read(orderProvider).clearFiltersReceive();
+          });
+        },
+        leftText: Strings.CLEAR,
+        rightText: Strings.APPLY,
+        onRightTap: () {
+          widget.onApply(_selectedMonths.toList(), _selectedContainers.toList());
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }

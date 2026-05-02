@@ -108,7 +108,7 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(

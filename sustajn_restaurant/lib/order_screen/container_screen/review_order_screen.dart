@@ -18,184 +18,174 @@ class ReviewOrderScreen extends ConsumerWidget {
     final orderState = ref.watch(orderProvider);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: CustomAppBar(
-        title: 'Review Your Order',
-          leading: CustomBackButton()).getAppBar(context),
-      body: Stack(
-        children: [
+    return SafeArea(
+      bottom: true,top: false,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        appBar: CustomAppBar(
+          title: 'Review Your Order',
+            leading: CustomBackButton()).getAppBar(context),
+        body: Stack(
+          children: [
 
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: orderState.selectedContainers.length,
-                    separatorBuilder: (_, __) =>
-                        SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    itemBuilder: (_, index) {
-                      final item =
-                      orderState.selectedContainers[index];
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: orderState.selectedContainers.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+                      itemBuilder: (_, index) {
+                        final item =
+                        orderState.selectedContainers[index];
 
-                      return Container(
-                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-                        decoration: BoxDecoration(
-                          color: Constant.grey.withOpacity(0.2),
-                          borderRadius:
-                          BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                          border: Border.all(
-                              color: Constant.grey.withOpacity(0.3)),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-                            /// IMAGE
-                            Container(
-                              width: Constant.CONTAINER_SIZE_60,
-                              height: Constant.CONTAINER_SIZE_60,
-                              decoration: BoxDecoration(
-                                color: Constant.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(
-                                    Constant.CONTAINER_SIZE_12),
-                              ),
-                              child: Image.asset(
-                                "assets/images/cups.png",
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-
-                            SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                            /// DETAILS
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.containerName!,
-                                    style: theme.textTheme.titleMedium
-                                        ?.copyWith(
-                                        color: Colors.white),
-                                  ),
-                                  SizedBox(height: Constant.SIZE_04),
-                                  Text(
-                                    item.containerUniqueId!,
-                                    style: theme.textTheme.bodySmall
-                                        ?.copyWith(
-                                        color: Colors.white70),
-                                  ),
-                                  Text(
-                                    "${item.capacity} ml",
-                                    style: theme.textTheme.bodySmall
-                                        ?.copyWith(
-                                        color: Colors.white54),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            /// RIGHT SIDE (X + STEPPER)
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.end,
-                              children: [
-
-                                /// REMOVE ICON
-                                GestureDetector(
-                                  onTap: () {
-                                    orderState.removeContainer(
-                                        item.containerId!);
-                                  },
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white70,
-                                    size: Constant.CONTAINER_SIZE_18,
-                                  ),
+                        return Container(
+                          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                          decoration: BoxDecoration(
+                            color: Constant.grey.withOpacity(0.2),
+                            borderRadius:
+                            BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            border: Border.all(
+                                color: Constant.grey.withOpacity(0.3)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: Constant.CONTAINER_SIZE_60,
+                                height: Constant.CONTAINER_SIZE_60,
+                                decoration: BoxDecoration(
+                                  color: Constant.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(
+                                      Constant.CONTAINER_SIZE_12),
                                 ),
-
-                                SizedBox(height: Constant.CONTAINER_SIZE_20),
-
-                                /// STEPPER
-                                Row(
+                                child: Image.asset(
+                                  "assets/images/cups.png",
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              SizedBox(width: Constant.CONTAINER_SIZE_12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                                   children: [
-                                    _qtyBtn(
-                                        context,
-                                        Icons.remove,
-                                            () {
-                                          if (item.quantityAvailable! > 1) {
+                                    Text(
+                                      item.containerName!,
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(height: Constant.SIZE_04),
+                                    Text(
+                                      item.containerUniqueId!,
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                          color: Colors.white70),
+                                    ),
+                                    Text(
+                                      "${item.capacity} ml",
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                          color: Colors.white54),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      orderState.removeContainer(
+                                          item.containerId!);
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.white70,
+                                      size: Constant.CONTAINER_SIZE_18,
+                                    ),
+                                  ),
+                                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+                                  Row(
+                                    children: [
+                                      _qtyBtn(
+                                          context,
+                                          Icons.remove,
+                                              () {
+                                            if (item.quantityAvailable! > 1) {
+                                              item.quantityAvailable =
+                                                  item.quantityAvailable! -
+                                                      1;
+                                              orderState
+                                                  .notifyListeners();
+                                            }
+                                          }),
+
+                                      Container(
+                                        width:
+                                        Constant.CONTAINER_SIZE_50,
+                                        alignment:
+                                        Alignment.center,
+                                        child: Text(
+                                          item.quantityAvailable
+                                              .toString(),
+                                          style: theme
+                                              .textTheme.titleMedium
+                                              ?.copyWith(
+                                              color:
+                                              Constant.gold),
+                                        ),
+                                      ),
+
+                                      _qtyBtn(
+                                          context,
+                                          Icons.add,
+                                              () {
                                             item.quantityAvailable =
-                                                item.quantityAvailable! -
+                                                item.quantityAvailable! +
                                                     1;
                                             orderState
                                                 .notifyListeners();
-                                          }
-                                        }),
-
-                                    Container(
-                                      width:
-                                      Constant.CONTAINER_SIZE_50,
-                                      alignment:
-                                      Alignment.center,
-                                      child: Text(
-                                        item.quantityAvailable
-                                            .toString(),
-                                        style: theme
-                                            .textTheme.titleMedium
-                                            ?.copyWith(
-                                            color:
-                                            Constant.gold),
-                                      ),
-                                    ),
-
-                                    _qtyBtn(
-                                        context,
-                                        Icons.add,
-                                            () {
-                                          item.quantityAvailable =
-                                              item.quantityAvailable! +
-                                                  1;
-                                          orderState
-                                              .notifyListeners();
-                                        }),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    },
+                                          }),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
 
-
-                Container(
-                  width: double.infinity,
-                  child: SubmitButton(
-                    rightText: 'Proceed to Confirm',
-                    onRightTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (_) => ConfirmOrderSheet(
-                          parentContext: context,
-                        ),
-                      );
-                    },
+                  SizedBox(
+                    width: double.infinity,
+                    child: SubmitButton(
+                      rightText: 'Proceed to Confirm',
+                      onRightTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (_) => ConfirmOrderSheet(
+                            parentContext: context,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          if (orderState.isOrdering)
-            const Center(child: CircularProgressIndicator()),
-        ],
+            if (orderState.isOrdering)
+              const Center(child: CircularProgressIndicator()),
+          ],
+        ),
       ),
     );
   }

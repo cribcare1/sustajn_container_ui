@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_container_data.dart';
@@ -72,18 +73,38 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                Container(
-                  width: Constant.CONTAINER_SIZE_90,
-                  height: Constant.CONTAINER_SIZE_90,
+                (widget.item.containerImageUrl != "")
+                    ? Container(
+                  height: Constant.CONTAINER_SIZE_60,
+                  width: Constant.CONTAINER_SIZE_60,
                   decoration: BoxDecoration(
-                    color: Constant.grey.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(
-                      Constant.CONTAINER_SIZE_20,
-                    ),
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Image.asset(
-                    "assets/images/cups.png",
-                    fit: BoxFit.contain,
+                  padding: const EdgeInsets.all(6),
+                  child: Image.network(
+                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.item.containerImageUrl}",
+                    errorBuilder: (context, obj, stack) {
+                      return Image.asset(
+                        "assets/images/no_image_container.png",
+                      );
+                    },
+                    fit: BoxFit.fill,
+                  ),
+                )
+                    : Container(
+                  width: Constant.CONTAINER_SIZE_70,
+                  height: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Constant.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.inbox,
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
 

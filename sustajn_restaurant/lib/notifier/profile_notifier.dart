@@ -17,7 +17,7 @@ class ProfileState extends ChangeNotifier{
   BuildContext? _context;
   bool _isVerifying = false;
   LoginData? _loginResponse;
-
+bool _isAddressSaving = false;
   // Error messages
   String? _nameError;
 
@@ -32,6 +32,7 @@ class ProfileState extends ChangeNotifier{
   GetProfileData? get getProfileData => _getProfileData;
   BuildContext get context => _context!;
   LoginData? get loginResponse => _loginResponse;
+  bool get  isAddressSaving => _isAddressSaving;
 
 // Setter for all
   void setName(String value) {
@@ -76,7 +77,10 @@ void setIsImageSaving(bool isLoading){
       _nameError = null;
     }
   }
-
+ void setAddressSaving(bool isLoadingAddress){
+    _isAddressSaving = isLoadingAddress;
+    notifyListeners();
+ }
 
 ///
   ///

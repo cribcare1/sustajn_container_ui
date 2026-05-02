@@ -49,134 +49,138 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      bottom: true,top: false,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Utils.buildFloatingHeader(context),
-            SizedBox(height: Constant.SIZE_08),
-            Container(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+    return Padding(
+      padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SafeArea(
+        bottom: true,top: false,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Utils.buildFloatingHeader(context),
+              SizedBox(height: Constant.SIZE_08),
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                  ),
                 ),
-              ),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _key,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _header(context, theme),
-                      SizedBox(height: Constant.SIZE_15),
-                      _cardField(
-                        theme,
-                        Strings.CARD_HOLDER_NAME,
-                        _cardHolderNameController,
-                        keyboardType: TextInputType.text,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return Strings.CARD_HOLDER_REQUIRED;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: Constant.SIZE_10),
-                      _cardField(
-                        theme,
-                        Strings.CARD_NUMBER,
-                        _cardNumberController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          CardNumberInputFormatter(),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return Strings.CARD_NO_REQ;
-                          }
-                          final digitsOnly = value.replaceAll(' ', '');
-                          if (digitsOnly.length != 12) {
-                            return Strings.CARD_NUMBER_12;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: Constant.SIZE_10),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: getDatePicker(
-                              context,
-                              Strings.EXPIRATION_DATE,
-                              _expiryDateController,
-                                  (date){
-                                  _expiryDateController.text =
-                                      "${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                },
-                              theme,
-                            ),
-                          ),
-                          SizedBox(width: Constant.SIZE_10),
-                          Expanded(
-                            child: _cardField(
-                              theme,
-                              Strings.CVV,
-                              _cvvController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(3),
-                              ],
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return Strings.CVV_REQUIRED;
-                                }
-                                if (value.length != 3) {
-                                  return Strings.THREE_DIGIT;
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: Constant.CONTAINER_SIZE_20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: SubmitButton(
-                          onRightTap: () {
-                            if (_key.currentState!.validate()) {
-                              final cardData = CardDetails(
-                                cardHolderName: _cardHolderNameController.text,
-                                cardNumber: _cardNumberController.text,
-                                cvv: _cvvController.text,
-                                expiryDate: _expiryDateController.text,
-                              );
-                              widget.state.setCardDetails(cardData);
-                              Navigator.pop(context);
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _key,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _header(context, theme),
+                        SizedBox(height: Constant.SIZE_15),
+                        _cardField(
+                          theme,
+                          Strings.CARD_HOLDER_NAME,
+                          _cardHolderNameController,
+                          keyboardType: TextInputType.text,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z ]')),
+                          ],
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return Strings.CARD_HOLDER_REQUIRED;
                             }
+                            return null;
                           },
-                          rightText: Strings.ADD_CARD_CONTINUE,
                         ),
-                      ),
-                    ],
+                        SizedBox(height: Constant.SIZE_10),
+                        _cardField(
+                          theme,
+                          Strings.CARD_NUMBER,
+                          _cardNumberController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            CardNumberInputFormatter(),
+                          ],
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return Strings.CARD_NO_REQ;
+                            }
+                            final digitsOnly = value.replaceAll(' ', '');
+                            if (digitsOnly.length != 12) {
+                              return Strings.CARD_NUMBER_12;
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: Constant.SIZE_10),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: getDatePicker(
+                                context,
+                                Strings.EXPIRATION_DATE,
+                                _expiryDateController,
+                                    (date){
+                                    _expiryDateController.text =
+                                        "${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                  },
+                                theme,
+                              ),
+                            ),
+                            //TODO:- cvv field
+                            // SizedBox(width: Constant.SIZE_10),
+                            // Expanded(
+                            //   child: _cardField(
+                            //     theme,
+                            //     Strings.CVV,
+                            //     _cvvController,
+                            //     keyboardType: TextInputType.number,
+                            //     inputFormatters: [
+                            //       FilteringTextInputFormatter.digitsOnly,
+                            //       LengthLimitingTextInputFormatter(3),
+                            //     ],
+                            //     validator: (value) {
+                            //       if (value == null || value.trim().isEmpty) {
+                            //         return Strings.CVV_REQUIRED;
+                            //       }
+                            //       if (value.length != 3) {
+                            //         return Strings.THREE_DIGIT;
+                            //       }
+                            //       return null;
+                            //     },
+                            //   ),
+                            // ),
+                          ],
+                        ),
+
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: SubmitButton(
+                            onRightTap: () {
+                              if (_key.currentState!.validate()) {
+                                final cardData = CardDetails(
+                                  cardHolderName: _cardHolderNameController.text,
+                                  cardNumber: _cardNumberController.text,
+                                  // cvv: _cvvController.text,
+                                  expiryDate: _expiryDateController.text,
+                                );
+                                widget.state.setCardDetails(cardData);
+                                Navigator.pop(context);
+                              }
+                            },
+                            rightText: Strings.ADD_CARD_CONTINUE,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

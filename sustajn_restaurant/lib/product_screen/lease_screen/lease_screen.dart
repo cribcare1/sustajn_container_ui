@@ -62,7 +62,8 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                 },
                 searchController,
                 Strings.SEARCH_BY_CUSTOMER_ID,
-                onFilterTap: () => _showFilterBottomSheet(context),
+                //TODO
+                // onFilterTap: () => _showFilterBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.CONTAINER_SIZE_10),
