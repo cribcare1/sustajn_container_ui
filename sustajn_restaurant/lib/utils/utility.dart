@@ -359,7 +359,13 @@ class Utils {
                             await await SharedPreferenceUtils.saveBoolDataInSF(
                                 Strings.IS_LOGGED_IN, false);
                              await SharedPreferenceUtils.clearAll();
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>LoginScreen(),));
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const LoginScreen(),
+                              ),
+                                  (route) => false,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -689,19 +695,23 @@ class Utils {
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
 
-  static int? userId = 0;
+  // static int? userId = 0;
 
-  static void loadUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt(Strings.USER_ID);
-    printLog("JWT Token ==== $token");
+  static int? userId;
+
+  static Future<void> loadUserId() async {
+    userId =
+    await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
+
+    printLog("User Id ==== $userId");
   }
 
-  static int getUserId() {
-    if (userId == 0) {
-      loadUserId();
+  static Future<int> getUserId() async {
+    if (userId == null || userId == 0) {
+      await loadUserId();
     }
-    return userId!;
+
+    return userId ?? 0;
   }
 
   static showNetworkErrorToast(BuildContext context, var errorCode) {

@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 import 'constants/network_urls.dart';
+import 'constants/string_utils.dart';
 
 class FirebaseServices {
   static final FirebaseServices _instance = FirebaseServices._internal();
@@ -109,6 +111,11 @@ class FirebaseServices {
 
   Future<void> _checkAndUpdateTokenIfNeeded(String newToken) async {
     try {
+      print("Firebase UserId :---- ${Utils.userId}");
+      if (Utils.userId == null || Utils.userId! <= 0) {
+        Utils.printLog('UserId is invalid. Token update skipped.');
+        return;
+      }
       final prefs = await SharedPreferences.getInstance();
       final savedToken = prefs.getString(_tokenKey);
       final lastUpdateTimestamp = prefs.getInt(_lastUpdateKey);
@@ -152,7 +159,6 @@ class FirebaseServices {
       Utils.printLog('Updating FCM token to API: $token');
 
       final String deviceType = Platform.isAndroid ? 'Android' : 'iOS';
-
       final response = await http.post(
         Uri.parse('${NetworkUrls.BASE_URL}notification/registerOrUpdateDeviceToken'),
         headers: {
@@ -166,7 +172,9 @@ class FirebaseServices {
           'deviceType': deviceType,
         }),
       );
-
+print({ 'userId': Utils.userId,
+  'deviceToken': token,
+  'deviceType': deviceType,});
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.printLog('Token updated successfully on server');
         Utils.printLog('Response: ${response.body}');

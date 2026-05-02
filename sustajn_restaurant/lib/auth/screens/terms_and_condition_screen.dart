@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_restaurant/common_widgets/app_loading.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
@@ -33,8 +32,7 @@ class _TermsAndConditionScreenState
   }
 
   Future<String> _loadTermsFromAssets() async {
-    return await rootBundle
-        .loadString('assets/note/terms_condition.txt');
+    return await rootBundle.loadString('assets/note/terms_condition.txt');
   }
 
   @override
@@ -46,8 +44,10 @@ class _TermsAndConditionScreenState
       onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: theme.primaryColor,
-        appBar: CustomAppBar(title: 'Terms & Conditions',
-            leading: CustomBackButton()).getAppBar(context),
+        appBar: CustomAppBar(
+          title: 'Terms & Conditions',
+          leading: CustomBackButton(),
+        ).getAppBar(context),
         body: SafeArea(
           child: Stack(
             alignment: Alignment.center,
@@ -91,67 +91,26 @@ class _TermsAndConditionScreenState
                     ),
                   ),
 
-
                   Padding(
                     padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: SubmitButton(
-                        onRightTap:  ()  {
-                          if(!signUpState.isLoading){
-                            _onCreateAccount(signUpState);
-                          }
-
-                      },
-                      rightText: "Agree & Create Account",
-                      )
-                      // ElevatedButton(
-                      //   onPressed: signUpState.isLoading
-                      //       ? null
-                      //       : () async {
-                      //     final confirmed = await termsDialog(
-                      //       context,
-                      //       Icons.warning_amber_outlined,
-                      //       Strings.CONFIRM_ACCOUNT,
-                      //       Strings.CONFIRM_MESSAGE,
-                      //       Strings.CANCEL,
-                      //       Strings.CREATE,
-                      //     );
-                      //
-                      //     if (confirmed == true) {
-                      //       _getNetworkData(signUpState);
-                      //     }
-                      //   },
-                      //
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Constant.gold,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(
-                      //         Constant.CONTAINER_SIZE_20,
-                      //       ),
-                      //     ),
-                      //     padding: EdgeInsets.symmetric(
-                      //       vertical: Constant.CONTAINER_SIZE_16,
-                      //     ),
-                      //   ),
-                      //   child: Text(
-                      //     "Agree & Create Account",
-                      //     style: theme.textTheme.labelLarge?.copyWith(
-                      //       color: theme.primaryColor,
-                      //       fontWeight: FontWeight.w700,
-                      //     ),
-                      //   ),
-                      // ),
-                    ),
+                    child: signUpState.isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            width: double.infinity,
+                            child: SubmitButton(
+                              onRightTap: () {
+                                if (!signUpState.isLoading) {
+                                  _onCreateAccount(signUpState);
+                                }
+                              },
+                              rightText: "Agree & Create Account",
+                            ),
+                          ),
                   ),
                 ],
               ),
-              if(signUpState.isLoading)
-                Center(
-                  child:CircularProgressIndicator(
-                    color: Constant.gold,
-                  ),
-                )
+              if (signUpState.isLoading)
+                Center(child: CircularProgressIndicator(color: Constant.gold)),
             ],
           ),
         ),
@@ -175,147 +134,146 @@ class _TermsAndConditionScreenState
         _getNetworkData(signUpState);
       });
     }
-
   }
 
   termsDialog(
-      BuildContext context,
-      IconData icon,
-      String title,
-      String subTitle,
-      String cancelButton,
-      String createButton
-      ) async {
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subTitle,
+    String cancelButton,
+    String createButton,
+  ) async {
     final theme = Theme.of(context);
 
     return await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => Dialog(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: Constant.PADDING_HEIGHT_10,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Container(
-              //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              //   decoration: BoxDecoration(
-              //       color: Constant.grey.withOpacity(0.2),
-              //       shape: BoxShape.rectangle,
-              //       borderRadius: BorderRadius.circular(12),
-              //       border: Border.all(
-              //           color: Constant.grey.withOpacity(0.1)
-              //       )
-              //   ),
-              //   child: Icon(
-              //     icon,
-              //     size: Constant.CONTAINER_SIZE_40,
-              //     color: Constant.gold,
-              //   ),
-              // ),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                  decoration: BoxDecoration(
-                    color: Constant.grey.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Constant.grey.withOpacity(0.1),
-                    ),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: Constant.CONTAINER_SIZE_40,
-                    color: Constant.gold,
-                  ),
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-              Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    height: Constant.SIZE_2,
-                    fontWeight: FontWeight.w600,
-                  )),
-              SizedBox(height: Constant.SIZE_05),
-              Text(
-                subTitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  height: Constant.SIZE_2,
-                ),
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-              Row(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => Dialog(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: Constant.PADDING_HEIGHT_10,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.pop(context, false);
-
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Constant.gold),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
-                          ),
+                  // Container(
+                  //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                  //   decoration: BoxDecoration(
+                  //       color: Constant.grey.withOpacity(0.2),
+                  //       shape: BoxShape.rectangle,
+                  //       borderRadius: BorderRadius.circular(12),
+                  //       border: Border.all(
+                  //           color: Constant.grey.withOpacity(0.1)
+                  //       )
+                  //   ),
+                  //   child: Icon(
+                  //     icon,
+                  //     size: Constant.CONTAINER_SIZE_40,
+                  //     color: Constant.gold,
+                  //   ),
+                  // ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                      decoration: BoxDecoration(
+                        color: Constant.grey.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Constant.grey.withOpacity(0.1),
                         ),
                       ),
-                      child: Text(
-                        cancelButton,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Constant.gold,
-                        ),
+                      child: Icon(
+                        icon,
+                        size: Constant.CONTAINER_SIZE_40,
+                        color: Constant.gold,
                       ),
                     ),
                   ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      height: Constant.SIZE_2,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_05),
+                  Text(
+                    subTitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white,
+                      height: Constant.SIZE_2,
+                    ),
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-                  SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                  // STAY
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Constant.gold,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_12,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.pop(context, false);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Constant.gold),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            cancelButton,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Constant.gold,
+                            ),
                           ),
                         ),
                       ),
-                      child: Text(
-                        createButton,
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.primaryColor,
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                      // STAY
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constant.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            createButton,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.primaryColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
@@ -325,13 +283,10 @@ class _TermsAndConditionScreenState
       if (value == null) return;
 
       if (value is Map) {
-        final nested = removeNullAndEmpty(
-          Map<String, dynamic>.from(value),
-        );
+        final nested = removeNullAndEmpty(Map<String, dynamic>.from(value));
 
         cleanedMap[key] = nested;
-      }
-      else {
+      } else {
         cleanedMap[key] = value;
       }
     });
@@ -339,7 +294,7 @@ class _TermsAndConditionScreenState
     return cleanedMap;
   }
 
-  _getPayload(AuthState authState){
+  _getPayload(AuthState authState) {
     print(authState.registrationData!.address);
     print(authState.socialMediaList);
     // print(authState.gateway??authState.gateway!.toJson());
@@ -358,7 +313,7 @@ class _TermsAndConditionScreenState
       "phoneNumber": authState.registrationData!.phoneNumber,
       "password": authState.registrationData!.password,
       "dateOfBirth": "",
-      "subscriptionPlanId":authState.planId,
+      "subscriptionPlanId": authState.planId,
       "address": {
         "addressType": "",
         "flatDoorHouseDetails": addressDetails,
@@ -368,14 +323,16 @@ class _TermsAndConditionScreenState
       },
       "latitude": authState.registrationData!.latitude,
       "longitude": authState.registrationData!.longitude,
-      if(authState.businessModel != null)
-        "basicDetails": authState.businessModel??BusinessModel().toJson(),
-      "bankDetails": authState.bankDetails??BankDetailsModel().toJson(),
+      if (authState.businessModel != null)
+        "basicDetails": authState.businessModel ?? BusinessModel().toJson(),
+      "bankDetails": authState.bankDetails ?? BankDetailsModel().toJson(),
       "socialMediaList": authState.socialMediaList.isEmpty
           ? []
           : authState.socialMediaList.map((e) => e.toJson()).toList(),
       "cardDetails": authState.cardDetails?.toJson() ?? CardDetails().toJson(),
-    "contactAndRegistrationDetails":authState.registrationDetailsData?.toJson()??ContactAndRegistrationDetails().toJson(),
+      "contactAndRegistrationDetails":
+          authState.registrationDetailsData?.toJson() ??
+          ContactAndRegistrationDetails().toJson(),
       "paymentGetWay": () {
         final map = (authState.gateway ?? PaymentGatewayModel()).toJson();
         map.remove('asset');
@@ -391,9 +348,11 @@ class _TermsAndConditionScreenState
       registrationState.setIsLoading(true);
       FocusScope.of(context).unfocus();
 
-      if(registrationState.isValid) {
+      if (registrationState.isValid) {
         Map<String, dynamic> mapData = _getPayload(registrationState);
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((isNetworkAvailable) {
+        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+        ) {
           Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
           setState(() {
             if (isNetworkAvailable) {
@@ -406,12 +365,12 @@ class _TermsAndConditionScreenState
             }
           });
         });
-      }else {
+      } else {
         Utils.showToast("Not valid data for Registration");
       }
     } catch (e) {
       Utils.printLog('Error in Login button: $e');
-    }finally{
+    } finally {
       registrationState.setIsLoading(false);
     }
   }

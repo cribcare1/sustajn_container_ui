@@ -116,7 +116,7 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
     if(response != null){
       LoginModel register = LoginModel.fromJson(response);
       if (register.status != null && register.status!.toLowerCase() == 'success') {
-        Utils.printLog(register.data!.toJson().toString());
+        Utils.printLog("Login Data  ${register.data!.toJson().toString()}");
         registrationState.setIsLoading(false);
         registrationState.setUserId(register.data!.userId!);
         SharedPreferenceUtils.saveDataInSF(
@@ -127,11 +127,16 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
           Strings.USER_ID,
           register.data!.userId!,
         );
+
         SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
         Utils.userId = register.data!.userId!;
         Utils.getToken();
         Utils.getProfile();
-        // Utils.getUserId();
+        try {
+          await FirebaseServices().initialize();
+        } catch (e) {
+          print("Firebase init error: $e");
+        }
         NavUtil.navigateToWithReplacement(registrationState.context, AccountSuccessScreen(
           message: 'Your subscription is now active!',
         ));
