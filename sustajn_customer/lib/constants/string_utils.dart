@@ -267,8 +267,8 @@ class Strings {
   static const String CARD_DETAILS = 'Card Details';
   static const String ONLINE_PAYMENT_GATEWAY = 'Online Payment Gateway';
   static const String ACCOUNT_HOLDER_NAME = 'Account Holder Name*';
-  static const String BIC = 'BIC';
-  static const String IBAN = 'IBAN';
+  static const String BIC = 'BIC(e.g.01264789635)';
+  static const String IBAN = 'IBAN(e.g.AE012345789635478952140)';
   static const String VERIFY_CONTINUE = 'Verify & Continue';
   static const String MY_PROFILE = 'My Profile';
   static const String EMAIL_1 = 'Email';
