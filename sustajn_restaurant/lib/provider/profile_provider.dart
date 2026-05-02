@@ -16,6 +16,7 @@ import '../lease_receive/model/container_return_list_model.dart';
 import '../models/update_address_data.dart';
 import '../notifier/profile_notifier.dart';
 import '../service/profile_service.dart';
+import '../utils/nav_utils.dart';
 import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 
@@ -99,6 +100,9 @@ FutureProvider.family<GetProfileData, Map<String, dynamic>>((ref, params) async 
     if (response.status != null &&
         response.status!.isNotEmpty &&
         response.status!.toLowerCase() == NetworkUrls.SUCCESS) {
+      final userId = Utils.userId;
+      final url = '${NetworkUrls.GET_PROFILE}$userId';
+      ref.read(getProfileProvider(url));
       return response;
     } else {
       throw Exception(
@@ -110,25 +114,87 @@ FutureProvider.family<GetProfileData, Map<String, dynamic>>((ref, params) async 
 
 
 final addressUpdateProvider =
-FutureProvider.family<UpdateProfAddressData, Map<String, dynamic>>(
-      (ref, params) async {
-    final apiService = ref.read(getProfileApiProvider);
+FutureProvider.family<UpdateProfAddressData,
+    Map<String, dynamic>>((ref, params) async {
 
-    final partUrl = params[NetworkUrls.UPDATE_ADDRESS];
-    final url = '${NetworkUrls.BASE_URL}$partUrl';
-    final requestData =
-    params[Strings.USER_DATA] as Map<String, dynamic>;
+  final apiService =
+  ref.read(getProfileApiProvider);
+
+  final profileState =
+  ref.watch(profileProvider);
+
+  try {
+
+    final url =
+        '${NetworkUrls.BASE_URL}${NetworkUrls.UPDATE_ADDRESS}';
+
     Utils.printLog("Provider url : $url");
-    final responseData =
-    await apiService.addressService(url, requestData);
 
-    print("Provider Response: $responseData");
-    if (responseData.status == null || responseData.status!.isEmpty) {
-      throw Exception(responseData.title ?? 'Update failed');
+    Utils.printLog("Request Params : $params");
+
+    final responseData =
+    await apiService.addressService(
+      url,
+      params,
+    );
+
+    Utils.printLog(
+      "Provider Response : ${responseData.toJson()}",
+    );
+
+    if (responseData.status == null ||
+        responseData.status!.isEmpty) {
+
+      throw Exception(
+        responseData.title ?? 'Update failed',
+      );
     }
+
+    Utils.showToast(
+      "Address updated successfully",
+    );
+
+    // POP FIRST
+    NavUtil.popScreen(
+      profileState.context,
+      1,
+    );
+
+    // THEN REFRESH
+    final userId = await Utils.getUserId();
+
+    final url1 =
+        '${NetworkUrls.GET_PROFILE}$userId';
+
+    Future.microtask(() async {
+      await ref.refresh(
+        getProfileProvider(url1).future,
+      );
+    });
+
     return responseData;
-  },
-);
+
+  } catch (e, stackTrace) {
+
+    Utils.printLog(
+      "Address Update Error : $e",
+    );
+
+    Utils.printLog(
+      "StackTrace : $stackTrace",
+    );
+
+    Utils.showToast(
+      e.toString(),
+    );
+
+    rethrow;
+
+  } finally {
+
+    profileState.setAddressSaving(false);
+  }
+});
 
 final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((
     ref,
@@ -144,6 +210,7 @@ final referPartnerProvider = FutureProvider.family<dynamic, Map<String, dynamic>
   Utils.showToast(
       responseData['message']);
   Navigator.pop(profileState.context);
+
   return responseData;
 });
 

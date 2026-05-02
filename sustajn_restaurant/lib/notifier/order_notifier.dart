@@ -23,7 +23,8 @@ class OrderState extends ChangeNotifier {
   bool _isOrdering = false;
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
-
+  List<OrderedResponses> _orderHistoryList = [];
+  List<OrderedResponses> _orderHistoryListFiltered = [];
   bool get isVerifying => _isVerifying;
 
   String get name => _name;
@@ -32,6 +33,8 @@ class OrderState extends ChangeNotifier {
   GetContainerData? get getContainerData => _getContainerData;
   List<ContainersDetails> get filterInventory => _filterInventory;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
+  List<OrderedResponses> get orderHistoryList => _orderHistoryList;
+  List<OrderedResponses> get orderHistoryListFiltered => _orderHistoryListFiltered;
   DamagedContainerData? get damagedContainerData => _damagedContainerData;
   SoldContainerData? get soldContainerData => _soldContainerData;
   BuildContext get context => _context!;
@@ -128,6 +131,29 @@ class OrderState extends ChangeNotifier {
     updateGroupedReceiveOrders();
     notifyListeners();
   }
+  void setHistoryContainer(List<OrderedResponses> _orderHistoryListData){
+    _orderHistoryList  = _orderHistoryListData;
+    _orderHistoryListFiltered = _orderHistoryList;
+    notifyListeners();
+  }
+
+  void historyFilter(String query) {
+    final search = query.toLowerCase().trim();
+    _orderHistoryListFiltered = _orderHistoryList.where((value) {
+      return value.productName!
+          .toLowerCase()
+          .contains(search) ||
+          value.orderId!
+              .toLowerCase()
+              .contains(search) ||
+          value.status!
+              .toLowerCase()
+              .contains(search);
+
+    }).toList();
+    notifyListeners();
+  }
+
   void setDamagedContainerData(DamagedContainerData damagedContainer){
     _damagedContainerData = damagedContainer;
     notifyListeners();

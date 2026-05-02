@@ -15,15 +15,12 @@ class EditAddressDialog extends ConsumerStatefulWidget {
   const EditAddressDialog({super.key, required this.selectedAddress});
 
   @override
-  ConsumerState<EditAddressDialog> createState() =>
-      _EditAddressDialogState();
+  ConsumerState<EditAddressDialog> createState() => _EditAddressDialogState();
 }
 
-class _EditAddressDialogState
-    extends ConsumerState<EditAddressDialog> {
+class _EditAddressDialogState extends ConsumerState<EditAddressDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _addressController =
-  TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   double lat = 0.0;
   double long = 0.0;
@@ -31,6 +28,9 @@ class _EditAddressDialogState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(profileProvider).setContext(context);
+    });
     if (widget.selectedAddress != null) {
       _addressController.text =
           widget.selectedAddress!.areaStreetCityBlockDetails ?? '';
@@ -60,9 +60,10 @@ class _EditAddressDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final address = widget.selectedAddress;
-
+    final profileState = ref.watch(profileProvider);
     return SafeArea(
-      top: false,bottom: true,
+      top: false,
+      bottom: true,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16),
         child: Column(
@@ -76,7 +77,11 @@ class _EditAddressDialogState
                 child: CircleAvatar(
                   radius: Constant.CONTAINER_SIZE_16,
                   backgroundColor: Colors.white,
-                  child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+                  child: Icon(
+                    Icons.clear,
+                    color: Colors.black,
+                    size: Constant.CONTAINER_SIZE_18,
+                  ),
                 ),
               ),
             ),
@@ -101,10 +106,14 @@ class _EditAddressDialogState
                       child: Container(
                         height: Constant.SIZE_04,
                         width: Constant.CONTAINER_SIZE_40,
-                        margin:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_16),
+                        margin: EdgeInsets.only(
+                          bottom: Constant.CONTAINER_SIZE_16,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_10,
+                          ),
                         ),
                       ),
                     ),
@@ -123,25 +132,26 @@ class _EditAddressDialogState
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
                       cursorColor: Colors.white,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: Colors.white),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                      ),
                       decoration: InputDecoration(
                         labelText: Strings.ADDRESS,
-                        floatingLabelBehavior:
-                        FloatingLabelBehavior.always,
-                        labelStyle: theme.textTheme.bodyMedium
-                            ?.copyWith(color: Colors.white),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                        ),
                         suffixIcon: IconButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => MapScreen(profile: "profile",)),
+                                builder: (_) => MapScreen(profile: "profile"),
+                              ),
                             ).then((value) {
                               if (value != null) {
                                 setState(() {
-                                  _addressController.text =
-                                  value['address'];
+                                  _addressController.text = value['address'];
                                   lat = value['lat'];
                                   long = value['lng'];
                                 });
@@ -154,10 +164,8 @@ class _EditAddressDialogState
                           ),
                         ),
                         contentPadding: EdgeInsets.symmetric(
-                          horizontal:
-                          Constant.CONTAINER_SIZE_16,
-                          vertical:
-                          Constant.CONTAINER_SIZE_14,
+                          horizontal: Constant.CONTAINER_SIZE_16,
+                          vertical: Constant.CONTAINER_SIZE_14,
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
@@ -168,15 +176,13 @@ class _EditAddressDialogState
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
                           ),
-                          borderSide:
-                          BorderSide(color: Constant.grey),
+                          borderSide: BorderSide(color: Constant.grey),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
                             Constant.CONTAINER_SIZE_12,
                           ),
-                          borderSide:
-                          BorderSide(color: Constant.grey),
+                          borderSide: BorderSide(color: Constant.grey),
                         ),
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
@@ -192,38 +198,34 @@ class _EditAddressDialogState
                     SizedBox(height: Constant.CONTAINER_SIZE_24),
                     SizedBox(
                       width: double.infinity,
-                      child: SubmitButton(
-                        onRightTap: () {
-                          if (!_formKey.currentState!
-                              .validate()) {
-                            return;
-                          }
-                          if (address == null) {
-                            Utils.showToast(
-                                'Address data not available');
-                            return;
-                          }
-                          if (address.id == null ||
-                              address.addressType == null ||
-                              address
-                                  .flatDoorHouseDetails ==
-                                  null ||
-                              address.poBoxOrPostalCode ==
-                                  null) {
-                            Utils.showToast(
-                                'Fill address details');
-                            return;
-                          }
-                          _editAddressNetworkCall(
-                            address.id.toString(),
-                            address.addressType!,
-                            address.flatDoorHouseDetails!,
-                            _addressController.text.trim(),
-                            address.poBoxOrPostalCode!,
-                          );
-                        },
-                        rightText: Strings.SAVE_CHANGES,
-                      ),
+                      child: profileState.isAddressSaving
+                          ? Center(child: CircularProgressIndicator())
+                          : SubmitButton(
+                              onRightTap: () {
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
+                                if (address == null) {
+                                  Utils.showToast('Address data not available');
+                                  return;
+                                }
+                                if (address.id == null ||
+                                    address.addressType == null ||
+                                    address.flatDoorHouseDetails == null ||
+                                    address.poBoxOrPostalCode == null) {
+                                  Utils.showToast('Fill address details');
+                                  return;
+                                }
+                                _editAddressNetworkCall(
+                                  address.id.toString(),
+                                  address.addressType!,
+                                  address.flatDoorHouseDetails!,
+                                  _addressController.text.trim(),
+                                  address.poBoxOrPostalCode!,
+                                );
+                              },
+                              rightText: Strings.SAVE_CHANGES,
+                            ),
                     ),
                   ],
                 ),
@@ -236,12 +238,12 @@ class _EditAddressDialogState
   }
 
   Map<String, dynamic> getJsonData(
-      String addressId,
-      String addType,
-      String houseDtls,
-      String cityDtls,
-      String pin,
-      ) {
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) {
     return {
       "addressId": addressId,
       "addressType": addType,
@@ -252,26 +254,28 @@ class _EditAddressDialogState
   }
 
   _editAddressNetworkCall(
-      String addressId,
-      String addType,
-      String houseDtls,
-      String cityDtls,
-      String pin,
-      ) async {
+    String addressId,
+    String addType,
+    String houseDtls,
+    String cityDtls,
+    String pin,
+  ) async {
     Utils.printLog('Update Address Network call');
-
-    final isNetworkAvailable = await ref
-        .read(networkProvider.notifier)
-        .isNetworkAvailable();
-
-    if (!isNetworkAvailable) {
-      Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-      return;
-    }
-
-    final jsonData =
-    getJsonData(addressId, addType, houseDtls, cityDtls, pin);
-
-    ref.read(addressUpdateProvider(jsonData));
+    final profileState = ref.read(profileProvider);
+    profileState.setAddressSaving(true);
+    await ref.read(networkProvider.notifier).isNetworkAvailable().then((value) {
+      if (value) {
+        final jsonData = getJsonData(
+          addressId,
+          addType,
+          houseDtls,
+          cityDtls,
+          pin,
+        );
+        ref.read(addressUpdateProvider(jsonData).future);
+      } else {
+        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+      }
+    });
   }
 }

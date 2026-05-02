@@ -45,10 +45,10 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(leaseReceiveNotifier).setContext(context);
       await controller.start();
-      _getContainerList(
-        ref.read(leaseReceiveNotifier),
-        restaurantId: Utils.userId.toString(),
-      );
+      // _getContainerList(
+      //   ref.read(leaseReceiveNotifier),
+      //   restaurantId: Utils.userId.toString(),
+      // );
     });
   }
   @override
@@ -184,7 +184,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsetsGeometry.symmetric(
@@ -325,39 +325,5 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
     );
   }
 
-  _getContainerList(LeaseReceiveNotifier leasState, {required String restaurantId,}) async {
-    try {
 
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-            isNetworkAvailable,
-            ) async {
-          try {
-            if (isNetworkAvailable) {
-              leasState.setContext(context);
-              leasState.setLoading(true);
-              ref.read(
-                containerListProvider(restaurantId),
-              );
-            } else {
-              leasState.setLoading(false);
-              if (!mounted) return;
-              showCustomSnackBar(
-                context: context,
-                message: Strings.NO_INTERNET_CONNECTION,
-                color: Colors.white,
-              );
-            }
-          } catch (e) {
-            Utils.printLog('Error on button onPressed: $e');
-            leasState.setLoading(false);
-          }
-          if (!mounted) return;
-          FocusScope.of(context).unfocus();
-        });
-
-    } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      leasState.setLoading(false);
-    }
-  }
 }

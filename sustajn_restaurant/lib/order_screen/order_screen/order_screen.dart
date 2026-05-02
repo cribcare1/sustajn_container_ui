@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/container_history_data.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
 import '../../provider/order_provider.dart';
@@ -46,75 +47,68 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
-
-    final container =
-        containerState.containerHistorydata?.data?.orderedResponses;
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
+          child:containerState.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : ( containerState.orderHistoryList.isEmpty)
+              ? const Center(
+            child: Text(
+              Strings.NO_CONTAINER_AVAILABLE,
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+              : Column(
             children: [
               CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CUSTOMER_ID,
-                onFilterTap: (){
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (_) => const OrderFilterBottomSheet(),
-                  );
-
-                }
+                "Search by Container Id/Order Id",
+                onChanged: (value){
+                  containerState.historyFilter(value);
+                },
+                //TODO:-
+                // onFilterTap: (){
+                //   showModalBottomSheet(
+                //     context: context,
+                //     isScrollControlled: true,
+                //     backgroundColor: Colors.transparent,
+                //     builder: (_) => const OrderFilterBottomSheet(),
+                //   );
+                //
+                // }
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_10),
               Expanded(
-                child: containerState.isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : (container == null || container.isEmpty)
+                child:( containerState.orderHistoryListFiltered.isEmpty)
                     ? const Center(
-                        child: Text(
-                          Strings.NO_CONTAINER_AVAILABLE,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: container.length,
-                        itemBuilder: (context, index) {
-                          //todo needed later
-                          // final month = container.elementAt(index);
-                          // final monthOrders = container[month];
+                  child: Text(
+                    Strings.NO_CONTAINER_AVAILABLE,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+                    :  ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: containerState.orderHistoryListFiltered.length,
+                            separatorBuilder: (_, __) => SizedBox(
+                              height: Constant.CONTAINER_SIZE_12,
+                            ),
+                            itemBuilder: (context, index) {
+                              final item = containerState.orderHistoryListFiltered[index];
+                              return _buildOrderCard(
+                                context,
+                                item.status ?? "Unknown",
+                                item.productName ?? "N/A",
+                                item.orderId ?? "-",
+                                item.orderDate ?? "",
+                                item,
+                              );
+                            },
+                          ),
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //todo needed later
-                              // _buildMonthHeader(context, month),
-                              ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: container.length,
-                                separatorBuilder: (_, __) => SizedBox(
-                                  height: Constant.CONTAINER_SIZE_12,
-                                ),
-                                itemBuilder: (context, orderIndex) {
-                                  final item = container[index];
-                                  return _buildOrderCard(
-                                    context,
-                                    item.status ?? "Unknown",
-                                    item.productName ?? "N/A",
-                                    item.orderId ?? "-",
-                                    item.orderDate ?? "",
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      ),
               ),
             ],
           ),
@@ -123,26 +117,6 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: Strings.SEARCH_BY_CONTAINER_NAME,
-          prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
-          suffixIcon: Icon(Icons.tune, color: theme.iconTheme.color),
-          filled: true,
-          fillColor: theme.cardColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    );
-  }
 
   // 🗓 Month Header
   Widget _buildMonthHeader(BuildContext context, String title) {
@@ -166,6 +140,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     String title,
     String orderId,
     String date,
+      OrderedResponses orderData,
   ) {
     final theme = Theme.of(context);
 
@@ -174,6 +149,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         NavUtil.navigateToPushScreen(context, OrderDetailsScreen(
           orderId: orderId,
           status: status,
+          orderData: orderData,
         ));
       },
       child: Container(

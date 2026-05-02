@@ -53,7 +53,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 onChanged: (value){
                 orderState.filterInventoryByNameOrId(value);
                 },
-                onFilterTap: () => _showSortBottomSheet(context),
+                //TODO:-
+                // onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.SIZE_04),

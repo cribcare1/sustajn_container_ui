@@ -87,6 +87,7 @@ final getContainerHistoryProvider = FutureProvider.family<dynamic, String>((
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       containerState.setIsLoading(false);
       containerState.setContainerHistoryData(responseData);
+      containerState.setHistoryContainer(responseData.data!.orderedResponses??[]);
     } else {
       containerState.setIsLoading(false);
       Utils.showToast(responseData.message!);

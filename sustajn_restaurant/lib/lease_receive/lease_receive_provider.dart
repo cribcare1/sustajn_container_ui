@@ -5,6 +5,7 @@ import 'package:sustajn_restaurant/lease_receive/lease_receive_notifier.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../constants/imports_util.dart';
+import '../provider/profile_provider.dart';
 import 'model/container_list_model.dart';
 import 'model/container_return_list_model.dart';
 
@@ -18,6 +19,10 @@ final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
     final response = await apiService.leaseContainer((params));
     if(response != null && response['status'] == NetworkUrls.SUCCESS){
       print("✅ SUCCESS BLOCK EXECUTED");
+      final url =
+          '${NetworkUrls.DASHBOARD_CHART}${Utils.userId}&month=${DateTime.now().month}&year=${DateTime.now().year}';
+      Utils.printLog("url::$url");
+      ref.read(getChartData(url));
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],

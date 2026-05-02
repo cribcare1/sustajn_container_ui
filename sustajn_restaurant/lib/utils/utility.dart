@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +20,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../lease_receive/lease_receive_notifier.dart';
+import '../lease_receive/lease_receive_provider.dart';
 import '../models/login_model.dart';
+import '../network_provider/network_provider.dart';
 
 class Utils {
 
@@ -359,6 +363,8 @@ class Utils {
                             await await SharedPreferenceUtils.saveBoolDataInSF(
                                 Strings.IS_LOGGED_IN, false);
                              await SharedPreferenceUtils.clearAll();
+                            final prefs = await SharedPreferences.getInstance();
+                            await prefs.clear();
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -1006,5 +1012,7 @@ void showCustomSnackBar({
       duration: const Duration(seconds: 2),
     ),
   );
+
 }
+
 

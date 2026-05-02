@@ -12,6 +12,7 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
 import '../lease_receive_notifier.dart';
 import '../lease_receive_provider.dart';
 import '../model/container_list_model.dart';

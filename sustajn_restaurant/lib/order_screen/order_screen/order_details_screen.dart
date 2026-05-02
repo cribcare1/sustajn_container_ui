@@ -8,11 +8,11 @@ import '../../utils/utility.dart';
 class OrderDetailsScreen extends StatefulWidget {
   final String orderId;
   final String status;
-
+final  OrderedResponses orderData;
   const OrderDetailsScreen({
     super.key,
     required this.orderId,
-    required this.status,
+    required this.status, required this.orderData,
   });
 
   @override
@@ -110,10 +110,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    _containerItem("Dip Cup", "ST-DC-50", "50ml", "150"),
-                    _containerItem("Round Container", "ST-RDC-500", "500ml", "200"),
-                    if (widget.status == "Delivered")
-                      _containerItem("Rectangular Container", "ST-RC-800", "800ml", "50"),
+                    _containerItem(widget.orderData.productName??"",
+                       widget.orderData.requestedQty.toString()),
                   ],
                 ),
               )
@@ -144,38 +142,38 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     items.add(_timelineItem(
       icon: Icons.check_circle,
       color: Colors.lightGreenAccent,
-      title: "Ordered on: 29.11.2025",
-      time: "08:00",
-      showLine: widget.status != "Pending",
+      title: "Ordered on: ${widget.orderData.orderDate!.split(" ").take(1).join()}",
+      time: widget.orderData.orderDate!.split(" ").sublist(1).join(),
+      showLine: widget.status != "PENDING",
     ));
 
-    if (widget.status == "Confirmed" ||
-        widget.status == "Delivered") {
+    if (widget.status == "CONFIRMED" ||
+        widget.status == "DELIVERED") {
       items.add(_timelineItem(
         icon: Icons.check_circle,
         color: Colors.lightGreenAccent,
-        title: "Confirmed on: 01.12.2025",
-        time: "12:02",
-        showLine: widget.status == "Delivered",
+        title: "Confirmed on: ${widget.orderData.decisionAt!.split(" ").take(1).join()}",
+        time: widget.orderData.decisionAt!.split(" ").sublist(1).join(),
+        showLine: widget.status == "DELIVERED",
       ));
     }
 
-    if (widget.status == "Delivered") {
+    if (widget.status == "DELIVERED") {
       items.add(_timelineItem(
         icon: Icons.check_circle,
         color: Colors.lightGreenAccent,
-        title: "Delivered on: 26.11.2025",
-        time: "10:02",
+        title: "Delivered on: ${widget.orderData.decisionAt!.split(" ").take(1).join()}",
+        time: widget.orderData.decisionAt!.split(" ").sublist(1).join(),
         showLine: false,
       ));
     }
 
-    if (widget.status == "Rejected") {
+    if (widget.status == "REJECTED") {
       items.add(_timelineItem(
         icon: Icons.cancel,
         color: Colors.redAccent,
-        title: "Rejected on: 01.12.2025",
-        time: "12:31",
+        title: "Rejected on: ${widget.orderData.decisionAt!.split(" ").take(1).join()}",
+        time: widget.orderData.decisionAt!.split(" ").sublist(1).join(),
         showLine: false,
       ));
     }
@@ -219,8 +217,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   Widget _containerItem(
       String title,
-      String code,
-      String volume,
+      // String code,
+      // String volume,
       String qty,
       ) {
     return Container(
@@ -243,17 +241,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             child: const Icon(Icons.inventory_2, color: Colors.white),
           ),
           SizedBox(width: Constant.SIZE_10),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
                     style: const TextStyle(color: Colors.white, fontSize: 15)),
-                Text(code,
-                    style: const TextStyle(color: Colors.white70, fontSize: 13)),
-                Text(volume,
-                    style: const TextStyle(color: Colors.white54, fontSize: 12)),
               ],
             ),
           ),

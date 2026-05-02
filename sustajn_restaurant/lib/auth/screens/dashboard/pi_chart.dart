@@ -1,20 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../lease_receive/lease_receive_notifier.dart';
+import '../../../lease_receive/lease_receive_provider.dart';
 import '../../../lease_receive/screens/lease_scan_screen.dart';
+import '../../../network_provider/network_provider.dart';
 import '../../../utils/nav_utils.dart';
 import '../../../utils/utility.dart';
 import 'option_file.dart';
 
-class FilterPopupWidget extends StatefulWidget {
+class FilterPopupWidget extends ConsumerStatefulWidget {
   const FilterPopupWidget({super.key});
 
   @override
-  State<FilterPopupWidget> createState() => _FilterPopupWidgetState();
+  ConsumerState<FilterPopupWidget> createState() => _FilterPopupWidgetState();
 }
 
-class _FilterPopupWidgetState extends State<FilterPopupWidget> {
+class _FilterPopupWidgetState extends ConsumerState<FilterPopupWidget> {
   String? selectedType;
   String? selectedValue;
   List<String> valueList = ["Customer Return", "Restaurant Damage"];
@@ -72,6 +77,7 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
                           onTap: () {
                             setState(() {
                               selectedType = 'LEASE';
+                              getContainerList();
                               Navigator.pop(context);
                               NavUtil.navigateToPushScreen(
                                 context,
@@ -154,4 +160,41 @@ class _FilterPopupWidgetState extends State<FilterPopupWidget> {
       ),
     );
   }
+  getContainerList() async {
+    final leaseState = ref.read(leaseReceiveNotifier);
+    try {
+
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+            leaseState.setContext(context);
+            leaseState.setLoading(true);
+            ref.read(
+              containerListProvider(Utils.userId.toString()),
+            );
+          } else {
+            leaseState.setLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.white,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leaseState.setLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leaseState.setLoading(false);
+    }
+  }
+
 }
