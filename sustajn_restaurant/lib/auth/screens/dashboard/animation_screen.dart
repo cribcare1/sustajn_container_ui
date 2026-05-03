@@ -26,7 +26,6 @@ class _AccountSuccessScreenState extends State<AccountSuccessScreen> {
   }
 
   Future<void> _loadUserId() async {
-    Utils.getToken();
     Utils.getProfile();
     Utils.userId = await SharedPreferenceUtils.getIntValuesSF(
       Strings.USER_ID,

@@ -13,9 +13,11 @@ import '../../../constants/number_constants.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
 import '../../provider/profile_provider.dart';
 import '../../utils/global_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../model/social_media_model.dart';
 import '../screens/subscription_screen.dart';
 import '../widgets/add_card_buttom_sheet.dart';
 
@@ -42,6 +44,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).setContext(context);
       ref.read(authNotifierProvider).clearBankErrors();
       _getData();
     });
@@ -86,7 +89,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
-
     return SafeArea(
       top: false,
       bottom: true,
@@ -242,28 +244,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                                   ),
                                 ),
                               ),
-                              //TODO:- Card cvv
-                              // Expanded(
-                              //   child: Text.rich(
-                              //     TextSpan(
-                              //       children: [
-                              //         TextSpan(
-                              //           text: Strings.CVVS,
-                              //           style: theme.textTheme.titleSmall!
-                              //               .copyWith(color: Colors.white),
-                              //         ),
-                              //         TextSpan(
-                              //           text: Strings.STAR,
-                              //           style: theme.textTheme.titleSmall!
-                              //               .copyWith(
-                              //                 color: theme.secondaryHeaderColor,
-                              //                 fontWeight: FontWeight.w600,
-                              //               ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ],
@@ -302,7 +282,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               SizedBox(
                 width: double.infinity,
-                child: SubmitButton(
+                child: authState.isLoading?Center(child: CircularProgressIndicator(),): SubmitButton(
                   onRightTap: () async {
                     final hasCard = authState.cardDetails != null;
                     final hasGateway = authState.gateway != null;
@@ -327,7 +307,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     }
 
                     if (widget.profile == 'profile') {
-                      Navigator.pop(context);
+                      _referPartnerNetworkCall();
+                      // Navigator.pop(context);
                       return;
                     }
 
@@ -346,24 +327,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  bool _validatePaymentSelection(BuildContext context, AuthState authState) {
-    final hasCard = authState.cardDetails != null;
-    final hasGateway = authState.gateway != null;
-
-    final hasBankDetails =
-        bankNameController.text.trim().isNotEmpty &&
-        accountHolderNameController.text.trim().isNotEmpty &&
-        ibanController.text.trim().isNotEmpty &&
-        bicController.text.trim().isNotEmpty;
-
-    // ❌ If all empty → show toast
-    if (!hasCard && !hasGateway && !hasBankDetails) {
-      Utils.showToast("Please add at least one payment method");
-      return false;
-    }
-
-    return true; // ✅ At least one section filled
-  }
 
   Widget _sectionTitle(ThemeData theme, {String? title}) {
     return Align(
@@ -441,29 +404,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _paypalTile(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-        color: Constant.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.account_balance_wallet, color: Colors.white),
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            Strings.PAYPAL,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget paymentGatewayTile({
     required BuildContext context,
@@ -641,6 +581,39 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         ),
       ),
     );
+  }
+
+  Map<String, dynamic> getJsonData() {
+    final authState = ref.read(authNotifierProvider);
+    final data = {
+      "bankDetails":  authState.bankDetails ?? BankDetailsModel().toJson(),
+      "cardDetails": authState.cardDetails?.toJson() ?? CardDetails().toJson(),
+      "paymentGetWay":  () {
+        final map = (authState.gateway ?? PaymentGatewayModel()).toJson();
+        map.remove('asset');
+        return map;
+      }(),
+    };
+    return data;
+  }
+
+  _referPartnerNetworkCall() async {
+    Utils.printLog('refer a partner Network call');
+    final authState = ref.read(authNotifierProvider);
+    try {
+      authState.setIsLoading(true);
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable().then((value)async{
+        if(value){
+          await ref.read(updatePaymentType(getJsonData()).future);
+        }else{
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
   }
 
 }

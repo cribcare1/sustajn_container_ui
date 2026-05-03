@@ -35,6 +35,9 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
   @override
   void dispose() {
     controller.dispose();
+    _isScanned = false;
+    scannedValue = "";
+    textController.clear();
     super.dispose();
   }
 

@@ -40,9 +40,10 @@ class _ReceiveProductListScreenState
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(leaseReceiveNotifier).containerReturnList.clear();
+      ref.read(leaseReceiveNotifier).containerReturnListAdded.clear();
       ref.read(leaseReceiveNotifier).setContext(context);
       _getContainerList(
-        ref.read(leaseReceiveNotifier),
         customerId: widget.customerId,
       );
     });
@@ -51,9 +52,10 @@ class _ReceiveProductListScreenState
   }
 
   _getContainerList(
-    LeaseReceiveNotifier leasState, {
+     {
     required String customerId,
   }) async {
+    final leasState = ref.read(leaseReceiveNotifier);
     try {
       leasState.setLoading(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
@@ -119,13 +121,12 @@ class _ReceiveProductListScreenState
                             Icon(Icons.badge, color: Colors.white, size: 18),
                             SizedBox(width: 6),
                             Text(
-                              'Customer ID: $scannedId',
+                              'Customer ID: ${widget.customerId}',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
-                        if (leaseNotifier.containerReturnListAdded.isEmpty) ...[
                           Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -137,7 +138,7 @@ class _ReceiveProductListScreenState
                                 ),
                                 SizedBox(width: Constant.SIZE_08),
                                 Text(
-                                  leaseNotifier.containerReturnListAdded.length
+                                  leaseNotifier.containerCount
                                       .toString(),
                                   style: const TextStyle(
                                     color: Colors.amber,
@@ -156,7 +157,6 @@ class _ReceiveProductListScreenState
                                 .copyWith(color: Colors.white),
                           ),
                         ],
-                      ],
                     ),
                   ),
                   Expanded(
@@ -164,31 +164,31 @@ class _ReceiveProductListScreenState
                       padding: EdgeInsets.symmetric(
                         horizontal: Constant.CONTAINER_SIZE_16,
                       ),
-                      itemCount: leaseNotifier.containerReturnListAdded.length,
+                      itemCount: leaseNotifier.containerReturnList.length,
                       itemBuilder: (context, index) {
                         return _containerCard(
-                          item: leaseNotifier.containerReturnListAdded[index],
+                          item: leaseNotifier.containerReturnList[index],
                         );
                       },
                       separatorBuilder: (context, index) =>
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
                     ),
                   ),
-                  SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                  (leaseNotifier.containerReturnListAdded.isEmpty)
-                      ? const SizedBox()
-                      : leaseNotifier.isSaving
-                      ? Center(child: CircularProgressIndicator())
-                      : SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.6,
-                          child: SubmitButton(
-                            onRightTap: () {
-                              showConfirmIssuePopup(context, leaseNotifier);
-                            },
-                            rightText: "Confirm Receive",
-                          ),
-                        ),
-                  SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                  // SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                  // (leaseNotifier.containerReturnList.isEmpty)
+                  //     ? const SizedBox()
+                  //     : leaseNotifier.isSaving
+                  //     ? Center(child: CircularProgressIndicator())
+                  //     : SizedBox(
+                  //         width: MediaQuery.sizeOf(context).width * 0.6,
+                  //         child: SubmitButton(
+                  //           onRightTap: () {
+                  //             showConfirmIssuePopup(context, leaseNotifier);
+                  //           },
+                  //           rightText: "Confirm Receive",
+                  //         ),
+                  //       ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_40),
                 ],
               ),
         floatingActionButton: InkWell(
@@ -277,7 +277,7 @@ class _ReceiveProductListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.containerCount.toString(),
+                item.quantity.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,

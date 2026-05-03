@@ -90,9 +90,9 @@ class AuthState extends ChangeNotifier{
     _userID = value;
     notifyListeners();
   }
-  void loadUserId(){
+  void loadUserId() async{
     if(_userID==0){
-      _userID = SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID);
+      _userID = (await SharedPreferenceUtils.getIntValuesSF(Strings.USER_ID))!;
       Utils.printLog("userid====$_userID");
     }
     notifyListeners();
