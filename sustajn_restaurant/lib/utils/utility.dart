@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sustajn_restaurant/auth/screens/login_screen.dart';
+import 'package:sustajn_restaurant/firebase_services.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
@@ -362,6 +363,7 @@ class Utils {
                              await SharedPreferenceUtils.saveBoolDataInSF(
                                 Strings.IS_LOGGED_IN, false);
                              await SharedPreferenceUtils.clearAll();
+                             await FirebaseServices().deleteToken();
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
