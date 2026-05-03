@@ -51,7 +51,7 @@ class ProductOrderListResponseList {
     required this.productUniqueId,
     required this.containerQuantity,
     required this.dueDate,
-    this.containerCount = 1,
+    required this.containerCount,
   });
 
   factory ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
@@ -66,7 +66,7 @@ class ProductOrderListResponseList {
       productUniqueId: json['productUniqueId'] ?? '',
       containerQuantity: json['containerQuantity'] ?? 0,
       dueDate: json['dueDate'] ?? '',
-      containerCount: json['containerCount'] ?? 1,
+      containerCount: json['containerCount'] ?? 0,
     );
   }
 

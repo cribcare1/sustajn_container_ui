@@ -191,6 +191,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
                 child: _showMap
                     ? GoogleMap(
+                  zoomGesturesEnabled: true,
                   mapType: MapType.normal,
 
                   initialCameraPosition:

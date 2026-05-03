@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
 import 'auth/screens/dashboard/dashboard_screen.dart';
 import 'auth/screens/login_screen.dart';
 import 'constants/assets_utils.dart';
@@ -29,24 +30,54 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 3500),
     );
 
-    _logoFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.4, curve: Curves.easeIn)),
+    _logoFade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeIn),
+      ),
     );
 
     _reflectionOpacity = TweenSequence([
-      TweenSequenceItem(tween: ConstantTween<double>(0.4), weight: 50),
-      TweenSequenceItem(tween: Tween<double>(begin: 0.4, end: 0.0), weight: 50),
+      TweenSequenceItem(
+        tween: ConstantTween<double>(0.4),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 0.4,
+          end: 0.0,
+        ),
+        weight: 50,
+      ),
     ]).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.8)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.8),
+      ),
     );
 
-    _nameFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.75, 1.0, curve: Curves.easeIn)),
+    _nameFade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.75, 1.0, curve: Curves.easeIn),
+      ),
     );
+
     _controller.forward();
+
+    /// LOAD DATA FIRST
+    _initializeApp();
+  }
+  Future<void> _initializeApp() async {
+    await Utils.authToken();
     _checkLoginAndNavigate();
   }
-
   Future<void> _checkLoginAndNavigate() async {
     bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
       Strings.IS_LOGGED_IN,
@@ -73,68 +104,71 @@ class _SplashScreenState extends State<SplashScreen>
     final logoSize = size.width * 0.32;
     final reflectionTop = logoSize * 1.05;
     final stackHeight = logoSize * 1.35;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0E3A2F),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: stackHeight,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  FadeTransition(
-                    opacity: _logoFade,
-                    child: Image.asset(
-                      AppAssets.sustajn_logo,
-                      width: logoSize,
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0E3A2F),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: stackHeight,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    FadeTransition(
+                      opacity: _logoFade,
+                      child: Image.asset(
+                        AppAssets.sustajn_logo,
+                        width: logoSize,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: reflectionTop,
-                    child: FadeTransition(
-                      opacity: _reflectionOpacity,
-                      child: ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.white,
-                              Colors.transparent,
-                            ],
-                            stops: [0.0, 0.6, 1.0],
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.dstIn,
-                        child: Transform(
-                          alignment: Alignment.topCenter,
-                          transform: Matrix4.identity()..scale(1.0, 0.35),
-                          child: Opacity(
-                            opacity: 0.85,
-                            child: Image.asset(
-                              AppAssets.sustajn_logo,
-                              width: logoSize,
+                    Positioned(
+                      top: reflectionTop,
+                      child: FadeTransition(
+                        opacity: _reflectionOpacity,
+                        child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.white,
+                                Colors.white,
+                                Colors.transparent,
+                              ],
+                              stops: [0.0, 0.6, 1.0],
+                            ).createShader(bounds);
+                          },
+                          blendMode: BlendMode.dstIn,
+                          child: Transform(
+                            alignment: Alignment.topCenter,
+                            transform: Matrix4.identity()..scale(1.0, 0.35),
+                            child: Opacity(
+                              opacity: 0.85,
+                              child: Image.asset(
+                                AppAssets.sustajn_logo,
+                                width: logoSize,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            FadeTransition(
-              opacity: _nameFade,
-              child: Image.asset(
-                AppAssets.sustajnLogoName,
-                width: size.width * 0.45,
+              FadeTransition(
+                opacity: _nameFade,
+                child: Image.asset(
+                  AppAssets.sustajnLogoName,
+                  width: size.width * 0.45,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

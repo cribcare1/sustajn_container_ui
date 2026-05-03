@@ -89,6 +89,24 @@ class ProfileServices {
       throw Exception(e);
     }
   }
+Future<dynamic> updatePaymentType(String url, Map<String, dynamic> requestData) async {
+    try {
+      print("requestData::::::: $requestData");
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.postApiRequest(url, requestData);
+
+      if (response != null) {
+        var responseData = GetProfileData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    }catch(e){
+      Utils.printLog("profile address update service::::$e");
+      throw Exception(e);
+    }
+  }
 
   Future<dynamic> referPartnerService(
       String url,

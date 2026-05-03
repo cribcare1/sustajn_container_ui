@@ -4,6 +4,7 @@ class Strings {
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
   static const USER_ID = 'USER_ID';
+  static const PLAN_ID = 'PLAN_ID';
 
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
@@ -337,6 +338,7 @@ class Strings {
   static const String RECEIVE_UC = "RECEIVE";
   static const String SCAN_FOR_LEASE = "Scan Customer QR to Leased Products";
   static const String SCAN_FOR_RECEIVE = "Scan Customer QR to Receive Products";
+  static const String SCAN_RECEIVE_QR = "Scan Container QR to Receive Products";
   static const String SCAN = "Scan";
   static const String SCAN_PRODUCT = "Scan Product";
   static const String SCAN_CONTAINER_QR = "Scan Container QR to Lease Products";
