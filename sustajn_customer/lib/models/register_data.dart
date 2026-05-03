@@ -103,9 +103,9 @@ class RegistrationData {
     if (paymentMethod == "BANK") {
       body["bankDetails"] = {
         "bankName": bankName,
-        "iban": iban,
+        "iBanNumber": iban,
         "accountHolderName": accountHolderName,
-        "bic": bic,
+        "bicNumber": bic,
       };
     }
 
@@ -113,8 +113,7 @@ class RegistrationData {
       body["cardDetails"] = {
         "cardHolderName": cardHolderName,
         "cardNumber": cardNumber,
-        "expiryDate": expiryDate,
-        "cvv": cvv,
+        "expiryDate": expiryDate
       };
     }
 

@@ -62,6 +62,7 @@ class SignupNotifier extends ChangeNotifier {
   String? _cvvError;
   String? _expiryError;
   String? _upiError;
+  String? _paymentError;
 
 
   bool _showBankErrors = false;
@@ -120,6 +121,7 @@ class SignupNotifier extends ChangeNotifier {
 
   String? get bicError => _bicError;
   String? get upiError => _upiError;
+  String? get paymentError => _paymentError;
 
   bool get showBankErrors => _showBankErrors;
   String? get cardHolderError => _cardHolderError;
@@ -250,8 +252,9 @@ class SignupNotifier extends ChangeNotifier {
     required String gatewayName,
   }) {
     _registrationData ??= RegistrationData();
-
-    _clearOtherPaymentData(PaymentMethodType.upi);
+    _paymentError = null;
+    //_clearOtherPaymentData(PaymentMethodType.upi);
+    validatePaymentGateWayId(gatewayName);
     _paymentMethod = PaymentMethodType.upi;
 
     _paymentGatewayId = gatewayId;
@@ -265,7 +268,32 @@ class SignupNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void validatePaymentGateWayId(paymentGatewayName){
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if(_paymentGatewayId.isEmpty){
+      _paymentError = "Payment ID is required";
+    }
 
+    switch(paymentGatewayName){
+      case Strings.PAYPAL:
+        if (!emailRegex.hasMatch(_bic)) {
+          _paymentError = 'Enter a valid Paypal ID';
+        }
+        break;
+      case Strings.GOOGLE:
+        final upiRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$');
+        if (!upiRegex.hasMatch(_bic)) {
+          _paymentError = 'Enter a valid Google Pay UPI ID';
+        }
+        break;
+      case Strings.APPLE:
+         _paymentError = null;
+        break;
+      default:
+        _paymentError = null;
+        break;
+    }
+  }
 
   void _validateBIC() {
     if (_bic.isEmpty) {
@@ -607,7 +635,7 @@ class SignupNotifier extends ChangeNotifier {
     _registrationData ??= RegistrationData();
 
     _paymentMethod = PaymentMethodType.bank;
-    _clearOtherPaymentData(PaymentMethodType.bank);
+    //_clearOtherPaymentData(PaymentMethodType.bank);
 
     _registrationData!
       ..paymentMethod = "BANK"
@@ -624,7 +652,7 @@ class SignupNotifier extends ChangeNotifier {
     _registrationData ??= RegistrationData();
 
     _paymentMethod = PaymentMethodType.card;
-    _clearOtherPaymentData(PaymentMethodType.card);
+    //_clearOtherPaymentData(PaymentMethodType.card);
 
     _registrationData!
       ..paymentMethod = "CARD"
@@ -647,13 +675,17 @@ class SignupNotifier extends ChangeNotifier {
     _validateAccountHolderName();
     _validateBIC();
     _validateIBAN();
+    
+    _validateCardHolder();
+    _validateCardNumber();
+    validatePaymentGateWayId(_paymentGatewayName);
 
     notifyListeners();
 
-    return _bankNameError == null &&
+    return (_bankNameError == null &&
         _accountHolderError == null &&
         _bicError == null &&
-        _ibanError == null;
+        _ibanError == null)||(_cardHolderError == null && _cardNumberError == null) || (_paymentError == null);
   }
 
 

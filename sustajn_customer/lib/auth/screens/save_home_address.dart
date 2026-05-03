@@ -158,11 +158,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
             ).getAppBar(context),
 
             body:
-            state.loading || state.position == null
-                ? const Center(
-              child: CircularProgressIndicator(color: Constant.gold),
-            )
-                : Column(
+           Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -190,7 +186,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
                 Expanded(
                   child: Stack(
                     children: [
-                      GoogleMap(
+                      if( state.position != null)GoogleMap(
                         initialCameraPosition: CameraPosition(
                           target: state.position!,
                           zoom: 17,
@@ -269,52 +265,53 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
   Widget _bottomContent(LocationState state, BuildContext context, var addressState) {
+    streetController.text = state.address;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Constant.gold),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Center(
-              child: Text(
-               Strings.USE_CURRENT_LOCATION,
-                style: TextStyle(
-                  color: Constant.gold,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ),
+        // GestureDetector(
+        //   child: Container(
+        //     width: double.infinity,
+        //     padding: const EdgeInsets.symmetric(vertical: 12),
+        //     decoration: BoxDecoration(
+        //       border: Border.all(color: Constant.gold),
+        //       borderRadius: BorderRadius.circular(20),
+        //     ),
+        //     child: const Center(
+        //       child: Text(
+        //        Strings.USE_CURRENT_LOCATION,
+        //         style: TextStyle(
+        //           color: Constant.gold,
+        //           fontWeight: FontWeight.w600,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        //
+        // const SizedBox(height: 12),
 
-        const SizedBox(height: 12),
-
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Constant.grey.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.location_on, color: Colors.white),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  state.address,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
+        // Container(
+        //   padding: const EdgeInsets.all(14),
+        //   decoration: BoxDecoration(
+        //     color: Constant.grey.withOpacity(0.1),
+        //     borderRadius: BorderRadius.circular(12),
+        //   ),
+        //   child: Row(
+        //     children: [
+        //       const Icon(Icons.location_on, color: Colors.white),
+        //       const SizedBox(width: 10),
+        //       Expanded(
+        //         child: Text(
+        //           state.address,
+        //           style: const TextStyle(color: Colors.white),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        //
+        // const SizedBox(height: 16),
 
         Row(
           children: [
@@ -336,6 +333,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         isRequired: true),
 
         const SizedBox(height: 12),
+
         _inputField(
           Strings.STREET_BLOCK_TXT,
           streetController,
@@ -375,7 +373,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
               final String areaDetails =
               streetController.text.trim().isEmpty
                   ? state.address
-                  : "${streetController.text}, ${state.address}";
+                  : "${streetController.text}";
 
               if (widget.flow == AddressFlow.signup) {
                 ref.read(signUpNotifier).setAddress(
@@ -626,6 +624,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         bool isLarge = false,
         bool isRequired = true,
       }) {
+
     return TextFormField(
       controller: controller,
       cursorColor: Colors.white70,

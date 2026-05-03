@@ -69,7 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return UpgradeAlert(
       upgrader: Upgrader(
           debugLogging: true,
-          debugDisplayAlways: true
+          debugDisplayAlways: false
       ),
       barrierDismissible: false,
       showIgnore: false,
