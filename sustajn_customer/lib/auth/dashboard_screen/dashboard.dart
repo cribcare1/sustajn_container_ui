@@ -109,7 +109,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             },
             child: CircleAvatar(
               radius: Constant.CONTAINER_SIZE_20,
-              backgroundColor: Constant.grey.withOpacity(0.15),
+              backgroundColor: Constant.grey.withOpacity(0.40),
               child: ClipOval(
                 child: (currentProfile?.profileImageUrl != null &&
                     currentProfile!.profileImageUrl!.isNotEmpty)
@@ -122,14 +122,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     return Icon(
                       Icons.person,
                       size: Constant.CONTAINER_SIZE_26,
-                      color: theme.primaryColor,
+                      color: Colors.white,
                     );
                   },
                 )
                     : Icon(
                   Icons.person,
                   size: Constant.CONTAINER_SIZE_26,
-                  color: theme.primaryColor,
+                  color:  Colors.white,
                 ),
               ),
             ),
