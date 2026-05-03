@@ -622,7 +622,7 @@ class Utils {
   static void getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString(Strings.JWT_TOKEN);
-    printLog("JUT Token ==== $token");
+    printLog("JWT Token ==== $token");
   }
 
   static String authToken() {

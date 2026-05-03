@@ -492,7 +492,6 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
               signupState.updateBankDetails();
 
               if (widget.flow == PaymentFlow.signup) {
-                signupState.updateBankDetails();
                 NavUtil.navigateToPushScreen(context, SubscriptionScreen(flow: SubscriptionFlow.registration));
               } else {
                 await _addBankNetwork(signupState);
@@ -535,7 +534,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         "cardHolderName": signupState.registrationData?.cardHolderName,
         "cardNumber": signupState.registrationData?.cardNumber,
         "expiryDate": signupState.registrationData?.expiryDate,
-        "cvv": signupState.registrationData?.cvv,
+        //"cvv": signupState.registrationData?.cvv,
         "paymentGatewayId": "",
         "paymentGatewayName": "",
       };

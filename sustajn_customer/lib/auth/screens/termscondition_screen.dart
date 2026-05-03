@@ -175,22 +175,6 @@ class _TermsconditionScreenState extends ConsumerState<TermsconditionScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Container(
-              //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              //   decoration: BoxDecoration(
-              //       color: Constant.grey.withOpacity(0.2),
-              //       shape: BoxShape.rectangle,
-              //       borderRadius: BorderRadius.circular(12),
-              //       border: Border.all(
-              //           color: Constant.grey.withOpacity(0.1)
-              //       )
-              //   ),
-              //   child: Icon(
-              //     icon,
-              //     size: Constant.CONTAINER_SIZE_40,
-              //     color: Constant.gold,
-              //   ),
-              // ),
               Align(
                 alignment: Alignment.center,
                 child: Container(

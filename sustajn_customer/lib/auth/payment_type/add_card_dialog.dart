@@ -123,20 +123,20 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                     ),
                   ),
 
-                  SizedBox(width: Constant.SIZE_10),
-                  Expanded(
-                    child: _cardField(
-                      controller: _cvv,
-                      theme: theme,
-                      hint: 'CVV',
-                      error: signupState.cvvError,
-                      onChanged: signupState.setCVV,
-                      formatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4),
-                      ],
-                    ),
-                  ),
+                  // SizedBox(width: Constant.SIZE_10),
+                  // Expanded(
+                  //   child: _cardField(
+                  //     controller: _cvv,
+                  //     theme: theme,
+                  //     hint: 'CVV',
+                  //     error: signupState.cvvError,
+                  //     onChanged: signupState.setCVV,
+                  //     formatters: [
+                  //       FilteringTextInputFormatter.digitsOnly,
+                  //       LengthLimitingTextInputFormatter(4),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
 

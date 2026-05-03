@@ -94,6 +94,7 @@ class _LinkPaymentBottomSheetState
                   cursorColor: Colors.white,
                   decoration: InputDecoration(
                     hintText: widget.hint,
+                    errorText: signupState.paymentError,
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       color:Colors.white,
                     ),
@@ -109,6 +110,9 @@ class _LinkPaymentBottomSheetState
                       Constant.grey.withOpacity(0.3),
                     ),
                   ),
+                  onChanged: (value){
+                    signupState.validatePaymentGateWayId(widget.gatewayName);
+                  },
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
