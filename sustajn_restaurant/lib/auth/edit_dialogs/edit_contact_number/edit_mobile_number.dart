@@ -43,7 +43,6 @@ class _EditMobileNumberDialogState
   @override
   void initState() {
     super.initState();
-    Utils.getToken();
     Utils.userId;
     if (widget.editType == MobileEditType.primary) {
       _primaryController.text = widget.primaryMobileNumber;

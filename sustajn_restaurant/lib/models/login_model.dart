@@ -34,6 +34,7 @@ class LoginData {
   final String? fullName;
   final String? jwtToken;
   final String? tokenType;
+  final int? planId;
 
   LoginData({
     this.userId,
@@ -44,6 +45,7 @@ class LoginData {
     this.fullName,
     this.jwtToken,
     this.tokenType,
+    this.planId,
   });
 
   factory LoginData.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class LoginData {
       fullName: json['fullName'] ?? '',
       jwtToken: json['jwtToken'] ?? '',
       tokenType: json['tokenType'] ?? '',
+      planId: json['planId'] ?? 0,
     );
   }
   Map<String, dynamic> toJson() {
@@ -68,6 +71,7 @@ class LoginData {
       'fullName': fullName ?? '',
       'jwtToken': jwtToken ?? '',
       'tokenType': tokenType ?? '',
+      'planId': planId ?? 0,
     };
   }
 }

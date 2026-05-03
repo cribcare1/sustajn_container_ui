@@ -4,8 +4,8 @@ import 'package:sustajn_restaurant/auth/auth_state/location_state.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
-import 'package:sustajn_restaurant/search_screen/search_restaurant_provider.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_model.dart';
+import 'package:sustajn_restaurant/search_screen/search_restaurant_provider.dart';
 
 import '../../utils/theme_utils.dart';
 import '../constants/string_utils.dart';
@@ -26,12 +26,13 @@ class _SearchRestaurantScreenState
   final Completer<GoogleMapController> _controller = Completer();
 
   final searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(searchResProvider).setContext(context);
-      ref.read(locationProvider.notifier).initialize().then((value){
+      ref.read(locationProvider.notifier).initialize().then((value) {
         final location = ref.read(locationProvider).position;
         if (location != null) {
           _getNetworkData(_lastKeyword);
@@ -39,7 +40,6 @@ class _SearchRestaurantScreenState
       });
     });
   }
-
 
   String _lastKeyword = "re";
 
@@ -77,15 +77,29 @@ class _SearchRestaurantScreenState
   }
 
   Set<Marker> _buildMarkers(List<SearchData> list) {
-    return list.map((data) {
+    return list
+        .where(
+          (e) =>
+      e.latitude != 0 &&
+          e.longitude != 0,
+    )
+        .map((data) {
       return Marker(
-        draggable: true,
-        flat: true,
         markerId: MarkerId(data.id.toString()),
-        position: LatLng(data.latitude, data.longitude),
+
+        position: LatLng(
+          data.latitude,
+          data.longitude,
+        ),
+
+        draggable: false,
+
+        consumeTapEvents: true,
+
         infoWindow: InfoWindow(
           title: data.name,
-          snippet: "${data.distanceKm.toStringAsFixed(2)} km",
+          snippet:
+          "${data.distanceKm.toStringAsFixed(2)} km",
           onTap: () {
             _showRestaurantPopup(data);
           },
@@ -105,7 +119,9 @@ class _SearchRestaurantScreenState
           ),
           title: Text(
             data.name,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge!.copyWith(color: Colors.white),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -113,19 +129,28 @@ class _SearchRestaurantScreenState
             children: [
               Text(
                 data.address,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(color: Colors.grey,fontSize: 10),
               ),
               const SizedBox(height: 8),
               Text(
                 "${data.distanceKm.toStringAsFixed(2)} km away",
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(color: Colors.white),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child:  Text("Close",style:  Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent)),
+              child: Text(
+                "Close",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent),
+              ),
             ),
           ],
         );
@@ -146,151 +171,160 @@ class _SearchRestaurantScreenState
           title: "Search Restaurant",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body:state.position == null?Center(child: CircularProgressIndicator(),): Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: CustomTheme.searchField(
-                searchController,
-                'Search by restaurant name',
-                onChanged: (value) {
-                  if (value.isEmpty) {
-                    _getNetworkData(_lastKeyword);
-                  } else if (value.length >= 3) {
-                    _lastKeyword = value;
-                    _getNetworkData(value.toLowerCase());
-                  }
-                },
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35,
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: state.position!,
-                  zoom: 17,
-                ),
-                markers: _buildMarkers(searchProvider.resList),
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                zoomControlsEnabled: false,
-                compassEnabled: true,
-                onMapCreated: (controller) {
-                  _controller.complete(controller);
-                },
-                onTap: (latLng){
-                  searchController.clear();
-                  ref.read(locationProvider.notifier).updatePosition(latLng);
-                  _getNetworkData(_lastKeyword);
-                },
-                onCameraIdle: () async {
-                  final controller = await _controller.future;
-                  final bounds = await controller.getVisibleRegion();
-
-                  final center = LatLng(
-                    (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
-                    (bounds.northeast.longitude + bounds.southwest.longitude) /
-                        2,
-                  );
-                  // ref.read(locationProvider.notifier).updatePosition(center);
-                  final oldPos = ref.read(locationProvider).position;
-                  if (oldPos == null ||
-                      oldPos.latitude != center.latitude ||
-                      oldPos.longitude != center.longitude) {
-                    ref.read(locationProvider.notifier).updatePosition(center);
-                    _getNetworkData(_lastKeyword);
-                  }
-                },
-
-              ),
-            ),
-            Padding(
-              padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: theme!.secondaryHeaderColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding:  EdgeInsets.symmetric(
-                      vertical: Constant.CONTAINER_SIZE_12,
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.my_location,
-                    color: theme!.secondaryHeaderColor,
-                  ),
-                  label: Text(
-                    'Use Current Location',
-                    style: TextStyle(
-                      color: theme!.secondaryHeaderColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onPressed: () async{
-                    searchController.clear();
-                    await ref.read(locationProvider.notifier).initialize();
-                    final pos = ref.read(locationProvider).position;
-                    if (pos == null) return;
-                    final controller = await _controller.future;
-                    controller.animateCamera(
-                      CameraUpdate.newLatLngZoom(pos, 17),
-                    );
-                    _getNetworkData(_lastKeyword);
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Column(
+        body: state.position == null
+            ? Center(child: CircularProgressIndicator())
+            : Column(
                 children: [
-                  if (searchProvider.isLoading)
-                    const Expanded(
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else if (searchProvider.resList.isEmpty)
-                    const Expanded(child: Center(child: Text("No Data")))
-                  else
-                    /// Title
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Nearby Restaurants',
-                          style: theme!.textTheme.titleLarge!.copyWith(
-                            color: Constant.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  SizedBox(height: Constant.SIZE_08),
-                  Expanded(
-                    child: ListView.separated(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.manual,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_16,
-                      ),
-                      separatorBuilder: (context, index) => Divider(color: Colors.grey,),
-                      itemCount: searchProvider.resList.length,
-                      itemBuilder: (context, index) {
-                        final data = searchProvider.resList[index];
-                        return RestaurantTile(
-                          name: data.name,
-                          distance: '${data.distanceKm.toStringAsFixed(2)} \nkm',
-                          address: data.address,
-                        );
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: CustomTheme.searchField(
+                      searchController,
+                      'Search by restaurant name',
+                      onChanged: (value) {
+                        if (value.isEmpty) {
+                          _getNetworkData(_lastKeyword);
+                        } else if (value.length >= 3) {
+                          _lastKeyword = value;
+                          _getNetworkData(value.toLowerCase());
+                        }
                       },
                     ),
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: GoogleMap(
+                      key: const ValueKey("google_map"),
+
+                      initialCameraPosition: CameraPosition(
+                        target: state.position!,
+                        zoom: 14,
+                      ),
+
+                      mapType: MapType.normal,
+
+                      markers: _buildMarkers(searchProvider.resList),
+
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+
+                      zoomControlsEnabled: false,
+                      compassEnabled: true,
+
+                      buildingsEnabled: false,
+                      trafficEnabled: false,
+                      indoorViewEnabled: false,
+
+                      onMapCreated: (GoogleMapController controller) {
+                        if (!_controller.isCompleted) {
+                          _controller.complete(controller);
+                        }
+                      },
+
+                      onTap: (LatLng latLng) async {
+                        searchController.clear();
+
+                        ref
+                            .read(locationProvider.notifier)
+                            .updatePosition(latLng);
+
+                        await _getNetworkData(_lastKeyword);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: theme!.secondaryHeaderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                        icon: Icon(
+                          Icons.my_location,
+                          color: theme!.secondaryHeaderColor,
+                        ),
+                        label: Text(
+                          'Use Current Location',
+                          style: TextStyle(
+                            color: theme!.secondaryHeaderColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () async {
+                          searchController.clear();
+                          await ref
+                              .read(locationProvider.notifier)
+                              .initialize();
+                          final pos = ref.read(locationProvider).position;
+                          if (pos == null) return;
+                          final controller = await _controller.future;
+                          controller.animateCamera(
+                            CameraUpdate.newLatLngZoom(pos, 17),
+                          );
+                          _getNetworkData(_lastKeyword);
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: (searchProvider.isLoading)
+                        ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                        : (searchProvider.resList.isEmpty)
+                        ? const Center(
+                      child: Text("No Data"),
+                    )
+                        : Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Nearby Restaurants',
+                              style: theme!.textTheme.titleMedium!.copyWith(
+                                color: Constant.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: Constant.SIZE_08),
+                        Expanded(
+                          child: ListView.separated(
+                            keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.manual,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Constant.CONTAINER_SIZE_16,
+                            ),
+                            separatorBuilder: (context, index) =>
+                            const Divider(color: Colors.grey),
+                            itemCount: searchProvider.resList.length,
+                            itemBuilder: (context, index) {
+                              final data =
+                              searchProvider.resList[index];
+
+                              return RestaurantTile(
+                                name: data.name,
+                                distance:
+                                '${data.distanceKm.toStringAsFixed(2)} \nkm',
+                                address: data.address,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -321,7 +355,8 @@ class RestaurantTile extends StatelessWidget {
             children: [
               Icon(Icons.location_on, color: theme?.secondaryHeaderColor),
               Text(
-                distance,textAlign: TextAlign.center,
+                distance,
+                textAlign: TextAlign.center,
                 style: theme?.textTheme.titleSmall?.copyWith(
                   color: theme.secondaryHeaderColor,
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sustajn_restaurant/utils/sharedpreference_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
 import 'auth/screens/dashboard/dashboard_screen.dart';
 import 'auth/screens/login_screen.dart';
 import 'constants/assets_utils.dart';
@@ -29,24 +30,54 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 3500),
     );
 
-    _logoFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.4, curve: Curves.easeIn)),
+    _logoFade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.4, curve: Curves.easeIn),
+      ),
     );
 
     _reflectionOpacity = TweenSequence([
-      TweenSequenceItem(tween: ConstantTween<double>(0.4), weight: 50),
-      TweenSequenceItem(tween: Tween<double>(begin: 0.4, end: 0.0), weight: 50),
+      TweenSequenceItem(
+        tween: ConstantTween<double>(0.4),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 0.4,
+          end: 0.0,
+        ),
+        weight: 50,
+      ),
     ]).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.8)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.8),
+      ),
     );
 
-    _nameFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.75, 1.0, curve: Curves.easeIn)),
+    _nameFade = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.75, 1.0, curve: Curves.easeIn),
+      ),
     );
+
     _controller.forward();
+
+    /// LOAD DATA FIRST
+    _initializeApp();
+  }
+  Future<void> _initializeApp() async {
+    await Utils.authToken();
     _checkLoginAndNavigate();
   }
-
   Future<void> _checkLoginAndNavigate() async {
     bool? isLoggedIn = await SharedPreferenceUtils.getBoolValuesSF(
       Strings.IS_LOGGED_IN,

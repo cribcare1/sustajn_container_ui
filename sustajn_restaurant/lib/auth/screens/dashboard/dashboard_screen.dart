@@ -21,6 +21,7 @@ import '../../../notification/notification_state.dart';
 import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
 import '../../../provider/profile_provider.dart';
+import '../../../utils/sharedpreference_utils.dart';
 import '../../../utils/utility.dart';
 import 'pi_chart.dart';
 
@@ -52,7 +53,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ref.read(notificationProvider).setContext(context);
     });
 
-    Utils.getToken();
     Utils.authToken();
     Utils.getUserId();
     _init();
@@ -61,11 +61,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _init() async {
     await FirebaseServices().initialize();
     await _loadProfile();
-
+    _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
     if (ref.read(profileProvider).getProfileData == null) {
       await _getProfileNetworkCall();
     }
-    _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
+
   }
 
   Future<void> _loadProfile() async {
@@ -76,7 +76,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     setState(() {
       loginResponse = Utils.loginData?.data;
       isLoading = false;
-      Utils.userId = loginResponse!.userId;
+      // Utils.userId = loginResponse!.userId;
     });
   }
 
@@ -107,6 +107,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   _getChartNetworkCall(int month, int year) async {
     try {
+      final id = await  SharedPreferenceUtils.getIntValuesSF(
+          Strings.PLAN_ID);
+      Utils.planId = id;
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) {
@@ -117,7 +120,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           profileState.setDashboardLoading(true);
           final userId = Utils.userId!;
           final url =
-              '${NetworkUrls.DASHBOARD_CHART}$userId&month=$month&year=$year';
+              '${NetworkUrls.DASHBOARD_CHART}$userId&month=$month&year=$year&planId=${Utils.planId}';
           Utils.printLog("url::$url");
           ref.read(getChartData(url));
         } else {

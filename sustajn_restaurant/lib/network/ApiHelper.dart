@@ -7,12 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 
 class ApiHelper {
 
   Future apiRequest(String url) async {
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Get call url::$url");
     Utils.printLog("Get token::$token");
     http.Response? response;
@@ -37,7 +38,7 @@ class ApiHelper {
       Map<String, dynamic> body,
       ) async {
 
-    final token = Utils.authToken();
+    final token =await Utils.authToken();
     var header = _getHeader(token);
     try {
       final request = http.Request("GET", Uri.parse(url));
@@ -77,66 +78,68 @@ class ApiHelper {
     };
   }
 
-  Future<http.Response> apiPostRequest(String url, dynamic jsonMap) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("token");
-    print("User Token $token");
-
-    print("call started==url==$url");
-    var response;
-
-    try {
-      // Check if jsonMap is a List<Map<String, dynamic>>
-      if (jsonMap is List<Map<String, dynamic>>) {
-        var body = json.encode(jsonMap);
-        print("List body====$body");
-
-        if (token != null) {
-          response = await http.post(Uri.parse(url),
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer $token', // Add token to the headers
-              },
-              body: body);
-        } else {
-          response = await http.post(Uri.parse(url), body: body);
-          // throw Exception("Token not found");
-        }
-      } else if (jsonMap is Map<String, dynamic>) {
-        // If jsonMap is a Map<String, dynamic>
-        var body = json.encode(jsonMap);
-        print("Map body====$body");
-
-        // Check if token is available
-        if (token != null) {
-          response = await http.post(Uri.parse(url),
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer $token', // Add token to the headers
-              },
-              body: body);
-        } else {
-          response = await http.post(Uri.parse(url), body: body);
-          // throw Exception("Token not found");
-        }
-      } else {
-        throw Exception(
-            "Invalid jsonMap type. Expected List<Map<String, dynamic>> or Map<String, dynamic>.");
-      }
-
-      print("Network call success. response==${response.statusCode}");
-    } on TimeoutException catch (_) {
-      Utils.printLog('Timed out');
-      return http.Response('Error', 408);
-    } catch (excetion) {
-      Utils.printLog("Network call failed, excetion==${excetion}");
-      return http.Response('Error', 409);
-    }
-
-    return response;
-  }
+  // Future<http.Response> apiPostRequest(String url, dynamic jsonMap) async {
+  //   final token =
+  //   await SharedPreferenceUtils.getStringValuesSF(
+  //     Strings.JWT_TOKEN,
+  //   );
+  //   print("User Token $token");
+  //
+  //   print("call started==url==$url");
+  //   var response;
+  //
+  //   try {
+  //     // Check if jsonMap is a List<Map<String, dynamic>>
+  //     if (jsonMap is List<Map<String, dynamic>>) {
+  //       var body = json.encode(jsonMap);
+  //       print("List body====$body");
+  //
+  //       if (token != null) {
+  //         response = await http.post(Uri.parse(url),
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Accept': 'application/json',
+  //               'Authorization': 'Bearer $token', // Add token to the headers
+  //             },
+  //             body: body);
+  //       } else {
+  //         response = await http.post(Uri.parse(url), body: body);
+  //         // throw Exception("Token not found");
+  //       }
+  //     } else if (jsonMap is Map<String, dynamic>) {
+  //       // If jsonMap is a Map<String, dynamic>
+  //       var body = json.encode(jsonMap);
+  //       print("Map body====$body");
+  //
+  //       // Check if token is available
+  //       if (token != null) {
+  //         response = await http.post(Uri.parse(url),
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Accept': 'application/json',
+  //               'Authorization': 'Bearer $token', // Add token to the headers
+  //             },
+  //             body: body);
+  //       } else {
+  //         response = await http.post(Uri.parse(url), body: body);
+  //         // throw Exception("Token not found");
+  //       }
+  //     } else {
+  //       throw Exception(
+  //           "Invalid jsonMap type. Expected List<Map<String, dynamic>> or Map<String, dynamic>.");
+  //     }
+  //
+  //     print("Network call success. response==${response.statusCode}");
+  //   } on TimeoutException catch (_) {
+  //     Utils.printLog('Timed out');
+  //     return http.Response('Error', 408);
+  //   } catch (excetion) {
+  //     Utils.printLog("Network call failed, excetion==${excetion}");
+  //     return http.Response('Error', 409);
+  //   }
+  //
+  //   return response;
+  // }
 
   /// @param url, jsonmap
   ///       After getting url ,it will make actual call to api  by POST mapping
@@ -146,7 +149,7 @@ class ApiHelper {
 
   Future<dynamic> apiPostLoginRequest(String url, var jsonMap) async {
     Utils.printLog("Post call started==url==$url");
-    var token = Utils.authToken();
+    var token = await Utils.authToken();
     Utils.printLog('Token : $token');
     http.Response? response;
     try {
@@ -166,7 +169,7 @@ class ApiHelper {
   }
   Future<dynamic> postAPIStringValue(String url, var jsonMap) async {
     Utils.printLog("Post call started==url==$url");
-    var token = Utils.authToken();
+    var token = await Utils.authToken();
     Utils.printLog('Token : $token');
     http.Response? response;
     try {
@@ -185,7 +188,7 @@ class ApiHelper {
     }
   }
   Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Get call started==url==$url");
     http.Response? responseData;
     try {
@@ -230,7 +233,7 @@ class ApiHelper {
       String url, Map<String, dynamic> jsonMap, var image, String keyName,
       {String fileName = "profile"}) async {
 
-    final token = Utils.authToken();
+    final token = await Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
 
     http.Response? responseData;
@@ -286,7 +289,7 @@ class ApiHelper {
   Future<http.Response> apiMultipartRequest(
       String url, Map<String, dynamic> jsonMap, var image, String keyName, var document) async {
 
-    final token = Utils.authToken();
+    final token =await Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
 
     http.Response? responseData;
@@ -368,7 +371,7 @@ class ApiHelper {
   Future<http.Response> apiMultiPartListFilePostRequest(
       String url, Map<String, dynamic> jsonMap, var imageList, String keyName) async {
     Utils.printLog("Image File length: ${imageList.length}");
-    final token = Utils.authToken();
+    final token =await Utils.authToken();
     Utils.printLog("MultipartPost call started==url==$url");
     Utils.printLog("token: $token");
     http.Response? responseData;
@@ -423,8 +426,8 @@ class ApiHelper {
     File? file,
     required String userType
   }) async {
-    final token = Utils.authToken();
-    Utils.printLog("Multipart call started => URL: $url");
+    final token = await Utils.authToken();
+    Utils.printLog("Multipart call started => URL: $url,   token   ==== $token");
 
     try {
       var multipartRequest = http.MultipartRequest("POST", Uri.parse(url));

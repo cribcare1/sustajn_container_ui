@@ -359,12 +359,9 @@ class Utils {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: ()async {
-                            Navigator.pop(context);
-                            await await SharedPreferenceUtils.saveBoolDataInSF(
+                             await SharedPreferenceUtils.saveBoolDataInSF(
                                 Strings.IS_LOGGED_IN, false);
                              await SharedPreferenceUtils.clearAll();
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.clear();
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -686,24 +683,25 @@ class Utils {
     print(message);
   }
 
-  static String? token = "";
+  static String? token = " ";
 
   static void getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString(Strings.JWT_TOKEN);
+     token =
+    await SharedPreferenceUtils.getStringValuesSF(
+      Strings.JWT_TOKEN,
+    );
     printLog("JWT Token ==== $token");
   }
 
-  static String authToken() {
-    if (token == null || token!.isEmpty) {
+  static Future<String> authToken() async {
+    if (token == null || token ==" ") {
       getToken();
     }
     return (token != null && token!.isNotEmpty) ? token! : "";
   }
 
-  // static int? userId = 0;
-
   static int? userId;
+  static int? planId;
 
   static Future<void> loadUserId() async {
     userId =
@@ -782,15 +780,26 @@ class Utils {
   static LoginModel? loginData;
   static int? societyId = 0;
   static Future<LoginModel?> getProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var data = prefs.getString(Strings.PROFILE_DATA);
+    var data = await SharedPreferenceUtils
+        .getStringValuesSF(
+      Strings.PROFILE_DATA,
+    );
     printLog("Profile Data ==== $data");
-    if (data != null) {
-      var response = json.decode(data);
-      loginData = LoginModel.fromJson(response);
-      return loginData;
+    if (data == null || data.isEmpty) {
+      return null;
     }
-    return null;
+    try {
+      var response = json.decode(data);
+      loginData = LoginModel.fromJson(
+        response,
+      );
+      return loginData;
+    } catch (e) {
+      printLog(
+        "Profile Parse Error ==== $e",
+      );
+      return null;
+    }
   }
 static  String deviceToken = "";
   static Future<String?> getDeviceToken() async {

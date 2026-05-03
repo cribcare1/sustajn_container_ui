@@ -43,7 +43,6 @@ await Upgrader.clearSavedSettings();
 
   await FirebaseServices().initialize();
 
-  Utils.getToken();
   Utils.getProfile();
   Utils.getUserId();
   runApp(const ProviderScope(child: MyApp()));

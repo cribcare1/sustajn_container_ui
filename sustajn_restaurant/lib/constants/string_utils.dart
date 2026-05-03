@@ -4,6 +4,7 @@ class Strings {
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
   static const USER_ID = 'USER_ID';
+  static const PLAN_ID = 'PLAN_ID';
 
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =

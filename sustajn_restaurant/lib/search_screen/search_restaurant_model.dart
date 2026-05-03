@@ -21,7 +21,7 @@ class SearchData {
     return SearchData(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
-      address: json['address'] ?? '__',
+      address: json['flatDoorHouseDetails'] ?? '__',
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
       distanceKm: (json['distanceKm'] as num?)?.toDouble() ?? 0.0,
@@ -33,7 +33,7 @@ class SearchData {
     return {
       'id': id,
       'name': name,
-      'address': address,
+      'flatDoorHouseDetails': address,
       'latitude': latitude,
       'longitude': longitude,
       'distanceKm': distanceKm,

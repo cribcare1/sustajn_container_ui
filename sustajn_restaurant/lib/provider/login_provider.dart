@@ -33,8 +33,6 @@ FutureProvider.family<LoginModel, Map<String, dynamic>>(
       final url = '${NetworkUrls.BASE_URL}${NetworkUrls.LOGIN_API}';
 
       try {
-        // registrationState.setIsLoading(true);
-
         final responseData = await apiService.loginUser(url, params, "");
         if (responseData.status == "success" &&
             responseData.data != null &&
@@ -42,8 +40,10 @@ FutureProvider.family<LoginModel, Map<String, dynamic>>(
             responseData.data!.jwtToken != null) {
           await Future.delayed(const Duration(milliseconds: 500));
           final userId = responseData.data!.userId!;
+          final planId = responseData.data!.planId!;
           final jwtToken = responseData.data!.jwtToken!;
-
+          Utils.userId = responseData.data!.userId!;
+          Utils.planId = responseData.data!.planId!;
           registrationState.setLoginData(responseData);
           registrationState.setUserId(userId);
 
@@ -52,6 +52,8 @@ FutureProvider.family<LoginModel, Map<String, dynamic>>(
 
           await SharedPreferenceUtils.saveDataInSF(
               Strings.USER_ID, userId);
+ await SharedPreferenceUtils.saveDataInSF(
+              Strings.PLAN_ID, planId);
 
           await SharedPreferenceUtils.saveBoolDataInSF(
               Strings.IS_LOGGED_IN, true);
@@ -119,19 +121,22 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
         Utils.printLog("Login Data  ${register.data!.toJson().toString()}");
         registrationState.setIsLoading(false);
         registrationState.setUserId(register.data!.userId!);
-        SharedPreferenceUtils.saveDataInSF(
+      await  SharedPreferenceUtils.saveDataInSF(
           Strings.JWT_TOKEN,
           register.data!.jwtToken!,
         );
-        SharedPreferenceUtils.saveDataInSF(
+       await SharedPreferenceUtils.saveDataInSF(
           Strings.USER_ID,
           register.data!.userId!,
         );
 
-        SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
+        await SharedPreferenceUtils.saveDataInSF(
+            Strings.PLAN_ID, register.data!.planId!);
+
+       await SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
         Utils.userId = register.data!.userId!;
-        Utils.getToken();
-        Utils.getProfile();
+        Utils.planId = register.data!.planId!;
+        Utils.authToken();
         try {
           await FirebaseServices().initialize();
         } catch (e) {
