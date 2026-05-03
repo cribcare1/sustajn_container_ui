@@ -27,92 +27,95 @@ class _AddressOptionsDialogState extends ConsumerState<AddressOptionsDialog> {
     final profileState = ref.watch(profileProvider);
     final theme = Theme.of(context);
 
-    return Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-          decoration: BoxDecoration(
-            color: const Color(0xFF0D402C),
-            borderRadius:  BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_28)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Address Options",
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+    return SafeArea(
+      bottom: true,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0D402C),
+              borderRadius:  BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_28)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Address Options",
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
 
-              SizedBox(height: Constant.CONTAINER_SIZE_18),
+                SizedBox(height: Constant.CONTAINER_SIZE_18),
 
-              _optionItem(
-                theme: theme,
-                icon: Icons.edit_outlined,
-                text: "Edit Address",
-                onTap: () {
-                  Navigator.pop(context);
-                  NavUtil.navigateToPushScreen(
-                    context,
-                    HomeAddress(
-                      flow: AddressFlow.profile,
-                      existingAddress: widget.address,
-                    ),
-                  );
-                  // navigate to edit address
-                },
-              ),
-
-              SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-              _optionItem(
-                theme: theme,
-                icon: Icons.delete_forever,
-                text: Strings.REMOVE_ADDRESS_TITLE,
-                  onTap: () async {
-                    Utils.displayDialog(
-                      context: context,
-                      icon: Icons.warning,
-                      title: Strings.DELETE_ADDRESS,
-                      subTitle:
-                      Strings.REMOVE_ADDRESS_TXT,
-                      cancelButtonText: Strings.NO,
-                      yesButtonText: Strings.DELETE,
-                      onCancel: () {
-                        Navigator.pop(context);
-                      },
-                      onYes: () async {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-
-                        await _deleteAddress(profileState, widget.address.id ?? 0);
-                      },
+                _optionItem(
+                  theme: theme,
+                  icon: Icons.edit_outlined,
+                  text: "Edit Address",
+                  onTap: () {
+                    Navigator.pop(context);
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      HomeAddress(
+                        flow: AddressFlow.profile,
+                        existingAddress: widget.address,
+                      ),
                     );
-                  }
-
-              ),
-            ],
-          ),
-        ),
-
-        if (profileState.isLoading)
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(28),
+                    // navigate to edit address
+                  },
                 ),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _optionItem(
+                  theme: theme,
+                  icon: Icons.delete_forever,
+                  text: Strings.REMOVE_ADDRESS_TITLE,
+                    onTap: () async {
+                      Utils.displayDialog(
+                        context: context,
+                        icon: Icons.warning,
+                        title: Strings.DELETE_ADDRESS,
+                        subTitle:
+                        Strings.REMOVE_ADDRESS_TXT,
+                        cancelButtonText: Strings.NO,
+                        yesButtonText: Strings.DELETE,
+                        onCancel: () {
+                          Navigator.pop(context);
+                        },
+                        onYes: () async {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+
+                          await _deleteAddress(profileState, widget.address.id ?? 0);
+                        },
+                      );
+                    }
+
+                ),
+              ],
             ),
           ),
-      ],
+
+          if (profileState.isLoading)
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.4),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

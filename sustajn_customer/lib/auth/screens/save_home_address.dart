@@ -69,7 +69,6 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
         flatController.text = addr.flatDoorHouseDetails ?? "";
         streetController.text = addr.areaStreetCityBlockDetails ?? "";
-
       }
 
       setState(() {});
@@ -78,7 +77,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
 
 
 
-  void _onSearchChanged(String query) {
+  void _searchLocation(String query) {
     if (query.trim().isEmpty) return;
 
     _searchDebounce?.cancel();
@@ -120,6 +119,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
     }
   }
 
+  Timer? _debounce;
 
 
 
@@ -146,7 +146,7 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
         child: Stack(
           children:[
             Scaffold(
-            backgroundColor: theme.scaffoldBackgroundColor,
+            backgroundColor: theme.primaryColor,
             appBar: CustomAppBar(
               title:  Utils.getAppBarTitle(
                 flow: widget.flow,
@@ -161,59 +161,89 @@ class _MapScreenState extends ConsumerState<HomeAddress> {
            Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    controller: searchController,
-                    cursorColor: Colors.white,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        hintText: Strings.SEARCH_ADDRESS,
-                        hintStyle: const TextStyle(color: Colors.white70),
-                        filled: true,
-                        fillColor: const Color(0xff1b4d3a),
-                        prefixIcon:
-                        const Icon(Icons.search, color: Colors.white),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                        ),
-                        enabledBorder: CustomTheme.roundedBorder(Constant.grey),
-                        focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                  padding:  EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_12,horizontal: Constant.CONTAINER_SIZE_16),
+                  child: SizedBox(
+                    height: Constant.CONTAINER_SIZE_48,
+                    child: TextField(
+                      controller: searchController,
+                      cursorColor: Colors.white,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                          hintText: Strings.SEARCH_ADDRESS,
+                          hintStyle: const TextStyle(color: Colors.white70),
+                          filled: true,
+                          fillColor: const Color(0xff1b4d3a),
+                          prefixIcon:
+                          const Icon(Icons.search, color: Colors.white),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                          ),
+                          enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+                          focusedBorder: CustomTheme.roundedBorder(Constant.grey)
+                      ),
+                      onChanged: (value) {
+                        _searchLocation(value);
+                      },
                     ),
-                    onChanged: _onSearchChanged,
                   ),
                 ),
 
                 Expanded(
                   child: Stack(
                     children: [
-                      if( state.position != null)GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: state.position!,
-                          zoom: 17,
+                      if( state.position != null)
+                        SizedBox(
+                          height: MediaQuery.sizeOf(context).height*0.4,
+                          child: GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: state.position!,
+                              zoom: 17,
+                            ),
+
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: true,
+                            zoomControlsEnabled: true,
+                            onMapCreated: (controller) {
+                              _mapController.complete(controller);
+                            },
+
+                            onTap: (latLng) async {
+
+                              /// UPDATE POSITION
+                              ref
+                                  .read(locationProvider.notifier)
+                                  .updatePosition(latLng);
+
+                              /// MOVE CAMERA
+                              final controller = await _mapController.future;
+
+                              controller.animateCamera(
+                                CameraUpdate.newLatLng(latLng),
+                              );
+                            },
+
+                            onCameraIdle: () async {
+                              if (_isSearching) return;
+
+                              final controller = await _mapController.future;
+
+                              final bounds = await controller.getVisibleRegion();
+
+                              final center = LatLng(
+                                (bounds.northeast.latitude +
+                                    bounds.southwest.latitude) /
+                                    2,
+                                (bounds.northeast.longitude +
+                                    bounds.southwest.longitude) /
+                                    2,
+                              );
+
+                              ref
+                                  .read(locationProvider.notifier)
+                                  .updatePosition(center);
+                            },
+                          ),
                         ),
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: false,
-                        zoomControlsEnabled: false,
-                        onMapCreated: (controller) {
-                          _mapController.complete(controller);
-                        },
-                        onCameraIdle: () async {
-                          if (_isSearching) return;
-
-                          final controller = await _mapController.future;
-                          final bounds = await controller.getVisibleRegion();
-
-                          final center = LatLng(
-                            (bounds.northeast.latitude +
-                                bounds.southwest.latitude) / 2,
-                            (bounds.northeast.longitude +
-                                bounds.southwest.longitude) / 2,
-                          );
-
-                          ref.read(locationProvider.notifier).updatePosition(center);
-                        },
-
-                      ),
 
                       const Center(
                         child: Icon(

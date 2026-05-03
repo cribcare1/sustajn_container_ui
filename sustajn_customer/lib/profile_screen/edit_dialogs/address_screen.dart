@@ -29,64 +29,67 @@ class _AddressScreenState extends ConsumerState<AddressScreen> {
         ? profileState.profileList.first.addressResponses ?? []
         : [];
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+    return SafeArea(
+      bottom: true,top: false,
+      child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
 
-      appBar: CustomAppBar(
-        title: Strings.ADDRESS,
-        leading: CustomBackButton(),
-      ).getAppBar(context),
+        appBar: CustomAppBar(
+          title: Strings.ADDRESS,
+          leading: CustomBackButton(),
+        ).getAppBar(context),
 
-      body: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: addressList.length,
-                    itemBuilder: (context, index) {
-                      return _addressCard(context, theme, addressList[index]);
-                    },
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: addressList.length,
+                      itemBuilder: (context, index) {
+                        return _addressCard(context, theme, addressList[index]);
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          if (profileState.isLoading)
-           Utils.showProgressBar()
-        ],
-      ),
-
-
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: SizedBox(
-            width: double.infinity,
-            height: Constant.CONTAINER_SIZE_50,
-            child: ElevatedButton(
-              onPressed: () {
-                NavUtil.navigateToPushScreen(
-                  context,
-                  HomeAddress(flow: AddressFlow.profile),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Constant.gold,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_30,
-                  ),
-                ),
+                ],
               ),
-              child: Text(
-                Strings.ADD_NEW_ADDRESS,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.w600,
+            ),
+
+            if (profileState.isLoading)
+             Utils.showProgressBar()
+          ],
+        ),
+
+
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+            child: SizedBox(
+              width: double.infinity,
+              height: Constant.CONTAINER_SIZE_50,
+              child: ElevatedButton(
+                onPressed: () {
+                  NavUtil.navigateToPushScreen(
+                    context,
+                    HomeAddress(flow: AddressFlow.profile),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Constant.gold,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      Constant.CONTAINER_SIZE_30,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  Strings.ADD_NEW_ADDRESS,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
