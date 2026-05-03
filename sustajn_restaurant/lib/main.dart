@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -21,16 +22,6 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   debugPrint("📩 Background Notification Data: ${message.data}");
 }
-// const String taskName = "apiTask";
-// void callbackDispatcher() {
-//   Workmanager().executeTask((task, inputData) async {
-//     if (task == taskName) {
-//       FilterPopupWidget a = FilterPopupWidget();
-//       a.getContainerList();
-//     }
-//     return Future.value(true);
-//   });
-// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 await Upgrader.clearSavedSettings();
@@ -63,11 +54,26 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Container tracking',
-      theme: CustomTheme.getTheme(true),
-      home:  SplashScreen(),
+    return  AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+
+        statusBarColor: Color(0xff0F3727),
+
+        statusBarIconBrightness: Brightness.light,
+
+        statusBarBrightness: Brightness.dark,
+
+        systemNavigationBarColor: Color(0xff0F3727),
+
+        systemNavigationBarIconBrightness:
+        Brightness.light,
+      ),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Container tracking',
+        theme: CustomTheme.getTheme(true),
+        home:  SplashScreen(),
+      ),
     );
   }
 }

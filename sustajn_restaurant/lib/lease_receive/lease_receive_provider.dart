@@ -129,7 +129,7 @@ FutureProvider.family<CustomerBorrowedData, String>((ref, customerId) async {
       leaseNotifier.setReturnContainer(response.data!);
       showCustomSnackBar(
         context: leaseNotifier.context!,
-        message: "Please Scan container",
+        message: response.message??"",
         color: Colors.green
       );
     }else{

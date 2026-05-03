@@ -50,8 +50,34 @@ List<ProductOrderListResponseList> _containerReturnListAdded =[];
     notifyListeners();
   }
   ///Return
-  void setReturnContainer(List<ProductOrderListResponseList> containerList) {
+  int _containerCount = 0;
+
+  int get containerCount => _containerCount;
+Map<String, int> _totalCount ={};
+Map<String, int> get totalCount => _totalCount;
+
+  void setReturnContainer(
+      List<ProductOrderListResponseList> containerList) {
+
+    _containerReturnListAdded.clear();
+    _containerReturnList.clear();
+
     _containerReturnList = containerList;
+
+    _containerCount = _containerReturnList.fold(
+      0,
+          (sum, item) => sum + item.quantity,
+    );
+
+    for (var item in _containerReturnList) {
+      final key = item.productUniqueId;
+
+      if (_totalCount.containsKey(key)) {
+        _totalCount[key] = _totalCount[key]! + item.quantity;
+      } else {
+        _totalCount[key] = item.quantity;
+      }
+    }
     notifyListeners();
   }
   void setReturnContainerAdd(ProductOrderListResponseList containerList) {

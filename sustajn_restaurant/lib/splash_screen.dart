@@ -73,68 +73,71 @@ class _SplashScreenState extends State<SplashScreen>
     final logoSize = size.width * 0.32;
     final reflectionTop = logoSize * 1.05;
     final stackHeight = logoSize * 1.35;
-    return Scaffold(
-      backgroundColor: const Color(0xFF0E3A2F),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: stackHeight,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  FadeTransition(
-                    opacity: _logoFade,
-                    child: Image.asset(
-                      AppAssets.sustajn_logo,
-                      width: logoSize,
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0E3A2F),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: stackHeight,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    FadeTransition(
+                      opacity: _logoFade,
+                      child: Image.asset(
+                        AppAssets.sustajn_logo,
+                        width: logoSize,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: reflectionTop,
-                    child: FadeTransition(
-                      opacity: _reflectionOpacity,
-                      child: ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.white,
-                              Colors.transparent,
-                            ],
-                            stops: [0.0, 0.6, 1.0],
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.dstIn,
-                        child: Transform(
-                          alignment: Alignment.topCenter,
-                          transform: Matrix4.identity()..scale(1.0, 0.35),
-                          child: Opacity(
-                            opacity: 0.85,
-                            child: Image.asset(
-                              AppAssets.sustajn_logo,
-                              width: logoSize,
+                    Positioned(
+                      top: reflectionTop,
+                      child: FadeTransition(
+                        opacity: _reflectionOpacity,
+                        child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.white,
+                                Colors.white,
+                                Colors.transparent,
+                              ],
+                              stops: [0.0, 0.6, 1.0],
+                            ).createShader(bounds);
+                          },
+                          blendMode: BlendMode.dstIn,
+                          child: Transform(
+                            alignment: Alignment.topCenter,
+                            transform: Matrix4.identity()..scale(1.0, 0.35),
+                            child: Opacity(
+                              opacity: 0.85,
+                              child: Image.asset(
+                                AppAssets.sustajn_logo,
+                                width: logoSize,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            FadeTransition(
-              opacity: _nameFade,
-              child: Image.asset(
-                AppAssets.sustajnLogoName,
-                width: size.width * 0.45,
+              FadeTransition(
+                opacity: _nameFade,
+                child: Image.asset(
+                  AppAssets.sustajnLogoName,
+                  width: size.width * 0.45,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
