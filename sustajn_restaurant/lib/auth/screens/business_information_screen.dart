@@ -295,7 +295,9 @@ class _BusinessInformationDetailsState
                               onChanged: (value) {
                                 setState(() {
                                   _selectedCountry = value;
-
+                                  print(
+                                    "_selectedCountry  :- ${_selectedCountry!.code}",
+                                  );
                                 });
                               },
                               initialSelection: "AE",
@@ -476,7 +478,7 @@ class _BusinessInformationDetailsState
                             type,
 
                             style: TextStyle(
-                              color: (_selectedBusinessType != null && _selectedBusinessType! ==(type))
+                              color: (_selectedBusinessType! ==(type))
                                   ? Colors.orangeAccent
                                   : Colors.white, // Menu text color
                             ),
@@ -628,7 +630,7 @@ class _BusinessInformationDetailsState
                                           licenceController.text,
                                       vatNumber: vatController.text,
                                       contactNumber:
-                                          "${_selectedCountry!.dialCode} ${contactNumberController.text}",
+                                          "${_selectedCountry!.code} ${contactNumberController.text}",
                                       registrationNumber: "",
                                     ),
                                   );
@@ -706,7 +708,7 @@ class _BusinessInformationDetailsState
                                     treadLicenseNumber: licenceController.text,
                                     vatNumber: vatController.text,
                                     contactNumber:
-                                        "${_selectedCountry!.dialCode} ${contactNumberController.text}",
+                                        "${_selectedCountry!.code} ${contactNumberController.text}",
                                     registrationNumber: "",
                                   ),
                                 );
@@ -906,7 +908,7 @@ class _BusinessInformationDetailsState
         "treadLicenseNumber": licenceController.text,
         "vatNumber": vatController.text,
         "contactNumber":
-            "${_selectedCountry!.dialCode} ${contactNumberController.text}",
+            "${_selectedCountry!.code} ${contactNumberController.text}",
         "registrationNumber": regdNo,
       },
 
