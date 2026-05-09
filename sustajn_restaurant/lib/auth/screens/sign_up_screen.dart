@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
+
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
 
   @override
   void initState() {
@@ -233,22 +240,62 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   },
                 ),
 
-                _buildTextField(
-                  context,
-                  controller: mobileCtrl,
-                  hint: Strings.CONTACT_NUMBER_SPCL,
-                  keyboard: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
+                Row(mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                            border: Border.all(color: Constant.grey),
+                          ),
+                          child: CountryCodePicker(
+                            textStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                            mode: CountryCodePickerMode.dialog,
+                            dialogBackgroundColor: theme.primaryColor,
+                            dialogTextStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                            searchStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                            closeIcon:Icon(Icons.close,color: Colors.white,),
+                            searchDecoration: InputDecoration(
+                              hintText: "search country name",
+                              hintStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                              prefixIcon: Icon(Icons.search,color: Colors.white),
+                            ),
+                            onChanged: (value){
+                              setState(() {
+                                _selectedCountry = value;
+                                print("_selectedCountry  :- ${_selectedCountry!.code}");
+                              });
+                            },
+                            initialSelection:"AE",
+                            showFlag: true,
+                            showDropDownButton: true,
+                          ),
+                        )),
+                    SizedBox(width: Constant.SIZE_08),
+                    Expanded(flex: 6,
+                      child: _buildTextField(
+                        context,
+                        controller: mobileCtrl,
+                        hint: Strings.CONTACT_NUMBER_SPCL,
+                        keyboard: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                        validator: (v) {
+                          if (v!.isEmpty) return "Mobile number required";
+                          if (v.length != 10) {
+                            return "Enter valid 10-digit mobile number";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
                   ],
-                  validator: (v) {
-                    if (v!.isEmpty) return "Mobile number required";
-                    if (v.length != 10) {
-                      return "Enter valid 10-digit mobile number";
-                    }
-                    return null;
-                  },
                 ),
 
                 _buildPasswordField(
@@ -318,9 +365,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               final registrationData = RegistrationData(
                                 fullName: restaurantCtrl.text,
                                 email: emailCtrl.text,
-                                phoneNumber: mobileCtrl.text,
+                                phoneNumber: "${_selectedCountry!.code} ${mobileCtrl.text}",
                                 password: passwordCtrl.text,
-                                // profileImage: selectedImage,
                                 address: addressCtrl.text,
                                 latitude: lat,
                                 longitude: long,
