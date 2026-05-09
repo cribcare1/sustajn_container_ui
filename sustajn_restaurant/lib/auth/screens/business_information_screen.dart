@@ -1,3 +1,4 @@
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -151,7 +152,11 @@ class _BusinessInformationDetailsState
     Strings.FAST_FOOD,
     Strings.FOOD_COURT,
   ];
-
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
   @override
   Widget build(BuildContext context) {
     String? regdNo;
@@ -248,28 +253,67 @@ class _BusinessInformationDetailsState
                       label: Strings.CONTACT_PERSON,
                       focusNode: _contactFocus,
                     ),
-
-                    _buildTextField(
-                      context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.MOBILE_NUMBER;
-                        }
-                        if (value.length != 10) {
-                          return Strings.MOBILE_VALIDATE;
-                        }
-                        return null;
-                      },
-                      controller: contactNumberController,
-                      hint: Strings.MOBILE_NUMBER,
-                      label: Strings.MOBILE_NUMBER,
-                      focusNode: _contactNumberFocus,
-                      keyboard: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(10),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                            flex: 3,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor,
+                                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                                border: Border.all(color: Constant.grey),
+                              ),
+                              child: CountryCodePicker(
+                                textStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                                mode: CountryCodePickerMode.dialog,
+                                dialogBackgroundColor: theme.primaryColor,
+                                dialogTextStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                                searchStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                                closeIcon:Icon(Icons.close,color: Colors.white,),
+                                searchDecoration: InputDecoration(
+                                  hintText: "search country name",
+                                  hintStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
+                                  prefixIcon: Icon(Icons.search,color: Colors.white),
+                                ),
+                                onChanged: (value){
+                                setState(() {
+                                  _selectedCountry = value;
+                                  print("_selectedCountry  :- ${_selectedCountry!.code}");
+                                });
+                                },
+                                  initialSelection:"AE",
+                                showFlag: true,
+                                showDropDownButton: true,
+                              ),
+                            )),
+                        SizedBox(width: Constant.SIZE_08),
+                        Expanded(
+                            flex: 6,
+                            child: _buildTextField(
+                              context,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return Strings.MOBILE_NUMBER;
+                                }
+                                if (value.length != 10) {
+                                  return Strings.MOBILE_VALIDATE;
+                                }
+                                return null;
+                              },
+                              controller: contactNumberController,
+                              hint: Strings.MOBILE_NUMBER,
+                              label: Strings.MOBILE_NUMBER,
+                              focusNode: _contactNumberFocus,
+                              keyboard: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                            ),)
                       ],
                     ),
+
                     _buildTextField(
                       context,
                       validator: (value) {
@@ -542,7 +586,7 @@ class _BusinessInformationDetailsState
                               contactEmail:contactEmailController.text,
                               treadLicenseNumber: licenceController.text,
                               vatNumber : vatController.text,
-                              contactNumber : contactNumberController.text,
+                              contactNumber : "${_selectedCountry!.code} ${contactNumberController.text}",
                               registrationNumber: "",
                             ));
                             widget.authState.setBusinessDetails(BusinessModel(
@@ -610,7 +654,7 @@ class _BusinessInformationDetailsState
                                     contactEmail:contactEmailController.text,
                                     treadLicenseNumber: licenceController.text,
                                   vatNumber : vatController.text,
-                                  contactNumber : contactNumberController.text,
+                                  contactNumber : "${_selectedCountry!.code} ${contactNumberController.text}",
                                     registrationNumber: "",
                                 ));
                                 widget.authState.setBusinessDetails(BusinessModel(
@@ -805,7 +849,7 @@ class _BusinessInformationDetailsState
         "contactEmail": contactEmailController.text,
         "treadLicenseNumber": licenceController.text,
         "vatNumber": vatController.text,
-        "contactNumber": contactNumberController.text,
+        "contactNumber": "${_selectedCountry!.code} ${contactNumberController.text}",
         "registrationNumber": regdNo,
       },
 
