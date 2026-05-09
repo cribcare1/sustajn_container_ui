@@ -61,13 +61,26 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
             children: [
               _freemiumCard(theme),
               SizedBox(height: Constant.CONTAINER_SIZE_24),
-              if(widget.previousScreen =="profile")...[
-                Text(data.description,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white),),
-              ],
-              if(widget.previousScreen =="")...[
-                Expanded(
-                  child: SingleChildScrollView(child: _featureList(theme,widget.planModel?.description??"")),
+                if(data.description != "") Row(
+                  children: [
+                    Icon(
+                      Icons.check,
+                      color: Theme.of(context).secondaryHeaderColor,
+                      size: Constant.CONTAINER_SIZE_18,
+                    ),
+                    SizedBox(width: Constant.CONTAINER_SIZE_12),
+                    Expanded(
+                      child: Text(
+                        data.description??"__",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: Constant.CONTAINER_SIZE_14,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              if(widget.previousScreen =="")...[
                 SizedBox(height: Constant.CONTAINER_SIZE_16),
                 SizedBox(
                   width: double.infinity,
