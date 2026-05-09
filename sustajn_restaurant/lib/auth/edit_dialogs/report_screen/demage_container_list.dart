@@ -186,7 +186,7 @@ class _DamageContainerListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.containerCount.toString(),
+                item.quantity.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -209,39 +209,4 @@ class _DamageContainerListScreenState
     );
   }
 
-  // _leaseContainer(
-  //     LeaseReceiveNotifier leasState,
-  //     Map<String, dynamic> body,
-  //     ) async {
-  //   try {
-  //     print("API calll");
-  //     leasState.setIsSaving(true);
-  //     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-  //         isNetworkAvailable,
-  //         ) async {
-  //       try {
-  //         print("isNetworkAvailable :- $isNetworkAvailable");
-  //         if (isNetworkAvailable) {
-  //           ref.read(receiveContainer(body).future);
-  //         } else {
-  //           leasState.setIsSaving(false);
-  //           if (!mounted) return;
-  //           showCustomSnackBar(
-  //             context: context,
-  //             message: Strings.NO_INTERNET_CONNECTION,
-  //             color: Colors.red,
-  //           );
-  //         }
-  //       } catch (e) {
-  //         Utils.printLog('Error on button onPressed: $e');
-  //         leasState.setIsSaving(false);
-  //       }
-  //       if (!mounted) return;
-  //       FocusScope.of(context).unfocus();
-  //     });
-  //   } catch (e) {
-  //     Utils.printLog('Error in Login button onPressed: $e');
-  //     leasState.setIsSaving(false);
-  //   }
-  // }
 }

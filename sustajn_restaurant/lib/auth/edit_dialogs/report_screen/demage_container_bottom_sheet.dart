@@ -75,6 +75,7 @@ class _DamageContainerBottomSheetState
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -88,10 +89,10 @@ class _DamageContainerBottomSheetState
               Utils.buildFloatingHeader(context),
               SizedBox(height: Constant.SIZE_08),
               Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Color(0xff0F3D2E),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                padding:  EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                decoration:  BoxDecoration(
+                  color: theme.primaryColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_20)),
                 ),
 
                 child: Column(
@@ -99,7 +100,7 @@ class _DamageContainerBottomSheetState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Scanned Damage Container",
+                      "Damaged Container Details",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -135,25 +136,72 @@ class _DamageContainerBottomSheetState
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.item.productName,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.item.productName,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.item.productUniqueId,
+                                        style: TextStyle(color: Colors.white70),
+                                      ),
+                                      Text(
+                                        "${widget.item.containerQuantity}ml",
+                                        style: TextStyle(color: Colors.white70),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                widget.item.productUniqueId,
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              Text(
-                                "${widget.item.containerQuantity}ml",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ],
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (widget.item.containerCount > 1) {
+                                        widget.item.containerCount--;
+                                      }
+                                    });
+                                  },
+
+                                  icon: const Icon(
+                                    Icons.remove,
+                                    color: Colors.white,
+                                  ),
+                                ),
+
+                                Text(
+                                  "${widget.item.containerCount}",
+
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (widget.item.containerCount <
+                                          widget.item.quantity) {
+                                        widget.item.containerCount++;
+                                      }
+                                    });
+                                  },
+
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -166,7 +214,7 @@ class _DamageContainerBottomSheetState
                         hintText: "Remarks",
                         hintStyle: const TextStyle(color: Colors.white70),
                         filled: true,
-                        fillColor: Colors.green.shade900.withOpacity(.4),
+                        fillColor: Theme.of(context).primaryColor,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide.none,
@@ -182,7 +230,8 @@ class _DamageContainerBottomSheetState
                         width: double.infinity,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: Colors.green.shade900.withOpacity(.4),
+                          border: Border.all(color: Colors.white),
+                          color: Theme.of(context).primaryColor,
                         ),
                         child: Column(
                           children: const [
@@ -206,7 +255,8 @@ class _DamageContainerBottomSheetState
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: Colors.green.shade900.withOpacity(.4),
+                          border: Border.all(color: Colors.white),
+                          color: Theme.of(context).primaryColor,
                         ),
                         child: Row(
                           children: [
