@@ -382,38 +382,56 @@ class PlanCard extends StatelessWidget {
                         ),
                       ),
                       if (plan.isSelected)
-                        GestureDetector(
-                          onTap: () {
-                          },
-                          child: Icon(Icons.check_circle, color: Colors.white),
-                        ),
+                        Icon(Icons.check_circle, color: Colors.white),
+                      if (!plan.isSelected)
+                        Icon(Icons.circle, color: Colors.white),
                     ],
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
-                  ...plan.features.map(
-                    (feature) => Padding(
-                      padding: EdgeInsets.only(bottom: Constant.SIZE_08),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check,
-                            color: Theme.of(context).secondaryHeaderColor,
-                            size: Constant.CONTAINER_SIZE_18,
-                          ),
-                          SizedBox(width: Constant.CONTAINER_SIZE_12),
-                          Expanded(
-                            child: Text(
-                              feature,
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: Constant.CONTAINER_SIZE_14,
-                              ),
-                            ),
-                          ),
-                        ],
+                  if(plan.description != "") Row(
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color:plan.isSelected? Theme.of(context).secondaryHeaderColor:Colors.white,
+                        size: Constant.CONTAINER_SIZE_18,
                       ),
-                    ),
+                      SizedBox(width: Constant.CONTAINER_SIZE_12),
+                      Expanded(
+                        child: Text(
+                          plan.description??"__",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: Constant.CONTAINER_SIZE_14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  //TODO:- multiline plan
+                  // ...plan.features.map(
+                  //   (feature) => Padding(
+                  //     padding: EdgeInsets.only(bottom: Constant.SIZE_08),
+                  //     child: Row(
+                  //       children: [
+                  //         Icon(
+                  //           Icons.check,
+                  //           color: Theme.of(context).secondaryHeaderColor,
+                  //           size: Constant.CONTAINER_SIZE_18,
+                  //         ),
+                  //         SizedBox(width: Constant.CONTAINER_SIZE_12),
+                  //         Expanded(
+                  //           child: Text(
+                  //             feature,
+                  //             style: TextStyle(
+                  //               color: Colors.white70,
+                  //               fontSize: Constant.CONTAINER_SIZE_14,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
                   Center(
                     child: OutlinedButton(
