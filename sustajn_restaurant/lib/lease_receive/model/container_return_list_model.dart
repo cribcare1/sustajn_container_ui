@@ -66,7 +66,7 @@ class ProductOrderListResponseList {
       productUniqueId: json['productUniqueId'] ?? '',
       containerQuantity: json['containerQuantity'] ?? 0,
       dueDate: json['dueDate'] ?? '',
-      containerCount: json['containerCount'] ?? 0,
+      containerCount: json['quantity'] ?? 0,
     );
   }
 
@@ -82,7 +82,7 @@ class ProductOrderListResponseList {
       'productUniqueId': productUniqueId,
       'containerQuantity': containerQuantity,
       'dueDate': dueDate,
-      'containerCount': containerCount,
+      'containerCount': quantity,
     };
   }
 }
