@@ -267,7 +267,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             onChanged: (value){
                               setState(() {
                                 _selectedCountry = value;
-                                print("_selectedCountry  :- ${_selectedCountry!.code}");
                               });
                             },
                             initialSelection:"AE",
@@ -365,7 +364,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                               final registrationData = RegistrationData(
                                 fullName: restaurantCtrl.text,
                                 email: emailCtrl.text,
-                                phoneNumber: "${_selectedCountry!.code} ${mobileCtrl.text}",
+                                phoneNumber: "${_selectedCountry!.dialCode} ${mobileCtrl.text}",
                                 password: passwordCtrl.text,
                                 address: addressCtrl.text,
                                 latitude: lat,
