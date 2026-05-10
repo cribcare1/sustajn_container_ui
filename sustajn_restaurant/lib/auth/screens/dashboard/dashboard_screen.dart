@@ -212,6 +212,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
+                                      //TODO:- search restaurant
                                       Expanded(
                                         child: InkWell(
                                           onTap: () {

@@ -321,7 +321,7 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: response['message'],
         color: Colors.green,
       );
-      Navigator.pop(leaseNotifier.context);
+     NavUtil.popScreen(leaseNotifier.context, 2);
     }
   } catch (e) {
     leaseNotifier.setIsSaving(false);

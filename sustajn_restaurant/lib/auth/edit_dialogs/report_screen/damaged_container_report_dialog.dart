@@ -1,3 +1,4 @@
+import 'package:sustajn_restaurant/auth/edit_dialogs/report_screen/get_all_container_list.dart';
 import 'package:sustajn_restaurant/auth/edit_dialogs/report_screen/reports_screen.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
@@ -82,7 +83,7 @@ class _DamagedContainerReportDialogState
                           onTap: () {
                             NavUtil.navigateToPushScreen(
                               context,
-                              DamagedContainerScannerWidget(),
+                              GetAllContainerListScreen(),
                             );
                           },
                           decoration: _inputDecoration(

@@ -1,3 +1,4 @@
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +52,11 @@ class _SecondaryMobileNumberDialogState
     if (value.length != 10) return 'Enter valid 10-digit number';
     return null;
   }
-
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -225,22 +230,77 @@ final profileState = ref.watch(profileProvider);
                           child: Column(
                             children: [
                               SizedBox(height: Constant.CONTAINER_SIZE_16),
-                              TextFormField(
-                                controller: _secondaryController,
-                                keyboardType: TextInputType.number,
-                                validator: _validateMobile,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  labelText: Strings.SECONDARY_NO,
-                                  labelStyle: const TextStyle(
-                                    color: Colors.white,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: theme.primaryColor,
+                                        borderRadius: BorderRadius.circular(
+                                          Constant.CONTAINER_SIZE_16,
+                                        ),
+                                        border: Border.all(color: Constant.grey),
+                                      ),
+                                      child: CountryCodePicker(
+                                        textStyle: theme.textTheme.titleSmall!.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                        mode: CountryCodePickerMode.dialog,
+                                        dialogBackgroundColor: theme.primaryColor,
+                                        dialogTextStyle: theme.textTheme.titleSmall!
+                                            .copyWith(color: Colors.white),
+                                        searchStyle: theme.textTheme.titleSmall!.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                        closeIcon: Icon(Icons.close, color: Colors.white),
+                                        searchDecoration: InputDecoration(
+                                          hintText: "search country name",
+                                          hintStyle: theme.textTheme.titleSmall!.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                          prefixIcon: Icon(
+                                            Icons.search,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedCountry = value;
+
+                                          });
+                                        },
+                                        initialSelection: "AE",
+                                        showFlag: true,
+                                        showDropDownButton: true,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(width: Constant.SIZE_08),
+                                  Expanded(
+                                    flex: 6,
+                                    child:  TextFormField(
+                                      controller: _secondaryController,
+                                      keyboardType: TextInputType.number,
+                                      validator: _validateMobile,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      style: const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
+                                        labelText: Strings.SECONDARY_NO,
+                                        labelStyle: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+
                             ],
                           ),
                         ),
@@ -276,7 +336,7 @@ final profileState = ref.watch(profileProvider);
   Map<String, dynamic> getJsonData() {
     final data = {
       "userId": Utils.userId,
-      "secondaryNumber": _secondaryController.text,
+      "secondaryNumber": "${_selectedCountry!.dialCode} ${_secondaryController.text}",
     };
     return data;
   }
