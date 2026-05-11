@@ -188,21 +188,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         return null;
                       },
                     ),
-                    // _buildTextField(
-                    //   context,
-                    //   controller: mobileCtrl,
-                    //   hint: Strings.CONTACT_NUMBER,
-                    //   keyboard: TextInputType.phone,
-                    //   inputFormatters: [
-                    //     FilteringTextInputFormatter.digitsOnly,
-                    //     LengthLimitingTextInputFormatter(10),
-                    //   ],
-                    //   validator: (v) {
-                    //     if (v!.isEmpty) return Strings.MOBILE;
-                    //     if (v.length != 10) return Strings.VALID_MOB;
-                    //     return null;
-                    //   },
-                    // ),
 
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +316,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                                   final registrationData = RegistrationData(
                                     fullName: restaurantCtrl.text,
                                     email: emailCtrl.text,
-                                    // phoneNumber: mobileCtrl.text,
                                     phoneNumber:
                                     "${_selectedCountry?.dialCode} ${mobileCtrl.text}",
                                     password: passwordCtrl.text,
