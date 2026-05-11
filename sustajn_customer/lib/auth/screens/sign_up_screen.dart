@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
   final dobCtrl = TextEditingController();
   DateTime? selectedDob;
   String? selectedGender;
+
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
 
   bool passwordVisible = false;
   bool confirmPasswordVisible = false;
@@ -181,20 +188,91 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                         return null;
                       },
                     ),
-                    _buildTextField(
-                      context,
-                      controller: mobileCtrl,
-                      hint: Strings.CONTACT_NUMBER,
-                      keyboard: TextInputType.phone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(10),
+                    // _buildTextField(
+                    //   context,
+                    //   controller: mobileCtrl,
+                    //   hint: Strings.CONTACT_NUMBER,
+                    //   keyboard: TextInputType.phone,
+                    //   inputFormatters: [
+                    //     FilteringTextInputFormatter.digitsOnly,
+                    //     LengthLimitingTextInputFormatter(10),
+                    //   ],
+                    //   validator: (v) {
+                    //     if (v!.isEmpty) return Strings.MOBILE;
+                    //     if (v.length != 10) return Strings.VALID_MOB;
+                    //     return null;
+                    //   },
+                    // ),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: theme.primaryColor,
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              border: Border.all(color: Constant.grey),
+                            ),
+                            child: CountryCodePicker(
+                              initialSelection: "AE",
+                              favorite: const ["+971", "AE"],
+                              showCountryOnly: false,
+                              showOnlyCountryWhenClosed: false,
+                              alignLeft: false,
+                              showDropDownButton: true,
+                              textStyle: const TextStyle(color: Colors.white),
+                              dialogBackgroundColor: theme.primaryColor,
+                              dialogTextStyle: const TextStyle(color: Colors.white),
+                              searchStyle: const TextStyle(color: Colors.white),
+                              closeIcon: const Icon(Icons.close, color: Colors.white),
+                              searchDecoration: InputDecoration(
+                                hintText: "Search country",
+                                hintStyle: const TextStyle(color: Colors.white70),
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCountry = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(width: Constant.SIZE_08),
+
+                        Expanded(
+                          flex: 6,
+                          child: _buildTextField(
+                            context,
+                            controller: mobileCtrl,
+                            hint: Strings.CONTACT_NUMBER,
+                            keyboard: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                            validator: (v) {
+                              if (v == null || v.isEmpty) {
+                                return Strings.MOBILE;
+                              }
+                              if (v.length != 10) {
+                                return Strings.VALID_MOB;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                       ],
-                      validator: (v) {
-                        if (v!.isEmpty) return Strings.MOBILE;
-                        if (v.length != 10) return Strings.VALID_MOB;
-                        return null;
-                      },
                     ),
 
                     _buildPasswordField(
@@ -253,7 +331,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                                   final registrationData = RegistrationData(
                                     fullName: restaurantCtrl.text,
                                     email: emailCtrl.text,
-                                    phoneNumber: mobileCtrl.text,
+                                    // phoneNumber: mobileCtrl.text,
+                                    phoneNumber:
+                                    "${_selectedCountry?.dialCode} ${mobileCtrl.text}",
                                     password: passwordCtrl.text,
                                     profileImage: selectedImage,
                                     dateOfBirth: selectedDob == null
