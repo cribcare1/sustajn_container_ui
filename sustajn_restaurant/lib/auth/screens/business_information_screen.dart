@@ -476,7 +476,7 @@ class _BusinessInformationDetailsState
                             type,
 
                             style: TextStyle(
-                              color: (_selectedBusinessType! ==(type))
+                              color: (_selectedBusinessType != null && _selectedBusinessType! ==(type))
                                   ? Colors.orangeAccent
                                   : Colors.white, // Menu text color
                             ),
