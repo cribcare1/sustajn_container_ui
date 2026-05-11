@@ -67,6 +67,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter_launcher_icons: ^0.14.4
   upgrader: ^13.1.0
+  country_code_picker_plus: ^0.1.0+1
 
 
 dev_dependencies:
