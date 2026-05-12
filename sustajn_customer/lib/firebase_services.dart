@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +13,20 @@ import 'constants/network_urls.dart';
 
 class FirebaseServices {
   static final FirebaseServices _instance = FirebaseServices._internal();
+
   factory FirebaseServices() {
     Utils.getProfile();
     return _instance;
   }
+
   FirebaseServices._internal();
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
   FlutterLocalNotificationsPlugin();
 
   String? _fcmToken;
+
   String? get fcmToken => _fcmToken;
 
   static const String _tokenKey = 'fcm_token';
@@ -48,7 +53,9 @@ class FirebaseServices {
   }
 
   Future<void> _initializeLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -61,14 +68,17 @@ class FirebaseServices {
     );
 
     await _localNotifications.initialize(
-      initSettings,
       onDidReceiveNotificationResponse: _onNotificationTapped,
+      settings: initSettings,
     );
+
+    Utils.printLog('Local notifications initialized');
   }
 
   Future<void> _requestPermissions() async {
     try {
-      NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      NotificationSettings settings = await _firebaseMessaging
+          .requestPermission(
         alert: true,
         announcement: false,
         badge: true,
@@ -78,11 +88,14 @@ class FirebaseServices {
         sound: true,
       );
 
-      Utils.printLog('Notification permission status: ${settings.authorizationStatus}');
+      Utils.printLog(
+        'Notification permission status: ${settings.authorizationStatus}',
+      );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         Utils.printLog('User granted notification permission');
-      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
         Utils.printLog('User granted provisional notification permission');
       } else {
         Utils.printLog('User declined notification permission');
@@ -126,14 +139,18 @@ class FirebaseServices {
         Utils.printLog('No last update timestamp, updating...');
         shouldUpdate = true;
       } else {
-        final lastUpdate = DateTime.fromMillisecondsSinceEpoch(lastUpdateTimestamp);
+        final lastUpdate = DateTime.fromMillisecondsSinceEpoch(
+          lastUpdateTimestamp,
+        );
         final daysSinceUpdate = DateTime.now().difference(lastUpdate).inDays;
 
         if (daysSinceUpdate >= _updateIntervalDays) {
           Utils.printLog('14 days passed, updating token...');
           shouldUpdate = true;
         } else {
-          Utils.printLog('Token updated $daysSinceUpdate days ago, no update needed');
+          Utils.printLog(
+            'Token updated $daysSinceUpdate days ago, no update needed',
+          );
         }
       }
 
@@ -155,9 +172,10 @@ class FirebaseServices {
       Utils.printLog('Updating FCM token to API: $token');
 
       final String deviceType = Platform.isAndroid ? 'Android' : 'iOS';
-
       final response = await http.post(
-        Uri.parse('${NetworkUrls.BASE_URL}notification/registerOrUpdateDeviceToken'),
+        Uri.parse(
+          '${NetworkUrls.BASE_URL}notification/registerOrUpdateDeviceToken',
+        ),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -169,12 +187,18 @@ class FirebaseServices {
           'deviceType': deviceType,
         }),
       );
-
+      print({
+        'userId': Utils.userId,
+        'deviceToken': token,
+        'deviceType': deviceType,
+      });
       if (response.statusCode == 200 || response.statusCode == 201) {
         Utils.printLog('Token updated successfully on server');
         Utils.printLog('Response: ${response.body}');
       } else {
-        Utils.printLog('Failed to update token on server: ${response.statusCode}');
+        Utils.printLog(
+          'Failed to update token on server: ${response.statusCode}',
+        );
         Utils.printLog('Response: ${response.body}');
       }
     } catch (e) {
@@ -183,11 +207,13 @@ class FirebaseServices {
   }
 
   void _setupTokenRefreshListener() {
-    _firebaseMessaging.onTokenRefresh.listen((newToken) {
+    _firebaseMessaging.onTokenRefresh
+        .listen((newToken) {
       Utils.printLog('FCM Token refreshed: $newToken');
       _fcmToken = newToken;
       _checkAndUpdateTokenIfNeeded(newToken);
-    }).onError((error) {
+    })
+        .onError((error) {
       Utils.printLog('Token refresh error: $error');
     });
   }
@@ -200,7 +226,7 @@ class FirebaseServices {
   }
 
   Future<void> _setupBackgroundNotificationHandler() async {
-    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessageHandler);
+    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
   }
 
   Future<void> _setupNotificationInteraction() async {
@@ -211,7 +237,9 @@ class FirebaseServices {
 
     final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
-      Utils.printLog('App opened from terminated state: ${initialMessage.messageId}');
+      Utils.printLog(
+        'App opened from terminated state: ${initialMessage.messageId}',
+      );
       _handleNotificationTap(initialMessage);
     }
   }
@@ -220,8 +248,9 @@ class FirebaseServices {
     Utils.printLog('Message data: ${message.data}');
     Utils.printLog('Message notification: ${message.notification?.title}');
 
-      _showLocalNotification(message);
-
+    // if (showNotification) {
+    _showLocalNotification(message);
+    // }
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
@@ -232,7 +261,8 @@ class FirebaseServices {
         const androidDetails = AndroidNotificationDetails(
           'high_importance_channel',
           'High Importance Notifications',
-          channelDescription: 'This channel is used for important notifications',
+          channelDescription:
+          'This channel is used for important notifications',
           importance: Importance.high,
           priority: Priority.high,
           showWhen: true,
@@ -252,10 +282,10 @@ class FirebaseServices {
         );
 
         await _localNotifications.show(
-           notification.hashCode,
-           notification['title'],
-           notification['body'],
-           notificationDetails,
+          id: notification.hashCode,
+          title: notification['title'],
+          body: notification['body'],
+          notificationDetails: notificationDetails,
           payload: message.data.toString(),
         );
 
@@ -313,7 +343,10 @@ class FirebaseServices {
         await _updateTokenToAPI(newToken);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_tokenKey, newToken);
-        await prefs.setInt(_lastUpdateKey, DateTime.now().millisecondsSinceEpoch);
+        await prefs.setInt(
+          _lastUpdateKey,
+          DateTime.now().millisecondsSinceEpoch,
+        );
         _fcmToken = newToken;
         Utils.printLog('Token force updated: $newToken');
       }
@@ -336,7 +369,9 @@ class FirebaseServices {
             : null,
         'daysSinceUpdate': lastUpdateTimestamp != null
             ? DateTime.now()
-            .difference(DateTime.fromMillisecondsSinceEpoch(lastUpdateTimestamp))
+            .difference(
+          DateTime.fromMillisecondsSinceEpoch(lastUpdateTimestamp),
+        )
             .inDays
             : null,
       };
@@ -348,9 +383,46 @@ class FirebaseServices {
 }
 
 // Background message handler - must be top-level function
+// @pragma('vm:entry-point')
+// Future<void> _firebaseBackgroundMessageHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   print('Background message received: ${message.messageId}');
+//   print('Background message data: ${message.notification}');
+// }
 @pragma('vm:entry-point')
-Future<void> _firebaseBackgroundMessageHandler(RemoteMessage message) async {
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('Background message received: ${message.messageId}');
-  print('Background message data: ${message.data}');
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings =
+  InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(settings: initializationSettings);
+
+  const AndroidNotificationDetails androidDetails =
+  AndroidNotificationDetails(
+    'high_importance_channel',
+    'High Importance Notifications',
+    importance: Importance.high,
+    priority: Priority.high,
+  );
+
+  const NotificationDetails notificationDetails =
+  NotificationDetails(android: androidDetails);
+
+  await flutterLocalNotificationsPlugin.show(
+    id:message.hashCode,
+    title: message.data['title'],
+    body: message.data['body'],
+    notificationDetails: notificationDetails,
+  );
+
+  print('Background notification shown');
 }

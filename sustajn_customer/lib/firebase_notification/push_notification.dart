@@ -61,7 +61,7 @@ class FirebasePushNotification{
     var initializationSetting = InitializationSettings(android: androidInitSetting);
 
     await _flutterLocalNotificationsPlugin.initialize(
-      initializationSetting,
+      settings: initializationSetting,
       onDidReceiveNotificationResponse: (payload) {
         handleMessage(context, message);
       },
@@ -127,10 +127,10 @@ class FirebasePushNotification{
     Future.delayed(Duration.zero,
             (){
           _flutterLocalNotificationsPlugin.show(
-            0,
-            message.notification!.title.toString(),
-            message.notification!.body.toString(),
-            notificationDetails,
+            id: 0,
+            title: message.notification!.title.toString(),
+           body:  message.notification!.body.toString(),
+           notificationDetails:  notificationDetails,
             payload: "My data",
           );
         });
