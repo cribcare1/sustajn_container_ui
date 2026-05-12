@@ -12,10 +12,6 @@ import 'package:sustajn_customer/utils/theme_utils.dart';
 import 'firebase_services.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-@pragma('vm:entry-point')
-Future<void> backgroundMessageHandler(RemoteMessage message) async {
-  debugPrint("📩 Background Notification Data: ${message.data}");
-}
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
