@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
-import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
 import 'package:sustajn_restaurant/common_widgets/submit_clear_button.dart';
 import 'package:sustajn_restaurant/constants/network_urls.dart';
 import 'package:sustajn_restaurant/constants/number_constants.dart';
 import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dart';
-import 'package:sustajn_restaurant/utils/global_utils.dart';
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
@@ -43,18 +41,13 @@ class _ReceiveProductListScreenState
       ref.read(leaseReceiveNotifier).containerReturnList.clear();
       ref.read(leaseReceiveNotifier).containerReturnListAdded.clear();
       ref.read(leaseReceiveNotifier).setContext(context);
-      _getContainerList(
-        customerId: widget.customerId,
-      );
+      _getContainerList(customerId: widget.customerId);
     });
 
     super.initState();
   }
 
-  _getContainerList(
-     {
-    required String customerId,
-  }) async {
+  _getContainerList({required String customerId}) async {
     final leasState = ref.read(leaseReceiveNotifier);
     try {
       leasState.setLoading(true);
@@ -127,36 +120,35 @@ class _ReceiveProductListScreenState
                           ],
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
-                          Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/img.png",
-                                  height: 25,
-                                  width: 25,
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/img.png",
+                                height: 25,
+                                width: 25,
+                              ),
+                              SizedBox(width: Constant.SIZE_08),
+                              Text(
+                                leaseNotifier.containerCount.toString(),
+                                style: const TextStyle(
+                                  color: Colors.amber,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                SizedBox(width: Constant.SIZE_08),
-                                Text(
-                                  leaseNotifier.containerCount
-                                      .toString(),
-                                  style: const TextStyle(
-                                    color: Colors.amber,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: Constant.CONTAINER_SIZE_20),
-                          Text(
-                            "Available Containers",
-                            textAlign: TextAlign.start,
-                            style: Theme.of(context).textTheme.titleMedium!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        Text(
+                          "Available Containers",
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
@@ -174,20 +166,6 @@ class _ReceiveProductListScreenState
                           SizedBox(height: Constant.CONTAINER_SIZE_10),
                     ),
                   ),
-                  // SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                  // (leaseNotifier.containerReturnList.isEmpty)
-                  //     ? const SizedBox()
-                  //     : leaseNotifier.isSaving
-                  //     ? Center(child: CircularProgressIndicator())
-                  //     : SizedBox(
-                  //         width: MediaQuery.sizeOf(context).width * 0.6,
-                  //         child: SubmitButton(
-                  //           onRightTap: () {
-                  //             showConfirmIssuePopup(context, leaseNotifier);
-                  //           },
-                  //           rightText: "Confirm Receive",
-                  //         ),
-                  //       ),
                   SizedBox(height: Constant.CONTAINER_SIZE_40),
                 ],
               ),

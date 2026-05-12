@@ -409,8 +409,6 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
   }
 
   Widget _containerCard({required ProductOrderListResponseList item}) {
-    // final maxLimit = item.quantity;
-
     return GlassSummaryCard(
       child: Row(
         children: [
@@ -471,6 +469,53 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                       .read(leaseReceiveNotifier)
                       .containerReturnListAdded;
 
+                  final currentTotal = list
+                      .where((e) =>
+                  e.productUniqueId ==
+                      item.productUniqueId)
+                      .fold<int>(
+                      0,
+                          (sum, e) =>
+                      sum + e.containerCount);
+
+                  if (currentTotal <= 1) {
+                    showCustomSnackBar(
+                      context: context,
+                      message: "Minimum is 1",
+                      color: Colors.red,
+                    );
+                    return;
+                  }
+
+                  setState(() {
+                    for (var e in list) {
+                      if (e.productUniqueId ==
+                          item.productUniqueId) {
+                        e.containerCount--;
+                      }
+                    }
+                  });
+                },
+                child: const Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                " ${item.containerCount} ",
+                style: const TextStyle(
+                  color: Colors.amber,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+
+                  final list = ref
+                      .read(leaseReceiveNotifier)
+                      .containerReturnListAdded;
+
                   final maxLimit = ref
                       .read(leaseReceiveNotifier)
                       .totalCount[item.productUniqueId] ??
@@ -505,55 +550,6 @@ class _QrScannerScreenState extends ConsumerState<ReceiveScanScreen> {
                 },
                 child: const Icon(
                   Icons.add_circle_outline,
-                  color: Colors.white,
-                ),
-              ),
-
-              Text(
-                " ${item.containerCount} ",
-                style: const TextStyle(
-                  color: Colors.amber,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              InkWell(
-                onTap: () {
-
-                  final list = ref
-                      .read(leaseReceiveNotifier)
-                      .containerReturnListAdded;
-
-                  final currentTotal = list
-                      .where((e) =>
-                  e.productUniqueId ==
-                      item.productUniqueId)
-                      .fold<int>(
-                      0,
-                          (sum, e) =>
-                      sum + e.containerCount);
-
-                  if (currentTotal <= 1) {
-                    showCustomSnackBar(
-                      context: context,
-                      message: "Minimum is 1",
-                      color: Colors.red,
-                    );
-                    return;
-                  }
-
-                  setState(() {
-                    for (var e in list) {
-                      if (e.productUniqueId ==
-                          item.productUniqueId) {
-                        e.containerCount--;
-                      }
-                    }
-                  });
-                },
-                child: const Icon(
-                  Icons.remove_circle_outline,
                   color: Colors.white,
                 ),
               ),

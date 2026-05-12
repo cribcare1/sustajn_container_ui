@@ -13,25 +13,23 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
+import '../../../lease_receive/model/container_list_model.dart';
 import '../../../notifier/profile_notifier.dart';
 
-class DamageContainerBottomSheet extends ConsumerStatefulWidget {
-  final ProductOrderListResponseList item;
-  final String customerId;
-
-  const DamageContainerBottomSheet({
+class RestaurantDamageContainerBottomSheet extends ConsumerStatefulWidget {
+  final ContainerDetails item;
+  const RestaurantDamageContainerBottomSheet({
     super.key,
     required this.item,
-    required this.customerId,
   });
 
   @override
-  ConsumerState<DamageContainerBottomSheet> createState() =>
-      _DamageContainerBottomSheetState();
+  ConsumerState<RestaurantDamageContainerBottomSheet> createState() =>
+      _RestaurantDamageContainerBottomSheetState();
 }
 
-class _DamageContainerBottomSheetState
-    extends ConsumerState<DamageContainerBottomSheet> {
+class _RestaurantDamageContainerBottomSheetState
+    extends ConsumerState<RestaurantDamageContainerBottomSheet> {
   final TextEditingController _remarksController = TextEditingController();
 
   File? selectedImage;
@@ -125,7 +123,7 @@ class _DamageContainerBottomSheetState
                                 Constant.SIZE_08,
                               ),
                               child: Image.network(
-                                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.item.productImageUrl}",
+                                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.item.containerImageUrl}",
                                 errorBuilder: (context, obj, stack) {
                                   return Image.asset(
                                     "assets/images/no_image_container.png",
@@ -144,18 +142,18 @@ class _DamageContainerBottomSheetState
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.item.productName,
+                                        widget.item.containerName,
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       Text(
-                                        widget.item.productUniqueId,
+                                        widget.item.containerUniqueId,
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                       Text(
-                                        "${widget.item.containerQuantity}ml",
+                                        "${widget.item.capacity}ml",
                                         style: TextStyle(color: Colors.white70),
                                       ),
                                     ],
@@ -164,8 +162,8 @@ class _DamageContainerBottomSheetState
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      if (widget.item.containerCount > 1) {
-                                        widget.item.containerCount--;
+                                      if (widget.item.quantity > 0) {
+                                        widget.item.quantity--;
                                       }
                                     });
                                   },
@@ -177,7 +175,7 @@ class _DamageContainerBottomSheetState
                                 ),
 
                                 Text(
-                                  "${widget.item.containerCount}",
+                                  "${widget.item.quantity}",
 
                                   style: const TextStyle(
                                     color: Colors.white,
@@ -188,9 +186,9 @@ class _DamageContainerBottomSheetState
                                 IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      if (widget.item.containerCount <
-                                          widget.item.quantity) {
-                                        widget.item.containerCount++;
+                                      if (widget.item.quantity <
+                                          widget.item.quantityAvailable) {
+                                        widget.item.quantity++;
                                       }
                                     });
                                   },
@@ -303,30 +301,30 @@ class _DamageContainerBottomSheetState
                     profileState.isSaving
                         ? Center(child: CircularProgressIndicator())
                         : SizedBox(
-                            width: double.infinity,
-                            child: SubmitButton(
-                              onRightTap: () {
-                                if (selectedImage == null) {
-                                  Fluttertoast.showToast(msg: "Select Image");
-                                  return;
-                                } else {
-                                  Map<String, dynamic> body = {
-                                    "containerTypeId": widget.item.productId,
-                                    "damagedCount":widget.item.quantity,
-                                    "remark": _remarksController.text,
-                                    "restaurantId": Utils.userId,
-                                    "userId": widget.customerId,
-                                    "isDamagedByRestaurant": false,
-                                    "isDamagedByUser": true,
-                                    "image":selectedImage!.path,
-                                  };
-                                  _networkCall(profileState, body: body);
-                                }
-                              },
+                      width: double.infinity,
+                      child: SubmitButton(
+                        onRightTap: () {
+                          if (selectedImage == null) {
+                            Fluttertoast.showToast(msg: "Select Image");
+                            return;
+                          } else {
+                            Map<String, dynamic> body = {
+                              "containerTypeId": widget.item.containerUniqueId,
+                              "remark": _remarksController.text,
+                              "restaurantId": Utils.userId,
+                              "damagedCount":widget.item.quantity,
+                              "userId": 0,
+                              "isDamagedByRestaurant": true,
+                              "isDamagedByUser": false,
+                              "image":selectedImage!.path,
+                            };
+                            _networkCall(profileState, body: body);
+                          }
+                        },
 
-                              rightText: Strings.CONFIRM,
-                            ),
-                          ),
+                        rightText: Strings.CONFIRM,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -338,15 +336,15 @@ class _DamageContainerBottomSheetState
   }
 
   _networkCall(
-    ProfileState leasState, {
-    required Map<String, dynamic> body,
-  }) async {
+      ProfileState leasState, {
+        required Map<String, dynamic> body,
+      }) async {
     try {
       leasState.setIsSaving(true);
       Future.delayed(Duration(seconds: 2));
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,
+          ) async {
         try {
           if (isNetworkAvailable) {
             ref.read(damageContainer(body));

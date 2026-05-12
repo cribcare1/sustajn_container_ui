@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/edit_dialogs/report_screen/restaurant_damage_contaner_sheet.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
@@ -12,77 +13,74 @@ import 'package:sustajn_restaurant/provider/profile_provider.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../../constants/string_utils.dart';
+import '../../../lease_receive/lease_receive_notifier.dart';
+import '../../../lease_receive/lease_receive_provider.dart';
+import '../../../lease_receive/model/container_list_model.dart';
 import 'demage_container_bottom_sheet.dart';
 
-class DamageContainerListScreen extends ConsumerStatefulWidget {
-  final String? damage;
-  final String customerId;
-
-  const DamageContainerListScreen({
+class GetAllContainerListScreen extends ConsumerStatefulWidget {
+  const GetAllContainerListScreen({
     super.key,
-    this.damage,
-    required this.customerId,
   });
 
   @override
-  ConsumerState<DamageContainerListScreen> createState() =>
-      _DamageContainerListScreenState();
+  ConsumerState<GetAllContainerListScreen> createState() =>
+      _GetAllContainerListScreenState();
 }
 
-class _DamageContainerListScreenState
-    extends ConsumerState<DamageContainerListScreen> {
+class _GetAllContainerListScreenState
+    extends ConsumerState<GetAllContainerListScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(profileProvider).setContext(context);
-      _getContainerList(
-        ref.read(profileProvider),
-        customerId: widget.customerId,
-      );
+      ref.read(leaseReceiveNotifier).setContext(context);
+      getContainerList();
     });
 
     super.initState();
   }
 
-  _getContainerList(
-    ProfileState leasState, {
-    required String customerId,
-  }) async {
+  getContainerList() async {
+    final leaseState = ref.read(leaseReceiveNotifier);
     try {
-      leasState.setLoading(true);
-      Future.delayed(Duration(seconds: 2));
+
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,
+          ) async {
         try {
           if (isNetworkAvailable) {
-            ref.read(damageContainerList(customerId));
+            leaseState.setContext(context);
+            leaseState.setLoading(true);
+            ref.read(
+              containerListProvider(Utils.userId.toString()),
+            );
           } else {
-            leasState.setLoading(false);
+            leaseState.setLoading(false);
             if (!mounted) return;
             showCustomSnackBar(
               context: context,
               message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.red,
+              color: Colors.white,
             );
           }
         } catch (e) {
           Utils.printLog('Error on button onPressed: $e');
-          leasState.setLoading(false);
+          leaseState.setLoading(false);
         }
         if (!mounted) return;
         FocusScope.of(context).unfocus();
       });
+
     } catch (e) {
       Utils.printLog('Error in Login button onPressed: $e');
-      leasState.setLoading(false);
+      leaseState.setLoading(false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final leaseNotifier = ref.watch(profileProvider);
+    final leaseState = ref.read(leaseReceiveNotifier);
     return SafeArea(
       bottom: true,
       top: false,
@@ -91,40 +89,38 @@ class _DamageContainerListScreenState
           title: "Container List",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body: leaseNotifier.isDamageLoading
-            ? const Center(child: CircularProgressIndicator())
-            : leaseNotifier.damageContainerList.isEmpty
+        body:leaseState.isLoading?Center(child: CircularProgressIndicator(),): leaseState.containersDetailsList.isEmpty
             ? Center(
-                child: Text(
-                  "There are no containers available for this user.",
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            : ListView.separated(
-              padding: EdgeInsets.all(
-                 Constant.CONTAINER_SIZE_16,
-              ),
-              itemCount: leaseNotifier.damageContainerList.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: (){
-                    _showReferPartnerDialogue(context, leaseNotifier.damageContainerList[index]);
-                  },
-                  child: _containerCard(
-                    item: leaseNotifier.damageContainerList[index],
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) =>
-                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+          child: Text(
+            "There are no containers available",
+            style: theme.textTheme.titleMedium!.copyWith(
+              color: Colors.white,
             ),
+          ),
+        )
+            : ListView.separated(
+          padding: EdgeInsets.all(
+            Constant.CONTAINER_SIZE_16,
+          ),
+          itemCount: leaseState.containersDetailsList.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: (){
+                _showReferPartnerDialogue(context, leaseState.containersDetailsList[index]);
+              },
+              child: _containerCard(
+                item: leaseState.containersDetailsList[index],
+              ),
+            );
+          },
+          separatorBuilder: (context, index) =>
+              SizedBox(height: Constant.CONTAINER_SIZE_10),
+        ),
       ),
     );
   }
 
-  Widget _containerCard({required ProductOrderListResponseList item}) {
+  Widget _containerCard({required ContainerDetails item}) {
     return GlassSummaryCard(
       child: Row(
         children: [
@@ -137,7 +133,7 @@ class _DamageContainerListScreenState
             ),
             padding: const EdgeInsets.all(6),
             child: Image.network(
-              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.productImageUrl}",
+              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
               errorBuilder: (context, obj, stack) {
                 return Image.asset("assets/images/no_image_container.png");
               },
@@ -154,7 +150,7 @@ class _DamageContainerListScreenState
                   children: [
                     Expanded(
                       child: Text(
-                        item.productName,
+                        item.containerName,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -166,14 +162,14 @@ class _DamageContainerListScreenState
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.productUniqueId,
+                  item.containerUniqueId,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                   ),
                 ),
                 Text(
-                  "${item.containerQuantity}ml",
+                  "${item.capacity}ml",
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
@@ -186,7 +182,7 @@ class _DamageContainerListScreenState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.quantity.toString(),
+                item.quantityAvailable.toString(),
                 style: const TextStyle(
                   color: Colors.amber,
                   fontSize: 18,
@@ -200,12 +196,12 @@ class _DamageContainerListScreenState
     );
   }
 
-  void _showReferPartnerDialogue(BuildContext context, ProductOrderListResponseList item) {
+  void _showReferPartnerDialogue(BuildContext context, ContainerDetails item) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DamageContainerBottomSheet(item: item, customerId: widget.customerId,),
+      builder: (_) => RestaurantDamageContainerBottomSheet(item: item,),
     );
   }
 

@@ -68,6 +68,7 @@ dependencies:
   flutter_local_notifications: ^20.1.0
   upgrader: ^13.1.0
   workmanager: ^0.9.0+3
+  country_code_picker_plus: ^0.1.0+1
 
 dev_dependencies:
   flutter_test:

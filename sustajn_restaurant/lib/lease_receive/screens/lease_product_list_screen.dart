@@ -12,7 +12,6 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
-import '../../provider/profile_provider.dart';
 import '../lease_receive_notifier.dart';
 import '../lease_receive_provider.dart';
 import '../model/container_list_model.dart';
@@ -200,13 +199,55 @@ class _LeaseProductListScreenState
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                item.quantity.toString(),
-                style: const TextStyle(
-                  color: Colors.amber,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (item.quantity > 1) {
+                          item.quantity--;
+                        }
+                      });
+                    },
+
+                    child: const Icon(
+                      Icons.remove_circle_outline,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  Padding(
+                    padding:  EdgeInsets.symmetric(
+                      horizontal: Constant.SIZE_08,
+                    ),
+
+                    child: Text(
+                      item.quantity.toString(),
+
+                      style: const TextStyle(
+                        color: Colors.amber,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        if (item.quantity <
+                            item.quantityAvailable) {
+                          item.quantity++;
+                        }
+                      });
+                    },
+
+                    child: const Icon(
+                      Icons.add_circle_outline,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 6),
               InkWell(

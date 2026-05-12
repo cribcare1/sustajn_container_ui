@@ -1,3 +1,4 @@
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,9 +104,8 @@ class _BusinessInformationDetailsState
   _getData() {
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
-    if(widget.previous == "profile" && profile != null){
-      if (profile.contactAndRegistrationDetailsResponse != null
-          ) {
+    if (widget.previous == "profile" && profile != null) {
+      if (profile.contactAndRegistrationDetailsResponse != null) {
         final business = profile.contactAndRegistrationDetailsResponse;
         final website = profile.businessDetailsResponse;
         contactPersonController.text = business!.contactPersonName ?? "";
@@ -113,44 +113,52 @@ class _BusinessInformationDetailsState
         contactEmailController.text = business.contactEmail ?? "";
         licenceController.text = business.treadLicenseNumber ?? "";
         vatController.text = business.vatNumber ?? "";
-        websiteController.text = (website != null)? website.website ?? "":"";
+        websiteController.text = (website != null) ? website.website ?? "" : "";
         final apiValue = website?.businessType?.trim().toLowerCase();
 
         _selectedBusinessType = _businessTypes.firstWhere(
-              (item) => item.toLowerCase() == apiValue,
+          (item) => item.toLowerCase() == apiValue,
           orElse: () => "",
         );
 
         if (_selectedBusinessType == "") {
           _selectedBusinessType = null;
         }
-
       }
       if (profile.socialMediaResponse != null &&
           profile.socialMediaResponse!.isNotEmpty) {
         widget.authState.socialMediaList.clear();
         widget.authState.socialMediaList.addAll(
           profile.socialMediaResponse!.map(
-                (e) => SocialMediaModel(
+            (e) => SocialMediaModel(
               socialMediaType: SocialMediaType.values.firstWhere(
-                    (type) => type.name.toUpperCase() == e.socialMediaType,
+                (type) => type.name.toUpperCase() == e.socialMediaType,
               ),
               controller: TextEditingController(text: e.link ?? ""),
             ),
           ),
         );
       }
-
     }
-
   }
 
   final List<String> _businessTypes = [
-    Strings.RESTAURANT,
-    Strings.CAFE,
-    Strings.FAST_FOOD,
-    Strings.FOOD_COURT,
+    "Restaurant",
+    "Cafe",
+    "Fast Food Restaurant",
+    "Coffee Shop",
+    "Bakery",
+    "Bar & Restaurant",
+    "Bistro",
+    "Food Truck",
+    "Buffet Restaurant",
+    "Fine Dining Restaurant",
   ];
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +201,7 @@ class _BusinessInformationDetailsState
                           right: index == 3 ? 0 : Constant.SIZE_10,
                         ),
                         decoration: BoxDecoration(
-                          color: active ? Constant.grey : Colors.white,
+                          color: active ? Constant.gold : Colors.white,
                           borderRadius: BorderRadius.circular(Constant.SIZE_10),
                         ),
                       ),
@@ -225,7 +233,7 @@ class _BusinessInformationDetailsState
                   ).textTheme.titleMedium!.copyWith(color: Colors.white),
                 ),
               ),
-              SizedBox(height: Constant.SIZE_05),
+              SizedBox(height: Constant.SIZE_HEIGHT_10),
               Form(
                 key: _key,
                 child: Column(
@@ -248,28 +256,82 @@ class _BusinessInformationDetailsState
                       label: Strings.CONTACT_PERSON,
                       focusNode: _contactFocus,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: theme.primaryColor,
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_16,
+                              ),
+                              border: Border.all(color: Constant.grey),
+                            ),
+                            child: CountryCodePicker(
+                              textStyle: theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.white,
+                              ),
+                              mode: CountryCodePickerMode.dialog,
+                              dialogBackgroundColor: theme.primaryColor,
+                              dialogTextStyle: theme.textTheme.titleSmall!
+                                  .copyWith(color: Colors.white),
+                              searchStyle: theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.white,
+                              ),
+                              closeIcon: Icon(Icons.close, color: Colors.white),
+                              searchDecoration: InputDecoration(
+                                hintText: "search country name",
+                                hintStyle: theme.textTheme.titleSmall!.copyWith(
+                                  color: Colors.white,
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCountry = value;
 
-                    _buildTextField(
-                      context,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.MOBILE_NUMBER;
-                        }
-                        if (value.length != 10) {
-                          return Strings.MOBILE_VALIDATE;
-                        }
-                        return null;
-                      },
-                      controller: contactNumberController,
-                      hint: Strings.MOBILE_NUMBER,
-                      label: Strings.MOBILE_NUMBER,
-                      focusNode: _contactNumberFocus,
-                      keyboard: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(10),
+                                });
+                              },
+                              initialSelection: "AE",
+                              showFlag: true,
+                              showDropDownButton: true,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: Constant.SIZE_08),
+                        Expanded(
+                          flex: 6,
+                          child: _buildTextField(
+                            context,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return Strings.MOBILE_NUMBER;
+                              }
+                              if (value.length != 10) {
+                                return Strings.MOBILE_VALIDATE;
+                              }
+                              return null;
+                            },
+                            controller: contactNumberController,
+                            hint: Strings.MOBILE_NUMBER,
+                            label: Strings.MOBILE_NUMBER,
+                            focusNode: _contactNumberFocus,
+                            keyboard: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
+
                     _buildTextField(
                       context,
                       validator: (value) {
@@ -353,6 +415,7 @@ class _BusinessInformationDetailsState
                         return _businessTypes.map((item) {
                           return Align(
                             alignment: Alignment.centerLeft,
+
                             child: Text(
                               item,
                               style: const TextStyle(color: Colors.white70),
@@ -363,32 +426,38 @@ class _BusinessInformationDetailsState
 
                       decoration: InputDecoration(
                         filled: true,
+
                         fillColor: theme.primaryColor,
+
                         labelText: Strings.TYPES_OF_BUSINESS,
+
                         labelStyle: const TextStyle(color: Colors.white70),
+
                         contentPadding: EdgeInsets.symmetric(
-                          horizontal: Constant.CONTAINER_SIZE_16,
+                          horizontal: Constant.SIZE_08,
                           vertical: Constant.CONTAINER_SIZE_14,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_20,
-                          ),
                           borderSide: BorderSide(color: Constant.grey),
                         ),
-                        enabledBorder: OutlineInputBorder(
+                      ),
+
+                      dropdownStyleData: DropdownStyleData(
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor,
                           borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
+                            Constant.CONTAINER_SIZE_12,
                           ),
-                          borderSide: BorderSide(color: Constant.grey),
+                          border: Border.all(
+                            color: const Color(0xFFD1AE31), // Yellow border
+                            width: 1.5,
+                          ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_16,
-                          ),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFD1AE31),
-                          ),
+                      ),
+
+                      menuItemStyleData: const MenuItemStyleData(
+                        overlayColor: WidgetStatePropertyAll(
+                          Color(0xFFD1AE31), // Selected item color
                         ),
                       ),
 
@@ -402,24 +471,33 @@ class _BusinessInformationDetailsState
                       items: _businessTypes.map((type) {
                         return DropdownMenuItem<String>(
                           value: type,
+
                           child: Text(
                             type,
-                            style: const TextStyle(color: Colors.black),
+
+                            style: TextStyle(
+                              color: (_selectedBusinessType != null && _selectedBusinessType! ==(type))
+                                  ? Colors.orangeAccent
+                                  : Colors.white, // Menu text color
+                            ),
                           ),
                         );
                       }).toList(),
 
                       onChanged: (value) {
-                        setState(() => _selectedBusinessType = value);
+                        setState(() {
+                          _selectedBusinessType = value;
+                        });
                       },
+
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return Strings.ENTER_BUSINESSTYPE;
                         }
+
                         return null;
                       },
                     ),
-
                     SizedBox(height: Constant.SIZE_10),
 
                     _buildTextField(
@@ -524,59 +602,74 @@ class _BusinessInformationDetailsState
                           onRightTap: _isLoading
                               ? null
                               : () async {
+                                  if (!_key.currentState!.validate()) return;
+                                  for (var item
+                                      in widget.authState.socialMediaList) {
+                                    final value = item.controller.text.trim();
+                                    if (value.isEmpty) continue;
+                                    final isValid = RegExp(
+                                      r'^(https?:\/\/)[^\s]+$',
+                                    ).hasMatch(value);
+                                    if (!isValid) {
+                                      Utils.showToast(
+                                        "Enter valid ${item.socialMediaType} link",
+                                      );
+                                      return;
+                                    }
+                                  }
+                                  setState(() => _isLoading = true);
 
-                            if (!_key.currentState!.validate()) return;
-                            for (var item in widget.authState.socialMediaList) {
-                              final value = item.controller.text.trim();
-                              if (value.isEmpty) continue;
-                              final isValid = RegExp(r'^(https?:\/\/)[^\s]+$').hasMatch(value);
-                              if (!isValid) {
-                                Utils.showToast("Enter valid ${item.socialMediaType} link");
-                                return;
-                              }
-                            }
-                            setState(() => _isLoading = true);
+                                  widget.authState.setRegistrationDetails(
+                                    ContactAndRegistrationDetails(
+                                      contactPersonName:
+                                          contactPersonController.text,
+                                      contactEmail: contactEmailController.text,
+                                      treadLicenseNumber:
+                                          licenceController.text,
+                                      vatNumber: vatController.text,
+                                      contactNumber:
+                                          "${_selectedCountry!.dialCode} ${contactNumberController.text}",
+                                      registrationNumber: "",
+                                    ),
+                                  );
+                                  widget.authState.setBusinessDetails(
+                                    BusinessModel(
+                                      websiteDetails: websiteController.text,
+                                      speciality: _selectedBusinessType ?? "",
+                                    ),
+                                  );
 
-                            widget.authState.setRegistrationDetails(ContactAndRegistrationDetails(
-                              contactPersonName:contactPersonController.text,
-                              contactEmail:contactEmailController.text,
-                              treadLicenseNumber: licenceController.text,
-                              vatNumber : vatController.text,
-                              contactNumber : contactNumberController.text,
-                              registrationNumber: "",
-                            ));
-                            widget.authState.setBusinessDetails(BusinessModel(
-                                websiteDetails: websiteController.text,
-                                speciality:_selectedBusinessType??""));
-                            /// PROFILE FLOW
-                            if (widget.previous == Strings.PROFILE) {
-                              final bool success =
-                                  await _businessInfoNetworkCall(regdNo!) ?? false;
+                                  /// PROFILE FLOW
+                                  if (widget.previous == Strings.PROFILE) {
+                                    final bool success =
+                                        await _businessInfoNetworkCall(
+                                          regdNo!,
+                                        ) ??
+                                        false;
 
-                              if (!mounted) return;
+                                    if (!mounted) return;
 
-                              setState(() => _isLoading = false);
+                                    setState(() => _isLoading = false);
 
-                              if (success) {
-                                Utils.showToast(
-                                  '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}',
-                                );
-                                NavUtil.popScreen(context, 1);
-                              } else {
-                                showCustomSnackBar(
-                                  context: context,
-                                  message: Strings.SOMETHING_WENT_WRONG,
-                                  color: Colors.red,
-                                );
-                              }
-                              return;
-                            }
+                                    if (success) {
+                                      Utils.showToast(
+                                        '${Strings.BUSINESS_INFO} ${Strings.SUCC_MSG}',
+                                      );
+                                      NavUtil.popScreen(context, 1);
+                                    } else {
+                                      showCustomSnackBar(
+                                        context: context,
+                                        message: Strings.SOMETHING_WENT_WRONG,
+                                        color: Colors.red,
+                                      );
+                                    }
+                                    return;
+                                  }
 
-                            setState(() => _isLoading = false);
-                          },
+                                  setState(() => _isLoading = false);
+                                },
                         ),
                       ),
-
                     ] else ...[
                       SubmitClearButton(
                         onLeftTap: () {
@@ -605,17 +698,24 @@ class _BusinessInformationDetailsState
                                   return;
                                 }
                                 setState(() => _isLoading = true);
-                                widget.authState.setRegistrationDetails(ContactAndRegistrationDetails(
-                                    contactPersonName:contactPersonController.text,
-                                    contactEmail:contactEmailController.text,
+                                widget.authState.setRegistrationDetails(
+                                  ContactAndRegistrationDetails(
+                                    contactPersonName:
+                                        contactPersonController.text,
+                                    contactEmail: contactEmailController.text,
                                     treadLicenseNumber: licenceController.text,
-                                  vatNumber : vatController.text,
-                                  contactNumber : contactNumberController.text,
+                                    vatNumber: vatController.text,
+                                    contactNumber:
+                                        "${_selectedCountry!.dialCode} ${contactNumberController.text}",
                                     registrationNumber: "",
-                                ));
-                                widget.authState.setBusinessDetails(BusinessModel(
+                                  ),
+                                );
+                                widget.authState.setBusinessDetails(
+                                  BusinessModel(
                                     websiteDetails: websiteController.text,
-                                    speciality:_selectedBusinessType??""));
+                                    speciality: _selectedBusinessType ?? "",
+                                  ),
+                                );
                                 NavUtil.navigateToPushScreen(
                                   context,
                                   PaymentTypeScreen(),
@@ -796,7 +896,7 @@ class _BusinessInformationDetailsState
       "userId": Utils.userId,
 
       "basicDetails": {
-        "businessType": _selectedBusinessType??"",
+        "businessType": _selectedBusinessType ?? "",
         "websiteDetails": websiteController.text,
       },
 
@@ -805,15 +905,14 @@ class _BusinessInformationDetailsState
         "contactEmail": contactEmailController.text,
         "treadLicenseNumber": licenceController.text,
         "vatNumber": vatController.text,
-        "contactNumber": contactNumberController.text,
+        "contactNumber":
+            "${_selectedCountry!.dialCode} ${contactNumberController.text}",
         "registrationNumber": regdNo,
       },
 
       "socialMediaList": authState.socialMediaList.isEmpty
           ? []
-          : authState.socialMediaList
-          .map((e) => e.toJson()).toSet()
-          .toList(),
+          : authState.socialMediaList.map((e) => e.toJson()).toSet().toList(),
     };
     return data;
   }
@@ -821,7 +920,6 @@ class _BusinessInformationDetailsState
   Future<bool> _businessInfoNetworkCall(String regdNo) async {
     Utils.printLog('business info Network call');
     Utils.printLog('business info Network call ${getJsonData("")}');
-
 
     final isNetworkAvailable = await ref
         .read(networkProvider.notifier)

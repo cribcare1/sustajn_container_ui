@@ -439,6 +439,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       BuildContext context,
       var signupState,
       ) {
+    final signupState = ref.read(signUpNotifier);
     return Row(
       children: [
         if (widget.flow == PaymentFlow.signup)

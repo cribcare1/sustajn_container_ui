@@ -138,11 +138,7 @@ final addressUpdateProvider =
         }
 
         Utils.showToast("Address updated successfully");
-
-        // POP FIRST
         NavUtil.popScreen(profileState.context, 1);
-
-        // THEN REFRESH
         final userId = await Utils.getUserId();
 
         final url1 = '${NetworkUrls.GET_PROFILE}$userId';
@@ -325,7 +321,7 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: response['message'],
         color: Colors.green,
       );
-      Navigator.pop(leaseNotifier.context);
+     NavUtil.popScreen(leaseNotifier.context, 2);
     }
   } catch (e) {
     leaseNotifier.setIsSaving(false);

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,9 +46,9 @@ class _EditMobileNumberDialogState
     super.initState();
     Utils.userId;
     if (widget.editType == MobileEditType.primary) {
-      _primaryController.text = widget.primaryMobileNumber;
+      _primaryController.text = widget.primaryMobileNumber.split(" ").last;
     } else {
-      _secondaryController.text = widget.secondaryMobileNumber;
+      _secondaryController.text = widget.secondaryMobileNumber.split(" ").last;
     }
   }
 
@@ -68,7 +69,11 @@ class _EditMobileNumberDialogState
     }
     return null;
   }
-
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates',
+  );
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -120,36 +125,146 @@ final profileState = ref.read(profileProvider);
                       SizedBox(height: Constant.CONTAINER_SIZE_20),
 
                       if (widget.editType == MobileEditType.primary)
-                        TextFormField(
-                          controller: _primaryController,
-                          validator: _validateMobileNumber,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                    Constant.CONTAINER_SIZE_16,
+                                  ),
+                                  border: Border.all(color: Constant.grey),
+                                ),
+                                child: CountryCodePicker(
+                                  textStyle: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  mode: CountryCodePickerMode.dialog,
+                                  dialogBackgroundColor: theme.primaryColor,
+                                  dialogTextStyle: theme.textTheme.titleSmall!
+                                      .copyWith(color: Colors.white),
+                                  searchStyle: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  closeIcon: Icon(Icons.close, color: Colors.white),
+                                  searchDecoration: InputDecoration(
+                                    hintText: "search country name",
+                                    hintStyle: theme.textTheme.titleSmall!.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedCountry = value;
+
+                                    });
+                                  },
+                                  initialSelection: "AE",
+                                  showFlag: true,
+                                  showDropDownButton: true,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: Constant.SIZE_08),
+                            Expanded(
+                              flex: 6,
+                              child:   TextFormField(
+                                controller: _primaryController,
+                                validator: _validateMobileNumber,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                decoration: _inputDecoration(
+                                  theme,
+                                  Strings.PRIMARY_NUMBER,
+                                ),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
                           ],
-                          decoration: _inputDecoration(
-                            theme,
-                            Strings.PRIMARY_NUMBER,
-                          ),
-                          style: TextStyle(color: Colors.white),
                         ),
 
+
                       if (widget.editType == MobileEditType.secondary)
-                        TextFormField(
-                          controller: _secondaryController,
-                          validator: _validateMobileNumber,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                    Constant.CONTAINER_SIZE_16,
+                                  ),
+                                  border: Border.all(color: Constant.grey),
+                                ),
+                                child: CountryCodePicker(
+                                  textStyle: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  mode: CountryCodePickerMode.dialog,
+                                  dialogBackgroundColor: theme.primaryColor,
+                                  dialogTextStyle: theme.textTheme.titleSmall!
+                                      .copyWith(color: Colors.white),
+                                  searchStyle: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  closeIcon: Icon(Icons.close, color: Colors.white),
+                                  searchDecoration: InputDecoration(
+                                    hintText: "search country name",
+                                    hintStyle: theme.textTheme.titleSmall!.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedCountry = value;
+
+                                    });
+                                  },
+                                  initialSelection: "AE",
+                                  showFlag: true,
+                                  showDropDownButton: true,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: Constant.SIZE_08),
+                            Expanded(
+                              flex: 6,
+                              child:   TextFormField(
+                                controller: _secondaryController,
+                                validator: _validateMobileNumber,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                decoration: _inputDecoration(
+                                  theme,
+                                  Strings.SECONDARY_NUMBER,
+                                ),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
                           ],
-                          decoration: _inputDecoration(
-                            theme,
-                            Strings.SECONDARY_NUMBER,
-                          ),
-                          style: TextStyle(color: Colors.white),
                         ),
+
 
                       SizedBox(height: Constant.CONTAINER_SIZE_24),
 
@@ -200,89 +315,14 @@ final profileState = ref.read(profileProvider);
       ),
     );
   }
-//TODO:- conformation Dialog
-  // Future<void> _showConfirmationDialog(BuildContext context) async {
-  //   final theme = Theme.of(context);
-  //
-  //   return showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (dialogContext) {
-  //       return StatefulBuilder(
-  //         builder: (context, setDialogState) {
-  //           return AlertDialog(
-  //             backgroundColor: theme.scaffoldBackgroundColor,
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-  //             ),
-  //             title: const Text(
-  //               Strings.CONFIRM_UPDATE,
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.w600,
-  //               ),
-  //             ),
-  //             content: Text(
-  //               Strings.UPDATE_CONTACT_NO,
-  //               style: TextStyle(color: Colors.grey.shade300),
-  //             ),
-  //             actions: [
-  //               /// NO button
-  //               TextButton(
-  //                 onPressed: _isUpdating
-  //                     ? null
-  //                     : () {
-  //                         Navigator.of(dialogContext).pop();
-  //                       },
-  //                 child: const Text(
-  //                   Strings.NO,
-  //                   style: TextStyle(color: Colors.grey),
-  //                 ),
-  //               ),
-  //
-  //               SizedBox(
-  //                 width: Constant.CONTAINER_SIZE_120,
-  //                 child: SubmitButton(
-  //                   rightText: Strings.UPDATE,
-  //                   isLoading: _isUpdating,
-  //                   onRightTap: _isUpdating
-  //                       ? null
-  //                       : () async {
-  //                           setDialogState(() => _isUpdating = true);
-  //
-  //                           await Future.delayed(Duration(seconds: 2));
-  //
-  //                           final result = await _editMobileNetworkCall();
-  //
-  //                           if (!mounted) return;
-  //
-  //                           setDialogState(() => _isUpdating = false);
-  //
-  //                           if (result != false) {
-  //                             Navigator.of(dialogContext).pop();
-  //                             NavUtil.popScreen(context, 2);
-  //                           } else {
-  //                             Utils.showToast(Strings.SOMETHING_WENT_WRONG);
-  //                           }
-  //                         },
-  //                 ),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   Map<String, dynamic> getJsonData() {
     return {
       "userId": Utils.userId,
       "phoneNumber": widget.editType == MobileEditType.primary
-          ? _primaryController.text
+          ? "${_selectedCountry!.dialCode} ${_primaryController.text}"
           : widget.primaryMobileNumber,
       "secondaryNumber": widget.editType == MobileEditType.secondary
-          ? _secondaryController.text
+          ? "${_selectedCountry!.dialCode} ${_secondaryController.text}"
           : widget.secondaryMobileNumber,
     };
   }

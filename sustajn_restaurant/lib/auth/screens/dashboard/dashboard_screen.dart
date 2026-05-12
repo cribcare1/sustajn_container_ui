@@ -133,6 +133,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
@@ -212,6 +213,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
+                                      //TODO:- search restaurant
                                       Expanded(
                                         child: InkWell(
                                           onTap: () {

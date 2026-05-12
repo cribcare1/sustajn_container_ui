@@ -234,38 +234,7 @@ class _DamagedContainerScannerWidgetState
                       ),
                       style: const TextStyle(color: Colors.white),
                     )
-                  : OutlinedButton.icon(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => AddDamagedContainerSheet(),
-                        );
-                      },
-                      icon: const Icon(Icons.add, color: Color(0xFFE4C45A)),
-                      label: Text(
-                        'Add Damage Manually',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: Constant.CONTAINER_SIZE_14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFE4C45A)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            Constant.CONTAINER_SIZE_14,
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Constant.CONTAINER_SIZE_16,
-                          vertical: Constant.SIZE_06,
-                        ),
-                      ),
-                    ),
-
+                  : SizedBox(),
               SizedBox(height: Constant.CONTAINER_SIZE_20),
               (widget.customer == 'customer')
                   ? SizedBox(
