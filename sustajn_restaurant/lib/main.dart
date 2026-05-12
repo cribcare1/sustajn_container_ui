@@ -18,10 +18,7 @@ import 'auth/screens/dashboard/pi_chart.dart';
 import 'auth/screens/map_screen.dart';
 import 'firebase_services.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-@pragma('vm:entry-point')
-Future<void> backgroundMessageHandler(RemoteMessage message) async {
-  debugPrint("📩 Background Notification Data: ${message.data}");
-}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 await Upgrader.clearSavedSettings();

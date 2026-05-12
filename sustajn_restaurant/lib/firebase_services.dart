@@ -348,7 +348,7 @@ class FirebaseServices {
   Future<void>
   _setupBackgroundNotificationHandler() async {
     FirebaseMessaging.onBackgroundMessage(
-      _firebaseBackgroundMessageHandler,
+      backgroundMessageHandler,
     );
   }
 
@@ -597,19 +597,39 @@ class FirebaseServices {
 }
 
 @pragma('vm:entry-point')
-Future<void>
-_firebaseBackgroundMessageHandler(
-    RemoteMessage message,
-    ) async {
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
-  print(
-    'Background message received: '
-        '${message.messageId}',
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings =
+  InitializationSettings(
+    android: initializationSettingsAndroid,
   );
 
-  print(
-    'Background message data: '
-        '${message.data}',
+  await flutterLocalNotificationsPlugin.initialize(settings: initializationSettings);
+
+  const AndroidNotificationDetails androidDetails =
+  AndroidNotificationDetails(
+    'high_importance_channel',
+    'High Importance Notifications',
+    importance: Importance.high,
+    priority: Priority.high,
   );
+
+  const NotificationDetails notificationDetails =
+  NotificationDetails(android: androidDetails);
+
+  await flutterLocalNotificationsPlugin.show(
+    id:message.hashCode,
+    title: message.data['title'],
+    body: message.data['body'],
+    notificationDetails: notificationDetails,
+  );
+
+  print('Background notification shown');
 }
