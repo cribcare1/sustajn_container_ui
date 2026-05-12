@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/order_screen/return_container_screen/return_container_screen.dart';
 
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
+import '../network_provider/network_provider.dart';
+import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
 import 'container_screen/add_container_screen.dart';
 import 'order_screen/order_screen.dart';
 
-class OrderHomeScreen extends StatefulWidget {
+class OrderHomeScreen extends ConsumerStatefulWidget {
   const OrderHomeScreen({super.key});
 
   @override
-  State<OrderHomeScreen> createState() => _OrderHomeScreenState();
+  ConsumerState<OrderHomeScreen> createState() => _OrderHomeScreenState();
 }
 
-class _OrderHomeScreenState extends State<OrderHomeScreen>
+class _OrderHomeScreenState extends ConsumerState<OrderHomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
@@ -23,6 +26,9 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(orderProvider).setContext(context);
+    });
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -30,6 +36,7 @@ class _OrderHomeScreenState extends State<OrderHomeScreen>
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
+    ref.read(orderProvider).dispose();
     super.dispose();
   }
 

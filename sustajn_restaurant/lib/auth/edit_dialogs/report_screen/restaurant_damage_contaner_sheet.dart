@@ -312,6 +312,7 @@ class _RestaurantDamageContainerBottomSheetState
                               "containerTypeId": widget.item.containerUniqueId,
                               "remark": _remarksController.text,
                               "restaurantId": Utils.userId,
+                              "damagedCount":widget.item.quantity,
                               "userId": 0,
                               "isDamagedByRestaurant": true,
                               "isDamagedByUser": false,
