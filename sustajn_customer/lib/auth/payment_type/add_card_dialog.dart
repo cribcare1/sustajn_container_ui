@@ -294,7 +294,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               doneStyle: const TextStyle(fontSize: 16),
             ),
             onConfirm: (date) {
-              final value = "${date.year}-${date.month}-${date.day}";
+              final value = "${date.year}-${date.month}";
               controller.text = value;
               onDateSelected(date);
             },

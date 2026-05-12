@@ -292,7 +292,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               ),
             ),
             onConfirm: (date) {
-              final value = "${date.year}-${date.month}-${date.day}";
+              final value = "${date.year}-${date.month}";
               controller.text = value;
               onDateSelected(date);
             },
