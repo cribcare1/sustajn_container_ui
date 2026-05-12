@@ -133,6 +133,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
