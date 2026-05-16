@@ -266,11 +266,15 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
       padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
       child: GestureDetector(
         onTap: () {
-          picker.DatePicker.showDatePicker(
+          picker.DatePicker.showPicker(
             context,
             showTitleActions: true,
-            minTime: DateTime.now(),
-            maxTime: DateTime(DateTime.now().year + 10, 12),
+            pickerModel: CustomMonthPicker(
+              currentTime: DateTime.now(),
+              minTime: DateTime.now(),
+              maxTime: DateTime(DateTime.now().year + 10, 12),
+              locale: picker.LocaleType.en,
+            ),
             theme: picker.DatePickerTheme(
               headerColor: Constant.gold,
               backgroundColor: theme.primaryColor,
@@ -284,7 +288,6 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
                 fontWeight: FontWeight.w600,
               ),
-
               doneStyle: TextStyle(
                 color: theme.primaryColor,
                 fontSize: Constant.LABEL_TEXT_SIZE_16,
@@ -292,12 +295,11 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               ),
             ),
             onConfirm: (date) {
-              final value = "${date.year}-${date.month}";
-              controller.text = value;
+              controller.text =
+              "${date.month.toString().padLeft(2, '0')}/${date.year}";
+
               onDateSelected(date);
             },
-            currentTime: DateTime.now(),
-            locale: picker.LocaleType.en,
           );
         },
         child: AbsorbPointer(
@@ -347,5 +349,24 @@ class CardNumberInputFormatter extends TextInputFormatter {
       text: buffer.toString(),
       selection: TextSelection.collapsed(offset: buffer.length),
     );
+  }
+}
+
+class CustomMonthPicker extends picker.DatePickerModel {
+  CustomMonthPicker({
+    DateTime? currentTime,
+    DateTime? minTime,
+    DateTime? maxTime,
+    picker.LocaleType locale = picker.LocaleType.en,
+  }) : super(
+    currentTime: currentTime,
+    minTime: minTime,
+    maxTime: maxTime,
+    locale: locale,
+  );
+
+  @override
+  List<int> layoutProportions() {
+    return [1, 1, 0];
   }
 }
