@@ -35,6 +35,11 @@ List<ProductOrderListResponseList> _containerReturnListAdded =[];
     notifyListeners();
   }
 
+  void clearAddedContainer(){
+    _containersList = [];
+    notifyListeners();
+  }
+
   void setIsSaving(bool isSaving) {
     _isSaving = isSaving;
     notifyListeners();
@@ -105,7 +110,10 @@ Map<String, int> get totalCount => _totalCount;
       notifyListeners();
     }
   }
-
+  void removeContainer(int index) {
+    _containersList.removeAt(index);
+    notifyListeners();
+  }
 }
 
 final leaseReceiveNotifier = ChangeNotifierProvider.autoDispose<LeaseReceiveNotifier>(

@@ -337,7 +337,7 @@ class CardNumberInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final text = newValue.text.replaceAll(' ', '');
-    if (text.length > 12) return oldValue;
+    if (text.length > 16) return oldValue;
     final buffer = StringBuffer();
     for (int i = 0; i < text.length; i++) {
       buffer.write(text[i]);
