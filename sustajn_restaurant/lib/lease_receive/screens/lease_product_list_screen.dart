@@ -49,87 +49,88 @@ class _LeaseProductListScreenState
             ? const Center(child: CircularProgressIndicator())
             : leaseNotifier.containersList.isEmpty
             ? Center(
-                child: Text(
-                  "No Containers found",
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
-              )
+          child: Text(
+            "No Containers found",
+            style: theme.textTheme.titleMedium!.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        )
             : Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    children: [
+                      Icon(Icons.badge, color: Colors.white, size: 18),
+                      SizedBox(width: 6),
+                      Text(
+                        'Customer ID: $scannedId',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.badge, color: Colors.white, size: 18),
-                            SizedBox(width: 6),
-                            Text(
-                              'Customer ID: $scannedId',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                        Image.asset(
+                          "assets/images/img.png",
+                          height: 25,
+                          width: 25,
                         ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_20),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/img.png",
-                                height: 25,
-                                width: 25,
-                              ),
-                              SizedBox(width: Constant.SIZE_08),
-                              Text(
-                                leaseNotifier.containersList.length
-                                    .toString(),
-                                style: const TextStyle(
-                                  color: Colors.amber,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: Constant.CONTAINER_SIZE_20),
+                        SizedBox(width: Constant.SIZE_08),
                         Text(
-                          "Containers",
-                          textAlign: TextAlign.start,
-                          style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(color: Colors.white),
+                          leaseNotifier.containersList.length
+                              .toString(),
+                          style: const TextStyle(
+                            color: Colors.amber,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: ListView.separated(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_16,
-                      ),
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemCount: leaseNotifier.containersList.length,
-                      itemBuilder: (context, index) {
-                        return _containerCard(
-                          item: leaseNotifier.containersList[index],
-                          onRemove: () {
-                            setState(() {
-                              leaseNotifier.containersList.removeAt(index);
-                            });
-                          },
-                        );
-                      },
-                      separatorBuilder: (context, index) =>
-                          SizedBox(height: Constant.CONTAINER_SIZE_10),
-                    ),
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+                  Text(
+                    "Containers",
+                    textAlign: TextAlign.start,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: Colors.white),
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_100,)
                 ],
               ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Constant.CONTAINER_SIZE_16,
+                ),
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: leaseNotifier.containersList.length,
+                itemBuilder: (context, index) {
+                  return _containerCard(
+                    item: leaseNotifier.containersList[index],
+                    onRemove: () {
+                      leaseNotifier.removeContainer(index);
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                    SizedBox(height: Constant.CONTAINER_SIZE_10),
+              ),
+            ),
+            SizedBox(height: Constant.CONTAINER_SIZE_100,)
+          ],
+        ),
         bottomSheet: Container(
           width: double.infinity,
           color: theme.primaryColor,
@@ -139,11 +140,11 @@ class _LeaseProductListScreenState
               : leaseNotifier.isSaving
               ? Center(child: CircularProgressIndicator())
               : SubmitButton(
-                  onRightTap: () {
-                    showConfirmIssuePopup(context, leaseNotifier);
-                  },
-                  rightText: "Issue Container",
-                ),
+            onRightTap: () {
+              showConfirmIssuePopup(context, leaseNotifier);
+            },
+            rightText: "Issue Container",
+          ),
         ),
       ),
     );
@@ -165,8 +166,9 @@ class _LeaseProductListScreenState
             ),
             padding: const EdgeInsets.all(6),
             child: Image.network(
-              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
-              errorBuilder: (context, obj, stack){
+              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item
+                  .containerImageUrl}",
+              errorBuilder: (context, obj, stack) {
                 return Image.asset("assets/images/no_image_container.png");
               },
               fit: BoxFit.fill,
@@ -206,6 +208,8 @@ class _LeaseProductListScreenState
                       setState(() {
                         if (item.quantity > 1) {
                           item.quantity--;
+                        } else {
+                          onRemove();
                         }
                       });
                     },
@@ -217,7 +221,7 @@ class _LeaseProductListScreenState
                   ),
 
                   Padding(
-                    padding:  EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                       horizontal: Constant.SIZE_08,
                     ),
 
@@ -249,15 +253,6 @@ class _LeaseProductListScreenState
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
-              InkWell(
-                onTap: onRemove,
-                child: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                  size: 20,
-                ),
-              ),
             ],
           ),
         ],
@@ -265,20 +260,23 @@ class _LeaseProductListScreenState
     );
   }
 
-  void showConfirmIssuePopup(
-    BuildContext context,
-    LeaseReceiveNotifier leaseState,
-  ) {
+  void showConfirmIssuePopup(BuildContext context,
+      LeaseReceiveNotifier leaseState,) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme
+          .of(context)
+          .primaryColor,
       isScrollControlled: true,
       isDismissible: false,
       useSafeArea: true,
       builder: (_) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 60,
+            bottom: MediaQuery
+                .of(context)
+                .viewInsets
+                .bottom + 60,
             left: Constant.CONTAINER_SIZE_16,
             right: Constant.CONTAINER_SIZE_16,
             top: Constant.CONTAINER_SIZE_16,
@@ -322,8 +320,8 @@ class _LeaseProductListScreenState
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
                 'You are about to issue the assigned containers to this '
-                'customer. Once issued, the containers will be added '
-                'to the customer’s active borrowing list.',
+                    'customer. Once issued, the containers will be added '
+                    'to the customer’s active borrowing list.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
@@ -335,31 +333,32 @@ class _LeaseProductListScreenState
               leaseState.isSaving
                   ? Center(child: CircularProgressIndicator())
                   : SubmitClearButton(
-                      onLeftTap: () {
-                        Navigator.pop(context);
-                      },
-                      leftText: "Cancel",
-                      onRightTap: () {
-                        Navigator.pop(context);
-                        final List<Map<String, dynamic>> items = leaseState
-                            .containersList
-                            .map(
-                              (i) => {
-                                "productId": i.containerId,
-                                "quantity": i.quantity,
-                              },
-                            )
-                            .toList();
+                onLeftTap: () {
+                  Navigator.pop(context);
+                },
+                leftText: "Cancel",
+                onRightTap: () {
+                  Navigator.pop(context);
+                  final List<Map<String, dynamic>> items = leaseState
+                      .containersList
+                      .map(
+                        (i) =>
+                    {
+                      "productId": i.containerId,
+                      "quantity": i.quantity,
+                    },
+                  )
+                      .toList();
 
-                        Map<String, dynamic> data = {
-                          "customerId": scannedId,
-                          "restaurantId": Utils.userId,
-                          "items": items,
-                        };
-                        _leaseContainer(leaseState, data);
-                      },
-                      rightText: "Confirm",
-                    ),
+                  Map<String, dynamic> data = {
+                    "customerId": scannedId,
+                    "restaurantId": Utils.userId,
+                    "items": items,
+                  };
+                  _leaseContainer(leaseState, data);
+                },
+                rightText: "Confirm",
+              ),
             ],
           ),
         );
@@ -367,16 +366,13 @@ class _LeaseProductListScreenState
     );
   }
 
-  _leaseContainer(
-    LeaseReceiveNotifier leasState,
-    Map<String, dynamic> body,
-  ) async {
+  _leaseContainer(LeaseReceiveNotifier leasState,
+      Map<String, dynamic> body,) async {
     try {
       print("API calll");
       leasState.setIsSaving(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) async {
+          isNetworkAvailable,) async {
         try {
           print("isNetworkAvailable :- $isNetworkAvailable");
           if (isNetworkAvailable) {
