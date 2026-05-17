@@ -45,10 +45,6 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(leaseReceiveNotifier).setContext(context);
       await controller.start();
-      // _getContainerList(
-      //   ref.read(leaseReceiveNotifier),
-      //   restaurantId: Utils.userId.toString(),
-      // );
     });
   }
   @override
