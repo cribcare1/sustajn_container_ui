@@ -22,7 +22,7 @@ import '../service/login_service.dart';
 import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 
-final authNotifierProvider = ChangeNotifierProvider((ref) => AuthState());
+final authNotifierProvider = ChangeNotifierProvider.autoDispose<AuthState>((ref) => AuthState());
 
 final loginDetailProvider =
 FutureProvider.family<LoginModel, Map<String, dynamic>>(
