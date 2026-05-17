@@ -18,7 +18,7 @@ import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
 
-final orderProvider = ChangeNotifierProvider((ref) => OrderState());
+final orderProvider = ChangeNotifierProvider.autoDispose<OrderState>((ref) => OrderState());
 
 final getOrderProvider = FutureProvider.family<dynamic, String>((
   ref,

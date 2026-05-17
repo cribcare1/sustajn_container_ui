@@ -18,7 +18,7 @@ import '../utils/sharedpreference_utils.dart';
 import '../utils/utility.dart';
 import 'login_provider.dart';
 
-final profileProvider = ChangeNotifierProvider((ref) => ProfileState());
+final profileProvider = ChangeNotifierProvider.autoDispose<ProfileState>((ref) => ProfileState());
 
 final getProfileProvider = FutureProvider.family<dynamic, String>((
   ref,

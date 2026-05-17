@@ -36,7 +36,6 @@ class _OrderHomeScreenState extends ConsumerState<OrderHomeScreen>
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
-    ref.read(orderProvider).dispose();
     super.dispose();
   }
 
