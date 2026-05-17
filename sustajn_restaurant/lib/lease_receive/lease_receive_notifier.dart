@@ -35,6 +35,11 @@ List<ProductOrderListResponseList> _containerReturnListAdded =[];
     notifyListeners();
   }
 
+  void clearAddedContainer(){
+    _containerReturnListAdded = [];
+    notifyListeners();
+  }
+
   void setIsSaving(bool isSaving) {
     _isSaving = isSaving;
     notifyListeners();

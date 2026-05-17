@@ -118,7 +118,7 @@ class _LeaseProductListScreenState
                           item: leaseNotifier.containersList[index],
                           onRemove: () {
                             setState(() {
-                              leaseNotifier.containersList.removeAt(index);
+                              leaseNotifier.clearAddedContainer();
                             });
                           },
                         );

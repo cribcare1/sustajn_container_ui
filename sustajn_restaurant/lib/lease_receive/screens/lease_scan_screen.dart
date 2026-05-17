@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
@@ -8,19 +9,20 @@ import 'package:sustajn_restaurant/lease_receive/screens/receive_product_list_sc
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 
 import '../../utils/global_utils.dart';
+import '../lease_receive_notifier.dart';
 import 'lease_product_scan_screen.dart';
 
-class LeaseScanScreen extends StatefulWidget {
+class LeaseScanScreen extends ConsumerStatefulWidget {
   final String type;
   final String? damage;
 
   const LeaseScanScreen({super.key, required this.type, this.damage});
 
   @override
-  State<LeaseScanScreen> createState() => _QrScannerScreenState();
+  ConsumerState<LeaseScanScreen> createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<LeaseScanScreen> {
+class _QrScannerScreenState extends ConsumerState<LeaseScanScreen> {
   final MobileScannerController controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates, // ensures single scan
     torchEnabled: false,
@@ -31,7 +33,11 @@ class _QrScannerScreenState extends State<LeaseScanScreen> {
   String? scannedValue;
   bool _torchOn = false;
   final textController = TextEditingController();
-
+@override
+  void initState() {
+    ref.read(leaseReceiveNotifier).clearAddedContainer();
+    super.initState();
+  }
   @override
   void dispose() {
     controller.dispose();
