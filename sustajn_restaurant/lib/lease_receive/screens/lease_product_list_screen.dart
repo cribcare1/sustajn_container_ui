@@ -120,20 +120,6 @@ class _LeaseProductListScreenState
                   return _containerCard(
                     item: leaseNotifier.containersList[index],
                     onRemove: () {
-                      // setState(() {
-                      //   print("=================");
-                      //   leaseNotifier.containersList.add(
-                      //       ContainerDetails(containerId: leaseNotifier.containersList[index].containerId,
-                      //           containerName: leaseNotifier.containersList[index].containerName,
-                      //           containerDescription: leaseNotifier.containersList[index].containerDescription,
-                      //           capacity: leaseNotifier.containersList[index].capacity,
-                      //           containerImageUrl: leaseNotifier.containersList[index].containerImageUrl,
-                      //           containerUniqueId: leaseNotifier.containersList[index].containerUniqueId,
-                      //           quantityAvailable: leaseNotifier.containersList[index].quantityAvailable,
-                      //       quantity: 0
-                      //       ));
-                      //   leaseNotifier.containersList.removeAt(index);
-                      // });
                       leaseNotifier.removeContainer(index);
                     },
                   );
@@ -267,15 +253,6 @@ class _LeaseProductListScreenState
                   ),
                 ],
               ),
-              // const SizedBox(height: 6),
-              // InkWell(
-              //   onTap: onRemove,
-              //   child: const Icon(
-              //     Icons.delete_outline,
-              //     color: Colors.redAccent,
-              //     size: 20,
-              //   ),
-              // ),
             ],
           ),
         ],
