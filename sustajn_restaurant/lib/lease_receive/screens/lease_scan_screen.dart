@@ -212,6 +212,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseScanScreen> {
                     onPressed: textController.text.isEmpty
                         ? null
                         : () {
+                      ref.read(leaseReceiveNotifier).clearAddedContainer();
                       scannedId = textController.text;
                             if (widget.type.contains(Strings.LEASE_UC)) {
                               NavUtil.navigateToPushScreen(

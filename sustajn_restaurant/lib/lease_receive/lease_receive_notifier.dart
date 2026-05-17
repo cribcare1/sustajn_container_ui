@@ -36,7 +36,7 @@ List<ProductOrderListResponseList> _containerReturnListAdded =[];
   }
 
   void clearAddedContainer(){
-    _containerReturnListAdded = [];
+    _containersList = [];
     notifyListeners();
   }
 
@@ -110,7 +110,10 @@ Map<String, int> get totalCount => _totalCount;
       notifyListeners();
     }
   }
-
+  void removeContainer(int index) {
+    _containersList.removeAt(index);
+    notifyListeners();
+  }
 }
 
 final leaseReceiveNotifier = ChangeNotifierProvider<LeaseReceiveNotifier>(
