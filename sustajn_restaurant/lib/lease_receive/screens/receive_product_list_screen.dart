@@ -10,6 +10,7 @@ import 'package:sustajn_restaurant/lease_receive/screens/receive_scan_screen.dar
 import 'package:sustajn_restaurant/utils/nav_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 
+import '../../auth/widgets/no_data_custom_text.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
 import '../lease_receive_notifier.dart';
@@ -88,18 +89,15 @@ class _ReceiveProductListScreenState
       top: false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: "Receive product",
+          title: Strings.RECEIVE_PRODUCT,
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: leaseNotifier.isLoading
             ? const Center(child: CircularProgressIndicator())
             : leaseNotifier.containerReturnList.isEmpty
             ? Center(
-                child: Text(
-                  "There are no return containers available for this user.",
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
+                child: NoDataFoundCustomText(
+                  text: Strings.NO_RETURN_CONTAINER,
                 ),
               )
             : Column(
@@ -111,8 +109,8 @@ class _ReceiveProductListScreenState
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.badge, color: Colors.white, size: 18),
-                            SizedBox(width: 6),
+                            Icon(Icons.badge, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
+                            SizedBox(width: Constant.SIZE_06),
                             Text(
                               'Customer ID: ${widget.customerId}',
                               style: TextStyle(color: Colors.white),
@@ -126,15 +124,15 @@ class _ReceiveProductListScreenState
                             children: [
                               Image.asset(
                                 "assets/images/img.png",
-                                height: 25,
-                                width: 25,
+                                height: Constant.CONTAINER_SIZE_25,
+                                width: Constant.SIZE_25,
                               ),
                               SizedBox(width: Constant.SIZE_08),
                               Text(
                                 leaseNotifier.containerCount.toString(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.amber,
-                                  fontSize: 22,
+                                  fontSize: Constant.CONTAINER_SIZE_22,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -143,7 +141,7 @@ class _ReceiveProductListScreenState
                         ),
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
                         Text(
-                          "Available Containers",
+                          Strings.AVAILABLE_CONTAINERS,
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.titleMedium!
                               .copyWith(color: Colors.white),
@@ -173,7 +171,7 @@ class _ReceiveProductListScreenState
           onTap: () {
             NavUtil.navigateToPushScreen(
               context,
-              ReceiveScanScreen(type: widget.type, previous: "list"),
+              ReceiveScanScreen(type: widget.type, previous: Strings.LIST),
             );
           },
           child: Container(
@@ -315,7 +313,7 @@ class _ReceiveProductListScreenState
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_16),
               const Text(
-                'Confirm receive Containers?',
+                Strings.CONFIRM_RECEIVE,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -325,7 +323,7 @@ class _ReceiveProductListScreenState
               ),
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
-                'Have you received the containers from the user?',
+                Strings.HAVE_YOU_RECEIVED,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
@@ -340,7 +338,7 @@ class _ReceiveProductListScreenState
                       onLeftTap: () {
                         Navigator.pop(context);
                       },
-                      leftText: "Cancel",
+                      leftText: Strings.CANCEL,
                       onRightTap: () {
                         Navigator.pop(context);
                         final List<Map<String, dynamic>> items = leaseState
@@ -360,7 +358,7 @@ class _ReceiveProductListScreenState
                         };
                         _leaseContainer(leaseState, data);
                       },
-                      rightText: "Confirm",
+                      rightText: Strings.CONFIRMED,
                     ),
             ],
           ),
