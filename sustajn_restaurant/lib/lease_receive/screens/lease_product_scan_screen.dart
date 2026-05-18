@@ -45,10 +45,6 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(leaseReceiveNotifier).setContext(context);
       await controller.start();
-      // _getContainerList(
-      //   ref.read(leaseReceiveNotifier),
-      //   restaurantId: Utils.userId.toString(),
-      // );
     });
   }
   @override
@@ -122,6 +118,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
         capacity: 0,
         containerImageUrl: '',
         quantityAvailable: 0,
+        quantity: 0,
       ),
     );
     Utils.printLog("matchedContainer:::${matchedContainer.containerUniqueId}");
@@ -137,6 +134,7 @@ class _QrScannerScreenState extends ConsumerState<LeaseProductScanScreen> {
 
         container.quantity += 1;
       }
+
       leaseNotifier.setContainerList(matchedContainer);
       showCustomSnackBar(
         context: context,
