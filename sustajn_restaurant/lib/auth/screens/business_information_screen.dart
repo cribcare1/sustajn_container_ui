@@ -502,9 +502,18 @@ class _BusinessInformationDetailsState
 
                     _buildTextField(
                       context,
+                      keyboard: TextInputType.url,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return Strings.ENTER_WEBSITE;
+                        if (value == null || value.trim().isEmpty) {
+                          return null;
+                        }
+                        final website = value.trim();
+                        final websiteRegex = RegExp(
+                          r'^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$',
+                        );
+
+                        if(!websiteRegex.hasMatch(website)){
+                          return "Enter valid website URL";
                         }
                         return null;
                       },

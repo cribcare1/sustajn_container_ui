@@ -194,6 +194,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                       children: [
                         Expanded(
                           flex: 3,
+                          child: SizedBox(
+                            height: 55,
                           child: Container(
                             decoration: BoxDecoration(
                               color: theme.primaryColor,
@@ -231,6 +233,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               },
                             ),
                           ),
+                        ),
                         ),
 
                         SizedBox(width: Constant.SIZE_08),
