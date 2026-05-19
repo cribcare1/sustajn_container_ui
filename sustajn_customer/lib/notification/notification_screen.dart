@@ -4,6 +4,7 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 import '../constants/string_utils.dart';
+import '../widgets/no_data_custom_text.dart';
 import 'models/notice_model.dart';
 import 'notification_dialog.dart';
 
@@ -13,65 +14,65 @@ class NotificationScreen extends StatelessWidget {
 
   final List<NoticeModel> notifications = [
 
-    NoticeModel(
-      title: Strings.TITLE_1,
-      icon: "assets/icons/right_check.png",
-      subtitle: Strings.SUB_TITLE_,
-      dateTime: "08/01/2026 | 10:00",
-      // icon: "assets/icons/check.png",
-      hasActions: true,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_2,
-      icon: "assets/icons/icon_1.png",
-      subtitle: "",
-      dateTime: "08/10/2026 | 23:00",
-      hasActions: false,
-    ),
-
-    NoticeModel(
-      title: Strings.TITLE_3,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "08/11/2026 | 09:00",
-      hasActions: false,
-    ),
-
-    NoticeModel(
-      title: Strings.TITLE_4,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_5,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
+    // NoticeModel(
+    //   title: Strings.TITLE_1,
+    //   icon: "assets/icons/right_check.png",
+    //   subtitle: Strings.SUB_TITLE_,
+    //   dateTime: "08/01/2026 | 10:00",
+    //   // icon: "assets/icons/check.png",
+    //   hasActions: true,
+    // ),
+    // NoticeModel(
+    //   title: Strings.TITLE_2,
+    //   icon: "assets/icons/icon_1.png",
+    //   subtitle: "",
+    //   dateTime: "08/10/2026 | 23:00",
+    //   hasActions: false,
+    // ),
+    //
+    // NoticeModel(
+    //   title: Strings.TITLE_3,
+    //   icon: "assets/icons/warning_icon.png",
+    //   subtitle: "",
+    //   dateTime: "08/11/2026 | 09:00",
+    //   hasActions: false,
+    // ),
+    //
+    // NoticeModel(
+    //   title: Strings.TITLE_4,
+    //   icon: "assets/icons/warning_icon.png",
+    //   subtitle: "",
+    //   dateTime: "30/11/2025 | 09:00",
+    //   hasActions: false,
+    // ),
+    // NoticeModel(
+    //   title: Strings.TITLE_5,
+    //   icon: "assets/icons/warning_icon.png",
+    //   subtitle: "",
+    //   dateTime: "30/11/2025 | 09:00",
+    //   hasActions: false,
+    // ),
+    // NoticeModel(
+    //   title: Strings.TITLE_6,
+    //   icon: "assets/icons/clock_icon.png",
+    //   subtitle: "",
+    //   dateTime: "30/11/2025 | 09:00",
+    //   hasActions: false,
+    // ),
+    // NoticeModel(
+    //   title: Strings.TITLE_6,
+    //   icon: "assets/icons/clock_icon.png",
+    //   subtitle: "",
+    //   dateTime: "30/11/2025 | 09:00",
+    //   hasActions: false,
+    // ),
+    // NoticeModel(
+    //   title: Strings.TITLE_6,
+    //   icon: "assets/icons/clock_icon.png",
+    //   subtitle: "",
+    //   dateTime: "30/11/2025 | 09:00",
+    //   hasActions: false,
+    // ),
   ];
 
   @override
@@ -98,15 +99,15 @@ class NotificationScreen extends StatelessWidget {
               right: Constant.CONTAINER_SIZE_16,
             ),
             child: Center(
-              child: Text(
-                'Mark all as read',
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Constant.gold,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Constant.gold,
-                  decorationThickness: 1.5,
-                ),
-              ),
+              // child: Text(
+              //   'Mark all as read',
+              //   style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              //     color: Constant.gold,
+              //     decoration: TextDecoration.underline,
+              //     decorationColor: Constant.gold,
+              //     decorationThickness: 1.5,
+              //   ),
+              // ),
             ),
           ),
         ],
@@ -118,7 +119,13 @@ class NotificationScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ListView.builder(
+              child: notifications.isEmpty
+        ? Center(
+                child: NoDataFoundCustomText(
+                  text: Strings.NO_NOTIFICATIONS,
+                ),
+              )
+       : ListView.builder(
                 itemCount: notifications.length,itemBuilder: (context, index) {
                 final item = notifications[index];
 

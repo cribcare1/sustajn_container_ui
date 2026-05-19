@@ -361,6 +361,8 @@ class Strings {
   static const String FEMALE = 'Female';
   static const String OTHERS = 'Others';
   static const String SIGNUP = 'SIGNUP';
+  static const String NO_NOTIFICATIONS = 'No notification to show';
+  static const String SEARCH_COUNTRY = 'Search country';
 
 
   static final RegExp alphaNumericWithSpace = RegExp(r'^[a-zA-Z0-9 ]+$');

@@ -107,8 +107,8 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                               return Strings.CARD_NO_REQ;
                             }
                             final digitsOnly = value.replaceAll(' ', '');
-                            if (digitsOnly.length != 12) {
-                              return Strings.CARD_NUMBER_12;
+                            if (digitsOnly.length != 16) {
+                              return Strings.CARD_NUMBER_16;
                             }
                             return null;
                           },

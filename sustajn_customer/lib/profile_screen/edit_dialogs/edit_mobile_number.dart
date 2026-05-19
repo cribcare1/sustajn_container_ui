@@ -207,9 +207,9 @@ class _EditMobileNumberDialogState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        flex: 3,
+                        flex: Constant.SIZE_03.toInt(),
                         child: SizedBox(
-                          height: 55,
+                          height: Constant.CONTAINER_SIZE_55,
                           child: Container(
                             decoration: BoxDecoration(
                               color: theme.primaryColor,
@@ -234,7 +234,7 @@ class _EditMobileNumberDialogState
                               closeIcon:
                               const Icon(Icons.close, color: Colors.white),
                               searchDecoration: const InputDecoration(
-                                hintText: "Search country",
+                                hintText: Strings.SEARCH_COUNTRY,
                                 hintStyle:
                                 TextStyle(color: Colors.white70),
                                 prefixIcon: Icon(
@@ -257,7 +257,7 @@ class _EditMobileNumberDialogState
                       SizedBox(width: Constant.SIZE_08),
 
                       Expanded(
-                        flex: 6,
+                        flex: Constant.SIZE_06.toInt(),
                         child: TextFormField(
                           controller: _controller,
                           validator: _validate,

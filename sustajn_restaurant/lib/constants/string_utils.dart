@@ -372,7 +372,7 @@ class Strings {
   static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
   static const String CARD_NUMBER = 'Card Number*';
   static const String CARD_NO_REQ = 'Card no. required';
-  static const String CARD_NUMBER_12 = 'Card number must be 16 digits';
+  static const String CARD_NUMBER_16 = 'Card number must be 16 digits';
   static const String EXPIRATION_DATE = 'Expiration Date';
   static const String CVV = 'CVV';
   static const String CVV_REQUIRED = 'CVV is required';
