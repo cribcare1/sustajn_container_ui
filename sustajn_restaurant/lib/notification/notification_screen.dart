@@ -4,7 +4,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/notification/notification_provider.dart';
-import 'package:sustajn_restaurant/notification/notification_state.dart';
+import 'package:sustajn_restaurant/notification/notification_notifier.dart';
 
 import '../auth/widgets/no_data_custom_text.dart';
 import '../constants/string_utils.dart';
@@ -25,12 +25,12 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationProvider).setContext(context);
-      _getOrderNetworkCall();
+      _getNotificationNetworkCall();
     });
     super.initState();
   }
 
-  _getOrderNetworkCall() async {
+  _getNotificationNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,

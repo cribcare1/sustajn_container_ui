@@ -38,5 +38,11 @@ class NetworkUrls {
   static const DELETE_CONTAINER = "inventory/delete-container-type/123";
   static const SUCCESS = 'success';
 
+  /// Notification ///
+  static const GET_ALL_NOTIFICATION = "notifications/getAll/";
+  static const MARK_READ = "notifications/mark-read/";
+  static const GET_NOTIFICATION_COUNT = "notifications/unread/count/";
+
+
 
 }
