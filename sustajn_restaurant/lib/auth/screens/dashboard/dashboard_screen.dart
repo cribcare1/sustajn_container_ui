@@ -17,7 +17,7 @@ import '../../../models/login_model.dart';
 import '../../../network_provider/network_provider.dart';
 import '../../../notification/notification_provider.dart';
 import '../../../notification/notification_screen.dart';
-import '../../../notification/notification_state.dart';
+import '../../../notification/notification_notifier.dart';
 import '../../../order_screen/order_home_screen.dart';
 import '../../../product_screen/product_home_screen.dart';
 import '../../../provider/profile_provider.dart';
