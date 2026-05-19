@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sustajn_restaurant/notification/notification_services.dart';
-import 'package:sustajn_restaurant/notification/notification_notifier.dart';
-import 'package:sustajn_restaurant/utils/utility.dart';
-
 import '../constants/imports_util.dart';
-import 'notification_model.dart';
+import '../utils/utils.dart';
+import 'models/notice_model.dart';
+import 'notification_notifier.dart';
+import 'notification_services.dart';
 
 final getNotification =
 FutureProvider.family<NotificationResponseModel, int>(

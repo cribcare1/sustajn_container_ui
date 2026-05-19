@@ -372,7 +372,7 @@ class Strings {
   static const String CARD_HOLDER_REQUIRED = 'Card holder name required';
   static const String CARD_NUMBER = 'Card Number*';
   static const String CARD_NO_REQ = 'Card no. required';
-  static const String CARD_NUMBER_12 = 'Card number must be 16 digits';
+  static const String CARD_NUMBER_16 = 'Card number must be 16 digits';
   static const String EXPIRATION_DATE = 'Expiration Date';
   static const String CVV = 'CVV';
   static const String CVV_REQUIRED = 'CVV is required';
@@ -422,5 +422,14 @@ class Strings {
   static const String MARK_ALL_READ = 'Mark all as read';
   static const String RETURN = 'Return';
   static const String ADD = 'Add';
+  static const String RECEIVE_PRODUCT = 'Receive product';
+  static const String NO_RETURN_CONTAINER = 'There are no return containers available for this user.';
+  static const String CONFIRM_RECEIVE = 'Confirm receive Containers?';
+  static const String HAVE_YOU_RECEIVED = 'Have you received the containers from the user?';
+  static const String CONFIRMED = 'Confirm';
+  static const String LIST = 'list';
+  static const String NO_NOTIFICATIONS = 'No notification to show';
+  static const String RECEIVE_DETAILS = 'Receive Details';
+  static const String NO_CONTAINERS_FOUND = 'No containers found';
 
 }

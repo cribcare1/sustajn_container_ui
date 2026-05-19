@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,6 +60,12 @@ class _EditMobileNumberDialogState
     if (v.length != 10) return Strings.ENTER_VALID_PHONE;
     return null;
   }
+
+  Country? _selectedCountry = Country(
+    code: 'AE',
+    dialCode: '+971',
+    name: 'United Arab Emirates'
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -196,31 +203,94 @@ class _EditMobileNumberDialogState
               if (view != ContactView.display) ...[
                 Form(
                   key: _formKey,
-                  child: TextFormField(
-                    controller: _controller,
-                    validator: _validate,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: Constant.SIZE_03.toInt(),
+                        child: SizedBox(
+                          height: Constant.CONTAINER_SIZE_55,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: theme.primaryColor,
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                              border: Border.all(color: Constant.grey),
+                            ),
+                            child: CountryCodePicker(
+                              initialSelection: "AE",
+                              favorite: const ["+971", "AE"],
+                              showCountryOnly: false,
+                              showOnlyCountryWhenClosed: false,
+                              alignLeft: false,
+                              showDropDownButton: true,
+                              textStyle: const TextStyle(color: Colors.white),
+                              dialogBackgroundColor: theme.primaryColor,
+                              dialogTextStyle:
+                              const TextStyle(color: Colors.white),
+                              searchStyle:
+                              const TextStyle(color: Colors.white),
+                              closeIcon:
+                              const Icon(Icons.close, color: Colors.white),
+                              searchDecoration: const InputDecoration(
+                                hintText: Strings.SEARCH_COUNTRY,
+                                hintStyle:
+                                TextStyle(color: Colors.white70),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCountry = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: Constant.SIZE_08),
+
+                      Expanded(
+                        flex: Constant.SIZE_06.toInt(),
+                        child: TextFormField(
+                          controller: _controller,
+                          validator: _validate,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: view == ContactView.edit
+                                ? Strings.PRIMARY_NUMBER
+                                : Strings.SECONDARY_NUMBER,
+                            labelStyle:
+                            const TextStyle(color: Colors.white70),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Constant.grey),
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide:
+                              BorderSide(color: Constant.gold),
+                              borderRadius: BorderRadius.circular(
+                                Constant.CONTAINER_SIZE_12,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: view == ContactView.edit
-                          ? Strings.PRIMARY_NUMBER
-                          : Strings.SECONDARY_NUMBER,
-                      labelStyle: const TextStyle(color: Colors.white70),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constant.grey),
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constant.gold),
-                        borderRadius:
-                        BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                    ),
                   ),
                 ),
 
@@ -279,12 +349,12 @@ class _EditMobileNumberDialogState
     if (isEditingPrimary) {
       return {
         "userId": Utils.userId,
-        "phoneNumber": mobileNo,
+        "phoneNumber": "${_selectedCountry?.dialCode} $mobileNo",
       };
     } else {
       return {
         "userId": Utils.userId,
-        "secondaryNumber": mobileNo,
+        "secondaryNumber": "${_selectedCountry?.dialCode} $mobileNo",
       };
     }
   }

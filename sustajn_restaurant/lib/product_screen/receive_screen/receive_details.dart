@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../../models/container_history_data.dart';
 
 class ReceiveDetailsDialog extends StatelessWidget {
@@ -76,7 +77,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
         ),
         SizedBox(height: Constant.CONTAINER_SIZE_20),
         Text(
-          "Receive Details",
+          Strings.RECEIVE_DETAILS,
           style: theme.textTheme.titleLarge?.copyWith(
             color: Colors.white,
             fontSize: Constant.LABEL_TEXT_SIZE_20,
@@ -145,7 +146,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
         data.productOrderListResponses!.isEmpty) {
       return Center(
         child: Text(
-          "No containers found",
+          Strings.NO_CONTAINERS_FOUND,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: Colors.white54,
           ),

@@ -4,8 +4,9 @@ import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/notification/notification_provider.dart';
-import 'package:sustajn_restaurant/notification/notification_state.dart';
+import 'package:sustajn_restaurant/notification/notification_notifier.dart';
 
+import '../auth/widgets/no_data_custom_text.dart';
 import '../constants/string_utils.dart';
 import '../network_provider/network_provider.dart';
 import '../utils/utility.dart';
@@ -19,33 +20,17 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
-  // List<NotificationModel> notificationList = [
-  //   NotificationModel(
-  //     title: "Order Delivered",
-  //     description: "Your order #ORD-0245 has been delivered",
-  //     icon: Icons.check,
-  //     color: Colors.green,
-  //     dateTime: "01/12/2024 5:00 PM",
-  //   ),
-  //   NotificationModel(
-  //     title: "Order Rejected",
-  //     description: "Your order #ORD-0245 has been delivered",
-  //     icon: Icons.close,
-  //     color: Colors.red,
-  //     dateTime: "01/12/2024 5:00 PM",
-  //   ),
-  // ];
-
+  
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationProvider).setContext(context);
-      _getOrderNetworkCall();
+      _getNotificationNetworkCall();
     });
     super.initState();
   }
 
-  _getOrderNetworkCall() async {
+  _getNotificationNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
@@ -91,14 +76,18 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       ).getAppBar(context),
       body: notificationState.isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.separated(
+          : notificationState.notificationList.length>0?ListView.separated(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               itemCount: notificationState.notificationList.length,
               itemBuilder: (context, index) =>
                   _notificationCard(notificationState.notificationList[index]),
               separatorBuilder: (context, index) =>
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
-            ),
+            ):Center(
+        child: NoDataFoundCustomText(
+          text: Strings.NO_NOTIFICATIONS,
+        )
+      ),
     );
   }
 

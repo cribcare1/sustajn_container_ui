@@ -194,6 +194,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                       children: [
                         Expanded(
                           flex: 3,
+                          child: SizedBox(
+                            height: Constant.CONTAINER_SIZE_55,
                           child: Container(
                             decoration: BoxDecoration(
                               color: theme.primaryColor,
@@ -215,7 +217,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               searchStyle: const TextStyle(color: Colors.white),
                               closeIcon: const Icon(Icons.close, color: Colors.white),
                               searchDecoration: InputDecoration(
-                                hintText: "Search country",
+                                hintText: Strings.SEARCH_COUNTRY,
                                 hintStyle: const TextStyle(color: Colors.white70),
                                 prefixIcon: const Icon(
                                   Icons.search,
@@ -231,6 +233,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with RouteAware {
                               },
                             ),
                           ),
+                        ),
                         ),
 
                         SizedBox(width: Constant.SIZE_08),

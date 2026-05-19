@@ -1,256 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_customer/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../utils/theme_utils.dart';
 import '../constants/string_utils.dart';
+import '../network_provider/network_provider.dart';
+import '../utils/utils.dart';
+import '../widgets/card_widget.dart';
+import '../widgets/no_data_custom_text.dart';
 import 'models/notice_model.dart';
 import 'notification_dialog.dart';
+import 'notification_notifier.dart';
+import 'notification_provider.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends ConsumerStatefulWidget {
+  const NotificationScreen({super.key});
 
-  NotificationScreen({super.key});
+  @override
+  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
+}
 
-  final List<NoticeModel> notifications = [
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
-    NoticeModel(
-      title: Strings.TITLE_1,
-      icon: "assets/icons/right_check.png",
-      subtitle: Strings.SUB_TITLE_,
-      dateTime: "08/01/2026 | 10:00",
-      // icon: "assets/icons/check.png",
-      hasActions: true,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_2,
-      icon: "assets/icons/icon_1.png",
-      subtitle: "",
-      dateTime: "08/10/2026 | 23:00",
-      hasActions: false,
-    ),
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(notificationProvider).setContext(context);
+      _getNotificationNetworkCall();
+    });
+    super.initState();
+  }
 
-    NoticeModel(
-      title: Strings.TITLE_3,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "08/11/2026 | 09:00",
-      hasActions: false,
-    ),
-
-    NoticeModel(
-      title: Strings.TITLE_4,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_5,
-      icon: "assets/icons/warning_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-    NoticeModel(
-      title: Strings.TITLE_6,
-      icon: "assets/icons/clock_icon.png",
-      subtitle: "",
-      dateTime: "30/11/2025 | 09:00",
-      hasActions: false,
-    ),
-  ];
+  _getNotificationNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        final notificationState = ref.read(notificationProvider);
+        if (isNetworkAvailable) {
+          notificationState.setLoading(true);
+          final userId = Utils.userId;
+          ref.read(getNotification(userId ?? 0));
+        } else {
+          notificationState.setLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final notificationState = ref.watch(notificationProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Notifications',
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Colors.white),),
-        backgroundColor: theme.scaffoldBackgroundColor,
-        leading: IconButton(
-          icon: Icon(
-    Icons.arrow_back_ios,
-        color: Colors.white,
-        size: Constant.CONTAINER_SIZE_20),
-        onPressed:(){
-          Navigator.pop(context);
-        },
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(
-              right: Constant.CONTAINER_SIZE_16,
-            ),
-            child: Center(
-              child: Text(
-                'Mark all as read',
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                  color: Constant.gold,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Constant.gold,
-                  decorationThickness: 1.5,
-                ),
-              ),
-            ),
-          ),
+      appBar: CustomAppBar(
+        title: Strings.NOTIFICATION,
+        leading: CustomBackButton(),
+        action: [
+          //todo
+          // TextButton(
+          //   onPressed: () {},
+          //   child: Text(
+          //     Strings.MARK_ALL_READ,
+          //     style: theme.textTheme.titleSmall!.copyWith(
+          //       color: Constant.gold,
+          //       decoration: TextDecoration.underline,
+          //       decorationColor: Constant.gold,
+          //       decorationThickness: 1.5,
+          //     ),
+          //   ),
+          // ),
         ],
-
-      ),
-      body: Padding(
+      ).getAppBar(context),
+      body: notificationState.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : notificationState.notificationList.length>0?ListView.separated(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: notifications.length,itemBuilder: (context, index) {
-                final item = notifications[index];
-
-                return InkWell(
-                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-                  onTap: () {
-                    if (index == 5) {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => const NotificationDialog(),
-                      );
-                    }
-                  },
-                  child: _notificationCard(
-                    context,
-                    item,
-                    theme,
-                    index,
-                  ),
-                );
-              },
-              ),
-            ),
-          ],
-        ),
+        itemCount: notificationState.notificationList.length,
+        itemBuilder: (context, index) =>
+            _notificationCard(notificationState.notificationList[index]),
+        separatorBuilder: (context, index) =>
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+      ):Center(
+          child: NoDataFoundCustomText(
+            text: Strings.NO_NOTIFICATIONS,
+          )
       ),
     );
   }
 
-  Widget _notificationCard(BuildContext context,
-      NoticeModel item,
-      ThemeData theme,
-      int index,
-      ) {
-    return Container(
-      margin: EdgeInsets.only(bottom: Constant.SIZE_10),
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        color: Constant.grey.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-        border: Border.all(color: Colors.white24, width: 0.4),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  _notificationCard(NotificationModel data) {
+    return GlassSummaryCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if(item.icon != "")...[
-            Container(
-              height: Constant.CONTAINER_SIZE_30,
-              width: Constant.CONTAINER_SIZE_30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme
-                    .of(context)
-                    .secondaryHeaderColor,
-              ),
-              child: Image.asset(item.icon),
-            ),
-            SizedBox(width: Constant.SIZE_05),
-          ],
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                if (item.title.contains('\n')) ...[
-                  Text(
-                    item.title.split('\n')[0],
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white70, // status text
+          Row(
+            children: [
+              // Container(
+              //   decoration: BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: data.color,
+              //   ),
+              //   padding: EdgeInsets.all(3),
+              //   child: Icon(data.icon, size: 15),
+              // ),
+              // SizedBox(width: Constant.SIZE_08),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.notificationType??"",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium!.copyWith(color: Colors.white),
                     ),
-                  ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_1),
-                  Text(
-                    item.title.split('\n')[1],
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: Constant.CONTAINER_SIZE_14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                    Text(
+                      data.message??"",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall!.copyWith(color: Colors.white),
                     ),
-                  ),
-                ] else
-                  Text(
-                    item.title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: Constant.CONTAINER_SIZE_14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                if(item.subtitle.isNotEmpty) ...[
-                  SizedBox(height: Constant.SIZE_06),
-                  Text(
-                    item.subtitle,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-
-                if(item.hasActions)...[
-                  SizedBox(height: Constant.SIZE_10),
-                  Row(
-                    children: [
-                      SizedBox(width: Constant.SIZE_10),
-                    ],
-                  ),
-                ],
-
-                SizedBox(height: Constant.SIZE_08),
-
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    item.dateTime,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontFamily: "DMSans",
-                      color: Colors.white70,
-                    ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          if (index == 5)
-            Icon(
-              Icons.chevron_right,
-              color: Colors.white70,
-              size: Constant.CONTAINER_SIZE_22,
-            )
+          Text(
+            data.timestamp??"",
+            textAlign: TextAlign.end,
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall!.copyWith(color: Colors.white),
+          ),
         ],
       ),
     );
