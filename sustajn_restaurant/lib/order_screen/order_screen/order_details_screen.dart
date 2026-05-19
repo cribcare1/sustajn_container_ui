@@ -111,7 +111,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 child: ListView(
                   children: [
                     _containerItem(widget.orderData.productName??"",
-                       widget.orderData.requestedQty.toString()),
+                       widget.orderData.approvedQty.toString()),
                   ],
                 ),
               )
