@@ -96,9 +96,13 @@ FutureProvider.family<ContainerListModel, int>((ref, restaurantId) async {
 
   try {
     final response = await apiService.fetchContainerList(restaurantId);
-    if  (response.status == NetworkUrls.SUCCESS && response.containersDetails.isNotEmpty) {
+    Utils.printLog("response====${response.status }    ${response.containersDetails.isNotEmpty}");
+    if  (response.status == NetworkUrls.SUCCESS && response.containersDetails.length>0) {
+
+      leaseNotifier.setLoading(false);
       leaseNotifier.setContainer(response.containersDetails);
     }else{
+      leaseNotifier.setLoading(false);
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message: response.message,

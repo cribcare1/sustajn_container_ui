@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/widgets/no_data_custom_text.dart';
 import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_app_bar.dart';
 import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
@@ -93,14 +94,9 @@ class _DamageContainerListScreenState
         ).getAppBar(context),
         body: leaseNotifier.isDamageLoading
             ? const Center(child: CircularProgressIndicator())
-            : leaseNotifier.damageContainerList.isEmpty
+            : leaseNotifier.damageContainerList.length==0
             ? Center(
-                child: Text(
-                  "There are no containers available for this user.",
-                  style: theme.textTheme.titleMedium!.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
+                child: NoDataFoundCustomText(text: "There are no containers available for this user.")
               )
             : ListView.separated(
               padding: EdgeInsets.all(

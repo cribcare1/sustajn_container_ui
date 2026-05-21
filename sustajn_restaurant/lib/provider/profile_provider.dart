@@ -9,6 +9,7 @@ import 'package:sustajn_restaurant/models/get_profile_data.dart';
 import '../constants/imports_util.dart';
 import '../constants/network_urls.dart';
 import '../constants/string_utils.dart';
+import '../lease_receive/lease_receive_provider.dart';
 import '../lease_receive/model/container_return_list_model.dart';
 import '../models/update_address_data.dart';
 import '../notifier/profile_notifier.dart';
@@ -314,14 +315,17 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   updatedBody.remove('image');
   try {
     final response = await apiService.markDamageContainer(updatedBody, image);
-    if (response != null) {
-      damageContainerList(body['restaurantId']);
+    if (response != null && response['status'] != null && response['status'].toString().toLowerCase() == NetworkUrls.SUCCESS) {
+      int restaurantId = response['data']?['restaurantId'] ?? 0;
+      Utils.printLog("restaurantid    ${restaurantId}");
+      // damageContainerList(restaurantId);
       showCustomSnackBar(
         context: leaseNotifier.context,
         message: response['message'],
         color: Colors.green,
       );
-     NavUtil.popScreen(leaseNotifier.context, 2);
+     NavUtil.popScreen(leaseNotifier.context, 1);
+      containerListProvider(restaurantId);
     }
   } catch (e) {
     leaseNotifier.setIsSaving(false);
