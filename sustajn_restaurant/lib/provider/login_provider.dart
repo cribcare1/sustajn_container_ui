@@ -54,7 +54,7 @@ FutureProvider.family<LoginModel, Map<String, dynamic>>(
               Strings.USER_ID, userId);
  await SharedPreferenceUtils.saveDataInSF(
               Strings.PLAN_ID, planId);
-
+          Utils.fullName = responseData.data!.fullName!;
           await SharedPreferenceUtils.saveBoolDataInSF(
               Strings.IS_LOGGED_IN, true);
           Utils.userId = userId;
@@ -132,7 +132,9 @@ final registerProvider = FutureProvider.family<dynamic, Map<String, dynamic>>((r
 
         await SharedPreferenceUtils.saveDataInSF(
             Strings.PLAN_ID, register.data!.planId!);
-
+        await SharedPreferenceUtils.saveDataInSF(
+            Strings.FULL_NAME, register.data!.fullName!);
+        Utils.fullName = register.data!.fullName!;
        await SharedPreferenceUtils.saveBoolDataInSF(Strings.IS_LOGGED_IN, true);
         Utils.userId = register.data!.userId!;
         Utils.planId = register.data!.planId!;

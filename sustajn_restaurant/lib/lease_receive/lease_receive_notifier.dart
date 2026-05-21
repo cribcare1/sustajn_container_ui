@@ -116,6 +116,6 @@ Map<String, int> get totalCount => _totalCount;
   }
 }
 
-final leaseReceiveNotifier = ChangeNotifierProvider.autoDispose<LeaseReceiveNotifier>(
+final leaseReceiveNotifier = ChangeNotifierProvider<LeaseReceiveNotifier>(
   (ref) => LeaseReceiveNotifier(),
 );
