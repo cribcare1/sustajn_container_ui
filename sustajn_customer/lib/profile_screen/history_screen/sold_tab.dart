@@ -27,46 +27,6 @@ class _SoldTabState extends ConsumerState<SoldTab> {
   }
 
    final List<BorrowedDetails> containers = [
-     // BorrowedDetails(
-     //   resturantName: Strings.RESTAURANT_1,
-     //   containerName: Strings.CONTAINER_1,
-     //   code: Strings.CODE_1,
-     //   volume: Strings.VOLUME_1,
-     //   qty: 3,
-     //   image: "assets/images/cups.png",
-     //   date: Strings.DATE_1,
-     //   price: "120"
-     // ),
-     // BorrowedDetails(
-     //   resturantName: Strings.RESTAURANT_2,
-     //   containerName: Strings.CONTAINER_2,
-     //   code: Strings.CODE_2,
-     //   volume: Strings.VOLUME_2,
-     //   qty: 5,
-     //   image: "assets/images/cups.png",
-     //   date: Strings.DATE_2,
-     //     price: "120"
-     // ),
-     // BorrowedDetails(
-     //   resturantName: Strings.RESTAURANT_2,
-     //   containerName: Strings.CONTAINER_3,
-     //   code: Strings.CODE_3,
-     //   volume: Strings.VOLUME_3,
-     //   qty: 2,
-     //   image: "assets/images/cups.png",
-     //   date: Strings.DATE_3,
-     //     price: "120"
-     // ),
-     // BorrowedDetails(
-     //   resturantName: Strings.RESTAURANT_3,
-     //   containerName: Strings.CONTAINER_4,
-     //   code: Strings.CODE_3,
-     //   volume: Strings.VOLUME_4,
-     //   qty: 5,
-     //   image: 'assets/images/cups.png',
-     //   date: Strings.DATE_3,
-     //     price: "120"
-     // ),
    ];
 
   @override
