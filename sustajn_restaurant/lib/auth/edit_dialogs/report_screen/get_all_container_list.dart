@@ -52,7 +52,7 @@ class _GetAllContainerListScreenState
             leaseState.setContext(context);
             leaseState.setLoading(true);
             ref.read(
-              containerListProvider(Utils.userId.toString()),
+              containerListProvider(Utils.userId!),
             );
           } else {
             leaseState.setLoading(false);

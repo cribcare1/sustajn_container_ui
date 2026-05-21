@@ -172,7 +172,7 @@ class _FilterPopupWidgetState extends ConsumerState<FilterPopupWidget> {
             leaseState.setContext(context);
             leaseState.setLoading(true);
             ref.read(
-              containerListProvider(Utils.userId.toString()),
+              containerListProvider(Utils.userId!),
             );
           } else {
             leaseState.setLoading(false);

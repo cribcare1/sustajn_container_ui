@@ -39,9 +39,9 @@ class LeaseAndReceiveServices {
       throw Exception(e);
     }
   }
-  Future<ContainerListModel> fetchContainerList(String restaurantId)async{
+  Future<ContainerListModel> fetchContainerList(int restaurantId)async{
     try{
-      var api = "${NetworkUrls.BASE_URL}${NetworkUrls.CONTAINER_LIST_LEASE}$restaurantId";
+      var api = "${NetworkUrls.BASE_URL}${NetworkUrls.GET_CONTAINER}$restaurantId";
       var response = await presenter.getAPIData(api);
       if(response != null){
         return ContainerListModel.fromJson(response);

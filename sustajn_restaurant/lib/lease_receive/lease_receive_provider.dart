@@ -90,7 +90,7 @@ final receiveContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
 });
 
 final containerListProvider =
-FutureProvider.family<ContainerListModel, String>((ref, restaurantId) async {
+FutureProvider.family<ContainerListModel, int>((ref, restaurantId) async {
   final apiService = ref.watch(leaseAPIServices);
   final leaseNotifier = ref.watch(leaseReceiveNotifier);
 
