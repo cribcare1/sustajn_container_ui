@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "monthYear": "May-2026",
+      "monthWiseTotalSoldContainers": 5,
+      "dateWiseSoldContainers": [
+        {
+          "productId": 4,
+          "productName": "Rectangular Cointainer 700",
+          "productDescription": "2- Compartment Rectangular Container with glass lids",
+          "productImageUrl": "4a3aa1a6-36be-463a-a168-0534a61b5041.png",
+          "capacity": 500,
+          "productUniqueId": "ST-2CC-700",
+          "soldAmount": 1250,
+          "soldQuantity": 5,
+          "borrowedOn": "28.04.2026",
+          "dueOn": "04.05.2026",
+          "soldOn": "05.05.2026"
+        }
+      ]
+    },
+    {
+      "monthYear": "April-2026",
+      "monthWiseTotalSoldContainers": 2,
+      "dateWiseSoldContainers": [
+        {
+          "productId": 5,
+          "productName": "Rectangular Cointainer 2200",
+          "productDescription": "2- Compartment Rectangular Container with glass lids",
+          "productImageUrl": "a9f47e40-5c6e-4eb3-8aef-8f082971bbfe.png",
+          "capacity": 500,
+          "productUniqueId": "ST-2CC-2200",
+          "soldAmount": 200,
+          "soldQuantity": 2,
+          "borrowedOn": "10.04.2026",
+          "dueOn": "14.04.2026",
+          "soldOn": "15.04.2026"
+        }
+      ]
+    }
+  ],
+  "message": "Detailed sold history fetched successfully",
+  "status": "success"
+}

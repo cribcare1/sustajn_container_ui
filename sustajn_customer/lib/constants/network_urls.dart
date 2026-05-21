@@ -29,7 +29,7 @@ class NetworkUrls {
   static const SEARCH_RESTAURANT ="auth/searchRestaurant";
   static const GET_PROFILE = 'auth/getProfileDetails/';
   static const UPDATE_PROFILE = 'auth/updateProfileDetails';
-  static const GET_SOLD_CONTAINER = "inventory/getSoldContainersByRestaurant?restaurantId=";
+  static const GET_SOLD_CONTAINER = "inventory/getDetailedSoldHistoryByRestaurant?restaurantId=";
 
 
   /// Container ///

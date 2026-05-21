@@ -364,6 +364,7 @@ class Strings {
   static const String NO_NOTIFICATIONS = 'No notification to show';
   static const String SEARCH_COUNTRY = 'Search country';
   static const String NOTIFICATION = 'Notifications';
+  static const String NO_SOLD_CONTAINER = 'No sold containers found';
 
 
 
