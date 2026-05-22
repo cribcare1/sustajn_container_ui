@@ -16,6 +16,7 @@ import '../../../constants/string_utils.dart';
 import '../../../lease_receive/lease_receive_notifier.dart';
 import '../../../lease_receive/lease_receive_provider.dart';
 import '../../../lease_receive/model/container_list_model.dart';
+import '../../widgets/no_data_custom_text.dart';
 import 'demage_container_bottom_sheet.dart';
 
 class GetAllContainerListScreen extends ConsumerStatefulWidget {
@@ -34,53 +35,18 @@ class _GetAllContainerListScreenState
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(leaseReceiveNotifier).setContext(context);
-      getContainerList();
+      _getContainerList();
     });
 
     super.initState();
   }
 
-  getContainerList() async {
-    final leaseState = ref.read(leaseReceiveNotifier);
-    try {
 
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) async {
-        try {
-          if (isNetworkAvailable) {
-            leaseState.setContext(context);
-            leaseState.setLoading(true);
-            ref.read(
-              containerListProvider(Utils.userId.toString()),
-            );
-          } else {
-            leaseState.setLoading(false);
-            if (!mounted) return;
-            showCustomSnackBar(
-              context: context,
-              message: Strings.NO_INTERNET_CONNECTION,
-              color: Colors.white,
-            );
-          }
-        } catch (e) {
-          Utils.printLog('Error on button onPressed: $e');
-          leaseState.setLoading(false);
-        }
-        if (!mounted) return;
-        FocusScope.of(context).unfocus();
-      });
-
-    } catch (e) {
-      Utils.printLog('Error in Login button onPressed: $e');
-      leaseState.setLoading(false);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final leaseState = ref.read(leaseReceiveNotifier);
+    final leaseState = ref.watch(leaseReceiveNotifier);
     return SafeArea(
       bottom: true,
       top: false,
@@ -89,16 +55,8 @@ class _GetAllContainerListScreenState
           title: "Container List",
           leading: CustomBackButton(),
         ).getAppBar(context),
-        body:leaseState.isLoading?Center(child: CircularProgressIndicator(),): leaseState.containersDetailsList.isEmpty
-            ? Center(
-          child: Text(
-            "There are no containers available",
-            style: theme.textTheme.titleMedium!.copyWith(
-              color: Colors.white,
-            ),
-          ),
-        )
-            : ListView.separated(
+        body:leaseState.isLoading?Center(child: CircularProgressIndicator()): leaseState.containersDetailsList.length>0
+            ? ListView.separated(
           padding: EdgeInsets.all(
             Constant.CONTAINER_SIZE_16,
           ),
@@ -115,6 +73,10 @@ class _GetAllContainerListScreenState
           },
           separatorBuilder: (context, index) =>
               SizedBox(height: Constant.CONTAINER_SIZE_10),
+        ):Center(
+            child: NoDataFoundCustomText(
+              text: Strings.NO_CONTAINERS_AVAILABLE,
+            )
         ),
       ),
     );
@@ -203,6 +165,41 @@ class _GetAllContainerListScreenState
       backgroundColor: Colors.transparent,
       builder: (_) => RestaurantDamageContainerBottomSheet(item: item,),
     );
+  }
+
+  _getContainerList() async {
+    final leaseState = ref.read(leaseReceiveNotifier);
+    try {
+      Utils.printLog("getcontainer list called");
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) async {
+        try {
+          if (isNetworkAvailable) {
+            leaseState.setContext(context);
+            leaseState.setLoading(true);
+            ref.read(containerListProvider(Utils.userId!));
+          } else {
+            leaseState.setLoading(false);
+            if (!mounted) return;
+            showCustomSnackBar(
+              context: context,
+              message: Strings.NO_INTERNET_CONNECTION,
+              color: Colors.white,
+            );
+          }
+        } catch (e) {
+          Utils.printLog('Error on button onPressed: $e');
+          leaseState.setLoading(false);
+        }
+        if (!mounted) return;
+        FocusScope.of(context).unfocus();
+      });
+
+    } catch (e) {
+      Utils.printLog('Error in Login button onPressed: $e');
+      leaseState.setLoading(false);
+    }
   }
 
 }

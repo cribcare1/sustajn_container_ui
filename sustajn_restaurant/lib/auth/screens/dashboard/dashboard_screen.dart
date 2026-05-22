@@ -196,7 +196,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       ),
                                       SizedBox(height: Constant.SIZE_05),
                                       Text(
-                                        loginResponse?.fullName ?? "",
+                                        loginResponse?.fullName ?? Utils.fullName ,
                                         style: theme.textTheme.titleMedium
                                             ?.copyWith(
                                               fontWeight: FontWeight.bold,

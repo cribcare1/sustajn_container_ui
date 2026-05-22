@@ -49,7 +49,7 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
 
   Future<dynamic> postMultipartRequest(String url, File image, Map<String, dynamic> jsonMap, String keyName, String responseType,String fileName) async {
     try {
-      var response = await appDataManager.apiHelper.apiMultiPartPostRequest(url, jsonMap, image, keyName,fileName: fileName);
+      var response = await appDataManager.apiHelper.apiMultiPartPostRequest(url, jsonMap, image, keyName,imageName: fileName);
 
       if (Utils.isReqSuccess(response)) {
         try {

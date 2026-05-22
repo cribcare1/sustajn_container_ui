@@ -5,6 +5,7 @@ class Strings {
   static const PROFILE_DATA = 'ProfileData';
   static const USER_ID = 'USER_ID';
   static const PLAN_ID = 'PLAN_ID';
+  static const FULL_NAME = 'fullName';
 
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
@@ -431,5 +432,6 @@ class Strings {
   static const String NO_NOTIFICATIONS = 'No notification to show';
   static const String RECEIVE_DETAILS = 'Receive Details';
   static const String NO_CONTAINERS_FOUND = 'No containers found';
+  static const String NO_CONTAINERS_AVAILABLE = "There are no containers available";
 
 }

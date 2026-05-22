@@ -228,10 +228,14 @@ class ApiHelper {
 
   }
 
-
+/*
+*
+* This multi part method is working fine to upload image with request payload.
+*
+* */
   Future<http.Response> apiMultiPartPostRequest(
       String url, Map<String, dynamic> jsonMap, var image, String keyName,
-      {String fileName = "profile"}) async {
+      {String imageName = "profile"}) async {
 
     final token = await Utils.authToken();
     Utils.printLog("Multipart call started==url==$url");
@@ -243,9 +247,10 @@ class ApiHelper {
       Utils.printLog("body====$body");
       Utils.printLog("keyName====$keyName");
       Utils.printLog("token::$token");
+      Utils.printLog("fileName::$imageName");
 
       var request = http.MultipartRequest("POST", Uri.parse(url));
-      request.headers['Content-Type'] = 'multipart/form-data';
+
       if (token != null && token.isNotEmpty) {
         request.headers['Authorization'] = 'Bearer $token';
       }
@@ -254,13 +259,16 @@ class ApiHelper {
       if(image != null) {
         var stream = http.ByteStream(image.openRead());
         var length = await image.length();
-        var multiport = http.MultipartFile(
-          fileName,
-          stream,
-          length,
-          filename: image.path.split('/').last,
+        Utils.printLog("image length::$length");
+        final fileName = image.path.split('/').last;
+
+        var multiport =  http.MultipartFile.fromPath(
+          imageName,
+          image.path,
+          filename: fileName,
+          contentType: http.MediaType('image', 'jpeg'), // or png
         );
-        request.files.add(multiport);
+        request.files.add(await multiport);
       }
 
 

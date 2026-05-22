@@ -673,6 +673,17 @@ class Utils {
     );
   }
 
+  static showToastGreenBg(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.green,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.white,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
+  }
+
   static isReqSuccess(var response) {
     if ((response.statusCode < 200 || response.statusCode >= 300)) {
       return false;
@@ -780,6 +791,7 @@ class Utils {
   }
 
   static LoginModel? loginData;
+  static String fullName = "";
   static int? societyId = 0;
   static Future<LoginModel?> getProfile() async {
     var data = await SharedPreferenceUtils
