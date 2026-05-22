@@ -311,7 +311,7 @@ class _DamageContainerBottomSheetState
                                   return;
                                 } else {
                                   Map<String, dynamic> body = {
-                                    "containerTypeId": widget.item.productId,
+                                    "containerTypeId": widget.item.productUniqueId,
                                     "damagedCount":widget.item.quantity,
                                     "remark": _remarksController.text,
                                     "restaurantId": Utils.userId,

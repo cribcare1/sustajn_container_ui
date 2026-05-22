@@ -99,7 +99,7 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
                           SizedBox(height: Constant.SIZE_08),
                       itemBuilder: (context, index) {
                         final damageItem = damageContainers[index];
-                        final products = damageItem.products![index];
+                        final products = damageItem.products![0];
 
                         return _damageCard(
                           context,
