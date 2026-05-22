@@ -1,5 +1,5 @@
 class SoldContainerData {
-  List<Data>? data;
+  List<SoldData>? data;
   String? message;
   String? status;
 
@@ -7,13 +7,13 @@ class SoldContainerData {
 
   SoldContainerData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <SoldData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new SoldData.fromJson(v));
       });
     }
-    message = json['message'] ?? "";
-    status = json['status'] ?? "";
+    message = json['message'];
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -27,19 +27,19 @@ class SoldContainerData {
   }
 }
 
-class Data {
+class SoldData {
   String? monthYear;
   int? monthWiseTotalSoldContainers;
   List<DateWiseSoldContainers>? dateWiseSoldContainers;
 
-  Data(
+  SoldData(
       {this.monthYear,
         this.monthWiseTotalSoldContainers,
         this.dateWiseSoldContainers});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    monthYear = json['monthYear'] ?? "";
-    monthWiseTotalSoldContainers = json['monthWiseTotalSoldContainers'] ?? 0;
+  SoldData.fromJson(Map<String, dynamic> json) {
+    monthYear = json['monthYear'];
+    monthWiseTotalSoldContainers = json['monthWiseTotalSoldContainers'];
     if (json['dateWiseSoldContainers'] != null) {
       dateWiseSoldContainers = <DateWiseSoldContainers>[];
       json['dateWiseSoldContainers'].forEach((v) {
@@ -61,42 +61,6 @@ class Data {
 }
 
 class DateWiseSoldContainers {
-  String? productIds;
-  String? localDateTime;
-  int? dateWiseTotalDamageContainers;
-  List<Products>? products;
-
-  DateWiseSoldContainers(
-      {this.productIds,
-        this.localDateTime,
-        this.dateWiseTotalDamageContainers,
-        this.products});
-
-  DateWiseSoldContainers.fromJson(Map<String, dynamic> json) {
-    productIds = json['productIds'] ?? "";
-    localDateTime = json['LocalDateTime'] ?? "";
-    dateWiseTotalDamageContainers = json['dateWiseTotalDamageContainers'] ?? 0;
-    if (json['products'] != null) {
-      products = <Products>[];
-      json['products'].forEach((v) {
-        products!.add(new Products.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['productIds'] = this.productIds;
-    data['LocalDateTime'] = this.localDateTime;
-    data['dateWiseTotalDamageContainers'] = this.dateWiseTotalDamageContainers;
-    if (this.products != null) {
-      data['products'] = this.products!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Products {
   int? productId;
   String? productName;
   String? productDescription;
@@ -104,24 +68,36 @@ class Products {
   int? capacity;
   String? productUniqueId;
   int? soldAmount;
+  int? soldQuantity;
+  String? borrowedOn;
+  String? dueOn;
+  String? soldOn;
 
-  Products(
+  DateWiseSoldContainers(
       {this.productId,
         this.productName,
         this.productDescription,
         this.productImageUrl,
         this.capacity,
         this.productUniqueId,
-        this.soldAmount});
+        this.soldAmount,
+        this.soldQuantity,
+        this.borrowedOn,
+        this.dueOn,
+        this.soldOn});
 
-  Products.fromJson(Map<String, dynamic> json) {
-    productId = json['productId'] ?? 0;
-    productName = json['productName'] ?? "";
-    productDescription = json['productDescription'] ?? "";
-    productImageUrl = json['productImageUrl'] ?? "";
-    capacity = json['capacity'] ?? 0;
-    productUniqueId = json['productUniqueId'] ?? "";
-    soldAmount = json['soldAmount'] ?? 0;
+  DateWiseSoldContainers.fromJson(Map<String, dynamic> json) {
+    productId = json['productId'];
+    productName = json['productName'];
+    productDescription = json['productDescription'];
+    productImageUrl = json['productImageUrl'];
+    capacity = json['capacity'];
+    productUniqueId = json['productUniqueId'];
+    soldAmount = json['soldAmount'];
+    soldQuantity = json['soldQuantity'];
+    borrowedOn = json['borrowedOn'];
+    dueOn = json['dueOn'];
+    soldOn = json['soldOn'];
   }
 
   Map<String, dynamic> toJson() {
@@ -133,6 +109,10 @@ class Products {
     data['capacity'] = this.capacity;
     data['productUniqueId'] = this.productUniqueId;
     data['soldAmount'] = this.soldAmount;
+    data['soldQuantity'] = this.soldQuantity;
+    data['borrowedOn'] = this.borrowedOn;
+    data['dueOn'] = this.dueOn;
+    data['soldOn'] = this.soldOn;
     return data;
   }
 }
