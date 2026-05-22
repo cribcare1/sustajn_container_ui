@@ -42,6 +42,7 @@ final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
     Utils.printLog("params===$params");
     SoldContainerData responseData = await serviceProvider
         .getSoldContainerService(params);
+    print("responseData  ====  &&&  ${responseData.toJson()}");
     if (responseData.status != null && responseData.status!.isNotEmpty) {
       containerState.setIsLoading(false);
       containerState.setSoldContainerData(responseData);
