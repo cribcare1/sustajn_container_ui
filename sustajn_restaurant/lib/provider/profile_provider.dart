@@ -324,7 +324,7 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
         message: response['message'],
         color: Colors.green,
       );
-     NavUtil.popScreen(leaseNotifier.context, 1);
+     NavUtil.popScreen(leaseNotifier.context, 2);
       containerListProvider(restaurantId);
     }
   } catch (e) {

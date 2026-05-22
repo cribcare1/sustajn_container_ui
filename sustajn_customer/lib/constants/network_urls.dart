@@ -6,6 +6,7 @@ class NetworkUrls {
 
   static const BASE_URL = "http://65.0.241.5:9090/";
   static const BASE_IMAGE_URL = 'http://65.0.241.5:9090/auth/images/';
+  static const BASE_CONTAINER_URL = 'http://65.0.241.5:9090/auth/images/container/';
   static const PROFILE_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/profile/";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/registerCostumer";

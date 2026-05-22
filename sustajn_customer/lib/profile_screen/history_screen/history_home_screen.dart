@@ -12,7 +12,7 @@ import 'borrowed_tab.dart';
 class HistoryHomeScreen extends StatefulWidget {
   final int userId;
 
-  const HistoryHomeScreen({Key? key, required this.userId}) : super(key: key);
+  const HistoryHomeScreen({super.key, required this.userId});
 
   @override
   State<HistoryHomeScreen> createState() => _ProductsScreenState();

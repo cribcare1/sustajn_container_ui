@@ -278,7 +278,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     final theme = CustomTheme.getTheme(true);
     final w = size.width;
     final h = size.height;
-    final double goldBarHeight = h * 0.26;
+    final double goldBarHeight = h * 0.2;
 
     return SafeArea(
       top: false,
@@ -556,6 +556,7 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ),
                         ),
                       ),
+                      SizedBox(height: Constant.CONTAINER_SIZE_16),
                     ],
                   ),
                 ],

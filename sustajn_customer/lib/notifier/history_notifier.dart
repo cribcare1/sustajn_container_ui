@@ -12,7 +12,7 @@ class HistoryNotifier extends ChangeNotifier {
   BuildContext? _context;
 
   BorrowedData? _borrowedData;
-
+List<SoldData> _soldContainerList = [];
 
   List<BorrowedUiItem> _borrowedList = [];
 
@@ -24,6 +24,8 @@ class HistoryNotifier extends ChangeNotifier {
   List<BorrowedUiItem> get borrowedList => _borrowedList;
 
   SoldContainerData? get soldContainerData => _soldContainerData;
+
+  List<SoldData> get soldContainerList => _soldContainerList;
 
 
   void setBorrowedData(BorrowedData data) {
@@ -90,7 +92,9 @@ class HistoryNotifier extends ChangeNotifier {
   }
 
   void setSoldContainerData(SoldContainerData soldContainer){
+    _soldContainerList.clear();
     _soldContainerData = soldContainer;
+    _soldContainerList.addAll(soldContainer.data??[]);
     notifyListeners();
   }
 
