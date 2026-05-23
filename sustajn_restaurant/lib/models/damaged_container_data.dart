@@ -1,62 +1,79 @@
 class DamagedContainerData {
-  List<Data>? data;
+  List<DamageContainerModel>? data;
   String? message;
   String? status;
 
-  DamagedContainerData({this.data, this.message, this.status});
+  DamagedContainerData({
+    this.data,
+    this.message,
+    this.status,
+  });
 
   DamagedContainerData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <DamageContainerModel>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(DamageContainerModel.fromJson(v));
       });
     }
+
     message = json['message'] ?? "";
     status = json['status'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> dataMap = {};
+
+    if (data != null) {
+      dataMap['data'] = data!.map((v) => v.toJson()).toList();
     }
-    data['message'] = this.message;
-    data['status'] = this.status;
-    return data;
+
+    dataMap['message'] = message;
+    dataMap['status'] = status;
+
+    return dataMap;
   }
 }
 
-class Data {
+class DamageContainerModel {
   String? monthYear;
   int? monthWiseTotalDamageContainers;
   List<DamageContainers>? damageContainers;
 
-  Data(
-      {this.monthYear,
-        this.monthWiseTotalDamageContainers,
-        this.damageContainers});
+  DamageContainerModel({
+    this.monthYear,
+    this.monthWiseTotalDamageContainers,
+    this.damageContainers,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  DamageContainerModel.fromJson(Map<String, dynamic> json) {
     monthYear = json['monthYear'] ?? "";
-    monthWiseTotalDamageContainers = json['monthWiseTotalDamageContainers'] ?? 0;
+
+    monthWiseTotalDamageContainers =
+        json['monthWiseTotalDamageContainers'] ?? 0;
+
     if (json['damageContainers'] != null) {
       damageContainers = <DamageContainers>[];
+
       json['damageContainers'].forEach((v) {
-        damageContainers!.add(new DamageContainers.fromJson(v));
+        damageContainers!.add(DamageContainers.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['monthYear'] = this.monthYear;
+    final Map<String, dynamic> data = {};
+
+    data['monthYear'] = monthYear;
+
     data['monthWiseTotalDamageContainers'] =
-        this.monthWiseTotalDamageContainers;
-    if (this.damageContainers != null) {
+        monthWiseTotalDamageContainers;
+
+    if (damageContainers != null) {
       data['damageContainers'] =
-          this.damageContainers!.map((v) => v.toJson()).toList();
+          damageContainers!.map((v) => v.toJson()).toList();
     }
+
     return data;
   }
 }
@@ -67,32 +84,44 @@ class DamageContainers {
   int? dateWiseTotalDamageContainers;
   List<Products>? products;
 
-  DamageContainers(
-      {this.productIds,
-        this.localDateTime,
-        this.dateWiseTotalDamageContainers,
-        this.products});
+  DamageContainers({
+    this.productIds,
+    this.localDateTime,
+    this.dateWiseTotalDamageContainers,
+    this.products,
+  });
 
   DamageContainers.fromJson(Map<String, dynamic> json) {
     productIds = json['productIds'] ?? "";
+
     localDateTime = json['LocalDateTime'] ?? "";
-    dateWiseTotalDamageContainers = json['dateWiseTotalDamageContainers'] ?? 0;
+
+    dateWiseTotalDamageContainers =
+        json['dateWiseTotalDamageContainers'] ?? 0;
+
     if (json['products'] != null) {
       products = <Products>[];
+
       json['products'].forEach((v) {
-        products!.add(new Products.fromJson(v));
+        products!.add(Products.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['productIds'] = this.productIds;
-    data['LocalDateTime'] = this.localDateTime;
-    data['dateWiseTotalDamageContainers'] = this.dateWiseTotalDamageContainers;
-    if (this.products != null) {
-      data['products'] = this.products!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+
+    data['productIds'] = productIds;
+    data['LocalDateTime'] = localDateTime;
+
+    data['dateWiseTotalDamageContainers'] =
+        dateWiseTotalDamageContainers;
+
+    if (products != null) {
+      data['products'] =
+          products!.map((v) => v.toJson()).toList();
     }
+
     return data;
   }
 }
@@ -107,15 +136,16 @@ class Products {
   String? damageRemark;
   String? damageImagesUrls;
 
-  Products(
-      {this.productId,
-        this.productName,
-        this.productDescription,
-        this.productImageUrl,
-        this.capacity,
-        this.productUniqueId,
-        this.damageRemark,
-        this.damageImagesUrls});
+  Products({
+    this.productId,
+    this.productName,
+    this.productDescription,
+    this.productImageUrl,
+    this.capacity,
+    this.productUniqueId,
+    this.damageRemark,
+    this.damageImagesUrls,
+  });
 
   Products.fromJson(Map<String, dynamic> json) {
     productId = json['productId'] ?? 0;
@@ -129,15 +159,17 @@ class Products {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['productId'] = this.productId;
-    data['productName'] = this.productName;
-    data['productDescription'] = this.productDescription;
-    data['productImageUrl'] = this.productImageUrl;
-    data['capacity'] = this.capacity;
-    data['productUniqueId'] = this.productUniqueId;
-    data['damageRemark'] = this.damageRemark;
-    data['damageImagesUrls'] = this.damageImagesUrls;
+    final Map<String, dynamic> data = {};
+
+    data['productId'] = productId;
+    data['productName'] = productName;
+    data['productDescription'] = productDescription;
+    data['productImageUrl'] = productImageUrl;
+    data['capacity'] = capacity;
+    data['productUniqueId'] = productUniqueId;
+    data['damageRemark'] = damageRemark;
+    data['damageImagesUrls'] = damageImagesUrls;
+
     return data;
   }
 }

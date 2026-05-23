@@ -16,6 +16,8 @@ class OrderState extends ChangeNotifier {
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
   DamagedContainerData? _damagedContainerData;
+  List<DamageContainerModel> _damageContainerList = [];
+  List<DamageContainerModel> _damageContainerListFiltered = [];
   SoldContainerData? _soldContainerData;
   BuildContext? _context;
   bool _isVerifying = false;
@@ -36,6 +38,8 @@ class OrderState extends ChangeNotifier {
   List<OrderedResponses> get orderHistoryList => _orderHistoryList;
   List<OrderedResponses> get orderHistoryListFiltered => _orderHistoryListFiltered;
   DamagedContainerData? get damagedContainerData => _damagedContainerData;
+  List<DamageContainerModel> get damageContainerList => _damageContainerList;
+  List<DamageContainerModel> get damageContainerListFiltered => _damageContainerListFiltered;
   SoldContainerData? get soldContainerData => _soldContainerData;
   BuildContext get context => _context!;
   List<ContainersDetails> get selectedContainers => _selectedContainers;
@@ -155,7 +159,71 @@ class OrderState extends ChangeNotifier {
   }
 
   void setDamagedContainerData(DamagedContainerData damagedContainer){
+    _damageContainerList.clear();
     _damagedContainerData = damagedContainer;
+    _damageContainerList.addAll(damagedContainer.data??[]);
+    _damageContainerListFiltered = _damageContainerList;
+    notifyListeners();
+  }
+
+  void setDamageContainerFilterData(String query) {
+    if (query.isEmpty) {
+      _damageContainerListFiltered = _damageContainerList;
+    } else {
+      final searchQuery = query.toLowerCase();
+
+      _damageContainerListFiltered = _damageContainerList.where((value) {
+
+        final monthYearMatch =
+            value.monthYear
+                ?.toLowerCase()
+                .contains(searchQuery) ??
+                false;
+
+        final damageContainerMatch =
+            value.damageContainers?.any((damageContainer) {
+
+              final productIdsMatch =
+                  damageContainer.productIds
+                      ?.toLowerCase()
+                      .contains(searchQuery) ??
+                      false;
+
+              final productMatch =
+                  damageContainer.products?.any((product) {
+
+                    final productNameMatch =
+                        product.productName
+                            ?.toLowerCase()
+                            .contains(searchQuery) ??
+                            false;
+
+                    final productUniqueIdMatch =
+                        product.productUniqueId
+                            ?.toLowerCase()
+                            .contains(searchQuery) ??
+                            false;
+
+                    final damageRemarkMatch =
+                        product.damageRemark
+                            ?.toLowerCase()
+                            .contains(searchQuery) ??
+                            false;
+
+                    return productNameMatch ||
+                        productUniqueIdMatch ||
+                        damageRemarkMatch;
+                  }) ??
+                      false;
+
+              return productIdsMatch || productMatch;
+            }) ??
+                false;
+
+        return monthYearMatch || damageContainerMatch;
+      }).toList();
+    }
+
     notifyListeners();
   }
 

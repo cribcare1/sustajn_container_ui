@@ -80,9 +80,9 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                   : (containerState.groupedOrders.isEmpty)
                   ? _buildEmptyState(containerState)
                   : ListView.builder(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constant.CONTAINER_SIZE_16,
-                ),
+                // padding: EdgeInsets.symmetric(
+                //   horizontal: Constant.CONTAINER_SIZE_16,
+                // ),
                 itemCount: containerState.groupedOrders.length,
                 itemBuilder: (context, index) {
                   String monthYear = containerState.groupedOrders.keys
@@ -94,8 +94,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        decoration: BoxDecoration(color: Colors.white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(6)
+                        decoration: BoxDecoration(color:  Colors.white.withOpacity(0.05),
                         ),
                         padding: EdgeInsets.symmetric(
                             vertical: Constant.CONTAINER_SIZE_10,
@@ -139,12 +138,12 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                           ],
                         ),
                       ),
-
-                      // Order Cards for this month
                       ListView.separated(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Constant.CONTAINER_SIZE_16,
+                        ),
                         itemCount: orders.length,
                         separatorBuilder: (_, __) =>
                             SizedBox(height: Constant.SIZE_08),
