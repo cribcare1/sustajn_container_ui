@@ -26,23 +26,17 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
-  LoginData? loginResponse;
-  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(orderProvider).setContext(context);
+    });
     _getOrderNetworkCall();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +199,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   }
 
   void _openAddDialog(BuildContext context, ContainersDetails item) async {
-    final result = await showModalBottomSheet<int>(
+     await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -217,15 +211,6 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
         child: ReturnContainerDialog(item: item),
       ),
     );
-
-    //todo needed later
-
-    // if (result != null && result > 0) {
-    //   setState(() {
-    //     item.selectedQty = result;
-    //     item.isAdded = true;
-    //   });
-    // }
   }
 
   _getOrderNetworkCall() async {

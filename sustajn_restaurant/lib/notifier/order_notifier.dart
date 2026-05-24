@@ -12,7 +12,10 @@ import '../product_screen/models/history_graph_model.dart';
 class OrderState extends ChangeNotifier {
   String _name = '';
   bool _isLoading = false;
-  GetContainerData? _getContainerData;
+  GetContainerData?  _getContainerData;
+  List<ContainersDetails> _allContainers = [];
+  List<ContainersDetails> _filteredContainers = [];
+
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
   DamagedContainerData? _damagedContainerData;
@@ -33,6 +36,9 @@ class OrderState extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   GetContainerData? get getContainerData => _getContainerData;
+  List<ContainersDetails> get allContainers => _allContainers;
+  List<ContainersDetails> get filteredContainers => _filteredContainers;
+
   List<ContainersDetails> get filterInventory => _filterInventory;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
   List<OrderedResponses> get orderHistoryList => _orderHistoryList;
@@ -75,7 +81,32 @@ class OrderState extends ChangeNotifier {
 
   void setOrderData(GetContainerData getContainer){
     _getContainerData = getContainer;
+    _allContainers = getContainer.containersDetails??[];
+    _filteredContainers = _allContainers;
     _filterInventory = List.from(getContainer.containersDetails ?? []);
+    notifyListeners();
+  }
+
+  void searchContainers(String query) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+        _filteredContainers = List.from(allContainers);
+    }
+      _filteredContainers = allContainers.where((item) {
+        final name =
+            item.containerName?.toLowerCase() ?? '';
+
+        final id =
+            item.containerUniqueId?.toString().toLowerCase() ?? '';
+
+        final volume =
+            item.capacity?.toString().toLowerCase() ?? '';
+
+        return name.contains(trimmedQuery) ||
+            id.contains(trimmedQuery) ||
+            volume.contains(trimmedQuery);
+      }).toList();
     notifyListeners();
   }
 

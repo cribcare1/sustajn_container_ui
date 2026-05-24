@@ -31,6 +31,8 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
   @override
   void initState() {
     super.initState();
+    qty = 0;
+    quantity.text = qty.toString();
     Utils.userId;
   }
 
@@ -46,10 +48,11 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
 
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: SingleChildScrollView(
+    return Padding(
+      padding:  EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SafeArea(
+        top: false,
+        bottom: true,
         child: Container(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
           decoration: BoxDecoration(
@@ -153,99 +156,100 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _qtyButton(
-                      icon: Icons.remove,
-                      onTap: () {
-                        if (qty > 0) {
-                          setState(() {
-                            qty--;
-                            quantity.text = qty.toString();
-                          });
-                        }
-                      },
-                      theme: theme,
-                    ),
-                    SizedBox(width: Constant.CONTAINER_SIZE_20),
+                Flexible(
+                  flex: 10,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(flex:2,
+                        child: _qtyButton(
+                          icon: Icons.remove,
+                          onTap: () {
+                            int currentQty = int.tryParse(quantity.text) ?? 0;
 
-                    Container(
-                      width: Constant.CONTAINER_SIZE_70,
-                      height: Constant.CONTAINER_SIZE_48,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Constant.gold, width: 1.5),
-                        borderRadius: BorderRadius.circular(
-                          Constant.CONTAINER_SIZE_12,
+                            if (currentQty > 0) {
+                              currentQty--;
+
+                              setState(() {
+                                qty = currentQty;
+                                quantity.text = qty.toString();
+                              });
+                            }
+                          },
+                          theme: theme,
                         ),
                       ),
-                      child: isEditingQty
-                          ? TextField(
-                              controller: quantity,
-                              focusNode: qtyFocusNode,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                              autofocus: true,
-                              style: theme.textTheme.displaySmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                              cursorColor: Colors.white,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              decoration: const InputDecoration(
-                                isDense: true,
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                focusedErrorBorder: InputBorder.none,
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              onSubmitted: (_) => _saveQty(),
-                              onEditingComplete: _saveQty,
-                            )
-                          : GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                setState(() {
-                                  isEditingQty = true;
-                                  quantity.text = qty.toString();
-                                });
-                                Future.delayed(
-                                  const Duration(milliseconds: 50),
-                                  () {
-                                    qtyFocusNode.requestFocus();
-                                  },
-                                );
-                              },
-                              child: Text(
-                                qty.toString(),
-                                style: theme.textTheme.displaySmall?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                    ),
+                      SizedBox(width: Constant.CONTAINER_SIZE_20),
 
-                    SizedBox(width: Constant.CONTAINER_SIZE_20),
-                    _qtyButton(
-                      icon: Icons.add,
-                      onTap: () {
-                        if (qty < widget.item.quantityAvailable!) {
-                          setState(() {
-                            qty++;
-                            quantity.text = qty.toString();
-                          });
-                        }
-                      },
-                      theme: theme,
-                    ),
-                  ],
+                      Flexible(flex: 6,
+                        child: Container(
+                          width: Constant.CONTAINER_SIZE_100,
+                          height: Constant.CONTAINER_SIZE_48,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Constant.gold, width: 1.5),
+                            borderRadius: BorderRadius.circular(
+                              Constant.CONTAINER_SIZE_12,
+                            ),
+                          ),
+                          child:
+                               TextField(
+                                  controller: quantity,
+                                  focusNode: qtyFocusNode,
+
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  autofocus: false,
+                                  style: theme.textTheme.displaySmall?.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  cursorColor: Colors.white,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  decoration: const InputDecoration(
+                                    isDense: true,
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    focusedErrorBorder: InputBorder.none,
+                                    filled: true,
+                                    fillColor: Colors.transparent,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                 onChanged: (value) {
+                                   final enteredQty = int.tryParse(value) ?? 0;
+                                   setState(() {
+                                     qty = enteredQty;
+                                   });
+                                 },
+                                  onSubmitted: (_) => _saveQty(),
+                                  onEditingComplete: _saveQty,
+                                )
+                        ),
+                      ),
+
+                      SizedBox(width: Constant.CONTAINER_SIZE_20),
+                      Flexible(flex: 2,
+                        child: _qtyButton(
+                          icon: Icons.add,
+                          onTap: () {
+                            int currentQty = int.tryParse(quantity.text) ?? 0;
+                            if (currentQty < widget.item.quantityAvailable!) {
+                              currentQty++;
+                              setState(() {
+                                qty = currentQty;
+                                quantity.text = qty.toString();
+                              });
+                            }
+                          },
+                          theme: theme,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_25),
@@ -341,40 +345,4 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
     });
   }
 
-  // Map<String, dynamic> getJsonData(ContainersDetails item) {
-  //   final data = {
-  //     "restaurantId": Utils.userId,
-  //     "type": "BORROW",
-  //     "items": [
-  //       {
-  //         "containerTypeId": item.containerId,
-  //         "requestedQty": qty,
-  //       },
-  //     ],
-  //   };
-  //   return data;
-  // }
-  //
-  // _addContainerNetworkCall(ContainersDetails item, var orderState) async {
-  //   Utils.printLog('add container Network call');
-  //
-  //   final isNetworkAvailable = await ref
-  //       .read(networkProvider.notifier)
-  //       .isNetworkAvailable();
-  //
-  //   if (!isNetworkAvailable) {
-  //     Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-  //     return;
-  //   }
-  //   try {
-  //     await ref.read(addReturnProvider(getJsonData(item)).future);
-  //     Navigator.pop(context);
-  //
-  //     // setState(() {
-  //     //   container = orderState.setOrderData!;
-  //     // });
-  //   } catch (e) {
-  //     Utils.printLog(e.toString());
-  //   }
-  // }
 }

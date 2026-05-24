@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sustajn_restaurant/order_screen/container_screen/review_order_screen.dart';
 
+import '../../common_widgets/card_widget.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
@@ -13,7 +13,6 @@ import '../../notifier/order_notifier.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../models/add_container_model.dart';
 import 'add_container_dialog.dart';
 
 class AddContainerScreen extends ConsumerStatefulWidget {
@@ -24,7 +23,6 @@ class AddContainerScreen extends ConsumerStatefulWidget {
 }
 
 class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
-  final TextEditingController _searchController = TextEditingController();
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
@@ -34,6 +32,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(orderProvider).setContext(context);
+    });
     _loadProfile();
     _getOrderNetworkCall();
   }
@@ -47,12 +48,15 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-
-    final containerData = orderState.getContainerData;
-    final containers = containerData?.containersDetails;
 
     return SafeArea(
       bottom: true,
@@ -61,38 +65,51 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
         backgroundColor: theme.scaffoldBackgroundColor,
         body: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: Column(
-                children: [
-                  CustomTheme.searchField(
-                    searchController,
-                    Strings.SEARCH_BY_CONTAINER_NAME,
+            orderState.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : (orderState.allContainers.isEmpty)
+                ? const Center(
+                    child: Text(
+                      Strings.NO_CONTAINER_AVAILABLE,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                    child: Column(
+                      children: [
+                        CustomTheme.searchField(
+                          searchController,
+                          Strings.SEARCH_BY_CONTAINER_NAME,
+                          onChanged: (value) {
+                            orderState.searchContainers(value);
+                          },
+                        ),
+                        SizedBox(height: Constant.CONTAINER_SIZE_10),
+                        Expanded(
+                          child: (orderState.filteredContainers.isEmpty)
+                              ? const Center(
+                                  child: Text(
+                                    Strings.NO_CONTAINER_AVAILABLE,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              : ListView.separated(
+                                  itemCount:
+                                      orderState.filteredContainers.length,
+                                  separatorBuilder: (_, __) => SizedBox(
+                                    height: Constant.CONTAINER_SIZE_12,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final item =
+                                        orderState.filteredContainers[index];
+                                    return _containerCard(context, item, theme);
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: Constant.CONTAINER_SIZE_10),
-                  Expanded(
-                    child: orderState.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : (containers == null || containers.isEmpty)
-                        ? const Center(
-                            child: Text(
-                              Strings.NO_CONTAINER_AVAILABLE,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        : ListView.separated(
-                            itemCount: containers.length,
-                            separatorBuilder: (_, __) =>
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                            itemBuilder: (context, index) {
-                              final item = containers[index];
-                              return _containerCard(context, item, theme);
-                            },
-                          ),
-                  ),
-                ],
-              ),
-            ),
 
             if (orderState.selectedContainers.isNotEmpty)
               Positioned(
@@ -100,7 +117,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                 right: Constant.CONTAINER_SIZE_16,
                 bottom: Constant.CONTAINER_SIZE_16,
                 child: _itemAddedBar(context, orderState),
-              )
+              ),
           ],
         ),
       ),
@@ -117,8 +134,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       ),
       decoration: BoxDecoration(
         color: Constant.gold,
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,87 +143,81 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             "${orderState.selectedContainers.length} Item added",
             style: theme.textTheme.titleSmall?.copyWith(
               color: theme.primaryColor,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
             ),
           ),
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const ReviewOrderScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const ReviewOrderScreen()),
               );
             },
             child: Row(
               children: [
-                Text("View",
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.bold
-                    )),
-                Icon(Icons.arrow_forward_ios,
-                    size: Constant.CONTAINER_SIZE_14,
-                    color: theme.primaryColor),
+                Text(
+                  "View",
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: Constant.CONTAINER_SIZE_14,
+                  color: theme.primaryColor,
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
-
 
   Widget _containerCard(
     BuildContext context,
     ContainersDetails item,
     ThemeData theme,
   ) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        color: Constant.grey.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-        border: Border.all(color: Constant.grey.withOpacity(0.3)),
-      ),
+    return GlassSummaryCard(
       child: Row(
         children: [
           (item.containerImageUrl != "")
               ? Container(
-            height: Constant.CONTAINER_SIZE_50,
-            width: Constant.CONTAINER_SIZE_50,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.all(6),
-            child: Image.network(
-              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
-              errorBuilder: (context, obj, stack) {
-                return Image.asset(
-                  "assets/images/no_image_container.png",
-                );
-              },
-              fit: BoxFit.fill,
-            ),
-          )
+                  height: Constant.CONTAINER_SIZE_50,
+                  width: Constant.CONTAINER_SIZE_50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(6),
+                  child: Image.network(
+                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+                    errorBuilder: (context, obj, stack) {
+                      return Image.asset(
+                        "assets/images/no_image_container.png",
+                      );
+                    },
+                    fit: BoxFit.fill,
+                  ),
+                )
               : Container(
-            width: Constant.CONTAINER_SIZE_70,
-            height: Constant.CONTAINER_SIZE_70,
-            decoration: BoxDecoration(
-              color: Constant.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(Constant.SIZE_08),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.inbox,
-                size: Constant.CONTAINER_SIZE_30,
-                color: Colors.white,
-              ),
-            ),
-          ),
+                  width: Constant.CONTAINER_SIZE_70,
+                  height: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Constant.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.inbox,
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,7 +263,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
               SizedBox(height: Constant.SIZE_06),
 
               GestureDetector(
-                onTap: () => _openAddDialog(context, item),
+                onTap: () {
+                  _openAddDialog(context, item);
+                },
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Constant.CONTAINER_SIZE_20,
@@ -281,18 +293,22 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   }
 
   void _openAddDialog(BuildContext context, ContainersDetails item) async {
-    final result = await showModalBottomSheet<int>(
+    FocusScope.of(context).unfocus();
+    await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       useSafeArea: true,
-      builder: (_) => Padding(
+      builder: (_) => AnimatedPadding(
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
         child: AddContainerDialog(item: item),
       ),
     );
+    FocusScope.of(context).unfocus();
   }
 
   _getOrderNetworkCall() async {
