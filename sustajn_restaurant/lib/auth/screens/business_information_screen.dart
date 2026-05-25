@@ -270,6 +270,7 @@ class _BusinessInformationDetailsState
                               ),
                               border: Border.all(color: Constant.grey),
                             ),
+                            padding: EdgeInsets.symmetric(vertical: Constant.SIZE_02),
                             child: CountryCodePicker(
                               textStyle: theme.textTheme.titleSmall!.copyWith(
                                 color: Colors.white,

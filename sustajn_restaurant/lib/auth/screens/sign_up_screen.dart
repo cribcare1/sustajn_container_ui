@@ -104,7 +104,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    double height = MediaQuery.sizeOf(context).height;
     final authState = ref.watch(authNotifierProvider);
 
     return SafeArea(
@@ -252,6 +251,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
                             border: Border.all(color: Constant.grey),
                           ),
+                          padding: EdgeInsets.symmetric(vertical: Constant.SIZE_02),
                           child: CountryCodePicker(
                             textStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
                             mode: CountryCodePickerMode.dialog,
