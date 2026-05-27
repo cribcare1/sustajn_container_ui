@@ -9,6 +9,7 @@ import '../constants/string_utils.dart';
 import '../lottie_animation/container_order_animation.dart';
 import '../models/container_history_data.dart';
 import '../models/damaged_container_data.dart';
+import '../models/get_all_container_model.dart';
 import '../models/get_container_data.dart';
 import '../models/sold_container_data.dart';
 import '../notifier/order_notifier.dart';
@@ -28,12 +29,12 @@ final getOrderProvider = FutureProvider.family<dynamic, String>((
   try {
     var serviceProvider = ref.read(getOrderApiProvider);
     Utils.printLog("params===$params");
-    GetContainerData responseData = await serviceProvider.getOrderService(
+    GetAllContainerModel responseData = await serviceProvider.getOrderService(
       params,
     );
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
       orderState.setIsLoading(false);
-      orderState.setOrderData(responseData);
+      orderState.setAllContainerData(responseData);
     } else {
       orderState.setIsLoading(false);
       Utils.showToast(responseData.message!);

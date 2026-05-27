@@ -7,11 +7,12 @@ import 'package:sustajn_restaurant/utils/utility.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_all_container_model.dart';
 import '../../models/get_container_data.dart';
 import '../../provider/order_provider.dart';
 
 class AddContainerDialog extends ConsumerStatefulWidget {
-  final ContainersDetails item;
+  final ContainerData item;
 
   const AddContainerDialog({super.key, required this.item});
 
@@ -25,7 +26,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
   TextEditingController quantity = TextEditingController();
   int qty = 0;
 
-  List<ContainersDetails> container = [];
+  List<ContainerData> container = [];
   bool isLoading = true;
 
   @override
@@ -76,7 +77,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
 
                 SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                (widget.item.containerImageUrl != "")
+                (widget.item.imageUrl != "")
                     ? Container(
                   height: Constant.CONTAINER_SIZE_60,
                   width: Constant.CONTAINER_SIZE_60,
@@ -86,7 +87,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                   ),
                   padding: const EdgeInsets.all(6),
                   child: Image.network(
-                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.item.containerImageUrl}",
+                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${widget.item.imageUrl}",
                     errorBuilder: (context, obj, stack) {
                       return Image.asset(
                         "assets/images/no_image_container.png",
@@ -114,19 +115,19 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                 SizedBox(height: Constant.SIZE_15),
 
                 Text(
-                  widget.item.containerName!,
+                  widget.item.name!,
                   style: theme.textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  widget.item.containerUniqueId!,
+                  widget.item.productId!,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  "${widget.item.capacity!.toString()} ml",
+                  "${widget.item.capacityMl!.toString()} ml",
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                   ),
@@ -147,7 +148,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                     border: Border.all(color: Constant.grey.withOpacity(0.4)),
                   ),
                   child: Text(
-                    "In-Stock: ${widget.item.quantityAvailable}",
+                    "In-Stock: ${widget.item.availableContainerCount}",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Constant.gold,
                     ),
@@ -237,7 +238,7 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
                           icon: Icons.add,
                           onTap: () {
                             int currentQty = int.tryParse(quantity.text) ?? 0;
-                            if (currentQty < widget.item.quantityAvailable!) {
+                            if (currentQty < widget.item.availableContainerCount!) {
                               currentQty++;
                               setState(() {
                                 qty = currentQty;
@@ -323,10 +324,10 @@ class _AddContainerDialogState extends ConsumerState<AddContainerDialog> {
     final int previousQty = qty;
     final int? value = int.tryParse(quantity.text);
 
-    if (value == null || value > widget.item.quantityAvailable!) {
+    if (value == null || value > widget.item.availableContainerCount!) {
       if (!_toastShown) {
         Utils.showToast(
-          "Quantity must be between 0 and ${widget.item.quantityAvailable}",
+          "Quantity must be between 0 and ${widget.item.availableContainerCount}",
         );
         _toastShown = true;
         Future.delayed(Duration(seconds: 2), () => _toastShown = false);

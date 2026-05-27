@@ -73,20 +73,20 @@ class ReviewOrderScreen extends ConsumerWidget {
                                   CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item.containerName!,
+                                      item.name!,
                                       style: theme.textTheme.titleMedium
                                           ?.copyWith(
                                           color: Colors.white),
                                     ),
                                     SizedBox(height: Constant.SIZE_04),
                                     Text(
-                                      item.containerUniqueId!,
+                                      item.productId!,
                                       style: theme.textTheme.bodySmall
                                           ?.copyWith(
                                           color: Colors.white70),
                                     ),
                                     Text(
-                                      "${item.capacity} ml",
+                                      "${item.capacityMl} ml",
                                       style: theme.textTheme.bodySmall
                                           ?.copyWith(
                                           color: Colors.white54),
@@ -101,7 +101,7 @@ class ReviewOrderScreen extends ConsumerWidget {
                                   GestureDetector(
                                     onTap: () {
                                       orderState.removeContainer(
-                                          item.containerId!);
+                                          item.id!);
                                     },
                                     child: Icon(
                                       Icons.close,
@@ -116,9 +116,9 @@ class ReviewOrderScreen extends ConsumerWidget {
                                           context,
                                           Icons.remove,
                                               () {
-                                            if (item.quantityAvailable! > 1) {
-                                              item.quantityAvailable =
-                                                  item.quantityAvailable! -
+                                            if (item.availableContainerCount! > 1) {
+                                              item.availableContainerCount =
+                                                  item.availableContainerCount! -
                                                       1;
                                               orderState
                                                   .notifyListeners();
@@ -131,7 +131,7 @@ class ReviewOrderScreen extends ConsumerWidget {
                                         alignment:
                                         Alignment.center,
                                         child: Text(
-                                          item.quantityAvailable
+                                          item.availableContainerCount
                                               .toString(),
                                           style: theme
                                               .textTheme.titleMedium
@@ -145,8 +145,8 @@ class ReviewOrderScreen extends ConsumerWidget {
                                           context,
                                           Icons.add,
                                               () {
-                                            item.quantityAvailable =
-                                                item.quantityAvailable! +
+                                            item.availableContainerCount =
+                                                item.availableContainerCount! +
                                                     1;
                                             orderState
                                                 .notifyListeners();
@@ -423,12 +423,12 @@ class _ConfirmOrderSheetState
               "type": "BORROW",
               "items": orderState.selectedContainers
                   .map((e) => {
-                "containerTypeId": e.containerId,
-                "requestedQty": e.quantityAvailable,
+                "containerTypeId": e.id,
+                "requestedQty": e.availableContainerCount,
               })
                   .toList(),
             };
-
+print("=====++++===////___ :-  $body");
             await ref.read(addReturnProvider(body).future);
 
           } else {

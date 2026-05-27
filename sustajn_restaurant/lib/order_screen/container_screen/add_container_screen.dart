@@ -6,6 +6,7 @@ import '../../common_widgets/card_widget.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../models/get_all_container_model.dart';
 import '../../models/get_container_data.dart';
 import '../../models/login_model.dart';
 import '../../network_provider/network_provider.dart';
@@ -177,13 +178,13 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
 
   Widget _containerCard(
     BuildContext context,
-    ContainersDetails item,
+      ContainerData item,
     ThemeData theme,
   ) {
     return GlassSummaryCard(
       child: Row(
         children: [
-          (item.containerImageUrl != "")
+          (item.imageUrl != "")
               ? Container(
                   height: Constant.CONTAINER_SIZE_50,
                   width: Constant.CONTAINER_SIZE_50,
@@ -193,7 +194,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                   ),
                   padding: const EdgeInsets.all(6),
                   child: Image.network(
-                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.imageUrl}",
                     errorBuilder: (context, obj, stack) {
                       return Image.asset(
                         "assets/images/no_image_container.png",
@@ -223,21 +224,21 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.containerName!,
+                  item.name!,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  item.containerUniqueId.toString(),
+                  item.productId.toString(),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  "${item.capacity.toString()} ml",
+                  "${item.capacityMl.toString()} ml",
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white70,
                   ),
@@ -254,7 +255,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                 style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
               ),
               Text(
-                item.quantityAvailable.toString(),
+                item.availableContainerCount.toString(),
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: Colors.white,
                 ),
@@ -292,7 +293,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     );
   }
 
-  void _openAddDialog(BuildContext context, ContainersDetails item) async {
+  void _openAddDialog(BuildContext context, ContainerData item) async {
     FocusScope.of(context).unfocus();
     await showModalBottomSheet<int>(
       context: context,
@@ -320,8 +321,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_CONTAINER}$userId';
+          // final userId = Utils.userId;
+          // final url = '${NetworkUrls.GET_CONTAINER}$userId';
+          final url = NetworkUrls.GET_TOTAL_CONTAINER;
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

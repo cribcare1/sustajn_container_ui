@@ -64,11 +64,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   : orderState.getContainerData == null
                   ? const Center(
                       child: Text(
-                        Strings.SOMETHING_WENT_WRONG,
+                        Strings.NO_CONTAINER_AVAILABLE,
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : orderState.getContainerData!.containersDetails == null ||
+                  : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
                         orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                       child: Text(

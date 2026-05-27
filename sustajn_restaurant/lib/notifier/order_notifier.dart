@@ -5,6 +5,7 @@ import 'package:sustajn_restaurant/product_screen/models/month_wise_history_mode
 import '../constants/string_utils.dart';
 import '../models/container_history_data.dart';
 import '../models/damaged_container_data.dart';
+import '../models/get_all_container_model.dart';
 import '../models/get_container_data.dart';
 import '../models/sold_container_data.dart';
 import '../product_screen/models/history_graph_model.dart';
@@ -13,8 +14,8 @@ class OrderState extends ChangeNotifier {
   String _name = '';
   bool _isLoading = false;
   GetContainerData?  _getContainerData;
-  List<ContainersDetails> _allContainers = [];
-  List<ContainersDetails> _filteredContainers = [];
+  List<ContainerData> _allContainers = [];
+  List<ContainerData> _filteredContainers = [];
 
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
@@ -24,7 +25,7 @@ class OrderState extends ChangeNotifier {
   SoldContainerData? _soldContainerData;
   BuildContext? _context;
   bool _isVerifying = false;
-  List<ContainersDetails> _selectedContainers = [];
+  List<ContainerData> _selectedContainers = [];
   bool _isOrdering = false;
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
@@ -36,8 +37,8 @@ class OrderState extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   GetContainerData? get getContainerData => _getContainerData;
-  List<ContainersDetails> get allContainers => _allContainers;
-  List<ContainersDetails> get filteredContainers => _filteredContainers;
+  List<ContainerData> get allContainers => _allContainers;
+  List<ContainerData> get filteredContainers => _filteredContainers;
 
   List<ContainersDetails> get filterInventory => _filterInventory;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
@@ -48,7 +49,7 @@ class OrderState extends ChangeNotifier {
   List<DamageContainerModel> get damageContainerListFiltered => _damageContainerListFiltered;
   SoldContainerData? get soldContainerData => _soldContainerData;
   BuildContext get context => _context!;
-  List<ContainersDetails> get selectedContainers => _selectedContainers;
+  List<ContainerData> get selectedContainers => _selectedContainers;
   bool get isOrdering => _isOrdering;
 
   // Error messages
@@ -81,12 +82,15 @@ class OrderState extends ChangeNotifier {
 
   void setOrderData(GetContainerData getContainer){
     _getContainerData = getContainer;
-    _allContainers = getContainer.containersDetails??[];
-    _filteredContainers = _allContainers;
     _filterInventory = List.from(getContainer.containersDetails ?? []);
     notifyListeners();
   }
 
+  void setAllContainerData(GetAllContainerModel data){
+    _allContainers = data.data??[];
+    _filteredContainers = _allContainers;
+    notifyListeners();
+  }
   void searchContainers(String query) {
     final trimmedQuery = query.trim().toLowerCase();
 
@@ -95,13 +99,13 @@ class OrderState extends ChangeNotifier {
     }
       _filteredContainers = allContainers.where((item) {
         final name =
-            item.containerName?.toLowerCase() ?? '';
+            item.name?.toLowerCase() ?? '';
 
         final id =
-            item.containerUniqueId?.toString().toLowerCase() ?? '';
+            item.productId?.toString().toLowerCase() ?? '';
 
         final volume =
-            item.capacity?.toString().toLowerCase() ?? '';
+            item.capacityMl?.toString().toLowerCase() ?? '';
 
         return name.contains(trimmedQuery) ||
             id.contains(trimmedQuery) ||
@@ -276,30 +280,51 @@ class OrderState extends ChangeNotifier {
     }
   }
 
-  void addContainerToOrder(ContainersDetails item, int qty) {
+  void addContainerToOrder(ContainerData item, int qty) {
     final index = _selectedContainers.indexWhere(
-          (e) => e.containerId == item.containerId,
+          (e) => e.id == item.id,
     );
 
     if (index >= 0) {
-      _selectedContainers[index].quantityAvailable = qty;
+      _selectedContainers[index].availableContainerCount = qty;
     } else {
       _selectedContainers.add(
-        ContainersDetails(
-          containerId: item.containerId,
-          containerName: item.containerName,
-          containerUniqueId: item.containerUniqueId,
-          capacity: item.capacity,
-          containerImageUrl: item.containerImageUrl,
-          quantityAvailable: qty,
+        ContainerData(
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          capacityMl: item.capacityMl,
+          productId: item.productId,
+          material: item.material,
+          colour: item.colour,
+          lengthCm: item.lengthCm,
+          widthCm: item.widthCm,
+          heightCm: item.heightCm,
+          weightGrams: item.weightGrams,
+          foodSafe: item.foodSafe,
+          dishwasherSafe: item.dishwasherSafe,
+          microwaveSafe: item.microwaveSafe,
+          maxTemperature: item.maxTemperature,
+          minTemperature: item.minTemperature,
+          lifespanCycle: item.lifespanCycle,
+          imageUrl: item.imageUrl,
+          costPerUnit: item.costPerUnit,
+          status: item.status,
+          createdAt: item.createdAt,
+          createdBy: item.createdBy,
+          updatedAt: item.updatedAt,
+          updatedBy: item.updatedBy,
+          totalContainerCount: item.totalContainerCount,
+          availableContainerCount: qty,
         ),
       );
     }
+
     notifyListeners();
   }
 
   void removeContainer(int id) {
-    _selectedContainers.removeWhere((e) => e.containerId == id);
+    _selectedContainers.removeWhere((e) => e.id == id);
     notifyListeners();
   }
 
