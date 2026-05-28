@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 import 'package:sustajn_restaurant/utils/date_month_utils.dart';
 
 import '../../../common_widgets/filter_Screen.dart';
@@ -27,7 +28,6 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
   String? selectedMonthYear;
 
   LoginData? loginResponse;
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -40,29 +40,13 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
     await Utils.getProfile();
     setState(() {
       loginResponse = Utils.loginData?.data;
-      isLoading = false;
     });
   }
-
-  Data? selectedMonthData;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final containerState = ref.watch(orderProvider);
-
-    final List<Data> damagedDataList =
-        containerState.damagedContainerData?.data ?? [];
-    if (damagedDataList.isNotEmpty) {
-      selectedMonthData = damagedDataList.firstWhere(
-        (e) => e.monthYear == selectedMonthYear,
-        orElse: () => damagedDataList.first,
-      );
-    } else {
-      selectedMonthData = null;
-    }
-
-    final damageContainers = selectedMonthData?.damageContainers! ?? [];
 
     return SafeArea(
       bottom: true,
@@ -75,6 +59,9 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
               child: CustomTheme.searchField(
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
+                onChanged: (value){
+                  containerState.setDamageContainerFilterData(value);
+                }
                 //TODO:- required in future
                 // onFilterTap: () => _showSortBottomSheet(context),
               ),
@@ -82,36 +69,109 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
             SizedBox(height: Constant.CONTAINER_SIZE_10),
             Expanded(
               child: containerState.isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : (damageContainers == null || damageContainers.isEmpty)
                   ? const Center(
-                      child: Text(
-                        Strings.NO_CONTAINER_AVAILABLE,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_16,
-                      ),
-                      itemCount: damageContainers.length,
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: Constant.SIZE_08),
-                      itemBuilder: (context, index) {
-                        final damageItem = damageContainers[index];
-                        final products = damageItem.products![0];
+                child: CircularProgressIndicator(),
+              )
+                  : containerState.damageContainerListFiltered.isEmpty
+                  ? const Center(
+                child: Text(
+                  Strings.NO_CONTAINER_AVAILABLE,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              )
+                  : ListView.builder(
+                itemCount:
+                containerState.damageContainerListFiltered.length,
+                itemBuilder: (context, index) {
 
-                        return _damageCard(
-                          context,
-                          theme,
-                          products.productName ?? "",
-                          products.damageRemark ?? "",
-                          products.capacity ?? 0,
-                          damageItem.localDateTime ?? "",
-                          damageItem,
-                        );
-                      },
-                    ),
+                  final monthData =
+                  containerState
+                      .damageContainerListFiltered[index];
+
+                  final damageContainers =
+                      monthData.damageContainers ?? [];
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      Container(
+                        margin:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_14),
+                        padding:  EdgeInsets.symmetric(
+                          horizontal: Constant.CONTAINER_SIZE_16,
+                          vertical: Constant.CONTAINER_SIZE_12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.05),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                monthData.monthYear ?? "",
+                                style: theme.textTheme.titleMedium
+                                    ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Image.asset(
+                              Strings.BOWL_IMG,
+                              height: Constant.CONTAINER_SIZE_16,
+                              width: Constant.CONTAINER_SIZE_16,
+                            ),
+                            SizedBox(width: Constant.SIZE_06),
+                            Text(
+                              "${monthData.monthWiseTotalDamageContainers ?? 0}",
+                              style: theme.textTheme.titleMedium
+                                  ?.copyWith(
+                                color: const Color(0xffD4A62A),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics:
+                        const NeverScrollableScrollPhysics(),
+                        padding:  EdgeInsets.symmetric(
+                          horizontal: Constant.CONTAINER_SIZE_16,
+                        ),
+                        itemCount: damageContainers.length,
+                        separatorBuilder: (_, __) =>
+                         SizedBox(height: Constant.CONTAINER_SIZE_12),
+                        itemBuilder: (context, damageIndex) {
+
+                          final damageItem =
+                          damageContainers[damageIndex];
+
+                          final product =
+                          damageItem.products?.isNotEmpty == true
+                              ? damageItem.products!.first
+                              : null;
+
+                          return _damageCard(
+                            context,
+                            theme,
+                            product?.productName ?? "",
+                            product?.damageRemark ?? "",
+                            product?.capacity ?? 0,
+                            damageItem.localDateTime ?? "",
+                            damageItem,
+                          );
+                        },
+                      ),
+                       SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -120,82 +180,83 @@ class _DamagedScreenState extends ConsumerState<DamagedScreen> {
   }
 
   Widget _damageCard(
-    BuildContext context,
-    ThemeData theme,
-    String productName,
-    String damageRemark,
-    int capacity,
-    String date,
-    DamageContainers damageItem,
-  ) {
+      BuildContext context,
+      ThemeData theme,
+      String productName,
+      String damageRemark,
+      int capacity,
+      String date,
+      DamageContainers damageItem,
+      ) {
     return InkWell(
-      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+      borderRadius: BorderRadius.circular(20),
       onTap: () {
         showModalBottomSheet(
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (_) => DamagedDialog(damageItem: damageItem),
+          useSafeArea: true,
+          builder: (_) {
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: DamagedDialog(
+                damageItem: damageItem,
+              ),
+            );
+          },
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Constant.grey.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          border: Border.all(color: Constant.grey, width: 0.3),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                productName,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: Constant.SIZE_06),
-              Row(
+      child: GlassSummaryCard(
+        child: Row(
+          children: [
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      damageRemark,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: Constant.SIZE_08),
                   Text(
-                    capacity.toString(),
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: Constant.gold,
-                      fontWeight: FontWeight.bold,
+                    productName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: Constant.CONTAINER_SIZE_16,
-                    color: Colors.white70,
+
+                  const SizedBox(height: 8),
+                  Text(
+                    date,
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(
+                      color: Colors.white70,
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: Constant.SIZE_06),
-              Text(
-                date,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w600,
+            ),
+
+            Row(
+              children: [
+                Text(
+                  "${damageItem.dateWiseTotalDamageContainers ?? 0}",
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(
+                    color: const Color(0xffD4A62A),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          ),
+                 SizedBox(width: Constant.CONTAINER_SIZE_12),
+                 Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: Constant.CONTAINER_SIZE_18,
+                  color: Colors.white70,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

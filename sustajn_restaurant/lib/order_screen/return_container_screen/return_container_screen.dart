@@ -26,23 +26,17 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   final searchController = TextEditingController();
 
   List<GetContainerData> containerData = [];
-  LoginData? loginResponse;
-  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(orderProvider).setContext(context);
+    });
     _getOrderNetworkCall();
   }
 
-  Future<void> _loadProfile() async {
-    await Utils.getProfile();
-    setState(() {
-      loginResponse = Utils.loginData?.data;
-      isLoading = false;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +113,39 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
       ),
       child: Row(
         children: [
-          Container(
-            width: Constant.CONTAINER_SIZE_50,
+          (item.containerImageUrl != "")
+              ? Container(
             height: Constant.CONTAINER_SIZE_50,
+            width: Constant.CONTAINER_SIZE_50,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(6),
+            child: Image.network(
+              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.containerImageUrl}",
+              errorBuilder: (context, obj, stack) {
+                return Image.asset(
+                  "assets/images/no_image_container.png",
+                );
+              },
+              fit: BoxFit.fill,
+            ),
+          )
+              : Container(
+            width: Constant.CONTAINER_SIZE_70,
+            height: Constant.CONTAINER_SIZE_70,
             decoration: BoxDecoration(
               color: Constant.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+              borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
-            child: Image.asset("assets/images/cups.png", fit: BoxFit.contain),
+            child: Center(
+              child: Icon(
+                Icons.inbox,
+                size: Constant.CONTAINER_SIZE_30,
+                color: Colors.white,
+              ),
+            ),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -205,7 +224,7 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
   }
 
   void _openAddDialog(BuildContext context, ContainersDetails item) async {
-    final result = await showModalBottomSheet<int>(
+     await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -217,15 +236,6 @@ class _ReturnContainerScreenState extends ConsumerState<ReturnContainerScreen> {
         child: ReturnContainerDialog(item: item),
       ),
     );
-
-    //todo needed later
-
-    // if (result != null && result > 0) {
-    //   setState(() {
-    //     item.selectedQty = result;
-    //     item.isAdded = true;
-    //   });
-    // }
   }
 
   _getOrderNetworkCall() async {

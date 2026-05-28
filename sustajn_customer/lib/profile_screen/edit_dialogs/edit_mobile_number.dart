@@ -128,7 +128,7 @@ class _EditMobileNumberDialogState
                               style: theme.textTheme.bodySmall
                                   ?.copyWith(color: Colors.white70)),
                           SizedBox(height: Constant.SIZE_04),
-                          Text("+91 ${widget.mobileNumber}",
+                          Text(widget.mobileNumber,
                               style: theme.textTheme.bodyLarge
                                   ?.copyWith(color: Colors.white)),
                         ],
@@ -158,7 +158,7 @@ class _EditMobileNumberDialogState
                                 style: theme.textTheme.bodySmall
                                     ?.copyWith(color: Colors.white70)),
                             SizedBox(height: Constant.SIZE_04),
-                            Text("+91 ${widget.secondaryNumber}",
+                            Text("${widget.secondaryNumber}",
                                 style: theme.textTheme.bodyLarge
                                     ?.copyWith(color: Colors.white)),
                           ],
@@ -309,22 +309,6 @@ class _EditMobileNumberDialogState
 
                       Navigator.pop(context);
                       await _editMobileNetwork(_controller.text, profileState);
-                      //
-                      // Utils.displayDialog(
-                      //   context: context,
-                      //   icon: Icons.warning,
-                      //   title: "Confirm Update",
-                      //   subTitle: "Are you sure you want to update your contact number?",
-                      //   cancelButtonText: "No",
-                      //   yesButtonText: "Yes",
-                      //   onCancel: () {
-                      //     Navigator.pop(context);
-                      //   },
-                      //   onYes: () async {
-                      //     Navigator.pop(context);
-                      //     await _editMobileNetwork(_controller.text, profileState);
-                      //   },
-                      // );
                     },
 
                     child: Text(

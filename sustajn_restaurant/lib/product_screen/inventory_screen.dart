@@ -64,11 +64,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   : orderState.getContainerData == null
                   ? const Center(
                       child: Text(
-                        Strings.SOMETHING_WENT_WRONG,
+                        Strings.NO_CONTAINER_AVAILABLE,
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : orderState.getContainerData!.containersDetails == null ||
+                  : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
                         orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                       child: Text(
@@ -367,7 +367,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
           final url = '${NetworkUrls.GET_CONTAINER}$userId';
-          ref.read(getOrderProvider(url));
+          ref.read(getInventoryProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

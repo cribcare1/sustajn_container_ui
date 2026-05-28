@@ -31,23 +31,33 @@ class HistoryService {
 
   Future<SoldContainerData> getSoldContainerService(String partUrl) async {
     try {
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = SoldContainerData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+      //TODO
+      // String response = await rootBundle.loadString(
+      //   'assets/json/sold.json',
+      // );
+      //
+      // print("Raw JSON Response: $response");
+      //
+      // var jsonData = json.decode(response);
+      //
+      // print("Decoded JSON: $jsonData");
 
-      String response = await rootBundle.loadString(
-        'assets/json/sold.json',
-      );
+      // SoldContainerData data =
+      // SoldContainerData.fromJson(jsonData);
+      //
+      // print("Model Response: ${data.toString()}");
 
-      print("Raw JSON Response: $response");
-
-      var jsonData = json.decode(response);
-
-      print("Decoded JSON: $jsonData");
-
-      SoldContainerData data =
-      SoldContainerData.fromJson(jsonData);
-
-      print("Model Response: ${data.toString()}");
-
-      return data;
+      // return data;
 
     } catch (e) {
       print("Error: $e");

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
 
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
@@ -21,35 +22,39 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
     final theme = Theme.of(context);
     final products = widget.damageItem.products ?? [];
 
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Constant.CONTAINER_SIZE_30),
-        ),
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _header(theme, context, widget.damageItem),
-              SizedBox(height: Constant.SIZE_15),
-
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: products.length,
-                separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
-                itemBuilder: (context, index) =>
-                    _containerCard(products[index], theme),
+    return SafeArea(
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.55,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return Container(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+            decoration: BoxDecoration(
+              color: theme.primaryColor,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Constant.CONTAINER_SIZE_30),
               ),
-            ],
-          ),
-          Utils.buildFloatingHeader(context),
-        ],
+            ),
+            child: Column(
+              children: [
+                _header(theme, context, widget.damageItem),
+                SizedBox(height: Constant.SIZE_15),
+                Expanded(
+                  child: ListView.separated(
+                    controller: scrollController,
+                    itemCount: products.length,
+                    separatorBuilder: (_, __) =>
+                        SizedBox(height: Constant.SIZE_10),
+                    itemBuilder: (context, index) =>
+                        _containerCard(products[index], theme),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -72,16 +77,26 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
           children: [
             Text(
               Strings.DAMAGED_DTLS,
-              style: theme.textTheme.titleLarge?.copyWith(color: Colors.white),
+              style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
             ),
           ],
         ),
 
         SizedBox(height: Constant.SIZE_10),
 
-        Text(
-          "${Strings.TOTAL_DAMAGED}: ${item.dateWiseTotalDamageContainers}",
-          style: theme.textTheme.titleMedium?.copyWith(color: Constant.gold),
+        Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              Strings.BOWL_IMG,
+              height: Constant.CONTAINER_SIZE_30,
+              width: Constant.CONTAINER_SIZE_30,
+            ),
+            SizedBox(width: Constant.SIZE_06),
+            Text(
+              "${item.dateWiseTotalDamageContainers}",
+              style: theme.textTheme.titleLarge?.copyWith(color: Constant.gold,fontWeight: FontWeight.w700),
+            ),
+          ],
         ),
 
         SizedBox(height: Constant.SIZE_06),
@@ -95,13 +110,7 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
   }
 
   Widget _containerCard(Products product, ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-      decoration: BoxDecoration(
-        color: Constant.grey.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-        border: Border.all(color: Constant.grey.withOpacity(0.2)),
-      ),
+    return GlassSummaryCard(
       child: Row(
         children: [
           Container(
@@ -113,10 +122,10 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
             ),
             clipBehavior: Clip.antiAlias,
             child:
-                product.productImageUrl != null &&
-                    product.productImageUrl!.isNotEmpty
+                product.damageImagesUrls != null &&
+                    product.damageImagesUrls!.isNotEmpty
                 ? Image.network(
-                    product.productImageUrl!,
+                    product.damageImagesUrls!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
@@ -129,22 +138,20 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product.productName ?? "",
+                  product.productName ?? "",maxLines: 1,overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                   ),
                 ),
                 SizedBox(height: Constant.SIZE_04),
 
-                if (product.damageRemark?.isNotEmpty == true)
                   Text(
-                    product.damageRemark!,
+                    product.productUniqueId??"",
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white70,
                     ),
@@ -160,10 +167,6 @@ class _DamagedDialogState extends ConsumerState<DamagedDialog> {
             ),
           ),
 
-          Text(
-            "1",
-            style: theme.textTheme.titleLarge?.copyWith(color: Constant.gold),
-          ),
         ],
       ),
     );
