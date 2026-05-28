@@ -252,9 +252,17 @@ class SignupNotifier extends ChangeNotifier {
     required String gatewayName,
   }) {
     _registrationData ??= RegistrationData();
-    _paymentError = null;
-    //_clearOtherPaymentData(PaymentMethodType.upi);
-    validatePaymentGateWayId(gatewayName);
+
+    if (gatewayId.isEmpty) {
+      _paymentMethod = null;
+      _paymentGatewayId = '';
+      _paymentGatewayName = '';
+      _paymentError = null;
+
+      notifyListeners();
+      return;
+    }
+
     _paymentMethod = PaymentMethodType.upi;
 
     _paymentGatewayId = gatewayId;
@@ -668,24 +676,44 @@ class SignupNotifier extends ChangeNotifier {
 
 
 
-  bool validateBankForm() {
+  bool validatePaymentDetails() {
     _showBankErrors = true;
 
-    _validateBankName();
-    _validateAccountHolderName();
-    _validateBIC();
-    _validateIBAN();
-    
-    _validateCardHolder();
-    _validateCardNumber();
-    validatePaymentGateWayId(_paymentGatewayName);
+    switch (_paymentMethod) {
+      case PaymentMethodType.bank:
+        _validateBankName();
+        _validateAccountHolderName();
+        _validateBIC();
+        _validateIBAN();
 
-    notifyListeners();
+        notifyListeners();
 
-    return (_bankNameError == null &&
-        _accountHolderError == null &&
-        _bicError == null &&
-        _ibanError == null)||(_cardHolderError == null && _cardNumberError == null) || (_paymentError == null);
+        return _bankNameError == null &&
+            _accountHolderError == null &&
+            _bicError == null &&
+            _ibanError == null;
+
+      case PaymentMethodType.card:
+        _validateCardHolder();
+        _validateCardNumber();
+        _validateCVV();
+
+        notifyListeners();
+
+        return _cardHolderError == null &&
+            _cardNumberError == null &&
+            _cvvError == null;
+
+      case PaymentMethodType.upi:
+        validatePaymentGateWayId(_paymentGatewayName);
+
+        notifyListeners();
+
+        return _paymentError == null;
+
+      default:
+        return false;
+    }
   }
 
 

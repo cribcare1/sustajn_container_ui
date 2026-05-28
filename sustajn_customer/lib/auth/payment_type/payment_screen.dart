@@ -110,11 +110,11 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                     _addCardButton(context, theme),
                     _orDivider(theme),
                     _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
-                    _paypalTile(theme),
+                    _paypalTile(theme,signupState),
                     SizedBox(height: Constant.SIZE_10),
-                    _applePay(theme),
+                    _applePay(theme,signupState),
                     SizedBox(height: Constant.SIZE_10),
-                    _googlePay(theme),
+                    _googlePay(theme,signupState),
                     SizedBox(height: Constant.SIZE_10),
                     _orDivider(theme),
                     _sectionTitle(theme, title: Strings.BANK_DETAILS),
@@ -236,7 +236,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
     );
   }
 
-  Widget _paypalTile(ThemeData theme) {
+  Widget _paypalTile(ThemeData theme, SignupNotifier signupState) {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
@@ -244,13 +244,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           hint: Strings.ENTER_PAYPAL,
           gatewayName: Strings.PAYPAL,
         );
+        print(" signupState.paymentGatewayName   ${ signupState.paymentGatewayName }");
       },
-      child: _gatewayTile(theme, 'assets/icons/paypal.png', 'PayPal'),
+      child: _gatewayTile(
+        theme,
+        'assets/icons/paypal.png',
+        'PayPal',
+        signupState.paymentGatewayName == Strings.PAYPAL
+            ? signupState.paymentGatewayId
+            : '',
+      ),
     );
   }
 
-
-  Widget _applePay(ThemeData theme) {
+  Widget _applePay(ThemeData theme, SignupNotifier signupState) {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
@@ -259,12 +266,18 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           gatewayName: Strings.APPLE,
         );
       },
-      child: _gatewayTile(theme, 'assets/icons/apple_pay.png', 'Apple Pay'),
+      child: _gatewayTile(
+        theme,
+        'assets/icons/apple_pay.png',
+        'Apple Pay',
+        signupState.paymentGatewayName == Strings.APPLE
+            ? signupState.paymentGatewayId
+            : '',
+      ),
     );
   }
 
-
-  Widget _googlePay(ThemeData theme) {
+  Widget _googlePay(ThemeData theme, SignupNotifier signupState) {
     return InkWell(
       onTap: () {
         _showLinkBottomSheet(
@@ -273,12 +286,19 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           gatewayName: Strings.GOOGLE,
         );
       },
-      child: _gatewayTile(theme, 'assets/icons/google_pay.png', 'Google Pay'),
+      child: _gatewayTile(
+        theme,
+        'assets/icons/google_pay.png',
+        'Google Pay',
+        signupState.paymentGatewayName == Strings.GOOGLE
+            ? signupState.paymentGatewayId
+            : '',
+      ),
     );
   }
 
 
-  Widget _gatewayTile(ThemeData theme, String icon, String title) {
+  Widget _gatewayTile(ThemeData theme, String icon, String title, String id) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
@@ -290,12 +310,17 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
         children: [
           Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
-          Text(
-            title,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-              fontSize: Constant.LABEL_TEXT_SIZE_16,
-            ),
+          Column(
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: Colors.white,
+                  fontSize: Constant.LABEL_TEXT_SIZE_16,
+                ),
+              ),
+              Text(id,style: theme.textTheme.titleSmall!.copyWith(color: Colors.white,fontSize: Constant.CONTAINER_SIZE_12),),
+            ],
           ),
         ],
       ),
@@ -488,7 +513,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             onPressed: signupState.isLoading
                 ? null
                 : () async {
-              final isValid = signupState.validateBankForm();
+              final isValid = signupState.validatePaymentDetails();
               if (!isValid) return;
               signupState.updateBankDetails();
 
@@ -506,7 +531,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             ),
             child: Text(
              Strings.VERIFY_CONTINUE,
-              style: theme.textTheme.labelLarge?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.primaryColor,
               ),
             ),
