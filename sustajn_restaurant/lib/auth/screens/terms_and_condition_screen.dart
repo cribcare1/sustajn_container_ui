@@ -29,6 +29,9 @@ class _TermsAndConditionScreenState
   void initState() {
     super.initState();
     _termsFuture = _loadTermsFromAssets();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(authNotifierProvider).setContext(context);
+    });
   }
 
   Future<String> _loadTermsFromAssets() async {
@@ -99,9 +102,7 @@ class _TermsAndConditionScreenState
                             width: double.infinity,
                             child: SubmitButton(
                               onRightTap: () {
-                                if (!signUpState.isLoading) {
-                                  _onCreateAccount(signUpState);
-                                }
+                                  termsDialog(context,signUpState);
                               },
                               rightText: "Agree & Create Account",
                             ),
@@ -118,35 +119,12 @@ class _TermsAndConditionScreenState
     );
   }
 
-  Future<void> _onCreateAccount(AuthState signUpState) async {
-    final confirmed = await termsDialog(
-      context,
-      Icons.warning_amber_outlined,
-      Strings.CONFIRM_ACCOUNT,
-      Strings.CONFIRM_MESSAGE,
-      Strings.CANCEL,
-      Strings.CREATE,
-    );
-
-    if (confirmed == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        signUpState.setIsLoading(true);
-        _getNetworkData(signUpState);
-      });
-    }
-  }
-
   termsDialog(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String subTitle,
-    String cancelButton,
-    String createButton,
+    BuildContext context, AuthState signUpState,
   ) async {
     final theme = Theme.of(context);
 
-    return await showDialog<bool>(
+    return  showDialog(
           context: context,
           barrierDismissible: false,
           builder: (_) => Dialog(
@@ -163,22 +141,7 @@ class _TermsAndConditionScreenState
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Container(
-                  //   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                  //   decoration: BoxDecoration(
-                  //       color: Constant.grey.withOpacity(0.2),
-                  //       shape: BoxShape.rectangle,
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       border: Border.all(
-                  //           color: Constant.grey.withOpacity(0.1)
-                  //       )
-                  //   ),
-                  //   child: Icon(
-                  //     icon,
-                  //     size: Constant.CONTAINER_SIZE_40,
-                  //     color: Constant.gold,
-                  //   ),
-                  // ),
+
                   Align(
                     alignment: Alignment.center,
                     child: Container(
@@ -191,7 +154,7 @@ class _TermsAndConditionScreenState
                         ),
                       ),
                       child: Icon(
-                        icon,
+                        Icons.warning_amber_outlined,
                         size: Constant.CONTAINER_SIZE_40,
                         color: Constant.gold,
                       ),
@@ -199,7 +162,7 @@ class _TermsAndConditionScreenState
                   ),
                   SizedBox(height: Constant.CONTAINER_SIZE_12),
                   Text(
-                    title,
+                    Strings.CONFIRM_ACCOUNT,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: Colors.white,
@@ -209,7 +172,7 @@ class _TermsAndConditionScreenState
                   ),
                   SizedBox(height: Constant.SIZE_05),
                   Text(
-                    subTitle,
+                    Strings.CONFIRM_MESSAGE,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
@@ -223,7 +186,7 @@ class _TermsAndConditionScreenState
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(context, false);
+                            Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Constant.gold),
@@ -234,7 +197,7 @@ class _TermsAndConditionScreenState
                             ),
                           ),
                           child: Text(
-                            cancelButton,
+                            Strings.CANCEL,
                             style: theme.textTheme.labelLarge?.copyWith(
                               color: Constant.gold,
                             ),
@@ -243,12 +206,14 @@ class _TermsAndConditionScreenState
                       ),
 
                       SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-                      // STAY
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context, true);
+                          onPressed: ()async {
+                            Navigator.pop(context);
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                            );
+                            _getNetworkData(signUpState);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Constant.gold,
@@ -259,7 +224,7 @@ class _TermsAndConditionScreenState
                             ),
                           ),
                           child: Text(
-                            createButton,
+                            Strings.CREATE,
                             style: theme.textTheme.labelLarge?.copyWith(
                               color: theme.primaryColor,
                             ),
@@ -272,8 +237,7 @@ class _TermsAndConditionScreenState
               ),
             ),
           ),
-        ) ??
-        false;
+        );
   }
 
   Map<String, dynamic> removeNullAndEmpty(Map<String, dynamic> map) {
