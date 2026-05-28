@@ -1,4 +1,5 @@
-import 'package:country_code_picker_plus/country_code_picker_plus.dart';
+import 'package:country_code_picker/country_code_picker.dart';
+// import 'package:country_code_picker_plus/country_code_picker_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +53,12 @@ class _SecondaryMobileNumberDialogState
     if (value.length != 10) return 'Enter valid 10-digit number';
     return null;
   }
-  Country? _selectedCountry = Country(
+  // Country? _selectedCountry = Country(
+  //   code: 'AE',
+  //   dialCode: '+971',
+  //   name: 'United Arab Emirates',
+  // );
+  CountryCode _selectedCountry = CountryCode(
     code: 'AE',
     dialCode: '+971',
     name: 'United Arab Emirates',
@@ -245,37 +251,54 @@ final profileState = ref.watch(profileProvider);
                                         border: Border.all(color: Constant.grey),
                                       ),
                                       child: CountryCodePicker(
-                                        textStyle: theme.textTheme.titleSmall!.copyWith(
-                                          color: Colors.white,
-                                        ),
-                                        mode: CountryCodePickerMode.dialog,
-                                        dialogBackgroundColor: theme.primaryColor,
-                                        dialogTextStyle: theme.textTheme.titleSmall!
-                                            .copyWith(color: Colors.white),
-                                        searchStyle: theme.textTheme.titleSmall!.copyWith(
-                                          color: Colors.white,
-                                        ),
-                                        closeIcon: Icon(Icons.close, color: Colors.white),
-                                        searchDecoration: InputDecoration(
-                                          hintText: "search country name",
-                                          hintStyle: theme.textTheme.titleSmall!.copyWith(
-                                            color: Colors.white,
-                                          ),
-                                          prefixIcon: Icon(
-                                            Icons.search,
-                                            color: Colors.white,
-                                          ),
-                                        ),
                                         onChanged: (value) {
                                           setState(() {
                                             _selectedCountry = value;
-
                                           });
                                         },
                                         initialSelection: "AE",
                                         showFlag: true,
                                         showDropDownButton: true,
-                                      ),
+                                        dialogBackgroundColor: theme.primaryColor,
+                                        textStyle: theme.textTheme.titleSmall!.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                        dialogTextStyle: theme.textTheme.titleSmall!.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      // CountryCodePicker(
+                                      //   textStyle: theme.textTheme.titleSmall!.copyWith(
+                                      //     color: Colors.white,
+                                      //   ),
+                                      //   mode: CountryCodePickerMode.dialog,
+                                      //   dialogBackgroundColor: theme.primaryColor,
+                                      //   dialogTextStyle: theme.textTheme.titleSmall!
+                                      //       .copyWith(color: Colors.white),
+                                      //   searchStyle: theme.textTheme.titleSmall!.copyWith(
+                                      //     color: Colors.white,
+                                      //   ),
+                                      //   closeIcon: Icon(Icons.close, color: Colors.white),
+                                      //   searchDecoration: InputDecoration(
+                                      //     hintText: "search country name",
+                                      //     hintStyle: theme.textTheme.titleSmall!.copyWith(
+                                      //       color: Colors.white,
+                                      //     ),
+                                      //     prefixIcon: Icon(
+                                      //       Icons.search,
+                                      //       color: Colors.white,
+                                      //     ),
+                                      //   ),
+                                      //   onChanged: (value) {
+                                      //     setState(() {
+                                      //       _selectedCountry = value;
+                                      //
+                                      //     });
+                                      //   },
+                                      //   initialSelection: "AE",
+                                      //   showFlag: true,
+                                      //   showDropDownButton: true,
+                                      // ),
                                     ),
                                   ),
                                   SizedBox(width: Constant.SIZE_08),

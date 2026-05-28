@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:country_code_picker_plus/country_code_picker_plus.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +47,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   File? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
-  Country? _selectedCountry = Country(
+  CountryCode? _selectedCountry = CountryCode(
     code: 'AE',
     dialCode: '+971',
     name: 'United Arab Emirates',
@@ -253,26 +253,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             border: Border.all(color: Constant.grey),
                           ),
                           child: CountryCodePicker(
-                            textStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
-                            mode: CountryCodePickerMode.dialog,
-                            dialogBackgroundColor: theme.primaryColor,
-                            dialogTextStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
-                            searchStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
-                            closeIcon:Icon(Icons.close,color: Colors.white,),
-                            searchDecoration: InputDecoration(
-                              hintText: "search country name",
-                              hintStyle: theme.textTheme.titleSmall!.copyWith(color: Colors.white),
-                              prefixIcon: Icon(Icons.search,color: Colors.white),
-                            ),
-                            onChanged: (value){
+                            onChanged: (value) {
                               setState(() {
                                 _selectedCountry = value;
                               });
                             },
-                            initialSelection:"AE",
+                            initialSelection: "AE",
                             showFlag: true,
                             showDropDownButton: true,
-                          ),
+                            dialogBackgroundColor: theme.primaryColor,
+                            textStyle: theme.textTheme.titleSmall!.copyWith(
+                              color: Colors.white,
+                            ),
+                            dialogTextStyle: theme.textTheme.titleSmall!.copyWith(
+                              color: Colors.white,
+                            ),
+                          )
                         )),
                     SizedBox(width: Constant.SIZE_08),
                     Expanded(flex: 6,

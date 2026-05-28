@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:284651712540:android:a0084d0a4fb030e8916fd9",
+        "android_client_info": {
+          "package_name": "com.example.sustajn_customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_aclcfx_Jsi_AoP0kmHDqu0BwEAo_HFA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:284651712540:android:960c7326cd9c0116916fd9",
         "android_client_info": {
           "package_name": "com.example.sustajn_restaurant"

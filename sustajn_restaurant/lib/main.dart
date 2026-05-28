@@ -12,36 +12,58 @@ import 'package:sustajn_restaurant/splash_screen.dart';
 import 'package:sustajn_restaurant/utils/theme_utils.dart';
 import 'package:sustajn_restaurant/utils/utility.dart';
 import 'package:upgrader/upgrader.dart';
-
+import 'firebase_options.dart';
 import 'firebase_services.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Upgrader.clearSavedSettings();
-  if (Platform.isAndroid) {
-    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-  }
-
   await Firebase.initializeApp();
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-
-  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
-
-  await FirebaseServices().initialize();
-
-  Utils.getProfile();
-  Utils.getUserId();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const MaterialApp(
+    home: Scaffold(
+      body: Center(child: Text("App is running")),
+    ),
+  ));
 }
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//
+//   await Upgrader.clearSavedSettings();
+//
+//   if (Platform.isAndroid) {
+//     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+//   }
+//
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+//
+//   // IMPORTANT: DO NOT block app startup
+//   runApp(const ProviderScope(child: MyApp()));
+//
+//   // run Firebase stuff AFTER UI loads
+//   Future.microtask(() async {
+//     try {
+//       await FirebaseServices().initialize();
+//     } catch (e) {
+//       debugPrint("FirebaseServices init failed: $e");
+//     }
+//   });
+//
+//   // background messaging (safe placement)
+//   FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+//
+//   FlutterError.onError =
+//       FirebaseCrashlytics.instance.recordFlutterFatalError;
+//
+//   PlatformDispatcher.instance.onError = (error, stack) {
+//     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+//     return true;
+//   };
+// }
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});

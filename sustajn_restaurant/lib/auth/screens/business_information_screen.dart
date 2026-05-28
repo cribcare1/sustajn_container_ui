@@ -1,4 +1,4 @@
-import 'package:country_code_picker_plus/country_code_picker_plus.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,7 +154,7 @@ class _BusinessInformationDetailsState
     "Buffet Restaurant",
     "Fine Dining Restaurant",
   ];
-  Country? _selectedCountry = Country(
+  CountryCode? _selectedCountry = CountryCode(
     code: 'AE',
     dialCode: '+971',
     name: 'United Arab Emirates',
@@ -271,36 +271,21 @@ class _BusinessInformationDetailsState
                               border: Border.all(color: Constant.grey),
                             ),
                             child: CountryCodePicker(
-                              textStyle: theme.textTheme.titleSmall!.copyWith(
-                                color: Colors.white,
-                              ),
-                              mode: CountryCodePickerMode.dialog,
-                              dialogBackgroundColor: theme.primaryColor,
-                              dialogTextStyle: theme.textTheme.titleSmall!
-                                  .copyWith(color: Colors.white),
-                              searchStyle: theme.textTheme.titleSmall!.copyWith(
-                                color: Colors.white,
-                              ),
-                              closeIcon: Icon(Icons.close, color: Colors.white),
-                              searchDecoration: InputDecoration(
-                                hintText: "search country name",
-                                hintStyle: theme.textTheme.titleSmall!.copyWith(
-                                  color: Colors.white,
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Colors.white,
-                                ),
-                              ),
                               onChanged: (value) {
                                 setState(() {
                                   _selectedCountry = value;
-
                                 });
                               },
                               initialSelection: "AE",
                               showFlag: true,
                               showDropDownButton: true,
+                              dialogBackgroundColor: theme.primaryColor,
+                              textStyle: theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.white,
+                              ),
+                              dialogTextStyle: theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

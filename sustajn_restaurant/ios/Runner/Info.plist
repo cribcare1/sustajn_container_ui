@@ -2,62 +2,100 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+	<!-- Basic App Config -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+
 	<key>CFBundleDisplayName</key>
-	<string>Sustajn Partner</string>
+	<string>Partner</string>
+
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+
 	<key>CFBundleName</key>
 	<string>sustajn_restaurant</string>
+
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app requires location access to function properly.</string>
 
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>This app requires background location access.</string>
 
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Location is needed even when the app is in background.</string>
-<key>NSUserTrackingUsageDescription</key>
-<string>This app uses notifications to keep you updated.</string>
-
-<key>FirebaseAppDelegateProxyEnabled</key>
-<true/>
-
-<key>UIBackgroundModes</key>
-<array>
-    <string>fetch</string>
-    <string>remote-notification</string>
-</array>
-<key>NSAppTransportSecurity</key>
+<key>UIApplicationSceneManifest</key>
 <dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
+	<key>UIApplicationSupportsMultipleScenes</key>
+	<false/>
 </dict>
+	<!-- ================= LOCATION ================= -->
+	<key>GMSApiKey</key>
+    <string>AIzaSyC8TSj35TpB0jQjSNJTG5KQHyBWQVi3o9Q</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires location access to show nearby restaurants and services.</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses location even in background for better experience.</string>
+
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location is required even when app runs in background.</string>
+
+	<!-- ================= CAMERA (QR / SCANNER) ================= -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access for QR scanning and image capture.</string>
+
+	<!-- ================= PHOTO LIBRARY ================= -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos to upload images.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app may save images to your gallery.</string>
+
+	<!-- ================= NOTIFICATIONS / FIREBASE ================= -->
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<!-- ================= APP TRACKING (optional, but safe) ================= -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses notifications and analytics to improve experience.</string>
+
+	<!-- ================= NETWORK ================= -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<!-- ================= ORIENTATION ================= -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -65,9 +103,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
 </dict>
 </plist>
