@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
@@ -421,18 +422,27 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
                           ),
                         ],
                       ),
-                      // SizedBox(height: h * 0.01),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                           'DOB - ${profile?.dateOfBirth ?? ""} ',
-                            style: TextStyle(
-                              fontSize: w * 0.045,
-                              color: Colors.white70,
+                      InkWell(
+                        onTap: () async {
+                          await Clipboard.setData(
+                            ClipboardData(
+                              text: profile?.customerId ?? "",
                             ),
-                          ),
-                        ],
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                             '${profile?.customerId ?? ""} ',
+                              style: TextStyle(
+                                fontSize: w * 0.045,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            Icon(Icons.copy,color: Colors.white,size: Constant.CONTAINER_SIZE_16,),
+                          ],
+                        ),
                       ),
                       SizedBox(height: h * 0.03),
                       Container(
