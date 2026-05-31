@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import '../utils/utility.dart';
 import 'AppDataManager.dart';
@@ -25,6 +24,41 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     } else {
       Utils.printLog('Error response status code: ${response.statusCode}');
       throw Exception('Error: ${response.statusCode}');
+    }
+  }
+
+  Stream<Map<String, dynamic>> getSSEAPIData(String url) async* {
+    final response = await appDataManager.apiHelper.getApiSSERequest(url);
+
+    if (response is! http.StreamedResponse) {
+      throw Exception(
+        'Expected StreamedResponse, got ${response.runtimeType}',
+      );
+    }
+
+    print('Status: ${response.statusCode}');
+    print('Headers: ${response.headers}');
+
+    await for (final line in response.stream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter())) {
+
+      final trimmed = line.trim();
+      print('SSE LINE => $trimmed');
+
+      if (trimmed.startsWith('data:')) {
+        final jsonString = trimmed.substring(5).trim();
+
+        try {
+          final Map<String, dynamic> data =
+          jsonDecode(jsonString);
+
+          // emit every update
+          yield data;
+        } catch (e) {
+          print('❌ JSON parse error: $e');
+        }
+      }
     }
   }
 

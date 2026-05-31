@@ -33,6 +33,59 @@ class ApiHelper {
     }
   }
 
+  Future getApiSSERequest(String url) async {
+    final token = await Utils.authToken();
+    Utils.printLog("SSE call url::$url");
+    Utils.printLog("SSE token::$token");
+
+    try {
+      // Prepare SSE-specific headers optimized for Spring Boot SseEmitter
+      Map<String, String> sseHeaders = {
+        'Accept': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'X-Requested-With': 'XMLHttpRequest',
+      };
+
+      // Add bearer token if available
+      if (token != null && token.toString().isNotEmpty) {
+        sseHeaders['Authorization'] = 'Bearer $token';
+        Utils.printLog("✅ SSE Authorization header added");
+      } else {
+        Utils.printLog("⚠️ No token available for SSE request");
+      }
+
+      Utils.printLog("SSE headers :: $sseHeaders");
+
+      final request = http.Request('GET', Uri.parse(url));
+      request.headers.addAll(sseHeaders);
+
+      Utils.printLog("📡 Sending SSE request to: $url");
+      final streamedResponse = await request.send().timeout(const Duration(minutes: 5));
+
+      Utils.printLog("SSE connection established. Status code: ${streamedResponse.statusCode}");
+
+      if (streamedResponse.statusCode == 200 || streamedResponse.statusCode == 201) {
+        Utils.printLog("✅ SSE stream opened successfully ${streamedResponse.reasonPhrase}");
+        return streamedResponse;
+      } else if (streamedResponse.statusCode == 406) {
+        Utils.printLog("❌ 406 Not Acceptable: Server rejected content negotiation");
+        Utils.printLog("Ensure Java backend endpoint produces: application/stream+json or text/event-stream");
+        final response = await http.Response.fromStream(streamedResponse);
+        return response;
+      } else {
+        Utils.printLog("❌ SSE Error: Status ${streamedResponse.statusCode}");
+        final response = await http.Response.fromStream(streamedResponse);
+        return response;
+      }
+    } on TimeoutException catch (_) {
+      Utils.printLog('⏱️ SSE request timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (exception) {
+      Utils.printLog("❌ SSE request failed, exception==$exception");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
   Future<http.Response> apiRequestWithBody(
       String url,
       Map<String, dynamic> body,
