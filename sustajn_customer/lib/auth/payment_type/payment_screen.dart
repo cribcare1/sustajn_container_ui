@@ -311,6 +311,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
@@ -513,8 +514,8 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             onPressed: signupState.isLoading
                 ? null
                 : () async {
-              final isValid = signupState.validatePaymentDetails();
-              if (!isValid) return;
+              final isValid = signupState.validateBankForm();
+              if (isValid) return;
               signupState.updateBankDetails();
 
               if (widget.flow == PaymentFlow.signup) {

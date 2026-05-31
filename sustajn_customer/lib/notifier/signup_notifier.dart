@@ -716,7 +716,21 @@ class SignupNotifier extends ChangeNotifier {
     }
   }
 
+  bool validateBankForm() {
+    _showBankErrors = true;
 
+    _validateBankName();
+    _validateAccountHolderName();
+    _validateBIC();
+    _validateIBAN();
+
+    notifyListeners();
+
+    return _bankNameError == null &&
+        _accountHolderError == null &&
+        _bicError == null &&
+        _ibanError == null;
+  }
 
 
   void resetBankValidation() {
