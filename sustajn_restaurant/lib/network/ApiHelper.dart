@@ -1,0 +1,538 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constants/network_urls.dart';
+import '../constants/string_utils.dart';
+import '../utils/sharedpreference_utils.dart';
+import '../utils/utility.dart';
+
+class ApiHelper {
+
+  Future apiRequest(String url) async {
+    final token = await Utils.authToken();
+    Utils.printLog("Get call url::$url");
+    Utils.printLog("Get token::$token");
+    http.Response? response;
+    try {
+      var header = _getHeader(token);
+      Utils.printLog("Get header :: $header");
+      response = await http.get(Uri.parse(url),
+          headers: header).timeout(const Duration(minutes: 5),);
+      Utils.printLog("Network call success. response==${response.statusCode}");
+      return response;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
+  Future getApiSSERequest(String url) async {
+    final token = await Utils.authToken();
+    Utils.printLog("SSE call url::$url");
+    Utils.printLog("SSE token::$token");
+
+    try {
+      // Prepare SSE-specific headers optimized for Spring Boot SseEmitter
+      Map<String, String> sseHeaders = {
+        'Accept': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'X-Requested-With': 'XMLHttpRequest',
+      };
+
+      // Add bearer token if available
+      if (token != null && token.toString().isNotEmpty) {
+        sseHeaders['Authorization'] = 'Bearer $token';
+        Utils.printLog("✅ SSE Authorization header added");
+      } else {
+        Utils.printLog("⚠️ No token available for SSE request");
+      }
+
+      Utils.printLog("SSE headers :: $sseHeaders");
+
+      final request = http.Request('GET', Uri.parse(url));
+      request.headers.addAll(sseHeaders);
+
+      Utils.printLog("📡 Sending SSE request to: $url");
+      final streamedResponse = await request.send().timeout(const Duration(minutes: 5));
+
+      Utils.printLog("SSE connection established. Status code: ${streamedResponse.statusCode}");
+
+      if (streamedResponse.statusCode == 200 || streamedResponse.statusCode == 201) {
+        Utils.printLog("✅ SSE stream opened successfully ${streamedResponse.reasonPhrase}");
+        return streamedResponse;
+      } else if (streamedResponse.statusCode == 406) {
+        Utils.printLog("❌ 406 Not Acceptable: Server rejected content negotiation");
+        Utils.printLog("Ensure Java backend endpoint produces: application/stream+json or text/event-stream");
+        final response = await http.Response.fromStream(streamedResponse);
+        return response;
+      } else {
+        Utils.printLog("❌ SSE Error: Status ${streamedResponse.statusCode}");
+        final response = await http.Response.fromStream(streamedResponse);
+        return response;
+      }
+    } on TimeoutException catch (_) {
+      Utils.printLog('⏱️ SSE request timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (exception) {
+      Utils.printLog("❌ SSE request failed, exception==$exception");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
+  Future<http.Response> apiRequestWithBody(
+      String url,
+      Map<String, dynamic> body,
+      ) async {
+
+    final token =await Utils.authToken();
+    var header = _getHeader(token);
+    try {
+      final request = http.Request("GET", Uri.parse(url));
+      request.headers.addAll(header);
+      request.body = jsonEncode(body);
+      final streamedResponse =
+      await request.send().timeout(const Duration(minutes: 5));
+      final response =
+      await http.Response.fromStream(streamedResponse);
+
+      Utils.printLog("StatusCode :: ${response.statusCode}");
+      Utils.printLog("Body :: ${response.body}");
+
+      return response;
+
+    } on TimeoutException {
+      return http.Response(
+          Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (e) {
+      Utils.printLog("Network call failed :: $e");
+      return http.Response(
+          Strings.ERROR,
+          NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+
+
+
+  _getHeader(var token){
+    return (token != null && token.toString().isNotEmpty)?{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token', // Add token to the headers
+    }:{
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+  }
+
+  // Future<http.Response> apiPostRequest(String url, dynamic jsonMap) async {
+  //   final token =
+  //   await SharedPreferenceUtils.getStringValuesSF(
+  //     Strings.JWT_TOKEN,
+  //   );
+  //   print("User Token $token");
+  //
+  //   print("call started==url==$url");
+  //   var response;
+  //
+  //   try {
+  //     // Check if jsonMap is a List<Map<String, dynamic>>
+  //     if (jsonMap is List<Map<String, dynamic>>) {
+  //       var body = json.encode(jsonMap);
+  //       print("List body====$body");
+  //
+  //       if (token != null) {
+  //         response = await http.post(Uri.parse(url),
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Accept': 'application/json',
+  //               'Authorization': 'Bearer $token', // Add token to the headers
+  //             },
+  //             body: body);
+  //       } else {
+  //         response = await http.post(Uri.parse(url), body: body);
+  //         // throw Exception("Token not found");
+  //       }
+  //     } else if (jsonMap is Map<String, dynamic>) {
+  //       // If jsonMap is a Map<String, dynamic>
+  //       var body = json.encode(jsonMap);
+  //       print("Map body====$body");
+  //
+  //       // Check if token is available
+  //       if (token != null) {
+  //         response = await http.post(Uri.parse(url),
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               'Accept': 'application/json',
+  //               'Authorization': 'Bearer $token', // Add token to the headers
+  //             },
+  //             body: body);
+  //       } else {
+  //         response = await http.post(Uri.parse(url), body: body);
+  //         // throw Exception("Token not found");
+  //       }
+  //     } else {
+  //       throw Exception(
+  //           "Invalid jsonMap type. Expected List<Map<String, dynamic>> or Map<String, dynamic>.");
+  //     }
+  //
+  //     print("Network call success. response==${response.statusCode}");
+  //   } on TimeoutException catch (_) {
+  //     Utils.printLog('Timed out');
+  //     return http.Response('Error', 408);
+  //   } catch (excetion) {
+  //     Utils.printLog("Network call failed, excetion==${excetion}");
+  //     return http.Response('Error', 409);
+  //   }
+  //
+  //   return response;
+  // }
+
+  /// @param url, jsonmap
+  ///       After getting url ,it will make actual call to api  by POST mapping
+  /// @return  future response
+  ///        the respone body of the api it will return
+  ///
+
+  Future<dynamic> apiPostLoginRequest(String url, var jsonMap) async {
+    Utils.printLog("Post call started==url==$url");
+    var token = await Utils.authToken();
+    Utils.printLog('Token : $token');
+    http.Response? response;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
+      Utils.printLog("Network call success. response==${response.statusCode}");
+      return response;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+  Future<dynamic> postAPIStringValue(String url, var jsonMap) async {
+    Utils.printLog("Post call started==url==$url");
+    var token = await Utils.authToken();
+    Utils.printLog('Token : $token');
+    http.Response? response;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      response = await http.post(Uri.parse(url),
+          headers: _getHeader(token), body: body).timeout(const Duration(seconds: 20),);
+      Utils.printLog("Network call success. response==${response.statusCode}");
+      return response;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+  }
+  Future apiMultiPartPostRequests(String url, Map<String, dynamic> jsonMap, image, String keyName) async {
+    final token = await Utils.authToken();
+    Utils.printLog("Get call started==url==$url");
+    http.Response? responseData;
+    try {
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var body = json.encode(jsonMap);
+
+      Utils.printLog("body====$body");
+      Utils.printLog("keyName====$keyName");
+      Utils.printLog("call started==url==$url");
+
+      var request = http.MultipartRequest("POST", Uri.parse(url),);
+      request.headers['Content-Type'] = 'multipart/form-data';
+      if(token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token'; // Add token to headers
+      }
+
+      request.fields[keyName] = jsonEncode(jsonMap);
+
+      var multiPart = http.MultipartFile('file', stream, length,
+        filename: image.path.split('/').last,
+      );
+      request.files.add(multiPart);
+      final response = await request.send().timeout(const Duration(minutes: 1));
+      final responseJson = await response.stream.bytesToString();
+      responseData = http.Response(responseJson, response.statusCode);
+      print("Network call success. response==${responseData.statusCode}");
+      return responseData;
+    }  on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response(Strings.ERROR, NetworkUrls.TIME_OUT_CODE);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response(Strings.ERROR, NetworkUrls.NETWORK_CALL_FAILED_CODE);
+    }
+
+  }
+
+/*
+*
+* This multi part method is working fine to upload image with request payload.
+*
+* */
+  Future<http.Response> apiMultiPartPostRequest(
+      String url, Map<String, dynamic> jsonMap, var image, String keyName,
+      {String imageName = "profile"}) async {
+
+    final token = await Utils.authToken();
+    Utils.printLog("Multipart call started==url==$url");
+
+    http.Response? responseData;
+    try {
+
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      Utils.printLog("keyName====$keyName");
+      Utils.printLog("token::$token");
+      Utils.printLog("fileName::$imageName");
+
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      request.fields[keyName] = jsonEncode(jsonMap);
+      if(image != null) {
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+        Utils.printLog("image length::$length");
+        final fileName = image.path.split('/').last;
+
+        var multiport =  http.MultipartFile.fromPath(
+          imageName,
+          image.path,
+          filename: fileName,
+          contentType: http.MediaType('image', 'jpeg'), // or png
+        );
+        request.files.add(await multiport);
+      }
+
+
+      final response = await request.send().timeout(const Duration(minutes: 1));
+      final responseJson = await response.stream.bytesToString();
+      responseData = http.Response(responseJson, response.statusCode);
+
+      Utils.printLog("Network call success. response==${responseData.statusCode}");
+
+      if (responseData.statusCode == 408) {
+        // Optionally log or handle the specific status code
+        Utils.printLog('408 error: Request timed out at server');
+      }
+
+      return responseData;
+    } on TimeoutException catch (_) {
+      Utils.printLog('Timed out in apiMultiPartPostRequest');
+      return http.Response('Request timed out', 408);
+    } catch (exception) {
+      Utils.printLog("Network call failed, exception==$exception");
+      return http.Response('Network call failed', 500);
+    }
+  }
+
+
+  Future<http.Response> apiMultipartRequest(
+      String url, Map<String, dynamic> jsonMap, var image, String keyName, var document) async {
+
+    final token =await Utils.authToken();
+    Utils.printLog("Multipart call started==url==$url");
+
+    http.Response? responseData;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      Utils.printLog("keyName====$keyName");
+      Utils.printLog("token::$token");
+
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      request.headers['Content-Type'] = 'multipart/form-data';
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      // Add JSON map as a field
+      request.fields[keyName] = jsonEncode(jsonMap);
+
+      // Add image file if provided
+      if (image != null) {
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+        var multiport = http.MultipartFile('file', stream, length,
+            filename: image.path.split('/').last);
+        request.files.add(multiport);
+      }
+
+      if (document != null) {
+        var stream = http.ByteStream(document.openRead());
+        var length = await document.length();
+        var multiport = http.MultipartFile('document', stream, length,
+            filename: document.path.split('/').last);
+        request.files.add(multiport);
+      }
+
+      final response = await request.send().timeout(const Duration(minutes:1));
+      final responseJson = await response.stream.bytesToString();
+      responseData = http.Response(responseJson, response.statusCode);
+
+      Utils.printLog("Network call success. response==${responseData.statusCode}");
+
+      if (responseData.statusCode == 408) {
+        Utils.printLog('408 error: Request timed out at server');
+      }
+
+      return responseData;
+    } on TimeoutException catch (_) {
+      Utils.printLog('Timed out in apiMultiPartPostRequest');
+      return http.Response('Request timed out', 408);
+    } catch (exception) {
+      Utils.printLog("Network call failed, exception==$exception");
+      return http.Response('Network call failed', 500);
+    }
+  }
+
+
+
+  Future<http.Response> apiPutRequest(String url, data) async {
+    const token = "Utils.token";
+    Utils.printLog("call put==url==$url");
+
+    http.Response response;
+    try {
+      var body = json.encode(data);
+      response = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body);
+      print("Network call success. response==${response.statusCode}");
+    } on TimeoutException catch (_) {
+      Utils.printLog('Timed out');
+      return http.Response('Error', 408);
+    } catch (excetion) {
+      Utils.printLog("Network call failed, excetion==$excetion");
+      return http.Response('Error', 409);
+    }
+    return response;
+  }
+
+
+  Future<http.Response> apiMultiPartListFilePostRequest(
+      String url, Map<String, dynamic> jsonMap, var imageList, String keyName) async {
+    Utils.printLog("Image File length: ${imageList.length}");
+    final token =await Utils.authToken();
+    Utils.printLog("MultipartPost call started==url==$url");
+    Utils.printLog("token: $token");
+    http.Response? responseData;
+    try {
+      var body = json.encode(jsonMap);
+      Utils.printLog("body====$body");
+      Utils.printLog("keyName====$keyName");
+
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      request.headers['Content-Type'] = 'multipart/form-data';
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+
+      request.fields[keyName] = jsonEncode(jsonMap);
+      for(File image in imageList){
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+        var fileName = path.basename(image.path);
+        var multiport = http.
+        MultipartFile('files', stream, length,
+            filename: image.path
+                .split('/')
+                .last);
+        request.files.add(multiport);
+      }
+
+      final response = await request.send().timeout(const Duration(minutes: 1));
+      final responseJson = await response.stream.bytesToString();
+      responseData = http.Response(responseJson, response.statusCode);
+
+      Utils.printLog("Network call success. response==${responseData.statusCode}");
+
+      if (responseData.statusCode == 408) {
+        // Optionally log or handle the specific status code
+        Utils.printLog('408 error: Request timed out at server');
+      }
+
+      return responseData;
+    } on TimeoutException catch (_) {
+      Utils.printLog('Timed out in apiMultiPartPostRequest');
+      return http.Response('Request timed out', 408);
+    } catch (exception) {
+      Utils.printLog("Network call failed, exception==$exception");
+      return http.Response('Network call failed', 500);
+    }
+  }
+
+  Future<http.Response> saveOrUpdateContainerType({
+    required String url,
+    required Map<String, dynamic> requestJson,
+    File? file,
+    required String userType
+  }) async {
+    final token = await Utils.authToken();
+    Utils.printLog("Multipart call started => URL: $url,   token   ==== $token");
+
+    try {
+      var multipartRequest = http.MultipartRequest("POST", Uri.parse(url));
+
+      // Set headers
+      // multipartRequest.headers['Content-Type'] = 'multipart/form-data';
+      if (token.isNotEmpty) {
+        multipartRequest.headers['Authorization'] = 'Bearer $token';
+      }
+
+      // Add JSON as string field -> "request"
+      multipartRequest.fields[userType] = jsonEncode(requestJson);
+
+      // Add file if exists
+      if (file != null) {
+        final fileName = file.path.split('/').last;
+
+        multipartRequest.files.add( await http.MultipartFile.fromPath(
+          'profileImage',
+          file.path,
+          filename: fileName,
+          contentType: http.MediaType('image', 'jpeg'), // or png
+        ),);
+      }
+
+      // Send request
+      final streamedResponse = await multipartRequest
+          .send()
+          .timeout(const Duration(minutes: 1));
+
+      // Convert stream to normal Response
+      final responseString = await streamedResponse.stream.bytesToString();
+      Utils.printLog("Status Code => ${streamedResponse.statusCode}");
+      Utils.printLog("Response => $responseString");
+
+      return http.Response(responseString, streamedResponse.statusCode);
+
+    } on TimeoutException {
+      Utils.printLog("⛔ Timeout Exception");
+      return http.Response("Request timed out", 408);
+    } catch (e) {
+      Utils.printLog("⛔ Error => $e");
+      return http.Response("Network call failed", 500);
+    }
+  }
+
+}

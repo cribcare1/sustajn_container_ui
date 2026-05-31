@@ -1,0 +1,239 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
+import '../../utils/shared_preference_utils.dart';
+import '../../utils/utils.dart';
+
+class QrDialog extends ConsumerStatefulWidget {
+  const QrDialog({super.key});
+
+  @override
+  ConsumerState<QrDialog> createState() => _QrDialogState();
+}
+
+class _QrDialogState extends ConsumerState<QrDialog> {
+  final GlobalKey _qrKey = GlobalKey();
+  bool isCopied = false;
+
+
+
+  Future<String?> _getCustomerId() async {
+    return await SharedPreferenceUtils.getStringValuesSF(
+      Strings.CUSTOMER_ID,
+    );
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      child: FutureBuilder<String?>(
+        future: _getCustomerId(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data == null || snapshot.data!.isEmpty) {
+            return _errorView(theme);
+          }
+
+          final customerId = snapshot.data!;
+
+          return Container(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        Strings.MY_QR_CODE,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+                  RepaintBoundary(
+                    key: _qrKey,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_10,
+                        Constant.CONTAINER_SIZE_24,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Constant.gold,
+                        borderRadius:
+                        BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding:
+                            EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                  Constant.CONTAINER_SIZE_12),
+                            ),
+                            child: QrImageView(
+                              data: customerId,
+                              size: Constant.CONTAINER_SIZE_200,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                customerId,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(width: Constant.CONTAINER_SIZE_8),
+
+                              InkWell(
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(text: customerId));
+
+                                  setState(() {
+                                    isCopied = true;
+                                  });
+
+                                  Future.delayed(const Duration(seconds: 2), () {
+                                    if (mounted) {
+                                      setState(() {
+                                        isCopied = false;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      isCopied ? Icons.check : Icons.copy,
+                                      size: Constant.CONTAINER_SIZE_16,
+                                      color: Colors.black,
+                                    ),
+                                    SizedBox(width: Constant.SIZE_06),
+                                    Text(
+                                      isCopied ? "Copied" : "Copy",
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                  InkWell(
+                    onTap: () => _shareQrImage(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                         Icon(Icons.share, color: Colors.white, size: Constant.CONTAINER_SIZE_18),
+                        SizedBox(width: Constant.CONTAINER_SIZE_8),
+                        Text(
+                          Strings.SHARE_QR,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _shareQrImage() async {
+    try {
+      RenderRepaintBoundary boundary =
+      _qrKey.currentContext!.findRenderObject()
+      as RenderRepaintBoundary;
+
+      ui.Image image = await boundary.toImage(pixelRatio: 3);
+      ByteData? byteData =
+      await image.toByteData(format: ui.ImageByteFormat.png);
+
+      final Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/qr_code.png');
+      await file.writeAsBytes(pngBytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: Strings.MY_QR,
+      );
+    } catch (e) {
+      debugPrint("QR Share Error: $e");
+    }
+  }
+
+  Widget _errorView(ThemeData theme) {
+    return Container(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_24),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+      ),
+      child: const Text(
+        Strings.CUSTOMER_ID_NOT_FOUND,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+  }
+}

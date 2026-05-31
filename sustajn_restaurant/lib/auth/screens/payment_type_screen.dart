@@ -1,0 +1,788 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_restaurant/auth/model/payment_type_model.dart';
+import 'package:sustajn_restaurant/common_widgets/card_widget.dart';
+import 'package:sustajn_restaurant/common_widgets/submit_button.dart';
+import 'package:sustajn_restaurant/notifier/login_notifier.dart';
+import 'package:sustajn_restaurant/provider/login_provider.dart';
+import 'package:sustajn_restaurant/utils/nav_utils.dart';
+import 'package:sustajn_restaurant/utils/utility.dart';
+
+import '../../../constants/number_constants.dart';
+import '../../common_widgets/custom_app_bar.dart';
+import '../../common_widgets/custom_back_button.dart';
+import '../../constants/string_utils.dart';
+import '../../network_provider/network_provider.dart';
+import '../../provider/profile_provider.dart';
+import '../../utils/global_utils.dart';
+import '../../utils/theme_utils.dart';
+import '../model/social_media_model.dart';
+import '../screens/subscription_screen.dart';
+import '../widgets/add_card_buttom_sheet.dart';
+
+class PaymentTypeScreen extends ConsumerStatefulWidget {
+  final String? profile;
+
+  const PaymentTypeScreen({super.key, this.profile = ""});
+
+  @override
+  ConsumerState<PaymentTypeScreen> createState() => _PaymentTypeScreenState();
+}
+
+class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
+  final TextEditingController bankNameController = TextEditingController();
+
+  final TextEditingController accountHolderNameController =
+      TextEditingController();
+
+  final TextEditingController bicController = TextEditingController();
+
+  final TextEditingController ibanController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authNotifierProvider).setContext(context);
+      ref.read(authNotifierProvider).clearBankErrors();
+      _getData();
+    });
+
+  }
+
+  _getData() {
+    final profileState = ref.read(profileProvider);
+    final authState = ref.read(authNotifierProvider);
+    print("Full Data: ${profileState.getProfileData?.data}");
+    if(profileState.getProfileData != null && profileState.getProfileData?.data != null){
+      final bankResponse = profileState.getProfileData?.data?.bankDetailsResponse;
+
+      if (bankResponse != null) {
+        bankNameController.text = bankResponse.bankName ?? "";
+        accountHolderNameController.text = bankResponse.accountHolderName ?? "";
+        ibanController.text = bankResponse.iBanNumber ?? "";
+        bicController.text = bankResponse.bicNumber ?? "";
+      }
+      if(profileState.getProfileData?.data?.cardDetailsResponse != null && profileState.getProfileData?.data?.cardDetailsResponse!.cardNumber != ""){
+        final cardDetails = profileState.getProfileData?.data?.cardDetailsResponse;
+        authState.setCardDetails(CardDetails(
+            cardHolderName:cardDetails!.cardHolderName??"",
+            cardNumber:cardDetails.cardNumber,
+            expiryDate:cardDetails.expiryDate,
+            cvv:cardDetails.id.toString()
+        ));
+      }
+      if(profileState.getProfileData?.data?.paymentGetWayResponse != null){
+        final paymentGateWay =  profileState.getProfileData?.data?.paymentGetWayResponse;
+        authState.setGateway(PaymentGatewayModel(
+            name: paymentGateWay!.paymentGatewayId,
+            id: paymentGateWay.paymentGatewayName));
+      }
+  print(authState.gateway!.name);
+  print(authState.gateway!.id);
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final authState = ref.watch(authNotifierProvider);
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: CustomAppBar(
+          title: widget.profile == 'profile' ? Strings.EDIT_PAYMENT_TYPE : '',
+          leading: CustomBackButton(),
+        ).getAppBar(context),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.profile == "") ...[
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Row(
+                  children: List.generate(4, (index) {
+                    bool active = index <= 2;
+                    return Expanded(
+                      child: Container(
+                        height: Constant.SIZE_05,
+                        margin: EdgeInsets.only(
+                          right: index == 3 ? 0 : Constant.SIZE_10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: active ? Constant.gold : Colors.white,
+                          borderRadius: BorderRadius.circular(Constant.SIZE_10),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+                Text(
+                  Strings.PAYMENT_TYPE,
+                  style: theme.textTheme.titleLarge!.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_16),
+              ],
+
+              _sectionTitle(theme, title: Strings.CARD_DETAILS),
+              (authState.cardDetails == null)
+                  ? _addCardButton(context, theme, authState)
+                  : GlassSummaryCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: Strings.ACCOUNT_HOLDER,
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            authState
+                                                .cardDetails!
+                                                .cardHolderName ??
+                                            "",
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(
+                                              color: theme.secondaryHeaderColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: Colors.transparent,
+                                        isScrollControlled: true,
+                                        builder: (_) =>
+                                            AddCardDialog(state: authState),
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: theme.secondaryHeaderColor,
+                                    ),
+                                  ),
+                                  SizedBox(width: Constant.CONTAINER_SIZE_10),
+                                  GestureDetector(
+                                    onTap: authState.removeCard,
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: theme.secondaryHeaderColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Constant.SIZE_06),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: Strings.CRD_NUMBER,
+                                  style: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: maskCardNumber(
+                                    authState.cardDetails!.cardNumber ?? "",
+                                  ),
+                                  style: theme.textTheme.titleSmall!.copyWith(
+                                    color: theme.secondaryHeaderColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: Constant.SIZE_06),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: Strings.EXPIRY,
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            authState.cardDetails!.expiryDate ??
+                                            "",
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(
+                                              color: theme.secondaryHeaderColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+              _orDivider(theme),
+              _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
+                notifier: authState,
+                title: Strings.PAYPAL,
+                asset: 'assets/images/paypal.webp',
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
+                notifier: authState,
+                title: Strings.APPLE_PAY,
+                asset: 'assets/images/apple_pay.png',
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              paymentGatewayTile(
+                context: context,
+                theme: theme,
+                notifier: authState,
+                title: Strings.GOOGLE_PAY,
+                asset: 'assets/images/google_pay.png',
+              ),
+              _orDivider(theme),
+              _sectionTitle(theme, title: Strings.BANK_DETAILS),
+
+              _bankFields(theme, authState),
+              SizedBox(height: Constant.CONTAINER_SIZE_16),
+              SizedBox(
+                width: double.infinity,
+                child: authState.isLoading?Center(child: CircularProgressIndicator(),): SubmitButton(
+                  onRightTap: () async {
+                    final hasCard = authState.cardDetails != null;
+                    final hasGateway = authState.gateway != null;
+                    final hasBankDetails =
+                        bankNameController.text.trim().isNotEmpty &&
+                        accountHolderNameController.text.trim().isNotEmpty &&
+                        ibanController.text.trim().isNotEmpty &&
+                        bicController.text.trim().isNotEmpty;
+                    if (!hasCard && !hasGateway && !hasBankDetails) {
+                      Utils.showToast("Please add at least one payment method");
+                      return;
+                    }
+                    if (hasBankDetails) {
+                      if (!authState.validateBankDetails()) return;
+                      final bankData = BankDetailsModel(
+                        bankName: authState.bankName ?? "",
+                        accountHolderName: authState.accountHolder ?? "",
+                        ibanNumber: authState.iban ?? "",
+                        bicNumber: authState.bic ?? "",
+                      );
+                      authState.setBankDetails(bankData);
+                    }
+
+                    if (widget.profile == 'profile') {
+                      _referPartnerNetworkCall();
+                      // Navigator.pop(context);
+                      return;
+                    }
+
+                    NavUtil.navigateToPushScreen(context, SubscriptionScreen());
+                  },
+
+                  rightText: widget.profile == 'profile'
+                      ? Strings.UPDATE
+                      : Strings.VERIFY_CONT,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  Widget _sectionTitle(ThemeData theme, {String? title}) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: Constant.SIZE_10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (title != null && title.isNotEmpty) ...[
+              Text(
+                title,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _addCardButton(
+    BuildContext context,
+    ThemeData theme,
+    AuthState state,
+  ) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          useSafeArea: true,
+          builder: (_) => AddCardDialog(state: state),
+        );
+      },
+      child: GlassSummaryCard(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.credit_card, color: Constant.gold),
+            SizedBox(width: Constant.SIZE_08),
+            Text(
+              Strings.ADD_CARD,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: Constant.gold,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _orDivider(ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: Constant.SIZE_15),
+      child: Row(
+        children: [
+          Expanded(child: Divider(color: Constant.gold)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: Constant.SIZE_10),
+            child: Text(
+              Strings.OR,
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            ),
+          ),
+          Expanded(child: Divider(color: Constant.gold)),
+        ],
+      ),
+    );
+  }
+
+
+  Widget paymentGatewayTile({
+    required BuildContext context,
+    required ThemeData theme,
+    required AuthState notifier,
+    required String title,
+    required String asset,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (_) =>
+              AddGatewayDialog(title: title, asset: asset, notifier: notifier),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E4636),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          border: Border.all(color: Colors.white24),
+        ),
+        child: Row(
+          children: [
+            Image.asset(asset, height: Constant.CONTAINER_SIZE_30),
+            SizedBox(width: Constant.CONTAINER_SIZE_12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (notifier.gateway != null && notifier.gateway!.name == title)
+                    Padding(
+                      padding: EdgeInsets.only(top: Constant.SIZE_04),
+                      child: Text(
+                        notifier.gateway!.id!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (notifier.gateway != null && notifier.gateway!.name == title)
+            Expanded(child: Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: (){
+                  setState(() {
+                    notifier.gateway!.name= "";
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.secondaryHeaderColor,
+                  ),
+                  padding: EdgeInsets.all(Constant.SIZE_04),
+                  child: Icon(Icons.close,size: Constant.CONTAINER_SIZE_12,color: theme.primaryColor),
+                ),
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bankFields(ThemeData theme, var auth) {
+    return Column(
+      children: [
+        _inputField(
+          theme,
+          hint: Strings.BANK_NAME,
+          label: Strings.BANK_NAME,
+          controller: bankNameController,
+          keyboardType: TextInputType.text,
+          errorText: auth.bankNameError,
+          onChanged: auth.setBankName,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
+        ),
+        SizedBox(height: Constant.SIZE_10),
+        _inputField(
+          theme,
+          hint: Strings.ACCOUNT_HOLDER_NAME,
+          label: Strings.ACCOUNT_HOLDER_NAME,
+          controller: accountHolderNameController,
+          keyboardType: TextInputType.text,
+          errorText: auth.accountHolderError,
+          onChanged: auth.setAccountHolder,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
+        ),
+        SizedBox(height: Constant.SIZE_10),
+        _inputField(
+          theme,
+          hint: Strings.IBAN,
+          label: Strings.IBAN,
+          controller: ibanController,
+          keyboardType: TextInputType.text,
+          errorText: auth.ibanError,
+          onChanged: auth.setIban,
+          inputFormatters: [LengthLimitingTextInputFormatter(23)],
+        ),
+        SizedBox(height: Constant.SIZE_10),
+        _inputField(
+          theme,
+          hint: Strings.BIC,
+          label: Strings.BIC,
+          controller: bicController,
+          keyboardType: TextInputType.text,
+          errorText: auth.bicError,
+          onChanged: auth.setBic,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(11),
+            FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _inputField(
+    ThemeData theme, {
+    required String hint,
+    required String label,
+    required TextEditingController controller,
+    required String? errorText,
+    required Function(String) onChanged,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      style: theme.textTheme.bodyLarge?.copyWith(
+        color: Colors.white,
+        fontSize: Constant.CONTAINER_SIZE_14,
+      ),
+      cursorColor: Colors.white,
+      textCapitalization: TextCapitalization.characters,
+      decoration: InputDecoration(
+        hintText: hint,
+        errorText: errorText,
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+        labelText: label,
+        labelStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
+        filled: true,
+        fillColor: Constant.grey.withOpacity(0.1),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+          borderSide: BorderSide(color: Constant.grey.withOpacity(0.3)),
+        ),
+        enabledBorder: CustomTheme.roundedBorder(
+          Constant.grey.withOpacity(0.3),
+        ),
+        focusedBorder: CustomTheme.roundedBorder(
+          Constant.grey.withOpacity(0.3),
+        ),
+      ),
+    );
+  }
+
+  Map<String, dynamic> getJsonData() {
+    final authState = ref.read(authNotifierProvider);
+    final data = {
+      "bankDetails":  authState.bankDetails ?? BankDetailsModel().toJson(),
+      "cardDetails": authState.cardDetails?.toJson() ?? CardDetails().toJson(),
+      "paymentGetWay":  () {
+        final map = (authState.gateway ?? PaymentGatewayModel()).toJson();
+        map.remove('asset');
+        return map;
+      }(),
+    };
+    return data;
+  }
+
+  _referPartnerNetworkCall() async {
+    Utils.printLog('refer a partner Network call');
+    final authState = ref.read(authNotifierProvider);
+    try {
+      authState.setIsLoading(true);
+      await ref
+          .read(networkProvider.notifier)
+          .isNetworkAvailable().then((value)async{
+        if(value){
+          await ref.read(updatePaymentType(getJsonData()).future);
+        }else{
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog(e.toString());
+    }
+  }
+
+}
+
+class AddGatewayDialog extends StatefulWidget {
+  final String title;
+  final String asset;
+  final AuthState notifier;
+
+  const AddGatewayDialog({
+    super.key,
+    required this.title,
+    required this.asset,
+    required this.notifier,
+  });
+
+  @override
+  State<AddGatewayDialog> createState() => _AddGatewayDialogState();
+}
+
+class _AddGatewayDialogState extends State<AddGatewayDialog> {
+  final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // _controller.text =
+    //     (widget.notifier.gateway != null &&
+    //         widget.notifier.gateway!.name!.toLowerCase().contains(
+    //           widget.title.toLowerCase(),
+    //         ))
+    //     ? widget.notifier.gateway!.id.toString()
+    //     : "";
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_16),
+            child: Utils.buildFloatingHeader(context),
+          ),
+          SizedBox(height: Constant.SIZE_08),
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: Constant.CONTAINER_SIZE_16,
+              right: Constant.CONTAINER_SIZE_16,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+              decoration: BoxDecoration(
+                color: Color(0xFF123D2C),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(Constant.CONTAINER_SIZE_20),
+                ),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(flex: 6,
+                          child: Text(
+                            "Link ${widget.title} Account",
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Image.asset(
+                          widget.asset,
+                          height: Constant.CONTAINER_SIZE_28,
+                          width: Constant.CONTAINER_SIZE_28,
+                          fit: BoxFit.contain,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_16),
+                    TextFormField(
+                      controller: _controller,
+                      style: const TextStyle(color: Colors.white),
+                      validator: (v) {
+                        if (v == null || v.isEmpty) {
+                          return 'Enter your ${widget.title} ID';
+                        }
+
+                        final value = v.trim();
+
+                        switch (widget.title.toLowerCase()) {
+                          case 'paypal':
+                            final emailRegex = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w+$');
+                            if (!emailRegex.hasMatch(value)) {
+                              return 'Enter a valid PayPal email';
+                            }
+                            break;
+                          case 'google pay':
+                            final gpayRegex = RegExp(r'^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$');
+                            if (!gpayRegex.hasMatch(value)) {
+                              return 'Enter a valid Google Pay UPI ID';
+                            }
+                            break;
+
+                          case 'apple pay':
+                            return null;
+
+                          default:
+                            return null;
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter your ${widget.title} ID',
+                        hintStyle: const TextStyle(color: Colors.white70),
+                        filled: true,
+                        fillColor: Colors.white10,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_14,
+                          ),
+                          borderSide: BorderSide(
+                            color: Constant.grey.withOpacity(0.3),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                          borderSide: BorderSide(
+                            color: Constant.grey.withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SubmitButton(
+                        rightText: Strings.ADD_CONT,
+                      onRightTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            widget.notifier.setGateway(
+                              PaymentGatewayModel(
+                                name: widget.title,
+                                id: _controller.text,
+                                asset: widget.asset,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

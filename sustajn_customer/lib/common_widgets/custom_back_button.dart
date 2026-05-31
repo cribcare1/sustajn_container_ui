@@ -1,25 +1,27 @@
-import 'package:flutter/material.dart';
+import '../constants/imports_util.dart';
+import '../constants/number_constants.dart';
 
-class CustomBackButton extends StatefulWidget {
-  const CustomBackButton({super.key});
+class CustomBackButton extends StatelessWidget {
+  final Future<bool> Function()? onBack;
 
-  @override
-  State<CustomBackButton> createState() => _CustomBackButtonState();
-}
+  const CustomBackButton({super.key, this.onBack});
 
-class _CustomBackButtonState extends State<CustomBackButton> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return InkWell(
-      onTap: () {
-        setState(() {
+      onTap: () async {
+        if (onBack != null) {
+          final shouldPop = await onBack!();
+          if (shouldPop) {
+            Navigator.pop(context);
+          }
+        } else {
           Navigator.pop(context);
-        });
+        }
       },
-      child: const Icon(
-        Icons.arrow_back,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.arrow_back_ios, color: Colors.white70),
     );
   }
 }

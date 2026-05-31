@@ -13,11 +13,19 @@ class Constant {
   static late int MAX_LINE_8 = 8;
   static late int MAX_LINE_9 = 9;
   static late int MAX_LINE_10 = 10;
+  static late int MAX_LINE_11 = 11;
+
   static late int MAX_LINE_12 = 12;
   static late int MAX_LINE_15 = 15;
+  static late int MAX_LINE_20 = 20;
+  static late int MAX_LINE_23 = 23;
+  static late int MAX_LINE_34 = 34;
+
   static late int MAX_LINE_100 = 100;
   static late double SIZE_005 = 0.5;
   static late double SIZE_008 = 0.8;
+  static late double SIZE_065 = 0.65;
+  static late double SIZE_085 = 0.85;
   static late double SIZE_00 = 0;
   static late double SIZE_001 = 0.40;
   static late double SIZE_01 = 1.00;
@@ -33,6 +41,8 @@ class Constant {
   static late double SIZE_15 = 15.00;
   static late double SIZE_17= 17.00;
   static late double SIZE_18 = 18.00;
+  static late double SIZE_2 = 1.3;
+  static late double SIZE_1 = 1.6;
   static late double TOPSIZE = 10;
   static late double PADDING_HEIGHT_10 = 10.0;
   static late double PADDING_HEIGHT_50 = 50.0;
@@ -47,29 +57,42 @@ class Constant {
   static late double LABEL_TEXT_SIZE_30 = 30;
   static late double CONTAINER_HEGIHT_SIZE = 35;
   static late double CONTAINER_WIDTH_SIZE = 40;
+  static late double CONTAINER_SIZE_1 = 01.0;
+  static late double CONTAINER_SIZE_2 = 02.0;
+  static late double CONTAINER_SIZE_4 = 04.0;
+  static const double CONTAINER_SIZE_6 = 06.0;
+  static late double CONTAINER_SIZE_8 = 08.0;
   static late double CONTAINER_SIZE_10 = 10.0;
   static late double CONTAINER_SIZE_12 = 12.0;
   static late double CONTAINER_SIZE_14 = 14.0;
   static late double CONTAINER_SIZE_13 = 13.0;
   static late double CONTAINER_SIZE_15 = 15.0;
   static late double CONTAINER_SIZE_16 = 16.0;
-  static late double CONTAINER_SIZE_18 = 18.0;
+  static const double CONTAINER_SIZE_18 = 18.0;
   static late double CONTAINER_SIZE_20 = 20.0;
+  static late double CONTAINER_SIZE_22 = 22.0;
   static late double CONTAINER_SIZE_24=24.0;
   static late double CONTAINER_SIZE_25 = 25.0;
+  static late double CONTAINER_SIZE_26 = 26.0;
   static late double CONTAINER_SIZE_28 = 28.0;
   static late double CONTAINER_SIZE_30 = 30.0;
   static late double CONTAINER_SIZE_32 = 32.0;
   static late double CONTAINER_SIZE_33 = 33.0;
   static late double CONTAINER_SIZE_35 = 35.0;
+  static late double CONTAINER_SIZE_36= 36.0;
   static late double CONTAINER_SIZE_40 = 40.0;
+  static late double CONTAINER_SIZE_42 = 42.0;
+  static late double CONTAINER_SIZE_44=44.0;
   static late double CONTAINER_SIZE_45 = 45.0;
+  static late double CONTAINER_SIZE_48= 48.0;
   static late double CONTAINER_SIZE_50 = 50.0;
   static late double CONTAINER_SIZE_55 = 55.0;
+  static late double CONTAINER_SIZE_56=56.0;
   static late double CONTAINER_SIZE_60 = 60.0;
   static late double CONTAINER_SIZE_64 = 64.0;
   static late double CONTAINER_SIZE_65 = 65.0;
   static late double CONTAINER_SIZE_70 = 70.0;
+  static late double CONTAINER_SIZE_72=72.0;
   static late double CONTAINER_SIZE_75 = 75.0;
   static late double CONTAINER_SIZE_80 = 80.0;
   static late double CONTAINER_SIZE_85 = 85.0;
@@ -100,6 +123,7 @@ class Constant {
   static late double CONTAINER_SIZE_350 = 350.0;
   static late double CONATAINER_SIZE_380 = 380.0;
   static late double CONATAINER_SIZE_400 = 400.0;
+  static late double CONTAINER_SIZE_500 = 500.0;
   static late double CONATAINER_SIZE_600 = 600.0;
   static late int CONATAINER_SIZE_1900 = 1900;
   static late double CONTAINER_SIZE_800= 800.0;
@@ -132,12 +156,10 @@ class Constant {
   static const Color black12 = Colors.black12;
   static const Color black38 = Colors.black38;
   static const Color black26 = Colors.black26;
-  static const Color lightBlue = Colors.lightBlue;
   static const Color transparent = Colors.transparent;
   static const Color grey = Colors.grey;
   static const Color grey200 = Color(0xFFF5F5F5);
   static const Color blueGrey = Colors.blueGrey;
-  static const Color lightBlueAccent = Colors.lightBlueAccent;
   static const Color blueAccent = Colors.blueAccent;
   static const Color teal = Colors.teal;
 
@@ -165,28 +187,27 @@ class Constant {
   static const Color redrgb = Color.fromARGB(226, 182, 36, 36);
   static const Color whitergb = Color.fromRGBO(255, 255, 255, 1);
 
-  // #EA8D8D → #A890FE
-
-// #FF61D2 → #FE9090
 
   static const Color boxDecoration = Color.fromRGBO(38, 105, 177, 1);
   static const Color heading1 = Color(0xFFFF61D2);
   static const Color heading2 = Color(0xFFEA8D8D);
 
-  //  0xFF5F4B8BFF
-  // 0xE69A8DFF
+  // static const Color background = Color(0xFF0E2F28);
+  // static const Color card = Color(0xFF1D3A33);
+  static const Color profileText = Colors.white;
+  static const Color statusCritical = Color(0xFFF8C53B);
+  static const Color statusUrgent = Color(0xFFE2703A);
+  static const Color statusUpcoming = Color(0xFF4CAF50);
+  static const Color subtitleText = Color(0xFFB9C5BE);
+  static const Color badgePink = Color(0xFFFF6A6A);
+  static const Color greenCircle = Color(0xFF4CAF50);
+  static const Color orangeCircle = Color(0xFFFFA04B);
+  static const Color gold = Color(0xFFD1AE31);
+  static const Color lightPink = Color(0xFFFFB2BA);
+  static const Color lightBlue = Color(0xFFb2c9ff);
+  static const Color lightYellow = Color(0xFFffdf99);
+  static const Color lightGreen = Color(0xFFa5ff99);
 
-  // card color theme
-  static const Color blueshade100 = Color(0xFFBBDEFB); // Light blue shade
-  static const Color greenshade100 = Color(0xFFC8E6C9); // Light green shade
-  static const Color pinkshade100 = Color(0xFFF8BBD0); // Light pink shade
-  static const Color orangeshade100 = Color(0xFFFFE0B2); // Light orange shade
-  static const Color greyshade100 = Color(0xFFE0E0E0); // Light grey shade
-  static const Color indigoShade100 = Color(0xFFC5CAE9); // Light indigo shade
-  static const Color tealshade100 = Color(0xFFB2DFDB); // Light teal shade
-  static const Color lightblueS = Color(0xFF8ECAE6); // Light teal shade
-  static const Color yellowShade100 = Color(0xFFFFF9);
-  static const Color baseColor = Color(0xFFffc700);
 
 
 

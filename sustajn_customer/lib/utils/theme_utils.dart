@@ -8,8 +8,8 @@ class CustomTheme {
     return isLightMode
         ? ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: const Color(0xff180fd1),
-      secondaryHeaderColor: const Color(0xff00c4cc),
+      primaryColor: const Color(0xFF0f3727),
+      secondaryHeaderColor: const Color(0xFFe7f7f1),
       colorScheme: const ColorScheme(
         primary: Color(0xff7300e6),
         secondary: Color(0xff00c4cc),
@@ -21,8 +21,8 @@ class CustomTheme {
         surface: Color(0xffffffff),
         onSurface: Color(0xff0e0e0e),
       ),
-      scaffoldBackgroundColor: const Color(0xfffbfbfa),
-      appBarTheme: const AppBarTheme(color: Color(0xff7300e6)), //0xff7300e6  0xff180fd1
+      scaffoldBackgroundColor: const Color(0xFF0f3727),
+      appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF78B5A4)), //0xff7300e6  0xff180fd1
       textTheme: TextTheme(
         displayLarge: GoogleFonts.openSans(),
         titleSmall: GoogleFonts.roboto(
@@ -74,6 +74,15 @@ class CustomTheme {
         borderSide: const BorderSide(color: Colors.grey));
   }
 
+
+  static OutlineInputBorder roundedBorder(Color color) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(20),
+      borderSide: BorderSide(color: color),
+    );
+  }
+
+
   static TextStyle getButtonBoldBlackStyle() {
     return TextStyle(
       fontFamily: 'OpenSans-Semibold',
@@ -106,6 +115,35 @@ class CustomTheme {
       color: Colors.white,
     );
   }
+
+  static TextField searchField(TextEditingController controller, String text, {ValueChanged<String>? onChanged}){
+    return  TextField(
+      controller: controller,
+      cursorColor: Colors.white70,
+      style: TextStyle(color: Colors.white70),
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        hintText: text,
+        hintStyle: TextStyle(color: Colors.white70),
+        prefixIcon: const Icon(Icons.search, color: Colors.white70,),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Constant.grey),
+        ),
+        fillColor: Constant.grey.withOpacity(0.1),
+        filled: true,
+      ),
+    );
+  }
+
 
 
 }

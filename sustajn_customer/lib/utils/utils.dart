@@ -1,0 +1,857 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sustajn_customer/auth/screens/login_screen.dart';
+import 'package:sustajn_customer/utils/nav_utils.dart';
+import 'package:sustajn_customer/utils/shared_preference_utils.dart';
+import 'package:sustajn_customer/utils/theme_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../auth/screens/save_home_address.dart';
+import '../constants/network_urls.dart';
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
+import '../models/get_profile_model.dart';
+
+class Utils {
+
+
+  static showProfilePhotoBottomSheet(
+      BuildContext context, {
+        required VoidCallback onCamera,
+        required VoidCallback onGallery,
+      }) {
+
+    final theme = CustomTheme.getTheme(true);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: false,
+      backgroundColor: theme!.scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: Constant.CONTAINER_SIZE_20,
+              horizontal: Constant.CONTAINER_SIZE_20,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Choose",
+                        style: TextStyle(
+                          fontSize: Constant.LABEL_TEXT_SIZE_18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                      ),
+                    ),
+
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+                      child: Container(
+                        height: Constant.CONTAINER_SIZE_36,
+                        width: Constant.CONTAINER_SIZE_36,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.clear,
+                          size: Constant.CONTAINER_SIZE_20,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+
+                    _optionButton(
+                      context,
+                      icon: Icons.camera_alt_outlined,
+                      label: "Camera",
+                      color: Constant.grey.withOpacity(0.3),
+                      iconColor: Colors.white,
+                      onTap: () {
+                        Navigator.pop(context);
+                        onCamera();
+                      },
+                    ),
+
+                    _optionButton(
+                      context,
+                      icon: Icons.image_outlined,
+                      label: "Gallery",
+                      color:Constant.grey.withOpacity(0.3),
+                      iconColor: Colors.white,
+                      onTap: () {
+                        Navigator.pop(context);
+                        onGallery();
+                      },
+                    ),
+                       // todo this may need in future
+                    // _optionButton(
+                    //   context,
+                    //   icon: Icons.delete_outline,
+                    //   label: "Remove",
+                    //   color: Colors.red.withOpacity(0.10),
+                    //   iconColor: Colors.red,
+                    //   onTap: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    // ),
+                  ],
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static String maskEmail(String email) {
+    if (email.isEmpty || !email.contains('@')) {
+      return email;
+    }
+
+    final parts = email.split('@');
+    final localPart = parts[0];
+    final domainPart = parts[1];
+
+    if (localPart.length <= 4) {
+      return email;
+    }
+
+    final maskedLength = localPart.length - 4;
+    final masked = List.filled(maskedLength, '*').join();
+
+    return '${localPart.substring(0, 4)}$masked@$domainPart';
+  }
+  static Future<void> displayDialog({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Future<void> skipDialog({
+    required BuildContext context,
+    required IconData icon,
+
+    required String subTitle,
+    required String cancelButtonText,
+    required String yesButtonText,
+    required VoidCallback onCancel,
+    required VoidCallback onYes,
+  }) async {
+    final theme = Theme.of(context);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  borderRadius:
+                  BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1),
+                  ),
+                  color: Constant.white.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: onCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFC8B531)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        cancelButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onYes,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        yesButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  static  logOutDialog(
+      BuildContext context,
+      IconData icon,
+      String title,
+      String subTitle,
+      String stayButtonText,
+      String noButton
+      ) async {
+    final theme = Theme.of(context);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: theme.scaffoldBackgroundColor,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: Constant.PADDING_HEIGHT_10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                decoration: BoxDecoration(
+                  color: Constant.grey.withOpacity(0.2),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Constant.grey.withOpacity(0.1)
+                  )
+                ),
+                child: Icon(
+                  icon,
+                  size: Constant.CONTAINER_SIZE_40,
+                  color: Constant.gold,
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+              Text(title, style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white
+              )),
+              SizedBox(height: Constant.SIZE_05),
+              Text(
+                subTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white
+                ),
+              ),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Constant.gold),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                       noButton,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Constant.gold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+                  // STAY
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+
+                        SharedPreferenceUtils.deleteValueFromSF();
+                        NavUtil.navigationToWithReplacement(context, LoginScreen());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Constant.gold,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_12,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        stayButtonText,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ?? false;
+  }
+
+
+
+  static  Widget _optionButton(
+      BuildContext context, {
+        required IconData icon,
+        required String label,
+        required Color color,
+        required Color iconColor,
+        required VoidCallback onTap,
+      }) {
+    return Flexible(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        child: Column(
+          children: [
+            Container(
+              height: Constant.CONTAINER_SIZE_80,
+              width: Constant.CONTAINER_SIZE_80,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                icon,
+                size: Constant.CONTAINER_SIZE_35,
+                color: iconColor,
+              ),
+            ),
+            SizedBox(height: Constant.CONTAINER_SIZE_10),
+            Text(
+              label,
+              style: TextStyle(fontSize: Constant.LABEL_TEXT_SIZE_14,
+              color: Colors.white),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+  static Widget getDateTimePicker(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      Function(DateTime) onDateSelected,
+      ThemeData theme
+      ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: Constant.SIZE_15),
+      child: GestureDetector(
+        onTap: () {
+          picker.DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime.now(),
+            theme: picker.DatePickerTheme(
+              headerColor: Constant.gold,
+              backgroundColor: theme.primaryColor,
+              itemStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              doneStyle: const TextStyle( fontSize: 16),
+            ),
+            onConfirm: (date) {
+              final value =
+                  "${date.year}-${date.month}-${date.day}";
+              controller.text = value;
+              onDateSelected(date);
+            },
+            currentTime: DateTime.now(),
+            locale: picker.LocaleType.en,
+          );
+        },
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white70),
+              suffixIcon: const Icon(Icons.date_range, color: Colors.white70,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              enabledBorder: CustomTheme.roundedBorder(Constant.grey),
+              focusedBorder: CustomTheme.roundedBorder(Constant.grey),
+            ),
+            validator: (value) =>
+            value!.isEmpty ? 'Please select date' : null,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+  static String formatDob(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.year}";
+  }
+
+  static String formatDate(DateTime date) {
+    return "${date.year}."
+        "${date.month.toString().padLeft(2, '0')}."
+        "${date.day.toString().padLeft(2, '0')}";
+  }
+
+
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG);
+  }
+
+  static isReqSuccess(var response) {
+    if ((response.statusCode < 200 || response.statusCode >= 300)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  static void printLog(String message) {
+    print(message);
+  }
+  static String? token = "";
+  static void getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString(Strings.JWT_TOKEN);
+    printLog("JWT Token ==== $token");
+  }
+
+  static String authToken() {
+    if (token == null || token!.isEmpty) {
+      getToken();
+    }
+    return (token != null && token!.isNotEmpty) ? token! : "";
+  }
+
+  static showNetworkErrorToast(BuildContext context, var errorCode) {
+    Utils.printLog("Exception:::: $errorCode");
+    const error = "Error:";
+    if (errorCode.contains(error)) {
+      final startIndex = errorCode.indexOf(error);
+      errorCode = errorCode
+          .substring(startIndex + error.length, errorCode.length)
+          .trim();
+      Utils.printLog("exception code:::: $errorCode");
+    }
+    switch (errorCode) {
+      case "${NetworkUrls.NETWORK_CALL_FAILED_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.TIME_OUT_CODE}":
+        showCustomSnackBar( context: context, message: Strings.TIME_OUT_ERROR_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.EMPTY_RESPONSE_CODE}":
+        showCustomSnackBar( context: context, message: Strings.EMPTY_DATA_SERVER_MSG, color: Colors.red);
+        break;
+      case "${NetworkUrls.UNAUTHORIZED_ERROR_CODE}":
+        showCustomSnackBar( context: context, message: Strings.SESSION_EXPIRED_MSG, color: Colors.red);
+        // sessionExpired(context);
+        break;
+      default:
+        showCustomSnackBar( context: context, message: Strings.API_ERROR_MSG_TEXT, color: Colors.red);
+        break;
+    }
+  }
+
+  static void navigateToPushScreen(BuildContext context, screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+  }
+
+  static getParams(var partUrl, var requestType, var listener) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.REQUEST_TYPE: requestType,
+      Strings.LISTENER: listener,
+    };
+  }
+
+  static postParams(var partUrl, var data) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+    };
+  }
+
+  static Map<String, dynamic> multipartParams(
+      String partUrl,
+      Map<String, dynamic> data,
+      String requestKey, {
+        File? image,
+      }) {
+    final params = {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+    };
+
+    if (image != null) {
+      params[Strings.IMAGE] = image;
+    }
+
+    return params;
+  }
+
+
+
+  static multipartParamsDocument(var partUrl, var data, var requestKey, var image, var document) {
+    return {
+      Strings.PART_URL: partUrl,
+      Strings.DATA: data,
+      Strings.REQUEST_KEY: requestKey,
+      if (image != null) Strings.IMAGE: image,
+      if (document != null) Strings.DOCUMENT: document,
+    };
+  }
+
+
+
+  static ProfileData? profileData;
+  static int? userId;
+
+  static Future<ProfileData?> getProfile() async {
+    try {
+      final SharedPreferences prefs =
+      await SharedPreferences.getInstance();
+
+      final data = prefs.getString(Strings.PROFILE_DATA);
+      printLog("Profile Data ==== $data");
+
+      if (data == null || data.isEmpty) {
+        printLog("No profile data found");
+        profileData = null;
+        userId = null;
+        return null;
+      }
+
+      final decoded = jsonDecode(data);
+      final parsed = ProfileData.fromJson(decoded);
+
+      profileData = parsed;
+      userId = parsed.id;
+
+      return parsed;
+    } catch (e) {
+      printLog("getProfile exception: $e");
+      profileData = null;
+      userId = null;
+      return null;
+    }
+  }
+
+
+
+
+
+
+
+
+
+  // this method is used for showing the error text
+  static Widget getErrorText(String msg) {
+    return Center(
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: Constant.LABEL_TEXT_SIZE_18,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
+
+  static Widget showProgressBar(){
+    return Center (
+      child: CircularProgressIndicator(
+        color: Constant.gold,
+      ),
+    );
+  }
+
+ static  Future<void> callPhone(String phone) async {
+    final Uri uri = Uri(scheme: 'tel', path: phone);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  static Future<String?> getDeviceToken() async {
+    final fcm = FirebaseMessaging.instance;
+    await fcm.requestPermission();
+    final token = await fcm.getToken();
+    if (token != null && token.isNotEmpty) {
+      printLog("DEVICE TOKEN: $token");
+      return token;
+    }
+    printLog("DEVICE TOKEN NOT FOUND");
+
+    return null;
+  }
+
+  static Future<void> sendEmail(String email) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  static String getAppBarTitle({
+    required AddressFlow flow,
+    required dynamic existingAddress,
+  }) {
+    if (flow == AddressFlow.signup) {
+      return Strings.SELECT_HOME_ADDRESS_TITLE;
+    }
+
+    if (existingAddress != null) {
+      return Strings.EDIT_ADDRESS_TITLE;
+    }
+
+    return Strings.ADD_ADDRESS_TITLE;
+  }
+
+
+}
+
+
+void showCustomSnackBar({
+  required BuildContext context,
+  required String message,
+  required Color color,
+}) {
+  final messenger = ScaffoldMessenger.of(context);
+
+  messenger.clearSnackBars();
+
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: Constant.CONTAINER_SIZE_14,
+        ),
+      ),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+    ),
+  );
+}
+
