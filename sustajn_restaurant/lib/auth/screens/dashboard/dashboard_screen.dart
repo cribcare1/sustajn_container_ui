@@ -52,7 +52,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ref.read(profileProvider).setContext(context);
       ref.read(notificationProvider).setContext(context);
     });
-
+    _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
     Utils.authToken();
     Utils.getUserId();
     _init();
@@ -61,7 +61,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _init() async {
     await FirebaseServices().initialize();
     await _loadProfile();
-    _getChartNetworkCall(DateTime.now().month, DateTime.now().year);
+
     if (ref.read(profileProvider).getProfileData == null) {
       await _getProfileNetworkCall();
     }
@@ -113,7 +113,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
       ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        Utils.printLog("CHART isNetworkAvailable::$isNetworkAvailable");
         final profileState = ref.read(profileProvider);
 
         if (isNetworkAvailable) {
@@ -121,8 +121,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           final userId = Utils.userId!;
           final url =
               '${NetworkUrls.DASHBOARD_CHART}$userId&month=$month&year=$year&planId=${Utils.planId}';
-          Utils.printLog("url::$url");
-          ref.read(getChartData(url));
+          Utils.printLog("CHART url::$url");
+          ref.read(getChartDataProvider(url));
         } else {
           profileState.setDashboardLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
@@ -134,9 +134,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
+
+    final userId = Utils.userId!;
+    final url =
+        '${NetworkUrls.DASHBOARD_CHART}$userId&month=${DateTime.now().month}&year=${DateTime.now().year}';
+    // ref.watch(getChartDataProvider(url));
     if (profileState.loginResponse != null) {
       loginResponse = profileState.loginResponse;
     }

@@ -68,7 +68,7 @@ static const GET_ALL_NOTIFICATION = "notifications/getAll/";
 static const GET_NOTIFICATION_COUNT = "notifications/unread/count/";
 static const MARK_READ = "notifications/mark-read/";
 
-static const DASHBOARD_CHART = "orders/restaurantOrders/chart-stats?restaurantId=";
+static const DASHBOARD_CHART = "orders/restaurantOrders/chart-stats/stream?restaurantId=";
 static const UPDATE_PAYMENT_TYPE = "auth/updateBankDetailsByUser?customerId=";
 
 
