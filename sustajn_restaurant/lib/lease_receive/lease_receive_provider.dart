@@ -19,10 +19,10 @@ final leaseContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
     final response = await apiService.leaseContainer((params));
     if(response != null && response['status'] == NetworkUrls.SUCCESS){
       print("✅ SUCCESS BLOCK EXECUTED");
-      final url =
-          '${NetworkUrls.DASHBOARD_CHART}${Utils.userId}&month=${DateTime.now().month}&year=${DateTime.now().year}&&planId=${Utils.planId}';
-      Utils.printLog("url::$url");
-      ref.read(getChartData(url));
+      // final url =
+      //     '${NetworkUrls.DASHBOARD_CHART}${Utils.userId}&month=${DateTime.now().month}&year=${DateTime.now().year}&&planId=${Utils.planId}';
+      // Utils.printLog("url::$url");
+      // // ref.read(getChartData(url));
       showCustomSnackBar(
         context: leaseNotifier.context!,
         message:  response['message'],

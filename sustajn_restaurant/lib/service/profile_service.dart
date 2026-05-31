@@ -218,24 +218,54 @@ Future<dynamic> updatePaymentType(String url, Map<String, dynamic> requestData) 
     }catch (e){throw Exception(e);}
   }
 
-  Future<ChartModel> fetchChartData(String partUrl) async {
-    try {
-      Utils.printLog("requestData::::::: $partUrl");
-      String url = NetworkUrls.BASE_URL + partUrl;
-      ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.getAPIData(url);
-      if (response != null) {
-        print("Chart Response ==== $response");
-        var responseData = ChartModel.fromJson(response['data']);
-        Utils.printLog("responseData in Service: $responseData");
-        return responseData;
-      } else {
-        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
-      }
-    } catch (e) {
-      Utils.printLog("Get Profile service::::$e");
-      throw Exception(e);
-    }
+  // Future<ChartModel> fetchChartData(String partUrl) async { TODO KEEP it now for further use
+  //   try {
+  //     Utils.printLog("requestData::::::: $partUrl");
+  //     String url = NetworkUrls.BASE_URL + partUrl;
+  //     ApiCallPresenter presenter = ApiCallPresenter();
+  //     var response = await presenter.getSSEAPIData(url);
+  //     if (response != null) {
+  //       Utils.printLog("Chart Response ==== $response");
+  //
+  //       // Check if response has 'data' wrapper, otherwise use response directly
+  //       var chartData;
+  //       if (response is Map<String, dynamic>) {
+  //         if (response.containsKey('data')) {
+  //           chartData = response['data'];
+  //           Utils.printLog("Using wrapped data from 'data' key");
+  //         } else {
+  //           // Response is already the chart data directly
+  //           chartData = response;
+  //           Utils.printLog("Using response directly as chart data");
+  //         }
+  //       } else {
+  //         chartData = response;
+  //       }
+  //
+  //       Utils.printLog("Chart data to parse: $chartData");
+  //       var responseData = ChartModel.fromJson(chartData);
+  //       Utils.printLog("✅ responseData in Service: $responseData");
+  //       return responseData;
+  //     } else {
+  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+  //     }
+  //   } catch (e) {
+  //     Utils.printLog("❌ Get Profile service error::::$e");
+  //     throw Exception(e);
+  //   }
+  // }
+  Stream<ChartModel> fetchChartData(String param) {
+    final url = NetworkUrls.BASE_URL + param;
+    Utils.printLog("service url for chart data: $url");
+    final apiService = ApiCallPresenter();
+
+    return apiService.getSSEAPIData(url).map((response) {
+        Utils.printLog("Chart Response ==== $response");
+      final chartData =
+      response.containsKey('data') ? response['data'] : response;
+
+      return ChartModel.fromJson(chartData);
+    });
   }
 
 }

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
 import 'package:http/http.dart' as http;
 import '../utils/utility.dart';
 import 'AppDataManager.dart';
 import 'api_data_listener.dart';
 import 'base_presentator.dart';
+import 'package:flutter_client_sse/flutter_client_sse.dart';
 
 
 class ApiCallPresenter extends BasePresentor<ApiDataListener>{
@@ -25,6 +27,92 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     } else {
       Utils.printLog('Error response status code: ${response.statusCode}');
       throw Exception('Error: ${response.statusCode}');
+    }
+  }
+  /// Parses a single SSE line and extracts JSON data
+  dynamic _parseSSELine(String line) {
+    line = line.trim();
+    if (line.isEmpty) return null;
+
+    // Format 1: "data: {json}"
+    if (line.startsWith('data:')) {
+      final jsonStr = line.replaceFirst('data:', '').trim();
+      if (jsonStr.isNotEmpty && jsonStr != ':') {
+        try {
+          return json.decode(jsonStr);
+        } catch (e) {
+          Utils.printLog('Parse error on data line: $e');
+        }
+      }
+    }
+
+    // Format 2: Direct JSON
+    if (line.startsWith('{') && line.endsWith('}')) {
+      try {
+        return json.decode(line);
+      } catch (e) {
+        Utils.printLog('Parse error on direct JSON: $e');
+      }
+    }
+
+    return null;
+  }
+
+  /// Processes SSE stream chunks and returns parsed data via Completer
+  void _handleSSEStreamChunk(
+    String data,
+    StringBuffer buffer,
+    Completer<dynamic> completer,
+  ) {
+    buffer.write(data);
+    Utils.printLog('📨 SSE Chunk received: $data');
+
+    final lines = buffer.toString().split('\n');
+    // for (String line in lines) {
+      final parsedData = _parseSSELine(data);
+      if (parsedData != null) {
+        Utils.printLog('✅ PARSED IMMEDIATELY: $parsedData');
+        if (!completer.isCompleted) {
+          completer.complete(parsedData);
+        }
+        return;
+      // }
+    }
+  }
+
+
+  Stream<Map<String, dynamic>> getSSEAPIData(String url) async* {
+    final response = await appDataManager.apiHelper.getApiSSERequest(url);
+
+    if (response is! http.StreamedResponse) {
+      throw Exception(
+        'Expected StreamedResponse, got ${response.runtimeType}',
+      );
+    }
+
+    print('Status: ${response.statusCode}');
+    print('Headers: ${response.headers}');
+
+    await for (final line in response.stream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter())) {
+
+      final trimmed = line.trim();
+      print('SSE LINE => $trimmed');
+
+      if (trimmed.startsWith('data:')) {
+        final jsonString = trimmed.substring(5).trim();
+
+        try {
+          final Map<String, dynamic> data =
+          jsonDecode(jsonString);
+
+          // emit every update
+          yield data;
+        } catch (e) {
+          print('❌ JSON parse error: $e');
+        }
+      }
     }
   }
 

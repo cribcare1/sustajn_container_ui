@@ -340,22 +340,35 @@ final damageContainer = FutureProvider.family<dynamic, Map<String, dynamic>>((
   }
 });
 
-final getChartData = FutureProvider.family<dynamic, String>((ref, param) async {
+
+final getChartDataProvider =
+StreamProvider.family<ChartModel, String>((ref, param) {
+  Utils.printLog("chart provider called");
+
   final apiService = ref.watch(getProfileApiProvider);
   final leaseNotifier = ref.watch(profileProvider);
-  try {
-    ChartModel response = await apiService.fetchChartData(param);
-    leaseNotifier.setChartData(response);
-    return response;
-  } catch (e) {
-    leaseNotifier.setDashboardLoading(false);
-    showCustomSnackBar(
-      context: leaseNotifier.context,
-      message: e.toString(),
-      color: Colors.red,
-    );
-    rethrow;
-  } finally {
-    leaseNotifier.setDashboardLoading(false);
-  }
+
+  final stream = apiService.fetchChartData(param);
+
+  stream.listen(
+        (chartModel) {
+          Utils.printLog("provider response::: $chartModel");
+      leaseNotifier.setChartData(chartModel);
+          leaseNotifier.setDashboardLoading(false);
+    },
+    onError: (error) {
+      leaseNotifier.setDashboardLoading(false);
+
+      showCustomSnackBar(
+        context: leaseNotifier.context,
+        message: error.toString(),
+        color: Colors.red,
+      );
+    },
+    onDone: () {
+      leaseNotifier.setDashboardLoading(false);
+    },
+  );
+
+  return stream;
 });
