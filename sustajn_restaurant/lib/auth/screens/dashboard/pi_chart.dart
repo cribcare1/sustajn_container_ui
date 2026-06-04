@@ -54,7 +54,7 @@ class _FilterPopupWidgetState extends ConsumerState<FilterPopupWidget> {
                   end: Alignment.bottomLeft,
                   colors: [Color(0xff0C794E), Color(0xff0F3727)],
                 ),
-                borderRadius: const BorderRadius.vertical(
+                borderRadius:  BorderRadius.vertical(
                   top: Radius.circular(Constant.CONTAINER_SIZE_20),
                 ),
               ),
