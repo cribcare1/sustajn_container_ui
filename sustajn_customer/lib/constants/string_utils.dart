@@ -326,7 +326,7 @@ class Strings {
   static const String CLEAR = 'Clear';
   static const String APPLY = 'Apply';
   static const String NO_BORROWED  = 'No borrowed containers found';
-  static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
+  static const String SEARCH_BY_REST_NAME = 'Search by Restaurant Name';
   static const String FILTERS = 'Filters';
   static const String MONTH = 'Month';
   static const String BORROWED_ON = 'Borrowed On';
