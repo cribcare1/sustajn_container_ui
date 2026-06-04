@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/theme_utils.dart';
 import '../common_widgets/custom_app_bar.dart';
@@ -139,10 +142,48 @@ class _SearchRestaurantScreenState
                 ).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent),
               ),
             ),
+            TextButton(
+              onPressed: () {
+                _openMap(
+                  data.latitude,
+                  data.longitude,
+                  data.name,
+                );
+              },
+              child: Text(
+                "View Map",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Colors.orangeAccent,
+                ),
+              ),
+            ),
           ],
         );
       },
     );
+  }
+
+  Future<void> _openMap(double lat, double lng, String name) async {
+    final Uri url = Platform.isIOS
+        ? Uri.parse(
+      'https://maps.apple.com/?q=$name&ll=$lat,$lng',
+    )
+        : Uri.parse(
+      'geo:$lat,$lng?q=$lat,$lng($name)',
+    );
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      final fallbackUrl = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+      );
+
+      await launchUrl(
+        fallbackUrl,
+        mode: LaunchMode.externalApplication,
+      );
+    }
   }
 
   @override
