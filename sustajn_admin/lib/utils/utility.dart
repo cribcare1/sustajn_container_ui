@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart' hide Fluttertoast, ToastGravity, Toast;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/model/login_model.dart';
@@ -12,6 +11,20 @@ import '../constants/string_utils.dart';
 import '../fluttertoast.dart';
 
 class Utils {
+
+  static buildFloatingHeader(BuildContext context) {
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
+      ),
+    );
+  }
   static Future<void> showEditDeleteMenu({
     required BuildContext context,
     required GlobalKey iconKey,
@@ -174,16 +187,7 @@ class Utils {
       ),
     );
   }
-  static showToast(String msg) {
-    Fluttertoast.showToast(
-      msg: msg,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.white,
-      toastLength: Toast.LENGTH_LONG,
-      textColor: Colors.black,
-      webBgColor: "linear-gradient(#673AB7, #673AB7)",
-    );
-  }
+
 
   static LoginModel? loginData;
   static Future<LoginModel?> getProfile() async {
@@ -236,54 +240,18 @@ class Utils {
     }
     return userId!;
   }
-  static List<String> getLast12Months() {
-    final now = DateTime.now();
 
-    List<String> months = [];
-
-    for (int i = 11; i >= 0; i--) {
-      final date = DateTime(now.year, now.month - i);
-
-      final monthName = _monthNames[date.month - 1];
-      months.add("$monthName ${date.year}");
-    }
-
-    return months;
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
   }
 
-  static const List<String> _monthNames = [
-    "Jan", "Feb", "Mar", "Apr",
-    "May", "Jun", "Jul", "Aug",
-    "Sep", "Oct", "Nov", "Dec"
-  ];
-  // static showToast(String msg) {
-  //   Fluttertoast.showToast(
-  //     msg: msg,
-  //     gravity: ToastGravity.CENTER,
-  //     backgroundColor: Colors.white,
-  //     toastLength: Toast.LENGTH_LONG,
-  //     textColor: Colors.black,
-  //     webBgColor: "linear-gradient(#673AB7, #673AB7)",
-  //   );
-  // }
-  static  String getFullMonth(String shortMonth) {
-    const months = {
-      "Jan": "January",
-      "Feb": "February",
-      "Mar": "March",
-      "Apr": "April",
-      "May": "May",
-      "Jun": "June",
-      "Jul": "July",
-      "Aug": "August",
-      "Sep": "September",
-      "Oct": "October",
-      "Nov": "November",
-      "Dec": "December",
-    };
-
-    return months[shortMonth] ?? shortMonth;
-  }
 
   static showNetworkErrorToast(BuildContext context, var errorCode) {
     Utils.printLog("Exception:::: $errorCode");
@@ -348,5 +316,4 @@ void showCustomSnackBar({
     ),
   );
 }
-
 
