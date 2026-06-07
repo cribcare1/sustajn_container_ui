@@ -351,7 +351,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final url = '${NetworkUrls.GET_CONTAINER}${widget.restaurantId}';
+          final url = '${NetworkUrls.GET_AVAILABLE_CONTAINER}${widget.restaurantId}';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

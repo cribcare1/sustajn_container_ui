@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:container_tracking/constants/network_urls.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/model/login_model.dart';
@@ -12,6 +11,20 @@ import '../constants/string_utils.dart';
 import '../fluttertoast.dart';
 
 class Utils {
+
+  static buildFloatingHeader(BuildContext context) {
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
+      ),
+    );
+  }
   static Future<void> showEditDeleteMenu({
     required BuildContext context,
     required GlobalKey iconKey,
@@ -174,16 +187,7 @@ class Utils {
       ),
     );
   }
-  static showToast(String msg) {
-    Fluttertoast.showToast(
-      msg: msg,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.white,
-      toastLength: Toast.LENGTH_LONG,
-      textColor: Colors.black,
-      webBgColor: "linear-gradient(#673AB7, #673AB7)",
-    );
-  }
+
 
   static LoginModel? loginData;
   static Future<LoginModel?> getProfile() async {
