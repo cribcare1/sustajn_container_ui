@@ -15,8 +15,8 @@ class CustomTheme {
         primary: Color(0xFFD4AE37),
         secondary: Color(0xff00c4cc),
         brightness: Brightness.light,
-        onPrimary: Color(0xff8b3dff),
-        onSecondary: Color(0xff9e77f3),
+        onPrimary: Color(0xFF0F3727),
+        onSecondary: Color(0xFF0F3727),
         error: Color(0xffdb1436),
         onError: Color(0xffff4757),
         surface: Color(0xffffffff),
@@ -57,9 +57,9 @@ class CustomTheme {
     )
         : ThemeData(
       textTheme: const TextTheme(
-        titleSmall: TextStyle(color: Colors.white, fontSize: 14),
-        titleMedium: TextStyle(color: Colors.white, fontSize: 16),
-        titleLarge: TextStyle(color: Colors.white, fontSize: 22),
+        titleSmall: TextStyle(color: Color(0xFFF5EBDF), fontSize: 14),
+        titleMedium: TextStyle(color: Color(0xFFF5EBDF), fontSize: 16),
+        titleLarge: TextStyle(color: Color(0xFFF5EBDF), fontSize: 22),
       ),
     );
   }
@@ -173,48 +173,52 @@ class CustomTheme {
     }
   }
 
-
-  static Widget searchField(
-      TextEditingController controller,
-      String text, {
-        VoidCallback? onFilterTap,
-        ValueChanged<String>? onChanged,
-      }) {
-    return TextField(
-      controller: controller,
-      autofocus: false,
-      style: const TextStyle(fontSize: 14, color: Colors.white),
-      onChanged: onChanged,
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: text,
-        hintStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: const Icon(Icons.search, color: Colors.white70),
-
-        suffixIcon: onFilterTap == null
-            ? null
-            : IconButton(
-          icon: const Icon(Icons.filter_list, color: Colors.white70),
-          onPressed: onFilterTap,
-        ),
-
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-          borderSide: BorderSide(color: Constant.grey),
-        ),
-        fillColor: Constant.grey.withOpacity(0.1),
-        filled: true,
-      ),
-    );
+  static Color? badgeTextColor(){
+    return const Color(0xFFF5EBDF);
   }
+
+
+  // static Widget searchField(
+  //     TextEditingController controller,
+  //     String text, {
+  //       VoidCallback? onFilterTap,
+  //       ValueChanged<String>? onChanged,
+  //     }) {
+  //   return TextField(
+  //     controller: controller,
+  //     autofocus: false,
+  //     style: const TextStyle(fontSize: 14, color: Colors.white),
+  //     onChanged: onChanged,
+  //     cursorColor: Colors.white,
+  //     decoration: InputDecoration(
+  //       hintText: text,
+  //       hintStyle: const TextStyle(color: Colors.white70),
+  //       prefixIcon: const Icon(Icons.search, color: Colors.white70),
+  //
+  //       suffixIcon: onFilterTap == null
+  //           ? null
+  //           : IconButton(
+  //         icon: const Icon(Icons.filter_list, color: Colors.white70),
+  //         onPressed: onFilterTap,
+  //       ),
+  //
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+  //         borderSide: BorderSide.none,
+  //       ),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+  //         borderSide: BorderSide(color: Constant.grey),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+  //         borderSide: BorderSide(color: Constant.grey),
+  //       ),
+  //       fillColor: Constant.grey.withOpacity(0.1),
+  //       filled: true,
+  //     ),
+  //   );
+  // }
 
 
 }
