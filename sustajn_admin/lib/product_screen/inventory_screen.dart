@@ -361,7 +361,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_CONTAINER}$userId';
+          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}$userId';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

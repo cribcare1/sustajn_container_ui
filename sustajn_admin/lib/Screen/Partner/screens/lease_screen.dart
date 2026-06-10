@@ -28,7 +28,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final containerState = ref.read(orderProvider);
+      final containerState = ref.read(productProvider);
       searchController.text = containerState.searchQuery;
     });
     _getLeaseNetworkCall();
@@ -43,7 +43,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final containerState = ref.watch(orderProvider);
+    final containerState = ref.watch(productProvider);
     final container =
         containerState.containerHistorydata?.data?.leasedResponses ?? [];
 
@@ -293,7 +293,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
   }
 
   void _showFilterBottomSheet(BuildContext context) {
-    final containerState = ref.read(orderProvider);
+    final containerState = ref.read(productProvider);
     final leasedResponses =
         containerState.containerHistorydata?.data?.leasedResponses;
 
@@ -323,7 +323,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
     List<String> selectedMonths,
     List<String> selectedContainers,
   ) {
-    final containerState = ref.read(orderProvider);
+    final containerState = ref.read(productProvider);
 
     List<LeasedResponses>? allResponses =
         containerState.containerHistorydata?.data?.leasedResponses;
@@ -374,7 +374,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
+        final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final url = '${NetworkUrls.CONTAINER_HISTORY}${widget.restaurantId}';

@@ -1,3 +1,4 @@
+import 'package:container_tracking/Screen/Partner/provider/provider/product_provider.dart';
 import 'package:container_tracking/Screen/Partner/screens/damaged_Screen.dart';
 import 'package:container_tracking/Screen/Partner/screens/product_home_screen.dart';
 import 'package:container_tracking/Screen/Partner/screens/returned_screen.dart';
@@ -5,25 +6,36 @@ import 'package:container_tracking/Screen/Partner/screens/sold_screen.dart';
 import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:fl_chart/fl_chart.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
+import '../../constants/network_urls.dart';
+import '../../constants/string_utils.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
+import '../../utils/utility.dart';
 import 'model/get_all_restaurant_data.dart';
+import 'model/get_container_data.dart';
+import 'model/lease_barrow_data.dart' hide Data;
 import 'order_history/order_history_screen.dart';
 import 'screens/issued_screen.dart';
 
-class PartnerDetailsScreen extends StatefulWidget {
+class PartnerDetailsScreen extends ConsumerStatefulWidget {
   final Data? data;
 
   const PartnerDetailsScreen({super.key, required this.data});
 
   @override
-  State<PartnerDetailsScreen> createState() => _PartnerDetailsScreenState();
+  ConsumerState<PartnerDetailsScreen> createState() => _PartnerDetailsScreenState();
 }
 
-class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
+class _PartnerDetailsScreenState extends ConsumerState<PartnerDetailsScreen> {
+
+  ContainersDetails? selectedType;
+  static final monthList=Utils.getLast12Months();
+  List<ContainersDetails> containerTypeList =[];
+  String? selectedMonth = monthList.last;
   Map<String, dynamic> dashboardData = {
     "containers": "1286",
     "active": "1120",
@@ -47,45 +59,68 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
   };
 
   @override
+  void initState() {
+    _getInventoryNetworkCall();
+    _getLeaseBorrowDataNetworkCall();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final themeData = CustomTheme.getTheme(false);
+    final orderState = ref.watch(productProvider);
+    containerTypeList = orderState.filterInventory;
     return Scaffold(
       appBar: CustomAppBar(
         title: "Partner Details",
         leading: CustomBackButton(),
       ).getAppBar(context),
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Column(
-            children: [
-              _restaurantDetails(widget.data!.name!, widget.data!.address!),
-              _viewDetails(),
-              SizedBox(height: Constant.SIZE_05),
-              _productDetails(),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
-              _barChart(),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
-              _leased(),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
-            ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                children: [
+                  _restaurantDetails(
+                    themeData!,
+                    widget.data!.name!,
+                    widget.data!.address!,
+                  ),
+                  _viewDetails(),
+                  SizedBox(height: Constant.SIZE_05),
+                  _productDetails(themeData!),
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+                  _barChart(themeData!),
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+                  _leased(),
+                  SizedBox(height: Constant.CONTAINER_SIZE_10),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+
+          if (orderState.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.3),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      )
     );
   }
 
-  Widget _restaurantDetails(String restaurantName, String address) {
+  Widget _restaurantDetails(ThemeData themeData, String restaurantName, String address) {
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             restaurantName,
-            style: TextStyle(
-              fontSize: Constant.CONTAINER_SIZE_18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: themeData.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: Constant.SIZE_05),
           Row(
@@ -93,11 +128,11 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
             children: [
               Icon(
                 Icons.location_on_outlined,
-                color: Colors.white,
+                color: CustomTheme.badgeTextColor(),
                 size: Constant.CONTAINER_SIZE_18,
               ),
               SizedBox(width: Constant.SIZE_05),
-              Expanded(child: Text(address)),
+              Expanded(child: Text(address, style: themeData.textTheme.titleSmall,)),
             ],
           ),
         ],
@@ -128,7 +163,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     );
   }
 
-  Widget _productDetails() {
+  Widget _productDetails(ThemeData themeData) {
     final items = [
       {"title": "Issued", "image": "assets/images/Issued.png"},
       {"title": "Products", "image": "assets/images/products.png"},
@@ -181,11 +216,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                 Text(
                   item["title"] as String,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Constant.CONTAINER_SIZE_10,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: themeData.textTheme.titleSmall!.copyWith(fontSize: Constant.CONTAINER_SIZE_10,)
                 ),
               ],
             ),
@@ -238,7 +269,16 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     }
   }
 
-  Widget _barChart() {
+  Widget _barChart(ThemeData themeData) {
+    final orderState = ref.watch(productProvider);
+    final leaseBorrowData = orderState.leaseBorrowData;
+    final dailyStats = orderState.dailyStats;
+    double maxY = (dailyStats ?? [])
+        .expand((e) => [(e.leased ?? 0), (e.returned ?? 0)])
+        .fold(0, (prev, element) => element > prev ? element : prev)
+        .toDouble();
+
+
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,9 +286,32 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: _filterBox("Month")),
+              Expanded(child: _filterBox(
+                themeData,
+                "Month",
+                selectedMonth,
+                monthList,
+                    (val) {
+                  setState(() {
+                    selectedMonth = val;
+                  });
+                },
+              ),),
               SizedBox(width: Constant.CONTAINER_SIZE_10),
-              Expanded(child: _filterBox("Container Type")),
+              Expanded(
+                child: _filterContainerBox(
+                  themeData,
+                  "Container Type",
+                  selectedType,
+                  containerTypeList,
+                      (val) {
+                    setState(() {
+                      selectedType = val;
+                      _getLeaseBorrowDataNetworkCall();
+                    });
+                  },
+                ),
+              ),
             ],
           ),
 
@@ -280,91 +343,64 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
                 ),
                 SizedBox(width: Constant.SIZE_08),
                 Expanded(
-                  child: BarChart(
-                    BarChartData(
-                      maxY: 100,
-                      alignment: BarChartAlignment.spaceBetween,
-                      groupsSpace: 14,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: (dailyStats?.length ?? 0) * 25,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: BarChart(
+                          BarChartData(
+                            alignment: BarChartAlignment.start,
+                            groupsSpace: 10,
+                            maxY: maxY + 10,
 
-                      gridData: FlGridData(
-                        show: true,
-                        horizontalInterval: 20,
-                        getDrawingHorizontalLine: (value) => FlLine(
-                          color: Colors.white.withOpacity(0.1),
-                          strokeWidth: 1,
-                        ),
-                      ),
+                            titlesData: FlTitlesData(
 
-                      borderData: FlBorderData(show: false),
-
-                      titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            interval: 20,
-                            getTitlesWidget: (value, _) {
-                              return Text(
-                                value.toInt().toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: Constant.CONTAINER_SIZE_11,
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false), // 👈 hides 0,1,2...
                                 ),
-                              );
-                            },
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 50, // 👈 important fix
+                                  getTitlesWidget: (value, meta) {
+                                    final index = value.toInt();
+                                    final stats = dailyStats ?? [];
+
+                                    if (index >= stats.length) return const SizedBox();
+
+                                    final item = stats[index];
+
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "${item.day ?? ""}",
+                                          style: const TextStyle(fontSize: 9),
+                                        ),
+                                        Text(
+                                          item.dayName ?? "",
+                                          style: const TextStyle(fontSize: 9),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            barGroups: _realBarData(dailyStats ?? []),
                           ),
                         ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            getTitlesWidget: (value, meta) {
-                              final index = value.toInt();
-                              const days = [
-                                "Mon",
-                                "Tue",
-                                "Wed",
-                                "Thu",
-                                "Fri",
-                                "Sat",
-                                "Sun",
-                              ];
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 1),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "${index + 1}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: Constant.CONTAINER_SIZE_10,
-                                      ),
-                                    ),
-                                    SizedBox(height: Constant.SIZE_02),
-                                    Text(
-                                      days[value.toInt() % days.length],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: Constant.CONTAINER_SIZE_11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
                       ),
-                      barGroups: _realBarData(),
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -373,7 +409,7 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
           Center(
             child: Text(
-              "November-2025",
+              leaseBorrowData?.leaseBarrowData?.monthYear ?? "",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: Constant.CONTAINER_SIZE_11,
@@ -385,24 +421,22 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     );
   }
 
-  List<BarChartGroupData> _realBarData() {
-    final leased = [75, 40, 10, 45, 5, 50, 8, 15, 25, 5, 30];
-    final returned = [35, 5, 5, 10, 3, 8, 5, 12, 10, 2, 15];
+  List<BarChartGroupData> _realBarData(List<DailyStats> stats) {
+    return List.generate(stats.length, (i) {
+      final item = stats[i];
 
-    return List.generate(leased.length, (i) {
       return BarChartGroupData(
         x: i,
         barsSpace: 4,
         barRods: [
           BarChartRodData(
-            toY: leased[i].toDouble(),
+            toY: (item.leased ?? 0).toDouble(),
             width: Constant.SIZE_05,
             borderRadius: BorderRadius.circular(Constant.SIZE_04),
             color: Color(0xFFFFC107),
           ),
-
           BarChartRodData(
-            toY: returned[i].toDouble(),
+            toY: (item.returned ?? 0).toDouble(),
             width: Constant.SIZE_05,
             borderRadius: BorderRadius.circular(Constant.SIZE_04),
             color: Colors.white,
@@ -412,32 +446,100 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     });
   }
 
-  Widget _filterBox(String text) {
+  Widget _filterBox(
+      ThemeData themeData,
+      String hint,
+      String? value,
+      List<String> items,
+      Function(String?) onChanged,
+      ) {
     return Container(
+      height: Constant.CONTAINER_SIZE_40,
       padding: EdgeInsets.symmetric(
         horizontal: Constant.CONTAINER_SIZE_10,
-        vertical: Constant.SIZE_07,
+        vertical: Constant.SIZE_05,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Constant.SIZE_08),
-        border: Border.all(color: Colors.white),
+        border: Border.all(color: CustomTheme.badgeTextColor()!),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: Constant.CONTAINER_SIZE_14,
+      child: DropdownButtonHideUnderline(
+        child: SizedBox(
+          height: Constant.CONTAINER_SIZE_35,
+          child: DropdownButton<String>(
+            value: value,
+            hint: Text(
+              hint,
+              maxLines: 1,
+              style: themeData.textTheme.titleSmall,
             ),
+            isExpanded: true, // 👈 VERY IMPORTANT (fixes overflow)
+            icon: Icon(
+              Icons.keyboard_arrow_down_outlined,
+              color: CustomTheme.badgeTextColor()!,
+              size: Constant.CONTAINER_SIZE_18,
+            ),
+            style: themeData.textTheme.titleSmall,
+            dropdownColor: Color(0xFF0F3727), // optional (match your theme)
+            items: items.map((item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item, maxLines: 1, style: themeData.textTheme.titleSmall,),
+              );
+            }).toList(),
+            onChanged: onChanged,
           ),
-          Icon(
+        ),
+      ),
+    );
+  }
+
+  Widget _filterContainerBox(
+      ThemeData themeData,
+      String hint,
+      ContainersDetails? value,
+      List<ContainersDetails> items,
+      Function(ContainersDetails?) onChanged,
+      ) {
+    return Container(
+      height: Constant.CONTAINER_SIZE_40,
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_10,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Constant.SIZE_08),
+        border: Border.all(color: CustomTheme.badgeTextColor()!),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<ContainersDetails>(
+          value: value,
+          hint: Text(
+            hint,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: themeData.textTheme.titleSmall,
+          ),
+          isExpanded: true,
+          isDense: true,
+          icon: Icon(
             Icons.keyboard_arrow_down_outlined,
-            color: Colors.white,
+            color: CustomTheme.badgeTextColor()!,
             size: Constant.CONTAINER_SIZE_18,
           ),
-        ],
+          style: themeData.textTheme.titleSmall,
+          dropdownColor: const Color(0xFF0F3727),
+          items: items.map((item) {
+            return DropdownMenuItem<ContainersDetails>(
+              value: item,
+              child: Text(
+                item.containerUniqueId ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+        ),
       ),
     );
   }
@@ -495,6 +597,8 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: _cardDecoration(),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -527,6 +631,9 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
 
           Text(
             data["name"],
+           maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center, //
             style: TextStyle(
               color: Colors.white,
               fontSize: Constant.CONTAINER_SIZE_12,
@@ -574,4 +681,50 @@ class _PartnerDetailsScreenState extends State<PartnerDetailsScreen> {
     fontSize: Constant.CONTAINER_SIZE_12,
     fontWeight: bold ? FontWeight.bold : FontWeight.w500,
   );
+
+  _getInventoryNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(productProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}${widget.data!.id}';
+          ref.read(getOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
+
+  _getLeaseBorrowDataNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(productProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final parts = selectedMonth!.split(" ");
+          var month = Utils.getFullMonth(parts[0]);
+          var year = parts[1];
+          var productId = selectedType != null ? selectedType!.containerId : 0;
+          final url = '${NetworkUrls.LEASE_BORROW_CONTAINER}${widget.data!.id}/daily-graph?monthName=$month&year=$year&productId=$productId';
+          ref.read(getLeaseBorrowProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }

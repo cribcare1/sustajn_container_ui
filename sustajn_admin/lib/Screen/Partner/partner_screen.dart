@@ -32,7 +32,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = CustomTheme.getTheme(true);
+    final themeData = CustomTheme.getTheme(false);
     final restaurantState = ref.watch(restaurantProvider);
     final restaurantList = restaurantState.getRestaurantData?.data ?? [];
     Utils.printLog("List length: ${restaurantList.length}");
@@ -72,7 +72,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
                 ? Center(
                     child: Text(
                       "Partner List is not available",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Color(0xFFF5EBDF)),
                     ),
                   )
                 : ListView.separated(
@@ -110,7 +110,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
                   borderRadius: BorderRadius.circular(
                     Constant.CONTAINER_SIZE_12,
                   ),
-                  border: Border.all(color: Colors.white),
+                  border: Border.all(color: Color(0xFFF5EBDF)),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(
@@ -121,22 +121,22 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
                           item.profileImageUrl!.isNotEmpty
                       ? Image.network(
                           "${NetworkUrls.IMAGE_BASE_URL}${item.profileImageUrl}",
-                          width: Constant.CONTAINER_SIZE_40,
-                          height: Constant.CONTAINER_SIZE_40,
+                          width: Constant.CONTAINER_SIZE_60,
+                          height: Constant.CONTAINER_SIZE_60,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
                               Strings.CUP_IMG,
-                              width: Constant.CONTAINER_SIZE_40,
-                              height: Constant.CONTAINER_SIZE_40,
+                              width: Constant.CONTAINER_SIZE_60,
+                              height: Constant.CONTAINER_SIZE_60,
                               fit: BoxFit.cover,
                             );
                           },
                         )
                       : Image.asset(
                           Strings.CUP_IMG,
-                          width: Constant.CONTAINER_SIZE_50,
-                          height: Constant.CONTAINER_SIZE_50,
+                          width: Constant.CONTAINER_SIZE_60,
+                          height: Constant.CONTAINER_SIZE_60,
                         ),
                 ),
               ),
@@ -151,7 +151,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
                       style: themeData.textTheme.titleMedium,
                     ),
                     SizedBox(height: Constant.SIZE_04),
-                    Text(item.address!, style: themeData.textTheme.titleSmall),
+                    Text(item.address!, style: themeData.textTheme.titleSmall,),
                   ],
                 ),
               ),
@@ -159,7 +159,7 @@ class _PartnerScreenState extends ConsumerState<PartnerScreen> {
               Icon(
                 Icons.arrow_forward_ios,
                 size: Constant.CONTAINER_SIZE_16,
-                color: Colors.white,
+                color: Color(0xFFF5EBDF),
               ),
             ],
           ),

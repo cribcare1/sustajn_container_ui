@@ -4,16 +4,19 @@ class NetworkUrls {
   static const int EMPTY_RESPONSE_CODE = 406;
   static const int UNAUTHORIZED_ERROR_CODE = 401;
 
-  static const BASE_URL = "http://35.154.182.218:9090/";
-  static const IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/";
-  static const CONTAINER_IMAGE_BASE_URL = "http://35.154.182.218:9090/auth/images/container/";
+  static const BASE_URL = "http://65.0.241.5:9090/";
+  static const IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/";
+  static const CONTAINER_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/container/";
   static const GET_CONTAINER = "inventory/getAllActiveInventory/";
+  static const GET_CONTAINER_BY_ID = "inventory/restaurant/getAvailableContainers/";
   static const CONTAINER_COUNT = "orders/getLeasedReturnedCount";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-user";
   static const FORGOT_PASSWORD = "notification/forgot-password";
   static const VERIFY_OTP = "notification/verify-token";
 
+  ///Patner
+  static const LEASE_BORROW_CONTAINER = "orders/partner/";
 /// Container ///
 static const ADD_CONTAINER = "inventory/addContainerByAdmin";
 static const CONTAINER_LIST = "inventory/getAllActiveInventory";
@@ -28,7 +31,7 @@ static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
 /// Partner products
   static const ALL_RESTAURANT_LIST = "auth/getAllActiveRestaurants";
   static const CONTAINER_HISTORY = "orders/orderHistory/";
-  static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  //static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
   static const RETURN_PRODUCTS = "inventory/restaurantOrders/returnedProducts/";
   static const ISSUED_PRODUCTS = "inventory/restaurantOrders/monthWiseIssuedProducts?restaurantId=&productId=";
   static const RESTAURANT_DETAILS = "auth/getRestaurantDetailsById/";

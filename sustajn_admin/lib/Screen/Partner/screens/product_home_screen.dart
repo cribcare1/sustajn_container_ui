@@ -60,41 +60,37 @@ class _ProductsHomeScreenState extends State<ProductsHomeScreen>
           tabs: [
             Tab(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min, // ✅ important
                 children: [
                   Image.asset(
                     Strings.BOWL_IMG,
-                    height: Constant.CONTAINER_SIZE_16,
-                    width: Constant.CONTAINER_SIZE_16,
+                    height: 15,
+                    width: 15,
                   ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(Strings.INVENTORY),
+                  const SizedBox(width: 2),
+                  const Text(Strings.INVENTORY),
                 ],
               ),
             ),
+
             Tab(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.call_made_outlined,
-                    size: Constant.CONTAINER_SIZE_18,
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(Strings.LEASE),
+                  const Icon(Icons.call_made_outlined, size: 15),
+                  const SizedBox(width: 2),
+                  const Text(Strings.LEASE),
                 ],
               ),
             ),
+
             Tab(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.call_received_outlined,
-                    size: Constant.CONTAINER_SIZE_18,
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(Strings.RECEIVE),
+                  const Icon(Icons.call_received_outlined, size: 15),
+                  const SizedBox(width: 2),
+                  const Text(Strings.RECEIVE),
                 ],
               ),
             ),

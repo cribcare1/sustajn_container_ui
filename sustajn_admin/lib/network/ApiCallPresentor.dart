@@ -16,7 +16,7 @@ class ApiCallPresenter extends BasePresentor<ApiDataListener>{
     if (Utils.isReqSuccess(response)) {
       try {
         final jsonData = json.decode(response.body);
-        Utils.printLog('Response status: $jsonData');
+        Utils.printLog('Response data: $jsonData');
         return jsonData;
       } catch (e) {
         Utils.printLog('Error decoding JSON: $e');

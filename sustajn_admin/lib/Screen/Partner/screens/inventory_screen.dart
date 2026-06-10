@@ -33,7 +33,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final orderState = ref.watch(orderProvider);
+    final orderState = ref.watch(productProvider);
 
     return SafeArea(
       top: false,
@@ -239,7 +239,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       builder: (context) {
         return Consumer(
           builder: (context, ref, _) {
-            final orderState = ref.watch(orderProvider);
+            final orderState = ref.watch(productProvider);
             bool tempAscending = orderState.isQtyAscending;
 
             return SafeArea(
@@ -318,13 +318,13 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                         SizedBox(height: Constant.CONTAINER_SIZE_20),
                         SubmitClearButton(
                           onLeftTap: () {
-                            ref.read(orderProvider).resetSort();
+                            ref.read(productProvider).resetSort();
                             Navigator.pop(context);
                           },
                           leftText: Strings.CLEAR,
                           onRightTap: () {
                             ref
-                                .read(orderProvider)
+                                .read(productProvider)
                                 .sortByQuantity(tempAscending);
                             Navigator.pop(context);
                           },
@@ -348,10 +348,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
+        final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final url = '${NetworkUrls.GET_CONTAINER}${widget.restaurantId}';
+          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}${widget.restaurantId}';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

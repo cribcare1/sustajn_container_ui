@@ -48,7 +48,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final containerState = ref.watch(orderProvider);
+    final containerState = ref.watch(productProvider);
 
     final containerList =
         containerState.containerHistorydata?.data?.orderedResponses ?? [];
@@ -269,7 +269,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
+        final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final url = '${NetworkUrls.CONTAINER_HISTORY}${widget.restaurantId}';
