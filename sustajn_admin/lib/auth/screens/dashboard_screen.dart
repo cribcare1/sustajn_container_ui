@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisCount: 3,
         mainAxisSpacing: Constant.SIZE_08,
         crossAxisSpacing: Constant.SIZE_08,
-        childAspectRatio: 1,
+        childAspectRatio: 0.85,
       ),
       itemBuilder: (context, index) {
         final item = items[index];
@@ -153,6 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(height: Constant.SIZE_04),
                 Text(
                   item["title"] as String,
+                  maxLines: 2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

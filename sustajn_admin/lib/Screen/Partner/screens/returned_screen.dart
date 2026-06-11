@@ -46,7 +46,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final productState = ref.watch(orderProvider);
+    final productState = ref.watch(productProvider);
     final container =
         productState.containerHistorydata?.data?.leasedResponses ?? [];
     if (filteredItems.isEmpty && container.isNotEmpty) {
@@ -259,7 +259,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
+        final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final url = '${NetworkUrls.RETURN_PRODUCTS}${widget.restaurantId}';

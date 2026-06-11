@@ -39,7 +39,7 @@ class _PartnerDtlsSheetState extends ConsumerState<PartnerDetailsSheet> {
           padding: EdgeInsets.all(Constant.SIZE_08),
           child: Column(
             children: [
-              Utils.buildFloatingHeader(context),
+              // Utils.buildFloatingHeader(context),
 
               Expanded(
                 child: Container(

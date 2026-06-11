@@ -1,3 +1,4 @@
+import 'package:container_tracking/Screen/Partner/model/lease_barrow_data.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../constants/string_utils.dart';
@@ -11,6 +12,8 @@ class OrderState extends ChangeNotifier {
   List<ContainersDetails> _filterInventory = [];
   ContainerHistoryData? _containerHistoryData;
 
+  LeaseBarrowData ? _leaseBarrowData;
+  List<DailyStats> _dailyStats = [];
   // DamagedContainerData? _damagedContainerData;
   // SoldContainerData? _soldContainerData;
   BuildContext? _context;
@@ -30,6 +33,8 @@ class OrderState extends ChangeNotifier {
 
   List<ContainersDetails> get filterInventory => _filterInventory;
 
+  LeaseBarrowData? get leaseBorrowData => _leaseBarrowData;
+  List<DailyStats> get dailyStats => _dailyStats;
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
 
   // DamagedContainerData? get damagedContainerData => _damagedContainerData;
@@ -76,6 +81,12 @@ class OrderState extends ChangeNotifier {
   void setOrderData(GetContainerData getContainer) {
     _getContainerData = getContainer;
     _filterInventory = List.from(getContainer.containersDetails ?? []);
+    notifyListeners();
+  }
+
+  void setLeaseBorrowData(LeaseBarrowData leaseBarrowData) {
+    _leaseBarrowData = leaseBarrowData;
+    _dailyStats = List.from(_leaseBarrowData!.leaseBarrowData!.dailyStats ?? []);
     notifyListeners();
   }
 

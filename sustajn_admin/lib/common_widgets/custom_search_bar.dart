@@ -24,21 +24,21 @@ class CustomSearchBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(color: Color(0xFFF5EBDF), width: 1),
         ),
         child: TextField(
           controller: controller,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Color(0xFFF5EBDF)),
           onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.white70),
-            prefixIcon: const Icon(Icons.search, color: Colors.white),
+            hintStyle: const TextStyle(color: Color(0xFFF5EBDF)),
+            prefixIcon: const Icon(Icons.search, color: Color(0xFFF5EBDF)),
 
             // ✅ optional filter icon
             suffixIcon: onFilterTap != null
                 ? IconButton(
-              icon: const Icon(Icons.filter_list, color: Colors.white),
+              icon: const Icon(Icons.filter_list, color: Color(0xFFF5EBDF)),
               onPressed: onFilterTap,
             )
                 : null,
