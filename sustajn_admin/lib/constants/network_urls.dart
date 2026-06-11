@@ -31,7 +31,7 @@ static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
 /// Partner products
   static const ALL_RESTAURANT_LIST = "auth/getAllActiveRestaurants";
   static const CONTAINER_HISTORY = "orders/orderHistory/";
-  //static const GET_CONTAINER = "inventory/restaurant/getAvailableContainers/";
+  static const GET_AVAILABLE_CONTAINER = "inventory/restaurant/getAvailableContainers/";
   static const RETURN_PRODUCTS = "inventory/restaurantOrders/returnedProducts/";
   static const ISSUED_PRODUCTS = "inventory/restaurantOrders/monthWiseIssuedProducts?restaurantId=&productId=";
   static const RESTAURANT_DETAILS = "auth/getRestaurantDetailsById/";

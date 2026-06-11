@@ -261,16 +261,16 @@ class Utils {
     "May", "Jun", "Jul", "Aug",
     "Sep", "Oct", "Nov", "Dec"
   ];
-  // static showToast(String msg) {
-  //   Fluttertoast.showToast(
-  //     msg: msg,
-  //     gravity: ToastGravity.CENTER,
-  //     backgroundColor: Colors.white,
-  //     toastLength: Toast.LENGTH_LONG,
-  //     textColor: Colors.black,
-  //     webBgColor: "linear-gradient(#673AB7, #673AB7)",
-  //   );
-  // }
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
+  }
   static  String getFullMonth(String shortMonth) {
     const months = {
       "Jan": "January",

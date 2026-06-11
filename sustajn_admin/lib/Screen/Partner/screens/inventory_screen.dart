@@ -8,6 +8,7 @@ import '../../../common_widgets/submit_clear_button.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
+import '../../../provider/order_provider.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
 import '../model/get_container_data.dart';
@@ -28,7 +29,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   @override
   void initState() {
     super.initState();
-    _getInventoryNetworkCall();
+    // _getInventoryNetworkCall();
   }
 
   @override
@@ -53,69 +54,69 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               ),
             ),
             SizedBox(height: Constant.SIZE_04),
-            Expanded(
-              child: orderState.isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
-                  ? Center(
-                      child: Text(
-                        Strings.SOMETHING_WENT_WRONG,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  : orderState.getContainerData!.containersDetails == null ||
-                        orderState.getContainerData!.containersDetails!.isEmpty
-                  ? const Center(
-                      child: Text(
-                        Strings.NO_CONTAINER_AVAILABLE,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  : (orderState.filterInventory.isEmpty &&
-                        searchController.text.isNotEmpty)
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            Strings.NO_CONTAINER_AVAILABLE,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                          SubmitButton(
-                            onRightTap: () {
-                              searchController.clear();
-                              orderState.filterInventoryByNameOrId('');
-                              setState(() {});
-                            },
-                            rightText: " Clear Filter ",
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_16,
-                        vertical: Constant.CONTAINER_SIZE_16,
-                      ),
-                      itemCount: orderState.filterInventory.length,
-                      itemBuilder: (context, index) {
-                        final item = orderState.filterInventory[index];
-
-                        return inventoryItemCard(
-                          context,
-                          image: item.containerImageUrl ?? "",
-                          title: item.containerName ?? "-",
-                          subTitle: item.containerUniqueId ?? "-",
-                          volume: item.capacity?.toString() ?? "0",
-                          qty: item.quantityAvailable ?? 0,
-                          data: item,
-                        );
-                      },
-                      separatorBuilder: (context, index) =>
-                          SizedBox(height: Constant.CONTAINER_SIZE_10),
-                    ),
-            ),
+            // Expanded(
+            //   child: orderState.isLoading
+            //       ? const Center(child: CircularProgressIndicator())
+            //       : orderState.getContainerData == null
+            //       ? Center(
+            //     child: Text(
+            //       Strings.SOMETHING_WENT_WRONG,
+            //       style: TextStyle(color: Colors.white),
+            //     ),
+            //   )
+            //       : orderState.getContainerData!.containersDetails == null ||
+            //       orderState.getContainerData!.containersDetails!.isEmpty
+            //       ? const Center(
+            //     child: Text(
+            //       Strings.NO_CONTAINER_AVAILABLE,
+            //       style: TextStyle(color: Colors.white),
+            //     ),
+            //   )
+            //       : (orderState.filterInventory.isEmpty &&
+            //       searchController.text.isNotEmpty)
+            //       ? Center(
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Text(
+            //           Strings.NO_CONTAINER_AVAILABLE,
+            //           style: TextStyle(color: Colors.white),
+            //         ),
+            //         SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+            //         SubmitButton(
+            //           onRightTap: () {
+            //             searchController.clear();
+            //             orderState.filterInventoryByNameOrId('');
+            //             setState(() {});
+            //           },
+            //           rightText: " Clear Filter ",
+            //         ),
+            //       ],
+            //     ),
+            //   )
+            //       : ListView.separated(
+            //     padding: EdgeInsets.symmetric(
+            //       horizontal: Constant.CONTAINER_SIZE_16,
+            //       vertical: Constant.CONTAINER_SIZE_16,
+            //     ),
+            //     itemCount: orderState.filterInventory.length,
+            //     itemBuilder: (context, index) {
+            //       final item = orderState.filterInventory[index];
+            //
+            //       return inventoryItemCard(
+            //         context,
+            //         image: item.containerImageUrl ?? "",
+            //         title: item.containerName ?? "-",
+            //         subTitle: item.containerUniqueId ?? "-",
+            //         volume: item.capacity?.toString() ?? "0",
+            //         qty: item.quantityAvailable ?? 0,
+            //         data: item,
+            //       );
+            //     },
+            //     separatorBuilder: (context, index) =>
+            //         SizedBox(height: Constant.CONTAINER_SIZE_10),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -123,14 +124,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   }
 
   Widget inventoryItemCard(
-    BuildContext context, {
-    required String image,
-    required String title,
-    required String subTitle,
-    required String volume,
-    required int qty,
-    required ContainersDetails data,
-  }) {
+      BuildContext context, {
+        required String image,
+        required String title,
+        required String subTitle,
+        required String volume,
+        required int qty,
+        required ContainersDetails data,
+      }) {
     final theme = Theme.of(context);
 
     return InkWell(
@@ -143,38 +144,38 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           children: [
             (image != "")
                 ? Container(
-                    height: Constant.CONTAINER_SIZE_70,
-                    width: Constant.CONTAINER_SIZE_70,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
-                    ),
-                    padding: EdgeInsets.all(Constant.SIZE_06),
-                    child: Image.network(
-                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                      errorBuilder: (context, obj, stack) {
-                        return Image.asset(
-                          "assets/images/no_image_container.png",
-                        );
-                      },
-                      fit: BoxFit.fill,
-                    ),
-                  )
+              height: Constant.CONTAINER_SIZE_70,
+              width: Constant.CONTAINER_SIZE_70,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(Constant.SIZE_08),
+              ),
+              padding: EdgeInsets.all(Constant.SIZE_06),
+              child: Image.network(
+                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+                errorBuilder: (context, obj, stack) {
+                  return Image.asset(
+                    "assets/images/no_image_container.png",
+                  );
+                },
+                fit: BoxFit.fill,
+              ),
+            )
                 : Container(
-                    width: Constant.CONTAINER_SIZE_70,
-                    height: Constant.CONTAINER_SIZE_70,
-                    decoration: BoxDecoration(
-                      color: Constant.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.inbox,
-                        size: Constant.CONTAINER_SIZE_30,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+              width: Constant.CONTAINER_SIZE_70,
+              height: Constant.CONTAINER_SIZE_70,
+              decoration: BoxDecoration(
+                color: Constant.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(Constant.SIZE_08),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.inbox,
+                  size: Constant.CONTAINER_SIZE_30,
+                  color: Colors.white,
+                ),
+              ),
+            ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -342,24 +343,24 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-  _getInventoryNetworkCall() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
-        if (isNetworkAvailable) {
-          orderState.setIsLoading(true);
-          final url = '${NetworkUrls.GET_AVAILABLE_CONTAINER}${widget.restaurantId}';
-          ref.read(getOrderProvider(url));
-        } else {
-          orderState.setIsLoading(false);
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
-    }
-  }
+  // _getInventoryNetworkCall() async {
+  //   try {
+  //     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+  //         isNetworkAvailable,
+  //         ) {
+  //       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+  //       final orderState = ref.read(orderProvider);
+  //       if (isNetworkAvailable) {
+  //         orderState.setIsLoading(true);
+  //         final url = '${NetworkUrls.GET_AVAILABLE_CONTAINER}${widget.restaurantId}';
+  //         ref.read(getOrderProvider(url));
+  //       } else {
+  //         orderState.setIsLoading(false);
+  //         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+  //       }
+  //     });
+  //   } catch (e) {
+  //     Utils.printLog('Error in visitor button onPressed: $e');
+  //   }
+  // }
 }
