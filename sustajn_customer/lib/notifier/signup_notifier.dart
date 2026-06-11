@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:sustajn_customer/auth/payment_type/payment_type_model.dart';
 
 import '../constants/string_utils.dart';
 import '../models/login_model.dart';
@@ -422,10 +423,17 @@ class SignupNotifier extends ChangeNotifier {
   }
 
   void _validateCardNumber() {
-    if (_cardNumber.isEmpty) {
+    final cardNumber = _cardNumber
+        .replaceAll(' ', '')
+        .replaceAll('-', '')
+        .trim();
+
+    if (cardNumber.isEmpty) {
       _cardNumberError = 'Card number is required';
-    } else if (!RegExp(r'^[0-9]{16}$').hasMatch(_cardNumber)) {
-      _cardNumberError = 'Card number must be 16 digits';
+    } else if (cardNumber.length != 12 && cardNumber.length != 16) {
+      _cardNumberError = 'Card number must be 12 or 16 digits';
+    } else if (!RegExp(r'^\d+$').hasMatch(cardNumber)) {
+      _cardNumberError = 'Card number must contain only numbers';
     } else {
       _cardNumberError = null;
     }
@@ -463,13 +471,12 @@ class SignupNotifier extends ChangeNotifier {
 
     _validateCardHolder();
     _validateCardNumber();
-    _validateCVV();
-
+    print("Holder Error: $_cardHolderError");
+    print("Card Error: $_cardNumberError");
     notifyListeners();
 
     return _cardHolderError == null &&
-        _cardNumberError == null &&
-        _cvvError == null;
+        _cardNumberError == null;
   }
 
   void resetCardValidation() {
@@ -477,12 +484,10 @@ class SignupNotifier extends ChangeNotifier {
 
     _cardHolderName = '';
     _cardNumber = '';
-    _cvv = '';
     _expiryDate = '';
 
     _cardHolderError = null;
     _cardNumberError = null;
-    _cvvError = null;
     _expiryError = null;
 
     notifyListeners();
@@ -818,4 +823,22 @@ class SignupNotifier extends ChangeNotifier {
     stopTimer();
     super.dispose();
   }
+
+  ///Add Card///
+
+  CardDetails? _cardDetails;
+  CardDetails? get cardDetails => _cardDetails;
+  void setCardDetails(CardDetails details){
+    _cardDetails = details;
+    print("_cardDetails ====== ${_cardDetails!.cardNumber}");
+    notifyListeners();
+  }
+  void removeCard(){
+    _cardDetails = null;
+    setCardHolderName("");
+    setCardNumber("");
+    setExpiryDate("");
+    notifyListeners();
+  }
+
 }

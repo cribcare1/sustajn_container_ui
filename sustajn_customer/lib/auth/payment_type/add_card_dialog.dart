@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
+    as picker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sustajn_customer/auth/payment_type/payment_type_model.dart';
+import 'package:sustajn_customer/common_widgets/submit_button.dart';
+
 import '../../../constants/number_constants.dart';
 import '../../models/get_profile_model.dart';
 import '../../provider/signup_provider.dart';
 import '../../utils/theme_utils.dart';
-import '../../utils/utils.dart';
 
 class AddCardDialog extends ConsumerStatefulWidget {
   final VoidCallback? onSuccess;
   final CardDetailsResponse? cardDetails;
+
   const AddCardDialog({super.key, this.onSuccess, this.cardDetails});
 
   @override
@@ -36,6 +39,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
     final card = widget.cardDetails;
     if (card != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(signUpNotifier).setContext(context);
         setState(() {
           _cardHolder.text = card.cardHolderName ?? "";
           _cardNumber.text = card.cardNumber ?? "";
@@ -50,9 +54,6 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
     }
   }
 
-
-
-
   @override
   void dispose() {
     _expiryController.dispose();
@@ -63,7 +64,6 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final signupState = ref.watch(signUpNotifier);
-
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -104,6 +104,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 formatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(16),
+                  CardNumberInputFormatter(),
                 ],
               ),
 
@@ -114,7 +115,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                       context,
                       'Expiration Date',
                       _expiryController,
-                          (date) {
+                      (date) {
                         signupState.setExpiryDate(
                           "${date.year}-${date.month}-${date.day}",
                         );
@@ -143,33 +144,23 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               SizedBox(height: Constant.CONTAINER_SIZE_20),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constant.gold,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                      BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-                    ),
-                  ),
-                  onPressed: () {
+                child: SubmitButton(
+                  onRightTap: () {
                     final isValid = signupState.validateCardForm();
+                    print("++++++++++__________------");
                     if (!isValid) return;
-
+                    print("=======");
+                    final cardData = CardDetails(
+                      cardHolderName: _cardHolder.text,
+                      cardNumber: _cardNumber.text,
+                      expiryDate: _expiryController.text,
+                    );
+                    signupState.setCardDetails(cardData);
                     signupState.updateCardDetails();
-
                     Navigator.pop(context);
-
                     widget.onSuccess?.call();
                   },
-
-
-
-                  child: Text(
-                    'Add Card & Continue',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.primaryColor,
-                    ),
-                  ),
+                  rightText: "Add Card & Continue",
                 ),
               ),
               SizedBox(height: 20),
@@ -193,7 +184,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: Constant.CONTAINER_SIZE_12,),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
               Text(
                 'Credit, Debit, Visa and Mastercard',
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -220,7 +211,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
     List<TextInputFormatter>? formatters,
   }) {
     return Padding(
-      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -228,9 +219,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             controller: controller,
             onChanged: onChanged,
             inputFormatters: formatters,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
-            ),
+            style: theme.textTheme.bodyLarge?.copyWith(color: Colors.white),
             cursorColor: Colors.white,
             decoration: InputDecoration(
               hintText: hint,
@@ -256,10 +245,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
               padding: const EdgeInsets.only(top: 4, left: 8),
               child: Text(
                 error,
-                style: const TextStyle(
-                  color: Colors.redAccent,
-                  fontSize: 12,
-                ),
+                style: const TextStyle(color: Colors.redAccent, fontSize: 12),
               ),
             ),
         ],
@@ -268,14 +254,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
   }
 
   static Widget getDatePicker(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      Function(DateTime) onDateSelected,
-      ThemeData theme,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    Function(DateTime) onDateSelected,
+    ThemeData theme,
+  ) {
     return Padding(
-      padding:  EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
+      padding: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_15),
       child: GestureDetector(
         onTap: () {
           picker.DatePicker.showPicker(
@@ -308,7 +294,7 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
             ),
             onConfirm: (date) {
               controller.text =
-              "${date.month.toString().padLeft(2, '0')}/${date.year}";
+                  "${date.month.toString().padLeft(2, '0')}/${date.year}";
 
               onDateSelected(date);
             },
@@ -334,16 +320,14 @@ class _AddCardDialogState extends ConsumerState<AddCardDialog> {
                 Constant.grey.withOpacity(0.3),
               ),
             ),
-            validator: (value) =>
-            value!.isEmpty ? 'Please select date' : null,
+            validator: (value) => value!.isEmpty ? 'Please select date' : null,
           ),
         ),
       ),
     );
   }
-
-
 }
+
 class CustomMonthPicker extends picker.DatePickerModel {
   CustomMonthPicker({
     DateTime? currentTime,
@@ -351,14 +335,36 @@ class CustomMonthPicker extends picker.DatePickerModel {
     DateTime? maxTime,
     picker.LocaleType locale = picker.LocaleType.en,
   }) : super(
-    currentTime: currentTime,
-    minTime: minTime,
-    maxTime: maxTime,
-    locale: locale,
-  );
+         currentTime: currentTime,
+         minTime: minTime,
+         maxTime: maxTime,
+         locale: locale,
+       );
 
   @override
   List<int> layoutProportions() {
     return [1, 1, 0];
+  }
+}
+
+class CardNumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(' ', '');
+    if (text.length > 16) return oldValue;
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if ((i + 1) % 4 == 0 && i + 1 != text.length) {
+        buffer.write(' ');
+      }
+    }
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
   }
 }
