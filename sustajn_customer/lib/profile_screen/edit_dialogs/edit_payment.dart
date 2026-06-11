@@ -7,6 +7,7 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import '../../../constants/number_constants.dart';
 import '../../auth/payment_type/add_card_dialog.dart';
 import '../../auth/payment_type/link_payment_sheet.dart';
+import '../../auth/payment_type/payment_type_model.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../models/get_profile_model.dart';
@@ -236,6 +237,12 @@ class _PaymentTypeScreenState extends ConsumerState<EditPaymentScreen> {
               signupState.setCardHolderName(cardDetails.cardHolderName ?? "");
               signupState.setCardNumber(cardDetails.cardNumber ?? "");
               signupState.setExpiryDate(cardDetails.expiryDate ?? "");
+              final cardData = CardDetails(
+                cardHolderName: cardDetails.cardHolderName,
+                cardNumber: cardDetails.cardNumber,
+                expiryDate: cardDetails.expiryDate,
+              );
+              signupState.setCardDetails(cardData);
             }
 
             return AddCardDialog(cardDetails: cardDetails);

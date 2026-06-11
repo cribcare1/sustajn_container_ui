@@ -379,7 +379,11 @@ class Strings {
   static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
 
   static final RegExp number_validation = RegExp(r'[A-Za-z0-9]');
-
+  static const String ACCOUNT_HOLDER = 'Account Holder: ';
+  static const String CRD_NUMBER = 'Card Number: ';
+  static const String EXPIRY = 'Expiry: ';
+  static const String CVVS = 'CVV: ';
+  static const String STAR = '***';
 
 
 }
