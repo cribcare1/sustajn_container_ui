@@ -221,4 +221,6 @@ class Strings {
 
   static final String BOWL_IMG = "assets/images/img.png";
   static final String CUP_IMG = "assets/images/cups.png";
+  static final String USER_IMG = "assets/images/user.png";
+
 }

@@ -25,7 +25,7 @@ static const DELETE_CONTAINER = "inventory/delete-container-type/123";
 static const RESTAURANT_LIST = "auth/activeRestaurants?";
 
 /// Customer ///
-static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
+static const CUSTOMER_LIST = "auth/activeCustomersDetails";
 
 
 /// Partner products
