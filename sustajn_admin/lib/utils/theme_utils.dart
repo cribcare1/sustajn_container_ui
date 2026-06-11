@@ -15,8 +15,8 @@ class CustomTheme {
         primary: Color(0xFFD4AE37),
         secondary: Color(0xff00c4cc),
         brightness: Brightness.light,
-        onPrimary: Color(0xff8b3dff),
-        onSecondary: Color(0xff9e77f3),
+        onPrimary: Color(0xFF0F3727),
+        onSecondary: Color(0xFF0F3727),
         error: Color(0xffdb1436),
         onError: Color(0xffff4757),
         surface: Color(0xffffffff),
@@ -172,5 +172,11 @@ class CustomTheme {
         return const Color(0xFFE53935);
     }
   }
+
+  static Color? badgeTextColor(){
+    return const Color(0xFFF5EBDF);
+  }
+
+
 
 }
