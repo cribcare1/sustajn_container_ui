@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sustajn_restaurant/auth/auth_state/location_state.dart';
@@ -6,6 +8,7 @@ import 'package:sustajn_restaurant/common_widgets/custom_back_button.dart';
 import 'package:sustajn_restaurant/constants/imports_util.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_model.dart';
 import 'package:sustajn_restaurant/search_screen/search_restaurant_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/theme_utils.dart';
 import '../constants/string_utils.dart';
@@ -30,14 +33,13 @@ class _SearchRestaurantScreenState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(searchResProvider).setContext(context);
-      ref.read(locationProvider.notifier).initialize().then((value) {
-        final location = ref.read(locationProvider).position;
-        if (location != null) {
-          _getNetworkData(_lastKeyword);
-        }
-      });
+      await ref.read(locationProvider.notifier).initialize();
+      if (!mounted) return;
+      if (ref.read(locationProvider).position != null) {
+        _getNetworkData(_lastKeyword);
+      }
     });
   }
 
@@ -78,34 +80,23 @@ class _SearchRestaurantScreenState
 
   Set<Marker> _buildMarkers(List<SearchData> list) {
     return list
-        .where(
-          (e) =>
-      e.latitude != 0 &&
-          e.longitude != 0,
-    )
-        .map((data) {
-      return Marker(
+        .where((e) => e.latitude != 0 && e.longitude != 0)
+        .map(
+          (data) => Marker(
         markerId: MarkerId(data.id.toString()),
+        position: LatLng(data.latitude, data.longitude),
 
-        position: LatLng(
-          data.latitude,
-          data.longitude,
-        ),
-
-        draggable: false,
-
-        consumeTapEvents: true,
-
-        infoWindow: InfoWindow(
-          title: data.name,
-          snippet:
-          "${data.distanceKm.toStringAsFixed(2)} km",
-          onTap: () {
-            _showRestaurantPopup(data);
-          },
-        ),
-      );
-    }).toSet();
+        onTap: () {
+          _showRestaurantPopup(data);
+        },
+        // TODO
+        // infoWindow: InfoWindow(
+        //   title: data.name,
+        //   snippet: "${data.distanceKm.toStringAsFixed(2)} km",
+        // ),
+      ),
+    )
+        .toSet();
   }
 
   void _showRestaurantPopup(SearchData data) {
@@ -127,11 +118,13 @@ class _SearchRestaurantScreenState
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                data.address,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall!.copyWith(color: Colors.grey,fontSize: 10),
+              Flexible(
+                child: Text(
+                  data.address,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall!.copyWith(color: Colors.grey,fontSize: 12),
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -152,10 +145,49 @@ class _SearchRestaurantScreenState
                 ).textTheme.titleMedium!.copyWith(color: Colors.orangeAccent),
               ),
             ),
+            TextButton(
+              onPressed: () {
+                _openMap(
+                  data.latitude,
+                  data.longitude,
+                  data.name,
+                );
+              },
+              child: Text(
+                "View Map",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: Colors.orangeAccent,
+                ),
+              ),
+            ),
           ],
         );
       },
     );
+  }
+
+
+  Future<void> _openMap(double lat, double lng, String name) async {
+    final Uri url = Platform.isIOS
+        ? Uri.parse(
+      'https://maps.apple.com/?q=$name&ll=$lat,$lng',
+    )
+        : Uri.parse(
+      'geo:$lat,$lng?q=$lat,$lng($name)',
+    );
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      final fallbackUrl = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+      );
+
+      await launchUrl(
+        fallbackUrl,
+        mode: LaunchMode.externalApplication,
+      );
+    }
   }
 
   @override

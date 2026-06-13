@@ -52,66 +52,59 @@ class _TermsAndConditionScreenState
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: SafeArea(
-          child: Stack(
-            alignment: Alignment.center,
+          child: Column(
             children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Constant.CONTAINER_SIZE_20,
-                      ),
-                      child: FutureBuilder<String>(
-                        future: _termsFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: Constant.gold,
-                              ),
-                            );
-                          }
-
-                          if (snapshot.hasError) {
-                            return const Text(
-                              "Failed to load terms & conditions",
-                              style: TextStyle(color: Colors.red),
-                            );
-                          }
-
-                          return Text(
-                            snapshot.data ?? '',
-                            textAlign: TextAlign.justify,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              height: Constant.SIZE_1,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_20,
                   ),
-
-                  Padding(
-                    padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-                    child: signUpState.isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : SizedBox(
-                            width: double.infinity,
-                            child: SubmitButton(
-                              onRightTap: () {
-                                  termsDialog(context,signUpState);
-                              },
-                              rightText: "Agree & Create Account",
-                            ),
+                  child: FutureBuilder<String>(
+                    future: _termsFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Constant.gold,
                           ),
+                        );
+                      }
+
+                      if (snapshot.hasError) {
+                        return const Text(
+                          "Failed to load terms & conditions",
+                          style: TextStyle(color: Colors.red),
+                        );
+                      }
+
+                      return Text(
+                        snapshot.data ?? '',
+                        textAlign: TextAlign.justify,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          height: Constant.SIZE_1,
+                        ),
+                      );
+                    },
                   ),
-                ],
+                ),
               ),
-              if (signUpState.isLoading)
-                Center(child: CircularProgressIndicator(color: Constant.gold)),
+
+              Padding(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+                child: signUpState.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : SizedBox(
+                        width: double.infinity,
+                        child: SubmitButton(
+                          onRightTap: () {
+                              termsDialog(context,signUpState);
+                          },
+                          rightText: "Agree & Create Account",
+                        ),
+                      ),
+              ),
             ],
           ),
         ),
@@ -210,9 +203,6 @@ class _TermsAndConditionScreenState
                         child: ElevatedButton(
                           onPressed: ()async {
                             Navigator.pop(context);
-                            await Future.delayed(
-                              const Duration(milliseconds: 100),
-                            );
                             _getNetworkData(signUpState);
                           },
                           style: ElevatedButton.styleFrom(
@@ -318,16 +308,12 @@ class _TermsAndConditionScreenState
           isNetworkAvailable,
         ) {
           Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          setState(() {
             if (isNetworkAvailable) {
-              registrationState.setIsLoading(true);
-
-              ref.read(registerProvider(mapData));
+              registrationState.setIsLoading(isNetworkAvailable);
+              ref.read(registerProvider(mapData).future);
             } else {
-              registrationState.setIsLoading(false);
               Utils.showToast(Strings.NO_INTERNET_CONNECTION);
             }
-          });
         });
       } else {
         Utils.showToast("Not valid data for Registration");

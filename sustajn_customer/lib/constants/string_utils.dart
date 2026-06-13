@@ -326,7 +326,7 @@ class Strings {
   static const String CLEAR = 'Clear';
   static const String APPLY = 'Apply';
   static const String NO_BORROWED  = 'No borrowed containers found';
-  static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
+  static const String SEARCH_BY_REST_NAME = 'Search by Restaurant Name';
   static const String FILTERS = 'Filters';
   static const String MONTH = 'Month';
   static const String BORROWED_ON = 'Borrowed On';
@@ -379,7 +379,11 @@ class Strings {
   static final RegExp text_validation = RegExp(r'[a-zA-Z ]');
 
   static final RegExp number_validation = RegExp(r'[A-Za-z0-9]');
-
+  static const String ACCOUNT_HOLDER = 'Account Holder: ';
+  static const String CRD_NUMBER = 'Card Number: ';
+  static const String EXPIRY = 'Expiry: ';
+  static const String CVVS = 'CVV: ';
+  static const String STAR = '***';
 
 
 }

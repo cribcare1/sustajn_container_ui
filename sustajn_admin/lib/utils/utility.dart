@@ -12,6 +12,20 @@ import '../constants/string_utils.dart';
 import '../fluttertoast.dart';
 
 class Utils {
+
+  static buildFloatingHeader(BuildContext context) {
+    return  Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        onTap: () => Navigator.pop(context),
+        child: CircleAvatar(
+          radius: Constant.CONTAINER_SIZE_16,
+          backgroundColor: Colors.white,
+          child: Icon(Icons.clear, color: Colors.black, size: Constant.CONTAINER_SIZE_18),
+        ),
+      ),
+    );
+  }
   static Future<void> showEditDeleteMenu({
     required BuildContext context,
     required GlobalKey iconKey,
@@ -174,16 +188,7 @@ class Utils {
       ),
     );
   }
-  static showToast(String msg) {
-    Fluttertoast.showToast(
-      msg: msg,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.white,
-      toastLength: Toast.LENGTH_LONG,
-      textColor: Colors.black,
-      webBgColor: "linear-gradient(#673AB7, #673AB7)",
-    );
-  }
+
 
   static LoginModel? loginData;
   static Future<LoginModel?> getProfile() async {
@@ -256,16 +261,16 @@ class Utils {
     "May", "Jun", "Jul", "Aug",
     "Sep", "Oct", "Nov", "Dec"
   ];
-  // static showToast(String msg) {
-  //   Fluttertoast.showToast(
-  //     msg: msg,
-  //     gravity: ToastGravity.CENTER,
-  //     backgroundColor: Colors.white,
-  //     toastLength: Toast.LENGTH_LONG,
-  //     textColor: Colors.black,
-  //     webBgColor: "linear-gradient(#673AB7, #673AB7)",
-  //   );
-  // }
+  static showToast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      toastLength: Toast.LENGTH_LONG,
+      textColor: Colors.black,
+      webBgColor: "linear-gradient(#673AB7, #673AB7)",
+    );
+  }
   static  String getFullMonth(String shortMonth) {
     const months = {
       "Jan": "January",

@@ -22,12 +22,10 @@ import '../../provider/profile_provider.dart';
 import '../model/social_media_model.dart';
 
 class BusinessInformationDetails extends ConsumerStatefulWidget {
-  final AuthState authState;
   final String? previous;
 
   const BusinessInformationDetails({
     super.key,
-    required this.authState,
     this.previous = "",
   });
 
@@ -63,6 +61,10 @@ class _BusinessInformationDetailsState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(profileProvider).setContext(context);
+      ref.read(authNotifierProvider).setContext(context);
+    });
     Utils.userId;
     contactPersonController = TextEditingController();
     contactNumberController = TextEditingController();
@@ -102,6 +104,7 @@ class _BusinessInformationDetailsState
   }
 
   _getData() {
+    final authState =ref.read(authNotifierProvider);
     final profileState = ref.read(profileProvider);
     final profile = profileState.getProfileData?.data;
     if (widget.previous == "profile" && profile != null) {
@@ -109,7 +112,7 @@ class _BusinessInformationDetailsState
         final business = profile.contactAndRegistrationDetailsResponse;
         final website = profile.businessDetailsResponse;
         contactPersonController.text = business!.contactPersonName ?? "";
-        contactNumberController.text = business.contactNumber ?? "";
+        contactNumberController.text = business.contactNumber!.split(" ").last;
         contactEmailController.text = business.contactEmail ?? "";
         licenceController.text = business.treadLicenseNumber ?? "";
         vatController.text = business.vatNumber ?? "";
@@ -127,8 +130,8 @@ class _BusinessInformationDetailsState
       }
       if (profile.socialMediaResponse != null &&
           profile.socialMediaResponse!.isNotEmpty) {
-        widget.authState.socialMediaList.clear();
-        widget.authState.socialMediaList.addAll(
+        authState.socialMediaList.clear();
+         authState.socialMediaList.addAll(
           profile.socialMediaResponse!.map(
             (e) => SocialMediaModel(
               socialMediaType: SocialMediaType.values.firstWhere(
@@ -163,9 +166,10 @@ class _BusinessInformationDetailsState
   @override
   Widget build(BuildContext context) {
     String? regdNo;
-
+    final authState = ref.watch(authNotifierProvider);
     if (widget.previous == Strings.PROFILE) {
       final profileState = ref.watch(profileProvider);
+
       regdNo = profileState
           .getProfileData
           ?.data
@@ -524,9 +528,9 @@ class _BusinessInformationDetailsState
                       focusNode: _websiteFocus,
                       textInputAction: TextInputAction.done,
                     ),
-                    widget.authState.socialMediaList.isNotEmpty
+                     authState.socialMediaList.isNotEmpty
                         ? Column(
-                            children: widget.authState.socialMediaList.map((
+                            children:  authState.socialMediaList.map((
                               item,
                             ) {
                               final config = socialMediaOptions.firstWhere(
@@ -563,7 +567,7 @@ class _BusinessInformationDetailsState
                                             ),
                                             onPressed: () {
                                               setState(() {
-                                                widget.authState
+                                                 authState
                                                     .removeSocialMedia(item);
                                               });
                                             },
@@ -614,7 +618,7 @@ class _BusinessInformationDetailsState
                               : () async {
                                   if (!_key.currentState!.validate()) return;
                                   for (var item
-                                      in widget.authState.socialMediaList) {
+                                      in  authState.socialMediaList) {
                                     final value = item.controller.text.trim();
                                     if (value.isEmpty) continue;
                                     final isValid = RegExp(
@@ -629,7 +633,7 @@ class _BusinessInformationDetailsState
                                   }
                                   setState(() => _isLoading = true);
 
-                                  widget.authState.setRegistrationDetails(
+                                   authState.setRegistrationDetails(
                                     ContactAndRegistrationDetails(
                                       contactPersonName:
                                           contactPersonController.text,
@@ -642,7 +646,7 @@ class _BusinessInformationDetailsState
                                       registrationNumber: "",
                                     ),
                                   );
-                                  widget.authState.setBusinessDetails(
+                                   authState.setBusinessDetails(
                                     BusinessModel(
                                       websiteDetails: websiteController.text,
                                       speciality: _selectedBusinessType ?? "",
@@ -708,7 +712,7 @@ class _BusinessInformationDetailsState
                                   return;
                                 }
                                 setState(() => _isLoading = true);
-                                widget.authState.setRegistrationDetails(
+                                 authState.setRegistrationDetails(
                                   ContactAndRegistrationDetails(
                                     contactPersonName:
                                         contactPersonController.text,
@@ -720,7 +724,7 @@ class _BusinessInformationDetailsState
                                     registrationNumber: "",
                                   ),
                                 );
-                                widget.authState.setBusinessDetails(
+                                 authState.setBusinessDetails(
                                   BusinessModel(
                                     websiteDetails: websiteController.text,
                                     speciality: _selectedBusinessType ?? "",
@@ -801,6 +805,7 @@ class _BusinessInformationDetailsState
   }
 
   void _openSocialMediaSheet(BuildContext context) {
+    final authState = ref.read(authNotifierProvider);
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).primaryColor,
@@ -840,7 +845,7 @@ class _BusinessInformationDetailsState
                 spacing: Constant.CONTAINER_SIZE_20,
                 alignment: WrapAlignment.center,
                 children: socialMediaOptions.map((item) {
-                  final alreadyAdded = widget.authState.socialMediaList.any(
+                  final alreadyAdded =  authState.socialMediaList.any(
                     (e) => e.socialMediaType == item.type,
                   );
 
@@ -849,7 +854,7 @@ class _BusinessInformationDetailsState
                         ? null
                         : () {
                             Navigator.pop(context);
-                            widget.authState.setSocialMedia(
+                             authState.setSocialMedia(
                               SocialMediaModel(
                                 socialMediaType: item.type,
                                 controller: TextEditingController(),

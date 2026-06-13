@@ -162,7 +162,6 @@ class _MyProfileScreenState extends ConsumerState<MyProfileScreen> {
     NavUtil.navigateToPushScreen(
       context,
       BusinessInformationDetails(
-        authState: ref.read(authNotifierProvider),
         previous: "profile",
       ),
     );

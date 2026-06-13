@@ -82,7 +82,15 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   print(authState.gateway!.name);
   print(authState.gateway!.id);
     }
+  }
 
+  @override
+  void dispose() {
+    bankNameController.dispose();
+    accountHolderNameController.dispose();
+    ibanController.dispose();
+    bicController.dispose();
+    super.dispose();
   }
 
   @override
