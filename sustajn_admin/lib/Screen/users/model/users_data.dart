@@ -202,6 +202,7 @@ class Addresses {
   String? flatDoorHouseDetails;
   String? areaStreetCityBlockDetails;
   String? poBoxOrPostalCode;
+  String? fullAddress;
 
   Addresses(
       {this.id,
@@ -212,10 +213,11 @@ class Addresses {
 
   Addresses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    addressType = json['addressType'];
-    flatDoorHouseDetails = json['flatDoorHouseDetails'];
-    areaStreetCityBlockDetails = json['areaStreetCityBlockDetails'];
-    poBoxOrPostalCode = json['poBoxOrPostalCode'];
+    addressType = json['addressType']?? "";
+    flatDoorHouseDetails = json['flatDoorHouseDetails']?? "";
+    areaStreetCityBlockDetails = json['areaStreetCityBlockDetails']?? "";
+    poBoxOrPostalCode = json['poBoxOrPostalCode']?? "";
+    fullAddress = flatDoorHouseDetails! + areaStreetCityBlockDetails! + poBoxOrPostalCode!;
   }
 
   Map<String, dynamic> toJson() {
