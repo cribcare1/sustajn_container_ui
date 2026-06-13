@@ -6,6 +6,7 @@ import 'package:sustajn_customer/common_widgets/custom_back_button.dart';
 import 'package:sustajn_customer/models/register_data.dart';
 import 'package:sustajn_customer/utils/nav_utils.dart';
 import '../../../constants/number_constants.dart';
+import '../../common_widgets/custom_container.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
 import '../../network_provider/network_provider.dart';
@@ -50,7 +51,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(signUpNotifier).resetBankValidation();
-      _clearBankControllers();
+      // _clearBankControllers();
     });
 
     Utils.getToken();
@@ -107,7 +108,123 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _sectionTitle(theme, title: Strings.CARD_DETAILS),
-                    _addCardButton(context, theme),
+                    (signupState.cardDetails == null)
+                        ?  _addCardButton(context, theme)
+                        :GlassSummaryCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: Strings.ACCOUNT_HOLDER,
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                        signupState
+                                            .cardDetails!
+                                            .cardHolderName ??
+                                            "",
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(
+                                          color: theme.secondaryHeaderColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: Colors.transparent,
+                                        isScrollControlled: true,
+                                        builder: (_) =>
+                                            AddCardDialog(),
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: theme.secondaryHeaderColor,
+                                    ),
+                                  ),
+                                  SizedBox(width: Constant.CONTAINER_SIZE_10),
+                                  GestureDetector(
+                                    onTap: signupState.removeCard,
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: theme.secondaryHeaderColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: Constant.SIZE_06),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: Strings.CRD_NUMBER,
+                                  style: theme.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: maskCardNumber(
+                                    signupState.cardDetails!.cardNumber ?? "",
+                                  ),
+                                  style: theme.textTheme.titleSmall!.copyWith(
+                                    color: theme.secondaryHeaderColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: Constant.SIZE_06),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: Strings.EXPIRY,
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                        signupState.cardDetails!.expiryDate ??
+                                            "",
+                                        style: theme.textTheme.titleSmall!
+                                            .copyWith(
+                                          color: theme.secondaryHeaderColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     _orDivider(theme),
                     _sectionTitle(theme, title: Strings.ONLINE_PAYMENT_GATEWAY),
                     _paypalTile(theme,signupState),
@@ -311,6 +428,7 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
           Image.asset(icon),
           SizedBox(width: Constant.CONTAINER_SIZE_12),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
@@ -513,10 +631,12 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
             onPressed: signupState.isLoading
                 ? null
                 : () async {
-              final isValid = signupState.validatePaymentDetails();
-              if (!isValid) return;
-              signupState.updateBankDetails();
-
+              final isBankValid = signupState.validateBankForm();
+              final isUpiValid = signupState.paymentGatewayId.isNotEmpty;
+              final isCardAdded = signupState.cardDetails != null;
+              if (isBankValid) {
+                signupState.updateBankDetails();
+              }
               if (widget.flow == PaymentFlow.signup) {
                 NavUtil.navigateToPushScreen(context, SubscriptionScreen(flow: SubscriptionFlow.registration));
               } else {
@@ -542,38 +662,28 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
   }
 
   Map<String, dynamic> getJsonData(SignupNotifier signupState) {
-    final Map<String, dynamic> body = {};
+    final Map<String, dynamic>
 
-    if (signupState.paymentMethod == "bank") {
-      body["bankDetailsRequest"] = {
-        "userId": Utils.userId,
-        "bankName": _bankNameController.text,
-        "bicNumber": _bicController.text,
-        "accountHolderName": _accountHolderController.text,
-        "iBanNumber": _ibanController.text,
-      };
-    }
-
-    if (signupState.paymentMethod == "card") {
-      body["cardDetailsRequest"] = {
-        "userId": Utils.userId,
-        "cardHolderName": signupState.registrationData?.cardHolderName,
-        "cardNumber": signupState.registrationData?.cardNumber,
-        "expiryDate": signupState.registrationData?.expiryDate,
-        //"cvv": signupState.registrationData?.cvv,
-        "paymentGatewayId": "",
-        "paymentGatewayName": "",
-      };
-    }
-
-    if (signupState.paymentMethod == "upi") {
-      body["paymentGetWayRequest"] = {
-        "userId": Utils.userId,
-        "paymentGatewayId": signupState.registrationData?.paymentGatewayId,
-        "paymentGatewayName": signupState.registrationData?.paymentGatewayName,
-      };
-    }
-
+body = {
+  "userId": Utils.userId,
+      "bankDetailsRequest":{
+        "bankName": _bankNameController.text.trim(),
+        "bicNumber": _bicController.text.trim(),
+        "accountHolderName": _accountHolderController.text.trim(),
+        "iBanNumber": _ibanController.text.trim(),
+      },
+  "cardDetailsRequest":{
+    "cardHolderName": signupState.registrationData?.cardHolderName,
+    "cardNumber": signupState.registrationData?.cardNumber,
+    "expiryDate": signupState.registrationData?.expiryDate,
+  },
+  "paymentGetWayRequest":{
+    "paymentGatewayId":
+    signupState.registrationData?.paymentGatewayId,
+    "paymentGatewayName":
+    signupState.registrationData?.paymentGatewayName,
+  },
+};
     return body;
   }
 
@@ -614,6 +724,20 @@ class _PaymentTypeScreenState extends ConsumerState<PaymentTypeScreen> {
       Utils.printLog('Error in Login button onPressed: $e');
       registrationState.setIsLoading(false);
     }
+  }
+
+
+  String maskCardNumber(String? cardNumber) {
+    if (cardNumber == null || cardNumber.isEmpty) {
+      return "**** **** **** ****";
+    }
+
+    if (cardNumber.length <= 4) {
+      return "**** **** **** $cardNumber";
+    }
+
+    final last4 = cardNumber.substring(cardNumber.length - 4);
+    return "**** **** **** $last4";
   }
 }
 

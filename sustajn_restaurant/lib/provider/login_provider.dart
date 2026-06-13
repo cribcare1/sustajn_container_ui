@@ -292,9 +292,7 @@ final verifyOtpProvider =
             );
           } else {
             NavUtil.navigateToPushScreen(registrationState.context,
-              BusinessInformationDetails(
-                authState: registrationState,
-              ),
+              BusinessInformationDetails(),
             );
           }
         } else {

@@ -57,9 +57,9 @@ class CustomTheme {
     )
         : ThemeData(
       textTheme: const TextTheme(
-        titleSmall: TextStyle(color: Color(0xFFF5EBDF), fontSize: 14),
-        titleMedium: TextStyle(color: Color(0xFFF5EBDF), fontSize: 16),
-        titleLarge: TextStyle(color: Color(0xFFF5EBDF), fontSize: 22),
+        titleSmall: TextStyle(color: Colors.white, fontSize: 14),
+        titleMedium: TextStyle(color: Colors.white, fontSize: 16),
+        titleLarge: TextStyle(color: Colors.white, fontSize: 22),
       ),
     );
   }
@@ -177,48 +177,6 @@ class CustomTheme {
     return const Color(0xFFF5EBDF);
   }
 
-
-  // static Widget searchField(
-  //     TextEditingController controller,
-  //     String text, {
-  //       VoidCallback? onFilterTap,
-  //       ValueChanged<String>? onChanged,
-  //     }) {
-  //   return TextField(
-  //     controller: controller,
-  //     autofocus: false,
-  //     style: const TextStyle(fontSize: 14, color: Colors.white),
-  //     onChanged: onChanged,
-  //     cursorColor: Colors.white,
-  //     decoration: InputDecoration(
-  //       hintText: text,
-  //       hintStyle: const TextStyle(color: Colors.white70),
-  //       prefixIcon: const Icon(Icons.search, color: Colors.white70),
-  //
-  //       suffixIcon: onFilterTap == null
-  //           ? null
-  //           : IconButton(
-  //         icon: const Icon(Icons.filter_list, color: Colors.white70),
-  //         onPressed: onFilterTap,
-  //       ),
-  //
-  //       border: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-  //         borderSide: BorderSide.none,
-  //       ),
-  //       enabledBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-  //         borderSide: BorderSide(color: Constant.grey),
-  //       ),
-  //       focusedBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-  //         borderSide: BorderSide(color: Constant.grey),
-  //       ),
-  //       fillColor: Constant.grey.withOpacity(0.1),
-  //       filled: true,
-  //     ),
-  //   );
-  // }
 
 
 }

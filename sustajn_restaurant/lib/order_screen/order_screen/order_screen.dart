@@ -11,7 +11,6 @@ import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import 'history_filter_bottom_sheet.dart';
 import 'order_details_screen.dart';
 
 class OrderHistoryScreen extends ConsumerStatefulWidget {
@@ -23,7 +22,6 @@ class OrderHistoryScreen extends ConsumerStatefulWidget {
 
 class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   final searchController = TextEditingController();
-
 
   LoginData? loginResponse;
   bool isLoading = true;
@@ -52,71 +50,70 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child:containerState.isLoading
+          child: containerState.isLoading
               ? Center(child: CircularProgressIndicator())
-              : ( containerState.orderHistoryList.isEmpty)
+              : (containerState.orderHistoryList.isEmpty)
               ? const Center(
-            child: Text(
-              Strings.NO_CONTAINER_AVAILABLE,
-              style: TextStyle(color: Colors.white),
-            ),
-          )
-              : Column(
-            children: [
-              CustomTheme.searchField(
-                searchController,
-                "Search by Container Id/Order Id",
-                onChanged: (value){
-                  containerState.historyFilter(value);
-                },
-                //TODO:-
-                // onFilterTap: (){
-                //   showModalBottomSheet(
-                //     context: context,
-                //     isScrollControlled: true,
-                //     backgroundColor: Colors.transparent,
-                //     builder: (_) => const OrderFilterBottomSheet(),
-                //   );
-                //
-                // }
-              ),
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
-              Expanded(
-                child:( containerState.orderHistoryListFiltered.isEmpty)
-                    ? const Center(
                   child: Text(
                     Strings.NO_CONTAINER_AVAILABLE,
                     style: TextStyle(color: Colors.white),
                   ),
                 )
-                    :  ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: containerState.orderHistoryListFiltered.length,
-                            separatorBuilder: (_, __) => SizedBox(
-                              height: Constant.CONTAINER_SIZE_12,
+              : Column(
+                  children: [
+                    CustomTheme.searchField(
+                      searchController,
+                      "Search by Container Id/Order Id",
+                      onChanged: (value) {
+                        containerState.historyFilter(value);
+                      },
+                      //TODO:-
+                      // onFilterTap: (){
+                      //   showModalBottomSheet(
+                      //     context: context,
+                      //     isScrollControlled: true,
+                      //     backgroundColor: Colors.transparent,
+                      //     builder: (_) => const OrderFilterBottomSheet(),
+                      //   );
+                      //
+                      // }
+                    ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    (containerState.orderHistoryListFiltered.isEmpty)
+                        ? const Center(
+                            child: Text(
+                              Strings.NO_CONTAINER_AVAILABLE,
+                              style: TextStyle(color: Colors.white),
                             ),
-                            itemBuilder: (context, index) {
-                              final item = containerState.orderHistoryListFiltered[index];
-                              return _buildOrderCard(
-                                context,
-                                item.status ?? "Unknown",
-                                item.productName ?? "N/A",
-                                item.orderId ?? "-",
-                                item.orderDate ?? "",
-                                item,
-                              );
-                            },
+                          )
+                        : Expanded(
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: containerState
+                                  .orderHistoryListFiltered
+                                  .length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+                              itemBuilder: (context, index) {
+                                final item = containerState
+                                    .orderHistoryListFiltered[index];
+                                return _buildOrderCard(
+                                  context,
+                                  item.status ?? "Unknown",
+                                  item.productName ?? "N/A",
+                                  item.orderId ?? "-",
+                                  item.orderDate ?? "",
+                                  item,
+                                );
+                              },
+                            ),
                           ),
-
-              ),
-            ],
-          ),
+                  ],
+                ),
         ),
       ),
     );
   }
-
 
   // 🗓 Month Header
   Widget _buildMonthHeader(BuildContext context, String title) {
@@ -140,17 +137,20 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
     String title,
     String orderId,
     String date,
-      OrderedResponses orderData,
+    OrderedResponses orderData,
   ) {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: (){
-        NavUtil.navigateToPushScreen(context, OrderDetailsScreen(
-          orderId: orderId,
-          status: status,
-          orderData: orderData,
-        ));
+      onTap: () {
+        NavUtil.navigateToPushScreen(
+          context,
+          OrderDetailsScreen(
+            orderId: orderId,
+            status: status,
+            orderData: orderData,
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),

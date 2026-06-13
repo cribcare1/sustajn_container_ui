@@ -35,7 +35,9 @@ class _QrScannerScreenState extends ConsumerState<LeaseScanScreen> {
   final textController = TextEditingController();
 @override
   void initState() {
-    ref.read(leaseReceiveNotifier).clearAddedContainer();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      ref.read(leaseReceiveNotifier).clearAddedContainer();
+    });
     super.initState();
   }
   @override
