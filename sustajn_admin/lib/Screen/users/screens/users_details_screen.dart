@@ -201,7 +201,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           mainAxisSpacing: Constant.SIZE_06,
           crossAxisSpacing: Constant.SIZE_06,
           childAspectRatio: 1,
-          mainAxisExtent: 75,
+          mainAxisExtent: 95,
         ),
         itemBuilder: (context, index) {
           final item = items[index];
@@ -215,7 +215,6 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey, width: 1.5),
@@ -421,64 +420,83 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
     required String icon,
     required Map<String, dynamic> data,
   }) {
-    final themeData = CustomTheme.getTheme(true);
+    final themeData = CustomTheme.getTheme(true)!;
 
     return Container(
-      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
       decoration: _cardDecoration(),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Image.asset(
-                    icon,
-                    height: Constant.CONTAINER_SIZE_18,
-                    color: themeData!.secondaryHeaderColor,
-                  ),
-                  SizedBox(width: Constant.SIZE_04),
-                  Text(
-                    title,
-                    style: _smallText(themeData.secondaryHeaderColor),
-                  ),
-                ],
+              Image.asset(
+                icon,
+                height: 16,
+                width: 16,
+                color: themeData.secondaryHeaderColor,
               ),
+              SizedBox(width: Constant.SIZE_04),
+
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: _smallText(themeData.secondaryHeaderColor),
+                ),
+              ),
+
               Text(
-                data["percent"],
-                style: _smallText(themeData.secondaryHeaderColor, bold: true),
+                data["percent"]?.toString() ?? "",
+                style: _smallText(
+                  themeData.secondaryHeaderColor,
+                  bold: true,
+                ),
               ),
             ],
           ),
 
-          SizedBox(height: Constant.CONTAINER_SIZE_10),
-
-          Image.asset(data["image"], height: Constant.CONTAINER_SIZE_45),
           SizedBox(height: Constant.SIZE_08),
 
+          Image.asset(
+            data["image"]?.toString() ?? "",
+            height: 40,
+            fit: BoxFit.contain,
+          ),
+
+          SizedBox(height: Constant.SIZE_06),
+
           Text(
-            data["name"],
-           maxLines: 1,
+            data["name"]?.toString() ?? "",
+            textAlign: TextAlign.center,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center, //
             style: TextStyle(
               color: Colors.white,
               fontSize: Constant.CONTAINER_SIZE_12,
               fontWeight: FontWeight.w600,
             ),
           ),
+
+          SizedBox(height: 2),
+
           Text(
-            data["code"],
+            data["code"]?.toString() ?? "",
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white,
               fontSize: Constant.CONTAINER_SIZE_10,
             ),
           ),
+
           Text(
-            data["capacity"],
+            data["capacity"]?.toString() ?? "",
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white,
               fontSize: Constant.CONTAINER_SIZE_10,

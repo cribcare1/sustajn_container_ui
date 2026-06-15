@@ -83,6 +83,7 @@ class Strings {
   static const OVERDUE = 'Overdue';
   static const RETURNED = 'Returned';
   static const BORROWED = 'Borrowed';
+  static const ACTIVE = 'Active';
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
   static const TOTAL_RETURNED_CONTAINER = 'Total Returned Containers';
@@ -217,6 +218,8 @@ class Strings {
   static final String BOWL_IMG = "assets/images/img.png";
   static final String CUP_IMG = "assets/images/cups.png";
   static final String USER_IMG = "assets/images/user.png";
+
+
 
 
 }
