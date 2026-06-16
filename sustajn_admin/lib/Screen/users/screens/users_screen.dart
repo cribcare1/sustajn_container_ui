@@ -2,6 +2,7 @@ import 'package:container_tracking/Screen/Partner/model/get_all_restaurant_data.
 import 'package:container_tracking/Screen/Partner/partner_details_screen.dart';
 import 'package:container_tracking/Screen/Partner/provider/provider/restaurant_list_provider.dart';
 import 'package:container_tracking/Screen/users/model/users_data.dart';
+import 'package:container_tracking/Screen/users/screens/users_details_screen.dart';
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/common_widgets/custom_back_button.dart';
 import 'package:container_tracking/constants/imports.util.dart';
@@ -96,12 +97,12 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
   Widget _containerTile(CustomersData item, ThemeData themeData) {
     return GestureDetector(
       onTap: () {
-        /*Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UsersDetailsScreen(data: item),
+            builder: (context) => UsersDetailsScreen(customersData: item),
           ),
-        );*/
+        );
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),

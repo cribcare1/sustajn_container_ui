@@ -78,11 +78,10 @@ class Strings {
   static const SEARCH_CONTAINER_NAME = 'Search by Container Name or ID';
   static const AVAILABLE_CONTAINERS = 'Available Containers';
   static const TOTAL_ISSUED_TITLE = 'Total Issued';
-  static const SEARCH_BY_RESTURANT = 'Search by resturant';
+  static const SEARCH_BY_RESTAURANT = 'Search by restaurant';
   static const TOTAL_RETURNED = 'Total Returned';
   static const OVERDUE = 'Overdue';
-  static const RETURNED = 'Returned';
-  static const BORROWED = 'Borrowed';
+
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
   static const TOTAL_RETURNED_CONTAINER = 'Total Returned Containers';
@@ -216,4 +215,16 @@ class Strings {
 
   static final String BOWL_IMG = "assets/images/img.png";
   static final String CUP_IMG = "assets/images/cups.png";
+  static final String USER_IMG = "assets/images/user.png";
+
+  static const String ACTIVE = "Active";
+  static const String BORROWED = "Borrowed";
+  static const String RETURNED = "Returned";
+  static const String NO_BORROWED  = 'No borrowed containers found';
+  static const String FILTERS = 'Filters';
+  //static const SEARCH_BY_RESTURANT = 'Search by restaurant';
+  static const String RETURNED_ON = 'Returned On';
+  static const String BORROWED_ON = 'Borrowed On';
+  static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
+  static const String RETURNED_DETAILS = 'Returned Details';
 }

@@ -126,7 +126,7 @@ class _ProductsScreenState extends State<ProductsScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                InventoryScreen(),
+                InventoryScreen(restaurantId: 2,),
                 Container(),
                 Container(),
                 Container(),

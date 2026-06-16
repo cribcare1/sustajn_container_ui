@@ -1,39 +1,41 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../common_provider/network_provider.dart';
-import '../common_widgets/card_widget.dart';
-import '../common_widgets/submit_button.dart';
-import '../common_widgets/submit_clear_button.dart';
-import '../constants/network_urls.dart';
-import '../constants/number_constants.dart';
-import '../constants/string_utils.dart';
-import '../container_list/model/container_list_model.dart';
-import '../provider/order_provider.dart';
-import '../utils/nav_utils.dart';
-import '../utils/theme_utils.dart';
-import '../utils/utility.dart';
 
-class InventoryScreen extends ConsumerStatefulWidget {
-  const InventoryScreen({super.key, required int restaurantId});
+import '../../../common_provider/network_provider.dart';
+import '../../../common_widgets/card_widget.dart';
+import '../../../common_widgets/submit_button.dart';
+import '../../../common_widgets/submit_clear_button.dart';
+import '../../../constants/network_urls.dart';
+import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../provider/order_provider.dart';
+import '../../../utils/theme_utils.dart';
+import '../../../utils/utility.dart';
+import '../../Partner/model/get_container_data.dart';
+import '../provider/user_provider.dart';
+
+
+class UsersActiveScreen extends ConsumerStatefulWidget {
+  final int? userId;
+
+  const UsersActiveScreen({super.key, required this.userId});
 
   @override
-  ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
+  ConsumerState<UsersActiveScreen> createState() => _UsersActiveScreenState();
 }
 
-class _InventoryScreenState extends ConsumerState<InventoryScreen> {
-  TextEditingController searchController = TextEditingController();
+class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
+  //TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getInventoryNetworkCall();
+    _getUsersActiveNetworkCall();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
+    final userProviders = ref.watch(userProvider);
 
     return SafeArea(
       top: false,
@@ -41,74 +43,61 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: CustomTheme.searchField(
-                searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
-                onChanged: (value){
-                  orderState.filterInventoryByNameOrId(value);
-                },
-                onFilterTap: () => _showSortBottomSheet(context),
-              ),
-            ),
-            SizedBox(height: Constant.SIZE_04),
+
             Expanded(
-              child: orderState.isLoading
+              child: userProviders.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
-                  ? const Center(
-                child: Text(
-                  Strings.SOMETHING_WENT_WRONG,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : orderState.getContainerData!.inventoryData == null ||
-                  orderState.getContainerData!.inventoryData!.isEmpty
+              //     : userProviders.productDataList! == null
+              //     ? Center(
+              //   child: Text(
+              //     Strings.SOMETHING_WENT_WRONG,
+              //     style: TextStyle(color: Colors.white),
+              //   ),
+              // )
+                  : userProviders.productList.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
-                  ],
-                ),
-              )
+              //     : Center(
+              //   child: Column(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Text(
+              //         Strings.NO_CONTAINER_AVAILABLE,
+              //         style: TextStyle(color: Colors.white),
+              //       ),
+              //       SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+              //       SubmitButton(
+              //         onRightTap: () {
+              //           searchController.clear();
+              //           userProviders.filterInventoryByNameOrId('');
+              //           setState(() {});
+              //         },
+              //         rightText: " Clear Filter ",
+              //       ),
+              //     ],
+              //   ),
+              // )
                   : ListView.separated(
                 padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_16
+                  horizontal: Constant.CONTAINER_SIZE_16,
+                  vertical: Constant.CONTAINER_SIZE_16,
                 ),
-                itemCount: orderState.filterInventory.length,
+                itemCount: userProviders.productList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
+                  final item = userProviders.productList[index];
 
                   return inventoryItemCard(
                     context,
-                    image: item.imageUrl ?? "",
-                    title: item.containerName ?? "-",
-                    subTitle: item.productId ?? "-",
-                    volume: item.capacityMl?.toString() ?? "0",
-                    qty: item.availableContainers ?? 0,
-                    // data: item,
+                    image: item.productImageUrl ?? "",
+                    title: item.productName ?? "-",
+                    subTitle: item.productUniqueId ?? "-",
+                    volume: item.containerQuantity?.toString() ?? "0",
+                    qty: item.quantity ?? 0,
+                    date: item.dueDate ?? "",
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -121,62 +110,50 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-  Widget inventoryItemCard(
-      BuildContext context, {
-        required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
-        // required InventoryData data,
-      }) {
+  Widget inventoryItemCard(BuildContext context, {
+    required String image,
+    required String title,
+    required String subTitle,
+    required String volume,
+    required int qty,
+    required String date,
+  }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
-      onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
-      },
+      onTap: () {},
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != "")
-                ? Container(
+
+            Container(
               height: Constant.CONTAINER_SIZE_70,
               width: Constant.CONTAINER_SIZE_70,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
-                : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(Constant.SIZE_08),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
+              padding: EdgeInsets.all(Constant.SIZE_06),
+              child: image.isNotEmpty
+                  ? Image.network(
+                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+                fit: BoxFit.fill,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    "assets/images/white_container.png",
+                  );
+                },
+              )
+                  : Icon(
+                Icons.inbox,
+                size: Constant.CONTAINER_SIZE_30,
+                color: Colors.white,
               ),
             ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
+
 
             Expanded(
               child: Column(
@@ -189,50 +166,66 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.SIZE_04),
+
+                  Text(
+                    subTitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          subTitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      Text(
-                        qty.toString(),
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: Constant.SIZE_08),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white70,
-                      ),
-                    ],
-                  ),
+
+                  SizedBox(height: Constant.SIZE_04),
+
                   Text(
                     "$volume ml",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
                       color: Colors.white70,
                     ),
                   ),
                 ],
               ),
+            ),
+
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      Strings.BOWL_IMG,
+                      height: 14,
+                      width: 14,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      qty.toString(),
+                      style: TextStyle(
+                        color: Constant.gold,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 4),
+
+                Text(
+                  "Due on: $date ",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -240,9 +233,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-  void _showSortBottomSheet(BuildContext context) {
-    final orderState = ref.watch(orderProvider);
 
+  void _showSortBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -259,7 +251,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   return Container(
                     padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(Constant.CONTAINER_SIZE_20),
                       ),
@@ -281,7 +275,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                             ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                              child: Icon(
+                                Icons.cancel_rounded,
+                                color: Constant.gold,
+                              ),
                             ),
                           ],
                         ),
@@ -349,22 +346,19 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-
-
-  _getInventoryNetworkCall() async {
+  _getUsersActiveNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+          isNetworkAvailable,) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
+        final userProviders = ref.read(userProvider);
         if (isNetworkAvailable) {
-          orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}$userId';
-          ref.read(getOrderProvider(url));
+          userProviders.setIsLoading(true);
+          final url = '${NetworkUrls.PRODUCT_DATA}${widget
+              .userId}';
+          ref.read(userActiveProvider(url));
         } else {
-          orderState.setIsLoading(false);
+          userProviders.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         }
       });
