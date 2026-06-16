@@ -319,7 +319,20 @@ class Utils {
         break;
     }
   }
-
+// this method is used for showing the error text
+  static Widget getErrorText(String msg) {
+    return Center(
+      child: Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: Constant.LABEL_TEXT_SIZE_18,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
 }
 Dio getDio(){
 var  dio = Dio();

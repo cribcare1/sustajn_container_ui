@@ -104,6 +104,8 @@ class InventoryData {
     productId = json['productId'];
   }
 
+  String? get containerImageUrl => null;
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['inventoryId'] = this.inventoryId;

@@ -40,3 +40,48 @@ final getUsersDataProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(userNotifier.context, e.toString());
   }
 });
+
+final userActiveProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final productState = ref.watch(userProvider);
+  try {
+    var serviceProvider = ref.read(getUsersApiProvider);
+    Utils.printLog("params===$params");
+    var responseData = await serviceProvider.productService(params);
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
+      productState.setIsLoading(false);
+      productState.setProductData(responseData);
+    } else {
+      productState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+  } catch (e) {
+    Utils.printLog("Get product provider error called: $e");
+    productState.setIsLoading(false);
+    Utils.showNetworkErrorToast(productState.context, e.toString());
+  }
+});
+final borrowedProvider = FutureProvider.family<dynamic, String>(
+      (ref, params) async {
+    final borrowedState = ref.watch(userProvider);
+    try {
+      var serviceProvider = ref.read(getUsersApiProvider);
+      Utils.printLog("params===$params");
+      var responseData = await serviceProvider.borrowedService(params);
+      if (responseData.status != null && responseData.status!.isNotEmpty ) {
+        borrowedState.setIsLoading(false);
+        borrowedState.setBorrowedData(responseData);
+
+      }else{
+        borrowedState.setIsLoading(false);
+        Utils.showToast(responseData.message!);
+      }
+    } catch (e) {
+      Utils.printLog("Get borrowed provider error called: $e");
+      borrowedState.setIsLoading(false);
+      Utils.showNetworkErrorToast(borrowedState.context, e.toString());
+    }
+  },
+);

@@ -35,5 +35,7 @@ static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
   static const RETURN_PRODUCTS = "inventory/restaurantOrders/returnedProducts/";
   static const ISSUED_PRODUCTS = "inventory/restaurantOrders/monthWiseIssuedProducts?restaurantId=&productId=";
   static const RESTAURANT_DETAILS = "auth/getRestaurantDetailsById/";
-
+  static const PRODUCT_DATA = 'orders/getBorrowedProduct?userId=';
+  static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
+  static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
 }

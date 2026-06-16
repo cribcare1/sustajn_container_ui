@@ -2,8 +2,12 @@ import 'package:container_tracking/Screen/Partner/model/lease_barrow_data.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../constants/string_utils.dart';
+import '../../../utils/utility.dart';
 import '../../Partner/model/container_history_data.dart';
 import '../../Partner/model/get_container_data.dart';
+import '../model/user_borrow_details_data.dart';
+import '../model/user_borrowed_data.dart';
+import '../model/user_product_data.dart';
 import '../model/users_data.dart';
 
 class UsersNotifier extends ChangeNotifier {
@@ -18,7 +22,11 @@ class UsersNotifier extends ChangeNotifier {
 
   LeaseBarrowData? _leaseBarrowData;
   List<DailyStats> _dailyStats = [];
+  ProductData? _productData;
 
+  List<ProductDataList> _productList = [];
+  List<BorrowedUiItem> _borrowedList = [];
+  List<BorrowedUiItem> get borrowedList => _borrowedList;
   // DamagedContainerData? _damagedContainerData;
   // SoldContainerData? _soldContainerData;
   BuildContext? _context;
@@ -37,6 +45,9 @@ class UsersNotifier extends ChangeNotifier {
   UsersData? get getUsersData => _usersData;
 
   List<CustomersData> get customerDataList => _customerDataList;
+  ProductData get productData => _productData!;
+
+  List<ProductDataList> get productList => _productList;
 
   LeaseBarrowData? get leaseBorrowData => _leaseBarrowData;
 
@@ -71,6 +82,69 @@ class UsersNotifier extends ChangeNotifier {
 
   void setReturnCount(int count) {
     _returnedContainerCount = count;
+    notifyListeners();
+  }
+  void setProductData(ProductData data) {
+    _productData = data;
+    _productList = data.data!;
+    notifyListeners();
+  }
+  void setBorrowedData(BorrowedData data) {
+    _borrowedList = [];
+
+    final value = data.value;
+    if (value == null) return;
+
+    final Map<String, List<December>> monthMap = {
+      "January": value.january?.cast<December>() ?? [],
+      "February": value.february?.cast<December>() ?? [],
+      "March": value.march?.cast<December>() ?? [],
+      "April": value.april?.cast<December>() ?? [],
+      "May": value.may?.cast<December>() ?? [],
+      "June": value.june?.cast<December>() ?? [],
+      "July": value.july?.cast<December>() ?? [],
+      "August": value.august?.cast<December>() ?? [],
+      "September": value.september?.cast<December>() ?? [],
+      "October": value.october?.cast<December>() ?? [],
+      "November": value.november?.cast<December>() ?? [],
+      "December": value.december ?? [],
+    };
+
+    monthMap.forEach((month, orders) {
+      for (final order in orders) {
+        final restaurantName = order.restaurantName ?? '';
+        final restaurantAddress = order.restaurantAddress ?? '';
+        final date = order.orderDate ?? '';
+        final time = order.orderTime ?? '';
+
+        final products = order.productOrderListResponseList ?? [];
+
+        for (final product in products) {
+          _borrowedList.add(
+            BorrowedUiItem(
+              restaurantName: restaurantName,
+              resturantAddress: restaurantAddress,
+              productName: product.productName ?? '',
+              capacity: product.capacity ?? 0,
+              containerCount: product.containerCount ?? 0,
+              productId: product.productUniqueId ?? '',
+              date: date,
+              time: time,
+              imageUrl: product.productImageUrl ?? '',
+              returnedDate: order.returnedDate,
+              returnedTime: order.returnedTime,
+            ),
+          );
+        }
+      }
+    });
+
+    notifyListeners();
+  }
+
+  void clearBorrowedList() {
+    _borrowedList.clear();
+    Utils.printLog('ownerTenant rejected List cleared');
     notifyListeners();
   }
 

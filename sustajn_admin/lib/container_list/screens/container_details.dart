@@ -217,7 +217,7 @@ class ContainerDetailsScreen extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => TotalListScreen(
               title: Strings.TOTAL_ISSUED_TITLE,
-              searchHint: Strings.SEARCH_BY_RESTURANT,
+              searchHint: Strings.SEARCH_BY_RESTAURANT,
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: items,
@@ -294,7 +294,7 @@ class ContainerDetailsScreen extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => TotalListScreen(
               title: Strings.TOTAL_RETURNED,
-              searchHint: Strings.SEARCH_BY_RESTURANT,
+              searchHint: Strings.SEARCH_BY_RESTAURANT,
               monthTitle: "November - 2025",
               totalAmount: 1000,
               items: totalReturnedItems,

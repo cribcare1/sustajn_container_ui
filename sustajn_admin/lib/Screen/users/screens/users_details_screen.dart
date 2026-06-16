@@ -4,6 +4,7 @@ import 'package:container_tracking/Screen/Partner/screens/product_home_screen.da
 import 'package:container_tracking/Screen/Partner/screens/returned_screen.dart';
 import 'package:container_tracking/Screen/Partner/screens/sold_screen.dart';
 import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
+import 'package:container_tracking/Screen/users/screens/user__produts_screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_details_bottomsheet.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 //import 'package:fl_chart/fl_chart.dart';
@@ -338,7 +339,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       case "Products":
         NavUtil.navigateToPushScreen(
           context,
-          ProductsHomeScreen(restaurantId: widget.customersData!.id!),
+          UserProductsHomeScreen(userId: widget.customersData!.id!),
         );
         break;
       case "Returned":
