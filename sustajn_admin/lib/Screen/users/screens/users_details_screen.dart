@@ -4,8 +4,9 @@ import 'package:container_tracking/Screen/Partner/screens/product_home_screen.da
 import 'package:container_tracking/Screen/Partner/screens/returned_screen.dart';
 import 'package:container_tracking/Screen/Partner/screens/sold_screen.dart';
 import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
-import 'package:container_tracking/Screen/users/screens/user__produts_screen.dart';
+import 'package:container_tracking/Screen/users/screens/user__products_screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_details_bottomsheet.dart';
+import 'package:container_tracking/Screen/users/screens/user_sold_screen.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 //import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -351,7 +352,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       case "Sold":
         NavUtil.navigateToPushScreen(
           context,
-          SoldScreen(restaurantId: widget.customersData!.id!),
+          UserSoldScreen(userId: widget.customersData!.id!),
         );
         break;
       case "Damaged":

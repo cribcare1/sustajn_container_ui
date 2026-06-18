@@ -227,4 +227,24 @@ class Strings {
   static const String BORROWED_ON = 'Borrowed On';
   static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
   static const String RETURNED_DETAILS = 'Returned Details';
+  static const String RESTAURANT_1 = 'Sfumato Gastro Atelier';
+  static const String RESTAURANT_2 = 'Ancora Mediterranean';
+  static const String RESTAURANT_3 = 'Kimura-ya Authentic Japanese Resta';
+  static const String CONTAINER_1 = 'Dip Cups';
+  static const String CONTAINER_2 = 'Round Container';
+  static const String CONTAINER_3 = 'Rectangular Container';
+  static const String CONTAINER_4 = 'Dip Cup | Round container';
+  static const String CODE_1 = 'ST-DC-50';
+  static const String CODE_2 = 'ST-RDC-500';
+  static const String CODE_3 = 'ST-RC-600';
+  static const String VOLUME_1 = '50ml';
+  static const String VOLUME_2 = '500ml';
+  static const String VOLUME_3 = '900ml';
+  static const String VOLUME_4 = '600kl';
+  static const String DATE_1 = '22/11/2025 | 10:00am';
+  static const String DATE_2 = '01/12/2025 | 10:00am';
+  static const String DATE_3 = '27/11/2025 | 04:11pm';
+  static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
+
+
 }
