@@ -281,7 +281,7 @@ class _userSoldTabState extends ConsumerState<UserSoldScreen> {
   Map<String, List<SoldDetails>> _groupByMonth() {
     final Map<String, List<SoldDetails>> grouped = {};
 
-    for (final item in containers) {
+    for (final item in containers) {s
       final monthKey = _getMonthYear(item.date);
 
       if (!grouped.containsKey(monthKey)) {
