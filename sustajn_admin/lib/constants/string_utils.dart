@@ -246,5 +246,5 @@ class Strings {
   static const String DATE_3 = '27/11/2025 | 04:11pm';
   static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
 
-
+  static const String NO_SOLD_CONTAINER = 'No sold containers found';
 }

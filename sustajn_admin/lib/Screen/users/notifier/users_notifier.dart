@@ -25,7 +25,7 @@ class UsersNotifier extends ChangeNotifier {
   List<DailyStats> _dailyStats = [];
   ProductData? _productData;
   SoldContainerData? _soldContainerData;
-  List<SoldDataList> _soldDataList = [];
+  List<SoldDataList> _soldContainerList = [];
 
   List<ProductDataList> _productList = [];
   List<BorrowedUiItem> _borrowedList = [];
@@ -58,7 +58,7 @@ class UsersNotifier extends ChangeNotifier {
 
   SoldContainerData? get soldContainerData => _soldContainerData;
 
-  List<SoldDataList> get soldDataList => _soldDataList;
+  List<SoldDataList> get soldContainerList => _soldContainerList;
 
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
 
@@ -97,8 +97,9 @@ class UsersNotifier extends ChangeNotifier {
     notifyListeners();
   }
   void setSoldContainerData(SoldContainerData soldContainer){
+    _soldContainerList.clear();
     _soldContainerData = soldContainer;
-    _soldDataList = _soldContainerData!.data!;
+    _soldContainerList.addAll(soldContainer.data??[]);
     notifyListeners();
   }
   void setBorrowedData(BorrowedData data) {

@@ -12,17 +12,17 @@ import '../../../utils/utility.dart';
 import '../model/user_sold_container_data.dart';
 import '../model/user_sold_details.dart';
 
-class UserExtendedFeeScreen extends ConsumerStatefulWidget {
+class UserSoldScreen extends ConsumerStatefulWidget {
 
   final int userId;
 
-  const UserExtendedFeeScreen({super.key, required this.userId});
+  const UserSoldScreen({super.key, required this.userId});
 
   @override
-  ConsumerState<UserExtendedFeeScreen> createState() => _ExtentedFeeTabState();
+  ConsumerState<UserSoldScreen> createState() => _SoldTabState();
 }
 
-class _ExtentedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
+class _SoldTabState extends ConsumerState<UserSoldScreen> {
   final searchController = TextEditingController();
 
   @override
@@ -37,44 +37,44 @@ class _ExtentedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
   Widget build(BuildContext context) {
     final historyState = ref.watch(userProvider);
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
-      appBar: CustomAppBar(
-        title: "Extended Fee",
-        leading: CustomBackButton(),
-      ).getAppBar(context),
-      body: Column(
-        children: [
-          Expanded(
-            child: historyState.soldContainerList.isEmpty
-                ? Center(
-              child: NoDataFoundCustomText(text: Strings.NO_SOLD_CONTAINER),
-            )
-                : ListView.separated(
-              padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_10),
-              itemCount: historyState.soldContainerList.length,
-              itemBuilder: (context, index) {
-                final month =
-                    historyState.soldContainerList[index].monthYear;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _monthHeader(
-                      month ?? "",
-                      historyState.soldContainerList.length,
-                    ),
-                    ...historyState
-                        .soldContainerList[index]
-                        .dateWiseSoldContainers!
-                        .map((item) => _soldItemCard(item: item)),
-                  ],
-                );
-              },
-              separatorBuilder: (context, index) =>
-                  SizedBox(height: Constant.CONTAINER_SIZE_12),
+        backgroundColor: Color(0xFF0E3B2E),
+        appBar: CustomAppBar(
+          title: "Sold",
+          leading: CustomBackButton(),
+        ).getAppBar(context),
+        body: Column(
+              children: [
+                Expanded(
+                  child: historyState.soldContainerList.isEmpty
+          ? Center(
+        child: NoDataFoundCustomText(text: Strings.NO_SOLD_CONTAINER),
+                  )
+          : ListView.separated(
+        padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_10),
+        itemCount: historyState.soldContainerList.length,
+        itemBuilder: (context, index) {
+          final month =
+              historyState.soldContainerList[index].monthYear;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _monthHeader(
+                month ?? "",
+                historyState.soldContainerList.length,
+              ),
+              ...historyState
+                  .soldContainerList[index]
+                  .dateWiseSoldContainers!
+                  .map((item) => _soldItemCard(item: item)),
+            ],
+          );
+        },
+        separatorBuilder: (context, index) =>
+            SizedBox(height: Constant.CONTAINER_SIZE_12),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
