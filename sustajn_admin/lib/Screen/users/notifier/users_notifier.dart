@@ -8,6 +8,7 @@ import '../../Partner/model/get_container_data.dart';
 import '../model/user_borrow_details_data.dart';
 import '../model/user_borrowed_data.dart';
 import '../model/user_product_data.dart';
+import '../model/user_sold_container_data.dart';
 import '../model/users_data.dart';
 
 class UsersNotifier extends ChangeNotifier {
@@ -23,6 +24,8 @@ class UsersNotifier extends ChangeNotifier {
   LeaseBarrowData? _leaseBarrowData;
   List<DailyStats> _dailyStats = [];
   ProductData? _productData;
+  SoldContainerData? _soldContainerData;
+  List<SoldDataList> _soldContainerList = [];
 
   List<ProductDataList> _productList = [];
   List<BorrowedUiItem> _borrowedList = [];
@@ -52,6 +55,10 @@ class UsersNotifier extends ChangeNotifier {
   LeaseBarrowData? get leaseBorrowData => _leaseBarrowData;
 
   List<DailyStats> get dailyStats => _dailyStats;
+
+  SoldContainerData? get soldContainerData => _soldContainerData;
+
+  List<SoldDataList> get soldContainerList => _soldContainerList;
 
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
 
@@ -87,6 +94,12 @@ class UsersNotifier extends ChangeNotifier {
   void setProductData(ProductData data) {
     _productData = data;
     _productList = data.data!;
+    notifyListeners();
+  }
+  void setSoldContainerData(SoldContainerData soldContainer){
+    _soldContainerList.clear();
+    _soldContainerData = soldContainer;
+    _soldContainerList.addAll(soldContainer.data??[]);
     notifyListeners();
   }
   void setBorrowedData(BorrowedData data) {

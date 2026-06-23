@@ -5,6 +5,7 @@ import '../../../network/ApiCallPresentor.dart';
 import '../../../utils/utility.dart';
 import '../model/user_borrow_details_data.dart';
 import '../model/user_product_data.dart';
+import '../model/user_sold_container_data.dart';
 import '../model/users_data.dart';
 
 
@@ -67,6 +68,25 @@ class UsersServices {
       throw Exception(e);
     }
   }
+  Future<SoldContainerData> getSoldContainerService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = SoldContainerData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Sold Container History service::::$e");
+      throw Exception(e);
+    }
+  }
 }
 
-final getUsersApiProvider = Provider<UsersServices>((ref) => UsersServices());
+
+final getUsersApiService = Provider<UsersServices>((ref) => UsersServices());

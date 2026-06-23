@@ -1,27 +1,20 @@
 import 'package:container_tracking/Screen/Partner/provider/provider/product_provider.dart';
-import 'package:container_tracking/Screen/Partner/screens/damaged_Screen.dart';
-import 'package:container_tracking/Screen/Partner/screens/product_home_screen.dart';
-import 'package:container_tracking/Screen/Partner/screens/returned_screen.dart';
-import 'package:container_tracking/Screen/Partner/screens/sold_screen.dart';
-import 'package:container_tracking/Screen/Partner/view_more_bottomsheet.dart';
-import 'package:container_tracking/Screen/users/screens/user__produts_screen.dart';
+import 'package:container_tracking/Screen/users/screens/user__products_screen.dart';
+import 'package:container_tracking/Screen/users/screens/user_damaged_Screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_details_bottomsheet.dart';
+import 'package:container_tracking/Screen/users/screens/user_extendedfee_screen.dart';
+import 'package:container_tracking/Screen/users/screens/user_sold_screens.dart';
 import 'package:container_tracking/constants/imports.util.dart';
-//import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common_provider/network_provider.dart';
 import '../../../common_widgets/custom_app_bar.dart';
 import '../../../common_widgets/custom_back_button.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
-import '../../../resutants/models/restaurant_list_model.dart';
 import '../../../utils/nav_utils.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
 import '../../Partner/model/get_container_data.dart';
-import '../../Partner/model/lease_barrow_data.dart';
-import '../../Partner/order_history/order_history_screen.dart';
-import '../../Partner/screens/issued_screen.dart';
 import '../model/users_data.dart';
 
 
@@ -189,7 +182,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       {"title": "Products", "image": "assets/images/products.png"},
       {"title": "Sold", "image": "assets/images/sold_container.png"},
       {"title": "Damaged", "image": "assets/images/Damaged.png"},
-      {"title": "Extended Fee", "image": "assets/images/Clock.png"},
+      {"title": "Extended Fee", "image": "assets/images/img.png"},
     ];
 
     return _card(
@@ -330,40 +323,28 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   void _handleNavigation(String title) {
     switch (title) {
-      case "Issued":
-        NavUtil.navigateToPushScreen(
-          context,
-          IssuedScreen(restaurantId: widget.customersData!.id!),
-        );
-        break;
       case "Products":
         NavUtil.navigateToPushScreen(
           context,
           UserProductsHomeScreen(userId: widget.customersData!.id!),
         );
         break;
-      case "Returned":
-        NavUtil.navigateToPushScreen(
-          context,
-          ReturnedScreen(restaurantId: widget.customersData!.id!),
-        );
-        break;
       case "Sold":
         NavUtil.navigateToPushScreen(
           context,
-          SoldScreen(restaurantId: widget.customersData!.id!),
+          UserSoldScreen(userId: widget.customersData!.id!),
         );
         break;
       case "Damaged":
         NavUtil.navigateToPushScreen(
           context,
-          DamagedScreen(restaurantId: widget.customersData!.id!),
+          UserDamagedScreen(userId: widget.customersData!.id!),
         );
         break;
-      case "Order History":
+      case "Extended Fee":
         NavUtil.navigateToPushScreen(
           context,
-          OrderHistoryScreen(restaurantId: widget.customersData!.id!),
+          UserExtendedFeeScreen(userId: widget.customersData!.id!),
         );
         break;
       default:

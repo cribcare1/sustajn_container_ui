@@ -8,6 +8,7 @@ import '../../../../utils/utility.dart';
 
 import 'dart:convert';
 
+import '../model/user_sold_container_data.dart';
 import '../model/users_data.dart';
 import '../service/users_service.dart';
 
@@ -19,7 +20,7 @@ final getUsersDataProvider = FutureProvider.family<dynamic, String>((
     ) async {
   final userNotifier = ref.watch(userProvider);
   try {
-    var serviceProvider = ref.read(getUsersApiProvider);
+    var serviceProvider = ref.read(getUsersApiService);
     Utils.printLog("params===$params");
     UsersData responseData = await serviceProvider.getUsersService(
       params,
@@ -47,7 +48,7 @@ final userActiveProvider = FutureProvider.family<dynamic, String>((
     ) async {
   final productState = ref.watch(userProvider);
   try {
-    var serviceProvider = ref.read(getUsersApiProvider);
+    var serviceProvider = ref.read(getUsersApiService);
     Utils.printLog("params===$params");
     var responseData = await serviceProvider.productService(params);
     if (responseData.status != null && responseData.status!.isNotEmpty) {
@@ -67,7 +68,7 @@ final borrowedProvider = FutureProvider.family<dynamic, String>(
       (ref, params) async {
     final borrowedState = ref.watch(userProvider);
     try {
-      var serviceProvider = ref.read(getUsersApiProvider);
+      var serviceProvider = ref.read(getUsersApiService);
       Utils.printLog("params===$params");
       var responseData = await serviceProvider.borrowedService(params);
       if (responseData.status != null && responseData.status!.isNotEmpty ) {
@@ -85,3 +86,27 @@ final borrowedProvider = FutureProvider.family<dynamic, String>(
     }
   },
 );
+final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final containerState = ref.watch(userProvider);
+  try {
+    var serviceProvider = ref.read(getUsersApiService);
+    Utils.printLog("params===$params");
+    SoldContainerData responseData = await serviceProvider
+        .getSoldContainerService(params);
+    if (responseData.status != null && responseData.status!.isNotEmpty) {
+      containerState.setIsLoading(false);
+      containerState.setSoldContainerData(responseData);
+    } else {
+      containerState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get sold provider error called: $e");
+    containerState.setIsLoading(false);
+    Utils.showNetworkErrorToast(containerState.context, e.toString());
+  }
+});

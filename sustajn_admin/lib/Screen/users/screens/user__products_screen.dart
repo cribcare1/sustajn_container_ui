@@ -68,10 +68,10 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
                 children: [
                   Image.asset(
                     Strings.BOWL_IMG,
-                    height: 15,
-                    width: 15,
+                    height: 14,
+                    width: 14,
                   ),
-                  const SizedBox(width: 2),
+                  const SizedBox(width: 1.8),
                   const Text("Active"),
                 ],
               ),
@@ -81,8 +81,8 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_made_outlined, size: 15),
-                  const SizedBox(width: 2),
+                  const Icon(Icons.call_made_outlined, size: 14),
+                  const SizedBox(width: 1.8),
                   const Text("Borrowed"),
                 ],
               ),
@@ -92,8 +92,8 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_received_outlined, size: 15),
-                  const SizedBox(width: 2),
+                  const Icon(Icons.call_received_outlined, size: 14),
+                  const SizedBox(width: 1.8),
                   const Text("Returned"),
                 ],
               ),
