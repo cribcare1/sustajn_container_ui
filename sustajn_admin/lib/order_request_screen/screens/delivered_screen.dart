@@ -1,4 +1,3 @@
-import 'package:container_tracking/order_request_screen/provider_service/order_request_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,20 +16,20 @@ import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 
-class PendingScreen extends ConsumerStatefulWidget {
-  const PendingScreen({super.key});
+class DeliveredScreen extends ConsumerStatefulWidget {
+  const DeliveredScreen({super.key});
 
   @override
-  ConsumerState<PendingScreen> createState() => _PendingScreenState();
+  ConsumerState<DeliveredScreen> createState() => _DeliveredScreenState();
 }
 
-class _PendingScreenState extends ConsumerState<PendingScreen> {
+class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-     _getPendingOrderNetworkCall();
+    // _getInventoryNetworkCall();
   }
 
   @override
@@ -67,8 +66,8 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
               //     style: TextStyle(color: Colors.white),
               //   ),
               // )
-                  // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
-                  // orderState.getContainerData!.containersDetails!.isEmpty
+              // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
+              // orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -355,25 +354,25 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
 
 
 
-  _getPendingOrderNetworkCall() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderRequestProvider);
-        if (isNetworkAvailable) {
-          orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.PENDING_ORDER_DATA}$userId';
-          ref.read(getPendingOrderProvider(url));
-        } else {
-          orderState.setIsLoading(false);
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
-    }
-  }
+// _getInventoryNetworkCall() async {
+//   try {
+//     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+//         isNetworkAvailable,
+//         ) {
+//       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+//       final orderState = ref.read(orderProvider);
+//       if (isNetworkAvailable) {
+//         orderState.setIsLoading(true);
+//         final userId = Utils.userId;
+//         final url = '${NetworkUrls.GET_CONTAINER}$userId';
+//         ref.read(getInventoryProvider(url));
+//       } else {
+//         orderState.setIsLoading(false);
+//         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+//       }
+//     });
+//   } catch (e) {
+//     Utils.printLog('Error in visitor button onPressed: $e');
+//   }
+// }
 }

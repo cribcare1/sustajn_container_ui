@@ -38,4 +38,7 @@ static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
   static const PRODUCT_DATA = 'orders/getBorrowedProduct?userId=';
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
+
+  //Order request
+  static const PENDING_ORDER_DATA = 'orders/monthWiseReturnedDetails?';
 }

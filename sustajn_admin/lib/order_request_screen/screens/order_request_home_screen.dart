@@ -1,9 +1,12 @@
 import 'package:container_tracking/order_request_screen/screens/pending_screen.dart';
+import 'package:container_tracking/order_request_screen/screens/rejected_screen.dart';
 import 'package:flutter/material.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/theme_utils.dart';
+import 'confirmed_screen.dart';
+import 'delivered_screen.dart';
 
 class OrderRequestScreen extends StatefulWidget {
   const OrderRequestScreen({super.key});
@@ -48,8 +51,11 @@ class _OrderRequestScreenState extends State<OrderRequestScreen>
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
           indicatorColor: Colors.amber,
+          padding: EdgeInsets.zero, // 👈 removes outer padding
+          tabAlignment: TabAlignment.start,
           indicatorWeight: 4,
           labelColor: Colors.amber,
+          isScrollable: true,
           unselectedLabelColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
@@ -62,9 +68,7 @@ class _OrderRequestScreenState extends State<OrderRequestScreen>
                     size: Constant.CONTAINER_SIZE_16,
                   ),
                   SizedBox(width: Constant.SIZE_06),
-                  Expanded(
-                      flex: 1,
-                      child: Text(Strings.PENDING,overflow: TextOverflow.ellipsis,)),
+                  Text(Strings.PENDING,overflow: TextOverflow.ellipsis,),
                 ],
               ),
             ),
@@ -116,7 +120,12 @@ class _OrderRequestScreenState extends State<OrderRequestScreen>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [PendingScreen()],
+              children: [
+                PendingScreen(),
+                ConfirmedScreen(),
+                DeliveredScreen(),
+                RejectedScreen()
+              ],
             ),
           ),
         ],
