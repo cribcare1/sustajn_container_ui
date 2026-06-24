@@ -227,4 +227,9 @@ class Strings {
   static const String BORROWED_ON = 'Borrowed On';
   static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
   static const String RETURNED_DETAILS = 'Returned Details';
+  static const String ORDER_REQUEST = 'Order Requests';
+  static const String PENDING = 'Pending';
+  static const String CONFIRMED = 'Confirmed';
+  static const String DELIVERED = 'Delivered';
+  static const String REJECTED = 'Rejected';
 }
