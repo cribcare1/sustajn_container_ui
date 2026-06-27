@@ -26,7 +26,7 @@ static const RESTAURANT_LIST = "auth/activeRestaurants?";
 
 /// Customer ///
 static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
-
+static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
 /// Partner products
   static const ALL_RESTAURANT_LIST = "auth/getAllActiveRestaurants";

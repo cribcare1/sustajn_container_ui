@@ -50,6 +50,7 @@ class UsersServices {
       throw Exception(e);
     }
   }
+
   Future<BorrowedData> borrowedService(String partUrl) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
@@ -68,6 +69,7 @@ class UsersServices {
       throw Exception(e);
     }
   }
+
   Future<SoldContainerData> getSoldContainerService(String partUrl) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
@@ -86,7 +88,24 @@ class UsersServices {
       throw Exception(e);
     }
   }
+  Future<UsersData> getUserDamagedService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = UsersData.fromJson(response);
+        Utils.printLog("User responseData in Service: ${responseData.status}");
+
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
 }
-
-
 final getUsersApiService = Provider<UsersServices>((ref) => UsersServices());

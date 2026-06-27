@@ -28,7 +28,7 @@ class _ExtentedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
   @override
   void initState() {
     super.initState();
-    _getSoldNetworkCall();
+    _getExtendedFeeNetworkCall();
   }
 
   final List<SoldDetails> containers = [];
@@ -47,7 +47,7 @@ class _ExtentedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
           Expanded(
             child: historyState.soldContainerList.isEmpty
                 ? Center(
-              child: NoDataFoundCustomText(text: Strings.NO_SOLD_CONTAINER),
+              child: NoDataFoundCustomText(text: Strings.NO_EXTENDED_FEE_DATA),
             )
                 : ListView.separated(
               padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_10),
@@ -272,7 +272,7 @@ class _ExtentedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
     );
   }
 
-  _getSoldNetworkCall() async {
+  _getExtendedFeeNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,

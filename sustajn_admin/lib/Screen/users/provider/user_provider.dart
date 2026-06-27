@@ -110,3 +110,30 @@ final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(containerState.context, e.toString());
   }
 });
+final getUserDamagedProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final userNotifier = ref.watch(userProvider);
+  try {
+    var serviceProvider = ref.read(getUsersApiService);
+    Utils.printLog("params===$params");
+    UsersData responseData = await serviceProvider.getUserDamagedService(
+      params,
+    );
+    Utils.printLog("On Success===${responseData.status}");
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
+      Utils.printLog("On Success===${responseData.status}");
+      userNotifier.setIsLoading(false);
+      userNotifier.setUsersData(responseData);
+    } else {
+      userNotifier.setIsLoading(false);
+      //Utils.showToast(responseData.message!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Users provider error called: $e");
+    userNotifier.setIsLoading(false);
+    Utils.showNetworkErrorToast(userNotifier.context, e.toString());
+  }
+});

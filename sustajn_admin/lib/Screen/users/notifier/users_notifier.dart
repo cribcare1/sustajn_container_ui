@@ -7,6 +7,7 @@ import '../../Partner/model/container_history_data.dart';
 import '../../Partner/model/get_container_data.dart';
 import '../model/user_borrow_details_data.dart';
 import '../model/user_borrowed_data.dart';
+import '../model/user_damage_data.dart';
 import '../model/user_product_data.dart';
 import '../model/user_sold_container_data.dart';
 import '../model/users_data.dart';
@@ -20,7 +21,8 @@ class UsersNotifier extends ChangeNotifier {
   UsersData? _usersData;
   List<CustomersData> _customerDataList = [];
   ContainerHistoryData? _containerHistoryData;
-
+  UserDamageData? _userDamageData;
+  List<DamageDataList> _damageDataList = [];
   LeaseBarrowData? _leaseBarrowData;
   List<DailyStats> _dailyStats = [];
   ProductData? _productData;
@@ -46,8 +48,10 @@ class UsersNotifier extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   UsersData? get getUsersData => _usersData;
+  UserDamageData? get getUserDamageData => _userDamageData;
 
   List<CustomersData> get customerDataList => _customerDataList;
+  List<DamageDataList> get userDamageList => _damageDataList;
   ProductData get productData => _productData!;
 
   List<ProductDataList> get productList => _productList;
@@ -198,6 +202,10 @@ class UsersNotifier extends ChangeNotifier {
     // updateGroupedOrders();
     notifyListeners();
   }
-
+  void setUsersDamageData(UserDamageData userDamageData) {
+    _userDamageData = userDamageData;
+    _damageDataList = List.from(userDamageData.data ?? []);
+    notifyListeners();
+  }
 
 }
