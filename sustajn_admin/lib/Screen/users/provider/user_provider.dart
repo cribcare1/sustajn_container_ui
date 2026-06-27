@@ -1,4 +1,5 @@
 import 'package:container_tracking/Screen/Partner/provider/notifier/product_notifier.dart';
+import 'package:container_tracking/Screen/users/model/user_damage_data.dart';
 import 'package:container_tracking/Screen/users/notifier/users_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -118,14 +119,14 @@ final getUserDamagedProvider = FutureProvider.family<dynamic, String>((
   try {
     var serviceProvider = ref.read(getUsersApiService);
     Utils.printLog("params===$params");
-    UsersData responseData = await serviceProvider.getUserDamagedService(
+    UserDamageData responseData = await serviceProvider.getUserDamagedService(
       params,
     );
     Utils.printLog("On Success===${responseData.status}");
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
       Utils.printLog("On Success===${responseData.status}");
       userNotifier.setIsLoading(false);
-      userNotifier.setUsersData(responseData);
+      userNotifier.setUsersDamageData(responseData);
     } else {
       userNotifier.setIsLoading(false);
       //Utils.showToast(responseData.message!);
