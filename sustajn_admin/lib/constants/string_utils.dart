@@ -190,8 +190,7 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
-  // static const PRODUCTS = 'Products';
-  // static const INVENTORY = 'Inventory';
+
   static const IN_CIRCULATION = 'In Circulation';
   static const WITH_PARTNER = 'With Partner';
   static const DAMAGED = 'Damaged';

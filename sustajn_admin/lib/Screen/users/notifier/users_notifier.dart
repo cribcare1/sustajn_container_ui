@@ -32,8 +32,6 @@ class UsersNotifier extends ChangeNotifier {
   List<ProductDataList> _productList = [];
   List<BorrowedUiItem> _borrowedList = [];
   List<BorrowedUiItem> get borrowedList => _borrowedList;
-  // DamagedContainerData? _damagedContainerData;
-  // SoldContainerData? _soldContainerData;
   BuildContext? _context;
   bool _isVerifying = false;
   List<ContainersDetails> _selectedContainers = [];
@@ -66,15 +64,12 @@ class UsersNotifier extends ChangeNotifier {
 
   ContainerHistoryData? get containerHistorydata => _containerHistoryData;
 
-  // DamagedContainerData? get damagedContainerData => _damagedContainerData;
-  // SoldContainerData? get soldContainerData => _soldContainerData;
   BuildContext get context => _context!;
 
   List<ContainersDetails> get selectedContainers => _selectedContainers;
 
   bool get isOrdering => _isOrdering;
 
-  // Error messages
   String? _nameError;
 
   String? get nameError => _nameError;
@@ -199,7 +194,6 @@ class UsersNotifier extends ChangeNotifier {
 
   void clearSearch() {
     _searchQuery = '';
-    // updateGroupedOrders();
     notifyListeners();
   }
   void setUsersDamageData(UserDamageData userDamageData) {
