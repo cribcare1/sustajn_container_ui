@@ -12,8 +12,8 @@ class UserDamageData {
         data!.add(new DamageDataList.fromJson(v));
       });
     }
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -38,8 +38,8 @@ class DamageDataList {
         this.damageContainers});
 
   DamageDataList.fromJson(Map<String, dynamic> json) {
-    monthYear = json['monthYear'];
-    monthWiseTotalDamageContainers = json['monthWiseTotalDamageContainers'];
+    monthYear = json['monthYear']??"";
+    monthWiseTotalDamageContainers = json['monthWiseTotalDamageContainers']??0;
     if (json['damageContainers'] != null) {
       damageContainers = <DamageContainers>[];
       json['damageContainers'].forEach((v) {
@@ -74,9 +74,9 @@ class DamageContainers {
         this.products});
 
   DamageContainers.fromJson(Map<String, dynamic> json) {
-    productIds = json['productIds'];
-    localDateTime = json['LocalDateTime'];
-    dateWiseTotalDamageContainers = json['dateWiseTotalDamageContainers'];
+    productIds = json['productIds']??"";
+    localDateTime = json['LocalDateTime']??"";
+    dateWiseTotalDamageContainers = json['dateWiseTotalDamageContainers']??0;
     if (json['products'] != null) {
       products = <Products>[];
       json['products'].forEach((v) {
@@ -124,14 +124,14 @@ class Products {
   Products.fromJson(Map<String, dynamic> json) {
     customerId = json['customerId'];
     restaurantName = json['restaurantName'];
-    productId = json['productId'];
-    productName = json['productName'];
-    productDescription = json['productDescription'];
-    productImageUrl = json['productImageUrl'];
-    capacity = json['capacity'];
-    productUniqueId = json['productUniqueId'];
-    damageRemark = json['damageRemark'];
-    damageImagesUrls = json['damageImagesUrls'];
+    productId = json['productId']??0;
+    productName = json['productName']??"";
+    productDescription = json['productDescription']??"";
+    productImageUrl = json['productImageUrl']??"";
+    capacity = json['capacity']??0;
+    productUniqueId = json['productUniqueId']??"";
+    damageRemark = json['damageRemark']??"";
+    damageImagesUrls = json['damageImagesUrls']??"";
   }
 
   Map<String, dynamic> toJson() {

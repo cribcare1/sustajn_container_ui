@@ -21,11 +21,11 @@ class UsersData {
         customersData!.add(new CustomersData.fromJson(v));
       });
     }
-    size = json['size'];
-    totalPages = json['totalPages'];
-    page = json['page'];
-    status = json['status'];
-    totalElements = json['totalElements'];
+    size = json['size']??0;
+    totalPages = json['totalPages']??0;
+    page = json['page']??0;
+    status = json['status']??"";
+    totalElements = json['totalElements']??0;
   }
 
   Map<String, dynamic> toJson() {
@@ -68,14 +68,14 @@ class CustomersData {
         this.addresses});
 
   CustomersData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
-    mobile = json['mobile'];
-    fullName = json['fullName'];
-    profileImage = json['profileImage'];
-    borrowedCount = json['borrowedCount'];
-    returnedCount = json['returnedCount'];
-    pendingCount = json['pendingCount'];
+    id = json['id']??0;
+    email = json['email']??"";
+    mobile = json['mobile']??"";
+    fullName = json['fullName']??"";
+    profileImage = json['profileImage']??"";
+    borrowedCount = json['borrowedCount']??0;
+    returnedCount = json['returnedCount']??0;
+    pendingCount = json['pendingCount']??0;
     subscriptionPlan = json['subscriptionPlan'] != null
         ? new SubscriptionPlan.fromJson(json['subscriptionPlan'])
         : null;
@@ -150,25 +150,25 @@ class SubscriptionPlan {
         this.updatedAt});
 
   SubscriptionPlan.fromJson(Map<String, dynamic> json) {
-    planId = json['planId'];
-    planName = json['planName'];
-    planType = json['planType'];
-    description = json['description'];
-    partnerType = json['partnerType'];
+    planId = json['planId']??0;
+    planName = json['planName']??"";
+    planType = json['planType']??"";
+    description = json['description']??"";
+    partnerType = json['partnerType']??"";
     feeType = json['feeType'];
     depositType = json['depositType'];
     commissionPercentage = json['commissionPercentage'];
-    minContainers = json['minContainers'];
-    maxContainers = json['maxContainers'];
-    totalContainers = json['totalContainers'];
+    minContainers = json['minContainers']??0;
+    maxContainers = json['maxContainers']??0;
+    totalContainers = json['totalContainers']??0;
     includesDelivery = json['includesDelivery'];
     includesMarketing = json['includesMarketing'];
     includesAnalytics = json['includesAnalytics'];
-    billingCycle = json['billingCycle'];
-    planStatus = json['planStatus'];
-    userType = json['userType'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    billingCycle = json['billingCycle']??"";
+    planStatus = json['planStatus']??"";
+    userType = json['userType']??"";
+    createdAt = json['createdAt']??"";
+    updatedAt = json['updatedAt']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -212,7 +212,7 @@ class Addresses {
         this.poBoxOrPostalCode});
 
   Addresses.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']??0;
     addressType = json['addressType']?? "";
     flatDoorHouseDetails = json['flatDoorHouseDetails']?? "";
     areaStreetCityBlockDetails = json['areaStreetCityBlockDetails']?? "";

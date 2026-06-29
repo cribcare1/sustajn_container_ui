@@ -38,8 +38,8 @@ class SoldDataList {
         this.dateWiseSoldContainers});
 
   SoldDataList.fromJson(Map<String, dynamic> json) {
-    monthYear = json['monthYear'];
-    monthWiseTotalSoldContainers = json['monthWiseTotalSoldContainers'];
+    monthYear = json['monthYear']??"";
+    monthWiseTotalSoldContainers = json['monthWiseTotalSoldContainers']??0;
     if (json['dateWiseSoldContainers'] != null) {
       dateWiseSoldContainers = <DateWiseSoldContainers>[];
       json['dateWiseSoldContainers'].forEach((v) {

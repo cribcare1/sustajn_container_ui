@@ -6,9 +6,9 @@ class BorrowedData {
   BorrowedData({this.message, this.value, this.status});
 
   BorrowedData.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
+    message = json['message']??"";
     value = json['value'] != null ? Value.fromJson(json['value']) : null;
-    status = json['status'];
+    status = json['status']??"";
   }
 
 
@@ -120,16 +120,16 @@ class December {
         this.productOrderListResponseList});
 
   December.fromJson(Map<String, dynamic> json) {
-    orderId = json['orderId'];
-    restaurantId = json['restaurantId'];
-    restaurantName = json['restaurantName'];
-    restaurantAddress = json['restaurantAddress'];
-    productCount = json['productCount'];
-    totalContainerCount = json['totalContainerCount'];
-    orderDate = json['orderDate'];
-    orderTime = json['orderTime'];
-    returnedDate = json['returnedDate'];
-    returnedTime = json['returnedTime'];
+    orderId = json['orderId']??0;
+    restaurantId = json['restaurantId']??0;
+    restaurantName = json['restaurantName']??"";
+    restaurantAddress = json['restaurantAddress']??"";
+    productCount = json['productCount']??0;
+    totalContainerCount = json['totalContainerCount']??0;
+    orderDate = json['orderDate']??"";
+    orderTime = json['orderTime']??"";
+    returnedDate = json['returnedDate']??"";
+    returnedTime = json['returnedTime']??"";
     if (json['productOrderListResponseList'] != null) {
       productOrderListResponseList = <ProductOrderListResponseList>[];
       json['productOrderListResponseList'].forEach((v) {
@@ -176,12 +176,12 @@ class ProductOrderListResponseList {
         this.productUniqueId});
 
   ProductOrderListResponseList.fromJson(Map<String, dynamic> json) {
-    productId = json['productId'];
-    productName = json['productName'];
-    capacity = json['capacity'];
-    containerCount = json['containerCount'];
-    productImageUrl = json['productImageUrl'];
-    productUniqueId = json['productUniqueId'];
+    productId = json['productId']??0;
+    productName = json['productName']??"";
+    capacity = json['capacity']??0;
+    containerCount = json['containerCount']??0;
+    productImageUrl = json['productImageUrl']??"";
+    productUniqueId = json['productUniqueId']??"";
   }
 
   Map<String, dynamic> toJson() {

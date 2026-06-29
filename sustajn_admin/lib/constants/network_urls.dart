@@ -38,6 +38,7 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
   static const PRODUCT_DATA = 'orders/getBorrowedProduct?userId=';
   static const BORROWED_DATA = 'orders/monthWiseBorrowedDetails?';
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
+  static const GET_SOLD_CONTAINER = "inventory/getSoldContainersByRestaurant?restaurantId=";
 
   //Order request
   static const PENDING_ORDER_DATA = 'inventory/admin/orders/pending';
