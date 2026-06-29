@@ -22,49 +22,18 @@ class UsersBorrowedScreen extends ConsumerStatefulWidget {
 }
 
 class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
+  int selectedYear = DateTime.now().year;
+  String? selectedMonthYear;
+  String _searchQuery = '';
+  List<BorrowedUiItem> filteredList = [];
+  final searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     Utils.getToken();
     _getBorrowedData();
   }
-
-  List<BorrowedUiItem> filteredList = [];
-
-  final searchController = TextEditingController();
-
-  String? selectedMonthYear;
-  int selectedYear = DateTime.now().year;
-
-  String _searchQuery = '';
-
-
-  void applySearchAndFilter(List<BorrowedUiItem> sourceList) {
-    filteredList = sourceList;
-
-    if (_searchQuery.isNotEmpty) {
-      filteredList = filteredList.where((item) {
-        return item.restaurantName
-            .toLowerCase()
-            .contains(_searchQuery.toLowerCase());
-      }).toList();
-    }
-    if(_searchQuery.isEmpty) {
-      if (selectedMonthYear != null) {
-        final selectedMonthName = selectedMonthYear!.split('–')[0];
-        final selectedMonthIndex = DateMonthUtils.getMonthIndex(selectedMonthName);
-
-        filteredList = filteredList.where((item) {
-          final itemMonth = DateTime
-              .parse(item.date)
-              .month;
-          return itemMonth == selectedMonthIndex;
-        }).toList();
-      }
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -188,20 +157,41 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
     );
   }
 
+  void applySearchAndFilter(List<BorrowedUiItem> sourceList) {
+    filteredList = sourceList;
+
+    if (_searchQuery.isNotEmpty) {
+      filteredList = filteredList.where((item) {
+        return item.restaurantName
+            .toLowerCase()
+            .contains(_searchQuery.toLowerCase());
+      }).toList();
+    }
+    if(_searchQuery.isEmpty) {
+      if (selectedMonthYear != null) {
+        final selectedMonthName = selectedMonthYear!.split('–')[0];
+        final selectedMonthIndex = DateMonthUtils.getMonthIndex(selectedMonthName);
+
+        filteredList = filteredList.where((item) {
+          final itemMonth = DateTime
+              .parse(item.date)
+              .month;
+          return itemMonth == selectedMonthIndex;
+        }).toList();
+      }
+    }
+  }
 
   Map<String, List<BorrowedUiItem>> _groupByMonth(List<BorrowedUiItem> list) {
     final Map<String, List<BorrowedUiItem>> grouped = {};
 
     for (final item in list) {
       final monthKey = DateMonthUtils.getMonthYear(item.date);
-
       grouped.putIfAbsent(monthKey, () => []);
       grouped[monthKey]!.add(item);
     }
-
     return grouped;
   }
-
 
   int _getTotalContainerCount(List<BorrowedUiItem> items) {
     int total = 0;

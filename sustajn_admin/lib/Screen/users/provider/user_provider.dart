@@ -1,4 +1,5 @@
 import 'package:container_tracking/Screen/Partner/provider/notifier/product_notifier.dart';
+import 'package:container_tracking/Screen/users/model/user_damage_data.dart';
 import 'package:container_tracking/Screen/users/notifier/users_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -108,5 +109,32 @@ final getSoldContainerProvider = FutureProvider.family<dynamic, String>((
     Utils.printLog("Get sold provider error called: $e");
     containerState.setIsLoading(false);
     Utils.showNetworkErrorToast(containerState.context, e.toString());
+  }
+});
+final getUserDamagedProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final userNotifier = ref.watch(userProvider);
+  try {
+    var serviceProvider = ref.read(getUsersApiService);
+    Utils.printLog("params===$params");
+    UserDamageData responseData = await serviceProvider.getUserDamagedService(
+      params,
+    );
+    Utils.printLog("On Success===${responseData.status}");
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
+      Utils.printLog("On Success===${responseData.status}");
+      userNotifier.setIsLoading(false);
+      userNotifier.setUsersDamageData(responseData);
+    } else {
+      userNotifier.setIsLoading(false);
+      //Utils.showToast(responseData.message!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Users provider error called: $e");
+    userNotifier.setIsLoading(false);
+    Utils.showNetworkErrorToast(userNotifier.context, e.toString());
   }
 });
