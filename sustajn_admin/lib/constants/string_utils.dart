@@ -190,7 +190,8 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
-
+  // static const PRODUCTS = 'Products';
+  // static const INVENTORY = 'Inventory';
   static const IN_CIRCULATION = 'In Circulation';
   static const WITH_PARTNER = 'With Partner';
   static const DAMAGED = 'Damaged';
@@ -226,6 +227,11 @@ class Strings {
   static const String BORROWED_ON = 'Borrowed On';
   static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
   static const String RETURNED_DETAILS = 'Returned Details';
+  static const String ORDER_REQUEST = 'Order Requests';
+  static const String PENDING = 'Pending';
+  static const String CONFIRMED = 'Confirmed';
+  static const String DELIVERED = 'Delivered';
+  static const String REJECTED = 'Rejected';
   static const String RESTAURANT_1 = 'Sfumato Gastro Atelier';
   static const String RESTAURANT_2 = 'Ancora Mediterranean';
   static const String RESTAURANT_3 = 'Kimura-ya Authentic Japanese Resta';
