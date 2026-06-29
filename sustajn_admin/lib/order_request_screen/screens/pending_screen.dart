@@ -36,7 +36,9 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
+    final orderRequestState = ref.watch(orderRequestProvider);
+    Utils.printLog("item list = ${orderRequestState.getPendingDataList.length}");
+
 
     return SafeArea(
       top: false,
@@ -50,7 +52,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderState.filterInventoryByNameOrId(value);
+                  // orderRequestState.filterInventoryByNameOrId(value);
                 },
                 //TODO:-
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -58,42 +60,13 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
-              child: orderState.isLoading
+              child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
-              //     ? const Center(
-              //   child: Text(
-              //     Strings.NO_CONTAINER_AVAILABLE,
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // )
-                  // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
-                  // orderState.getContainerData!.containersDetails!.isEmpty
+                  : orderRequestState.getPendingData == null
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
                   style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
-                  ],
                 ),
               )
                   : ListView.separated(
@@ -101,19 +74,18 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.filterInventory.length,
+                itemCount: orderRequestState.getPendingDataList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
-
-                  // return inventoryItemCard(
-                  //   context,
-                  //   image: item.containerImageUrl ?? "",
-                  //   title: item.containerName ?? "-",
-                  //   // subTitle: item.containerUniqueId ?? "-",
-                  //   // volume: item.capacity?.toString() ?? "0",
-                  //   qty: item.quantityAvailable ?? 0,
-                  //   data: item,
-                  // );
+                  final item = orderRequestState.getPendingDataList[index];
+                  Utils.printLog("item = ${item.toString()}");
+                  return pendingItemCard(
+                    context,
+                    requestNumber: item.requestNumber ?? "",
+                    restaurantName: item.restaurantName ?? "-",
+                    containerCodes: item.containerCodes ?? "-",
+                    formattedDateTime: item.formattedDateTime ?? "-",
+                    totalQuantity: item.totalQuantity ?? 0,
+                  );
                 },
                 separatorBuilder: (context, index) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
@@ -125,14 +97,13 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
     );
   }
 
-  Widget inventoryItemCard(
+  Widget pendingItemCard(
       BuildContext context, {
-        required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
-        // required ContainersDetails data,
+        required String requestNumber,
+        required String restaurantName,
+        required String containerCodes,
+        required String formattedDateTime,
+        required int totalQuantity,
       }) {
     final theme = Theme.of(context);
 
@@ -145,49 +116,13 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != "")
-                ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
-                : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-            SizedBox(width: Constant.CONTAINER_SIZE_12),
 
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    requestNumber,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -197,11 +132,8 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                     ),
                   ),
                   // SizedBox(height: Constant.SIZE_04),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          subTitle,
+            Text(
+              restaurantName,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -209,25 +141,19 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                             color: Colors.white70,
                           ),
                         ),
-                      ),
+
                       // SizedBox(width: Constant.CONTAINER_SIZE_100),
                       Text(
-                        qty.toString(),
+                        containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Constant.gold,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_08),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white70,
-                      ),
-                    ],
-                  ),
+
                   Text(
-                    "$volume ml",
+                    formattedDateTime,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -237,6 +163,21 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                   ),
                 ],
               ),
+            ),
+            Text(
+              "$totalQuantity",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontSize: Constant.LABEL_TEXT_SIZE_14,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(width: Constant.SIZE_08),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: Constant.CONTAINER_SIZE_14,
+              color: Colors.white70,
             ),
           ],
         ),
@@ -364,8 +305,8 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
         final orderState = ref.read(orderRequestProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.PENDING_ORDER_DATA}$userId';
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.PENDING_ORDER_DATA}';
           ref.read(getPendingOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

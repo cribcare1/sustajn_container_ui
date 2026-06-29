@@ -40,5 +40,5 @@ static const CUSTOMER_LIST = "auth/activeCustomersDetails?";
   static const RETURNED_DATA = 'orders/monthWiseReturnedDetails?';
 
   //Order request
-  static const PENDING_ORDER_DATA = 'orders/monthWiseReturnedDetails?';
+  static const PENDING_ORDER_DATA = 'inventory/admin/orders/pending';
 }
