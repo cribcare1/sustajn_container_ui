@@ -1,4 +1,6 @@
   import 'package:container_tracking/Screen/users/model/user_damage_data.dart';
+import 'package:container_tracking/Screen/users/screens/user_borrowed_details_dialog.dart';
+import 'package:container_tracking/Screen/users/screens/user_damage_popup.dart';
   import 'package:container_tracking/common_widgets/custom_app_bar.dart';
   import 'package:flutter/material.dart';
   import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +13,8 @@
   import '../../../constants/string_utils.dart';
   import '../../../utils/date_month_utils.dart';
   import '../../../utils/utility.dart';
-  import '../provider/user_provider.dart';
+  import '../model/user_borrowed_data.dart';
+import '../provider/user_provider.dart';
 
   class UserDamagedScreen extends ConsumerStatefulWidget {
     final int userId;
@@ -192,7 +195,9 @@
     Widget _cardItem(DamageContainers item) {
       final theme = Theme.of(context);
 
-      return Container(
+      return InkWell(
+        onTap: () => _openDetailDialog(context, item),
+        child: Container(
         margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         decoration: BoxDecoration(
@@ -264,6 +269,7 @@
             ),
           ],
         ),
+      )
       );
     }
 
@@ -362,6 +368,29 @@
           ),
         ],
       ),
+    );
+  }
+
+  void _openDetailDialog(BuildContext context, DamageContainers item) {
+    final items = (item.products ?? []).map((product) {
+      return BorrowedUiItem(
+        restaurantName: '',
+        resturantAddress: '',
+        productName: product.productName ?? '',
+        capacity: product.capacity ?? 0,
+        containerCount: item.dateWiseTotalDamageContainers ?? 0,
+        productId: product.productUniqueId ?? '',
+        date: item.localDateTime ?? '',
+        time: '',
+        imageUrl: product.productImageUrl ?? '',
+      );
+    }).toList();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) =>
+          DamageDetailsDialog(title: 'Damage Details', items: items),
     );
   }
 
