@@ -36,7 +36,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
+    final orderRequestState = ref.watch(orderRequestProvider);
 
     return SafeArea(
       top: false,
@@ -50,7 +50,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderState.filterInventoryByNameOrId(value);
+                  orderRequestState.filterInventoryByNameOrId(value);
                 },
                 //TODO:-
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -58,9 +58,9 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
-              child: orderState.isLoading
+              child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
+                  : orderRequestState.getRejectData == null
               //     ? const Center(
               //   child: Text(
               //     Strings.NO_CONTAINER_AVAILABLE,
@@ -75,7 +75,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                  : (orderRequestState.getRejectDataList.isEmpty && searchController.text.isNotEmpty)
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +88,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                     SubmitButton(
                       onRightTap: () {
                         searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
+                        orderRequestState.filterInventoryByNameOrId('');
                         setState(() {});
                       },
                       rightText: " Clear Filter ",
@@ -101,19 +101,20 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.filterInventory.length,
+                itemCount: orderRequestState.getRejectDataList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
+                  final item = orderRequestState.getRejectDataList[index];
 
-                  // return inventoryItemCard(
-                  //   context,
-                  //   image: item.containerImageUrl ?? "",
-                  //   title: item.containerName ?? "-",
-                  //   // subTitle: item.containerUniqueId ?? "-",
-                  //   // volume: item.capacity?.toString() ?? "0",
-                  //   qty: item.quantityAvailable ?? 0,
-                  //   data: item,
-                  // );
+                  return inventoryItemCard(
+                    context,
+                    // image: item.containerImageUrl ?? "",
+                    requestNumber: item.requestNumber ?? "-",
+                    restaurantName: item.restaurantName ?? "-",
+                    containerCodes: item.containerCodes ?? "-",
+                    formattedDateTime: item.formattedDateTime ?? "-",
+                    totalQuantity: item.totalQuantity ?? 0,
+                    // data: item,
+                  );
                 },
                 separatorBuilder: (context, index) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
@@ -127,11 +128,12 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
-        required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
+        // required String image,
+        required String requestNumber,
+        required String restaurantName,
+        required String containerCodes,
+        required String formattedDateTime,
+        required int totalQuantity,
         // required ContainersDetails data,
       }) {
     final theme = Theme.of(context);
@@ -145,49 +147,49 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != "")
-                ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
-                : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-            SizedBox(width: Constant.CONTAINER_SIZE_12),
+          //   (image != "")
+          //       ? Container(
+          //     height: Constant.CONTAINER_SIZE_70,
+          //     width: Constant.CONTAINER_SIZE_70,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white.withOpacity(0.15),
+          //       borderRadius: BorderRadius.circular(8),
+          //     ),
+          //     padding: const EdgeInsets.all(6),
+          //     child: Image.network(
+          //       "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+          //       errorBuilder: (context, obj, stack) {
+          //         return Image.asset(
+          //           "assets/images/no_image_container.png",
+          //         );
+          //       },
+          //       fit: BoxFit.fill,
+          //     ),
+          //   )
+          //       : Container(
+          //     width: Constant.CONTAINER_SIZE_70,
+          //     height: Constant.CONTAINER_SIZE_70,
+          //     decoration: BoxDecoration(
+          //       color: Constant.white.withOpacity(0.2),
+          //       borderRadius: BorderRadius.circular(Constant.SIZE_08),
+          //     ),
+          //     child: Center(
+          //       child: Icon(
+          //         Icons.inbox,
+          //         size: Constant.CONTAINER_SIZE_30,
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //   ),
+          //
+          //   SizedBox(width: Constant.CONTAINER_SIZE_12),
 
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    requestNumber,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -201,7 +203,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          subTitle,
+                          restaurantName,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -211,11 +213,31 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                         ),
                       ),
                       // SizedBox(width: Constant.CONTAINER_SIZE_100),
+
+
                       Text(
-                        qty.toString(),
+                        containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Constant.gold,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        formattedDateTime,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      Text(
+                        "$totalQuantity",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                          color: Colors.white70,
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_08),
@@ -225,15 +247,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                         color: Colors.white70,
                       ),
                     ],
-                  ),
-                  Text(
-                    "$volume ml",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.white70,
-                    ),
                   ),
                 ],
               ),

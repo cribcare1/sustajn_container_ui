@@ -10,8 +10,10 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   bool _isLoading = false;
   String _searchQuery = '';
+
   // Error messages
   String? _nameError;
+
   String get searchQuery => _searchQuery;
   BuildContext? _context;
 
@@ -20,6 +22,11 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   ConfirmData? _confirmData;
   List<ConfirmDataList> _confirmDataList = [];
+  List<ConfirmDataList> _filterConfirmDataList = [];
+  List<DeliverDataList> _filterDeliverDataList = [];
+  List<RejectDataList> _filterRejectDataList = [];
+
+
 
   DeliverData? _deliverData;
   List<DeliverDataList> _deliverDataList = [];
@@ -34,6 +41,7 @@ class OrderRequestNotifier extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   BuildContext get context => _context!;
+
   //Getter
   String? get nameError => _nameError;
   bool _isQtyAscending = true;
@@ -43,17 +51,26 @@ class OrderRequestNotifier extends ChangeNotifier {
   int get leasedContainerCount => _leasedContainerCount;
 
   int get returnedContainerCount => _returnedContainerCount;
+
   PendingData? get getPendingData => _pendingData;
+
   List<PendingDataList> get getPendingDataList => _pendingDataList;
 
   ConfirmData? get getConfirmData => _confirmData;
   List<ConfirmDataList> get getConfirmDataList => _confirmDataList;
+  List<ConfirmDataList> get getFilterConfirmedDataList =>
+      _filterConfirmDataList;
 
   DeliverData? get getDeliverData => _deliverData;
   List<DeliverDataList> get getDeliverDataList => _deliverDataList;
+  List<DeliverDataList> get getFilterDeliveredDataList => _filterDeliverDataList;
+
 
   RejectOrderData? get getRejectData => _rejectOrderData;
   List<RejectDataList> get getRejectDataList => _rejectDataList;
+  List<RejectDataList> get getFilterRejectedDataList => _filterRejectDataList;
+
+
 //Setter
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -78,23 +95,26 @@ class OrderRequestNotifier extends ChangeNotifier {
   }
 
   void setConfirmData(ConfirmData confirmData) {
-  Utils.printLog("data list = ${confirmData.data!.length}");
-  _confirmData = confirmData;
-  _confirmDataList = confirmData.data!.cast<ConfirmDataList>();
-  notifyListeners();
+    Utils.printLog("data list = ${confirmData.data!.length}");
+    _confirmData = confirmData;
+    _confirmDataList = confirmData!.data!;
+    _filterConfirmDataList = _confirmDataList ?? [];
+    notifyListeners();
   }
 
   void setDeliverData(DeliverData deliverData) {
     Utils.printLog("data list = ${deliverData.data!.length}");
     _deliverData = deliverData;
     _deliverDataList = deliverData!.data!;
+    _filterDeliverDataList = _deliverDataList ?? [];
     notifyListeners();
   }
-  
-  void setRejectOredrData(RejectOrderData rejectOrderData){
+
+  void setRejectOredrData(RejectOrderData rejectOrderData) {
     Utils.printLog("data list = ${rejectOrderData.data!.length}");
     _rejectOrderData = rejectOrderData;
     _rejectDataList = rejectOrderData!.data!;
+    _filterRejectDataList = _rejectDataList ?? [];
     notifyListeners();
   }
 
@@ -109,4 +129,29 @@ class OrderRequestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterInventoryByNameOrId(String query) {
+    if (query.isEmpty) {
+      _filterConfirmDataList = _confirmDataList ?? [];
+      notifyListeners();
+      return;
+    }
+  }
+
+
+  void filterDeliverByNameOrId(String query) {
+    if (query.isEmpty) {
+      _filterDeliverDataList = _deliverDataList ?? [];
+      notifyListeners();
+      return;
+    }
+  }
+
+
+  void filterrejectByNameOrId(String query) {
+    if (query.isEmpty) {
+      _filterRejectDataList = _rejectDataList ?? [];
+      notifyListeners();
+      return;
+    }
+  }
 }

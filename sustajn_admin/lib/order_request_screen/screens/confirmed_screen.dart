@@ -36,7 +36,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
+    final orderRequestState = ref.watch(orderRequestProvider);
 
     return SafeArea(
       top: false,
@@ -50,7 +50,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderState.filterInventoryByNameOrId(value);
+                  orderRequestState.filterInventoryByNameOrId(value);
                 },
                 //TODO:-
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -58,9 +58,9 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
-              child: orderState.isLoading
+              child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
+                  : orderRequestState.getConfirmData == null
               //     ? const Center(
               //   child: Text(
               //     Strings.NO_CONTAINER_AVAILABLE,
@@ -75,7 +75,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                  : (orderRequestState.getFilterConfirmedDataList.isEmpty && searchController.text.isNotEmpty)
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -85,14 +85,14 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
+                    // SubmitButton(
+                    //   onRightTap: () {
+                    //     searchController.clear();
+                    //     orderRequestState.filterInventoryByNameOrId('');
+                    //     setState(() {});
+                    //   },
+                    //   rightText: " Clear Filter ",
+                    // ),
                   ],
                 ),
               )
@@ -101,19 +101,19 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.filterInventory.length,
+                itemCount: orderRequestState.getFilterConfirmedDataList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
+                  final item = orderRequestState.getFilterConfirmedDataList[index];
 
-                  // return inventoryItemCard(
-                  //   context,
-                  //   image: item.containerImageUrl ?? "",
-                  //   title: item.containerName ?? "-",
-                  //   // subTitle: item.containerUniqueId ?? "-",
-                  //   // volume: item.capacity?.toString() ?? "0",
-                  //   qty: item.quantityAvailable ?? 0,
-                  //   data: item,
-                  // );
+                  return inventoryItemCard(
+                    context,
+                    requestNumber: item.requestNumber?? "-",
+                    restaurantName: item.restaurantName ?? "-",
+                    containerCodes: item.containerCodes ?? "-",
+                    formattedDateTime: item.formattedDateTime?.toString() ?? "0",
+                    totalQuantity: item.totalQuantity ?? 0,
+                    // data: item,
+                  );
                 },
                 separatorBuilder: (context, index) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_10),
@@ -127,7 +127,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
-        required String image,
+
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
@@ -146,42 +146,42 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != "")
-                ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
-                : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-            SizedBox(width: Constant.CONTAINER_SIZE_12),
+            // (image != "")
+            //     ? Container(
+            //   height: Constant.CONTAINER_SIZE_70,
+            //   width: Constant.CONTAINER_SIZE_70,
+            //   decoration: BoxDecoration(
+            //     color: Colors.white.withOpacity(0.15),
+            //     borderRadius: BorderRadius.circular(8),
+            //   ),
+            //   padding: const EdgeInsets.all(6),
+            //   child: Image.network(
+            //     "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+            //     errorBuilder: (context, obj, stack) {
+            //       return Image.asset(
+            //         "assets/images/no_image_container.png",
+            //       );
+            //     },
+            //     fit: BoxFit.fill,
+            //   ),
+            // )
+            //     : Container(
+            //   width: Constant.CONTAINER_SIZE_70,
+            //   height: Constant.CONTAINER_SIZE_70,
+            //   decoration: BoxDecoration(
+            //     color: Constant.white.withOpacity(0.2),
+            //     borderRadius: BorderRadius.circular(Constant.SIZE_08),
+            //   ),
+            //   child: Center(
+            //     child: Icon(
+            //       Icons.inbox,
+            //       size: Constant.CONTAINER_SIZE_30,
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // ),
+            //
+            // SizedBox(width: Constant.CONTAINER_SIZE_12),
 
             Expanded(
               child: Column(

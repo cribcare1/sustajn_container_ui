@@ -36,7 +36,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderState = ref.watch(orderProvider);
+    final orderRequestState = ref.watch(orderRequestProvider);
 
     return SafeArea(
       top: false,
@@ -50,7 +50,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderState.filterInventoryByNameOrId(value);
+                  orderRequestState.filterInventoryByNameOrId(value);
                 },
                 //TODO:-
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -58,9 +58,9 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
-              child: orderState.isLoading
+              child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getContainerData == null
+                  : orderRequestState.getDeliverData == null
               //     ? const Center(
               //   child: Text(
               //     Strings.NO_CONTAINER_AVAILABLE,
@@ -75,7 +75,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                  : (orderRequestState.getDeliverDataList.isEmpty && searchController.text.isNotEmpty)
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +88,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     SubmitButton(
                       onRightTap: () {
                         searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
+                        orderRequestState.filterInventoryByNameOrId('');
                         setState(() {});
                       },
                       rightText: " Clear Filter ",
@@ -101,19 +101,20 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.filterInventory.length,
+                itemCount: orderRequestState.getDeliverDataList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.filterInventory[index];
+                  final item = orderRequestState.getDeliverDataList[index];
 
-                  // return inventoryItemCard(
-                  //   context,
-                  //   image: item.containerImageUrl ?? "",
-                  //   title: item.containerName ?? "-",
-                  //   // subTitle: item.containerUniqueId ?? "-",
-                  //   // volume: item.capacity?.toString() ?? "0",
-                  //   qty: item.quantityAvailable ?? 0,
-                  //   data: item,
-                  // );
+                  return pendingItemCard(
+                    context,
+                    // image: item.containerImageUrl ?? "",
+                    requestNumber: item.requestNumber ?? "-",
+                    restaurantName: item.restaurantName ?? "-",
+                    containerCodes: item.containerCodes?.toString() ?? "0",
+                    formattedDateTime : item.formattedDateTime?? "-",
+                    totalQuantity: item.totalQuantity ?? 0,
+                    // data: item,
+                  );
                 },
                 separatorBuilder: (context, index) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_10),

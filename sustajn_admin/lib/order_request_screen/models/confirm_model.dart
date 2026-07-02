@@ -1,7 +1,7 @@
 import '../../Screen/Partner/model/container_history_data.dart';
 
 class ConfirmData {
-  List<Data>? data;
+  List<ConfirmDataList>? data;
   String? message;
   String? status;
 
@@ -9,9 +9,9 @@ class ConfirmData {
 
   ConfirmData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <ConfirmDataList>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new ConfirmDataList.fromJson(v));
       });
     }
     message = json['message']??"";
