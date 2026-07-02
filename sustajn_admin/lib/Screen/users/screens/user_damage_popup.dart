@@ -6,13 +6,11 @@ import '../../../constants/string_utils.dart';
 import '../model/user_borrowed_data.dart';
 
 class DamageDetailsDialog extends StatelessWidget {
-  final String title;
-  final List<BorrowedUiItem> items;
-
-  // NEW (optional)
   final bool isReturned;
+  final String title;
   final String? borrowedOn;
   final String? returnedOn;
+  final List<BorrowedUiItem> items;
 
   DamageDetailsDialog({
     super.key,
