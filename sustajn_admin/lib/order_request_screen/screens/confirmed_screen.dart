@@ -15,6 +15,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../provider_service/order_request_provider.dart';
 
 class ConfirmedScreen extends ConsumerStatefulWidget {
   const ConfirmedScreen({super.key});
@@ -29,7 +30,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   @override
   void initState() {
     super.initState();
-    // _getInventoryNetworkCall();
+    _getConfirmOrderNetworkCall();
   }
 
   @override
@@ -127,10 +128,11 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   Widget inventoryItemCard(
       BuildContext context, {
         required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
+        required String requestNumber,
+        required String restaurantName,
+        required String containerCodes,
+        required String formattedDateTime,
+        required int totalQuantity,
         // required ContainersDetails data,
       }) {
     final theme = Theme.of(context);
@@ -186,7 +188,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    requestNumber,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -200,7 +202,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          subTitle,
+                          restaurantName,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -209,12 +211,31 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           ),
                         ),
                       ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
                       Text(
-                        qty.toString(),
+                        containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Constant.gold,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      Text(
+                        formattedDateTime,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
+                      Text(
+                        "$totalQuantity",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: Constant.LABEL_TEXT_SIZE_14,
+                          color: Colors.white70,
                         ),
                       ),
                       SizedBox(width: Constant.SIZE_08),
@@ -225,15 +246,15 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       ),
                     ],
                   ),
-                  Text(
-                    "$volume ml",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.white70,
-                    ),
-                  ),
+                  // Text(
+                  //   "$volume ml",
+                  //   maxLines: 1,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: theme.textTheme.bodySmall?.copyWith(
+                  //     fontSize: Constant.LABEL_TEXT_SIZE_14,
+                  //     color: Colors.white70,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -354,25 +375,25 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
 
 
 
-// _getInventoryNetworkCall() async {
-//   try {
-//     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-//         isNetworkAvailable,
-//         ) {
-//       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-//       final orderState = ref.read(orderProvider);
-//       if (isNetworkAvailable) {
-//         orderState.setIsLoading(true);
-//         final userId = Utils.userId;
-//         final url = '${NetworkUrls.GET_CONTAINER}$userId';
-//         ref.read(getInventoryProvider(url));
-//       } else {
-//         orderState.setIsLoading(false);
-//         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-//       }
-//     });
-//   } catch (e) {
-//     Utils.printLog('Error in visitor button onPressed: $e');
-//   }
-// }
+_getConfirmOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderRequestProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.CONFIRM_ORDER_DATA}';
+          ref.read(getConfirmOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }

@@ -15,6 +15,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../provider_service/order_request_provider.dart';
 
 class DeliveredScreen extends ConsumerStatefulWidget {
   const DeliveredScreen({super.key});
@@ -29,7 +30,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
   @override
   void initState() {
     super.initState();
-    // _getInventoryNetworkCall();
+    _getDeliverOrderNetworkCall();
   }
 
   @override
@@ -124,14 +125,13 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
     );
   }
 
-  Widget inventoryItemCard(
+  Widget pendingItemCard(
       BuildContext context, {
-        required String image,
-        required String title,
-        required String subTitle,
-        required String volume,
-        required int qty,
-        // required ContainersDetails data,
+        required String requestNumber,
+        required String restaurantName,
+        required String containerCodes,
+        required String formattedDateTime,
+        required int totalQuantity,
       }) {
     final theme = Theme.of(context);
 
@@ -144,49 +144,13 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            (image != "")
-                ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
-                : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-
-            SizedBox(width: Constant.CONTAINER_SIZE_12),
 
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    requestNumber,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -196,37 +160,28 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     ),
                   ),
                   // SizedBox(height: Constant.SIZE_04),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          subTitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      Text(
-                        qty.toString(),
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: Constant.SIZE_08),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white70,
-                      ),
-                    ],
-                  ),
                   Text(
-                    "$volume ml",
+                    restaurantName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: Constant.LABEL_TEXT_SIZE_14,
+                      color: Colors.white70,
+                    ),
+                  ),
+
+                  // SizedBox(width: Constant.CONTAINER_SIZE_100),
+                  Text(
+                    containerCodes,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Constant.gold,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: Constant.SIZE_08),
+
+                  Text(
+                    formattedDateTime,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
@@ -236,6 +191,21 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                   ),
                 ],
               ),
+            ),
+            Text(
+              "$totalQuantity",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontSize: Constant.LABEL_TEXT_SIZE_14,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(width: Constant.SIZE_08),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: Constant.CONTAINER_SIZE_14,
+              color: Colors.white70,
             ),
           ],
         ),
@@ -354,25 +324,25 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
 
 
 
-// _getInventoryNetworkCall() async {
-//   try {
-//     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-//         isNetworkAvailable,
-//         ) {
-//       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-//       final orderState = ref.read(orderProvider);
-//       if (isNetworkAvailable) {
-//         orderState.setIsLoading(true);
-//         final userId = Utils.userId;
-//         final url = '${NetworkUrls.GET_CONTAINER}$userId';
-//         ref.read(getInventoryProvider(url));
-//       } else {
-//         orderState.setIsLoading(false);
-//         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-//       }
-//     });
-//   } catch (e) {
-//     Utils.printLog('Error in visitor button onPressed: $e');
-//   }
-// }
+  _getDeliverOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderRequestProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.DELIVER_ORDER_DATA}';
+          ref.read(getDeliverOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }

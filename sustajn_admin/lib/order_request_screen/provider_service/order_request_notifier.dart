@@ -1,7 +1,10 @@
+import 'package:container_tracking/order_request_screen/models/deliver_order_model.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../utils/utility.dart';
+import '../models/confirm_model.dart';
 import '../models/pending_model.dart';
+import '../models/reject_order_model.dart';
 
 class OrderRequestNotifier extends ChangeNotifier {
 
@@ -14,6 +17,15 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   PendingData? _pendingData;
   List<PendingDataList> _pendingDataList = [];
+
+  ConfirmData? _confirmData;
+  List<ConfirmDataList> _confirmDataList = [];
+
+  DeliverData? _deliverData;
+  List<DeliverDataList> _deliverDataList = [];
+
+  RejectOrderData? _rejectOrderData;
+  List<RejectDataList> _rejectDataList = [];
 
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
@@ -33,6 +45,15 @@ class OrderRequestNotifier extends ChangeNotifier {
   int get returnedContainerCount => _returnedContainerCount;
   PendingData? get getPendingData => _pendingData;
   List<PendingDataList> get getPendingDataList => _pendingDataList;
+
+  ConfirmData? get getConfirmData => _confirmData;
+  List<ConfirmDataList> get getConfirmDataList => _confirmDataList;
+
+  DeliverData? get getDeliverData => _deliverData;
+  List<DeliverDataList> get getDeliverDataList => _deliverDataList;
+
+  RejectOrderData? get getRejectData => _rejectOrderData;
+  List<RejectDataList> get getRejectDataList => _rejectDataList;
 //Setter
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -53,6 +74,27 @@ class OrderRequestNotifier extends ChangeNotifier {
     Utils.printLog("data list = ${pendingData.data!.length}");
     _pendingData = pendingData;
     _pendingDataList = pendingData!.data!;
+    notifyListeners();
+  }
+
+  void setConfirmData(ConfirmData confirmData) {
+  Utils.printLog("data list = ${confirmData.data!.length}");
+  _confirmData = confirmData;
+  _confirmDataList = confirmData.data!.cast<ConfirmDataList>();
+  notifyListeners();
+  }
+
+  void setDeliverData(DeliverData deliverData) {
+    Utils.printLog("data list = ${deliverData.data!.length}");
+    _deliverData = deliverData;
+    _deliverDataList = deliverData!.data!;
+    notifyListeners();
+  }
+  
+  void setRejectOredrData(RejectOrderData rejectOrderData){
+    Utils.printLog("data list = ${rejectOrderData.data!.length}");
+    _rejectOrderData = rejectOrderData;
+    _rejectDataList = rejectOrderData!.data!;
     notifyListeners();
   }
 

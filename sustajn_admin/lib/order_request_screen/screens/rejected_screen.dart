@@ -1,3 +1,4 @@
+import 'package:container_tracking/order_request_screen/provider_service/order_request_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
   @override
   void initState() {
     super.initState();
-    // _getInventoryNetworkCall();
+    _getRejectOrderNetworkCall();
   }
 
   @override
@@ -354,25 +355,25 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
 
 
-// _getInventoryNetworkCall() async {
-//   try {
-//     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-//         isNetworkAvailable,
-//         ) {
-//       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-//       final orderState = ref.read(orderProvider);
-//       if (isNetworkAvailable) {
-//         orderState.setIsLoading(true);
-//         final userId = Utils.userId;
-//         final url = '${NetworkUrls.GET_CONTAINER}$userId';
-//         ref.read(getInventoryProvider(url));
-//       } else {
-//         orderState.setIsLoading(false);
-//         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-//       }
-//     });
-//   } catch (e) {
-//     Utils.printLog('Error in visitor button onPressed: $e');
-//   }
-// }
+  _getRejectOrderNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderRequestProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.REJECT_ORDER_DATA}';
+          ref.read(getRejectOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
+  }
 }
