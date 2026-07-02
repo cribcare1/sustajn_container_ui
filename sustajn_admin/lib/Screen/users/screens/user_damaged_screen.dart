@@ -239,13 +239,6 @@ import '../provider/user_provider.dart';
                       fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
-                  Text(
-                    '${item.dateWiseTotalDamageContainers!}',
-                    style: TextStyle(
-                      color: Colors.white54,
-                      fontSize: Constant.CONTAINER_SIZE_11,
-                    ),
-                  ),
                 ],
               ),
             ),
