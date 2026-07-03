@@ -107,13 +107,11 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
                   return inventoryItemCard(
                     context,
-                    // image: item.containerImageUrl ?? "",
                     requestNumber: item.requestNumber ?? "-",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes ?? "-",
                     formattedDateTime: item.formattedDateTime ?? "-",
                     totalQuantity: item.totalQuantity ?? 0,
-                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -128,13 +126,11 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
-        // required String image,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
         required String formattedDateTime,
         required int totalQuantity,
-        // required ContainersDetails data,
       }) {
     final theme = Theme.of(context);
 
@@ -147,43 +143,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          //   (image != "")
-          //       ? Container(
-          //     height: Constant.CONTAINER_SIZE_70,
-          //     width: Constant.CONTAINER_SIZE_70,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white.withOpacity(0.15),
-          //       borderRadius: BorderRadius.circular(8),
-          //     ),
-          //     padding: const EdgeInsets.all(6),
-          //     child: Image.network(
-          //       "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-          //       errorBuilder: (context, obj, stack) {
-          //         return Image.asset(
-          //           "assets/images/no_image_container.png",
-          //         );
-          //       },
-          //       fit: BoxFit.fill,
-          //     ),
-          //   )
-          //       : Container(
-          //     width: Constant.CONTAINER_SIZE_70,
-          //     height: Constant.CONTAINER_SIZE_70,
-          //     decoration: BoxDecoration(
-          //       color: Constant.white.withOpacity(0.2),
-          //       borderRadius: BorderRadius.circular(Constant.SIZE_08),
-          //     ),
-          //     child: Center(
-          //       child: Icon(
-          //         Icons.inbox,
-          //         size: Constant.CONTAINER_SIZE_30,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //   ),
-          //
-          //   SizedBox(width: Constant.CONTAINER_SIZE_12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

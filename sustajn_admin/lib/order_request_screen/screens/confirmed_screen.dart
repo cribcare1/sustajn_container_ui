@@ -146,43 +146,6 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // (image != "")
-            //     ? Container(
-            //   height: Constant.CONTAINER_SIZE_70,
-            //   width: Constant.CONTAINER_SIZE_70,
-            //   decoration: BoxDecoration(
-            //     color: Colors.white.withOpacity(0.15),
-            //     borderRadius: BorderRadius.circular(8),
-            //   ),
-            //   padding: const EdgeInsets.all(6),
-            //   child: Image.network(
-            //     "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-            //     errorBuilder: (context, obj, stack) {
-            //       return Image.asset(
-            //         "assets/images/no_image_container.png",
-            //       );
-            //     },
-            //     fit: BoxFit.fill,
-            //   ),
-            // )
-            //     : Container(
-            //   width: Constant.CONTAINER_SIZE_70,
-            //   height: Constant.CONTAINER_SIZE_70,
-            //   decoration: BoxDecoration(
-            //     color: Constant.white.withOpacity(0.2),
-            //     borderRadius: BorderRadius.circular(Constant.SIZE_08),
-            //   ),
-            //   child: Center(
-            //     child: Icon(
-            //       Icons.inbox,
-            //       size: Constant.CONTAINER_SIZE_30,
-            //       color: Colors.white,
-            //     ),
-            //   ),
-            // ),
-            //
-            // SizedBox(width: Constant.CONTAINER_SIZE_12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,15 +209,6 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       ),
                     ],
                   ),
-                  // Text(
-                  //   "$volume ml",
-                  //   maxLines: 1,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: theme.textTheme.bodySmall?.copyWith(
-                  //     fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  //     color: Colors.white70,
-                  //   ),
-                  // ),
                 ],
               ),
             ),

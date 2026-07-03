@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Screen/Partner/model/get_container_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_button.dart';
@@ -10,9 +8,7 @@ import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../product_screen/container_details.dart';
 import '../../provider/order_provider.dart';
-import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../provider_service/order_request_provider.dart';
@@ -61,14 +57,6 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
               child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : orderRequestState.getDeliverData == null
-              //     ? const Center(
-              //   child: Text(
-              //     Strings.NO_CONTAINER_AVAILABLE,
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // )
-              // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
-              // orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -107,13 +95,11 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
 
                   return pendingItemCard(
                     context,
-                    // image: item.containerImageUrl ?? "",
                     requestNumber: item.requestNumber ?? "-",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes?.toString() ?? "0",
                     formattedDateTime : item.formattedDateTime?? "-",
                     totalQuantity: item.totalQuantity ?? 0,
-                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
