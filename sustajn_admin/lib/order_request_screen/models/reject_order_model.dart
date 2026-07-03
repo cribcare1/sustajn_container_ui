@@ -1,15 +1,15 @@
-class PendingData {
-  List<PendingDataList>? data;
+class RejectOrderData {
+  List<RejectDataList>? data;
   String? message;
   String? status;
 
-  PendingData({this.data, this.message, this.status});
+  RejectOrderData({this.data, this.message, this.status});
 
-  PendingData.fromJson(Map<String, dynamic> json) {
+  RejectOrderData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <PendingDataList>[];
+      data = <RejectDataList>[];
       json['data'].forEach((v) {
-        data!.add(new PendingDataList.fromJson(v));
+        data!.add(new RejectDataList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -27,7 +27,7 @@ class PendingData {
   }
 }
 
-class PendingDataList {
+class RejectDataList {
   int? id;
   String? requestNumber;
   String? requestType;
@@ -35,19 +35,17 @@ class PendingDataList {
   String? containerCodes;
   String? formattedDateTime;
   int? totalQuantity;
-  List<String>? imageUrls;
 
-  PendingDataList(
+  RejectDataList(
       {this.id,
         this.requestNumber,
         this.requestType,
         this.restaurantName,
         this.containerCodes,
         this.formattedDateTime,
-        this.totalQuantity,
-        this.imageUrls});
+        this.totalQuantity});
 
-  PendingDataList.fromJson(Map<String, dynamic> json) {
+  RejectDataList.fromJson(Map<String, dynamic> json) {
     id = json['id']??0;
     requestNumber = json['requestNumber']??"";
     requestType = json['requestType']??"";
@@ -55,7 +53,6 @@ class PendingDataList {
     containerCodes = json['containerCodes']??"";
     formattedDateTime = json['formattedDateTime']??"";
     totalQuantity = json['totalQuantity']??0;
-    imageUrls = json['imageUrls'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -67,7 +64,6 @@ class PendingDataList {
     data['containerCodes'] = this.containerCodes;
     data['formattedDateTime'] = this.formattedDateTime;
     data['totalQuantity'] = this.totalQuantity;
-    data['imageUrls'] = this.imageUrls;
     return data;
   }
 }

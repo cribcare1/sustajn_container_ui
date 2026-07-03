@@ -48,17 +48,8 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
           children: [
             Padding(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: CustomTheme.searchField(
-                searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
-                onChanged: (value){
-                  // orderRequestState.filterInventoryByNameOrId(value);
-                },
-                //TODO:-
-                // onFilterTap: () => _showSortBottomSheet(context),
-              ),
             ),
-            SizedBox(height: Constant.SIZE_04),
+            SizedBox(height: Constant.SIZE_02),
             Expanded(
               child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -131,7 +122,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
             Text(
               restaurantName,
                           maxLines: 2,
@@ -142,7 +132,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                           ),
                         ),
 
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
                       Text(
                         containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -150,8 +139,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: Constant.SIZE_08),
-
                   Text(
                     formattedDateTime,
                     maxLines: 1,
