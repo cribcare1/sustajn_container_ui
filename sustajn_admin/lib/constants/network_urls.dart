@@ -42,6 +42,7 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
   //Order request
   static const PENDING_ORDER_DATA = 'inventory/admin/orders/pending';
+  static const PENDING_ORDER_DETAILS_DATA = 'inventory/admin/orders/details/';
   static const CONFIRM_ORDER_DATA = 'inventory/admin/orders/confirmed';
   static const DELIVER_ORDER_DATA = 'inventory/admin/orders/delivered';
   static const REJECT_ORDER_DATA = 'inventory/admin/orders/rejected';

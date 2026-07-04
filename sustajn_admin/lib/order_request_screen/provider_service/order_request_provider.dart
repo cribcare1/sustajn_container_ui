@@ -1,4 +1,5 @@
 import 'package:container_tracking/order_request_screen/models/deliver_order_model.dart';
+import 'package:container_tracking/order_request_screen/models/pending_detail_data.dart';
 import 'package:container_tracking/order_request_screen/models/reject_order_model.dart';
 import 'package:container_tracking/order_request_screen/provider_service/order_request_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,6 +111,33 @@ final getRejectOrderProvider = FutureProvider.family<dynamic, String>((
       Utils.printLog("On Success===${responseData.status}");
       orderRequestNotifier.setIsLoading(false);
       orderRequestNotifier.setRejectOredrData(responseData);
+    } else {
+      orderRequestNotifier.setIsLoading(false);
+      //Utils.showToast(responseData.message!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Users provider error called: $e");
+    orderRequestNotifier.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderRequestNotifier.context, e.toString());
+  }
+});
+
+//Pending OrderDetails Provider
+final getPendingDetailsProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderRequestNotifier = ref.watch(orderRequestProvider);
+  try {
+    var serviceProvider = ref.read(orderRequestServices);
+    Utils.printLog("params===$params");
+    PendingDetailsData responseData = await serviceProvider.getPendingDetailOrderService(params);
+    Utils.printLog("On Success===${responseData.status}");
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
+      Utils.printLog("On Success===${responseData.status}");
+      orderRequestNotifier.setIsLoading(false);
+      orderRequestNotifier.setPendingDetailsData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
       //Utils.showToast(responseData.message!);

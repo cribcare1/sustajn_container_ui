@@ -4,6 +4,7 @@ import '../../constants/network_urls.dart';
 import '../../network/ApiCallPresentor.dart';
 import '../../utils/utility.dart';
 import '../models/confirm_model.dart';
+import '../models/pending_detail_data.dart';
 import '../models/pending_model.dart';
 import '../models/reject_order_model.dart';
 
@@ -76,6 +77,26 @@ class OrderRequestServices {
       var response = await presenter.getAPIData(url);
       if (response != null) {
         var responseData = RejectOrderData.fromJson(response);
+        Utils.printLog("User responseData in Service: ${responseData.status}");
+
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+
+  Future<PendingDetailsData> getPendingDetailOrderService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = PendingDetailsData.fromJson(response);
         Utils.printLog("User responseData in Service: ${responseData.status}");
 
         return responseData;

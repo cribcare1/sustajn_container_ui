@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../utils/utility.dart';
 import '../models/confirm_model.dart';
+import '../models/pending_detail_data.dart';
 import '../models/pending_model.dart';
 import '../models/reject_order_model.dart';
 
@@ -20,6 +21,9 @@ class OrderRequestNotifier extends ChangeNotifier {
   PendingData? _pendingData;
   List<PendingDataList> _pendingDataList = [];
 
+  PendingDetailsData? _pendingDetailsData;
+ // List<PendingDetailsDataList> _pendingDetailsDataList = [];
+
   ConfirmData? _confirmData;
   List<ConfirmDataList> _confirmDataList = [];
   List<ConfirmDataList> _filterConfirmDataList = [];
@@ -33,7 +37,7 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   RejectOrderData? _rejectOrderData;
   List<RejectDataList> _rejectDataList = [];
-
+  
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
 
@@ -55,6 +59,9 @@ class OrderRequestNotifier extends ChangeNotifier {
   PendingData? get getPendingData => _pendingData;
 
   List<PendingDataList> get getPendingDataList => _pendingDataList;
+  
+  PendingDetailsData? get getPendingDetailsData => _pendingDetailsData;
+//  List<PendingDetailsDataList> get getPendingDetailsDataList => _pendingDetailsDataList;
 
   ConfirmData? get getConfirmData => _confirmData;
   List<ConfirmDataList> get getConfirmDataList => _confirmDataList;
@@ -94,27 +101,34 @@ class OrderRequestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setPendingDetailsData(PendingDetailsData pendingDetailsData) {
+    Utils.printLog("data list = ${pendingDetailsData.data!.restaurantName}");
+    _pendingDetailsData = pendingDetailsData;
+  //  _pendingDetailsDataList = _pendingDetailsData!.data!;
+    notifyListeners();
+  }
+
   void setConfirmData(ConfirmData confirmData) {
     Utils.printLog("data list = ${confirmData.data!.length}");
     _confirmData = confirmData;
-    _confirmDataList = confirmData!.data!;
-    _filterConfirmDataList = _confirmDataList ?? [];
+    _confirmDataList = confirmData.data!;
+    _filterConfirmDataList = _confirmDataList;
     notifyListeners();
   }
 
   void setDeliverData(DeliverData deliverData) {
     Utils.printLog("data list = ${deliverData.data!.length}");
     _deliverData = deliverData;
-    _deliverDataList = deliverData!.data!;
-    _filterDeliverDataList = _deliverDataList ?? [];
+    _deliverDataList = deliverData.data!;
+    _filterDeliverDataList = _deliverDataList;
     notifyListeners();
   }
 
   void setRejectOredrData(RejectOrderData rejectOrderData) {
     Utils.printLog("data list = ${rejectOrderData.data!.length}");
     _rejectOrderData = rejectOrderData;
-    _rejectDataList = rejectOrderData!.data!;
-    _filterRejectDataList = _rejectDataList ?? [];
+    _rejectDataList = rejectOrderData.data!;
+    _filterRejectDataList = _rejectDataList;
     notifyListeners();
   }
 
@@ -131,7 +145,7 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   void filterInventoryByNameOrId(String query) {
     if (query.isEmpty) {
-      _filterConfirmDataList = _confirmDataList ?? [];
+      _filterConfirmDataList = _confirmDataList;
       notifyListeners();
       return;
     }
@@ -140,7 +154,7 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   void filterDeliverByNameOrId(String query) {
     if (query.isEmpty) {
-      _filterDeliverDataList = _deliverDataList ?? [];
+      _filterDeliverDataList = _deliverDataList;
       notifyListeners();
       return;
     }
@@ -149,7 +163,7 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   void filterrejectByNameOrId(String query) {
     if (query.isEmpty) {
-      _filterRejectDataList = _rejectDataList ?? [];
+      _filterRejectDataList = _rejectDataList;
       notifyListeners();
       return;
     }

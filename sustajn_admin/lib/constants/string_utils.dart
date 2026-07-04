@@ -254,4 +254,7 @@ class Strings {
   static const String NO_SOLD_CONTAINER = 'No sold containers found';
   static const String NO_DAMAGED  = 'No damaged containers found';
   static const String NO_EXTENDED_FEE_DATA = 'No extended fee data found';
+  static const String ORDER_DETAILS = 'Order Details';
+  static const String CONFIRM_ORDER = 'Confirm Order';
+  static const String REJECT_ORDER = 'Reject Order';
 }

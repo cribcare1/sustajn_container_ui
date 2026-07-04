@@ -15,6 +15,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/confirm_details_screen.dart';
 import '../provider_service/order_request_provider.dart';
 
 class ConfirmedScreen extends ConsumerStatefulWidget {
@@ -140,7 +141,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        // NavUtil.navigateToPushScreen(context, ConfirmDetailsScreen());
       },
       child: GlassSummaryCard(
         child: Row(

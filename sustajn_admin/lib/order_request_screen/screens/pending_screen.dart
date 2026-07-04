@@ -16,6 +16,7 @@ import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/pending_details_screen.dart';
 
 class PendingScreen extends ConsumerStatefulWidget {
   const PendingScreen({super.key});
@@ -71,6 +72,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                   Utils.printLog("item = ${item.toString()}");
                   return pendingItemCard(
                     context,
+                    orderId: item.id ?? 0,
                     requestNumber: item.requestNumber ?? "",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes ?? "-",
@@ -90,6 +92,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
 
   Widget pendingItemCard(
       BuildContext context, {
+        required int orderId,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
@@ -101,7 +104,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, PendingDetailsScreen(orderId: orderId));
       },
       child: GlassSummaryCard(
         child: Row(
