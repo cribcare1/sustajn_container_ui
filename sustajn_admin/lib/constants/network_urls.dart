@@ -42,4 +42,6 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
   //Order request
   static const PENDING_ORDER_DATA = 'inventory/admin/orders/pending';
+
+  static const SUBSCRIPTION = 'inventory/admin/transactions/subscriptions';
 }
