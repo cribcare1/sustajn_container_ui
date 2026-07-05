@@ -228,7 +228,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
           Row(
             children: [
               Image.asset(
-                'assets/images/img.png',
+                'assets/images/bowl_img.png',
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),

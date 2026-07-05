@@ -57,7 +57,7 @@ class UsersNotifier extends ChangeNotifier {
   LeaseBarrowData? get leaseBorrowData => _leaseBarrowData;
 
   List<DailyStats> get dailyStats => _dailyStats;
-
+  List<SoldDataList> get filteredList => filteredList;
   SoldContainerData? get soldContainerData => _soldContainerData;
 
   List<SoldDataList> get soldContainerList => _soldContainerList;
@@ -86,6 +86,10 @@ class UsersNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFilteredList(List<SoldDataList> list) {
+    var _filteredList = list;
+    notifyListeners();
+  }
   void setReturnCount(int count) {
     _returnedContainerCount = count;
     notifyListeners();
