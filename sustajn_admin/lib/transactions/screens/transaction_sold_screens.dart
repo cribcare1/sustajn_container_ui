@@ -1,6 +1,5 @@
 import 'package:container_tracking/Screen/users/provider/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../common_provider/network_provider.dart';
 import '../../../common_widgets/custom_app_bar.dart';
 import '../../../common_widgets/custom_back_button.dart';
@@ -9,20 +8,28 @@ import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/no_data_custom_text.dart';
 import '../../../utils/utility.dart';
-import '../model/user_sold_container_data.dart';
-import '../model/user_sold_details.dart';
+import 'package:container_tracking/transactions/screens/transaction_extendedfee_screen.dart';
+import 'package:container_tracking/transactions/screens/transaction_sold_screens.dart';
+import 'package:container_tracking/transactions/screens/transaction_subscription_screen.dart';
+import '../../Screen/users/model/user_sold_container_data.dart';
+import '../../Screen/users/model/user_sold_details.dart';
+import '../../common_widgets/filter_screen_2.dart';
+import '../../utils/date_month_utils.dart';
 
-class UserSoldScreen extends ConsumerStatefulWidget {
-
+class TransactionSoldScreen extends ConsumerStatefulWidget {
   final int userId;
 
-  const UserSoldScreen({super.key, required this.userId});
+
+  TransactionSoldScreen({super.key, required this.userId});
 
   @override
-  ConsumerState<UserSoldScreen> createState() => _SoldTabState();
+  ConsumerState<TransactionSoldScreen> createState() => _TransactionSoldState();
 }
 
-class _SoldTabState extends ConsumerState<UserSoldScreen> {
+class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
+  String _searchQuery = '';
+  String? selectedMonthYear;
+  late List<SoldDataList> filteredList = [];
   final searchController = TextEditingController();
 
   @override
@@ -31,19 +38,17 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
     _getSoldNetworkCall();
   }
 
-  final List<SoldDetails> containers = [];
-
   @override
   Widget build(BuildContext context) {
     final historyState = ref.watch(userProvider);
+    if (filteredList.isEmpty && historyState.soldContainerList.isNotEmpty) {
+      applySearchAndFilter(historyState.soldContainerList);
+    }
     return Scaffold(
         backgroundColor: Color(0xFF0E3B2E),
-        appBar: CustomAppBar(
-          title: "Sold",
-          leading: CustomBackButton(),
-        ).getAppBar(context),
         body: Column(
               children: [
+                _searchBar(),
                 Expanded(
                   child: historyState.soldContainerList.isEmpty
           ? Center(
@@ -51,7 +56,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                   )
           : ListView.separated(
         padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_10),
-        itemCount: historyState.soldContainerList.length,
+        itemCount: historyState.filteredList.length,
         itemBuilder: (context, index) {
           final month =
               historyState.soldContainerList[index].monthYear;
@@ -76,6 +81,97 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
               ],
             ),
     );
+  }
+  Widget _searchBar() {
+    return Padding(
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+      child: TextField(
+        controller: searchController,
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value;
+            applySearchAndFilter(ref.read(userProvider).soldContainerList);
+          });
+        },
+        cursorColor: Colors.white,
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: Strings.SEARCH_BY_SOLD,
+          hintStyle: const TextStyle(color: Colors.white70),
+          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+            borderSide: BorderSide(color: Constant.grey),
+          ),
+          fillColor: Constant.grey.withOpacity(0.1),
+          filled: true,
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.filter_list, color: Colors.white),
+            onPressed: () {
+              final months = DateMonthUtils.getCurrentYearMonths();
+
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) => ReusableFilterBottomSheet(
+                  title: Strings.FILTERS,
+                  leftTabTitle: Strings.MONTH,
+                  options: months,
+                  selectedValue: selectedMonthYear,
+                  onApply: (value) {
+                    if (value == null) return;
+
+                    setState(() {
+                      selectedMonthYear = value;
+                      applySearchAndFilter(
+                        ref.read(userProvider).soldContainerList,
+                      );
+                    });
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+  void applySearchAndFilter(List<SoldDataList> sourceList) {
+    ref.read(userProvider).setFilteredList(sourceList);
+
+    if (_searchQuery.isNotEmpty) {
+      filteredList = filteredList.where((item) {
+        return item.dateWiseSoldContainers?.any((sold) {
+          return (sold.productName ?? "")
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
+              (sold.productUniqueId ?? "")
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase());
+        }) ??
+            false;
+      }).toList();
+    }
+
+    if (_searchQuery.isEmpty && selectedMonthYear != null) {
+      final selectedMonthName = selectedMonthYear!.split('–')[0];
+      final selectedMonthIndex =
+      DateMonthUtils.getMonthIndex(selectedMonthName);
+
+      filteredList = filteredList.where((item) {
+        final itemMonth = DateTime.parse(item.monthYear!).month;
+        return itemMonth == selectedMonthIndex;
+      }).toList();
+    }
   }
 
   Widget _soldItemCard({required DateWiseSoldContainers item}) {
