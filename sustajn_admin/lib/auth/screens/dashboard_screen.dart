@@ -6,8 +6,10 @@ import 'package:container_tracking/utils/nav_utils.dart';
 import '../../Screen/users/screens/users_screen.dart';
 import '../../container_list/screens/container_list_screen.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
+import '../../transactions/screens/transaction_home_screen.dart';
 import '../../products_screen/add_new_container_screen.dart';
 import '../../utils/theme_utils.dart';
+import 'package:container_tracking/Screen/users/screens/transaction_home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -182,6 +184,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     case "Users": NavUtil.navigateToPushScreen(context, UsersScreen());
     break;
     case "Order Requests": NavUtil.navigateToPushScreen(context, OrderRequestScreen());
+    break;
+    case "Transactions":
+      NavUtil.navigateToPushScreen(
+        context,
+        TransactionHomeScreen(
+          userId: 1,
+        ),
+      );
+      break;
     default:
       break;
   }
