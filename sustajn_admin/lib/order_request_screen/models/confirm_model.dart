@@ -1,15 +1,17 @@
-class PendingData {
-  List<PendingDataList>? data;
+import '../../Screen/Partner/model/container_history_data.dart';
+
+class ConfirmData {
+  List<ConfirmDataList>? data;
   String? message;
   String? status;
 
-  PendingData({this.data, this.message, this.status});
+  ConfirmData({this.data, this.message, this.status});
 
-  PendingData.fromJson(Map<String, dynamic> json) {
+  ConfirmData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      data = <PendingDataList>[];
+      data = <ConfirmDataList>[];
       json['data'].forEach((v) {
-        data!.add(new PendingDataList.fromJson(v));
+        data!.add(new ConfirmDataList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -27,7 +29,7 @@ class PendingData {
   }
 }
 
-class PendingDataList {
+class ConfirmDataList {
   int? id;
   String? requestNumber;
   String? requestType;
@@ -35,19 +37,17 @@ class PendingDataList {
   String? containerCodes;
   String? formattedDateTime;
   int? totalQuantity;
-  List<String>? imageUrls;
 
-  PendingDataList(
+  ConfirmDataList(
       {this.id,
-        this.requestNumber,
-        this.requestType,
-        this.restaurantName,
-        this.containerCodes,
-        this.formattedDateTime,
-        this.totalQuantity,
-        this.imageUrls});
+      this.requestNumber,
+      this.requestType,
+      this.restaurantName,
+      this.containerCodes,
+      this.formattedDateTime,
+      this.totalQuantity});
 
-  PendingDataList.fromJson(Map<String, dynamic> json) {
+  ConfirmDataList.fromJson(Map<String, dynamic> json) {
     id = json['id']??0;
     requestNumber = json['requestNumber']??"";
     requestType = json['requestType']??"";
@@ -55,7 +55,6 @@ class PendingDataList {
     containerCodes = json['containerCodes']??"";
     formattedDateTime = json['formattedDateTime']??"";
     totalQuantity = json['totalQuantity']??0;
-    imageUrls = json['imageUrls'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -67,7 +66,6 @@ class PendingDataList {
     data['containerCodes'] = this.containerCodes;
     data['formattedDateTime'] = this.formattedDateTime;
     data['totalQuantity'] = this.totalQuantity;
-    data['imageUrls'] = this.imageUrls;
     return data;
   }
 }

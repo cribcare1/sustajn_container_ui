@@ -1,14 +1,14 @@
 class ContainerHistoryData {
   String? status;
   String? message;
-  Data? data;
+  ConfirmDataList? data;
 
   ContainerHistoryData({this.status, this.message, this.data});
 
   ContainerHistoryData.fromJson(Map<String, dynamic> json) {
     status = json['status'] ?? "";
     message = json['message'] ?? "";
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new ConfirmDataList.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,14 +22,14 @@ class ContainerHistoryData {
   }
 }
 
-class Data {
+class ConfirmDataList {
   List<LeasedResponses>? leasedResponses;
   List<ReceivedResponses>? receivedResponses;
   List<OrderedResponses>? orderedResponses;
 
-  Data({this.leasedResponses, this.receivedResponses, this.orderedResponses});
+  ConfirmDataList({this.leasedResponses, this.receivedResponses, this.orderedResponses});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ConfirmDataList.fromJson(Map<String, dynamic> json) {
     if (json['leasedResponses'] != null) {
       leasedResponses = <LeasedResponses>[];
       json['leasedResponses'].forEach((v) {
