@@ -265,6 +265,7 @@ class Strings {
   static const SEARCH_BY_REST = 'Search by Partner';
   static const SEARCH_BY_SOLD = 'Search by Customer or Partner';
   static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
+  static const PLANTYPE = 'Plan Type';
 
 
 
