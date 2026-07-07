@@ -19,6 +19,7 @@ import '../../Screen/users/model/user_borrowed_data.dart';
 import '../../Screen/users/model/user_damage_data.dart';
 import '../../Screen/users/provider/user_provider.dart';
 import '../../Screen/users/screens/user_damage_popup.dart';
+import '../../common_widgets/filtered_screen_3.dart';
 import '../provider_service/transaction_provider.dart';
 
 class TransactionSubscriptionScreen extends ConsumerStatefulWidget {
@@ -37,6 +38,7 @@ class _SubscriptionScreenState
   final searchController = TextEditingController();
   String _searchQuery = '';
   String? selectedMonthYear;
+  String? selectedPlanType;
 
   @override
   void initState() {
@@ -150,21 +152,28 @@ class _SubscriptionScreenState
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (_) => ReusableFilterBottomSheet(
-                  title: Strings.FILTERS,
-                  leftTabTitle: Strings.MONTH,
+                builder: (_) => ReusableFilter(
+                  title: "Filters",
+                  leftTabTitle: "Month",
+                  leftTabTitles: "Plan Type",
                   options: months,
+                  planType: const [
+                    "Pay-per-use",
+                    "Customization",
+                  ],
                   selectedValue: selectedMonthYear,
-                  onApply: (value) {
-                    if (value == null) return;
-
+                  selectedPlanType: selectedPlanType,
+                  onApply: (month, planType) {
                     setState(() {
-                      selectedMonthYear = value;
+                      selectedMonthYear = month;
+                      selectedPlanType = planType;
+
                       applySearchAndFilter(
                         ref.read(transactionProvider).getSubscriptionDataList,
                       );
                     });
                   },
+
                 ),
               );
             },
