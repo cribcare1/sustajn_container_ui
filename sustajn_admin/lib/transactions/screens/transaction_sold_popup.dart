@@ -1,0 +1,286 @@
+import 'package:container_tracking/Screen/users/model/user_sold_container_data.dart';
+import 'package:container_tracking/constants/imports.util.dart';
+import '../../../common_widgets/card_widget.dart';
+import '../../../constants/network_urls.dart';
+
+class TransactionSoldPopup extends StatelessWidget {
+  final List<DateWiseSoldContainers> items;
+
+  const TransactionSoldPopup({super.key, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: Alignment.topRight,
+          child: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              margin: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+              padding: EdgeInsets.all(Constant.SIZE_08),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.close,
+                color: Colors.black,
+                size: Constant.CONTAINER_SIZE_20,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_20,
+              vertical: Constant.CONTAINER_SIZE_16,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Constant.CONTAINER_SIZE_30),
+              ),
+            ),
+            child: Column(
+              children: [
+                _header(theme, context),
+                SizedBox(height: Constant.CONTAINER_SIZE_24),
+                Expanded(child: ListView(children: [ _buildContainerList( theme),],)
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _header(ThemeData theme, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Container(
+            width: Constant.CONTAINER_SIZE_60,
+            height: Constant.SIZE_05,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(Constant.SIZE_05),
+              color: Colors.white30,
+            ),
+          ),
+        ),
+        SizedBox(height: Constant.CONTAINER_SIZE_20),
+        Text(
+          "Sold Details",
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: Colors.white,
+            fontSize: Constant.LABEL_TEXT_SIZE_20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: Constant.CONTAINER_SIZE_16),
+        ("ABC" == "ABC")?Row(
+          children: [
+            Icon(
+              Icons.receipt_outlined,
+              size: Constant.CONTAINER_SIZE_18,
+              color: Colors.white70,
+            ),
+            SizedBox(width: Constant.SIZE_08),
+
+            Text("Pravin_005",
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontSize: Constant.LABEL_TEXT_SIZE_20,
+                fontWeight: FontWeight.w600,
+              )),
+
+      ]
+      ): Column(children: [
+          Text("Pravin_005",
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.white,
+                fontSize: Constant.LABEL_TEXT_SIZE_20,
+                fontWeight: FontWeight.w600,
+              )),
+          Row(
+              children: [
+                Icon(
+                  Icons.receipt_outlined,
+                  size: Constant.CONTAINER_SIZE_18,
+                  color: Colors.white70,
+                ),
+                SizedBox(width: Constant.SIZE_08),
+
+                Text("Pravin_005",
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontSize: Constant.LABEL_TEXT_SIZE_20,
+                      fontWeight: FontWeight.w600,
+                    )),
+
+              ]
+          )
+        ],),
+
+        SizedBox(height: Constant.SIZE_08),
+
+    const SizedBox(height: 8),
+
+
+        Center(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/bowl_img.png",
+                    height: Constant.CONTAINER_SIZE_40,
+                    width: Constant.CONTAINER_SIZE_40,
+                  ),
+                  SizedBox(width: Constant.SIZE_08),
+                  Text(
+                    "${items.first.soldQuantity}",
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      color: Color(0xFFFBBF24),
+                      fontSize: Constant.CONTAINER_SIZE_40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Constant.SIZE_08),
+              Text(
+                _formatDateTime(items.first.leasedStartDateTime ?? ''),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white60,
+                  fontSize: Constant.LABEL_TEXT_SIZE_14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: Constant.CONTAINER_SIZE_12),
+      ],
+    ),
+    ]
+    );
+  }
+
+  Widget _buildContainerList(ThemeData theme) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_12),
+      itemCount: items.length,
+      separatorBuilder: (_, __) => SizedBox(height: Constant.CONTAINER_SIZE_12),
+      itemBuilder: (context, index) {
+        return _containerCard(items[index], theme);
+      },
+    );
+  }
+
+
+
+  Widget _containerCard(DateWiseSoldContainers product, ThemeData theme) {
+    return GlassSummaryCard(
+      child: Row(
+        children: [
+          (product.productImageUrl != null &&
+                  product.productImageUrl!.isNotEmpty)
+              ? Container(
+                  height: Constant.CONTAINER_SIZE_70,
+                  width: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  padding: EdgeInsets.all(Constant.SIZE_06),
+                  child: Image.network(
+                    "${NetworkUrls.IMAGE_BASE_URL}${product.productImageUrl}",
+                    errorBuilder: (context, obj, stack) {
+                      return Image.asset(
+                        "assets/images/no_image_container.png",
+                        fit: BoxFit.contain,
+                      );
+                    },
+                    fit: BoxFit.contain,
+                  ),
+                )
+              : Container(
+                  width: Constant.CONTAINER_SIZE_70,
+                  height: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.inbox_outlined,
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+          SizedBox(width: Constant.CONTAINER_SIZE_16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.productName ?? "",
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: Constant.SIZE_04),
+                Text(
+                  product.productUniqueId ?? "",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white70,
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                  ),
+                ),
+                SizedBox(height: Constant.SIZE_04),
+                Text(
+                  "${product.capacity ?? 0}ml",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white60,
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            "${product.soldQuantity ?? 0}",
+            style: theme.textTheme.headlineMedium?.copyWith(
+              color: Color(0xFFFBBF24),
+              fontSize: Constant.LABEL_TEXT_SIZE_18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            "${product.soldAmount}",
+            style: TextStyle(
+              color: Color(0xFFE5C84B),
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  String _formatDateTime(String dateTimeStr) {
+    return dateTimeStr.replaceAll('|', ' | ');
+  }
+}
