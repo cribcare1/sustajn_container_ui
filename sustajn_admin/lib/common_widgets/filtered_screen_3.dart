@@ -50,16 +50,6 @@ class _ReusableFilterBottomSheetState
     final width = MediaQuery.of(context).size.width;
 
     return GlassSummaryCard(
-      // height: height,
-      // width: width,
-      // padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
-      // decoration: BoxDecoration(
-      //   color: themeData!.primaryColor,
-      //   borderRadius: BorderRadius.only(
-      //     topLeft: Radius.circular(Constant.CONTAINER_SIZE_20),
-      //     topRight: Radius.circular(Constant.CONTAINER_SIZE_20),
-      //   ),
-      // ),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

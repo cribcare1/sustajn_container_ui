@@ -267,8 +267,4 @@ class Strings {
   static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
   static const PLANTYPE = 'Plan Type';
 
-
-
-
-
 }
