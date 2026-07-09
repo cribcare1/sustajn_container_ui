@@ -1,7 +1,6 @@
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/network_urls.dart';
@@ -11,9 +10,13 @@ import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../models/pending_detail_data.dart';
 import '../provider_service/order_request_provider.dart';
+import '../screens/confirm_order_sheet.dart';
+import '../screens/partner_remark_bottom_sheet.dart';
+import '../screens/reject_order_sheet.dart';
 
 class PendingDetailsScreen extends ConsumerStatefulWidget {
   final int orderId;
+
   const PendingDetailsScreen({super.key, required orderId}) : orderId = orderId;
 
   @override
@@ -42,49 +45,47 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
         leading: const CustomBackButton(),
       ).getAppBar(context),
 
-      body: orderRequestState.isLoading?const Center(child: CircularProgressIndicator()):(pendingDetails != null)?Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _restaurantDetails(
-              themeData!,
-              pendingDetails!.data!.restaurantName!,
-              pendingDetails!.data!.restaurantAddress!,
-            ),
+      body: orderRequestState.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : (pendingDetails != null)
+          ? Padding(
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _restaurantDetails(
+                    themeData!,
+                    pendingDetails!.data!.restaurantName!,
+                    pendingDetails!.data!.restaurantAddress!,
+                  ),
 
-            SizedBox(height: Constant.SIZE_18),
+                  SizedBox(height: Constant.SIZE_18),
 
-            _orderDetails(themeData, pendingDetails!.data!),
+                  _orderDetails(themeData,
+                      pendingDetails!.data!),
 
-            SizedBox(height: Constant.SIZE_18),
+                  SizedBox(height: Constant.SIZE_18),
 
-            _sectionTitle(themeData),
+                  _sectionTitle(themeData),
 
-            SizedBox(height: Constant.SIZE_18),
+                  SizedBox(height: Constant.SIZE_18),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: pendingDetails.data!.items!.length,
-                separatorBuilder: (_, __) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_14),
-                itemBuilder: (context, index) {
-                  final item = pendingDetails.data!.items![index];
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: pendingDetails.data!.items!.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_14),
+                      itemBuilder: (context, index) {
+                        final item = pendingDetails.data!.items![index];
 
-                  return _containerItem(
-                    themeData,
-                    image: item.imageUrl!,
-                    title: item.containerName!,
-                    code: item.productCode!,
-                    size: item.capacity!,
-                    qty: item.orderedQty!,
-                  );
-                },
+                        return _containerItem(themeData, item);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ):NoDataFoundCustomText(text:"No Pending Details Found"),
+            )
+          : NoDataFoundCustomText(text: "No Pending Details Found"),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -99,7 +100,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white.withOpacity(.12)),
       ),
       child: Column(
@@ -116,7 +117,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
 
           Row(
             children: [
-              Image.asset("assets/icons/location.png", width: 16, height: 16),
+              Image.asset("assets/icons/location.png", width: Constant.CONTAINER_SIZE_16, height: Constant.CONTAINER_SIZE_16),
 
               SizedBox(width: Constant.SIZE_08),
 
@@ -143,21 +144,21 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white.withOpacity(.12)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: Constant.CONTAINER_SIZE_36,
+            height: Constant.CONTAINER_SIZE_36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
-            child: Image.asset("assets/icons/order.png", width: 18),
+            child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -173,7 +174,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                   ),
                 ),
 
-                SizedBox(height: 2),
+                SizedBox(height: Constant.SIZE_02),
 
                 Text(
                   pendingDetailsData.orderId!,
@@ -183,54 +184,66 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_12),
-                (isClicked)? Row(
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                    Column(children: [
-                      Text(
-                        "Order On: 27.07.26",
-                        style: themeData.textTheme.bodySmall!.copyWith(
-                          color: Colors.white60,
-                        ),
-                      ),
-                      SizedBox(width: Constant.CONTAINER_SIZE_12),
-                      Text(
-                      'Time: 11:00',
-                        style: themeData.textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],)
-                  ],
-                ):Container(),
+                (isClicked)
+                    ? Row(
+                        children: [
+                          Container(
+                            width: Constant.CONTAINER_SIZE_30,
+                            height: Constant.CONTAINER_SIZE_30,
+                            decoration: const BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: Constant.CONTAINER_SIZE_18,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "Order On: 27.07.26",
+                                style: themeData.textTheme.bodySmall!.copyWith(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              SizedBox(width: Constant.CONTAINER_SIZE_12),
+                              Text(
+                                'Time: 11:00',
+                                style: themeData.textTheme.titleMedium!
+                                    .copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Container(),
                 Center(
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 0.1),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Color(0xffD9A91F),
-                          width: 1.5,
+                  child: InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
+                        builder: (_) => const PartnerRemarksBottomSheet(),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: Constant.SIZE_02),
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Color(0xffD9A91F),
+                            width: 1.5,
+                          ),
                         ),
                       ),
-                    ),
-                    child: Text(
-                      "Partner Remarks",
-                      style: themeData.textTheme.bodySmall!.copyWith(
-                        color: const Color(0xffD9A91F),
-                        decoration: TextDecoration.none,
+                      child: Text(
+                        "Partner Remarks",
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: const Color(0xffD9A91F),
+                        ),
                       ),
                     ),
                   ),
@@ -264,128 +277,212 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
     );
   }
 
-  Widget _containerItem(
-    ThemeData themeData, {
-    required String image,
-    required String title,
-    required String code,
-    required String size,
-    required int qty,
-  }) {
+  Widget _containerItem(ThemeData themeData, Items item) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white.withOpacity(.12)),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(.05),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
+          Row(
+            children: [
+              Container(
+                width: Constant.CONTAINER_SIZE_55,
+                height: Constant.CONTAINER_SIZE_55,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_12,
-                  ),
-                  border: Border.all(color: Color(0xFFF5EBDF)),
+                  color: Colors.white.withOpacity(.05),
+                  borderRadius: BorderRadius.circular(Constant.SIZE_08),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    Constant.CONTAINER_SIZE_12,
-                  ),
-                  child: image != null && image.isNotEmpty
-                      ? Image.network(
-                          "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${image}",
-                          width: Constant.CONTAINER_SIZE_60,
-                          height: Constant.CONTAINER_SIZE_60,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              Strings.CUP_IMG,
+                child: Padding(
+                  padding: EdgeInsets.all(Constant.SIZE_08),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
+                      border: Border.all(color: Color(0xFFF5EBDF)),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        Constant.CONTAINER_SIZE_12,
+                      ),
+                      child:
+                          item!.imageUrl! != null && item.imageUrl!.isNotEmpty
+                          ? Image.network(
+                              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${item.imageUrl}",
                               width: Constant.CONTAINER_SIZE_60,
                               height: Constant.CONTAINER_SIZE_60,
                               fit: BoxFit.cover,
-                            );
-                          },
-                        )
-                      : Image.asset(
-                          Strings.CUP_IMG,
-                          width: Constant.CONTAINER_SIZE_60,
-                          height: Constant.CONTAINER_SIZE_60,
-                        ),
-                ),
-              ),
-            ),
-          ),
-
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: themeData.textTheme.titleMedium),
-
-                SizedBox(height: Constant.SIZE_04),
-
-                Text(
-                  code,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white60,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  Strings.CUP_IMG,
+                                  width: Constant.CONTAINER_SIZE_60,
+                                  height: Constant.CONTAINER_SIZE_60,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              Strings.CUP_IMG,
+                              width: Constant.CONTAINER_SIZE_60,
+                              height: Constant.CONTAINER_SIZE_60,
+                            ),
+                    ),
                   ),
-                ),
-
-                SizedBox(height: Constant.SIZE_02),
-
-                Text(
-                  size,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white60,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "Ordered Qty.",
-                style: themeData.textTheme.bodySmall!.copyWith(
-                  color: Colors.white60,
                 ),
               ),
 
-              SizedBox(height: Constant.SIZE_04),
+              SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-              Text(
-                qty.toString(),
-                style: themeData.textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.containerName!,
+                      style: themeData.textTheme.titleMedium,
+                    ),
+
+                    SizedBox(height: Constant.SIZE_04),
+
+                    Text(
+                      item.productCode!,
+                      style: themeData.textTheme.bodySmall!.copyWith(
+                        color: Colors.white60,
+                      ),
+                    ),
+
+                    SizedBox(height: Constant.SIZE_02),
+
+                    Text(
+                      item.capacity!,
+                      style: themeData.textTheme.bodySmall!.copyWith(
+                        color: Colors.white60,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Ordered Qty.",
+                    style: themeData.textTheme.bodySmall!.copyWith(
+                      color: Colors.white60,
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.SIZE_04),
+
+                  Text(
+                    item.orderedQty!.toString(),
+                    style: themeData.textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+              Checkbox(
+                value: item.isClicked,
+                onChanged: (bool? value) {
+                  setState(() {
+                    item.isClicked = value ?? false;
+                  });
+                },
               ),
             ],
           ),
+          if (item.isClicked ?? false)
+            Column(
+              children: [
+                 Divider(
+                  color: Color(0xFF9E9E9E),
+                  thickness: Constant.SIZE_01,
+                ),
+                // const SizedBox(height: 8),
 
-          SizedBox(width: Constant.CONTAINER_SIZE_12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Available Qty.',
+                      style: themeData.textTheme.bodySmall!.copyWith(
+                        color: Colors.white60,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Approve Qty.',
+                          style: themeData.textTheme.bodySmall!.copyWith(
+                            color: Colors.white60,
+                          ),
+                        ),
+                        SizedBox(height: Constant.SIZE_08),
 
-          Container(
-            width: 18,
-            height: 18,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(color: const Color(0xffD9A91F)),
+                        Text(
+                          item.approvequantity!.toString(),
+                          style: themeData.textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        Container(
+                          height: Constant.CONTAINER_SIZE_36,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white30),
+                            borderRadius: BorderRadius.circular(Constant.SIZE_06),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.remove, size: Constant.CONTAINER_SIZE_18),
+                                onPressed: () {
+                                  setState(() {
+                                    if (item.approvequantity! > 0) {
+                                      item.approvequantity =
+                                          item.approvequantity! - 1;
+                                    }
+                                  });
+                                },
+                              ),
+
+                              SizedBox(
+                                width: Constant.CONTAINER_SIZE_35,
+                                child: Center(
+                                  child: Text('${item.approvequantity}'),
+                                ),
+                              ),
+
+                              IconButton(
+                                icon: Icon(Icons.add, size: Constant.CONTAINER_SIZE_18),
+                                onPressed: () {
+                                  setState(() {
+                                    item.approvequantity =
+                                        item.approvequantity! + 1;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
         ],
       ),
     );
@@ -399,15 +496,27 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
           children: [
             Expanded(
               child: SizedBox(
-                height: 48,
+                height: Constant.CONTAINER_SIZE_45,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.red),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(Constant.CONTAINER_SIZE_30),
+                        ),
+                      ),
+                      builder: (_) => const RejectOrderSheet(),
+                    );
+                  },
                   child: const Text(
                     Strings.REJECT_ORDER,
                     style: TextStyle(color: Colors.white),
@@ -420,19 +529,33 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
 
             Expanded(
               child: SizedBox(
-                height: 48,
+                height: Constant.CONTAINER_SIZE_45,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xffD9A91F),
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(Constant.CONTAINER_SIZE_30),
+                        ),
+                      ),
+                      builder: (_) => const ConfirmOrderSheet(),
+                    );
+                  },
                   child: const Text(
                     Strings.CONFIRM_ORDER,
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -453,7 +576,8 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           // final userId = Utils.userId;
-          final url = '${NetworkUrls.PENDING_ORDER_DETAILS_DATA}${widget.orderId}';
+          final url =
+              '${NetworkUrls.PENDING_ORDER_DETAILS_DATA}${widget.orderId}';
           ref.read(getPendingDetailsProvider(url));
         } else {
           orderState.setIsLoading(false);

@@ -255,6 +255,15 @@ class Strings {
   static const String NO_DAMAGED  = 'No damaged containers found';
   static const String NO_EXTENDED_FEE_DATA = 'No extended fee data found';
   static const String ORDER_DETAILS = 'Order Details';
+  static const String CONFIRM_DETAILS = 'Confirmed Details';
   static const String CONFIRM_ORDER = 'Confirm Order';
   static const String REJECT_ORDER = 'Reject Order';
+  static const String PARTNER_REMARKS = 'Partner Remarks';
+  static const String REMARK_DETAILS = 'Lorem ipsum dolor sit amet consectetur. '
+      'Nulla magnis adipiscing commodo non amet dignissim orci. '
+      'In gravida et sed morbi. Proin vulputate lectus aliquam massa.'
+      ' A turpis tellus et mattis tincidunt nunc. Odio sit in nulla.';
+  static const String MARK_AS_DELIVERED = 'Mark as Delivered';
+  static const String DELIVER_DETAILS = 'Delivered Details';
+  static const String REJECT_DETAILS = 'Rejected Details';
 }

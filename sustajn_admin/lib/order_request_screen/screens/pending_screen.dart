@@ -2,19 +2,14 @@ import 'package:container_tracking/order_request_screen/provider_service/order_r
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Screen/Partner/model/get_container_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
-import '../../common_widgets/submit_button.dart';
 import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../product_screen/container_details.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
-import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../details_screen/pending_details_screen.dart';
 
@@ -39,7 +34,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
     Utils.printLog("item list = ${orderRequestState.getPendingDataList.length}");
-
 
     return SafeArea(
       top: false,
@@ -283,8 +277,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
       },
     );
   }
-
-
 
   _getPendingOrderNetworkCall() async {
     try {

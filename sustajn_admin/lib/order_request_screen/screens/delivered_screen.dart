@@ -9,8 +9,10 @@ import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../provider/order_provider.dart';
+import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/deliver_details_screen.dart';
 import '../provider_service/order_request_provider.dart';
 
 class DeliveredScreen extends ConsumerStatefulWidget {
@@ -49,7 +51,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                   orderRequestState.filterInventoryByNameOrId(value);
                 },
                 //TODO:-
-                // onFilterTap: () => _showSortBottomSheet(context),
+                onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.SIZE_04),
@@ -95,6 +97,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
 
                   return pendingItemCard(
                     context,
+                    id: item.id ?? 0,
                     requestNumber: item.requestNumber ?? "-",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes?.toString() ?? "0",
@@ -114,18 +117,20 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
 
   Widget pendingItemCard(
       BuildContext context, {
+        required int id,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
         required String formattedDateTime,
         required int totalQuantity,
+        
       }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, DeliverDetailsScreen(orderId: id));
       },
       child: GlassSummaryCard(
         child: Row(
@@ -146,7 +151,6 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Text(
                     restaurantName,
                     maxLines: 2,
@@ -157,7 +161,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     ),
                   ),
 
-                  // SizedBox(width: Constant.CONTAINER_SIZE_100),
+                  SizedBox(width: Constant.CONTAINER_SIZE_100),
                   Text(
                     containerCodes,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -209,9 +213,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
       builder: (context) {
         return Consumer(
           builder: (context, ref, _) {
-            final orderState = ref.watch(orderProvider);
             bool tempAscending = orderState.isQtyAscending;
-
             return SafeArea(
               top: false,
               child: StatefulBuilder(

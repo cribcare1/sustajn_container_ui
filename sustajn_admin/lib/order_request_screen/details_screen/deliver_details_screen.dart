@@ -1,5 +1,6 @@
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/imports.util.dart';
+import 'package:container_tracking/order_request_screen/models/deliver_details_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common_provider/network_provider.dart';
@@ -9,47 +10,45 @@ import '../../constants/string_utils.dart';
 import '../../utils/no_data_custom_text.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
-import '../models/confirm_detail_data.dart';
-import '../models/pending_detail_data.dart' hide Items;
 import '../provider_service/order_request_provider.dart';
 import '../screens/deliver_order_sheet.dart';
 import '../screens/partner_remark_bottom_sheet.dart';
 import '../screens/reject_order_sheet.dart';
 
-class ConfirmDetailsScreen extends ConsumerStatefulWidget {
+class DeliverDetailsScreen extends ConsumerStatefulWidget {
   final int orderId;
 
-  const ConfirmDetailsScreen({super.key, required orderId}) : orderId = orderId;
+  const DeliverDetailsScreen({super.key, required orderId}) : orderId = orderId;
 
   @override
-  ConsumerState<ConfirmDetailsScreen> createState() =>
-      _ConfirmDetailsScreenState();
+  ConsumerState<DeliverDetailsScreen> createState() =>
+      _DeliverDetailsScreenState();
 }
 
-class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
+class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
   bool isClicked = false;
 
   @override
   void initState() {
     super.initState();
-    _getConfirmDetailsNetworkCall();
+    _getDeliverDetailsNetworkCall();
   }
 
   @override
   Widget build(BuildContext context) {
     final orderRequestState = ref.watch(orderRequestProvider);
-    final confirmDetailsData = orderRequestState.getConfirmDetailsData;
+    final deliverDetailData = orderRequestState.getDeliverDetailData;
     final themeData = CustomTheme.getTheme(false);
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: Strings.CONFIRM_DETAILS,
+        title: Strings.DELIVER_DETAILS,
         leading: const CustomBackButton(),
       ).getAppBar(context),
 
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : (context != null)
+          : (deliverDetailData != null)
           ? Padding(
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Column(
@@ -57,13 +56,13 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
           children: [
             _restaurantDetails(
               themeData!,
-              confirmDetailsData!.data!.restaurantName!,
-              confirmDetailsData!.data!.restaurantAddress!,
+              deliverDetailData!.data!.restaurantName!,
+              deliverDetailData!.data!.restaurantAddress!,
             ),
 
             SizedBox(height: Constant.SIZE_18),
 
-            _orderDetails(themeData, confirmDetailsData!.data!),
+            _orderDetails(themeData, deliverDetailData!.data!),
 
             SizedBox(height: Constant.SIZE_18),
 
@@ -73,11 +72,11 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
             Expanded(
               child: ListView.separated(
-                itemCount: confirmDetailsData!.data!.items!.length,
+                itemCount: deliverDetailData!.data!.items!.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_14),
                 itemBuilder: (context, index) {
-                  final item = confirmDetailsData!.data!.items![index];
+                  final item = deliverDetailData!.data!.items![index];
 
                   return _containerItem(themeData, item);
                 },
@@ -101,7 +100,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white.withOpacity(.12)),
       ),
       child: Column(
@@ -139,7 +138,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -147,24 +146,24 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
   Widget _orderDetails(
       ThemeData themeData,
-      ConfirmDetailData confirmDetailData,
+      DeliveredData deliveredData,
       ) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white.withOpacity(.12)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: Constant.CONTAINER_SIZE_36,
+            height: Constant.CONTAINER_SIZE_36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
             child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
@@ -186,7 +185,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                 SizedBox(height: Constant.SIZE_02),
 
                 Text(
-                  confirmDetailData.orderId!,
+                  deliveredData.orderId!,
                   style: themeData.textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -208,7 +207,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                                 color: Color(0xFF3DBE5A),
                                 shape: BoxShape.circle,
                               ),
-                              child:  Icon(
+                              child: Icon(
                                 Icons.check,
                                 color: Colors.white,
                                 size: Constant.CONTAINER_SIZE_18,
@@ -244,6 +243,34 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                                 size: Constant.CONTAINER_SIZE_18,
                               ),
                             ),
+                            SizedBox(
+                              width: Constant.SIZE_02,
+                              height: Constant.CONTAINER_SIZE_45,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: List.generate(
+                                  6,
+                                      (_) => Container(
+                                    width: Constant.SIZE_02,
+                                    height: Constant.SIZE_04,
+                                    color: Colors.white38,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: Constant.CONTAINER_SIZE_28,
+                              height: Constant.CONTAINER_SIZE_28,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF3DBE5A),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: Constant.CONTAINER_SIZE_18,
+                              ),
+                            ),
                           ],
                         ),
 
@@ -254,11 +281,11 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Ordered on: ${confirmDetailData.orderedOnDate}",
+                                "Ordered on: ${deliveredData.orderedDate}",
                                 style: themeData.textTheme.titleSmall,
                               ),
                               Text(
-                                "Time: ${confirmDetailData.orderedOnTime}",
+                                "Time: ${deliveredData.orderedTime}",
                                 style: themeData.textTheme.bodySmall!.copyWith(
                                   color: Colors.white60,
                                 ),
@@ -267,11 +294,23 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                               SizedBox(height: Constant.CONTAINER_SIZE_30),
 
                               Text(
-                                "Confirmed on: ${confirmDetailData.confirmedOnDate}",
+                                "Confirmed on: ${deliveredData.confirmedDate}",
                                 style: themeData.textTheme.titleSmall,
                               ),
                               Text(
-                                "Time: ${confirmDetailData.confirmedOnTime}",
+                                "Time: ${deliveredData.confirmedTime}",
+                                style: themeData.textTheme.bodySmall!.copyWith(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              SizedBox(height: Constant.CONTAINER_SIZE_30),
+
+                              Text(
+                                "Delivered on: ${deliveredData.deliveredDate}",
+                                style: themeData.textTheme.titleSmall,
+                              ),
+                              Text(
+                                "Time: ${deliveredData.deliveredTime}",
                                 style: themeData.textTheme.bodySmall!.copyWith(
                                   color: Colors.white60,
                                 ),
@@ -294,11 +333,11 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                     },
                     child: Container(
                       padding: EdgeInsets.only(bottom: Constant.SIZE_02),
-                      decoration:  BoxDecoration(
+                      decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
                             color: Color(0xffD9A91F),
-                            width: Constant.SIZE_02,
+                            width: 1.5,
                           ),
                         ),
                       ),
@@ -331,7 +370,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
   Widget _sectionTitle(ThemeData themeData) {
     return Row(
       children: [
-        Text("Ordered Containers", style: themeData.textTheme.titleMedium),
+        Text("Delivered Containers", style: themeData.textTheme.titleMedium),
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -410,17 +449,9 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              SizedBox(height: Constant.SIZE_18),
               Text(
-                "Approved Qty.",
-                style: themeData.textTheme.bodySmall!.copyWith(
-                  color: Colors.white60,
-                ),
-              ),
-
-              SizedBox(height: Constant.CONTAINER_SIZE_10),
-
-              Text(
-                "Ordered Qty. ${item.orderedQty ?? 0}",
+                " ${item.deliveredQty ?? 0}",
                 style: themeData.textTheme.bodySmall!.copyWith(
                   color: Colors.white60,
                 ),
@@ -437,77 +468,13 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         child: Row(
           children: [
-            Expanded(
-              child: SizedBox(
-                height: Constant.CONTAINER_SIZE_45,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-                    ),
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(Constant.CONTAINER_SIZE_30),
-                        ),
-                      ),
-                      builder: (_) => const RejectOrderSheet(),
-                    );
-                  },
-                  child: const Text(
-                    Strings.REJECT_ORDER,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(width: Constant.CONTAINER_SIZE_12),
-
-            Expanded(
-              child: SizedBox(
-                height: Constant.CONTAINER_SIZE_45,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffD9A91F),
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-                    ),
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(Constant.CONTAINER_SIZE_30),
-                        ),
-                      ),
-                      builder: (_) => const DeliverOrderSheet(),
-                    );
-                  },
-                  child: const Text(
-                    'Mark as Delivered',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  _getConfirmDetailsNetworkCall() async {
+  _getDeliverDetailsNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
@@ -518,8 +485,8 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
           orderState.setIsLoading(true);
           // final userId = Utils.userId;
           final url =
-              '${NetworkUrls.CONFIRM_ORDER_DETAILS_DATA}${widget.orderId}';
-          ref.read(getConfirmDetailsProvider(url));
+              '${NetworkUrls.DELIVER_ORDER_DETAILS}${widget.orderId}';
+          ref.read(getDeliverDetailProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

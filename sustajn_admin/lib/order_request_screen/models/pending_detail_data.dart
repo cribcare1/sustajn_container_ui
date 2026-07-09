@@ -6,9 +6,11 @@ class PendingDetailsData {
   PendingDetailsData({this.data, this.message, this.status});
 
   PendingDetailsData.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new PendingDetailData.fromJson(json['data']) : null;
-    message = json['message']??"";
-    status = json['status']??"";
+    data = json['data'] != null
+        ? new PendingDetailData.fromJson(json['data'])
+        : null;
+    message = json['message'] ?? "";
+    status = json['status'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -29,24 +31,27 @@ class PendingDetailData {
   String? restaurantAddress;
   String? partnerRemark;
   String? sustajnRemark;
+  String? availableQty;
   List<Items>? items;
 
-  PendingDetailData(
-      {this.id,
-        this.orderId,
-        this.restaurantName,
-        this.restaurantAddress,
-        this.partnerRemark,
-        this.sustajnRemark,
-        this.items});
+  PendingDetailData({
+    this.id,
+    this.orderId,
+    this.restaurantName,
+    this.restaurantAddress,
+    this.partnerRemark,
+    this.sustajnRemark,
+    this.availableQty,
+    this.items,
+  });
 
   PendingDetailData.fromJson(Map<String, dynamic> json) {
-    id = json['id']??0;
-    orderId = json['orderId']??"";
-    restaurantName = json['restaurantName']??"";
-    restaurantAddress = json['restaurantAddress']??"";
-    partnerRemark = json['partnerRemark']??"";
-    sustajnRemark = json['sustajnRemark']??"";
+    id = json['id'] ?? 0;
+    orderId = json['orderId'] ?? "";
+    restaurantName = json['restaurantName'] ?? "";
+    restaurantAddress = json['restaurantAddress'] ?? "";
+    partnerRemark = json['partnerRemark'] ?? "";
+    sustajnRemark = json['sustajnRemark'] ?? "";
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
@@ -77,22 +82,29 @@ class Items {
   String? capacity;
   String? imageUrl;
   int? orderedQty;
+  bool? isClicked;
+  int? approvequantity;
 
-  Items(
-      {this.itemId,
-        this.containerName,
-        this.productCode,
-        this.capacity,
-        this.imageUrl,
-        this.orderedQty});
+  Items({
+    this.itemId,
+    this.containerName,
+    this.productCode,
+    this.capacity,
+    this.imageUrl,
+    this.orderedQty,
+    this.isClicked = false,
+    this.approvequantity = 0,
+  });
 
   Items.fromJson(Map<String, dynamic> json) {
-    itemId = json['itemId']??0;
-    containerName = json['containerName']??"";
-    productCode = json['productCode']??"";
-    capacity = json['capacity']??"";
-    imageUrl = json['imageUrl']??"";
-    orderedQty = json['orderedQty']??0;
+    itemId = json['itemId'] ?? 0;
+    containerName = json['containerName'] ?? "";
+    productCode = json['productCode'] ?? "";
+    capacity = json['capacity'] ?? "";
+    imageUrl = json['imageUrl'] ?? "";
+    orderedQty = json['orderedQty'] ?? 0;
+    isClicked = json['isClicked'] ?? false;
+    approvequantity = json['approvequantity'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
