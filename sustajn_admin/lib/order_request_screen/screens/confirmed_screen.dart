@@ -127,7 +127,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
@@ -143,7 +143,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  SizedBox(width: Constant.SIZE_06),
+                  // SizedBox(width: Constant.SIZE_06),
 
                   Row(
                     children: [
@@ -158,7 +158,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: Constant.SIZE_06),
+                      // SizedBox(height: Constant.SIZE_06),
 
                       Text(
                         containerCodes,
@@ -167,7 +167,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: Constant.SIZE_06),
+                      // SizedBox(width: Constant.SIZE_06),
 
                       Text(
                         formattedDateTime,
@@ -178,7 +178,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           color: Colors.white70,
                         ),
                       ),
-                      SizedBox(width: Constant.SIZE_06),
+                      // SizedBox(width: Constant.SIZE_06),
                       Text(
                         "$totalQuantity",
                         maxLines: 1,

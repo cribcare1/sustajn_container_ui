@@ -134,7 +134,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
             Expanded(

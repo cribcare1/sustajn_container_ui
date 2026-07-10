@@ -127,7 +127,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                             color: Colors.white70,
                           ),
                         ),
-
                       Text(
                         containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -148,7 +147,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
               ),
             ),
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   "$totalQuantity",
