@@ -311,8 +311,6 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
     );
   }
 
-
-
   _getDeliverOrderNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((

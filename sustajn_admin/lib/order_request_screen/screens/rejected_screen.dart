@@ -317,8 +317,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
     );
   }
 
-
-
   _getRejectOrderNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((

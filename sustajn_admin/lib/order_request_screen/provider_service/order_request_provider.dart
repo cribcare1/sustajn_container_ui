@@ -5,8 +5,6 @@ import 'package:container_tracking/order_request_screen/models/reject_order_mode
 import 'package:container_tracking/order_request_screen/provider_service/order_request_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-
-import '../../Screen/users/model/users_data.dart';
 import '../../constants/imports.util.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/string_utils.dart';
@@ -38,7 +36,6 @@ final getPendingOrderProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setPendingData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -65,7 +62,6 @@ final getConfirmOrderProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setConfirmData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -93,7 +89,6 @@ final getDeliverOrderProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setDeliverData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -121,7 +116,6 @@ final getRejectOrderProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setRejectOredrData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -148,7 +142,6 @@ final getPendingDetailsProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setPendingDetailsData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -176,7 +169,6 @@ final getConfirmDetailsProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setConfirmDetailsData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -204,7 +196,6 @@ final getDeliverDetailProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setDeliverDetailData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -231,7 +222,6 @@ final getRejectDetailProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setRejectDetailsData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -257,14 +247,11 @@ final getApproveOrderProvider = FutureProvider.family<dynamic, Map<String, dynam
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
-
     } else {
       orderRequestNotifier.setIsLoading(false);
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
     }
     return null;
   } catch (e) {
@@ -291,14 +278,11 @@ final getRejectedOrderProvider = FutureProvider.family<dynamic, Map<String, dyna
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
-
     } else {
       orderRequestNotifier.setIsLoading(false);
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
     }
     return null;
   } catch (e) {
@@ -315,7 +299,6 @@ final getMarkDeliverOrderProvider = FutureProvider.family<dynamic,  String>((ref
   try {
     var serviceProvider = ref.read(orderRequestServices);
     Utils.printLog("params===$params");
-    // final partUrl = '${NetworkUrls.MARK_AS_DELIVERED}';
     DeliversData responseData = await serviceProvider.getMarkDeliverOrderService(params);
     Utils.printLog("On Success===${responseData.status}");
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
@@ -325,14 +308,11 @@ final getMarkDeliverOrderProvider = FutureProvider.family<dynamic,  String>((ref
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
-
     } else {
       orderRequestNotifier.setIsLoading(false);
       Utils.showToast(responseData.message!);
       Navigator.pop(orderRequestNotifier.context);
       Navigator.pop(orderRequestNotifier.context);
-
     }
     return null;
   } catch (e) {

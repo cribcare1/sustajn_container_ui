@@ -266,4 +266,7 @@ class Strings {
   static const String MARK_AS_DELIVERED = 'Mark as Delivered';
   static const String DELIVER_DETAILS = 'Delivered Details';
   static const String REJECT_DETAILS = 'Rejected Details';
+  static const String REMARKS = 'Remarks*';
+  static const String REJECT_MESSAGE = 'Once rejected, this order will be marked as closed and cannot be processed.';
+  static const String CANCEL = 'Cancel';
 }

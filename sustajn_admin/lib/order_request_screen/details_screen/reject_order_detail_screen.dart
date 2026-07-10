@@ -442,7 +442,6 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
         final orderState = ref.read(orderRequestProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.REJECT_ORDER_DETAILS_DATA}${widget.orderId}';
           ref.read(getRejectDetailProvider(url));

@@ -2,7 +2,6 @@ import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:container_tracking/order_request_screen/models/deliver_details_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/network_urls.dart';
@@ -11,9 +10,7 @@ import '../../utils/no_data_custom_text.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../provider_service/order_request_provider.dart';
-import '../screens/deliver_order_sheet.dart';
 import '../screens/partner_remark_bottom_sheet.dart';
-import '../screens/reject_order_sheet.dart';
 
 class DeliverDetailsScreen extends ConsumerStatefulWidget {
   final int orderId;
@@ -483,7 +480,6 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
         final orderState = ref.read(orderRequestProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.DELIVER_ORDER_DETAILS}${widget.orderId}';
           ref.read(getDeliverDetailProvider(url));

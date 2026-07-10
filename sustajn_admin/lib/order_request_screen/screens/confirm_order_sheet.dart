@@ -72,7 +72,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
               SizedBox(height: Constant.CONTAINER_SIZE_26),
       
               Text(
-                "Confirm Order",
+                Strings.CONFIRM_ORDER,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -147,7 +147,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                           ),
                         ),
                         child: const Text(
-                          "Cancel",
+                          Strings.CANCEL,
                           style: TextStyle(
                             color: Color(0xffD6A62A),
                             fontWeight: FontWeight.w600,
@@ -189,7 +189,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                           ),
                         )
                             : const Text(
-                          "Confirm Order",
+                          Strings.CONFIRM_ORDER,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,

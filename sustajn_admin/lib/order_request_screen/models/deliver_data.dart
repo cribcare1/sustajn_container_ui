@@ -5,8 +5,8 @@ class DeliversData {
   DeliversData({this.message, this.status});
 
   DeliversData.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {

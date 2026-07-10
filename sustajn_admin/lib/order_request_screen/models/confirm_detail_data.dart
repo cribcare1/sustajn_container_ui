@@ -7,8 +7,8 @@ class ConfirmDetailsData {
 
   ConfirmDetailsData.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new ConfirmDetailData.fromJson(json['data']) : null;
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -53,18 +53,18 @@ class ConfirmDetailData {
         this.items});
 
   ConfirmDetailData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    orderId = json['orderId'];
-    restaurantName = json['restaurantName'];
-    restaurantAddress = json['restaurantAddress'];
-    partnerRemark = json['partnerRemark'];
-    sustajnRemark = json['sustajnRemark'];
+    id = json['id']??0;
+    orderId = json['orderId']??"";
+    restaurantName = json['restaurantName']??"";
+    restaurantAddress = json['restaurantAddress']??"";
+    partnerRemark = json['partnerRemark']??"";
+    sustajnRemark = json['sustajnRemark']??"";
     orderDate = json['orderDate'];
     orderTime = json['orderTime'];
-    orderedOnDate = json['orderedOnDate'];
-    orderedOnTime = json['orderedOnTime'];
-    confirmedOnDate = json['confirmedOnDate'];
-    confirmedOnTime = json['confirmedOnTime'];
+    orderedOnDate = json['orderedOnDate']??"";
+    orderedOnTime = json['orderedOnTime']??"";
+    confirmedOnDate = json['confirmedOnDate']??"";
+    confirmedOnTime = json['confirmedOnTime']??"";
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
@@ -111,12 +111,12 @@ class Items {
         this.orderedQty});
 
   Items.fromJson(Map<String, dynamic> json) {
-    itemId = json['itemId'];
-    containerName = json['containerName'];
-    productCode = json['productCode'];
-    capacity = json['capacity'];
-    imageUrl = json['imageUrl'];
-    orderedQty = json['orderedQty'];
+    itemId = json['itemId']??0;
+    containerName = json['containerName']??"";
+    productCode = json['productCode']??"";
+    capacity = json['capacity']??"";
+    imageUrl = json['imageUrl']??"";
+    orderedQty = json['orderedQty']??0;
   }
 
   Map<String, dynamic> toJson() {

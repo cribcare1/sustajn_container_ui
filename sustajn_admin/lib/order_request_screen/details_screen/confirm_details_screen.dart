@@ -1,7 +1,6 @@
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/network_urls.dart';
@@ -516,7 +515,6 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
         final orderState = ref.read(orderRequestProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.CONFIRM_ORDER_DETAILS_DATA}${widget.orderId}';
           ref.read(getConfirmDetailsProvider(url));

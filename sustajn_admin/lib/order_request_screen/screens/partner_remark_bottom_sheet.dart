@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 
@@ -60,7 +59,6 @@ class PartnerRemarksBottomSheet extends StatelessWidget {
               height: 1.5,
             ),
           ),
-
           SizedBox(height: Constant.CONTAINER_SIZE_25),
         ],
       ),

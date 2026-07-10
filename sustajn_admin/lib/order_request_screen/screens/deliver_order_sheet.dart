@@ -21,8 +21,6 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
-
-
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       decoration: BoxDecoration(
@@ -181,7 +179,6 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           orderState.setContext(context);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.MARK_AS_DELIVERED}${orderId}';
           ref.read(getMarkDeliverOrderProvider(url));

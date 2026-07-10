@@ -5,7 +5,6 @@ import 'package:container_tracking/order_request_screen/models/deliver_order_mod
 import 'package:container_tracking/order_request_screen/models/reject_data.dart';
 import 'package:container_tracking/order_request_screen/models/reject_detail_data.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../utils/utility.dart';
 import '../models/confirm_model.dart';
 import '../models/deliver_data.dart';
@@ -28,7 +27,6 @@ class OrderRequestNotifier extends ChangeNotifier {
   List<PendingDataList> _pendingDataList = [];
 
   PendingDetailsData? _pendingDetailsData;
- // List<PendingDetailsDataList> _pendingDetailsDataList = [];
 
   ConfirmData? _confirmData;
   List<ConfirmDataList> _confirmDataList = [];
@@ -37,8 +35,6 @@ class OrderRequestNotifier extends ChangeNotifier {
   List<ConfirmDataList> _filterConfirmDataList = [];
   List<DeliverDataList> _filterDeliverDataList = [];
   List<RejectDataList> _filterRejectDataList = [];
-
-
 
   DeliverData? _deliverData;
   List<DeliverDataList> _deliverDataList = [];
@@ -55,7 +51,6 @@ class OrderRequestNotifier extends ChangeNotifier {
   
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
-
 
   bool get isLoading => _isLoading;
 
@@ -89,7 +84,6 @@ class OrderRequestNotifier extends ChangeNotifier {
   List<DeliverDataList> get getDeliverDataList => _deliverDataList;
   List<DeliverDataList> get getFilterDeliveredDataList => _filterDeliverDataList;
   DeliverDetailData? get getDeliverDetailData => _deliverDetailData;
-
 
   RejectOrderData? get getRejectData => _rejectOrderData;
   List<RejectDataList> get getRejectDataList => _rejectDataList;
@@ -126,7 +120,6 @@ class OrderRequestNotifier extends ChangeNotifier {
   void setPendingDetailsData(PendingDetailsData pendingDetailsData) {
     Utils.printLog("data list = ${pendingDetailsData.data!.restaurantName}");
     _pendingDetailsData = pendingDetailsData;
-  //  _pendingDetailsDataList = _pendingDetailsData!.data!;
     notifyListeners();
   }
 
@@ -197,7 +190,6 @@ class OrderRequestNotifier extends ChangeNotifier {
 
   void clearSearch() {
     _searchQuery = '';
-    // updateGroupedOrders();
     notifyListeners();
   }
 
@@ -209,7 +201,6 @@ class OrderRequestNotifier extends ChangeNotifier {
     }
   }
 
-
   void filterDeliverByNameOrId(String query) {
     if (query.isEmpty) {
       _filterDeliverDataList = _deliverDataList;
@@ -217,7 +208,6 @@ class OrderRequestNotifier extends ChangeNotifier {
       return;
     }
   }
-
 
   void filterrejectByNameOrId(String query) {
     if (query.isEmpty) {

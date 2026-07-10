@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../common_provider/network_provider.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -27,8 +26,6 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
-
-
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       decoration: BoxDecoration(
@@ -75,7 +72,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
             SizedBox(height: Constant.CONTAINER_SIZE_26),
 
             Text(
-              "Reject Order",
+              Strings.REJECT_ORDER,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -103,7 +100,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                 color: Colors.white,
               ),
               decoration: InputDecoration(
-                hintText: "Remarks*",
+                hintText: Strings.REMARKS,
                 hintStyle: const TextStyle(
                   color: Colors.white54,
                 ),
@@ -112,15 +109,15 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                 ),
                 filled: true,
                 fillColor: Colors.white.withOpacity(.05),
-                contentPadding: const EdgeInsets.all(18),
+                contentPadding: EdgeInsets.all(Constant.CONTAINER_SIZE_18),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                   borderSide: BorderSide(
                     color: Colors.white.withOpacity(.12),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                   borderSide: const BorderSide(
                     color: Color(0xffD6A62A),
                   ),
@@ -147,8 +144,8 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
                         ),
                       ),
-                      child: const Text(
-                        "Cancel",
+                      child: Text(
+                        Strings.CANCEL,
                         style: TextStyle(
                           color: Color(0xffD6A62A),
                           fontWeight: FontWeight.w600,
@@ -189,7 +186,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                         ),
                       )
                      : const Text(
-                        "Reject Order",
+                        Strings.REJECT_ORDER,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
