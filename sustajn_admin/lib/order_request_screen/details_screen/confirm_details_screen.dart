@@ -9,7 +9,6 @@ import '../../utils/no_data_custom_text.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../models/confirm_detail_data.dart';
-import '../models/pending_detail_data.dart' hide Items;
 import '../provider_service/order_request_provider.dart';
 import '../screens/deliver_order_sheet.dart';
 import '../screens/partner_remark_bottom_sheet.dart';
@@ -119,7 +118,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 2), // optional
+                padding: EdgeInsets.only(top: Constant.SIZE_02),
                 child: Image.asset(
                   "assets/icons/location.png",
                   width: Constant.CONTAINER_SIZE_16,
@@ -159,11 +158,11 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: Constant.CONTAINER_SIZE_36,
+            height: Constant.CONTAINER_SIZE_36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
             child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
@@ -302,7 +301,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                         ),
                       ),
                       child: Text(
-                        "Partner Remarks",
+                        Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
                           color: const Color(0xffD9A91F),
                         ),
@@ -330,7 +329,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
   Widget _sectionTitle(ThemeData themeData) {
     return Row(
       children: [
-        Text("Ordered Containers", style: themeData.textTheme.titleMedium),
+        Text(Strings.ORDERED_CONTAINERS, style: themeData.textTheme.titleMedium),
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -351,8 +350,8 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: Constant.CONTAINER_SIZE_55,
+            height: Constant.CONTAINER_SIZE_55,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.05),
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
@@ -494,7 +493,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                     );
                   },
                   child: const Text(
-                    'Mark as Delivered',
+                    Strings.MARK_AS_DELIVERED,
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),

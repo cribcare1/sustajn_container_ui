@@ -85,7 +85,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                 ],
               ),
             )
-          : NoDataFoundCustomText(text: "No Pending Details Found"),
+          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -117,7 +117,9 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
 
           Row(
             children: [
-              Image.asset("assets/icons/location.png", width: Constant.CONTAINER_SIZE_16, height: Constant.CONTAINER_SIZE_16),
+              Image.asset("assets/icons/location.png",
+                  width: Constant.CONTAINER_SIZE_16,
+                  height: Constant.CONTAINER_SIZE_16),
 
               SizedBox(width: Constant.SIZE_08),
 
@@ -168,7 +170,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Order ID",
+                  Strings.ORDER_ID,
                   style: themeData.textTheme.bodySmall!.copyWith(
                     color: Colors.white60,
                   ),
@@ -240,7 +242,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                         ),
                       ),
                       child: Text(
-                        "Partner Remarks",
+                        Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
                           color: const Color(0xffD9A91F),
                         ),
@@ -268,7 +270,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
   Widget _sectionTitle(ThemeData themeData) {
     return Row(
       children: [
-        Text("Ordered Containers", style: themeData.textTheme.titleMedium),
+        Text(Strings.ORDERED_CONTAINERS, style: themeData.textTheme.titleMedium),
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -371,7 +373,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "Ordered Qty.",
+                    Strings.ORDERED_QTY,
                     style: themeData.textTheme.bodySmall!.copyWith(
                       color: Colors.white60,
                     ),
@@ -407,7 +409,6 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                   color: Color(0xFF9E9E9E),
                   thickness: Constant.SIZE_01,
                 ),
-                // const SizedBox(height: 8),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

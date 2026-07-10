@@ -269,4 +269,13 @@ class Strings {
   static const String REMARKS = 'Remarks*';
   static const String REJECT_MESSAGE = 'Once rejected, this order will be marked as closed and cannot be processed.';
   static const String CANCEL = 'Cancel';
+  static const String CONFIRMATION = 'After confirmation, the restaurant container orde will be processed and can only be marked as delivered  afterward.';
+  static const String REMARK_OPTIONAL = 'Remarks (optional)';
+  static const String CONFIRM_DELIVERY = 'Confirm Delivery';
+  static const String CONFIRM_MESSAGE = 'Marking this order as delivered will complete the process and cannot be undone Confirm only if the containers have been physically delivered.';
+  static const String ORDERED_CONTAINERS = 'Ordered Containers';
+  static const String ORDER_ID = 'Order ID';
+  static const String DELIVERED_CONTAINERS = 'Delivered Containers';
+  static const String NO_PENDING_DETAILS = 'No Pending Details Found';
+  static const String ORDERED_QTY = 'Ordered Quantity';
 }

@@ -149,7 +149,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(

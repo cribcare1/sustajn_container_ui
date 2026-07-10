@@ -22,7 +22,10 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_24,
+          Constant.CONTAINER_SIZE_16,
+          Constant.CONTAINER_SIZE_24,
+          Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
         color: const Color(0xff0D3C2D),
         borderRadius: BorderRadius.vertical(
@@ -66,7 +69,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
             SizedBox(height: Constant.CONTAINER_SIZE_26),
 
             Text(
-              "Confirm Delivery",
+              Strings.CONFIRM_DELIVERY,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -76,8 +79,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
             SizedBox(height: Constant.CONTAINER_SIZE_14),
 
             Text(
-              "Marking this order as delivered will complete the process and cannot be undone. "
-                  "Confirm only if the containers have been physically delivered.",
+              Strings.CONFIRM_MESSAGE,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white70,
@@ -105,7 +107,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                         ),
                       ),
                       child: const Text(
-                        "Cancel",
+                        Strings.CANCEL,
                         style: TextStyle(
                           color: Color(0xffD6A62A),
                           fontWeight: FontWeight.w600,
@@ -137,7 +139,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                         ),
                       ),
                       child: const Text(
-                        "Mark as Delivered",
+                        Strings.MARK_AS_DELIVERED,
                         style: TextStyle(
                           color: Color(0xff0F3727),
                           fontWeight: FontWeight.bold,

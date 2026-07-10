@@ -82,7 +82,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
           ],
         ),
       )
-          : NoDataFoundCustomText(text: "No Pending Details Found"),
+          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -116,7 +116,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 2), // optional
+                padding: EdgeInsets.only(top: Constant.SIZE_02), // optional
                 child: Image.asset(
                   "assets/icons/location.png",
                   width: Constant.CONTAINER_SIZE_16,
@@ -173,7 +173,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Order ID",
+                  Strings.ORDER_ID,
                   style: themeData.textTheme.bodySmall!.copyWith(
                     color: Colors.white60,
                   ),
@@ -191,7 +191,8 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                 SizedBox(height: Constant.CONTAINER_SIZE_12),
                 if (isClicked)
                   Padding(
-                    padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_12, bottom: Constant.CONTAINER_SIZE_12),
+                    padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_12,
+                        bottom: Constant.CONTAINER_SIZE_12),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -217,7 +218,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: List.generate(
-                                  6,
+                                  Constant.SIZE_06.toInt(),
                                       (_) => Container(
                                     width: Constant.SIZE_02,
                                     height: Constant.SIZE_04,
@@ -246,7 +247,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: List.generate(
-                                  6,
+                                  Constant.SIZE_06.toInt(),
                                       (_) => Container(
                                     width: Constant.SIZE_02,
                                     height: Constant.SIZE_04,
@@ -339,7 +340,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                         ),
                       ),
                       child: Text(
-                        "Partner Remarks",
+                        Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
                           color: const Color(0xffD9A91F),
                         ),
@@ -367,11 +368,11 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
   Widget _sectionTitle(ThemeData themeData) {
     return Row(
       children: [
-        Text("Delivered Containers", style: themeData.textTheme.titleMedium),
+        Text(Strings.DELIVERED_CONTAINERS, style: themeData.textTheme.titleMedium),
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: 1)),
+        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: Constant.SIZE_01)),
       ],
     );
   }
@@ -388,8 +389,8 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: Constant.CONTAINER_SIZE_55,
+            height: Constant.CONTAINER_SIZE_55,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.05),
               borderRadius: BorderRadius.circular(Constant.SIZE_08),

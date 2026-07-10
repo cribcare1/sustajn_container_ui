@@ -53,7 +53,7 @@ class _OrderRequestScreenState extends State<OrderRequestScreen>
           indicatorColor: Colors.amber,
           padding: EdgeInsets.zero, // 👈 removes outer padding
           tabAlignment: TabAlignment.start,
-          indicatorWeight: 4,
+          indicatorWeight: Constant.SIZE_04,
           labelColor: Colors.amber,
           isScrollable: true,
           unselectedLabelColor: Colors.white,

@@ -82,7 +82,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
           ],
         ),
       )
-          : NoDataFoundCustomText(text: "No Pending Details Found"),
+          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -174,7 +174,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Order ID",
+                  Strings.ORDER_ID,
                   style: themeData.textTheme.bodySmall!.copyWith(
                     color: Colors.white60,
                   ),

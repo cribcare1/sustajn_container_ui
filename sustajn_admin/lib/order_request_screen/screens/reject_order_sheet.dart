@@ -27,7 +27,10 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_24,
+          Constant.CONTAINER_SIZE_16,
+          Constant.CONTAINER_SIZE_24,
+          Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
         color: const Color(0xff0D3C2D),
         borderRadius: BorderRadius.vertical(
@@ -82,7 +85,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
             SizedBox(height: Constant.CONTAINER_SIZE_14),
 
             Text(
-              "Once rejected, this order will be marked as closed and cannot be processed.",
+              Strings.REJECT_MESSAGE,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white70,
@@ -229,7 +232,6 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           orderState.setContext(context);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.REJECT_ORDER}';
           ref.read(getRejectedOrderProvider(_getPayLoad()));

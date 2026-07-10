@@ -28,7 +28,10 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
     final orderRequestState = ref.watch(orderRequestProvider);
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+        padding: EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_24,
+            Constant.CONTAINER_SIZE_16,
+            Constant.CONTAINER_SIZE_24,
+            Constant.CONTAINER_SIZE_24),
         decoration: BoxDecoration(
           color: const Color(0xff0D3C2D),
           borderRadius: BorderRadius.vertical(
@@ -82,9 +85,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
               SizedBox(height: Constant.CONTAINER_SIZE_14),
       
               Text(
-                "After confirmation, the restaurant's container order\n"
-                    "will be processed and can only be marked as delivered\n"
-                    "afterward.",
+                Strings.CONFIRMATION,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white70,
@@ -102,7 +103,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                   color: Colors.white,
                 ),
                 decoration: InputDecoration(
-                  hintText: "Remarks (optional)",
+                  hintText: Strings.REMARK_OPTIONAL,
                   hintStyle: const TextStyle(
                     color: Colors.white54,
                   ),
@@ -233,7 +234,6 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           orderState.setContext(context);
-          // final userId = Utils.userId;
           final url =
               '${NetworkUrls.APPROVE_ORDER}';
           ref.read(getApproveOrderProvider(_getPayLoad()));
