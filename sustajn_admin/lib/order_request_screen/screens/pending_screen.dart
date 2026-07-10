@@ -102,9 +102,8 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,14 +147,19 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                 ],
               ),
             ),
-            Text(
-              "$totalQuantity",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.white70,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "$totalQuantity",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
             ),
             SizedBox(width: Constant.SIZE_08),
             Icon(
