@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/date_month_utils.dart';
 import '../constants/number_constants.dart';
 import '../transactions/models/transaction_sold_data.dart';
+import '../transactions/provider_service/transaction_provider.dart';
 
 class SoldFilterResult {
   RangeValues ageRange;
@@ -20,8 +22,9 @@ class SoldFilterResult {
 
 class SoldFilterBottomSheet extends StatefulWidget {
   final Function(SoldFilterResult) onApply;
+  final List<Containers> containerList;
 
-  const SoldFilterBottomSheet({super.key, required this.onApply});
+  const SoldFilterBottomSheet({super.key, required this.onApply, required this.containerList});
 
   @override
   State<SoldFilterBottomSheet> createState() => _SoldFilterBottomSheetState();
@@ -32,11 +35,8 @@ class _SoldFilterBottomSheetState extends State<SoldFilterBottomSheet> {
 
   RangeValues ageRange = const RangeValues(20, 60);
 
-  final List<String> soldByList = ["Pravin", "Rahul", "Ramesh", "Suresh"];
+  final List<String> transactionNames = [];
   final List<String> monthList = DateMonthUtils.getCurrentYearMonths();
-
-  final List<Containers> containerList = [];
-
   final List<String> selectedSoldBy = [];
   final List<String> selectedMonths = [];
   final List<Containers> selectedContainers = [];
@@ -48,12 +48,12 @@ class _SoldFilterBottomSheetState extends State<SoldFilterBottomSheet> {
   @override
   void initState() {
     super.initState();
-    filteredContainers = List.from(containerList);
+    filteredContainers = List.from(widget.containerList);
   }
 
   void _filterContainers(String value) {
     setState(() {
-      filteredContainers = containerList.where((e) {
+      filteredContainers = widget.containerList.where((e) {
         return (e.containerName ?? "")
             .toLowerCase()
             .contains(value.toLowerCase());
@@ -63,6 +63,17 @@ class _SoldFilterBottomSheetState extends State<SoldFilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final transactionState = ref.watch(transactionProvider);
+    var transactionSoldData = transactionState.getTransactionSoldData;
+    for (var soldDataList in transactionSoldData!.data! ?? []) {
+      for (var transaction in soldDataList.transactions ?? []) {
+        if (transaction.name != null) {
+          transactionNames.add(transaction.name!);
+        }
+      }
+    }
+
+    print(transactionNames);
     return SafeArea(
       child: DraggableScrollableSheet(
         initialChildSize: .85,
@@ -270,7 +281,7 @@ class _SoldFilterBottomSheetState extends State<SoldFilterBottomSheet> {
         );
 
       case 1:
-        return _checkBoxList(soldByList, selectedSoldBy);
+        return _checkBoxList(transactionNames, selectedSoldBy);
 
       case 2:
         return _buildMonthView();
