@@ -114,7 +114,7 @@ class _TransactionHomeScreenState extends State<TransactionHomeScreen>
               controller: _tabController,
               children: [
                 TransactionSubscriptionScreen(userId: widget.userId!),
-                TransactionSoldScreen(userId: widget.userId!),
+                TransactionSoldScreen(),
                 TransactionExtendedFeeScreen(userId: widget.userId!),
               ],
             ),

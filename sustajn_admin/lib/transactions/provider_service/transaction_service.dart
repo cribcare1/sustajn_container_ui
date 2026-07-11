@@ -5,6 +5,7 @@ import '../../network/ApiCallPresentor.dart';
 import '../../order_request_screen/models/pending_model.dart';
 import '../../utils/utility.dart';
 import '../models/transaction_extendedfee_data.dart';
+import '../models/transaction_sold_data.dart';
 import '../models/transaction_subscription_data.dart';
 
 
@@ -30,14 +31,14 @@ class TransactionServices {
     }
   }
 
-  Future<SoldContainerData> getSoldService(String partUrl) async {
+  Future<TransactionSoldData> getSoldService(String partUrl) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
-        var responseData = SoldContainerData.fromJson(response);
+        var responseData = TransactionSoldData.fromJson(response);
         Utils.printLog("User responseData in Service: ${responseData.status}");
 
         return responseData;
