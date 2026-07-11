@@ -2,8 +2,6 @@ import 'package:container_tracking/order_request_screen/provider_service/order_r
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Screen/Partner/model/get_container_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_button.dart';
@@ -11,11 +9,11 @@ import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../product_screen/container_details.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/reject_order_detail_screen.dart';
 
 class RejectedScreen extends ConsumerStatefulWidget {
   const RejectedScreen({super.key});
@@ -61,14 +59,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
               child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : orderRequestState.getRejectData == null
-              //     ? const Center(
-              //   child: Text(
-              //     Strings.NO_CONTAINER_AVAILABLE,
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // )
-              // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
-              // orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -107,6 +97,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
                   return inventoryItemCard(
                     context,
+                    id: item.id ?? 0,
                     requestNumber: item.requestNumber ?? "-",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes ?? "-",
@@ -126,6 +117,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
+        required int id,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
@@ -137,7 +129,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, RejectOrderDetailsScreen(orderId: id));
       },
       child: GlassSummaryCard(
         child: Row(
@@ -157,7 +149,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(
@@ -324,8 +315,6 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
       },
     );
   }
-
-
 
   _getRejectOrderNetworkCall() async {
     try {

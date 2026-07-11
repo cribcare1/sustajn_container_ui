@@ -133,7 +133,7 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
           child: (data.productImageUrl != null &&
               data.productImageUrl !="")
               ? Image.network(
-            "${NetworkUrls.PROFILE_IMAGE_BASE_URL}${data.productImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
+            "${NetworkUrls.BASE_CONTAINER_URL}${data.productImageUrl}?t=${DateTime.now().millisecondsSinceEpoch}",
             height: Constant.CONTAINER_SIZE_70,
             width: Constant.CONTAINER_SIZE_70,
             fit: BoxFit.cover,

@@ -1,20 +1,18 @@
+import 'package:container_tracking/order_request_screen/models/confirm_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Screen/Partner/model/get_container_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
-import '../../common_widgets/submit_button.dart';
 import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../product_screen/container_details.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/confirm_details_screen.dart';
 import '../provider_service/order_request_provider.dart';
 
 class ConfirmedScreen extends ConsumerStatefulWidget {
@@ -26,6 +24,7 @@ class ConfirmedScreen extends ConsumerStatefulWidget {
 
 class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   TextEditingController searchController = TextEditingController();
+  List<ConfirmData> filteredItems = [];
 
   @override
   void initState() {
@@ -37,6 +36,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
+
 
     return SafeArea(
       top: false,
@@ -61,14 +61,6 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
               child: orderRequestState.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : orderRequestState.getConfirmData == null
-              //     ? const Center(
-              //   child: Text(
-              //     Strings.NO_CONTAINER_AVAILABLE,
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // )
-              // : orderState.getContainerData == null && orderState.getContainerData!.containersDetails == null ||
-              // orderState.getContainerData!.containersDetails!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -85,14 +77,6 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    // SubmitButton(
-                    //   onRightTap: () {
-                    //     searchController.clear();
-                    //     orderRequestState.filterInventoryByNameOrId('');
-                    //     setState(() {});
-                    //   },
-                    //   rightText: " Clear Filter ",
-                    // ),
                   ],
                 ),
               )
@@ -107,12 +91,12 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
 
                   return inventoryItemCard(
                     context,
+                    orderId: item.id ?? 0,
                     requestNumber: item.requestNumber?? "-",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes ?? "-",
                     formattedDateTime: item.formattedDateTime?.toString() ?? "0",
                     totalQuantity: item.totalQuantity ?? 0,
-                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -127,24 +111,23 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
-
+        required int orderId,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
         required String formattedDateTime,
         required int totalQuantity,
-        // required ContainersDetails data,
       }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, ConfirmDetailsScreen(orderId: orderId));
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
@@ -160,7 +143,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
+
                   Row(
                     children: [
                       Expanded(
@@ -174,6 +157,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           ),
                         ),
                       ),
+
                       Text(
                         containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -191,7 +175,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           color: Colors.white70,
                         ),
                       ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
+
                       Text(
                         "$totalQuantity",
                         maxLines: 1,
@@ -201,7 +185,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           color: Colors.white70,
                         ),
                       ),
-                      SizedBox(width: Constant.SIZE_08),
+                      SizedBox(width: Constant.SIZE_06),
                       Icon(
                         Icons.arrow_forward_ios,
                         size: Constant.CONTAINER_SIZE_14,
@@ -326,8 +310,6 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
       },
     );
   }
-
-
 
 _getConfirmOrderNetworkCall() async {
     try {

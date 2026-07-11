@@ -366,7 +366,7 @@ class _ReturnContainerDialogState extends ConsumerState<ReturnContainerDialog> {
       "items": [
         {
           "containerTypeId": item.containerId,
-          "requestedQty": quantity,
+          "requestedQty": quantity.text,
         },
       ],
     };

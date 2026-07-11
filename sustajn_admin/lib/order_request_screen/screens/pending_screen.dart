@@ -2,20 +2,16 @@ import 'package:container_tracking/order_request_screen/provider_service/order_r
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Screen/Partner/model/get_container_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
-import '../../common_widgets/submit_button.dart';
 import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
-import '../../product_screen/container_details.dart';
 import '../../provider/order_provider.dart';
 import '../../utils/nav_utils.dart';
-import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
+import '../details_screen/pending_details_screen.dart';
 
 class PendingScreen extends ConsumerStatefulWidget {
   const PendingScreen({super.key});
@@ -38,7 +34,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
     Utils.printLog("item list = ${orderRequestState.getPendingDataList.length}");
-
 
     return SafeArea(
       top: false,
@@ -71,6 +66,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                   Utils.printLog("item = ${item.toString()}");
                   return pendingItemCard(
                     context,
+                    orderId: item.id ?? 0,
                     requestNumber: item.requestNumber ?? "",
                     restaurantName: item.restaurantName ?? "-",
                     containerCodes: item.containerCodes ?? "-",
@@ -90,6 +86,7 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
 
   Widget pendingItemCard(
       BuildContext context, {
+        required int orderId,
         required String requestNumber,
         required String restaurantName,
         required String containerCodes,
@@ -101,13 +98,12 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, PendingDetailsScreen(orderId: orderId));
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +127,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                             color: Colors.white70,
                           ),
                         ),
-
                       Text(
                         containerCodes,
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -151,14 +146,18 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
                 ],
               ),
             ),
-            Text(
-              "$totalQuantity",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: Constant.LABEL_TEXT_SIZE_14,
-                color: Colors.white70,
-              ),
+            Column(
+              children: [
+                Text(
+                  "$totalQuantity",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
             ),
             SizedBox(width: Constant.SIZE_08),
             Icon(
@@ -280,8 +279,6 @@ class _PendingScreenState extends ConsumerState<PendingScreen> {
       },
     );
   }
-
-
 
   _getPendingOrderNetworkCall() async {
     try {

@@ -42,7 +42,14 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
   //Order request
   static const PENDING_ORDER_DATA = 'inventory/admin/orders/pending';
+  static const PENDING_ORDER_DETAILS_DATA = 'inventory/admin/orders/details/';
   static const CONFIRM_ORDER_DATA = 'inventory/admin/orders/confirmed';
+  static const CONFIRM_ORDER_DETAILS_DATA = 'inventory/admin/orders/confirmed/details/';
   static const DELIVER_ORDER_DATA = 'inventory/admin/orders/delivered';
+  static const DELIVER_ORDER_DETAILS = 'inventory/admin/orders/delivered/details/';
   static const REJECT_ORDER_DATA = 'inventory/admin/orders/rejected';
+  static const REJECT_ORDER_DETAILS_DATA = 'inventory/admin/orders/rejected/details/';
+  static const APPROVE_ORDER = 'inventory/approveOrder';
+  static const REJECT_ORDER = 'inventory/rejectOrder';
+  static const MARK_AS_DELIVERED = 'inventory/markOrderAsDelivered/';
 }

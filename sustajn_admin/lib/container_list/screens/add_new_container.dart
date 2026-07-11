@@ -13,6 +13,7 @@ import '../../common_widgets/submit_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../products_screen/add_container_popup.dart';
 import '../../utils/SharedPreferenceUtils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -435,6 +436,12 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                         ? Center(child: CircularProgressIndicator())
                         : SubmitButton(
                             onRightTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const RejectOrderSheet(),
+                              );
                               Map<String, dynamic> body =
                                   (widget.inventoryData != null)
                                   ? {

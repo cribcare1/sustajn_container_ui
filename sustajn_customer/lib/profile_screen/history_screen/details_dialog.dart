@@ -193,7 +193,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
           item.imageUrl.isNotEmpty
               ? ClipOval(
             child: Image.network(
-              NetworkUrls.BASE_IMAGE_URL + item.imageUrl,
+              NetworkUrls.BASE_CONTAINER_URL + item.imageUrl,
               width: Constant.CONTAINER_SIZE_60,
               height: Constant.CONTAINER_SIZE_60,
               fit: BoxFit.cover,
