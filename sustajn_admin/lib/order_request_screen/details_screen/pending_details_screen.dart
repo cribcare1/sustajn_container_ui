@@ -205,16 +205,15 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                           Column(
                             children: [
                               Text(
-                                "Order On: 27.07.26",
-                                style: themeData.textTheme.bodySmall!.copyWith(
-                                  color: Colors.white60,
-                                ),
+                                "Ordered on: ${pendingDetailsData.orderedOnDate}",
+                                style: themeData.textTheme.titleSmall,
                               ),
                               SizedBox(width: Constant.CONTAINER_SIZE_12),
                               Text(
-                                'Time: 11:00',
-                                style: themeData.textTheme.titleMedium!
-                                    .copyWith(fontWeight: FontWeight.w600),
+                                "Time: ${pendingDetailsData.orderedOnTime}",
+                                style: themeData.textTheme.bodySmall!.copyWith(
+                                  color: Colors.white60,
+                                ),
                               ),
                             ],
                           ),

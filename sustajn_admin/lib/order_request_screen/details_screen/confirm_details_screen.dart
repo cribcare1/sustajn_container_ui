@@ -175,7 +175,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Order ID",
+                  Strings.ORDER_ID,
                   style: themeData.textTheme.bodySmall!.copyWith(
                     color: Colors.white60,
                   ),

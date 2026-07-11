@@ -31,6 +31,8 @@ class PendingDetailData {
   String? restaurantAddress;
   String? partnerRemark;
   String? sustajnRemark;
+  String? orderedOnDate;
+  String? orderedOnTime;
   String? availableQty;
   List<Items>? items;
 
@@ -41,6 +43,8 @@ class PendingDetailData {
     this.restaurantAddress,
     this.partnerRemark,
     this.sustajnRemark,
+    this.orderedOnDate,
+    this.orderedOnTime,
     this.availableQty,
     this.items,
   });
@@ -52,6 +56,8 @@ class PendingDetailData {
     restaurantAddress = json['restaurantAddress'] ?? "";
     partnerRemark = json['partnerRemark'] ?? "";
     sustajnRemark = json['sustajnRemark'] ?? "";
+    orderedOnDate = json['orderedOnDate'] ?? "";
+    orderedOnTime = json['orderedOnTime'] ?? "";
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
@@ -68,6 +74,8 @@ class PendingDetailData {
     data['restaurantAddress'] = this.restaurantAddress;
     data['partnerRemark'] = this.partnerRemark;
     data['sustajnRemark'] = this.sustajnRemark;
+    data['orderedOnDate'] = this.orderedOnDate;
+    data['orderedOnTime'] = this.orderedOnTime;
     if (this.items != null) {
       data['items'] = this.items!.map((v) => v.toJson()).toList();
     }
