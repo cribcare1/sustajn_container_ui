@@ -141,17 +141,25 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
+              final transactionState = ref.read(transactionProvider);
+
+              List<Containers> allContainers = [];
+
+              for (final soldData in transactionState.getTransactionSoldDataList) {
+                for (final transaction in soldData.transactions ?? []) {
+                  allContainers.addAll(transaction.containers ?? []);
+                }
+              }
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
                 builder: (_) => SoldFilterBottomSheet(
+                  containerList: allContainers,
                   onApply: (result) {
                     setState(() {
                       applySearchAndFilter(
-                        ref
-                            .read(transactionProvider)
-                            .getTransactionSoldDataList,
+                        transactionState.getTransactionSoldDataList,
                       );
                     });
                   },
