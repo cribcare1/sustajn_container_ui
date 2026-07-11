@@ -1,26 +1,18 @@
-import 'package:container_tracking/Screen/users/provider/user_provider.dart';
+import 'package:container_tracking/transactions/provider_service/transaction_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../common_provider/network_provider.dart';
-import '../../../common_widgets/custom_app_bar.dart';
-import '../../../common_widgets/custom_back_button.dart';
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/no_data_custom_text.dart';
 import '../../../utils/utility.dart';
-import 'package:container_tracking/transactions/screens/transaction_extendedfee_screen.dart';
-import 'package:container_tracking/transactions/screens/transaction_sold_screens.dart';
-import 'package:container_tracking/transactions/screens/transaction_subscription_screen.dart';
-import '../../Screen/users/model/user_sold_container_data.dart';
-import '../../Screen/users/model/user_sold_details.dart';
-import '../../common_widgets/filter_screen_2.dart';
+import '../../common_widgets/sold_filter_bottom_sheet.dart';
 import '../../utils/date_month_utils.dart';
+import '../models/transaction_sold_data.dart';
 
 class TransactionSoldScreen extends ConsumerStatefulWidget {
-  final int userId;
-
-
-  TransactionSoldScreen({super.key, required this.userId});
+  TransactionSoldScreen({super.key});
 
   @override
   ConsumerState<TransactionSoldScreen> createState() => _TransactionSoldState();
@@ -40,48 +32,77 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final historyState = ref.watch(userProvider);
-    if (filteredList.isEmpty && historyState.soldContainerList.isNotEmpty) {
-      applySearchAndFilter(historyState.soldContainerList);
+    final transactionState = ref.watch(transactionProvider);
+    if (filteredList.isEmpty &&
+        transactionState.getTransactionSoldDataList.isNotEmpty) {
+      applySearchAndFilter(transactionState.getTransactionSoldDataList);
     }
     return Scaffold(
-        backgroundColor: Color(0xFF0E3B2E),
-        body: Column(
+      backgroundColor: Color(0xFF0E3B2E),
+
+      body: transactionState.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : (transactionState.getTransactionSoldDataList.isEmpty)
+          ? const Center(
+              child: Text(
+                Strings.NO_CONTAINER_AVAILABLE,
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : Column(
               children: [
                 _searchBar(),
                 Expanded(
-                  child: historyState.soldContainerList.isEmpty
-          ? Center(
-        child: NoDataFoundCustomText(text: Strings.NO_SOLD_CONTAINER),
-                  )
-          : ListView.separated(
-        padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_10),
-        itemCount: historyState.filteredList.length,
-        itemBuilder: (context, index) {
-          final month =
-              historyState.soldContainerList[index].monthYear;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _monthHeader(
-                month ?? "",
-                historyState.soldContainerList.length,
-              ),
-              ...historyState
-                  .soldContainerList[index]
-                  .dateWiseSoldContainers!
-                  .map((item) => _soldItemCard(item: item)),
-            ],
-          );
-        },
-        separatorBuilder: (context, index) =>
-            SizedBox(height: Constant.CONTAINER_SIZE_12),
-                  ),
+                  child: transactionState.getTransactionSoldDataList.isEmpty
+                      ? Center(
+                          child: NoDataFoundCustomText(
+                            text: Strings.NO_SOLD_CONTAINER,
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: EdgeInsets.only(
+                            top: Constant.CONTAINER_SIZE_10,
+                          ),
+                          itemCount: transactionState
+                              .getTransactionSoldDataList
+                              .length,
+                          itemBuilder: (context, index) {
+                            final month = transactionState
+                                .getTransactionSoldDataList[index]
+                                .monthYear;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _monthHeader(
+                                  month ?? "",
+                                  transactionState
+                                      .getTransactionSoldDataList
+                                      .length,
+                                ),
+                                ...transactionState
+                                    .getTransactionSoldDataList[index]
+                                    .transactions!
+                                    .expand(
+                                      (transaction) =>
+                                          transaction.containers!.map(
+                                            (container) => _soldItemCard(
+                                              transaction: transaction,
+                                              container: container,
+                                            ),
+                                          ),
+                                    ),
+                              ],
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: Constant.CONTAINER_SIZE_12),
+                        ),
                 ),
               ],
             ),
     );
   }
+
   Widget _searchBar() {
     return Padding(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
@@ -90,11 +111,13 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
         onChanged: (value) {
           setState(() {
             _searchQuery = value;
-            applySearchAndFilter(ref.read(userProvider).soldContainerList);
+            applySearchAndFilter(
+              ref.read(transactionProvider).getTransactionSoldDataList,
+            );
           });
         },
         cursorColor: Colors.white,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_SOLD,
           hintStyle: const TextStyle(color: Colors.white70),
@@ -122,18 +145,13 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (_) => ReusableFilterBottomSheet(
-                  title: Strings.FILTERS,
-                  leftTabTitle: Strings.MONTH,
-                  options: months,
-                  selectedValue: selectedMonthYear,
-                  onApply: (value) {
-                    if (value == null) return;
-
+                builder: (_) => SoldFilterBottomSheet(
+                  onApply: (result) {
                     setState(() {
-                      selectedMonthYear = value;
                       applySearchAndFilter(
-                        ref.read(userProvider).soldContainerList,
+                        ref
+                            .read(transactionProvider)
+                            .getTransactionSoldDataList,
                       );
                     });
                   },
@@ -145,27 +163,32 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
       ),
     );
   }
+
   void applySearchAndFilter(List<SoldDataList> sourceList) {
-    ref.read(userProvider).setFilteredList(sourceList);
+    filteredList = List.from(sourceList);
 
     if (_searchQuery.isNotEmpty) {
       filteredList = filteredList.where((item) {
-        return item.dateWiseSoldContainers?.any((sold) {
-          return (sold.productName ?? "")
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()) ||
-              (sold.productUniqueId ?? "")
-                  .toLowerCase()
-                  .contains(_searchQuery.toLowerCase());
-        }) ??
+        return item.transactions?.any((transaction) {
+              return transaction.containers?.any((container) {
+                    return (container.containerName ?? "")
+                            .toLowerCase()
+                            .contains(_searchQuery.toLowerCase()) ||
+                        (container.productCode ?? "").toLowerCase().contains(
+                          _searchQuery.toLowerCase(),
+                        );
+                  }) ??
+                  false;
+            }) ??
             false;
       }).toList();
     }
 
-    if (_searchQuery.isEmpty && selectedMonthYear != null) {
+    if (selectedMonthYear != null) {
       final selectedMonthName = selectedMonthYear!.split('–')[0];
-      final selectedMonthIndex =
-      DateMonthUtils.getMonthIndex(selectedMonthName);
+      final selectedMonthIndex = DateMonthUtils.getMonthIndex(
+        selectedMonthName,
+      );
 
       filteredList = filteredList.where((item) {
         final itemMonth = DateTime.parse(item.monthYear!).month;
@@ -174,7 +197,10 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
     }
   }
 
-  Widget _soldItemCard({required DateWiseSoldContainers item}) {
+  Widget _soldItemCard({
+    required Transactions transaction,
+    required Containers container,
+  }) {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
@@ -186,7 +212,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.25),
@@ -199,21 +225,11 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
           padding: const EdgeInsets.all(14),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _dateItem(
-                    title: "Borrowed on:",
-                    value: item.borrowedOn ?? "",
-                  ),
-                  _dateItem(title: "Due on:", value: item.dueOn ?? ""),
-                  _dateItem(title: "Sold on:", value: item.soldOn ?? ""),
-                ],
-              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
               const SizedBox(height: 14),
 
-              Divider(color: Colors.white.withOpacity(0.15), height: 1),
+              Divider(color: Colors.white.withValues(alpha: 0.15), height: 1),
 
               const SizedBox(height: 12),
               Row(
@@ -230,7 +246,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        "${NetworkUrls.IMAGE_BASE_URL}${item.productImageUrl}",
+                        "${NetworkUrls.IMAGE_BASE_URL}${container.imageUrl ?? ""}",
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
@@ -247,7 +263,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.productName ?? "",
+                          container.containerName ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleMedium!.copyWith(
@@ -256,7 +272,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          item.productUniqueId ?? "",
+                          container.productCode ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall!.copyWith(
@@ -267,7 +283,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                         const SizedBox(height: 4),
 
                         Text(
-                          "${item.capacity}ml",
+                          "${container.capacity ?? ""} ",
                           style: theme.textTheme.titleSmall!.copyWith(
                             color: Colors.white,
                           ),
@@ -287,7 +303,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                           ),
                           SizedBox(width: Constant.SIZE_04),
                           Text(
-                            item.soldQuantity?.toString() ?? "",
+                            container.quantity?.toString() ?? "0",
                             style: theme.textTheme.titleSmall!.copyWith(
                               color: Colors.white,
                             ),
@@ -307,7 +323,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                           ),
                           SizedBox(width: Constant.SIZE_02),
                           Text(
-                            item.soldAmount?.toString() ?? "",
+                            container.price?.toString() ?? "0",
                             style: theme.textTheme.titleMedium!.copyWith(
                               color: Color(0xFFE5C84B),
                               fontWeight: FontWeight.w700,
@@ -371,17 +387,17 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
   _getSoldNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(userProvider);
+        final transactionState = ref.read(transactionProvider);
         if (isNetworkAvailable) {
-          orderState.setIsLoading(true);
+          transactionState.setIsLoading(true);
 
-          final url = '${NetworkUrls.GET_SOLD_CONTAINER}${widget.userId}';
-          ref.read(getSoldContainerProvider(url));
+          final url = '${NetworkUrls.SOLD_DASHBOARD}';
+          ref.read(getTransactionSoldDataList(url));
         } else {
-          orderState.setIsLoading(false);
+          transactionState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
         }
       });

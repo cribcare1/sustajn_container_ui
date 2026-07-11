@@ -126,11 +126,11 @@ class Constant {
   static const double SIZE_HEIGHT_10 = 10;
 
 // Colors Utils
-  static const PrimaryColor =  Color(0xFF808080);
-  static const PrimaryAssentColor =  Color(0xff7300e6);
+  static const PrimaryColor =  Color(0xFF0E3B2E);
+  static const PrimaryAssentColor =  Color(0xffD3AF37);
   static const PrimaryDarkColor =  Color(0xFF808080);
   static const ErroColor =  Color(0xFF808080);
-
+  static const BeigeColor = Color(0xFFF5EBDF);
   static const Color white = Colors.white;
   static const Color red = Colors.red;
   static const Color green = Colors.green;

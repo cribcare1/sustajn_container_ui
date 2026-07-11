@@ -1,6 +1,7 @@
+import 'package:container_tracking/transactions/screens/transaction_sold_popup.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../Screen/users/model/user_sold_container_data.dart';
+import '../models/transaction_sold_data.dart';
 import '../../order_request_screen/models/pending_model.dart';
 import '../../utils/utility.dart';
 import '../models/transaction_extendedfee_data.dart';
@@ -10,6 +11,7 @@ import '../models/transaction_subscription_data.dart';
 class TransactionNotifier extends ChangeNotifier {
 
   bool _isLoading = false;
+
   String _searchQuery = '';
   // Error messages
   String? _nameError;
@@ -18,8 +20,8 @@ class TransactionNotifier extends ChangeNotifier {
   SubscriptionData? _subscriptionData;
   List<SubscriptionDataList> _subscriptionDataList = [];
 
-  SoldContainerData? _soldContainerData;
-  List<SoldDataList> _soldContainerDataList = [];
+  TransactionSoldData? _transactionSoldData;
+  List<SoldDataList> _transacationSoldDataList = [];
 
   ExtendedFeeData? _extendedFeeData;
   List<ExtendedFeeDataList> _extendedFeeDataList = [];
@@ -34,8 +36,8 @@ class TransactionNotifier extends ChangeNotifier {
   SubscriptionData? get getSubscriptionData => _subscriptionData;
   List<SubscriptionDataList> get getSubscriptionDataList => _subscriptionDataList;
 
-  SoldContainerData? get getSoldContainerData => _soldContainerData;
-  List<SoldDataList> get getSoldContainerDataList => _soldContainerDataList;
+  TransactionSoldData? get getTransactionSoldData => _transactionSoldData;
+  List<SoldDataList> get getTransactionSoldDataList => _transacationSoldDataList;
 
   ExtendedFeeData? get getExtendedFeeData => _extendedFeeData;
   List<ExtendedFeeDataList> get getExtendedFeeDataList => _extendedFeeDataList;
@@ -54,10 +56,10 @@ class TransactionNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSoldContainerData(SoldContainerData soldContainerData) {
+  void setSoldContainerData(TransactionSoldData soldContainerData) {
     Utils.printLog("data list = ${soldContainerData.data!.length}");
-    _soldContainerData = soldContainerData;
-    _soldContainerDataList = soldContainerData!.data!;
+    _transactionSoldData = soldContainerData;
+    _transacationSoldDataList = soldContainerData!.data!;
     notifyListeners();
   }
 

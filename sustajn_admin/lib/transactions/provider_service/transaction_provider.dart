@@ -8,6 +8,7 @@ import '../../Screen/users/model/users_data.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/utility.dart';
 import '../models/transaction_extendedfee_data.dart';
+import '../models/transaction_sold_data.dart';
 import '../models/transaction_subscription_data.dart';
 import 'transaction_notifier.dart';
 
@@ -39,7 +40,7 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
   }
 });
 
-final getSoldProvider = FutureProvider.family<dynamic, String>((
+final getTransactionSoldDataList = FutureProvider.family<dynamic, String>((
     ref,
     params,
     ) async {
@@ -47,7 +48,7 @@ final getSoldProvider = FutureProvider.family<dynamic, String>((
   try {
     var serviceProvider = ref.read(transactionServices);
     Utils.printLog("params===$params");
-    SoldContainerData responseData = await serviceProvider.getSoldService(params);
+    TransactionSoldData responseData = await serviceProvider.getSoldService(params);
     Utils.printLog("On Success===${responseData.status}");
     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
       Utils.printLog("On Success===${responseData.status}");
