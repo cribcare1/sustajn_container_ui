@@ -1,6 +1,6 @@
 import 'package:container_tracking/transactions/provider_service/transaction_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:intl/intl.dart';
 import '../../../common_provider/network_provider.dart';
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
@@ -150,16 +150,25 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                   allContainers.addAll(transaction.containers ?? []);
                 }
               }
+              List<String> transactionNames = [];
+              for (var soldDataList in transactionState.getTransactionSoldData!.data! ?? []) {
+                  for (var transaction in soldDataList.transactions ?? []) {
+                    if (transaction.name != null) {
+                      transactionNames.add(transaction.name!);
+                    }
+                  }
+                }
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
                 builder: (_) => SoldFilterBottomSheet(
-                  containerList: allContainers,
+                  containerList: allContainers, transactionNames: transactionNames,
                   onApply: (result) {
                     setState(() {
-                      applySearchAndFilter(
+                      applyFilter(
                         transactionState.getTransactionSoldDataList,
+                        result,
                       );
                     });
                   },
@@ -203,6 +212,84 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
         return itemMonth == selectedMonthIndex;
       }).toList();
     }
+  }
+
+
+  void applyFilter(
+      List<SoldDataList> sourceList, SoldFilterResult filter,) {
+    filteredList = sourceList.map((monthData) {
+      final filteredTransactions = monthData.transactions?.where((transaction) {
+        print('---------------------------------------');
+        print('Month  : ${monthData.monthYear}');
+        print('Transaction : ${transaction.id}');
+        print('Name        : ${transaction.name}');
+        print('Date        : ${transaction.formattedDate}');
+
+        print('filter age        : ${filter.ageRange!.start} - ${filter.ageRange!.end}');
+        print('filter soldby : ${filter.soldBy.toString()}');
+        print('filter months : ${filter.months.toString()}');
+        print('filter containers : ${filter.containers!.toString()}');
+       // print('filter container        : ${filter.containers!.elementAt(0).containerTypeId}');
+
+
+        bool matches = true;
+
+        final transactionDate =
+        DateFormat('dd.MM.yyyy')
+            .parse(transaction.formattedDate!);
+
+        // Age Filter
+        if (filter.ageRange != null && filter.ageRange!.start>20) {
+          final ageInDays =
+              DateTime.now()
+                  .difference(transactionDate)
+                  .inDays;
+
+          matches &= ageInDays >= filter.ageRange!.start &&
+              ageInDays <= filter.ageRange!.end;
+        }
+
+        // Month Filter
+        if (filter.months != null &&
+            filter.months!.isNotEmpty) {
+          matches &= filter.months!.any(
+                (month) =>
+            DateMonthUtils.getMonthIndex(month) ==
+                transactionDate.month,
+          );
+        }
+
+        // Sold By Filter
+        if (filter.soldBy != null &&
+            filter.soldBy!.isNotEmpty) {
+          matches &= filter.soldBy![0].contains(transaction.name!);
+        }
+
+        // Container Filter
+        if (filter.containers != null &&
+            filter.containers!.isNotEmpty) {
+          matches &= transaction.containers?.any(
+                (container) =>
+                filter.containers!.any(
+                      (selected) =>
+                  selected.containerTypeId ==
+                      container.containerTypeId,
+                ),
+          ) ??
+              false;
+        }
+
+        return matches;
+      }).toList();
+
+      if (filteredTransactions == null ||
+          filteredTransactions.isEmpty) {
+        return null;
+      }
+
+    })
+        .whereType<SoldDataList>()
+        .toList();
   }
 
   Widget _soldItemCard({

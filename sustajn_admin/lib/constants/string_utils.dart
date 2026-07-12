@@ -216,9 +216,10 @@ class Strings {
   static final String BOWL_IMG = "assets/images/bowl_img.png";
   static final String CUP_IMG = "assets/images/cups.png";
   static final String USER_IMG = "assets/images/user.png";
-  static final String SUBSCRIPTION_IMG = "assets/images/subscription_icon.png";
-  static final String SOLD_IMG = "assets/images/sold.png";
-  static final String CLOCK_IMG = "assets/images/clock.png";
+  // static final String SUBSCRIPTION_IMG = "assets/images/subscription_icon.png";
+  static final String SUBSCRIPTION_IMG = "assets/images/bowl_img.png";
+  static final String SOLD_IMG = "assets/images/bowl_img.png";
+  static final String CLOCK_IMG = "assets/images/bowl_img.png";
 
   static const String ACTIVE = "Active";
   static const String BORROWED = "Borrowed";
