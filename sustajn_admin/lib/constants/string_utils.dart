@@ -258,6 +258,16 @@ class Strings {
   static const String NO_SOLD_CONTAINER = 'No sold containers found';
   static const String NO_DAMAGED  = 'No damaged containers found';
   static const String NO_EXTENDED_FEE_DATA = 'No extended fee data found';
+  //Transactions
+  static const String TRANSACTIONS = 'Transactions';
+  static const String NO_SOLD_CON = 'No sold containers found';
+  static const String NO_SUBSCRIPTION  = 'No Subscription Plan found';
+  static const String NO_TRANSACTION_EXTENDED_FEE_DATA = 'No extended fee data found';
+  static const SEARCH_BY_REST = 'Search by Partner';
+  static const SEARCH_BY_SOLD = 'Search by Customer or Partner';
+  static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
+  static const PLANTYPE = 'Plan Type';
+
   static const String ORDER_DETAILS = 'Order Details';
   static const String CONFIRM_DETAILS = 'Confirmed Details';
   static const String CONFIRM_ORDER = 'Confirm Order';
