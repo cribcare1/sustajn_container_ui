@@ -56,6 +56,4 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
   static const SUBSCRIPTION = 'inventory/admin/transactions/subscriptions';
   static const SOLD_DASHBOARD = 'inventory/admin/transactions/sold-dashboard';
 
-  static const SUBSCRIPTION = 'inventory/admin/transactions/subscriptions';
-  static const SOLD_DASHBOARD = 'inventory/admin/transactions/sold-dashboard';
 }
