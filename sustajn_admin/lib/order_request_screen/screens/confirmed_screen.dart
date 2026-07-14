@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
+import '../../common_widgets/submit_button.dart';
 import '../../common_widgets/submit_clear_button.dart';
 import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
@@ -24,7 +25,7 @@ class ConfirmedScreen extends ConsumerStatefulWidget {
 
 class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   TextEditingController searchController = TextEditingController();
-  List<ConfirmData> filteredItems = [];
+  List<ConfirmDataList> filteredItems = [];
 
   @override
   void initState() {
@@ -36,6 +37,11 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
+    final confirmDataList = orderRequestState.getConfirmData?.data ?? [];
+    Utils.printLog("List length: ${confirmDataList.length}");
+    if (filteredItems.isEmpty && confirmDataList.isNotEmpty) {
+      filteredItems = confirmDataList;
+    }
 
 
     return SafeArea(
@@ -50,7 +56,17 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderRequestState.filterInventoryByNameOrId(value);
+                  setState(() {
+                    if (value.isEmpty) {
+                      filteredItems = confirmDataList;
+                    } else {
+                      filteredItems = confirmDataList.where((item) {
+                        return (item.restaurantName?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
+                            (item.requestNumber?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
+                            (item.containerCodes?.toLowerCase().contains(value.toLowerCase()) ?? false);
+                      }).toList();
+                    }
+                  });
                 },
                 //TODO:-
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -67,7 +83,7 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderRequestState.getFilterConfirmedDataList.isEmpty && searchController.text.isNotEmpty)
+                  : (filteredItems.isEmpty && searchController.text.isNotEmpty)
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -77,6 +93,15 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                    SubmitButton(
+                      onRightTap: () {
+                        searchController.clear();
+                        setState(() {
+                          filteredItems = confirmDataList;
+                        });
+                      },
+                      rightText: " Clear Filter ",
+                    ),
                   ],
                 ),
               )
@@ -85,9 +110,9 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderRequestState.getFilterConfirmedDataList.length,
+                itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
-                  final item = orderRequestState.getFilterConfirmedDataList[index];
+                  final item = filteredItems[index];
 
                   return inventoryItemCard(
                     context,
