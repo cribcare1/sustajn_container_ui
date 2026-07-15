@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../Screen/Partner/model/get_all_restaurant_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_button.dart';
@@ -13,6 +14,7 @@ import '../../utils/nav_utils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
 import '../details_screen/deliver_details_screen.dart';
+import '../models/deliver_order_model.dart';
 import '../provider_service/order_request_provider.dart';
 
 class DeliveredScreen extends ConsumerStatefulWidget {
@@ -23,6 +25,8 @@ class DeliveredScreen extends ConsumerStatefulWidget {
 }
 
 class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
+  List<DeliverDataList> filteredItems = [];
+
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -35,6 +39,12 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderRequestState = ref.watch(orderRequestProvider);
+    final deliverDataList = orderRequestState.getDeliverData?.data ?? [];
+    Utils.printLog("List length: ${deliverDataList.length}");
+    if (filteredItems.isEmpty && deliverDataList.isNotEmpty) {
+      filteredItems = deliverDataList;
+    }
+
 
     return SafeArea(
       top: false,
@@ -48,7 +58,17 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  orderRequestState.filterInventoryByNameOrId(value);
+                  setState(() {
+                    if (value.isEmpty) {
+                      filteredItems = deliverDataList;
+                    } else {
+                      filteredItems = deliverDataList.where((item) {
+                        return (item.containerCodes?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
+                            (item.requestNumber?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
+                            (item.restaurantName?.toLowerCase().contains(value.toLowerCase()) ?? false);
+                      }).toList();
+                    }
+                  });
                 },
                 //TODO:-
                 onFilterTap: () => _showSortBottomSheet(context),
@@ -65,7 +85,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (orderRequestState.getDeliverDataList.isEmpty && searchController.text.isNotEmpty)
+                  : ((filteredItems.isEmpty && searchController.text.isNotEmpty))
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -78,8 +98,9 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     SubmitButton(
                       onRightTap: () {
                         searchController.clear();
-                        orderRequestState.filterInventoryByNameOrId('');
-                        setState(() {});
+                        setState(() {
+                          filteredItems = deliverDataList;
+                        });
                       },
                       rightText: " Clear Filter ",
                     ),
@@ -91,10 +112,9 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderRequestState.getDeliverDataList.length,
+                  itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
-                  final item = orderRequestState.getDeliverDataList[index];
-
+                  final item = filteredItems[index];
                   return pendingItemCard(
                     context,
                     id: item.id ?? 0,

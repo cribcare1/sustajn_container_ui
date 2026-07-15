@@ -436,12 +436,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                         ? Center(child: CircularProgressIndicator())
                         : SubmitButton(
                             onRightTap: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => const RejectOrderSheet(),
-                              );
                               Map<String, dynamic> body =
                                   (widget.inventoryData != null)
                                   ? {
