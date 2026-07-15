@@ -1,7 +1,6 @@
 import 'package:container_tracking/Screen/Partner/model/lease_barrow_data.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../../../constants/string_utils.dart';
 import '../../../utils/utility.dart';
 import '../../Partner/model/container_history_data.dart';
 import '../../Partner/model/get_container_data.dart';
@@ -31,6 +30,7 @@ class UsersNotifier extends ChangeNotifier {
 
   List<ProductDataList> _productList = [];
   List<BorrowedUiItem> _borrowedList = [];
+
   List<BorrowedUiItem> get borrowedList => _borrowedList;
   BuildContext? _context;
   bool _isVerifying = false;
@@ -46,10 +46,13 @@ class UsersNotifier extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   UsersData? get getUsersData => _usersData;
+
   UserDamageData? get getUserDamageData => _userDamageData;
 
   List<CustomersData> get customerDataList => _customerDataList;
+
   List<DamageDataList> get userDamageList => _damageDataList;
+
   ProductData get productData => _productData!;
 
   List<ProductDataList> get productList => _productList;
@@ -57,7 +60,9 @@ class UsersNotifier extends ChangeNotifier {
   LeaseBarrowData? get leaseBorrowData => _leaseBarrowData;
 
   List<DailyStats> get dailyStats => _dailyStats;
+
   List<SoldDataList> get filteredList => filteredList;
+
   SoldContainerData? get soldContainerData => _soldContainerData;
 
   List<SoldDataList> get soldContainerList => _soldContainerList;
@@ -90,21 +95,25 @@ class UsersNotifier extends ChangeNotifier {
     var _filteredList = list;
     notifyListeners();
   }
+
   void setReturnCount(int count) {
     _returnedContainerCount = count;
     notifyListeners();
   }
+
   void setProductData(ProductData data) {
     _productData = data;
     _productList = data.data!;
     notifyListeners();
   }
-  void setSoldContainerData(SoldContainerData soldContainer){
+
+  void setSoldContainerData(SoldContainerData soldContainer) {
     _soldContainerList.clear();
     _soldContainerData = soldContainer;
-    _soldContainerList.addAll(soldContainer.data??[]);
+    _soldContainerList.addAll(soldContainer.data ?? []);
     notifyListeners();
   }
+
   void setBorrowedData(BorrowedData data) {
     _borrowedList = [];
 
@@ -164,7 +173,6 @@ class UsersNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
     notifyListeners();
@@ -189,21 +197,19 @@ class UsersNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void setContext(BuildContext context) {
     _context = context;
     notifyListeners();
   }
 
-
   void clearSearch() {
     _searchQuery = '';
     notifyListeners();
   }
+
   void setUsersDamageData(UserDamageData userDamageData) {
     _userDamageData = userDamageData;
     _damageDataList = List.from(userDamageData.data ?? []);
     notifyListeners();
   }
-
 }

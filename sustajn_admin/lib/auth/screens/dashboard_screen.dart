@@ -1,13 +1,12 @@
 import 'package:container_tracking/Screen/Partner/partner_screen.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:container_tracking/utils/nav_utils.dart';
+
 import '../../Screen/users/screens/users_screen.dart';
-import '../../container_list/screens/add_new_container.dart';
 import '../../container_list/screens/container_list_screen.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
 import '../../transactions/screens/transaction_home_screen.dart';
 import '../../utils/theme_utils.dart';
-import 'package:container_tracking/Screen/users/screens/transaction_home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -133,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final themeData = CustomTheme.getTheme(true);
         return InkWell(
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-          onTap: (){
+          onTap: () {
             final title = item["title"]?.toString() ?? "";
             _handleNavigation(title);
           },
@@ -173,28 +172,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _handleNavigation(String title){
-  switch(title){
-    case "Products": NavUtil.navigateToPushScreen(context, ContainersScreen());
-    break;
-    case "Partners": NavUtil.navigateToPushScreen(context, PartnerScreen());
-    break;
-    case "Users": NavUtil.navigateToPushScreen(context, UsersScreen());
-    break;
-    case "Order Requests": NavUtil.navigateToPushScreen(context, OrderRequestScreen());
-    break;
-    case "Transactions":
-      NavUtil.navigateToPushScreen(
-        context,
-        TransactionHomeScreen(
-          userId: 1,
-        ),
-      );
-      break;
-    break;
-    default:
-      break;
-  }
+  void _handleNavigation(String title) {
+    switch (title) {
+      case "Products":
+        NavUtil.navigateToPushScreen(context, ContainersScreen());
+        break;
+      case "Partners":
+        NavUtil.navigateToPushScreen(context, PartnerScreen());
+        break;
+      case "Users":
+        NavUtil.navigateToPushScreen(context, UsersScreen());
+        break;
+      case "Order Requests":
+        NavUtil.navigateToPushScreen(context, OrderRequestScreen());
+        break;
+      case "Transactions":
+        NavUtil.navigateToPushScreen(context, TransactionHomeScreen(userId: 1));
+        break;
+        break;
+      default:
+        break;
+    }
   }
 
   Widget _containerStats() {
