@@ -1,16 +1,14 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../auth/model/login_model.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../common_widgets/submit_button.dart';
-import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/SharedPreferenceUtils.dart';
@@ -43,8 +41,10 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _foodController = TextEditingController();
   final TextEditingController _dishwashController = TextEditingController();
   final TextEditingController _microwaveController = TextEditingController();
-  final TextEditingController _maxtemperatureController = TextEditingController();
-  final TextEditingController _mintemperatureController = TextEditingController();
+  final TextEditingController _maxtemperatureController =
+      TextEditingController();
+  final TextEditingController _mintemperatureController =
+      TextEditingController();
   final TextEditingController _lifespanfoodController = TextEditingController();
   final TextEditingController _costController = TextEditingController();
 
@@ -62,11 +62,16 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       _heightController.text = widget.inventoryData!.heightCm.toString();
       _weightController.text = widget.inventoryData!.weightGrams.toString();
       _foodController.text = widget.inventoryData!.foodSafe.toString();
-      _dishwashController.text = widget.inventoryData!.dishwasherSafe.toString();
-      _microwaveController.text = widget.inventoryData!.microwaveSafe.toString();
-      _maxtemperatureController.text = widget.inventoryData!.maxTemperature.toString();
-      _mintemperatureController.text = widget.inventoryData!.minTemperature.toString();
-      _lifespanfoodController.text = widget.inventoryData!.lifespanCycle.toString();
+      _dishwashController.text = widget.inventoryData!.dishwasherSafe
+          .toString();
+      _microwaveController.text = widget.inventoryData!.microwaveSafe
+          .toString();
+      _maxtemperatureController.text = widget.inventoryData!.maxTemperature
+          .toString();
+      _mintemperatureController.text = widget.inventoryData!.minTemperature
+          .toString();
+      _lifespanfoodController.text = widget.inventoryData!.lifespanCycle
+          .toString();
       _costController.text = widget.inventoryData!.costPerUnit.toString();
     }
   }
@@ -81,11 +86,13 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     _materialController.dispose();
     super.dispose();
   }
+
   LoginData? loginModel;
 
   Future<void> _getUserData() async {
-    final Map<String, dynamic>? json =
-    await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
+    final Map<String, dynamic>? json = await SharedPreferenceUtils.getMapFromSF(
+      Strings.PROFILE_DATA,
+    );
 
     if (json != null) {
       loginModel = LoginData.fromJson(json);
@@ -185,6 +192,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     }
     return null;
   }
+
   String? _validateColor(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
@@ -225,7 +233,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     return null;
   }
 
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -254,7 +261,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                         children: [
                           Text(
                             Strings.CONTAINER_INFORMATION,
-                            style: themeData!.textTheme.titleMedium
+                            style: themeData!.textTheme.titleMedium,
                           ),
                           SizedBox(height: Constant.CONTAINER_SIZE_12),
                           Form(
@@ -292,7 +299,9 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                 ),
                                 SizedBox(height: Constant.CONTAINER_SIZE_12),
                                 Container(
-                                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
+                                  padding: EdgeInsets.all(
+                                    Constant.CONTAINER_SIZE_10,
+                                  ),
                                   width: double.infinity,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
@@ -305,12 +314,13 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                       BoxShadow(
                                         color: Colors.white.withOpacity(0.01),
                                         blurRadius: 18,
-                                        offset: const Offset(0, 8)
+                                        offset: const Offset(0, 8),
                                       ),
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         Strings.CONTAINER_SPEC,
@@ -462,12 +472,12 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                                       "description": _desController.text,
                                     };
                               _getNetworkData(containerState, body);
-                                showCustomSnackBar(
-                                  context: context,
-                                  message: "Please complete required fields",
-                                  color: Colors.red,
-                                );
-                              },
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please complete required fields",
+                                color: Colors.red,
+                              );
+                            },
                             rightText: (widget.inventoryData != null)
                                 ? "Edit Container"
                                 : "Add Container",
@@ -579,7 +589,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             child: Container(
               width: Constant.CONTAINER_SIZE_28,
               height: Constant.CONTAINER_SIZE_28,
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 color: Theme.of(context).secondaryHeaderColor,
                 shape: BoxShape.circle,
               ),
