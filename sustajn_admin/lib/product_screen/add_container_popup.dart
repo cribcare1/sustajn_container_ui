@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
 class ContainerPopUpScreen extends ConsumerStatefulWidget {
   const ContainerPopUpScreen({super.key});
@@ -59,7 +60,7 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
               ),
               child: Center(
                 child: Image.asset(
-                  "assets/images/golden_bowl.png", // Change to your asset
+                  Strings.GOLDEN_BOWL_IMG,
                   width: Constant.CONTAINER_SIZE_42,
                   height: Constant.CONTAINER_SIZE_42,
                 ),

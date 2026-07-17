@@ -292,6 +292,7 @@ class Strings {
   static const String DELIVERED_CONTAINERS = 'Delivered Containers';
   static const String NO_PENDING_DETAILS = 'No Pending Details Found';
   static const String ORDERED_QTY = 'Ordered Quantity';
+  static const String GOLDEN_BOWL_IMG = 'assets/images/golden_bowl.png';
   //Transactions
   // static const String TRANSACTIONS = 'Transactions';
   // static const String NO_SOLD_CON = 'No sold containers found';
@@ -302,4 +303,10 @@ class Strings {
   // static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
   // static const PLANTYPE = 'Plan Type';
 
+static const String PRODUCT_INCIRCULATION = 'Incirculation';
+static const String SELECT_PROD = 'Select Product';
+static const String SELECT_PROD_ID = 'Select Product Id';
+static const String SELECT_VOL = 'Select Volume';
+static const String SEARCH_BY_RESTAURANT_NAME = 'Search by Restaurant Name';
+static const String REJECTED_REMARK = 'Rejected Remark';
 }

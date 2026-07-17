@@ -208,6 +208,10 @@ class Constant {
   static const Color gold1 = Color(0xffD9A91F);
   static const Color white1 = Color(0xFFF5EBDF);
   static const Color grey1 = Color(0xFF9E9E9E);
+  static const Color white2 = Color(0xFFE8EFEA);
+  static const Color white3 = Color(0xFFBFDCCF);
+  static const Color white4 = Color(0xFFEEF7F1);
+  static const Color green3 = Color(0xFF2D8F6E);
 
 
 }
