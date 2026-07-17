@@ -7,22 +7,27 @@ class ContainerPopUpScreen extends ConsumerStatefulWidget {
   const ContainerPopUpScreen({super.key});
 
   @override
-  ConsumerState<ContainerPopUpScreen> createState() => ContainerPopUpScreenState();
+  ConsumerState<ContainerPopUpScreen> createState() =>
+      ContainerPopUpScreenState();
 }
 
 class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
-  // final TextEditingController remarksController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
-      padding: EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_24, Constant.CONTAINER_SIZE_12, Constant.CONTAINER_SIZE_24, Constant.CONTAINER_SIZE_30),
+      padding: EdgeInsets.fromLTRB(
+        Constant.CONTAINER_SIZE_24,
+        Constant.CONTAINER_SIZE_12,
+        Constant.CONTAINER_SIZE_24,
+        Constant.CONTAINER_SIZE_30,
+      ),
       decoration: BoxDecoration(
         color: Constant.backgroundColor,
         borderRadius: BorderRadius.vertical(
@@ -50,9 +55,7 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.04),
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-                border: Border.all(
-                  color: Colors.white.withOpacity(.12),
-                ),
+                border: Border.all(color: Colors.white.withOpacity(.12)),
               ),
               child: Center(
                 child: Image.asset(
@@ -78,8 +81,8 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
 
             Text(
               "This will add a new container with ID "
-                  "‘ST-DC-50’ to your inventory. "
-                  "You can edit or delete it later.",
+              "‘ST-DC-50’ to your inventory. "
+              "You can edit or delete it later.",
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white70,
@@ -92,7 +95,6 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
 
             Row(
               children: [
-
                 Expanded(
                   child: SizedBox(
                     height: Constant.CONTAINER_SIZE_55,
@@ -101,11 +103,11 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
                         Navigator.pop(context);
                       },
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          color: Constant.goldenColor,
-                        ),
+                        side: const BorderSide(color: Constant.goldenColor),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_18,
+                          ),
                         ),
                       ),
                       child: Text(
@@ -126,14 +128,14 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
                   child: SizedBox(
                     height: Constant.CONTAINER_SIZE_55,
                     child: ElevatedButton(
-                      onPressed: () {
-
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Constant.goldenColor,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
+                          borderRadius: BorderRadius.circular(
+                            Constant.CONTAINER_SIZE_18,
+                          ),
                         ),
                       ),
                       child: Text(
@@ -147,7 +149,6 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ],
