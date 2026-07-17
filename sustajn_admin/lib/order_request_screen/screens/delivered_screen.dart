@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../Screen/Partner/model/get_all_restaurant_data.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/card_widget.dart';
 import '../../common_widgets/submit_button.dart';
@@ -56,7 +55,7 @@ class _DeliveredScreenState extends ConsumerState<DeliveredScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_RESTAURANT_NAME,
                 onChanged: (value){
                   setState(() {
                     if (value.isEmpty) {

@@ -278,4 +278,11 @@ class Strings {
   static const String DELIVERED_CONTAINERS = 'Delivered Containers';
   static const String NO_PENDING_DETAILS = 'No Pending Details Found';
   static const String ORDERED_QTY = 'Ordered Quantity';
+  static const String CONTAINER_INFO = 'Container Information';
+  static const String SELECT_PROD = 'Select Product*';
+  static const String SELECT_PROD_ID = 'Select Product ID*';
+  static const String SELECT_VOL = 'Select Volume in ml (automatically populated)';
+  static const String REJECTED_REMARK = 'Rejected Remarks';
+  static const String SEARCH_BY_RESTAURANT_NAME = 'Search by Restaurant Name';
+
 }

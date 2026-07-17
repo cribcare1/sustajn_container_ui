@@ -32,7 +32,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
           Constant.CONTAINER_SIZE_24,
           Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
-        color: const Color(0xff0D3C2D),
+        color: Constant.backgroundColor,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Constant.CONTAINER_SIZE_30),
         ),
@@ -66,7 +66,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
               child: Center(
                 child: Icon(
                   Icons.close,
-                  color: Color(0xffDC3545),
+                  color: Constant.rejectColor,
                   size: Constant.CONTAINER_SIZE_45,
                 ),
               ),
@@ -122,7 +122,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                   borderSide: const BorderSide(
-                    color: Color(0xffD6A62A),
+                    color: Constant.goldenColor,
                   ),
                 ),
               ),
@@ -141,7 +141,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
-                          color: Color(0xffD6A62A),
+                          color: Constant.goldenColor,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
@@ -150,7 +150,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                       child: Text(
                         Strings.CANCEL,
                         style: TextStyle(
-                          color: Color(0xffD6A62A),
+                          color: Constant.goldenColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -170,7 +170,7 @@ class _RejectOrderSheetState extends ConsumerState<RejectOrderSheet> {
                         await _getRejectOrderNetworkCall();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffDC3545),
+                        backgroundColor: Constant.rejectColor,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),

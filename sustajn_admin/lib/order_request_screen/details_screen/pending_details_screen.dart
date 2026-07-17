@@ -235,7 +235,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: 1.5,
                           ),
                         ),
@@ -243,7 +243,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                       child: Text(
                         Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -273,7 +273,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: 1)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: 1)),
       ],
     );
   }
@@ -304,7 +304,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                       borderRadius: BorderRadius.circular(
                         Constant.CONTAINER_SIZE_12,
                       ),
-                      border: Border.all(color: Color(0xFFF5EBDF)),
+                      border: Border.all(color: Constant.white1),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(
@@ -405,7 +405,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
             Column(
               children: [
                  Divider(
-                  color: Color(0xFF9E9E9E),
+                  color: Constant.grey1,
                   thickness: Constant.SIZE_01,
                 ),
 
@@ -532,7 +532,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
                 height: Constant.CONTAINER_SIZE_45,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffD9A91F),
+                    backgroundColor: Constant.gold1,
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),

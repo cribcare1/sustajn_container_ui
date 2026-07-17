@@ -5,6 +5,7 @@ import '../../Screen/users/screens/users_screen.dart';
 import '../../container_list/screens/add_new_container.dart';
 import '../../container_list/screens/container_list_screen.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
+import '../../product_screen/product_home_screen.dart';
 import '../../utils/theme_utils.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -173,7 +174,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _handleNavigation(String title){
   switch(title){
-    case "Products": NavUtil.navigateToPushScreen(context, ContainersScreen());
+    case "Products": NavUtil.navigateToPushScreen(context, ProductsScreen());
     break;
     case "Partners": NavUtil.navigateToPushScreen(context, PartnerScreen());
     break;

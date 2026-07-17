@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +6,6 @@ import '../../auth/model/login_model.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
-import '../../common_widgets/submit_button.dart';
-import '../../constants/network_urls.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/SharedPreferenceUtils.dart';
@@ -228,255 +223,277 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final themeData = CustomTheme.getTheme(true);
     final containerState = ref.watch(containerNotifierProvider);
+
     return Scaffold(
-      backgroundColor: themeData?.scaffoldBackgroundColor,
+      backgroundColor: Constant.backgroundColor,
+
       appBar: CustomAppBar(
         title: Strings.ADD_NEWCONTAINER_TITLE,
         centerTitle: false,
-        leading: CustomBackButton(),
+        leading: const CustomBackButton(),
       ).getAppBar(context),
 
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    GlassSummaryCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            Strings.CONTAINER_INFORMATION,
-                            style: themeData!.textTheme.titleMedium
-                          ),
-                          SizedBox(height: Constant.CONTAINER_SIZE_12),
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                _buildTextField(
-                                  controller: _productController,
-                                  hint: Strings.SELECT_PRODUCT,
-                                  validator: _validateProduct,
-                                  keyboardType: TextInputType.text,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                                _buildTextField(
-                                  controller: _productIdController,
-                                  hint: Strings.SELECT_PRODUCT_ID,
-                                  validator: _validateProductId,
-                                  keyboardType: TextInputType.text,
-                                  // isReadonly: true,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                                _buildTextField(
-                                  controller: _volumeController,
-                                  hint: Strings.SELECT_VOLUME,
-                                  validator: _validateVolume,
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(Constant.CONTAINER_SIZE_12,
+              Constant.SIZE_08,
+              Constant.CONTAINER_SIZE_12,
+              Constant.CONTAINER_SIZE_12),
+          child: SizedBox(
+            height: Constant.CONTAINER_SIZE_50,
+            child: containerState.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constant.goldenColor,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                ),
+              ),
+              onPressed: () {
+                Map<String, dynamic> body =
+                (widget.inventoryData != null)
+                    ? {
+                  "containerName": _productController.text,
+                  "productId": _productIdController.text,
+                  "capacityMl": _volumeController.text,
+                  "quantity": _quantityController.text,
+                  "foodSafe": true,
+                  "dishwasherSafe": true,
+                  "microwaveSafe": false,
+                  "userId": loginModel!.userId,
+                  "containerTypeId":
+                  widget.inventoryData!.containerTypeId,
+                  "description": _desController.text,
+                }
+                    : {
+                  "containerName": _productController.text,
+                  "productId": _productIdController.text,
+                  "capacityMl": _volumeController.text,
+                  "quantity": _quantityController.text,
+                  "foodSafe": true,
+                  "dishwasherSafe": true,
+                  "microwaveSafe": false,
+                  "userId": loginModel!.userId,
+                  "description": _desController.text,
+                };
 
-                                _buildTextField(
-                                  controller: _quantityController,
-                                  hint: Strings.ENTER_QUANTITY,
-                                  validator: _validateQuantity,
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                                Container(
-                                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_10),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.white.withOpacity(0.01),
-                                    border: Border.all(
-                                      color: Colors.white.withOpacity(0.25),
-                                      width: 0.08,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withOpacity(0.01),
-                                        blurRadius: 18,
-                                        offset: const Offset(0, 8)
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        Strings.CONTAINER_SPEC,
-                                        style: TextStyle(
-                                          fontSize: Constant.LABEL_TEXT_SIZE_18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                _buildTextField(
-                                  maxLine: 8,
-                                  controller: _desController,
-                                  hint: Strings.DESCRIPTION_TEXT,
-                                  keyboardType: TextInputType.text,
-                                  validator: (String? p1) {
-                                    return null;
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _materialController,
-                      hint: Strings.CONTAINER_MATERIAL,
-                      validator: _validateMaterial,
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _colorController,
-                      hint: Strings.CONTAINER_COLOR,
-                      validator: _validateColor,
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _lengthController,
-                      hint: Strings.LENGTH,
-                      validator: _validateLength,
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _heightController,
-                      hint: Strings.HEIGHT,
-                      validator: _validateHeight,
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _weightController,
-                      hint: Strings.WEIGHT,
-                      validator: _validateWeight,
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _foodController,
-                      hint: Strings.FOOD_SAFE,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.DISH_WASH,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.MICROWAVE,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.MAX_TEMP,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.MIN_TEMPERATURE,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.LIFESPAN,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-                    _buildTextField(
-                      controller: _productIdController,
-                      hint: Strings.COST,
-                      validator: _validateProductId,
-                      keyboardType: TextInputType.text,
-                      isReadonly: true,
-                    ),
-                    SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-                    containerState.isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : SubmitButton(
-                            onRightTap: () {
-                              Map<String, dynamic> body =
-                                  (widget.inventoryData != null)
-                                  ? {
-                                      "containerName": _productController.text,
-                                      "productId": _productIdController.text,
-                                      "capacityMl": _volumeController.text,
-                                      "quantity": _quantityController.text,
-                                      "foodSafe": true,
-                                      "dishwasherSafe": true,
-                                      "microwaveSafe": false,
-                                      "userId": loginModel!.userId,
-                                      "containerTypeId":
-                                          widget.inventoryData!.containerTypeId,
-                                      "description": _desController.text,
-                                    }
-                                  : {
-                                      "containerName": _productController.text,
-                                      "productId": _productIdController.text,
-                                      "capacityMl": _volumeController.text,
-                                      "quantity": _quantityController.text,
-                                      "foodSafe": true,
-                                      "dishwasherSafe": true,
-                                      "microwaveSafe": false,
-                                      "userId": loginModel!.userId,
-                                      "description": _desController.text,
-                                    };
-                              _getNetworkData(containerState, body);
-                                showCustomSnackBar(
-                                  context: context,
-                                  message: "Please complete required fields",
-                                  color: Colors.red,
-                                );
-                              },
-                            rightText: (widget.inventoryData != null)
-                                ? "Edit Container"
-                                : "Add Container",
-                          ),
-                  ],
+                _getNetworkData(containerState, body);
+              },
+              child: Text(
+                widget.inventoryData != null
+                    ? "Edit Container"
+                    : "Add Container",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-          ],
+          ),
+        ),
+      ),
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  Strings.CONTAINER_INFO,
+                  style: themeData!.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_14),
+
+                _buildTextField(
+                  controller: _productController,
+                  hint: Strings.SELECT_PROD,
+                  validator: _validateProduct,
+                  keyboardType: TextInputType.text,
+                  suffix: Icons.keyboard_arrow_down_rounded,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _productIdController,
+                  hint: Strings.SELECT_PROD_ID,
+                  validator: _validateProductId,
+                  keyboardType: TextInputType.text,
+                  suffix: Icons.keyboard_arrow_down_rounded,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _volumeController,
+                  hint: Strings.SELECT_VOL,
+                  validator: _validateVolume,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _quantityController,
+                  hint: Strings.ENTER_QUANTITY,
+                  validator: _validateQuantity,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_24),
+
+                Text(
+                  Strings.CONTAINER_SPEC,
+                  style: themeData.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_14),
+
+                _buildTextField(
+                  controller: _desController,
+                  hint: Strings.DESCRIPTION_TEXT,
+                  validator: (value) => null,
+                  keyboardType: TextInputType.multiline,
+                  maxLine: 6,
+                ),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "0/500",
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: Constant.CONTAINER_SIZE_11,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _materialController,
+                  hint: Strings.CONTAINER_MATERIAL,
+                  validator: _validateMaterial,
+                  keyboardType: TextInputType.text,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _colorController,
+                  hint: Strings.CONTAINER_COLOR,
+                  validator: _validateColor,
+                  keyboardType: TextInputType.text,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _lengthController,
+                  hint: Strings.LENGTH,
+                  validator: _validateLength,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _heightController,
+                  hint: Strings.HEIGHT,
+                  validator: _validateHeight,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _weightController,
+                  hint: Strings.WEIGHT,
+                  validator: _validateWeight,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                _buildTextField(
+                  controller: _foodController,
+                  hint: Strings.FOOD_SAFE,
+                  validator: (value) => null,
+                  keyboardType: TextInputType.text,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _dishwashController,
+                  hint: "Dishwash Safe",
+                  validator: (value) => null,
+                  keyboardType: TextInputType.text,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _microwaveController,
+                  hint: "Microwave Safe",
+                  validator: (value) => null,
+                  keyboardType: TextInputType.text,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _maxtemperatureController,
+                  hint: "Max Temperature",
+                  validator: (value) => null,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _mintemperatureController,
+                  hint: "Min Temperature",
+                  validator: (value) => null,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _lifespanfoodController,
+                  hint: "Lifespan Cycle",
+                  validator: (value) => null,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildTextField(
+                  controller: _costController,
+                  hint: "Cost Per Unit",
+                  validator: _validatePrice,
+                  keyboardType: TextInputType.number,
+                ),
+
+                const SizedBox(height: 80),
+              ],
+            ),
+          ),
         ),
       ),
     );

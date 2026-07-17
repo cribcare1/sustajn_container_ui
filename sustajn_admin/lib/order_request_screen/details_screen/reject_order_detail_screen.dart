@@ -202,7 +202,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -222,7 +222,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
                                       (_) => Container(
                                     width: Constant.SIZE_02,
                                     height: Constant.SIZE_04,
-                                        color: Color(0xFFDC3545),
+                                        color: Constant.rejectColor,
                                   ),
                                 ),
                               ),
@@ -232,7 +232,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFFDC3545),
+                                color: Constant.rejectColor,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -294,15 +294,15 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: 1.5,
                           ),
                         ),
                       ),
                       child: Text(
-                        "Rejected Remarks",
+                        Strings.REJECTED_REMARK,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -332,7 +332,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: Constant.SIZE_01)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: Constant.SIZE_01)),
       ],
     );
   }

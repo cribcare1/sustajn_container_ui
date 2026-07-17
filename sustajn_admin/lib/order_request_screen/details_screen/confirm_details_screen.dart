@@ -203,7 +203,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child:  Icon(
@@ -233,7 +233,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -295,7 +295,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                       decoration:  BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: Constant.SIZE_02,
                           ),
                         ),
@@ -303,7 +303,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                       child: Text(
                         Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -333,7 +333,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: 1)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: 1)),
       ],
     );
   }
@@ -473,7 +473,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                 height: Constant.CONTAINER_SIZE_45,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffD9A91F),
+                    backgroundColor: Constant.gold1,
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),

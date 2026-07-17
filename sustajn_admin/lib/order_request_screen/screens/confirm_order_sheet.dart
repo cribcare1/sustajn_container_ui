@@ -33,7 +33,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
             Constant.CONTAINER_SIZE_24,
             Constant.CONTAINER_SIZE_24),
         decoration: BoxDecoration(
-          color: const Color(0xff0D3C2D),
+          color: Constant.backgroundColor,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(Constant.CONTAINER_SIZE_30),
           ),
@@ -66,7 +66,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                 child: Center(
                   child: Icon(
                     Icons.check,
-                    color: Color(0xff2DBE60),
+                    color: Constant.green1,
                     size: Constant.CONTAINER_SIZE_45,
                   ),
                 ),
@@ -122,7 +122,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                     borderSide: const BorderSide(
-                      color: Color(0xffD6A62A),
+                      color: Constant.gold,
                     ),
                   ),
                 ),
@@ -141,7 +141,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                         },
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(
-                            color: Color(0xffD6A62A),
+                            color: Constant.gold,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
@@ -150,7 +150,7 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                         child: const Text(
                           Strings.CANCEL,
                           style: TextStyle(
-                            color: Color(0xffD6A62A),
+                            color: Constant.gold,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -170,8 +170,8 @@ class _ConfirmOrderSheetState extends ConsumerState<ConfirmOrderSheet> {
                           await _getApproveOrderNetworkCall();
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffD6A62A),
-                          disabledBackgroundColor: const Color(0xffD6A62A),
+                          backgroundColor: Constant.gold,
+                          disabledBackgroundColor: Constant.gold,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),

@@ -232,7 +232,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -260,7 +260,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -334,7 +334,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: 1.5,
                           ),
                         ),
@@ -342,7 +342,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                       child: Text(
                         Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -372,7 +372,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: Constant.SIZE_01)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: Constant.SIZE_01)),
       ],
     );
   }
