@@ -155,47 +155,4 @@ class ContainerPopUpScreenState extends ConsumerState<ContainerPopUpScreen> {
       ),
     );
   }
-
-
-
-
-// _getPayLoad() {
-//   final orderRequestState = ref.watch(orderRequestProvider);
-//   final pendingDetailData = orderRequestState.getPendingDetailsData!.data!;
-//   var payload = {
-//     "orderId": pendingDetailData!.id!,
-//     "adminRemark": remarksController.text,
-//     "items": pendingDetailData.items!.map((item) {
-//       return {
-//         "itemId": item.itemId,
-//         "approvedQty": item.approvequantity,
-//       };
-//     }).toList(),
-//   };
-//   return payload;
-// }
-
-// _getRejectOrderNetworkCall() async {
-//   try {
-//     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-//         isNetworkAvailable,
-//         ) {
-//       Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-//       final orderState = ref.read(orderRequestProvider);
-//       if (isNetworkAvailable) {
-//         orderState.setIsLoading(true);
-//         orderState.setContext(context);
-//         // final userId = Utils.userId;
-//         final url =
-//             '${NetworkUrls.REJECT_ORDER}';
-//         ref.read(getRejectedOrderProvider(_getPayLoad()));
-//       } else {
-//         orderState.setIsLoading(false);
-//         Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-//       }
-//     });
-//   } catch (e) {
-//     Utils.printLog('Error in visitor button onPressed: $e');
-//   }
-// }
 }

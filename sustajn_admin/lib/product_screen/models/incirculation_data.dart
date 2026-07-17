@@ -12,8 +12,8 @@ class IncirculationData {
         data!.add(new IncirculationList.fromJson(v));
       });
     }
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -44,12 +44,12 @@ class IncirculationList {
         this.productId});
 
   IncirculationList.fromJson(Map<String, dynamic> json) {
-    capacity = json['capacity'];
-    containerTypeId = json['containerTypeId'];
-    imageUrl = json['imageUrl'];
-    inCirculationCount = json['inCirculationCount'];
-    name = json['name'];
-    productId = json['productId'];
+    capacity = json['capacity']??"";
+    containerTypeId = json['containerTypeId']??0;
+    imageUrl = json['imageUrl']??"";
+    inCirculationCount = json['inCirculationCount']??0;
+    name = json['name']??"";
+    productId = json['productId']??"";
   }
 
   Map<String, dynamic> toJson() {
