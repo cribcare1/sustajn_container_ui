@@ -280,33 +280,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Map<String, dynamic> body = (widget.inventoryData != null)
-                          ? {
-                              "containerName": _productController.text,
-                              "productId": _productIdController.text,
-                              "capacityMl": _volumeController.text,
-                              "quantity": _quantityController.text,
-                              "foodSafe": true,
-                              "dishwasherSafe": true,
-                              "microwaveSafe": false,
-                              "userId": loginModel!.userId,
-                              "containerTypeId":
-                                  widget.inventoryData!.containerTypeId,
-                              "description": _desController.text,
-                            }
-                          : {
-                              "containerName": _productController.text,
-                              "productId": _productIdController.text,
-                              "capacityMl": _volumeController.text,
-                              "quantity": _quantityController.text,
-                              "foodSafe": true,
-                              "dishwasherSafe": true,
-                              "microwaveSafe": false,
-                              "userId": loginModel!.userId,
-                              "description": _desController.text,
-                            };
-
-                      _getNetworkData(containerState, body);
+                      _getNetworkData(containerState);
                     },
                     child:
                     Text(
@@ -689,7 +663,36 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     );
   }
 
-  _getNetworkData(var containerState, Map<String, dynamic> body) async {
+  _getJsonData(){
+    Map<String, dynamic> body = (widget.inventoryData != null)
+        ? {
+      "containerName": _productController.text,
+      "productId": _productIdController.text,
+      "capacityMl": _volumeController.text,
+      "quantity": _quantityController.text,
+      "foodSafe": true,
+      "dishwasherSafe": true,
+      "microwaveSafe": false,
+      "userId": loginModel!.userId,
+      "containerTypeId":
+      widget.inventoryData!.containerTypeId,
+      "description": _desController.text,
+    }
+        : {
+      "containerName": _productController.text,
+      "productId": _productIdController.text,
+      "capacityMl": _volumeController.text,
+      "quantity": _quantityController.text,
+      "foodSafe": true,
+      "dishwasherSafe": true,
+      "microwaveSafe": false,
+      "userId": loginModel!.userId,
+      "description": _desController.text,
+    };
+    return body;
+  }
+
+  _getNetworkData(var containerState) async {
     try {
       containerState.setIsLoading(true);
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
@@ -698,7 +701,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
         try {
           if (isNetworkAvailable) {
             containerState.setIsLoading(true);
-            ref.read(addContainerProvider(body));
+            ref.read(addContainerProvider(_getJsonData()));
           } else {
             containerState.setIsLoading(false);
             if (!mounted) return;
