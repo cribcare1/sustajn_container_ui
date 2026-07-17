@@ -110,7 +110,7 @@ class LeaseDetailsDialogue extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "assets/images/img.png",
+                    "assets/images/bowl_img.png",
                     height: Constant.CONTAINER_SIZE_40,
                     width: Constant.CONTAINER_SIZE_40,
                   ),

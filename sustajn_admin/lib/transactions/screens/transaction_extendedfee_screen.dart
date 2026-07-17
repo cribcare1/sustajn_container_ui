@@ -1,32 +1,31 @@
-  import 'package:container_tracking/Screen/users/model/user_damage_data.dart';
-import 'package:container_tracking/Screen/users/screens/user_borrowed_details_dialog.dart';
-import 'package:container_tracking/Screen/users/screens/user_damage_popup.dart';
-  import 'package:container_tracking/common_widgets/custom_app_bar.dart';
-  import 'package:flutter/material.dart';
-  import 'package:flutter_riverpod/flutter_riverpod.dart';
-  import '../../../common_provider/network_provider.dart';
-  import '../../../common_widgets/custom_back_button.dart';
-  import '../../../common_widgets/custom_search_bar.dart';
-  import '../../../common_widgets/filter_screen_2.dart';
-  import '../../../constants/network_urls.dart';
-  import '../../../constants/number_constants.dart';
-  import '../../../constants/string_utils.dart';
-  import '../../../utils/date_month_utils.dart';
-  import '../../../utils/utility.dart';
-  import '../model/user_borrowed_data.dart';
-import '../provider/user_provider.dart';
+import 'package:container_tracking/transactions/models/transaction_extendedfee_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../common_provider/network_provider.dart';
+import '../../../common_widgets/filter_screen_2.dart';
+import '../../../constants/network_urls.dart';
+import '../../../constants/number_constants.dart';
+import '../../../constants/string_utils.dart';
+import '../../../utils/date_month_utils.dart';
+import '../../../utils/utility.dart';
+import '../../Screen/users/model/user_borrowed_data.dart';
+import '../../Screen/users/model/user_damage_data.dart';
+import '../../Screen/users/provider/user_provider.dart';
+import '../../Screen/users/screens/user_damage_popup.dart';
+import '../provider_service/transaction_provider.dart';
 
-  class UserDamagedScreen extends ConsumerStatefulWidget {
+
+  class TransactionExtendedFeeScreen extends ConsumerStatefulWidget {
     final int userId;
 
-    const UserDamagedScreen({super.key, required this.userId});
+    const TransactionExtendedFeeScreen({super.key, required this.userId});
 
     @override
-    ConsumerState<UserDamagedScreen> createState() => _DamagedScreenState();
+    ConsumerState<TransactionExtendedFeeScreen> createState() => _TransactionScreenState();
   }
 
-  class _DamagedScreenState extends ConsumerState<UserDamagedScreen> {
-  List<DamageDataList> filteredList = [];
+  class _TransactionScreenState extends ConsumerState<TransactionExtendedFeeScreen> {
+  List<ExtendedFeeDataList> filteredList = [];
   final searchController = TextEditingController();
   String _searchQuery = '';
   String? selectedMonthYear;
@@ -34,13 +33,13 @@ import '../provider/user_provider.dart';
     @override
     void initState() {
       super.initState();
-      _getSoldNetworkCall();
+      _getExtendedNetworkCall();
     }
 
   @override
   Widget build(BuildContext context) {
-    final userNotifierState = ref.watch(userProvider);
-    final damageList = userNotifierState.userDamageList;
+    final transactionState = ref.watch(transactionProvider);
+    final damageList = transactionState.getExtendedFeeDataList;
     Utils.printLog("damageList = ${damageList.length}");
     if (filteredList.isEmpty && damageList.isNotEmpty) {
       applySearchAndFilter(damageList);
@@ -48,10 +47,6 @@ import '../provider/user_provider.dart';
 
     return Scaffold(
         backgroundColor: Color(0xFF0E3B2E),
-        appBar: CustomAppBar(
-          title: "Damage",
-          leading: CustomBackButton(),
-        ).getAppBar(context),
         body: Stack(
         children: [
           Column(
@@ -59,27 +54,27 @@ import '../provider/user_provider.dart';
               _searchBar(),
 
               Expanded(
-                child: filteredList.isEmpty && !userNotifierState.isLoading
+                child: filteredList.isEmpty && !transactionState.isLoading
                     ? Center(
-                  child: Utils.getErrorText(Strings.NO_DAMAGED),
+                  child: Utils.getErrorText(Strings.NO_TRANSACTION_EXTENDED_FEE_DATA),
                 )
                     : ListView.builder(
                   padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
                   itemCount: filteredList.length,
                   itemBuilder: (context, index) {
-                    final damageData = filteredList.elementAt(index);
+                    final extendedData = filteredList.elementAt(index);
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _monthHeader(damageData.monthYear!, damageData.monthWiseTotalDamageContainers!),
+                        _monthHeader(extendedData.monthYear!, extendedData.monthWiseTotalDamageContainers!),
                         SizedBox(height: Constant.SIZE_06),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: damageData.damageContainers!.length,
+                          itemCount: extendedData.extendedFeeContainers!.length,
                           itemBuilder: (_, i) => _cardItem(
-                            damageData.damageContainers![i],
+                            extendedData!.extendedFeeContainers![i]!,
                           ),
                         ),
                       ],
@@ -90,7 +85,7 @@ import '../provider/user_provider.dart';
             ],
           ),
 
-          if (userNotifierState.isLoading)
+          if (transactionState.isLoading)
             const Center(child: CircularProgressIndicator(
               color: Constant.gold,
             )),
@@ -107,13 +102,13 @@ import '../provider/user_provider.dart';
         onChanged: (value) {
           setState(() {
             _searchQuery = value;
-            applySearchAndFilter(ref.read(userProvider).userDamageList);
+            applySearchAndFilter(ref.read(transactionProvider).getExtendedFeeDataList);
           });
         },
         cursorColor: Colors.white,
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          hintText: Strings.SEARCH_BY_RESTAURANT,
+          hintText: Strings.SEARCH_BY_EXTENDED_FEE,
           hintStyle: const TextStyle(color: Colors.white70),
           prefixIcon: const Icon(Icons.search, color: Colors.white70),
           border: OutlineInputBorder(
@@ -149,7 +144,7 @@ import '../provider/user_provider.dart';
 
                     setState(() {
                       selectedMonthYear = value;
-                      applySearchAndFilter(ref.read(userProvider).userDamageList);
+                      applySearchAndFilter(ref.read(transactionProvider).getExtendedFeeDataList);
                     });
 
                   },
@@ -163,14 +158,14 @@ import '../provider/user_provider.dart';
     );
   }
 
-  void applySearchAndFilter(List<DamageDataList> sourceList) {
+  void applySearchAndFilter(List<ExtendedFeeDataList> sourceList) {
     filteredList = sourceList;
     Utils.printLog("filteredListData = ${filteredList.length}  sourceListData  = ${sourceList.length}");
 
 
     if (_searchQuery.isNotEmpty) {
       filteredList = filteredList.where((item) {
-        return item.damageContainers?.any((container) {
+        return item.extendedFeeContainers?.any((container) {
           return container.productIds
               ?.toLowerCase()
               .contains(_searchQuery.toLowerCase()) ??
@@ -192,7 +187,7 @@ import '../provider/user_provider.dart';
     }
   }
 
-    Widget _cardItem(DamageContainers item) {
+    Widget _cardItem(ExtendedFeeContainers item) {
       final theme = Theme.of(context);
 
       return InkWell(
@@ -209,17 +204,6 @@ import '../provider/user_provider.dart';
         ),
         child: Row(
           children: [
-            // Container(
-            //   height: Constant.CONTAINER_SIZE_50,
-            //   width: Constant.CONTAINER_SIZE_50,
-            //   decoration: BoxDecoration(
-            //     color: Colors.white10,
-            //     borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
-            //   ),
-            //   child: Image.asset(getContainerImage(item.type)),
-            // ),
-            // SizedBox(width: Constant.CONTAINER_SIZE_12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,7 +348,7 @@ import '../provider/user_provider.dart';
     );
   }
 
-  void _openDetailDialog(BuildContext context, DamageContainers item) {
+  void _openDetailDialog(BuildContext context, ExtendedFeeContainers item) {
     final items = (item.products ?? []).map((product) {
       return BorrowedUiItem(
         restaurantName: '',
@@ -387,7 +371,7 @@ import '../provider/user_provider.dart';
     );
   }
 
-  _getSoldNetworkCall() async {
+  _getExtendedNetworkCall() async {
       try {
         await ref.read(networkProvider.notifier).isNetworkAvailable().then((
             isNetworkAvailable,
@@ -397,7 +381,7 @@ import '../provider/user_provider.dart';
           if (isNetworkAvailable) {
             orderState.setIsLoading(true);
 
-            final url = '${NetworkUrls.USER_DAMAGED_DATA}${widget.userId}';
+            final url = '${NetworkUrls.SUBSCRIPTION}${widget.userId}';
             ref.read(getUserDamagedProvider(url));
           } else {
             orderState.setIsLoading(false);

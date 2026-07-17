@@ -53,6 +53,7 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
   static const REJECT_ORDER = 'inventory/rejectOrder';
   static const MARK_AS_DELIVERED = 'inventory/markOrderAsDelivered/';
 
-  //Admin Products
-static const PRODUCT_INCIRCULATION = 'inventory/cointainerstatistic/in-circulation-list';
+  static const SUBSCRIPTION = 'inventory/admin/transactions/subscriptions';
+  static const SOLD_DASHBOARD = 'inventory/admin/transactions/sold-dashboard';
+
 }
