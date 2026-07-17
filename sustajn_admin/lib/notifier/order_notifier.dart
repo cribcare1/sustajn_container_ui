@@ -1,7 +1,8 @@
-import 'package:container_tracking/Screen/Partner/model/container_history_data.dart';
+import 'package:container_tracking/product_screen/models/incirculation_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
 import '../resutants/models/get_container_data.dart';
+import '../utils/utility.dart';
 
 class OrderState extends ChangeNotifier {
   String _name = '';
@@ -15,6 +16,9 @@ class OrderState extends ChangeNotifier {
   bool _isOrdering = false;
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
+
+  IncirculationData? _incirculationData;
+  List<IncirculationList> _incirculationList = [];
 
   bool get isVerifying => _isVerifying;
 
@@ -43,6 +47,9 @@ class OrderState extends ChangeNotifier {
   int get leasedContainerCount => _leasedContainerCount;
 
   int get returnedContainerCount => _returnedContainerCount;
+
+  IncirculationData? get getIncirculationData => _incirculationData;
+  List<IncirculationList> get getIncirculationList => _incirculationList;
 
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -73,6 +80,13 @@ class OrderState extends ChangeNotifier {
 
   void setInventoryFilter(List<InventoryData> data) {
     _filterInventory = List.from(data);
+    notifyListeners();
+  }
+
+  void setIncirculationData(IncirculationData incirculationData) {
+    Utils.printLog("data list = ${incirculationData.data!.length}");
+    _incirculationData = incirculationData;
+    _incirculationList = incirculationData!.data!;
     notifyListeners();
   }
 

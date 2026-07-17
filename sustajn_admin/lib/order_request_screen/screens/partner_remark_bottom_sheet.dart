@@ -11,7 +11,7 @@ class PartnerRemarksBottomSheet extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF0E3B2E),
+        color: Constant.backgroundColor,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Constant.CONTAINER_SIZE_24),
         ),

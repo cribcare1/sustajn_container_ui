@@ -3,6 +3,7 @@ import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
+import 'incirculation_screen.dart';
 import 'inventory_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
@@ -126,8 +127,8 @@ class _ProductsScreenState extends State<ProductsScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                InventoryScreen(restaurantId: 2,),
-                Container(),
+                InventoryScreen(restaurantId: 2),
+                IncirculationScreen(restaurantId: 2),
                 Container(),
                 Container(),
                 Container(),

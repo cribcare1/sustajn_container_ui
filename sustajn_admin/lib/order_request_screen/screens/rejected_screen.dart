@@ -46,7 +46,7 @@ class _RejectedScreenState extends ConsumerState<RejectedScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_CONTAINER_NAME,
+                Strings.SEARCH_BY_RESTAURANT_NAME,
                 onChanged: (value){
                   orderRequestState.filterInventoryByNameOrId(value);
                 },
