@@ -1,11 +1,14 @@
+import 'package:container_tracking/common_widgets/card_widget.dart';
 import 'package:container_tracking/container_list/container_provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../auth/model/login_model.dart';
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
+import '../../common_widgets/submit_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../../utils/SharedPreferenceUtils.dart';
@@ -38,8 +41,10 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
   final TextEditingController _foodController = TextEditingController();
   final TextEditingController _dishwashController = TextEditingController();
   final TextEditingController _microwaveController = TextEditingController();
-  final TextEditingController _maxtemperatureController = TextEditingController();
-  final TextEditingController _mintemperatureController = TextEditingController();
+  final TextEditingController _maxtemperatureController =
+      TextEditingController();
+  final TextEditingController _mintemperatureController =
+      TextEditingController();
   final TextEditingController _lifespanfoodController = TextEditingController();
   final TextEditingController _costController = TextEditingController();
 
@@ -57,11 +62,16 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       _heightController.text = widget.inventoryData!.heightCm.toString();
       _weightController.text = widget.inventoryData!.weightGrams.toString();
       _foodController.text = widget.inventoryData!.foodSafe.toString();
-      _dishwashController.text = widget.inventoryData!.dishwasherSafe.toString();
-      _microwaveController.text = widget.inventoryData!.microwaveSafe.toString();
-      _maxtemperatureController.text = widget.inventoryData!.maxTemperature.toString();
-      _mintemperatureController.text = widget.inventoryData!.minTemperature.toString();
-      _lifespanfoodController.text = widget.inventoryData!.lifespanCycle.toString();
+      _dishwashController.text = widget.inventoryData!.dishwasherSafe
+          .toString();
+      _microwaveController.text = widget.inventoryData!.microwaveSafe
+          .toString();
+      _maxtemperatureController.text = widget.inventoryData!.maxTemperature
+          .toString();
+      _mintemperatureController.text = widget.inventoryData!.minTemperature
+          .toString();
+      _lifespanfoodController.text = widget.inventoryData!.lifespanCycle
+          .toString();
       _costController.text = widget.inventoryData!.costPerUnit.toString();
     }
   }
@@ -76,11 +86,13 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     _materialController.dispose();
     super.dispose();
   }
+
   LoginData? loginModel;
 
   Future<void> _getUserData() async {
-    final Map<String, dynamic>? json =
-    await SharedPreferenceUtils.getMapFromSF(Strings.PROFILE_DATA);
+    final Map<String, dynamic>? json = await SharedPreferenceUtils.getMapFromSF(
+      Strings.PROFILE_DATA,
+    );
 
     if (json != null) {
       loginModel = LoginData.fromJson(json);
@@ -180,6 +192,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     }
     return null;
   }
+
   String? _validateColor(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Required";
@@ -219,7 +232,6 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
     }
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -298,20 +310,106 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
       ),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  Strings.CONTAINER_INFO,
-                  style: themeData!.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    GlassSummaryCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            Strings.CONTAINER_INFORMATION,
+                            style: themeData!.textTheme.titleMedium,
+                          ),
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                _buildTextField(
+                                  controller: _productController,
+                                  hint: Strings.SELECT_PRODUCT,
+                                  validator: _validateProduct,
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  controller: _productIdController,
+                                  hint: Strings.SELECT_PRODUCT_ID,
+                                  validator: _validateProductId,
+                                  keyboardType: TextInputType.text,
+                                  // isReadonly: true,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                _buildTextField(
+                                  controller: _volumeController,
+                                  hint: Strings.SELECT_VOLUME,
+                                  validator: _validateVolume,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                                _buildTextField(
+                                  controller: _quantityController,
+                                  hint: Strings.ENTER_QUANTITY,
+                                  validator: _validateQuantity,
+                                  keyboardType: TextInputType.number,
+                                ),
+                                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                                Container(
+                                  padding: EdgeInsets.all(
+                                    Constant.CONTAINER_SIZE_10,
+                                  ),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.white.withOpacity(0.01),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.25),
+                                      width: 0.08,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.white.withOpacity(0.01),
+                                        blurRadius: 18,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        Strings.CONTAINER_SPEC,
+                                        style: TextStyle(
+                                          fontSize: Constant.LABEL_TEXT_SIZE_18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                _buildTextField(
+                                  maxLine: 8,
+                                  controller: _desController,
+                                  hint: Strings.DESCRIPTION_TEXT,
+                                  keyboardType: TextInputType.text,
+                                  validator: (String? p1) {
+                                    return null;
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_14),
 
@@ -379,7 +477,50 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                       color: Colors.white38,
                       fontSize: Constant.CONTAINER_SIZE_11,
                     ),
-                  ),
+                    SizedBox(height: Constant.CONTAINER_SIZE_12),
+
+                    containerState.isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : SubmitButton(
+                            onRightTap: () {
+                              Map<String, dynamic> body =
+                                  (widget.inventoryData != null)
+                                  ? {
+                                      "containerName": _productController.text,
+                                      "productId": _productIdController.text,
+                                      "capacityMl": _volumeController.text,
+                                      "quantity": _quantityController.text,
+                                      "foodSafe": true,
+                                      "dishwasherSafe": true,
+                                      "microwaveSafe": false,
+                                      "userId": loginModel!.userId,
+                                      "containerTypeId":
+                                          widget.inventoryData!.containerTypeId,
+                                      "description": _desController.text,
+                                    }
+                                  : {
+                                      "containerName": _productController.text,
+                                      "productId": _productIdController.text,
+                                      "capacityMl": _volumeController.text,
+                                      "quantity": _quantityController.text,
+                                      "foodSafe": true,
+                                      "dishwasherSafe": true,
+                                      "microwaveSafe": false,
+                                      "userId": loginModel!.userId,
+                                      "description": _desController.text,
+                                    };
+                              _getNetworkData(containerState, body);
+                              showCustomSnackBar(
+                                context: context,
+                                message: "Please complete required fields",
+                                color: Colors.red,
+                              );
+                            },
+                            rightText: (widget.inventoryData != null)
+                                ? "Edit Container"
+                                : "Add Container",
+                          ),
+                  ],
                 ),
 
                 SizedBox(height: Constant.CONTAINER_SIZE_12),
@@ -596,7 +737,7 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
             child: Container(
               width: Constant.CONTAINER_SIZE_28,
               height: Constant.CONTAINER_SIZE_28,
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 color: Theme.of(context).secondaryHeaderColor,
                 shape: BoxShape.circle,
               ),

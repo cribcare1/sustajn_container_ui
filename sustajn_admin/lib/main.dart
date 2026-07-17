@@ -6,12 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
- Utils.getToken();
+  Utils.getToken();
   runApp(ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
@@ -24,4 +25,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-

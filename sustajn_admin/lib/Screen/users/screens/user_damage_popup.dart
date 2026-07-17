@@ -1,5 +1,3 @@
-
-
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
@@ -109,7 +107,7 @@ class DamageDetailsDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              "assets/images/img.png",
+              "assets/images/bowl_img.png",
               height: 34,
               width: 34,
               color: Constant.gold,

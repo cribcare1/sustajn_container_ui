@@ -182,7 +182,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       {"title": "Products", "image": "assets/images/products.png"},
       {"title": "Sold", "image": "assets/images/sold_container.png"},
       {"title": "Damaged", "image": "assets/images/Damaged.png"},
-      {"title": "Extended Fee", "image": "assets/images/img.png"},
+      {"title": "Extended Fee", "image": "assets/images/bowl_img.png"},
     ];
 
     return _card(
