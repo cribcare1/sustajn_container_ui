@@ -1,15 +1,15 @@
-class IncirculationData {
-  List<IncirculationList>? incirculationData;
+class WithPartnerData {
+  List<WithPartnerList>? withpartnerData;
   String? message;
   String? status;
 
-  IncirculationData({this.incirculationData, this.message, this.status});
+  WithPartnerData({this.withpartnerData, this.message, this.status});
 
-  IncirculationData.fromJson(Map<String, dynamic> json) {
+  WithPartnerData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      incirculationData = <IncirculationList>[];
+      withpartnerData = <WithPartnerList>[];
       json['data'].forEach((v) {
-        incirculationData!.add(new IncirculationList.fromJson(v));
+        withpartnerData!.add(new WithPartnerList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -18,8 +18,8 @@ class IncirculationData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.incirculationData != null) {
-      data['data'] = this.incirculationData!.map((v) => v.toJson()).toList();
+    if (this.withpartnerData != null) {
+      data['data'] = this.withpartnerData!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     data['status'] = this.status;
@@ -27,29 +27,29 @@ class IncirculationData {
   }
 }
 
-class IncirculationList {
+class WithPartnerList {
   String? capacity;
   int? containerTypeId;
   String? imageUrl;
-  int? inCirculationCount;
   String? name;
   String? productId;
+  int? withPartnerCount;
 
-  IncirculationList(
+  WithPartnerList(
       {this.capacity,
         this.containerTypeId,
         this.imageUrl,
-        this.inCirculationCount,
         this.name,
-        this.productId});
+        this.productId,
+        this.withPartnerCount});
 
-  IncirculationList.fromJson(Map<String, dynamic> json) {
+  WithPartnerList.fromJson(Map<String, dynamic> json) {
     capacity = json['capacity']??"";
     containerTypeId = json['containerTypeId']??0;
     imageUrl = json['imageUrl']??"";
-    inCirculationCount = json['inCirculationCount']??0;
-    name = json['name']??"-";
-    productId = json['productId']??"-";
+    name = json['name']??"";
+    productId = json['productId']??"";
+    withPartnerCount = json['withPartnerCount']??0;
   }
 
   Map<String, dynamic> toJson() {
@@ -57,9 +57,9 @@ class IncirculationList {
     data['capacity'] = this.capacity;
     data['containerTypeId'] = this.containerTypeId;
     data['imageUrl'] = this.imageUrl;
-    data['inCirculationCount'] = this.inCirculationCount;
     data['name'] = this.name;
     data['productId'] = this.productId;
+    data['withPartnerCount'] = this.withPartnerCount;
     return data;
   }
 }

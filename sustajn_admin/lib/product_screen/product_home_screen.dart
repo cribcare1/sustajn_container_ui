@@ -1,3 +1,4 @@
+import 'package:container_tracking/product_screen/with_partner_screen.dart';
 import 'package:flutter/material.dart';
 import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
@@ -129,7 +130,7 @@ class _ProductsScreenState extends State<ProductsScreen>
               children: [
                 InventoryScreen(restaurantId: 2),
                 IncirculationScreen(restaurantId: 2),
-                Container(),
+                WithPartnerScreen(restaurantId: 2),
                 Container(),
                 Container(),
               ],

@@ -58,5 +58,5 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
   // Admin Product
 static const PRODUCT_INCIRCULATION ='inventory/cointainerstatistic/in-circulation-list';
-
+static const WITH_PARTNER = 'inventory/cointainerstatistic/with-partner-list';
 }

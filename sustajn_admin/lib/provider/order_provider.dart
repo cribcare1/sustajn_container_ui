@@ -5,6 +5,7 @@ import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../notifier/order_notifier.dart';
 import '../product_screen/models/incirculation_data.dart';
+import '../product_screen/models/with_partner_data.dart';
 import '../resutants/models/get_container_data.dart';
 import '../service/order_service.dart';
 import '../utils/nav_utils.dart';
@@ -65,7 +66,7 @@ final getContainerCount = FutureProvider.family<dynamic, Map<String, dynamic>>((
   }
 });
 
-// In circulation Provider
+/// Incirculation Provider
 final getIncirculationProvider = FutureProvider.family<dynamic, String>((
     ref,
     params,
@@ -91,3 +92,32 @@ final getIncirculationProvider = FutureProvider.family<dynamic, String>((
     Utils.showNetworkErrorToast(orderState.context, e.toString());
   }
 });
+
+/// With Partner Provider
+
+final getWithPartnerOrderProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    Utils.printLog("params===$params");
+    WithPartnerData responseData = await serviceProvider.getWithPartnerOrderService(
+      params,
+    );
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
+      orderState.setIsLoading(false);
+      orderState.setWithPartnerData(responseData);
+    } else {
+      orderState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+

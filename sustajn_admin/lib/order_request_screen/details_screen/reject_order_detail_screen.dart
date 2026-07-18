@@ -118,7 +118,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
               Padding(
                 padding: EdgeInsets.only(top: Constant.SIZE_02), // optional
                 child: Image.asset(
-                  "assets/icons/location.png",
+                  Strings.LOCATION_PNG,
                   width: Constant.CONTAINER_SIZE_16,
                   height: Constant.CONTAINER_SIZE_16,
                 ),
@@ -163,7 +163,7 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
-            child: Image.asset("assets/icons/order.png",
+            child: Image.asset(Strings.ORDER_PNG,
                 width: Constant.CONTAINER_SIZE_18),
           ),
 

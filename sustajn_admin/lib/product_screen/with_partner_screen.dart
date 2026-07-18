@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../common_provider/network_provider.dart';
@@ -8,26 +7,24 @@ import '../common_widgets/submit_clear_button.dart';
 import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
-import '../container_list/model/container_list_model.dart';
 import '../provider/order_provider.dart';
-import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 
-class IncirculationScreen extends ConsumerStatefulWidget {
-  const IncirculationScreen({super.key, required int restaurantId});
+class WithPartnerScreen extends ConsumerStatefulWidget {
+  const WithPartnerScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<IncirculationScreen> createState() => _IncirculationScreenState();
+  ConsumerState<WithPartnerScreen> createState() => _WithPartnerScreenState();
 }
 
-class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
+class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getIncirculationNetworkCall();
+    _getWithPartnerNetworkCall();
   }
 
   @override
@@ -56,15 +53,15 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
             Expanded(
               child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getIncirculationData == null
+                  : orderState.getWithPartnerData == null
                   ? const Center(
                 child: Text(
                   Strings.SOMETHING_WENT_WRONG,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getIncirculationData!.incirculationData == null ||
-                  orderState.getIncirculationData!.incirculationData!.isEmpty
+                  : orderState.getWithPartnerData!.withpartnerData == null ||
+                  orderState.getWithPartnerData!.withpartnerData!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -97,9 +94,9 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.getIncirculationList.length,
+                itemCount: orderState.getPartnerDataList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.getIncirculationList[index];
+                  final item = orderState.getPartnerDataList[index];
 
                   return inventoryItemCard(
                     context,
@@ -107,7 +104,7 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
                     name: item.name ?? "",
                     productId: item.productId ?? "-",
                     capacity: item.capacity?.toString() ?? "0",
-                    inCirculationCount: item.inCirculationCount ?? 0,
+                    withPartnerCount: item.withPartnerCount ?? 0,
                     containerTypeId : item.containerTypeId ?? 0,
                     // data: item,
                   );
@@ -128,7 +125,7 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
         required String name,
         required String productId,
         required String capacity,
-        required int inCirculationCount,
+        required int withPartnerCount,
         required int containerTypeId,
         // required InventoryData data,
       }) {
@@ -210,7 +207,7 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
                       ),
                       // SizedBox(width: Constant.CONTAINER_SIZE_100),
                       Text(
-                        inCirculationCount.toString(),
+                        withPartnerCount.toString(),
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Constant.gold,
                           fontWeight: FontWeight.bold,
@@ -351,9 +348,7 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
     );
   }
 
-
-
-  _getIncirculationNetworkCall() async {
+  _getWithPartnerNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
@@ -363,8 +358,8 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
-          final url = '${NetworkUrls.PRODUCT_INCIRCULATION}$userId';
-          ref.read(getIncirculationProvider(url));
+          final url = '${NetworkUrls.WITH_PARTNER}$userId';
+          ref.read(getWithPartnerOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

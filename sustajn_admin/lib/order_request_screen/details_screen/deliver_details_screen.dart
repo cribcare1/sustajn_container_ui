@@ -118,7 +118,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               Padding(
                 padding: EdgeInsets.only(top: Constant.SIZE_02), // optional
                 child: Image.asset(
-                  "assets/icons/location.png",
+                  Strings.LOCATION_PNG,
                   width: Constant.CONTAINER_SIZE_16,
                   height: Constant.CONTAINER_SIZE_16,
                 ),
@@ -163,7 +163,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
-            child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
+            child: Image.asset(Strings.ORDER_PNG, width: Constant.CONTAINER_SIZE_18),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -202,7 +202,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
