@@ -29,7 +29,7 @@ Future.microtask((){
   try {
     final response = await apiService.fetchRestaurant(url);
 
-    state.addRestaurants(response.data);
+    state.addRestaurants(response.incirculationData);
     state.incrementPage();
 
   } catch (e) {

@@ -1,6 +1,7 @@
 import 'package:container_tracking/product_screen/models/incirculation_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
+import '../product_screen/models/with_partner_data.dart';
 import '../resutants/models/get_container_data.dart';
 import '../utils/utility.dart';
 
@@ -19,6 +20,9 @@ class OrderState extends ChangeNotifier {
 
   IncirculationData? _incirculationData;
   List<IncirculationList> _incirculationList = [];
+
+  WithPartnerData? _withPartnerData;
+  List<WithPartnerList> _withPartnerList = [];
 
   bool get isVerifying => _isVerifying;
 
@@ -50,6 +54,9 @@ class OrderState extends ChangeNotifier {
 
   IncirculationData? get getIncirculationData => _incirculationData;
   List<IncirculationList> get getIncirculationList => _incirculationList;
+
+  WithPartnerData? get getWithPartnerData => _withPartnerData;
+  List<WithPartnerList> get getPartnerDataList => _withPartnerList;
 
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -84,11 +91,18 @@ class OrderState extends ChangeNotifier {
   }
 
   void setIncirculationData(IncirculationData incirculationData) {
-    Utils.printLog("data list = ${incirculationData.data!.length}");
+    Utils.printLog("data list = ${incirculationData.incirculationData!.length}");
     _incirculationData = incirculationData;
-    _incirculationList = incirculationData!.data!;
+    _incirculationList = incirculationData!.incirculationData!;
     notifyListeners();
   }
+
+  void setWithPartnerData(WithPartnerData withPartnerData) {
+    Utils.printLog("data list = ${withPartnerData.withpartnerData!.length}");
+    _withPartnerData = withPartnerData;
+    _withPartnerList = withPartnerData!.withpartnerData!;
+  }
+
 
   void filterInventoryByNameOrId(String query) {
     if (query.isEmpty) {
