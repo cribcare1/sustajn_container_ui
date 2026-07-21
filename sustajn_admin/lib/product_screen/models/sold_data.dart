@@ -12,8 +12,8 @@ class SoldContainersData {
         soldData!.add(new SoldList.fromJson(v));
       });
     }
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
@@ -35,8 +35,8 @@ class SoldList {
   SoldList({this.monthYear, this.monthTotalAmount, this.transactions});
 
   SoldList.fromJson(Map<String, dynamic> json) {
-    monthYear = json['monthYear'];
-    monthTotalAmount = json['monthTotalAmount'];
+    monthYear = json['monthYear']??"";
+    monthTotalAmount = json['monthTotalAmount']??0;
     if (json['transactions'] != null) {
       transactions = <Transactions>[];
       json['transactions'].forEach((v) {
@@ -81,15 +81,15 @@ class Transactions {
         this.containers});
 
   Transactions.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    type = json['type'];
-    name = json['name'];
+    id = json['id']??"";
+    type = json['type']??"";
+    name = json['name']??"";
     customerId = json['customerId'];
     address = json['address'];
-    formattedDate = json['formattedDate'];
-    totalQuantity = json['totalQuantity'];
-    totalAmount = json['totalAmount'];
-    productCodesConcatenated = json['productCodesConcatenated'];
+    formattedDate = json['formattedDate']??"";
+    totalQuantity = json['totalQuantity']??0;
+    totalAmount = json['totalAmount']??0;
+    productCodesConcatenated = json['productCodesConcatenated']??"";
     if (json['containers'] != null) {
       containers = <ContainersList>[];
       json['containers'].forEach((v) {
@@ -135,13 +135,13 @@ class ContainersList {
         this.price});
 
   ContainersList.fromJson(Map<String, dynamic> json) {
-    containerTypeId = json['containerTypeId'];
-    containerName = json['containerName'];
-    productCode = json['productCode'];
-    capacity = json['capacity'];
-    imageUrl = json['imageUrl'];
-    quantity = json['quantity'];
-    price = json['price'];
+    containerTypeId = json['containerTypeId']??0;
+    containerName = json['containerName']??"";
+    productCode = json['productCode']??"";
+    capacity = json['capacity']??"";
+    imageUrl = json['imageUrl']??"";
+    quantity = json['quantity']??0;
+    price = json['price']??0;
   }
 
   Map<String, dynamic> toJson() {

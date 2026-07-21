@@ -106,9 +106,7 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
                     name: item.containerName ?? "",
                     productId: item.containerTypeId ?? 0,
                     capacity: item.capacity?.toString() ?? "0",
-                    // withPartnerCount: item.withPartnerCount ?? 0,
                     containerTypeId : item.productCode ?? "",
-                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -127,16 +125,14 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
         required String name,
         required int productId,
         required String capacity,
-        // required int withPartnerCount,
         required String containerTypeId,
-        // required InventoryData data,
       }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: null!));
+        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: null!));
       },
       child: GlassSummaryCard(
         child: Row(
@@ -148,9 +144,9 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
               width: Constant.CONTAINER_SIZE_70,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(Constant.SIZE_08),
               ),
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(Constant.SIZE_06),
               child: Image.network(
                 "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
                 errorBuilder: (context, obj, stack) {
@@ -193,7 +189,6 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(
@@ -207,14 +202,7 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
                           ),
                         ),
                       ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      // Text(
-                      //   withPartnerCount.toString(),
-                      //   style: theme.textTheme.titleMedium?.copyWith(
-                      //     color: Constant.gold,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
+
                       SizedBox(width: Constant.SIZE_08),
                       Icon(
                         Icons.arrow_forward_ios,

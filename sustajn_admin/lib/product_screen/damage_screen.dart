@@ -104,9 +104,7 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
                     name: item.productName ?? "",
                     productId: item.productId ?? 0,
                     capacity: item.capacity?.toString() ?? "0",
-                    // withPartnerCount: item.withPartnerCount ?? 0,
                     containerTypeId : item.productUniqueId ?? "",
-                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -125,9 +123,7 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
         required String name,
         required int productId,
         required String capacity,
-        // required int withPartnerCount,
         required String containerTypeId,
-        // required InventoryData data,
       }) {
     final theme = Theme.of(context);
 
@@ -191,7 +187,6 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(
@@ -205,14 +200,7 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
                           ),
                         ),
                       ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      // Text(
-                      //   withPartnerCount.toString(),
-                      //   style: theme.textTheme.titleMedium?.copyWith(
-                      //     color: Constant.gold,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
+
                       SizedBox(width: Constant.SIZE_08),
                       Icon(
                         Icons.arrow_forward_ios,
