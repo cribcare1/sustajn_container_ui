@@ -8,10 +8,8 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
-import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
-import 'container_details.dart';
 
 class SoldScreen extends ConsumerStatefulWidget {
   const SoldScreen({super.key, required int restaurantId});
@@ -105,8 +103,8 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
                     imageUrl: item.imageUrl ?? "",
                     name: item.containerName ?? "",
                     productId: item.containerTypeId ?? 0,
-                    capacity: item.capacity?.toString() ?? "0",
-                    containerTypeId : item.productCode ?? "",
+                    quantity: item.quantity?.toString() ?? "0",
+                    capacity : item.capacity ?? "",
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -125,7 +123,7 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
         required String name,
         required int productId,
         required String capacity,
-        required String containerTypeId,
+        required String quantity,
       }) {
     final theme = Theme.of(context);
 

@@ -127,10 +127,18 @@ class _RejectDetailsScreenState extends ConsumerState<RejectOrderDetailsScreen> 
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

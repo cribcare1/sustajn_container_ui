@@ -312,4 +312,8 @@ class Strings {
   static const String REJECTED_REMARK = 'Rejected Remark';
   static const String LOCATION_PNG = 'assets/icons/location.png';
   static const String ORDER_PNG = 'assets/icons/order.png';
+  static const String SUBSCRIPTION_DETAILS = 'Subscription Details';
+  static const String DIRHAM_IMG = 'assets/images/diarhm.png';
+  static const String PLAN_TYPE = 'Plan Type';
+  static const String PAY_USE = 'Pay-per-use';
 }

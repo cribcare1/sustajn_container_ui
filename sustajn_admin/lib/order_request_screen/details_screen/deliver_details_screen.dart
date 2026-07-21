@@ -46,43 +46,52 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : (deliverDetailData != null)
-          ? Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _restaurantDetails(
-              themeData!,
-              deliverDetailData!.data!.restaurantName!,
-              deliverDetailData!.data!.restaurantAddress!,
-            ),
+          ? SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            SizedBox(height: Constant.SIZE_18),
+              _restaurantDetails(
+                themeData!,
+                deliverDetailData.data!.restaurantName!,
+                deliverDetailData.data!.restaurantAddress!,
+              ),
 
-            _orderDetails(themeData, deliverDetailData!.data!),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _orderDetails(
+                themeData,
+                deliverDetailData.data!,
+              ),
 
-            _sectionTitle(themeData),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _sectionTitle(themeData),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: deliverDetailData!.data!.items!.length,
+              SizedBox(height: Constant.SIZE_18),
+
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: deliverDetailData.data!.items!.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_14),
                 itemBuilder: (context, index) {
-                  final item = deliverDetailData!.data!.items![index];
-
+                  final item = deliverDetailData.data!.items![index];
                   return _containerItem(themeData, item);
                 },
               ),
-            ),
-          ],
+
+              SizedBox(height: Constant.CONTAINER_SIZE_80),
+            ],
+          ),
         ),
       )
-          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
+          : NoDataFoundCustomText(
+        text: Strings.NO_PENDING_DETAILS,
+      ),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -127,10 +136,18 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100, // Fixed height
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

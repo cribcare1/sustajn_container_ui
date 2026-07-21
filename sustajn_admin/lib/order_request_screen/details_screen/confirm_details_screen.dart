@@ -47,44 +47,58 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : (context != null)
-          ? Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _restaurantDetails(
-              themeData!,
-              confirmDetailsData!.data!.restaurantName!,
-              confirmDetailsData!.data!.restaurantAddress!,
-            ),
+          : (confirmDetailsData != null)
+          ? SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            SizedBox(height: Constant.SIZE_18),
+              _restaurantDetails(
+                themeData!,
+                confirmDetailsData.data!.restaurantName!,
+                confirmDetailsData.data!.restaurantAddress!,
+              ),
 
-            _orderDetails(themeData, confirmDetailsData!.data!),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _orderDetails(
+                themeData,
+                confirmDetailsData.data!,
+              ),
 
-            _sectionTitle(themeData),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _sectionTitle(themeData),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: confirmDetailsData!.data!.items!.length,
+              SizedBox(height: Constant.SIZE_18),
+
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: confirmDetailsData.data!.items!.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_14),
                 itemBuilder: (context, index) {
-                  final item = confirmDetailsData!.data!.items![index];
+
+                  final item =
+                  confirmDetailsData.data!.items![index];
 
                   return _containerItem(themeData, item);
                 },
               ),
-            ),
-          ],
+
+              SizedBox(
+                height: Constant.CONTAINER_SIZE_90,
+              ),
+            ],
+          ),
         ),
       )
-          : NoDataFoundCustomText(text: "No Pending Details Found"),
+          : NoDataFoundCustomText(
+        text: Strings.NO_PENDING_DETAILS,
+      ),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -129,10 +143,18 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

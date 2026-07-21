@@ -48,44 +48,48 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : (pendingDetails != null)
-          ? Padding(
-              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _restaurantDetails(
-                    themeData!,
-                    pendingDetails!.data!.restaurantName!,
-                    pendingDetails!.data!.restaurantAddress!,
-                  ),
-
-                  SizedBox(height: Constant.SIZE_18),
-
-                  _orderDetails(themeData,
-                      pendingDetails!.data!),
-
-                  SizedBox(height: Constant.SIZE_18),
-
-                  _sectionTitle(themeData),
-
-                  SizedBox(height: Constant.SIZE_18),
-
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: pendingDetails.data!.items!.length,
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: Constant.CONTAINER_SIZE_14),
-                      itemBuilder: (context, index) {
-                        final item = pendingDetails.data!.items![index];
-
-                        return _containerItem(themeData, item);
-                      },
-                    ),
-                  ),
-                ],
+          ? SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _restaurantDetails(
+                themeData!,
+                pendingDetails.data!.restaurantName!,
+                pendingDetails.data!.restaurantAddress!,
               ),
-            )
-          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
+
+              SizedBox(height: Constant.SIZE_18),
+
+              _orderDetails(themeData, pendingDetails.data!),
+
+              SizedBox(height: Constant.SIZE_18),
+
+              _sectionTitle(themeData),
+
+              SizedBox(height: Constant.SIZE_18),
+
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: pendingDetails.data!.items!.length,
+                separatorBuilder: (_, __) =>
+                    SizedBox(height: Constant.CONTAINER_SIZE_14),
+                itemBuilder: (context, index) {
+                  final item = pendingDetails.data!.items![index];
+                  return _containerItem(themeData, item);
+                },
+              ),
+
+              SizedBox(height: Constant.CONTAINER_SIZE_80),
+            ],
+          ),
+        ),
+      )
+          : NoDataFoundCustomText(
+        text: Strings.NO_PENDING_DETAILS,
+      ),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -116,6 +120,7 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
           SizedBox(height: Constant.SIZE_10),
 
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(Strings.LOCATION_PNG,
                   width: Constant.CONTAINER_SIZE_16,
@@ -124,10 +129,18 @@ class _PendingDetailsScreenState extends ConsumerState<PendingDetailsScreen> {
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
