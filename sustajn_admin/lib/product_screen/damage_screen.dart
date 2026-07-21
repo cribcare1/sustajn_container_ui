@@ -11,20 +11,20 @@ import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 
-class WithPartnerScreen extends ConsumerStatefulWidget {
-  const WithPartnerScreen({super.key, required int restaurantId});
+class DamageScreen extends ConsumerStatefulWidget {
+  const DamageScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<WithPartnerScreen> createState() => _WithPartnerScreenState();
+  ConsumerState<DamageScreen> createState() => _DamageScreenState();
 }
 
-class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
+class _DamageScreenState extends ConsumerState<DamageScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getWithPartnerNetworkCall();
+    _getDamagedNetworkCall();
   }
 
   @override
@@ -53,15 +53,15 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
             Expanded(
               child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getWithPartnerData == null
+                  : orderState.getDamagedContainerData == null
                   ? const Center(
                 child: Text(
                   Strings.SOMETHING_WENT_WRONG,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getWithPartnerData!.withpartnerData == null ||
-                  orderState.getWithPartnerData!.withpartnerData!.isEmpty
+                  : orderState.getDamagedContainerData!.damageData == null ||
+                  orderState.getDamagedContainerData!.damageData!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -94,18 +94,18 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.getPartnerDataList.length,
+                itemCount: orderState.getProductsList!.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.getPartnerDataList[index];
+                  final item = orderState.getProductsList![index];
 
                   return inventoryItemCard(
                     context,
-                    imageUrl: item.imageUrl ?? "",
-                    name: item.name ?? "",
-                    productId: item.productId ?? "-",
+                    imageUrl: item.productImageUrl ?? "",
+                    name: item.productName ?? "",
+                    productId: item.productId ?? 0,
                     capacity: item.capacity?.toString() ?? "0",
-                    withPartnerCount: item.withPartnerCount ?? 0,
-                    containerTypeId : item.containerTypeId ?? 0,
+                    // withPartnerCount: item.withPartnerCount ?? 0,
+                    containerTypeId : item.productUniqueId ?? "",
                     // data: item,
                   );
                 },
@@ -123,10 +123,10 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
       BuildContext context, {
         required String imageUrl,
         required String name,
-        required String productId,
+        required int productId,
         required String capacity,
-        required int withPartnerCount,
-        required int containerTypeId,
+        // required int withPartnerCount,
+        required String containerTypeId,
         // required InventoryData data,
       }) {
     final theme = Theme.of(context);
@@ -196,7 +196,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          productId,
+                          productId.toString(),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -206,13 +206,13 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                         ),
                       ),
                       // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      Text(
-                        withPartnerCount.toString(),
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      // Text(
+                      //   withPartnerCount.toString(),
+                      //   style: theme.textTheme.titleMedium?.copyWith(
+                      //     color: Constant.gold,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                       SizedBox(width: Constant.SIZE_08),
                       Icon(
                         Icons.arrow_forward_ios,
@@ -348,7 +348,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
     );
   }
 
-  _getWithPartnerNetworkCall() async {
+  _getDamagedNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
@@ -358,7 +358,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
-          final url = '${NetworkUrls.WITH_PARTNER}$userId';
+          final url = '${NetworkUrls.DAMAGED_CONTAINER}$userId';
           ref.read(getDamagedOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
