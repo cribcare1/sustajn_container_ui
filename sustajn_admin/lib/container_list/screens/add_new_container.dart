@@ -9,6 +9,7 @@ import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
+import '../../product_screen/add_container_popup.dart';
 import '../../utils/SharedPreferenceUtils.dart';
 import '../../utils/theme_utils.dart';
 import '../../utils/utility.dart';
@@ -278,9 +279,18 @@ class _AddContainerScreenState extends ConsumerState<AddContainerScreen> {
                         ),
                       ),
                     ),
-                    onPressed: () {
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ContainerPopUpScreen(
+                    onConfirm: () {
                       _getNetworkData(containerState);
                     },
+                  ),
+                );
+              },
                     child:
                     Text(
                       widget.inventoryData != null

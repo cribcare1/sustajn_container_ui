@@ -1,9 +1,11 @@
 import 'package:container_tracking/product_screen/with_partner_screen.dart';
 import 'package:flutter/material.dart';
+import '../Screen/Partner/screens/sold_screen.dart';
 import '../common_widgets/custom_back_button.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../utils/theme_utils.dart';
+import 'damage_screen.dart';
 import 'incirculation_screen.dart';
 import 'inventory_screen.dart';
 
@@ -131,8 +133,8 @@ class _ProductsScreenState extends State<ProductsScreen>
                 InventoryScreen(restaurantId: 2),
                 IncirculationScreen(restaurantId: 2),
                 WithPartnerScreen(restaurantId: 2),
-                Container(),
-                Container(),
+                DamageScreen(restaurantId: 2),
+                SoldScreen(restaurantId: 2),
               ],
             ),
           ),

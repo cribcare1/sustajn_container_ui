@@ -11,20 +11,20 @@ import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 
-class WithPartnerScreen extends ConsumerStatefulWidget {
-  const WithPartnerScreen({super.key, required int restaurantId});
+class SoldScreen extends ConsumerStatefulWidget {
+  const SoldScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<WithPartnerScreen> createState() => _WithPartnerScreenState();
+  ConsumerState<SoldScreen> createState() => _SoldScreenState();
 }
 
-class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
+class _SoldScreenState extends ConsumerState<SoldScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getWithPartnerNetworkCall();
+    _getSoldNetworkCall();
   }
 
   @override
@@ -46,22 +46,22 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                 onChanged: (value){
                   orderState.filterInventoryByNameOrId(value);
                 },
-                onFilterTap: () => _showSortBottomSheet(context),
+                // onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
               child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getWithPartnerData == null
+                  : orderState.getSoldContainersData == null
                   ? const Center(
                 child: Text(
                   Strings.SOMETHING_WENT_WRONG,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getWithPartnerData!.withpartnerData == null ||
-                  orderState.getWithPartnerData!.withpartnerData!.isEmpty
+                  : orderState.getSoldContainersData!.soldData == null ||
+                  orderState.getSoldContainersData!.soldData!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -94,19 +94,17 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.getPartnerDataList.length,
+                itemCount: orderState.getContainersList!.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.getPartnerDataList[index];
+                  final item = orderState.getContainersList![index];
 
                   return inventoryItemCard(
                     context,
                     imageUrl: item.imageUrl ?? "",
-                    name: item.name ?? "",
-                    productId: item.productId ?? "-",
-                    capacity: item.capacity?.toString() ?? "0",
-                    withPartnerCount: item.withPartnerCount ?? 0,
-                    containerTypeId : item.containerTypeId ?? 0,
-                    // data: item,
+                    name: item.containerName ?? "",
+                    productId: item.containerTypeId ?? 0,
+                    quantity: item.quantity?.toString() ?? "0",
+                    capacity : item.capacity ?? "",
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -123,18 +121,16 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
       BuildContext context, {
         required String imageUrl,
         required String name,
-        required String productId,
+        required int productId,
         required String capacity,
-        required int withPartnerCount,
-        required int containerTypeId,
-        // required InventoryData data,
+        required String quantity,
       }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: null!));
       },
       child: GlassSummaryCard(
         child: Row(
@@ -146,9 +142,9 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
               width: Constant.CONTAINER_SIZE_70,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(Constant.SIZE_08),
               ),
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(Constant.SIZE_06),
               child: Image.network(
                 "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
                 errorBuilder: (context, obj, stack) {
@@ -191,12 +187,11 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                       color: Colors.white70,
                     ),
                   ),
-                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          productId,
+                          productId.toString(),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -205,14 +200,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
                           ),
                         ),
                       ),
-                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
-                      Text(
-                        withPartnerCount.toString(),
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Constant.gold,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+
                       SizedBox(width: Constant.SIZE_08),
                       Icon(
                         Icons.arrow_forward_ios,
@@ -348,7 +336,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
     );
   }
 
-  _getWithPartnerNetworkCall() async {
+  _getSoldNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
@@ -358,8 +346,8 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
           final userId = Utils.userId;
-          final url = '${NetworkUrls.WITH_PARTNER}$userId';
-          ref.read(getDamagedOrderProvider(url));
+          final url = '${NetworkUrls.SOLD_CONTAINERS}$userId';
+          ref.read(getSoldOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
