@@ -5,7 +5,8 @@ import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 
 class ContainerPopUpScreen extends ConsumerStatefulWidget {
-  const ContainerPopUpScreen({super.key});
+  final VoidCallback onConfirm;
+  const ContainerPopUpScreen({super.key, required this.onConfirm});
 
   @override
   ConsumerState<ContainerPopUpScreen> createState() =>
