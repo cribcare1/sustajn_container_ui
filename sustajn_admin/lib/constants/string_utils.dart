@@ -98,8 +98,7 @@ class Strings {
   static const CUSTOMER = 'Customer';
   static const TOTAL_EARNINGS = 'Total Earnings';
   static const VERIFY_EMAIL = 'Verify your email';
-  static const SEND_CODE =
-      "We've sent you a code to verify your email id on\n";
+  static const SEND_CODE = "We've sent you a code to verify your email id on\n";
   static const VERIFY = 'Verify';
   static const DIDNT_RECV_CODE = "Didn't receive the code? ";
   static const RESEND = 'Resend';
@@ -214,11 +213,10 @@ class Strings {
   static const LIFESPAN = 'Lifespan Cycle';
   static const COST = 'Cost Per Unit';
 
-
-
   static final String BOWL_IMG = "assets/images/bowl_img.png";
   static final String CUP_IMG = "assets/images/cups.png";
   static final String USER_IMG = "assets/images/user.png";
+
   // static final String SUBSCRIPTION_IMG = "assets/images/subscription_icon.png";
   static final String SUBSCRIPTION_IMG = "assets/images/bowl_img.png";
   static final String SOLD_IMG = "assets/images/bowl_img.png";
@@ -231,6 +229,7 @@ class Strings {
   static const String RETURNED = "Returned";
   static const String NO_BORROWED  = 'No borrowed containers found';
   static const String FILTERS = 'Filters';
+
   //static const SEARCH_BY_RESTURANT = 'Search by restaurant';
   static const String RETURNED_ON = 'Returned On';
   static const String BORROWED_ON = 'Borrowed On';
@@ -261,8 +260,9 @@ class Strings {
   static const String SEARCH_BY_REST_NAME = 'Search by Resturant Name';
 
   static const String NO_SOLD_CONTAINER = 'No sold containers found';
-  static const String NO_DAMAGED  = 'No damaged containers found';
+  static const String NO_DAMAGED = 'No damaged containers found';
   static const String NO_EXTENDED_FEE_DATA = 'No extended fee data found';
+
   //Transactions
   static const String TRANSACTIONS = 'Transactions';
   static const String NO_SOLD_CON = 'No sold containers found';
@@ -297,6 +297,21 @@ class Strings {
   static const String DELIVERED_CONTAINERS = 'Delivered Containers';
   static const String NO_PENDING_DETAILS = 'No Pending Details Found';
   static const String ORDERED_QTY = 'Ordered Quantity';
+  static const String GOLDEN_BOWL_IMG = 'assets/images/golden_bowl.png';
+  static const String PRODUCT_INCIRCULATION = 'Incirculation';
+  static const String SELECT_PROD = 'Select Product';
+  static const String SELECT_PROD_ID = 'Select Product Id';
+  static const String SELECT_VOL = 'Select Volume';
+  static const String SEARCH_BY_RESTAURANT_NAME = 'Search by Restaurant Name';
+  static const String REJECTED_REMARK = 'Rejected Remark';
+  static const String LOCATION_PNG = 'assets/icons/location.png';
+  static const String ORDER_PNG = 'assets/icons/order.png';
+  static const String SUBSCRIPTION_DETAILS = 'Subscription Details';
+  static const String DIRHAM_IMG = 'assets/images/diarhm.png';
+  static const String PLAN_TYPE = 'Plan Type';
+  static const String PAY_USE = 'Pay-per-use';
+  static const String INCRICULATION = 'In Circulation';
+  static const String SEARCH_BY_USERID = 'Search by UserID';
   //Transactions
   // static const String TRANSACTIONS = 'Transactions';
   // static const String NO_SOLD_CON = 'No sold containers found';

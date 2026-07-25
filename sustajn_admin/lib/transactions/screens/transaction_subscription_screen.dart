@@ -1,24 +1,13 @@
-import 'package:container_tracking/common_widgets/custom_app_bar.dart';
 import 'package:container_tracking/transactions/models/transaction_subscription_data.dart';
-import 'package:container_tracking/transactions/screens/transaction_extendedfee_screen.dart';
-import 'package:container_tracking/transactions/screens/transaction_sold_screens.dart';
 import 'package:container_tracking/transactions/screens/transaction_subscription_popup.dart';
-import 'package:container_tracking/transactions/screens/transaction_subscription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../common_provider/network_provider.dart';
-import '../../../common_widgets/custom_back_button.dart';
-import '../../../common_widgets/custom_search_bar.dart';
-import '../../../common_widgets/filter_screen_2.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/date_month_utils.dart';
 import '../../../utils/utility.dart';
-import '../../Screen/users/model/user_borrowed_data.dart';
-import '../../Screen/users/model/user_damage_data.dart';
-import '../../Screen/users/provider/user_provider.dart';
-import '../../Screen/users/screens/user_damage_popup.dart';
 import '../../common_widgets/filtered_screen_3.dart';
 import '../provider_service/transaction_provider.dart';
 
@@ -56,7 +45,7 @@ class _SubscriptionScreenState
     }
 
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
       body: Stack(
         children: [
           Column(
@@ -157,10 +146,7 @@ class _SubscriptionScreenState
                   leftTabTitle: "Month",
                   leftTabTitles: "Plan Type",
                   options: months,
-                  planType: const [
-                    "Pay-per-use",
-                    "Customization",
-                  ],
+                  planType: const ["Pay-per-use", "Customization"],
                   selectedValue: selectedMonthYear,
                   selectedPlanType: selectedPlanType,
                   onApply: (month, planType) {
@@ -173,7 +159,6 @@ class _SubscriptionScreenState
                       );
                     });
                   },
-
                 ),
               );
             },
@@ -355,7 +340,7 @@ class _SubscriptionScreenState
     );
   }
 
-  Widget _monthHeader(String title, int count) {
+  Widget _monthHeader(String title, double count) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Constant.SIZE_06),
       child: Row(
@@ -372,7 +357,7 @@ class _SubscriptionScreenState
           Row(
             children: [
               Image.asset(
-                'assets/images/bowl_img.png',
+                Strings.BOWL_IMG,
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
@@ -403,8 +388,7 @@ class _SubscriptionScreenState
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          SubscriptionDetailsDialog(items: item),
+      builder: (_) => SubscriptionDetailsDialog(items: item),
     );
   }
 
@@ -414,12 +398,12 @@ class _SubscriptionScreenState
         isNetworkAvailable,
       ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(userProvider);
+        final orderState = ref.read(transactionProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
 
           final url = '${NetworkUrls.SUBSCRIPTION}';
-          ref.read(getUserDamagedProvider(url));
+          ref.read(getSubscriptionProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

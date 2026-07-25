@@ -27,7 +27,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
           Constant.CONTAINER_SIZE_24,
           Constant.CONTAINER_SIZE_24),
       decoration: BoxDecoration(
-        color: const Color(0xff0D3C2D),
+        color: Constant.backgroundColor,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(Constant.CONTAINER_SIZE_30),
         ),
@@ -60,7 +60,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
               child: Center(
                 child: Icon(
                   Icons.warning_amber_rounded,
-                  color: Color(0xffD4AE37),
+                  color: Constant.gold,
                   size: Constant.CONTAINER_SIZE_45,
                 ),
               ),
@@ -100,7 +100,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
-                          color: Color(0xffD6A62A),
+                          color: Constant.gold,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
@@ -109,7 +109,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                       child: const Text(
                         Strings.CANCEL,
                         style: TextStyle(
-                          color: Color(0xffD6A62A),
+                          color: Constant.gold,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -129,7 +129,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                         await _getMarkDeliverOrderNetworkCall(orderRequestState.getPendingDetailsData!.data!.id!);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffD6A62A),
+                        backgroundColor: Constant.gold,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
@@ -141,7 +141,7 @@ class _DeliverOrderSheetState extends ConsumerState<DeliverOrderSheet> {
                       child: const Text(
                         Strings.MARK_AS_DELIVERED,
                         style: TextStyle(
-                          color: Color(0xff0F3727),
+                          color: Constant.backgroundColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

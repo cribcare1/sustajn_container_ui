@@ -1,7 +1,12 @@
-import 'package:container_tracking/Screen/Partner/model/container_history_data.dart';
+import 'package:container_tracking/product_screen/models/incirculation_data.dart';
+import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
+import '../Screen/users/model/user_sold_container_data.dart';
 import '../constants/string_utils.dart';
+import '../product_screen/models/damage_data.dart';
+import '../product_screen/models/with_partner_data.dart';
 import '../resutants/models/get_container_data.dart';
+import '../utils/utility.dart';
 
 class OrderState extends ChangeNotifier {
   String _name = '';
@@ -15,6 +20,20 @@ class OrderState extends ChangeNotifier {
   bool _isOrdering = false;
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
+
+  IncirculationData? _incirculationData;
+  List<IncirculationList> _incirculationList = [];
+
+  WithPartnerData? _withPartnerData;
+  List<WithPartnerList> _withPartnerList = [];
+
+  DamagedContainerData? _damagedContainerData;
+  List<DamagedList> _damagedList = [];
+  List<ProductsList> _productsList = [];
+
+  SoldContainersData? _soldContainersData;
+  List<SoldList> _soldList = [];
+  List<ContainersList> _containersList = [];
 
   bool get isVerifying => _isVerifying;
 
@@ -43,6 +62,20 @@ class OrderState extends ChangeNotifier {
   int get leasedContainerCount => _leasedContainerCount;
 
   int get returnedContainerCount => _returnedContainerCount;
+
+  IncirculationData? get getIncirculationData => _incirculationData;
+  List<IncirculationList> get getIncirculationList => _incirculationList;
+
+  WithPartnerData? get getWithPartnerData => _withPartnerData;
+  List<WithPartnerList> get getPartnerDataList => _withPartnerList;
+
+  DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
+  List<DamagedList> get getDamagedList => _damagedList;
+  List<ProductsList> get getProductsList => _productsList;
+
+  SoldContainersData? get getSoldContainersData => _soldContainersData;
+  List<SoldList> get getSoldList => _soldList;
+  List<ContainersList> get getContainersList => _containersList;
 
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -73,6 +106,36 @@ class OrderState extends ChangeNotifier {
 
   void setInventoryFilter(List<InventoryData> data) {
     _filterInventory = List.from(data);
+    notifyListeners();
+  }
+
+  void setIncirculationData(IncirculationData incirculationData) {
+    Utils.printLog("data list = ${incirculationData.incirculationData!.length}");
+    _incirculationData = incirculationData;
+    _incirculationList = incirculationData!.incirculationData!;
+    notifyListeners();
+  }
+
+  void setWithPartnerData(WithPartnerData withPartnerData) {
+    Utils.printLog("data list = ${withPartnerData.withpartnerData!.length}");
+    _withPartnerData = withPartnerData;
+    _withPartnerList = withPartnerData!.withpartnerData!;
+    notifyListeners();
+  }
+
+  void setDamagedData(DamagedContainerData damagedContainerData) {
+    Utils.printLog("data list = ${damagedContainerData.damageData!.length}");
+    _damagedContainerData = damagedContainerData;
+    _damagedList = _damagedContainerData!.damageData!;
+    _productsList = _productsList!;
+    notifyListeners();
+  }
+
+  void setSoldContainersData(SoldContainersData soldContainersData) {
+    Utils.printLog("data list = ${soldContainersData.soldData!.length}");
+    _soldContainersData = soldContainersData;
+    _soldList = _soldContainersData!.soldData!;
+    _containersList = _containersList!;
     notifyListeners();
   }
 

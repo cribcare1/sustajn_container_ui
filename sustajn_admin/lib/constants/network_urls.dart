@@ -55,6 +55,12 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
 
   static const SUBSCRIPTION = 'inventory/admin/transactions/subscriptions';
   static const SOLD_DASHBOARD = 'inventory/admin/transactions/sold-dashboard';
-  static const DAMAGE_USER = 'inventory/getDamageContainerByUserType?damageBy=USER';
-  static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=RESTAURANT';
+
+  // Admin Product
+static const PRODUCT_INCIRCULATION ='inventory/cointainerstatistic/in-circulation-list';
+static const WITH_PARTNER = 'inventory/cointainerstatistic/with-partner-list';
+static const DAMAGED_CONTAINER = 'inventory/getDamageContainerByUserType?damageBy=USER';
+static const SOLD_CONTAINERS = 'inventory/admin/transactions/sold-dashboard';
+static const DAMAGE_USER = 'inventory/getDamageContainerByUserType?damageBy=USER';
+static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=RESTAURANT';
 }

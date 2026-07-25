@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../models/transaction_subscription_data.dart';
 
 class SubscriptionDetailsDialog extends StatelessWidget {
@@ -10,11 +11,11 @@ class SubscriptionDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F3727),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
+      decoration: BoxDecoration(
+        color: Constant.PrimaryColor,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(30),
+          top: Radius.circular(Constant.CONTAINER_SIZE_30),
         ),
       ),
       child: SingleChildScrollView(
@@ -23,23 +24,23 @@ class SubscriptionDetailsDialog extends StatelessWidget {
           children: [
             // Drag Handle
             Container(
-              width: 60,
-              height: 5,
+              width: Constant.CONTAINER_SIZE_60,
+              height: Constant.SIZE_05,
               decoration: BoxDecoration(
                 color: Colors.white70,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
               ),
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: Constant.CONTAINER_SIZE_20),
 
             Row(
               children: [
-                const Text(
-                  "Subscription Details",
+                Text(
+                  Strings.SUBSCRIPTION_DETAILS,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 28,
+                    fontSize: Constant.CONTAINER_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -54,14 +55,14 @@ class SubscriptionDetailsDialog extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: Constant.CONTAINER_SIZE_24),
 
 
             Container(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(Constant.CONTAINER_SIZE_18),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.08),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                 border: Border.all(
                   color: Colors.white24,
                 ),
@@ -73,27 +74,28 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                     items.name!,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: Constant.CONTAINER_SIZE_18,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  SizedBox(height: Constant.SIZE_10),
 
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(
                         Icons.location_on_outlined,
                         color: Colors.white70,
-                        size: 18,
+                        size: Constant.CONTAINER_SIZE_18,
                       ),
-                      SizedBox(width: 6),
+                      SizedBox(width: Constant.SIZE_06),
                       Expanded(
                         child: Text(
                           items.restaurantAddress!,
                           style: TextStyle(
                             color: Colors.white70,
-                            fontSize: 14,
+                            fontSize: Constant.CONTAINER_SIZE_14,
                           ),
                         ),
                       ),
@@ -103,77 +105,77 @@ class SubscriptionDetailsDialog extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 35),
+            SizedBox(height: Constant.CONTAINER_SIZE_35),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/images/diarhm.png",
-                  height: 38,
-                  color: Color(0xFFE3B73C),
+                  Strings.DIRHAM_IMG,
+                  height: Constant.CONTAINER_SIZE_40,
+                  color: Constant.PrimaryAssentColor,
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: Constant.SIZE_06),
                 Text(
                   '${items.amount!}',
                   style: TextStyle(
-                    color: Color(0xFFE3B73C),
-                    fontSize: 60,
+                    color: Constant.PrimaryAssentColor,
+                    fontSize: Constant.CONTAINER_SIZE_40,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: Constant.SIZE_08),
 
             Text(
               items.formattedDate!,
               style: TextStyle(
                 color: Colors.white70,
-                fontSize: 24,
+                fontSize: Constant.CONTAINER_SIZE_16,
               ),
             ),
 
-            const SizedBox(height: 40),
+            SizedBox(height: Constant.CONTAINER_SIZE_40),
 
             Align(
               alignment: Alignment.centerLeft,
               child: Column(
                 children: [
                   Text(
-                    "Plan Type",
+                    Strings.PLAN_TYPE,
                     style: TextStyle(
                       color: Colors.white.withOpacity(.8),
-                      fontSize: 22,
+                      fontSize: Constant.CONTAINER_SIZE_14,
                     ),
                   ),
                   Text(
                     items.planType!,
                     style: TextStyle(
                       color: Colors.white.withOpacity(.8),
-                      fontSize: 22,
+                      fontSize: Constant.CONTAINER_SIZE_14,
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-            const Align(
+             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Pay-per-use",
+                Strings.PAY_USE,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 34,
+                  fontSize: Constant.CONTAINER_SIZE_20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: Constant.CONTAINER_SIZE_30),
           ],
         ),
       ),

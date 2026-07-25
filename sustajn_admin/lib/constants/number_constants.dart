@@ -201,8 +201,18 @@ class Constant {
   static const Color yellowShade100 = Color(0xFFFFF9);
   static const Color baseColor = Color(0xFFffc700);
   static const Color gold = Color(0xFFD1AE31);
-
-
+  static const Color backgroundColor = Color(0xff0D3C2D);
+  static const Color green1 = Color(0xff2DBE60);
+  static const Color rejectColor = Color(0xffDC3545);
+  static const Color goldenColor = Color(0xffD6A62A);
+  static const Color green2 = Color(0xFF3DBE5A);
+  static const Color gold1 = Color(0xffD9A91F);
+  static const Color white1 = Color(0xFFF5EBDF);
+  static const Color grey1 = Color(0xFF9E9E9E);
+  static const Color white2 = Color(0xFFE8EFEA);
+  static const Color white3 = Color(0xFFBFDCCF);
+  static const Color white4 = Color(0xFFEEF7F1);
+  static const Color green3 = Color(0xFF2D8F6E);
 
 
 }

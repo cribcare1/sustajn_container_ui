@@ -46,43 +46,52 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : (deliverDetailData != null)
-          ? Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _restaurantDetails(
-              themeData!,
-              deliverDetailData!.data!.restaurantName!,
-              deliverDetailData!.data!.restaurantAddress!,
-            ),
+          ? SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            SizedBox(height: Constant.SIZE_18),
+              _restaurantDetails(
+                themeData!,
+                deliverDetailData.data!.restaurantName!,
+                deliverDetailData.data!.restaurantAddress!,
+              ),
 
-            _orderDetails(themeData, deliverDetailData!.data!),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _orderDetails(
+                themeData,
+                deliverDetailData.data!,
+              ),
 
-            _sectionTitle(themeData),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _sectionTitle(themeData),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: deliverDetailData!.data!.items!.length,
+              SizedBox(height: Constant.SIZE_18),
+
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: deliverDetailData.data!.items!.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_14),
                 itemBuilder: (context, index) {
-                  final item = deliverDetailData!.data!.items![index];
-
+                  final item = deliverDetailData.data!.items![index];
                   return _containerItem(themeData, item);
                 },
               ),
-            ),
-          ],
+
+              SizedBox(height: Constant.CONTAINER_SIZE_80),
+            ],
+          ),
         ),
       )
-          : NoDataFoundCustomText(text: Strings.NO_PENDING_DETAILS),
+          : NoDataFoundCustomText(
+        text: Strings.NO_PENDING_DETAILS,
+      ),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -118,7 +127,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               Padding(
                 padding: EdgeInsets.only(top: Constant.SIZE_02), // optional
                 child: Image.asset(
-                  "assets/icons/location.png",
+                  Strings.LOCATION_PNG,
                   width: Constant.CONTAINER_SIZE_16,
                   height: Constant.CONTAINER_SIZE_16,
                 ),
@@ -127,10 +136,18 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100, // Fixed height
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -163,7 +180,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
-            child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
+            child: Image.asset(Strings.ORDER_PNG, width: Constant.CONTAINER_SIZE_18),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -202,7 +219,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -232,7 +249,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -260,7 +277,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -334,7 +351,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                       decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: 1.5,
                           ),
                         ),
@@ -342,7 +359,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
                       child: Text(
                         Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -372,7 +389,7 @@ class _DeliverDetailsScreenState extends ConsumerState<DeliverDetailsScreen> {
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: Constant.SIZE_01)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: Constant.SIZE_01)),
       ],
     );
   }

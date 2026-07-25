@@ -1,48 +1,39 @@
-import 'package:container_tracking/order_request_screen/models/confirm_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../common_provider/network_provider.dart';
-import '../../common_widgets/card_widget.dart';
-import '../../common_widgets/submit_button.dart';
-import '../../common_widgets/submit_clear_button.dart';
-import '../../constants/network_urls.dart';
-import '../../constants/number_constants.dart';
-import '../../constants/string_utils.dart';
-import '../../provider/order_provider.dart';
-import '../../utils/nav_utils.dart';
-import '../../utils/theme_utils.dart';
-import '../../utils/utility.dart';
-import '../details_screen/confirm_details_screen.dart';
-import '../provider_service/order_request_provider.dart';
+import '../common_provider/network_provider.dart';
+import '../common_widgets/card_widget.dart';
+import '../common_widgets/submit_button.dart';
+import '../common_widgets/submit_clear_button.dart';
+import '../constants/network_urls.dart';
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
+import '../container_list/model/container_list_model.dart';
+import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
+import '../utils/theme_utils.dart';
+import '../utils/utility.dart';
 
-class ConfirmedScreen extends ConsumerStatefulWidget {
-  const ConfirmedScreen({super.key});
+class IncirculationScreen extends ConsumerStatefulWidget {
+  const IncirculationScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<ConfirmedScreen> createState() => _ConfirmedScreenState();
+  ConsumerState<IncirculationScreen> createState() => _IncirculationScreenState();
 }
 
-class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
+class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
   TextEditingController searchController = TextEditingController();
-  List<ConfirmDataList> filteredItems = [];
 
   @override
   void initState() {
     super.initState();
-    _getConfirmOrderNetworkCall();
+    _getIncirculationNetworkCall();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orderRequestState = ref.watch(orderRequestProvider);
-    final confirmDataList = orderRequestState.getConfirmData?.data ?? [];
-    Utils.printLog("List length: ${confirmDataList.length}");
-    if (filteredItems.isEmpty && confirmDataList.isNotEmpty) {
-      filteredItems = confirmDataList;
-    }
-
+    final orderState = ref.watch(orderProvider);
 
     return SafeArea(
       top: false,
@@ -54,36 +45,33 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: CustomTheme.searchField(
                 searchController,
-                Strings.SEARCH_BY_RESTAURANT_NAME,
+                Strings.SEARCH_BY_CONTAINER_NAME,
                 onChanged: (value){
-                  setState(() {
-                    if (value.isEmpty) {
-                      filteredItems = confirmDataList;
-                    } else {
-                      filteredItems = confirmDataList.where((item) {
-                        return (item.restaurantName?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
-                            (item.requestNumber?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
-                            (item.containerCodes?.toLowerCase().contains(value.toLowerCase()) ?? false);
-                      }).toList();
-                    }
-                  });
+                  orderState.filterInventoryByNameOrId(value);
                 },
-                //TODO:-
-                // onFilterTap: () => _showSortBottomSheet(context),
+                onFilterTap: () => _showSortBottomSheet(context),
               ),
             ),
             SizedBox(height: Constant.SIZE_04),
             Expanded(
-              child: orderRequestState.isLoading
+              child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderRequestState.getConfirmData == null
+                  : orderState.getIncirculationData == null
+                  ? const Center(
+                child: Text(
+                  Strings.SOMETHING_WENT_WRONG,
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+                  : orderState.getIncirculationData!.incirculationData == null ||
+                  orderState.getIncirculationData!.incirculationData!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : (filteredItems.isEmpty && searchController.text.isNotEmpty)
+                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -96,9 +84,8 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                     SubmitButton(
                       onRightTap: () {
                         searchController.clear();
-                        setState(() {
-                          filteredItems = confirmDataList;
-                        });
+                        orderState.filterInventoryByNameOrId('');
+                        setState(() {});
                       },
                       rightText: " Clear Filter ",
                     ),
@@ -110,18 +97,19 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: filteredItems.length,
+                itemCount: orderState.getIncirculationList.length,
                 itemBuilder: (context, index) {
-                  final item = filteredItems[index];
+                  final item = orderState.getIncirculationList[index];
 
                   return inventoryItemCard(
                     context,
-                    orderId: item.id ?? 0,
-                    requestNumber: item.requestNumber?? "-",
-                    restaurantName: item.restaurantName ?? "-",
-                    containerCodes: item.containerCodes ?? "-",
-                    formattedDateTime: item.formattedDateTime?.toString() ?? "0",
-                    totalQuantity: item.totalQuantity ?? 0,
+                    imageUrl: item.imageUrl ?? "",
+                    name: item.name ?? "",
+                    productId: item.productId ?? "-",
+                    capacity: item.capacity?.toString() ?? "0",
+                    inCirculationCount: item.inCirculationCount ?? 0,
+                    containerTypeId : item.containerTypeId ?? 0,
+                    // data: item,
                   );
                 },
                 separatorBuilder: (context, index) =>
@@ -136,30 +124,68 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
-        required int orderId,
-        required String requestNumber,
-        required String restaurantName,
-        required String containerCodes,
-        required String formattedDateTime,
-        required int totalQuantity,
+        required String imageUrl,
+        required String name,
+        required String productId,
+        required String capacity,
+        required int inCirculationCount,
+        required int containerTypeId,
+        // required InventoryData data,
       }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        NavUtil.navigateToPushScreen(context, ConfirmDetailsScreen(orderId: orderId));
+        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
       },
       child: GlassSummaryCard(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            (imageUrl != "")
+                ? Container(
+              height: Constant.CONTAINER_SIZE_70,
+              width: Constant.CONTAINER_SIZE_70,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.all(6),
+              child: Image.network(
+                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
+                errorBuilder: (context, obj, stack) {
+                  return Image.asset(
+                    "assets/images/no_image_container.png",
+                  );
+                },
+                fit: BoxFit.fill,
+              ),
+            )
+                : Container(
+              width: Constant.CONTAINER_SIZE_70,
+              height: Constant.CONTAINER_SIZE_70,
+              decoration: BoxDecoration(
+                color: Constant.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(Constant.SIZE_08),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.inbox,
+                  size: Constant.CONTAINER_SIZE_30,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+
+            SizedBox(width: Constant.CONTAINER_SIZE_12),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    requestNumber,
+                    name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -168,12 +194,12 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                       color: Colors.white70,
                     ),
                   ),
-
+                  // SizedBox(height: Constant.SIZE_04),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          restaurantName,
+                          productId,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -182,41 +208,30 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
                           ),
                         ),
                       ),
-
+                      // SizedBox(width: Constant.CONTAINER_SIZE_100),
                       Text(
-                        containerCodes,
+                        inCirculationCount.toString(),
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Constant.gold,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
-                      Text(
-                        formattedDateTime,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_14,
-                          color: Colors.white70,
-                        ),
-                      ),
-
-                      Text(
-                        "$totalQuantity",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: Constant.LABEL_TEXT_SIZE_14,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      SizedBox(width: Constant.SIZE_06),
+                      SizedBox(width: Constant.SIZE_08),
                       Icon(
                         Icons.arrow_forward_ios,
                         size: Constant.CONTAINER_SIZE_14,
                         color: Colors.white70,
                       ),
                     ],
+                  ),
+                  Text(
+                    "$capacity ml",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: Constant.LABEL_TEXT_SIZE_14,
+                      color: Colors.white70,
+                    ),
                   ),
                 ],
               ),
@@ -336,18 +351,20 @@ class _ConfirmedScreenState extends ConsumerState<ConfirmedScreen> {
     );
   }
 
-_getConfirmOrderNetworkCall() async {
+
+
+  _getIncirculationNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
           isNetworkAvailable,
           ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderRequestProvider);
+        final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          // final userId = Utils.userId;
-          final url = '${NetworkUrls.CONFIRM_ORDER_DATA}';
-          ref.read(getConfirmOrderProvider(url));
+          final userId = Utils.userId;
+          final url = '${NetworkUrls.PRODUCT_INCIRCULATION}$userId';
+          ref.read(getIncirculationProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

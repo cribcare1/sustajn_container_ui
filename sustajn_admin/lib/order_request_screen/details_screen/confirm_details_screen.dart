@@ -47,44 +47,58 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
       body: orderRequestState.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : (context != null)
-          ? Padding(
-        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _restaurantDetails(
-              themeData!,
-              confirmDetailsData!.data!.restaurantName!,
-              confirmDetailsData!.data!.restaurantAddress!,
-            ),
+          : (confirmDetailsData != null)
+          ? SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            SizedBox(height: Constant.SIZE_18),
+              _restaurantDetails(
+                themeData!,
+                confirmDetailsData.data!.restaurantName!,
+                confirmDetailsData.data!.restaurantAddress!,
+              ),
 
-            _orderDetails(themeData, confirmDetailsData!.data!),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _orderDetails(
+                themeData,
+                confirmDetailsData.data!,
+              ),
 
-            _sectionTitle(themeData),
+              SizedBox(height: Constant.SIZE_18),
 
-            SizedBox(height: Constant.SIZE_18),
+              _sectionTitle(themeData),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: confirmDetailsData!.data!.items!.length,
+              SizedBox(height: Constant.SIZE_18),
+
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: confirmDetailsData.data!.items!.length,
                 separatorBuilder: (_, __) =>
                     SizedBox(height: Constant.CONTAINER_SIZE_14),
                 itemBuilder: (context, index) {
-                  final item = confirmDetailsData!.data!.items![index];
+
+                  final item =
+                  confirmDetailsData.data!.items![index];
 
                   return _containerItem(themeData, item);
                 },
               ),
-            ),
-          ],
+
+              SizedBox(
+                height: Constant.CONTAINER_SIZE_90,
+              ),
+            ],
+          ),
         ),
       )
-          : NoDataFoundCustomText(text: "No Pending Details Found"),
+          : NoDataFoundCustomText(
+        text: Strings.NO_PENDING_DETAILS,
+      ),
       bottomNavigationBar: _bottomButtons(themeData!),
     );
   }
@@ -120,7 +134,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
               Padding(
                 padding: EdgeInsets.only(top: Constant.SIZE_02),
                 child: Image.asset(
-                  "assets/icons/location.png",
+                  Strings.LOCATION_PNG,
                   width: Constant.CONTAINER_SIZE_16,
                   height: Constant.CONTAINER_SIZE_16,
                 ),
@@ -129,10 +143,18 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
               SizedBox(width: Constant.SIZE_08),
 
               Expanded(
-                child: Text(
-                  address,
-                  style: themeData.textTheme.bodySmall!.copyWith(
-                    color: Colors.white54,
+                child: SizedBox(
+                  height: Constant.CONTAINER_SIZE_100,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        address,
+                        style: themeData.textTheme.bodySmall!.copyWith(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -165,7 +187,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
               borderRadius: BorderRadius.circular(Constant.SIZE_08),
               border: Border.all(color: Colors.white24),
             ),
-            child: Image.asset("assets/icons/order.png", width: Constant.CONTAINER_SIZE_18),
+            child: Image.asset(Strings.ORDER_PNG, width: Constant.CONTAINER_SIZE_18),
           ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
@@ -203,7 +225,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child:  Icon(
@@ -233,7 +255,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                               width: Constant.CONTAINER_SIZE_28,
                               height: Constant.CONTAINER_SIZE_28,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF3DBE5A),
+                                color: Constant.green2,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -295,7 +317,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                       decoration:  BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xffD9A91F),
+                            color: Constant.gold1,
                             width: Constant.SIZE_02,
                           ),
                         ),
@@ -303,7 +325,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                       child: Text(
                         Strings.PARTNER_REMARKS,
                         style: themeData.textTheme.bodySmall!.copyWith(
-                          color: const Color(0xffD9A91F),
+                          color: Constant.gold1,
                         ),
                       ),
                     ),
@@ -333,7 +355,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
 
         SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-        Expanded(child: Divider(color: const Color(0xffD9A91F), thickness: 1)),
+        Expanded(child: Divider(color: Constant.gold1, thickness: 1)),
       ],
     );
   }
@@ -473,7 +495,7 @@ class _ConfirmDetailsScreenState extends ConsumerState<ConfirmDetailsScreen> {
                 height: Constant.CONTAINER_SIZE_45,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffD9A91F),
+                    backgroundColor: Constant.gold1,
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),

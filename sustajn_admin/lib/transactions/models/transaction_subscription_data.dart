@@ -29,7 +29,7 @@ class SubscriptionData {
 
 class SubscriptionDataList {
   String? monthYear;
-  int? monthWiseTotalSusbcriptionAmount;
+  double? monthWiseTotalSusbcriptionAmount;
   List<DateWiseSubscription>? dateWiseSubscription;
 
   SubscriptionDataList(
@@ -67,7 +67,7 @@ class DateWiseSubscription {
   String? userType;
   String? restaurantAddress;
   String? planType;
-  int? amount;
+  double? amount;
   String? formattedDate;
 
   DateWiseSubscription(
@@ -85,7 +85,7 @@ class DateWiseSubscription {
     userType = json['userType']?? '';
     restaurantAddress = json['restaurantAddress']?? '';
     planType = json['planType']?? '';
-    amount = json['amount']?? 0;
+    amount = json['amount']?? 0.0;
     formattedDate = json['formattedDate']?? '';
   }
 
