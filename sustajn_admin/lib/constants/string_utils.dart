@@ -318,4 +318,6 @@ class Strings {
   static const String PAY_USE = 'Pay-per-use';
   static const String INCRICULATION = 'In Circulation';
   static const String SEARCH_BY_USERID = 'Search by UserID';
+  static const String SEARCH_BY_PARTNER = 'Search by Partner Name';
+  static const String NO_INCIRCULATION_AVAILABLE = 'No InCirculation Data Available';
 }

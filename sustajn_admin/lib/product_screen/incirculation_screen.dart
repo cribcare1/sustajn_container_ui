@@ -13,15 +13,16 @@ import '../provider/order_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'models/incirculation_data.dart';
 
-class IncirculationScreen extends ConsumerStatefulWidget {
-  const IncirculationScreen({super.key, required int restaurantId});
+class InCirculationScreen extends ConsumerStatefulWidget {
+  const InCirculationScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<IncirculationScreen> createState() => _IncirculationScreenState();
+  ConsumerState<InCirculationScreen> createState() => _InCirculationScreenState();
 }
 
-class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
+class _InCirculationScreenState extends ConsumerState<InCirculationScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -34,6 +35,8 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
+    final InCirculationData? inCirculationData = orderState.getInCirculationData;
+
 
     return SafeArea(
       top: false,
@@ -56,15 +59,15 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
             Expanded(
               child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getIncirculationData == null
+                  : orderState.getInCirculationData == null
                   ? const Center(
                 child: Text(
-                  Strings.SOMETHING_WENT_WRONG,
+                  Strings.NO_INCIRCULATION_AVAILABLE,
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getIncirculationData!.incirculationData == null ||
-                  orderState.getIncirculationData!.incirculationData!.isEmpty
+                  : orderState.getInCirculationData!.data == null ||
+                  orderState.getInCirculationData!.data!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -97,9 +100,9 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
                     horizontal: Constant.CONTAINER_SIZE_16,
                     vertical: Constant.CONTAINER_SIZE_16
                 ),
-                itemCount: orderState.getIncirculationList.length,
+                itemCount: orderState.getInCirculationList.length,
                 itemBuilder: (context, index) {
-                  final item = orderState.getIncirculationList[index];
+                  final item = orderState.getInCirculationList[index];
 
                   return inventoryItemCard(
                     context,
@@ -362,9 +365,10 @@ class _IncirculationScreenState extends ConsumerState<IncirculationScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.PRODUCT_INCIRCULATION}$userId';
-          ref.read(getIncirculationProvider(url));
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.PRODUCT_INCIRCULATION}';
+              // '$userId';
+          ref.read(getInCirculationProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

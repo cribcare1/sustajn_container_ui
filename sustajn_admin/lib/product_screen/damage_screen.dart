@@ -10,6 +10,7 @@ import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'models/damage_data.dart';
 
 class DamageScreen extends ConsumerStatefulWidget {
   const DamageScreen({super.key, required int restaurantId});
@@ -31,7 +32,7 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-
+    final DamagedContainerData? damagedData = orderState.getDamagedContainerData;
     return SafeArea(
       top: false,
       bottom: true,

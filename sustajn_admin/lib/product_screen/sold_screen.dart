@@ -10,15 +10,16 @@ import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'models/sold_data.dart';
 
-class SoldScreen extends ConsumerStatefulWidget {
-  const SoldScreen({super.key, required int restaurantId});
+class SoldsScreen extends ConsumerStatefulWidget {
+  const SoldsScreen({super.key, required int restaurantId});
 
   @override
-  ConsumerState<SoldScreen> createState() => _SoldScreenState();
+  ConsumerState<SoldsScreen> createState() => _SoldScreenState();
 }
 
-class _SoldScreenState extends ConsumerState<SoldScreen> {
+class _SoldScreenState extends ConsumerState<SoldsScreen> {
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -31,6 +32,8 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
+    final SoldContainersData? soldData = orderState.getSoldContainersData;
+
 
     return SafeArea(
       top: false,
@@ -60,8 +63,8 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getSoldContainersData!.soldData == null ||
-                  orderState.getSoldContainersData!.soldData!.isEmpty
+                  : orderState.getSoldContainersData!.data == null ||
+                  orderState.getSoldContainersData!.data!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -345,8 +348,7 @@ class _SoldScreenState extends ConsumerState<SoldScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.SOLD_CONTAINERS}$userId';
+          final url = '${NetworkUrls.SOLD_CONTAINERS}';
           ref.read(getSoldOrderProvider(url));
         } else {
           orderState.setIsLoading(false);

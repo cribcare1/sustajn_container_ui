@@ -4,6 +4,9 @@ import 'package:container_tracking/utils/nav_utils.dart';
 import '../../Screen/users/screens/users_screen.dart';
 import '../../container_list/screens/add_new_container.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
+import '../../product_screen/damage_detail_screen.dart';
+import '../../product_screen/product_home_screen.dart';
+import '../../product_screen/with_partnerist_screen.dart';
 import '../../transactions/screens/transaction_home_screen.dart';
 import '../../utils/theme_utils.dart';
 
@@ -174,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _handleNavigation(String title) {
     switch (title) {
       case "Products":
-        NavUtil.navigateToPushScreen(context, AddContainerScreen());
+        NavUtil.navigateToPushScreen(context, ProductsScreen());
         break;
       case "Partners":
         NavUtil.navigateToPushScreen(context, PartnerScreen());

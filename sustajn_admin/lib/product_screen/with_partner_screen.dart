@@ -1,3 +1,4 @@
+import 'package:container_tracking/product_screen/with_partnerist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../common_provider/network_provider.dart';
@@ -8,6 +9,7 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 
@@ -134,7 +136,7 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, WithPartnerListScreen());
       },
       child: GlassSummaryCard(
         child: Row(
@@ -357,9 +359,10 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.WITH_PARTNER}$userId';
-          ref.read(getDamagedOrderProvider(url));
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.WITH_PARTNER}';
+              // '$userId';
+          ref.read(getWithPartnerOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);
