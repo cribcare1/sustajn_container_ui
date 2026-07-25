@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../common_provider/network_provider.dart';
 import '../common_widgets/card_widget.dart';
 import '../common_widgets/submit_button.dart';
