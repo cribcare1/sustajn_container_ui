@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 
 class LeaseDetailsUI extends StatelessWidget {
   const LeaseDetailsUI({super.key});
@@ -12,18 +13,13 @@ class LeaseDetailsUI extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-
         Align(
           alignment: Alignment.topRight,
           child: InkWell(
             onTap: () => Navigator.pop(context),
             child: Container(
-              margin: EdgeInsets.all(
-                Constant.CONTAINER_SIZE_12,
-              ),
-              padding: EdgeInsets.all(
-                Constant.SIZE_08,
-              ),
+              margin: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+              padding: EdgeInsets.all(Constant.SIZE_08),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
@@ -46,30 +42,24 @@ class LeaseDetailsUI extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(
-                  Constant.CONTAINER_SIZE_30,
-                ),
+                top: Radius.circular(Constant.CONTAINER_SIZE_30),
               ),
             ),
 
             child: Column(
               children: [
-
                 _header(theme),
 
-                SizedBox(
-                  height: Constant.CONTAINER_SIZE_24,
-                ),
+                SizedBox(height: Constant.CONTAINER_SIZE_24),
 
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Containers",
+                          Strings.CONTAINERS_TITLE,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: Constant.LABEL_TEXT_SIZE_18,
@@ -83,14 +73,10 @@ class LeaseDetailsUI extends StatelessWidget {
                       Expanded(
                         child: ListView.separated(
                           itemCount: 1,
-                          separatorBuilder: (_, __) => SizedBox(
-                            height: Constant.CONTAINER_SIZE_12,
-                          ),
+                          separatorBuilder: (_, __) =>
+                              SizedBox(height: Constant.CONTAINER_SIZE_12),
                           itemBuilder: (context, index) {
-                            return _containerCard(
-                              theme,
-                              index,
-                            );
+                            return _containerCard(theme, index);
                           },
                         ),
                       ),
@@ -105,33 +91,25 @@ class LeaseDetailsUI extends StatelessWidget {
     );
   }
 
-
-  Widget _header(ThemeData theme){
-
+  Widget _header(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Center(
           child: Container(
             width: Constant.CONTAINER_SIZE_60,
             height: Constant.SIZE_05,
             decoration: BoxDecoration(
               color: Colors.white30,
-              borderRadius:
-              BorderRadius.circular(Constant.SIZE_05),
+              borderRadius: BorderRadius.circular(Constant.SIZE_05),
             ),
           ),
         ),
 
-
-        SizedBox(
-          height: Constant.CONTAINER_SIZE_20,
-        ),
-
+        SizedBox(height: Constant.CONTAINER_SIZE_20),
 
         Text(
-          "Lease Details",
+          Strings.LEASE_DETAILS,
           style: TextStyle(
             color: Colors.white,
             fontSize: Constant.LABEL_TEXT_SIZE_20,
@@ -139,11 +117,7 @@ class LeaseDetailsUI extends StatelessWidget {
           ),
         ),
 
-
-        SizedBox(
-          height: Constant.CONTAINER_SIZE_16,
-        ),
-
+        SizedBox(height: Constant.CONTAINER_SIZE_16),
 
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,20 +125,16 @@ class LeaseDetailsUI extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Row(
                   children: [
-
                     Image.asset(
-                      "assets/icons/bowl_small.png",
+                      Strings.SMALL_BOWL,
                       height: Constant.CONTAINER_SIZE_18,
                       width: Constant.CONTAINER_SIZE_18,
                       color: Colors.white70,
                     ),
 
-                    SizedBox(
-                      width: Constant.SIZE_08,
-                    ),
+                    SizedBox(width: Constant.SIZE_08),
 
                     Text(
                       "Container ID: ST-DC-50",
@@ -176,25 +146,18 @@ class LeaseDetailsUI extends StatelessWidget {
                   ],
                 ),
 
-
-                SizedBox(
-                  height: Constant.CONTAINER_SIZE_10,
-                ),
-
+                SizedBox(height: Constant.CONTAINER_SIZE_10),
 
                 Row(
                   children: [
-
                     Image.asset(
-                      "assets/icons/order_id.png",
+                      Strings.ORDER_ID_ICON,
                       height: Constant.CONTAINER_SIZE_18,
                       width: Constant.CONTAINER_SIZE_18,
                       color: Colors.white70,
                     ),
 
-                    SizedBox(
-                      width: Constant.SIZE_08,
-                    ),
+                    SizedBox(width: Constant.SIZE_08),
 
                     Text(
                       "User ID: SIDD-1542",
@@ -205,43 +168,31 @@ class LeaseDetailsUI extends StatelessWidget {
                     ),
                   ],
                 ),
-
               ],
             ),
           ],
         ),
 
-
-        SizedBox(
-          height: Constant.CONTAINER_SIZE_12,
-        ),
-
+        SizedBox(height: Constant.CONTAINER_SIZE_12),
 
         Center(
           child: Column(
             children: [
-
               Row(
-                mainAxisAlignment:
-                MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   Image.asset(
-                    "assets/images/bowl_img.png",
-                    height:
-                    Constant.CONTAINER_SIZE_40,
-                    width:
-                    Constant.CONTAINER_SIZE_40,
+                    Strings.BOWL_IMGS,
+                    height: Constant.CONTAINER_SIZE_40,
+                    width: Constant.CONTAINER_SIZE_40,
                   ),
 
-                  SizedBox(
-                    width: Constant.SIZE_08,
-                  ),
+                  SizedBox(width: Constant.SIZE_08),
 
                   Text(
                     "1",
                     style: TextStyle(
-                      color: Color(0xFFFBBF24),
+                      color: Constant.baseColor,
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
                     ),
@@ -249,11 +200,7 @@ class LeaseDetailsUI extends StatelessWidget {
                 ],
               ),
 
-
-              SizedBox(
-                height: Constant.SIZE_08,
-              ),
-
+              SizedBox(height: Constant.SIZE_08),
 
               Text(
                 "21.11.2025 | 09:00",
@@ -269,121 +216,70 @@ class LeaseDetailsUI extends StatelessWidget {
     );
   }
 
-
-
-  Widget _containerCard(
-      ThemeData theme,
-      int index,
-      ){
-
+  Widget _containerCard(ThemeData theme, int index) {
     return Container(
-      padding: EdgeInsets.all(
-        Constant.CONTAINER_SIZE_12,
-      ),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
 
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.05),
-        borderRadius:
-        BorderRadius.circular(
-          Constant.CONTAINER_SIZE_16,
-        ),
-        border: Border.all(
-          color: Colors.white24,
-        ),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
+        border: Border.all(color: Colors.white24),
       ),
-
 
       child: Row(
         children: [
-
           Container(
-            height:
-            Constant.CONTAINER_SIZE_70,
-
-            width:
-            Constant.CONTAINER_SIZE_70,
-
+            height: Constant.CONTAINER_SIZE_70,
+            width: Constant.CONTAINER_SIZE_70,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(.15),
-              borderRadius:
-              BorderRadius.circular(
-                Constant.SIZE_08,
-              ),
+              borderRadius: BorderRadius.circular(Constant.SIZE_08),
             ),
 
             child: Image.asset(
-              "assets/images/no_image_container.png",
+              Strings.NO_IMG,
               fit: BoxFit.contain,
             ),
           ),
 
-
-          SizedBox(
-            width: Constant.CONTAINER_SIZE_16,
-          ),
-
+          SizedBox(width: Constant.CONTAINER_SIZE_16),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 Text(
                   "Dip Cup",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize:
-                    Constant.LABEL_TEXT_SIZE_16,
-                    fontWeight:
-                    FontWeight.w500,
+                    fontSize: Constant.LABEL_TEXT_SIZE_16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
 
-
-                SizedBox(
-                  height: Constant.SIZE_04,
-                ),
-
+                SizedBox(height: Constant.SIZE_04),
 
                 Text(
                   "ST-DC-50",
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize:
-                    Constant.LABEL_TEXT_SIZE_14,
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
 
-
-                SizedBox(
-                  height: Constant.SIZE_04,
-                ),
-
+                SizedBox(height: Constant.SIZE_04),
 
                 Text(
                   "50ml",
                   style: TextStyle(
                     color: Colors.white60,
-                    fontSize:
-                    Constant.LABEL_TEXT_SIZE_14,
+                    fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
               ],
             ),
           ),
-
-
-          // Text(
-          //   "2",
-          //   style: TextStyle(
-          //     color: Color(0xFFFBBF24),
-          //     fontSize:
-          //     Constant.LABEL_TEXT_SIZE_18,
-          //     fontWeight: FontWeight.w600,
-          //   ),
-          // ),
         ],
       ),
     );

@@ -27,19 +27,6 @@ class _InCirculationScreenState
     _getIncirculationListNetworkCall();
   }
 
-  // final List<Map<String, dynamic>> users = [
-  //   {"id": "ROBE-2323", "qty": 2},
-  //   {"id": "BESS-1323", "qty": 10},
-  //   {"id": "KATH-2312", "qty": 1},
-  //   {"id": "DEVO-2123", "qty": 4},
-  //   {"id": "CAME-1232", "qty": 2},
-  //   {"id": "JACO-3222", "qty": 5},
-  //   {"id": "ARLE-2123", "qty": 9},
-  //   {"id": "ALBE-1865", "qty": 6},
-  //   {"id": "KIRA-1644", "qty": 3},
-  //   {"id": "LIMS-1432", "qty": 2},
-  // ];
-
   @override
   Widget build(BuildContext context,) {
     final theme = Theme.of(context);
@@ -220,23 +207,6 @@ class _InCirculationScreenState
                     ),
                     child: Row(
                       children: [
-                        // Expanded(
-                        // child: Text(
-                        //   item["id"],
-                        //   style: TextStyle(
-                        //     color: Colors.white,
-                        //     fontSize: Constant.CONTAINER_SIZE_15,
-                        //   ),
-                        // ),
-                        // ),
-                        // Text(
-                        //   item["qty"].toString(),
-                        //   style: TextStyle(
-                        //     color: Color(0xffF6C343),
-                        //     fontSize: Constant.CONTAINER_SIZE_18,
-                        //     fontWeight: FontWeight.w600,
-                        //   ),
-                        // )
                       ],
                     ),
                   );
@@ -257,7 +227,6 @@ class _InCirculationScreenState
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          // final userId = Utils.userId;
           final url = '${NetworkUrls.INCIRCULATION_DETAIL}';
           ref.read(getWithPartnerDetailProvider(url));
         } else {

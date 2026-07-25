@@ -320,4 +320,9 @@ class Strings {
   static const String SEARCH_BY_USERID = 'Search by UserID';
   static const String SEARCH_BY_PARTNER = 'Search by Partner Name';
   static const String NO_INCIRCULATION_AVAILABLE = 'No InCirculation Data Available';
+  static const String LEASE_DETAILS = 'Lease Details';
+  static const String SMALL_BOWL = 'assets/icons/bowl_small.png';
+  static const String ORDER_ID_ICON = 'assets/icons/order_id.png';
+  static const String BOWL_IMGS = 'assets/images/bowl_img.png';
+  static const String NO_IMG = 'assets/images/no_image_container.png';
 }

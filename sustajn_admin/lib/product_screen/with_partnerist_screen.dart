@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../common_provider/network_provider.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
@@ -20,6 +21,7 @@ class WithPartnerListScreen extends ConsumerStatefulWidget {
 
 class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
   final TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +32,8 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-    final PartnersDataList? partnerData = orderState.getWithPartnerDetailsData?.data;
+    final PartnersDataList? partnerData =
+        orderState.getWithPartnerDetailsData?.data;
     final List<Partners> partnerList = partnerData?.partners ?? [];
 
     return Scaffold(
@@ -38,18 +41,21 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
 
       appBar: CustomAppBar(
         title: Strings.WITH_PARTNER,
-        leading: CustomBackButton(
-            onTap: () => Navigator.pop(context)),
+        leading: CustomBackButton(onTap: () => Navigator.pop(context)),
       ).getAppBar(context),
 
       body: Column(
         children: [
           SizedBox(height: Constant.CONTAINER_SIZE_12),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_12,
+            ),
             child: Container(
               height: Constant.CONTAINER_SIZE_80,
-              padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+              padding: EdgeInsets.symmetric(
+                horizontal: Constant.CONTAINER_SIZE_12,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.05),
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
@@ -66,7 +72,7 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Constant.SIZE_08),
-                      child:  Image.network(
+                      child: Image.network(
                         "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${partnerData?.imageUrl ?? ""}",
                         fit: BoxFit.fill,
                         errorBuilder: (context, error, stackTrace) {
@@ -75,7 +81,7 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
                             fit: BoxFit.fill,
                           );
                         },
-                      )
+                      ),
                     ),
                   ),
 
@@ -99,15 +105,20 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
 
                         Text(
                           (partnerData?.productId ?? ""),
-                          style: TextStyle(color: Colors.white70,
-                              fontSize: Constant.CONTAINER_SIZE_13),
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: Constant.CONTAINER_SIZE_13,
+                          ),
                         ),
 
                         SizedBox(height: Constant.SIZE_03),
 
                         Text(
                           (partnerData?.capacity ?? ""),
-                          style: TextStyle(color: Colors.white54, fontSize: Constant.CONTAINER_SIZE_12),
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: Constant.CONTAINER_SIZE_12,
+                          ),
                         ),
                       ],
                     ),
@@ -129,7 +140,9 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
           SizedBox(height: Constant.CONTAINER_SIZE_18),
 
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+            padding: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_12,
+            ),
             child: Container(
               height: Constant.CONTAINER_SIZE_50,
               decoration: BoxDecoration(
@@ -148,7 +161,11 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(width: Constant.SIZE_01, height: Constant.CONTAINER_SIZE_24, color: Colors.white24),
+                      Container(
+                        width: Constant.SIZE_01,
+                        height: Constant.CONTAINER_SIZE_24,
+                        color: Colors.white24,
+                      ),
 
                       SizedBox(width: Constant.SIZE_10),
 
@@ -166,17 +183,23 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
 
           Expanded(
             child: ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
+              padding: EdgeInsets.symmetric(
+                horizontal: Constant.CONTAINER_SIZE_12,
+              ),
               itemCount: partnerList.length,
               separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
               itemBuilder: (context, index) {
                 final Partners item = partnerList[index];
                 return Container(
                   height: Constant.CONTAINER_SIZE_70,
-                  padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_14),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constant.CONTAINER_SIZE_14,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(.05),
-                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+                    borderRadius: BorderRadius.circular(
+                      Constant.CONTAINER_SIZE_14,
+                    ),
                     border: Border.all(color: Colors.white24),
                   ),
                   child: Row(
@@ -231,31 +254,31 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
       ),
     );
   }
-_getWithPartnerListNetworkCall() async {
-  try {
-    await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+
+  _getWithPartnerListNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
         isNetworkAvailable,
-        ) {
-      Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-      final orderState = ref.read(orderProvider);
-      if (isNetworkAvailable) {
-        orderState.setIsLoading(true);
-        // final userId = Utils.userId;
-        final url = '${NetworkUrls.WITH_PARTNER_DETAIL}';
-        ref.read(getWithPartnerDetailProvider(url));
-      } else {
-        orderState.setIsLoading(false);
-        Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-      }
-    });
-  } catch (e) {
-    Utils.printLog('Error in visitor button onPressed: $e');
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final url = '${NetworkUrls.WITH_PARTNER_DETAIL}';
+          ref.read(getWithPartnerDetailProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
-}
+
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
   }
 }
-

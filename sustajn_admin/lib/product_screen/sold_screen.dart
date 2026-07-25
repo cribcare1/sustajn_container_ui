@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../common_provider/network_provider.dart';
 import '../common_widgets/card_widget.dart';
 import '../common_widgets/submit_button.dart';
@@ -34,7 +35,6 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
     final orderState = ref.watch(orderProvider);
     final SoldContainersData? soldData = orderState.getSoldContainersData;
 
-
     return SafeArea(
       top: false,
       bottom: true,
@@ -46,7 +46,7 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
               child: CustomTheme.searchField(
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
-                onChanged: (value){
+                onChanged: (value) {
                   orderState.filterInventoryByNameOrId(value);
                 },
                 // onFilterTap: () => _showSortBottomSheet(context),
@@ -58,61 +58,62 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : orderState.getSoldContainersData == null
                   ? const Center(
-                child: Text(
-                  Strings.SOMETHING_WENT_WRONG,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
+                      child: Text(
+                        Strings.SOMETHING_WENT_WRONG,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
                   : orderState.getSoldContainersData!.data == null ||
-                  orderState.getSoldContainersData!.data!.isEmpty
+                        orderState.getSoldContainersData!.data!.isEmpty
                   ? const Center(
-                child: Text(
-                  Strings.NO_CONTAINER_AVAILABLE,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : (orderState.filterInventory.isEmpty &&
+                        searchController.text.isNotEmpty)
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
-                  ],
-                ),
-              )
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            Strings.NO_CONTAINER_AVAILABLE,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                          SubmitButton(
+                            onRightTap: () {
+                              searchController.clear();
+                              orderState.filterInventoryByNameOrId('');
+                              setState(() {});
+                            },
+                            rightText: " Clear Filter ",
+                          ),
+                        ],
+                      ),
+                    )
                   : ListView.separated(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_16
-                ),
-                itemCount: orderState.getContainersList!.length,
-                itemBuilder: (context, index) {
-                  final item = orderState.getContainersList![index];
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                        vertical: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: orderState.getContainersList!.length,
+                      itemBuilder: (context, index) {
+                        final item = orderState.getContainersList![index];
 
-                  return inventoryItemCard(
-                    context,
-                    imageUrl: item.imageUrl ?? "",
-                    name: item.containerName ?? "",
-                    productId: item.containerTypeId ?? 0,
-                    quantity: item.quantity?.toString() ?? "0",
-                    capacity : item.capacity ?? "",
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-              ),
+                        return inventoryItemCard(
+                          context,
+                          imageUrl: item.imageUrl ?? "",
+                          name: item.containerName ?? "",
+                          productId: item.containerTypeId ?? 0,
+                          quantity: item.quantity?.toString() ?? "0",
+                          capacity: item.capacity ?? "",
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    ),
             ),
           ],
         ),
@@ -121,13 +122,13 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
   }
 
   Widget inventoryItemCard(
-      BuildContext context, {
-        required String imageUrl,
-        required String name,
-        required int productId,
-        required String capacity,
-        required String quantity,
-      }) {
+    BuildContext context, {
+    required String imageUrl,
+    required String name,
+    required int productId,
+    required String capacity,
+    required String quantity,
+  }) {
     final theme = Theme.of(context);
 
     return InkWell(
@@ -141,38 +142,38 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
           children: [
             (imageUrl != "")
                 ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              padding: EdgeInsets.all(Constant.SIZE_06),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
+                    height: Constant.CONTAINER_SIZE_70,
+                    width: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    padding: EdgeInsets.all(Constant.SIZE_06),
+                    child: Image.network(
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
+                      errorBuilder: (context, obj, stack) {
+                        return Image.asset(
+                          "assets/images/no_image_container.png",
+                        );
+                      },
+                      fit: BoxFit.fill,
+                    ),
+                  )
                 : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                    width: Constant.CONTAINER_SIZE_70,
+                    height: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Constant.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.inbox,
+                        size: Constant.CONTAINER_SIZE_30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -271,7 +272,10 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
                             ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                              child: Icon(
+                                Icons.cancel_rounded,
+                                color: Constant.gold,
+                              ),
                             ),
                           ],
                         ),
@@ -342,8 +346,8 @@ class _SoldScreenState extends ConsumerState<SoldsScreen> {
   _getSoldNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
