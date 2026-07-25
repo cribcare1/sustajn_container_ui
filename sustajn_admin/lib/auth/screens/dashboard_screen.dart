@@ -4,6 +4,7 @@ import 'package:container_tracking/utils/nav_utils.dart';
 
 import '../../Screen/users/screens/users_screen.dart';
 import '../../container_list/screens/container_list_screen.dart';
+import '../../damage/screens/damage_screen.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
 import '../../transactions/screens/transaction_home_screen.dart';
 import '../../utils/theme_utils.dart';
@@ -189,6 +190,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case "Transactions":
         NavUtil.navigateToPushScreen(context, TransactionHomeScreen(userId: 1));
         break;
+      case "Damaged":
+        NavUtil.navigateToPushScreen(context, DamageHomeScreen(userId: 1));
         break;
       default:
         break;

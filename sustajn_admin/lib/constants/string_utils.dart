@@ -79,8 +79,11 @@ class Strings {
   static const AVAILABLE_CONTAINERS = 'Available Containers';
   static const TOTAL_ISSUED_TITLE = 'Total Issued';
   static const SEARCH_BY_RESTAURANT = 'Search by restaurant';
+  static const SEARCH_BY_USER_ID = 'Search by User ID';
   static const TOTAL_RETURNED = 'Total Returned';
   static const OVERDUE = 'Overdue';
+  static const SEARCH_BY_PARTNER_NAME = 'Search by Partner Name';
+
 
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
@@ -220,6 +223,8 @@ class Strings {
   static final String SUBSCRIPTION_IMG = "assets/images/bowl_img.png";
   static final String SOLD_IMG = "assets/images/bowl_img.png";
   static final String CLOCK_IMG = "assets/images/bowl_img.png";
+  static final String DAMAGE_USER = "assets/images/damage_user.png";
+  static final String DAMAGE_PARTNER = "assets/images/damage_partner.png";
 
   static const String ACTIVE = "Active";
   static const String BORROWED = "Borrowed";
@@ -301,5 +306,16 @@ class Strings {
   // static const SEARCH_BY_SOLD = 'Search by Customer or Partner';
   // static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
   // static const PLANTYPE = 'Plan Type';
+
+ static const String SUBSCRIPTION = 'Subscription';
+ static const String EXTENDED_FEE = 'Extended Fee';
+ //static const String FILTER = 'Filter';
+
+  //Damage
+  static const String DAMAGE = 'Damage';
+  static const String USER = 'User';
+  static const String PARTNER = 'Partner';
+  static const String NO_USERDAMAGE = 'No User Damage Data Found';
+  static const String NO_PARTNERDAMAGE = 'No Partner Damage Data Found';
 
 }
