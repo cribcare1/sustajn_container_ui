@@ -3,8 +3,10 @@ import '../constants/network_urls.dart';
 import '../network/ApiCallPresentor.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
+import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/sold_data.dart';
 import '../product_screen/models/with_partner_data.dart';
+import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
 import '../utils/utility.dart';
 
@@ -43,15 +45,15 @@ class OrderServices {
     }
   }
 
-  //Incirculation Order Service
-  Future<IncirculationData> getInCirculationOrderService(String partUrl) async {
+  //InCirculation Order Service
+  Future<InCirculationData> getInCirculationOrderService(String partUrl) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
-        var responseData = IncirculationData.fromJson(response);
+        var responseData = InCirculationData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {
@@ -112,6 +114,45 @@ class OrderServices {
       var response = await presenter.getAPIData(url);
       if (response != null) {
         var responseData = SoldContainersData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+  ///IncirculationList order Service
+  // Future<IncirculationDetailsData> getInCirculationListOrderService(String partUrl) async {
+  //   try {
+  //     Utils.printLog("requestData::::::: $partUrl");
+  //     String url = NetworkUrls.BASE_URL + partUrl;
+  //     ApiCallPresenter presenter = ApiCallPresenter();
+  //     var response = await presenter.getAPIData(url);
+  //     if (response != null) {
+  //       var responseData = IncirculationDetailsData.fromJson(response);
+  //       Utils.printLog("responseData in Service: $responseData");
+  //       return responseData;
+  //     } else {
+  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+  //     }
+  //   } catch (e) {
+  //     Utils.printLog("Get Profile service::::$e");
+  //     throw Exception(e);
+  //   }
+  // }
+  ///WithPartner Detail order service
+
+  Future<WithPartnerDetailsData> getWithPartnerDetailOrderService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = WithPartnerDetailsData.fromJson(response);
         Utils.printLog("responseData in Service: $responseData");
         return responseData;
       } else {

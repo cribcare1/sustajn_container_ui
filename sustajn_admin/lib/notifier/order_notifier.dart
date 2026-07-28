@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import '../Screen/users/model/user_sold_container_data.dart';
 import '../constants/string_utils.dart';
 import '../product_screen/models/damage_data.dart';
+import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/with_partner_data.dart';
+import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
 import '../utils/utility.dart';
 
@@ -21,11 +23,19 @@ class OrderState extends ChangeNotifier {
   int _leasedContainerCount = 0;
   int _returnedContainerCount = 0;
 
-  IncirculationData? _incirculationData;
-  List<IncirculationList> _incirculationList = [];
+  InCirculationData? _inCirculationData;
+  List<IncirculationList> _inCirculationList = [];
+
+  // IncirculationDetailsData? _incirculationDetailsData;
+  // List<IncirculationListData> _incirculationListData = [];
 
   WithPartnerData? _withPartnerData;
   List<WithPartnerList> _withPartnerList = [];
+
+  WithPartnerDetailsData? _withPartnerDetailsData;
+  List<PartnersDataList> _partnersDataList = [];
+  List<Partners> _partners = [];
+
 
   DamagedContainerData? _damagedContainerData;
   List<DamagedList> _damagedList = [];
@@ -63,11 +73,18 @@ class OrderState extends ChangeNotifier {
 
   int get returnedContainerCount => _returnedContainerCount;
 
-  IncirculationData? get getIncirculationData => _incirculationData;
-  List<IncirculationList> get getIncirculationList => _incirculationList;
+  InCirculationData? get getInCirculationData => _inCirculationData;
+  List<IncirculationList> get getInCirculationList => _inCirculationList;
+
+  // IncirculationDetailsData? get getIncirculationDetailsData => _incirculationDetailsData;
+  // List<IncirculationListData> get getIncirculationListData => _incirculationListData;
 
   WithPartnerData? get getWithPartnerData => _withPartnerData;
   List<WithPartnerList> get getPartnerDataList => _withPartnerList;
+
+  WithPartnerDetailsData? get getWithPartnerDetailsData => _withPartnerDetailsData;
+  List<PartnersDataList> get getPartnersDataList => _partnersDataList;
+  List<Partners> get getPartners => _partners;
 
   DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
   List<DamagedList> get getDamagedList => _damagedList;
@@ -109,17 +126,32 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setIncirculationData(IncirculationData incirculationData) {
-    Utils.printLog("data list = ${incirculationData.incirculationData!.length}");
-    _incirculationData = incirculationData;
-    _incirculationList = incirculationData!.incirculationData!;
+  void setInCirculationData(InCirculationData inCirculationData) {
+    Utils.printLog("data list = ${inCirculationData.data!.length}");
+    _inCirculationData = inCirculationData;
+    _inCirculationList = inCirculationData!.data!;
     notifyListeners();
   }
+
+  // void setIncirculationDetailsData(IncirculationDetailsData incirculationDetailsData) {
+  //   Utils.printLog("data list = ${incirculationDetailsData.data!.capacity}");
+  //   _incirculationDetailsData = incirculationDetailsData;
+  //   _incirculationListData = incirculationDetailsData!.data!;
+  //   notifyListeners();
+  // }
 
   void setWithPartnerData(WithPartnerData withPartnerData) {
     Utils.printLog("data list = ${withPartnerData.withpartnerData!.length}");
     _withPartnerData = withPartnerData;
     _withPartnerList = withPartnerData!.withpartnerData!;
+    notifyListeners();
+  }
+
+  void setWithPartnerDetailsData(WithPartnerDetailsData withPartnerDetailsData) {
+    Utils.printLog("data list = ${withPartnerDetailsData.data!.capacity}");
+    _withPartnerDetailsData = withPartnerDetailsData;
+    _partnersDataList = _partnersDataList;
+    _partners = _partners!;
     notifyListeners();
   }
 
@@ -132,9 +164,9 @@ class OrderState extends ChangeNotifier {
   }
 
   void setSoldContainersData(SoldContainersData soldContainersData) {
-    Utils.printLog("data list = ${soldContainersData.soldData!.length}");
+    Utils.printLog("data list = ${soldContainersData.data!.length}");
     _soldContainersData = soldContainersData;
-    _soldList = _soldContainersData!.soldData!;
+    _soldList = _soldContainersData!.data!;
     _containersList = _containersList!;
     notifyListeners();
   }

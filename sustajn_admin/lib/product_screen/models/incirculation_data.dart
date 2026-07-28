@@ -1,15 +1,15 @@
-class IncirculationData {
-  List<IncirculationList>? incirculationData;
+class InCirculationData {
+  List<IncirculationList>? data;
   String? message;
   String? status;
 
-  IncirculationData({this.incirculationData, this.message, this.status});
+  InCirculationData({this.data, this.message, this.status});
 
-  IncirculationData.fromJson(Map<String, dynamic> json) {
+  InCirculationData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      incirculationData = <IncirculationList>[];
+      data = <IncirculationList>[];
       json['data'].forEach((v) {
-        incirculationData!.add(new IncirculationList.fromJson(v));
+        data!.add(new IncirculationList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -18,8 +18,8 @@ class IncirculationData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.incirculationData != null) {
-      data['data'] = this.incirculationData!.map((v) => v.toJson()).toList();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     data['status'] = this.status;
