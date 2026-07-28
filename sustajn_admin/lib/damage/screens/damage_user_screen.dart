@@ -69,8 +69,9 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
                       return (damageContainer.products ?? []).map((product) {
                         return InkWell(
                           onTap: () {
-                            showDialog(
+                            showModalBottomSheet(
                               context: context,
+                              isScrollControlled: true,
                               builder: (_) => DamageDetailsPopup(
                                 damageContainer: damageContainer,
                                 product: product,
@@ -168,11 +169,13 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
   }
 
   Widget _monthHeader(DamageUserDataList month) {
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 12,
       ),
+      color: Colors.white.withOpacity(0.15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -180,28 +183,28 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
             month.monthYear ?? "",
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
 
           Row(
             children: [
-
-              const Icon(
-                Icons.inventory_2_outlined,
-                color: Color(0xFFFFC107),
-                size: 18,
+              Image.asset(
+                "assets/images/diarhm.png",
+                width: 18,
+                height: 18,
+                color: const Color(0xFFF5EBDF),
               ),
 
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
 
               Text(
                 "${month.monthWiseTotalDamageContainers ?? 0}",
                 style: const TextStyle(
                   color: Color(0xFFFFC107),
-                  fontWeight: FontWeight.bold,
                   fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -236,7 +239,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
               children: [
 
                 Text(
-                  product.productName ?? product.productUniqueId ?? "",
+                  product.productName ?? product.productName ?? "",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

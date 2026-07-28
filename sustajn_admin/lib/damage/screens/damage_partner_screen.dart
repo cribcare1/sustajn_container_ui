@@ -64,7 +64,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _monthHeader(month.monthYear ?? ""),
+                    _monthHeader(month),
 
                     ...(month.damageContainers ?? []).expand((damageContainer) {
                       return (damageContainer.products ?? []).map((product) {
@@ -155,18 +155,45 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
     }
   }
 
-  Widget _monthHeader(String month) {
+  Widget _monthHeader(DamagePartnerDataList month) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       color: Colors.white.withOpacity(0.15),
-      child: Text(
-        month,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            month.monthYear ?? "",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          Row(
+            children: [
+              Image.asset(
+                "assets/images/diarhm.png",
+                width: 18,
+                height: 18,
+                color: const Color(0xFFF5EBDF),
+              ),
+
+              const SizedBox(width: 6),
+
+              Text(
+                "${month.monthWiseTotalDamageContainers ?? 0}",
+                style: const TextStyle(
+                  color: Color(0xFFFFC107),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -174,8 +201,10 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
   Widget _damageCard(DamageContainers damageContainer, Products product) {
     return InkWell(
       onTap: () {
-        showDialog(
+        showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          backgroundColor: Constant.PrimaryColor,
           builder: (_) => DamagePartnerPopup(
             damageContainer: damageContainer,
             product: product,
@@ -202,12 +231,12 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         ),
         child: Row(
           children: [
-            /// Left Side
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Product Name
+
                   Text(
                     product.productName ?? "",
                     maxLines: 1,
@@ -221,7 +250,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
 
                   const SizedBox(height: 5),
 
-                  /// Partner Name
+
                   Text(
                     product.restaurantName ?? "-",
                     maxLines: 1,
@@ -234,7 +263,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
 
                   const SizedBox(height: 5),
 
-                  /// Date
+
                   Text(
                     damageContainer.localDateTime ?? "",
                     style: const TextStyle(
@@ -246,7 +275,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
               ),
             ),
 
-            /// Right Side
+
             Row(
               children: [
                 Text(
