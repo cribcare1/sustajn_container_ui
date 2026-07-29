@@ -1,15 +1,15 @@
 class DamagedContainerData {
-  List<DamagedList>? damageData;
+  List<DamagedList>? data;
   String? message;
   String? status;
 
-  DamagedContainerData({this.damageData, this.message, this.status});
+  DamagedContainerData({this.data, this.message, this.status});
 
   DamagedContainerData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      damageData = <DamagedList>[];
+      data = <DamagedList>[];
       json['data'].forEach((v) {
-        damageData!.add(new DamagedList.fromJson(v));
+        data!.add(new DamagedList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -18,8 +18,8 @@ class DamagedContainerData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.damageData != null) {
-      data['data'] = this.damageData!.map((v) => v.toJson()).toList();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     data['status'] = this.status;
@@ -98,7 +98,7 @@ class DamageContainers {
 }
 
 class ProductsList {
-  Null? customerId;
+  String? customerId;
   Null? restaurantName;
   int? productId;
   String? productName;
@@ -122,7 +122,7 @@ class ProductsList {
         this.damageImagesUrls});
 
   ProductsList.fromJson(Map<String, dynamic> json) {
-    customerId = json['customerId'];
+    customerId = json['customerId']??"";
     restaurantName = json['restaurantName'];
     productId = json['productId']??0;
     productName = json['productName']??"";
