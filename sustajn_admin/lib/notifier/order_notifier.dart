@@ -1,10 +1,8 @@
 import 'package:container_tracking/product_screen/models/incirculation_data.dart';
 import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
-import '../Screen/users/model/user_sold_container_data.dart';
 import '../constants/string_utils.dart';
 import '../product_screen/models/damage_data.dart';
-import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
@@ -156,9 +154,9 @@ class OrderState extends ChangeNotifier {
   }
 
   void setDamagedData(DamagedContainerData damagedContainerData) {
-    Utils.printLog("data list = ${damagedContainerData.damageData!.length}");
+    Utils.printLog("data list = ${damagedContainerData.data!.length}");
     _damagedContainerData = damagedContainerData;
-    _damagedList = _damagedContainerData!.damageData!;
+    _damagedList = _damagedContainerData!.data!;
     _productsList = _productsList!;
     notifyListeners();
   }
