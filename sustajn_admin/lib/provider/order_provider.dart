@@ -6,6 +6,7 @@ import '../constants/string_utils.dart';
 import '../notifier/order_notifier.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
+import '../product_screen/models/inventory_details_data.dart';
 import '../product_screen/models/sold_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
@@ -228,6 +229,31 @@ final getWithPartnerDetailProvider = FutureProvider.family<dynamic, String>((
       Utils.showToast(responseData.message!);
     }
     return null;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+
+///Inventory Details Provider
+
+final getInventoryDetailProvider =
+FutureProvider.family<dynamic, String>((ref, params) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+
+    Utils.printLog("params===$params");
+
+    InventoryDetailsData responseData =
+    await serviceProvider.getInventoryDetailOrderService(params);
+
+    orderState.setIsLoading(false);
+    orderState.setInventoryDetailsData(responseData);
+
+    return responseData;
   } catch (e) {
     Utils.printLog("Get Profile provider error called: $e");
     orderState.setIsLoading(false);
