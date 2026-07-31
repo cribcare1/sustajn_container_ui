@@ -31,27 +31,6 @@ class _DamagedScreenState extends ConsumerState<DamagedDetailsScreen> {
     _getDamageListNetworkCall();
   }
 
-  _getDamageListNetworkCall() async {
-    try {
-      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-        isNetworkAvailable,
-      ) {
-        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-        final orderState = ref.read(orderProvider);
-        if (isNetworkAvailable) {
-          orderState.setIsLoading(true);
-          final url = '${NetworkUrls.DAMAGED_CONTAINER}';
-          ref.read(getDamagedOrderProvider(url));
-        } else {
-          orderState.setIsLoading(false);
-          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-        }
-      });
-    } catch (e) {
-      Utils.printLog('Error in visitor button onPressed: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final tab = ref.watch(damageTabProvider);
@@ -238,6 +217,26 @@ class _DamagedScreenState extends ConsumerState<DamagedDetailsScreen> {
         ),
       ),
     );
+  }
+  _getDamageListNetworkCall() async {
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+          isNetworkAvailable,
+          ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(orderProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
+          final url = '${NetworkUrls.DAMAGED_CONTAINER}';
+          ref.read(getDamagedOrderProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
+    }
   }
 }
 

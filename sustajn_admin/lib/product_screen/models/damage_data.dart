@@ -99,7 +99,7 @@ class DamageContainers {
 
 class ProductsList {
   String? customerId;
-  Null? restaurantName;
+  String? restaurantName;
   int? productId;
   String? productName;
   String? productDescription;
@@ -123,7 +123,7 @@ class ProductsList {
 
   ProductsList.fromJson(Map<String, dynamic> json) {
     customerId = json['customerId']??"";
-    restaurantName = json['restaurantName'];
+    restaurantName = json['restaurantName']??"";
     productId = json['productId']??0;
     productName = json['productName']??"";
     productDescription = json['productDescription']??"";
