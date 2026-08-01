@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../common_provider/network_provider.dart';
 import '../common_widgets/card_widget.dart';
 import '../common_widgets/submit_button.dart';
@@ -8,8 +9,11 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'damage_detail_screen.dart';
+import 'models/damage_data.dart';
 
 class DamageScreen extends ConsumerStatefulWidget {
   const DamageScreen({super.key, required int restaurantId});
@@ -31,7 +35,8 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-
+    final DamagedContainerData? damagedData =
+        orderState.getDamagedContainerData;
     return SafeArea(
       top: false,
       bottom: true,
@@ -43,7 +48,7 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
               child: CustomTheme.searchField(
                 searchController,
                 Strings.SEARCH_BY_CONTAINER_NAME,
-                onChanged: (value){
+                onChanged: (value) {
                   orderState.filterInventoryByNameOrId(value);
                 },
                 onFilterTap: () => _showSortBottomSheet(context),
@@ -55,61 +60,63 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : orderState.getDamagedContainerData == null
                   ? const Center(
-                child: Text(
-                  Strings.SOMETHING_WENT_WRONG,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : orderState.getDamagedContainerData!.damageData == null ||
-                  orderState.getDamagedContainerData!.damageData!.isEmpty
+                      child: Text(
+                        Strings.SOMETHING_WENT_WRONG,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : orderState.getDamagedContainerData!.data == null ||
+                        orderState.getDamagedContainerData!.data!.isEmpty
                   ? const Center(
-                child: Text(
-                  Strings.NO_CONTAINER_AVAILABLE,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-                  : (orderState.filterInventory.isEmpty && searchController.text.isNotEmpty)
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  : (orderState.filterInventory.isEmpty &&
+                        searchController.text.isNotEmpty)
                   ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.NO_CONTAINER_AVAILABLE,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-                    SubmitButton(
-                      onRightTap: () {
-                        searchController.clear();
-                        orderState.filterInventoryByNameOrId('');
-                        setState(() {});
-                      },
-                      rightText: " Clear Filter ",
-                    ),
-                  ],
-                ),
-              )
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            Strings.NO_CONTAINER_AVAILABLE,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
+                          SubmitButton(
+                            onRightTap: () {
+                              searchController.clear();
+                              orderState.filterInventoryByNameOrId('');
+                              setState(() {});
+                            },
+                            rightText: " Clear Filter ",
+                          ),
+                        ],
+                      ),
+                    )
                   : ListView.separated(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constant.CONTAINER_SIZE_16,
-                    vertical: Constant.CONTAINER_SIZE_16
-                ),
-                itemCount: orderState.getProductsList!.length,
-                itemBuilder: (context, index) {
-                  final item = orderState.getProductsList![index];
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                        vertical: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: orderState.getProductsList!.length,
+                      itemBuilder: (context, index) {
+                        final item = orderState.getProductsList![index];
 
-                  return inventoryItemCard(
-                    context,
-                    imageUrl: item.productImageUrl ?? "",
-                    name: item.productName ?? "",
-                    productId: item.productId ?? 0,
-                    capacity: item.capacity?.toString() ?? "0",
-                    containerTypeId : item.productUniqueId ?? "",
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-              ),
+                        return inventoryItemCard(
+                          context,
+                          item: item,
+                          imageUrl: item.productImageUrl ?? "",
+                          name: item.productName ?? "",
+                          productId: item.productId ?? 0,
+                          capacity: item.capacity?.toString() ?? "0",
+                          containerTypeId: item.productUniqueId ?? "",
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    ),
             ),
           ],
         ),
@@ -118,19 +125,23 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
   }
 
   Widget inventoryItemCard(
-      BuildContext context, {
-        required String imageUrl,
-        required String name,
-        required int productId,
-        required String capacity,
-        required String containerTypeId,
-      }) {
+    BuildContext context, {
+    required String imageUrl,
+    required ProductsList item,
+    required String name,
+    required int productId,
+    required String capacity,
+    required String containerTypeId,
+  }) {
     final theme = Theme.of(context);
 
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(
+          context,
+          DamagedDetailsScreen(product: item),
+        );
       },
       child: GlassSummaryCard(
         child: Row(
@@ -138,38 +149,38 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
           children: [
             (imageUrl != "")
                 ? Container(
-              height: Constant.CONTAINER_SIZE_70,
-              width: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(6),
-              child: Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
-                errorBuilder: (context, obj, stack) {
-                  return Image.asset(
-                    "assets/images/no_image_container.png",
-                  );
-                },
-                fit: BoxFit.fill,
-              ),
-            )
+                    height: Constant.CONTAINER_SIZE_70,
+                    width: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: Image.network(
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$imageUrl",
+                      errorBuilder: (context, obj, stack) {
+                        return Image.asset(
+                          "assets/images/no_image_container.png",
+                        );
+                      },
+                      fit: BoxFit.fill,
+                    ),
+                  )
                 : Container(
-              width: Constant.CONTAINER_SIZE_70,
-              height: Constant.CONTAINER_SIZE_70,
-              decoration: BoxDecoration(
-                color: Constant.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(Constant.SIZE_08),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.inbox,
-                  size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                    width: Constant.CONTAINER_SIZE_70,
+                    height: Constant.CONTAINER_SIZE_70,
+                    decoration: BoxDecoration(
+                      color: Constant.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.inbox,
+                        size: Constant.CONTAINER_SIZE_30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -268,7 +279,10 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
                             ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: Icon(Icons.cancel_rounded, color: Constant.gold),
+                              child: Icon(
+                                Icons.cancel_rounded,
+                                color: Constant.gold,
+                              ),
                             ),
                           ],
                         ),
@@ -339,8 +353,8 @@ class _DamageScreenState extends ConsumerState<DamageScreen> {
   _getDamagedNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {

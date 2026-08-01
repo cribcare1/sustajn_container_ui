@@ -3,6 +3,7 @@ class Strings {
   static const JWT_TOKEN = 'jwt_token';
   static const IS_LOGGED_IN = 'isLoggedIn';
   static const PROFILE_DATA = 'ProfileData';
+
   //Network Message
   static const EMPTY_DATA_SERVER_MSG =
       'Something went wrong! Please try again after sometime.';
@@ -166,8 +167,8 @@ class Strings {
   static const PASSWORD_REQUIRED_TXT = "Password is required";
   static const INVALID_PASSWORD =
       'Password must be at least 8 characters long and contain at least one letter and one number';
-  static const LOGGED_SUCCESS ="Logged in successfully";
-  static const ADDED_CONTAINER ="Container Added Successfully";
+  static const LOGGED_SUCCESS = "Logged in successfully";
+  static const ADDED_CONTAINER = "Container Added Successfully";
   static const PART_URL = 'part_url';
   static const REQUEST_TYPE = 'request_type';
   static const LISTENER = 'listener';
@@ -184,15 +185,22 @@ class Strings {
   static const TITLE_4 = 'Extended Due Fee Received';
   static const TITLE_5 = 'Container Sold';
   static const SUBTITLE_1 = 'Container broken during use';
-  static const SUBTITLE_2 = 'Brothaus Bakery & Bistro has placed a container order';
-  static const SUBTITLE_3 = 'Dragonfly Dubai has requested a container return pickup';
-  static const SUBTITLE_4 = 'JOHN-2323 paid AED 6 as an extended usage fee for overdue containers.';
-  static const SUBTITLE_5 = 'KIRAN-2322 purchased the container(s) for AED 200.';
+  static const SUBTITLE_2 =
+      'Brothaus Bakery & Bistro has placed a container order';
+  static const SUBTITLE_3 =
+      'Dragonfly Dubai has requested a container return pickup';
+  static const SUBTITLE_4 =
+      'JOHN-2323 paid AED 6 as an extended usage fee for overdue containers.';
+  static const SUBTITLE_5 =
+      'KIRAN-2322 purchased the container(s) for AED 200.';
   static const LEAVE_RESET_PASSWORD = 'Leave Reset Password?';
   static const GO_BACK_RESET_PASSWORD =
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
+
+  // static const PRODUCTS = 'Products';
+  // static const INVENTORY = 'Inventory';
   static const IN_CIRCULATION = 'In Circulation';
   static const WITH_PARTNER = 'With Partner';
   static const DAMAGED = 'Damaged';
@@ -226,7 +234,7 @@ class Strings {
   static const String ACTIVE = "Active";
   static const String BORROWED = "Borrowed";
   static const String RETURNED = "Returned";
-  static const String NO_BORROWED  = 'No borrowed containers found';
+  static const String NO_BORROWED = 'No borrowed containers found';
   static const String FILTERS = 'Filters';
 
 
@@ -265,8 +273,9 @@ class Strings {
   //Transactions
   static const String TRANSACTIONS = 'Transactions';
   static const String NO_SOLD_CON = 'No sold containers found';
-  static const String NO_SUBSCRIPTION  = 'No Subscription Plan found';
-  static const String NO_TRANSACTION_EXTENDED_FEE_DATA = 'No extended fee data found';
+  static const String NO_SUBSCRIPTION = 'No Subscription Plan found';
+  static const String NO_TRANSACTION_EXTENDED_FEE_DATA =
+      'No extended fee data found';
   static const SEARCH_BY_REST = 'Search by Partner';
   static const SEARCH_BY_SOLD = 'Search by Customer or Partner';
   static const SEARCH_BY_EXTENDED_FEE = 'Search by Customer ID';
@@ -277,7 +286,8 @@ class Strings {
   static const String CONFIRM_ORDER = 'Confirm Order';
   static const String REJECT_ORDER = 'Reject Order';
   static const String PARTNER_REMARKS = 'Partner Remarks';
-  static const String REMARK_DETAILS = 'Lorem ipsum dolor sit amet consectetur. '
+  static const String REMARK_DETAILS =
+      'Lorem ipsum dolor sit amet consectetur. '
       'Nulla magnis adipiscing commodo non amet dignissim orci. '
       'In gravida et sed morbi. Proin vulputate lectus aliquam massa.'
       ' A turpis tellus et mattis tincidunt nunc. Odio sit in nulla.';
@@ -285,12 +295,15 @@ class Strings {
   static const String DELIVER_DETAILS = 'Delivered Details';
   static const String REJECT_DETAILS = 'Rejected Details';
   static const String REMARKS = 'Remarks*';
-  static const String REJECT_MESSAGE = 'Once rejected, this order will be marked as closed and cannot be processed.';
+  static const String REJECT_MESSAGE =
+      'Once rejected, this order will be marked as closed and cannot be processed.';
   static const String CANCEL = 'Cancel';
-  static const String CONFIRMATION = 'After confirmation, the restaurant container orde will be processed and can only be marked as delivered  afterward.';
+  static const String CONFIRMATION =
+      'After confirmation, the restaurant container orde will be processed and can only be marked as delivered  afterward.';
   static const String REMARK_OPTIONAL = 'Remarks (optional)';
   static const String CONFIRM_DELIVERY = 'Confirm Delivery';
-  static const String CONFIRM_MESSAGE = 'Marking this order as delivered will complete the process and cannot be undone Confirm only if the containers have been physically delivered.';
+  static const String CONFIRM_MESSAGE =
+      'Marking this order as delivered will complete the process and cannot be undone Confirm only if the containers have been physically delivered.';
   static const String ORDERED_CONTAINERS = 'Ordered Containers';
   static const String ORDER_ID = 'Order ID';
   static const String DELIVERED_CONTAINERS = 'Delivered Containers';
@@ -311,6 +324,22 @@ class Strings {
   static const String PAY_USE = 'Pay-per-use';
   static const String INCRICULATION = 'In Circulation';
   static const String SEARCH_BY_USERID = 'Search by UserID';
+  static const String SEARCH_BY_PARTNER = 'Search by Partner Name';
+  static const String NO_INCIRCULATION_AVAILABLE = 'No InCirculation Data Available';
+  static const String LEASE_DETAILS = 'Lease Details';
+  static const String SMALL_BOWL = 'assets/icons/bowl_small.png';
+  static const String ORDER_ID_ICON = 'assets/icons/order_id.png';
+  static const String BOWL_IMGS = 'assets/images/bowl_img.png';
+  static const String NO_IMG = 'assets/images/no_image_container.png';
+  static const String CORNER_ARROW = 'assets/icons/corner_arrow.png';
+  static const String DELETE_CONTAINER = 'Delete Container?';
+  static const String EDIT_ICON = 'assets/icons/edit_icon.png';
+  static const String DELETE_ICON = 'assets/icons/delete_icon.png';
+  static const String ORDERED = 'Ordered';
+  static const String ISSUED_PARTNER = 'Issued to Partner';
+  static const String IN_STOCK = 'In-Stock';
+  static const String VIEW_MORE = 'View More Details';
+  static const String DELETE_DES = 'Deleting this container will remove it from all future orders and assignments. Existing records may be impacted. This action is irreversible.';
 
  static const String SUBSCRIPTION = 'Subscription';
  static const String EXTENDED_FEE = 'Extended Fee';

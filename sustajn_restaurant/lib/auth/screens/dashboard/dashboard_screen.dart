@@ -119,6 +119,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         if (isNetworkAvailable) {
           profileState.setDashboardLoading(true);
           final userId = Utils.userId!;
+
           final url =
               '${NetworkUrls.DASHBOARD_CHART}$userId&month=$month&year=$year&planId=${Utils.planId}';
           Utils.printLog("CHART url::$url");

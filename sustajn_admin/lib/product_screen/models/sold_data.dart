@@ -1,15 +1,15 @@
 class SoldContainersData {
-  List<SoldList>? soldData;
+  List<SoldList>? data;
   String? message;
   String? status;
 
-  SoldContainersData({this.soldData, this.message, this.status});
+  SoldContainersData({this.data, this.message, this.status});
 
   SoldContainersData.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
-      soldData = <SoldList>[];
+      data = <SoldList>[];
       json['data'].forEach((v) {
-        soldData!.add(new SoldList.fromJson(v));
+        data!.add(new SoldList.fromJson(v));
       });
     }
     message = json['message']??"";
@@ -18,8 +18,8 @@ class SoldContainersData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.soldData != null) {
-      data['data'] = this.soldData!.map((v) => v.toJson()).toList();
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     data['status'] = this.status;
