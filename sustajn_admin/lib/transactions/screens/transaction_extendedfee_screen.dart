@@ -8,33 +8,30 @@ import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/date_month_utils.dart';
 import '../../../utils/utility.dart';
-import '../../Screen/users/model/user_borrowed_data.dart';
-import '../../Screen/users/model/user_damage_data.dart';
-import '../../Screen/users/provider/user_provider.dart';
-import '../../Screen/users/screens/user_damage_popup.dart';
 import '../provider_service/transaction_provider.dart';
 
+class TransactionExtendedFeeScreen extends ConsumerStatefulWidget {
+  final int userId;
 
-  class TransactionExtendedFeeScreen extends ConsumerStatefulWidget {
-    final int userId;
+  const TransactionExtendedFeeScreen({super.key, required this.userId});
 
-    const TransactionExtendedFeeScreen({super.key, required this.userId});
+  @override
+  ConsumerState<TransactionExtendedFeeScreen> createState() =>
+      _TransactionScreenState();
+}
 
-    @override
-    ConsumerState<TransactionExtendedFeeScreen> createState() => _TransactionScreenState();
-  }
-
-  class _TransactionScreenState extends ConsumerState<TransactionExtendedFeeScreen> {
+class _TransactionScreenState
+    extends ConsumerState<TransactionExtendedFeeScreen> {
   List<ExtendedFeeDataList> filteredList = [];
   final searchController = TextEditingController();
   String _searchQuery = '';
   String? selectedMonthYear;
 
-    @override
-    void initState() {
-      super.initState();
-      _getExtendedNetworkCall();
-    }
+  @override
+  void initState() {
+    super.initState();
+    _getExtendedNetworkCall();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +43,8 @@ import '../provider_service/transaction_provider.dart';
     }
 
     return Scaffold(
-        backgroundColor: Color(0xFF0E3B2E),
-        body: Stack(
+      backgroundColor: Constant.PrimaryColor,
+      body: Stack(
         children: [
           Column(
             children: [
@@ -56,39 +53,47 @@ import '../provider_service/transaction_provider.dart';
               Expanded(
                 child: filteredList.isEmpty && !transactionState.isLoading
                     ? Center(
-                  child: Utils.getErrorText(Strings.NO_TRANSACTION_EXTENDED_FEE_DATA),
-                )
-                    : ListView.builder(
-                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-                  itemCount: filteredList.length,
-                  itemBuilder: (context, index) {
-                    final extendedData = filteredList.elementAt(index);
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _monthHeader(extendedData.monthYear!, extendedData.monthWiseTotalDamageContainers!),
-                        SizedBox(height: Constant.SIZE_06),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: extendedData.extendedFeeContainers!.length,
-                          itemBuilder: (_, i) => _cardItem(
-                            extendedData!.extendedFeeContainers![i]!,
-                          ),
+                        child: Utils.getErrorText(
+                          Strings.NO_TRANSACTION_EXTENDED_FEE_DATA,
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          final extendedData = filteredList.elementAt(index);
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _monthHeader(
+                                extendedData.monthYear ?? '',
+                                (extendedData.monthTotalAmount ?? 0).toDouble(),
+                              ),
+
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount:
+                                    extendedData.transactions?.length ?? 0,
+                                itemBuilder: (_, i) {
+                                  final transaction =
+                                      extendedData.transactions![i];
+                                  return _cardItem(transaction);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
               ),
             ],
           ),
 
           if (transactionState.isLoading)
-            const Center(child: CircularProgressIndicator(
-              color: Constant.gold,
-            )),
+            const Center(
+              child: CircularProgressIndicator(color: Constant.gold),
+            ),
         ],
       ),
     );
@@ -102,7 +107,9 @@ import '../provider_service/transaction_provider.dart';
         onChanged: (value) {
           setState(() {
             _searchQuery = value;
-            applySearchAndFilter(ref.read(transactionProvider).getExtendedFeeDataList);
+            applySearchAndFilter(
+              ref.read(transactionProvider).getExtendedFeeDataList,
+            );
           });
         },
         cursorColor: Colors.white,
@@ -144,11 +151,11 @@ import '../provider_service/transaction_provider.dart';
 
                     setState(() {
                       selectedMonthYear = value;
-                      applySearchAndFilter(ref.read(transactionProvider).getExtendedFeeDataList);
+                      applySearchAndFilter(
+                        ref.read(transactionProvider).getExtendedFeeDataList,
+                      );
                     });
-
                   },
-
                 ),
               );
             },
@@ -160,25 +167,25 @@ import '../provider_service/transaction_provider.dart';
 
   void applySearchAndFilter(List<ExtendedFeeDataList> sourceList) {
     filteredList = sourceList;
-    Utils.printLog("filteredListData = ${filteredList.length}  sourceListData  = ${sourceList.length}");
-
+    Utils.printLog(
+      "filteredListData = ${filteredList.length}  sourceListData  = ${sourceList.length}",
+    );
 
     if (_searchQuery.isNotEmpty) {
       filteredList = filteredList.where((item) {
-        return item.extendedFeeContainers?.any((container) {
-          return container.productIds
-              ?.toLowerCase()
-              .contains(_searchQuery.toLowerCase()) ??
+        return item.transactions?.any((container) {
+              return container.orderId.toString().contains(_searchQuery);
               false;
-        }) ??
+            }) ??
             false;
       }).toList();
     }
 
     if (_searchQuery.isEmpty && selectedMonthYear != null) {
       final selectedMonthName = selectedMonthYear!.split('–')[0];
-      final selectedMonthIndex =
-      DateMonthUtils.getMonthIndex(selectedMonthName);
+      final selectedMonthIndex = DateMonthUtils.getMonthIndex(
+        selectedMonthName,
+      );
 
       filteredList = filteredList.where((item) {
         final itemMonth = DateTime.parse(item.monthYear!).month;
@@ -187,17 +194,16 @@ import '../provider_service/transaction_provider.dart';
     }
   }
 
-    Widget _cardItem(ExtendedFeeContainers item) {
-      final theme = Theme.of(context);
+  Widget _cardItem(Transactions item) {
+    final theme = Theme.of(context);
 
-      return InkWell(
-        onTap: () => _openDetailDialog(context, item),
-        child: Container(
+    return Container(
         margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF1F5A46), Color(0xFF0E3B2E)],
+            colors: [Constant.Green4,
+              Constant.PrimaryColor],
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           border: Border.all(color: Colors.white70),
@@ -209,116 +215,144 @@ import '../provider_service/transaction_provider.dart';
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.productIds!,
-                    style: TextStyle(
+                    item.name ?? '',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item.localDateTime!,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: Constant.CONTAINER_SIZE_12,
-                    ),
+                    item.formattedDateTime ?? '',
+                    style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12),
                   ),
                 ],
               ),
             ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
 
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Image.asset(
+                  "assets/images/bowl_img.png",
+                  width: Constant.CONTAINER_SIZE_14,
+                  height: Constant.CONTAINER_SIZE_14,
+                ),
+                SizedBox(width: Constant.SIZE_04),
+
                 Text(
-                  '${item.dateWiseTotalDamageContainers!}',
+                  "${item.totalQuantity ?? 0}",
+                  style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Constant.CONTAINER_SIZE_13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+            ),
+
+                SizedBox(height: 6),
+
+                Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/images/diarhm.png",
+                    width: Constant.CONTAINER_SIZE_14,
+                    height: Constant.CONTAINER_SIZE_14,
+                  ),
+
+                Text(
+                  '${item.totalAmount ?? 0}',
                   style: TextStyle(
                     color: theme.secondaryHeaderColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(width: Constant.SIZE_06),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white54,
-                  size: Constant.CONTAINER_SIZE_14,
-                ),
+
               ],
             ),
           ],
         ),
-      )
-      );
-    }
+  ],
+        ),
+    );
+  }
 
-    Widget _filterButton() {
-      final theme = Theme.of(context);
-      return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Constant.CONTAINER_SIZE_18,
-          vertical: Constant.CONTAINER_SIZE_12,
-        ),
-        decoration: BoxDecoration(
-          color: theme.secondaryHeaderColor,
-          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              onTap: () {},
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.sort,
+  Widget _filterButton() {
+    final theme = Theme.of(context);
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_18,
+        vertical: Constant.CONTAINER_SIZE_12,
+      ),
+      decoration: BoxDecoration(
+        color: theme.secondaryHeaderColor,
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_30),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: () {},
+            child: Row(
+              children: [
+                Icon(
+                  Icons.sort,
+                  color: Colors.black,
+                  size: Constant.CONTAINER_SIZE_20,
+                ),
+                SizedBox(width: Constant.SIZE_06),
+                Text(
+                  Strings.SORT,
+                  style: TextStyle(
                     color: Colors.black,
-                    size: Constant.CONTAINER_SIZE_20,
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(
-                    Strings.SORT,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: Constant.CONTAINER_SIZE_12,
-              ),
-              height: Constant.CONTAINER_SIZE_18,
-              width: Constant.SIZE_02,
-              color: Colors.black26,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: Constant.CONTAINER_SIZE_12,
             ),
+            height: Constant.CONTAINER_SIZE_18,
+            width: Constant.SIZE_02,
+            color: Colors.black26,
+          ),
 
-            InkWell(
-              onTap: () {},
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.filter_list,
+          InkWell(
+            onTap: () {},
+            child: Row(
+              children: [
+                Icon(
+                  Icons.filter_list,
+                  color: Colors.black,
+                  size: Constant.CONTAINER_SIZE_20,
+                ),
+                SizedBox(width: Constant.SIZE_06),
+                Text(
+                  Strings.FILTER,
+                  style: TextStyle(
                     color: Colors.black,
-                    size: Constant.CONTAINER_SIZE_20,
+                    fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(width: Constant.SIZE_06),
-                  Text(
-                    Strings.FILTER,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
+  }
 
-  Widget _monthHeader(String title, int count) {
+  Widget _monthHeader(String title, double amount) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Constant.SIZE_06),
       child: Row(
@@ -335,12 +369,15 @@ import '../provider_service/transaction_provider.dart';
           Row(
             children: [
               Image.asset(
-                'assets/images/bowl_img.png',
+                'assets/images/diarhm.png',
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
-              Text("$count", style: const TextStyle(color: Colors.white)),
+              Text(
+                amount.toStringAsFixed(2),
+                style: const TextStyle(color: Colors.white),
+              ),
             ],
           ),
         ],
@@ -348,48 +385,27 @@ import '../provider_service/transaction_provider.dart';
     );
   }
 
-  void _openDetailDialog(BuildContext context, ExtendedFeeContainers item) {
-    final items = (item.products ?? []).map((product) {
-      return BorrowedUiItem(
-        restaurantName: '',
-        resturantAddress: '',
-        productName: product.productName ?? '',
-        capacity: product.capacity ?? 0,
-        containerCount: item.dateWiseTotalDamageContainers ?? 0,
-        productId: product.productUniqueId ?? '',
-        date: item.localDateTime ?? '',
-        time: '',
-        imageUrl: product.productImageUrl ?? '',
-      );
-    }).toList();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) =>
-          DamageDetailsDialog(title: 'Damage Details', items: items),
-    );
-  }
 
   _getExtendedNetworkCall() async {
-      try {
-        await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-            isNetworkAvailable,
-            ) {
-          Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-          final orderState = ref.read(userProvider);
-          if (isNetworkAvailable) {
-            orderState.setIsLoading(true);
+    try {
+      await ref.read(networkProvider.notifier).isNetworkAvailable().then((
+        isNetworkAvailable,
+      ) {
+        Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
+        final orderState = ref.read(transactionProvider);
+        if (isNetworkAvailable) {
+          orderState.setIsLoading(true);
 
-            final url = '${NetworkUrls.SUBSCRIPTION}${widget.userId}';
-            ref.read(getUserDamagedProvider(url));
-          } else {
-            orderState.setIsLoading(false);
-            Utils.showToast(Strings.NO_INTERNET_CONNECTION);
-          }
-        });
-      } catch (e) {
-        Utils.printLog('Error in visitor button onPressed: $e');
-      }
+          final url = '${NetworkUrls.EXTENDED_FEE}';
+          // '${widget.userId}';
+          ref.read(getExtendedFeeProvider(url));
+        } else {
+          orderState.setIsLoading(false);
+          Utils.showToast(Strings.NO_INTERNET_CONNECTION);
+        }
+      });
+    } catch (e) {
+      Utils.printLog('Error in visitor button onPressed: $e');
     }
   }
+}

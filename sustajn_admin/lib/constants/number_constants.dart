@@ -97,6 +97,7 @@ class Constant {
   static late double CONTAINER_SIZE_180 = 180.0;
   static late double CONTAINER_SIZE_200 = 200.0;
   static late double CONTAINER_SIZE_210 = 210.0;
+  static late double CONTAINER_SIZE_215 = 215.0;
   static late double CONTAINER_SIZE_220 = 220.0;
   static late double CONTAINER_SIZE_230 = 230.0;
   static late double CONTAINER_SIZE_250 = 250.0;
@@ -214,9 +215,12 @@ class Constant {
   static const Color white3 = Color(0xFFBFDCCF);
   static const Color white4 = Color(0xFFEEF7F1);
   static const Color green3 = Color(0xFF2D8F6E);
+  static const Color Green4 = Color(0xFF1F5A46);
+
   static const Color green4 = Color(0xff184A3A);
   static const Color green5 = Color(0xff0C794E);
   static const Color green6 = Color(0xff0F3727);
   static const Color gold2 = Color(0xffD4AE37);
-
+  static const Color green7 = Color(0xFF184D3B);
+  static const Color green8 = Color(0xFF0E3A2D);
 }

@@ -54,6 +54,7 @@ class Strings {
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const CONTAINERS_TITLE = 'Containers';
+  static const CONTAINER = 'Container';
   static const CONTAINER_DETAILS = 'Container Details';
   static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
   static const CONTAINER_INFORMATION = 'Container Information';
@@ -80,8 +81,11 @@ class Strings {
   static const AVAILABLE_CONTAINERS = 'Available Containers';
   static const TOTAL_ISSUED_TITLE = 'Total Issued';
   static const SEARCH_BY_RESTAURANT = 'Search by restaurant';
+  static const SEARCH_BY_USER_ID = 'Search by User ID';
   static const TOTAL_RETURNED = 'Total Returned';
   static const OVERDUE = 'Overdue';
+  static const SEARCH_BY_PARTNER_NAME = 'Search by Partner Name';
+
 
   static const MONTHLY = 'Monthly';
   static const DAILY = 'Daily';
@@ -220,10 +224,12 @@ class Strings {
   static final String CUP_IMG = "assets/images/cups.png";
   static final String USER_IMG = "assets/images/user.png";
 
-  // static final String SUBSCRIPTION_IMG = "assets/images/subscription_icon.png";
+
   static final String SUBSCRIPTION_IMG = "assets/images/bowl_img.png";
   static final String SOLD_IMG = "assets/images/bowl_img.png";
   static final String CLOCK_IMG = "assets/images/bowl_img.png";
+  static final String DAMAGE_USER = "assets/images/damage_user.png";
+  static final String DAMAGE_PARTNER = "assets/images/damage_partner.png";
 
   static const String ACTIVE = "Active";
   static const String BORROWED = "Borrowed";
@@ -231,7 +237,7 @@ class Strings {
   static const String NO_BORROWED = 'No borrowed containers found';
   static const String FILTERS = 'Filters';
 
-  //static const SEARCH_BY_RESTURANT = 'Search by restaurant';
+
   static const String RETURNED_ON = 'Returned On';
   static const String BORROWED_ON = 'Borrowed On';
   static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
@@ -335,4 +341,19 @@ class Strings {
   static const String VIEW_MORE = 'View More Details';
   static const String DELETE_DES = 'Deleting this container will remove it from all future orders and assignments. Existing records may be impacted. This action is irreversible.';
   static const String NO_USER_FOUND = 'No Users Available';
+
+ static const String SUBSCRIPTION = 'Subscription';
+ static const String EXTENDED_FEE = 'Extended Fee';
+
+
+  //Damage
+  static const String DAMAGE = 'Damage';
+  static const String USER = 'User';
+  static const String PARTNER = 'Partner';
+  static const String NO_USERDAMAGE = 'No User Damage Data Found';
+  static const String NO_PARTNERDAMAGE = 'No Partner Damage Data Found';
+  static const String DAMAGE_DETAILS = 'Damage Details';
+  //Age Limit
+  static const String AGE_LIMIT = 'Age Limit';
+
 }

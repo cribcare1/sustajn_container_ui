@@ -32,7 +32,6 @@ final getSubscriptionProvider = FutureProvider.family<dynamic, String>((
       orderRequestNotifier.setSubscriptionData(responseData);
     } else {
       orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
     }
     return null;
   } catch (e) {
@@ -46,7 +45,7 @@ final getTransactionSoldDataList = FutureProvider.family<dynamic, String>((
   ref,
   params,
 ) async {
-  final orderRequestNotifier = ref.watch(transactionProvider);
+  final transactionNotifier = ref.watch(transactionProvider);
   try {
     var serviceProvider = ref.read(transactionServices);
     Utils.printLog("params===$params");
@@ -58,17 +57,18 @@ final getTransactionSoldDataList = FutureProvider.family<dynamic, String>((
         responseData.status!.isNotEmpty &&
         responseData.status!.toLowerCase() == Strings.SUCCESS) {
       Utils.printLog("On Success===${responseData.status}");
-      orderRequestNotifier.setIsLoading(false);
-      orderRequestNotifier.setSoldContainerData(responseData);
+      transactionNotifier.setIsLoading(false);
+      transactionNotifier.setSoldContainerData(responseData);
+      Utils.printLog(
+          "${transactionNotifier.getTransactionSoldDataList.length}");
     } else {
-      orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
+      transactionNotifier.setIsLoading(false);
     }
     return null;
   } catch (e) {
     Utils.printLog("Get Users provider error called: $e");
-    orderRequestNotifier.setIsLoading(false);
-    Utils.showNetworkErrorToast(orderRequestNotifier.context, e.toString());
+    transactionNotifier.setIsLoading(false);
+    Utils.showNetworkErrorToast(transactionNotifier.context, e.toString());
   }
 });
 
@@ -76,28 +76,27 @@ final getExtendedFeeProvider = FutureProvider.family<dynamic, String>((
   ref,
   params,
 ) async {
-  final orderRequestNotifier = ref.watch(transactionProvider);
+  final transactionNotifier = ref.watch(transactionProvider);
   try {
     var serviceProvider = ref.read(transactionServices);
     Utils.printLog("params===$params");
     ExtendedFeeData responseData = await serviceProvider.getExtendedFeeService(
-      params,
+      params
     );
     Utils.printLog("On Success===${responseData.status}");
     if (responseData.status != null &&
         responseData.status!.isNotEmpty &&
         responseData.status!.toLowerCase() == Strings.SUCCESS) {
       Utils.printLog("On Success===${responseData.status}");
-      orderRequestNotifier.setIsLoading(false);
-      orderRequestNotifier.setExtendedFeeData(responseData);
+      transactionNotifier.setIsLoading(false);
+      transactionNotifier.setExtendedFeeData(responseData);
     } else {
-      orderRequestNotifier.setIsLoading(false);
-      //Utils.showToast(responseData.message!);
+      transactionNotifier.setIsLoading(false);
     }
     return null;
   } catch (e) {
     Utils.printLog("Get Users provider error called: $e");
-    orderRequestNotifier.setIsLoading(false);
-    Utils.showNetworkErrorToast(orderRequestNotifier.context, e.toString());
+    transactionNotifier.setIsLoading(false);
+    Utils.showNetworkErrorToast(transactionNotifier.context, e.toString());
   }
 });

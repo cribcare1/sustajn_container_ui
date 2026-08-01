@@ -1,4 +1,5 @@
 import 'package:container_tracking/transactions/provider_service/transaction_provider.dart';
+import 'package:container_tracking/transactions/screens/transaction_sold_popup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../common_provider/network_provider.dart';
@@ -38,7 +39,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
       applySearchAndFilter(transactionState.getTransactionSoldDataList);
     }
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
 
       body: transactionState.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -67,17 +68,14 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                               .getTransactionSoldDataList
                               .length,
                           itemBuilder: (context, index) {
-                            final month = transactionState
-                                .getTransactionSoldDataList[index]
-                                .monthYear;
+                            final item = transactionState
+                                .getTransactionSoldDataList[index];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _monthHeader(
-                                  month ?? "",
-                                  transactionState
-                                      .getTransactionSoldDataList
-                                      .length,
+                                  item.monthYear ?? "",
+                                  item.monthTotalAmount ?? 0,
                                 ),
                                 ...transactionState
                                     .getTransactionSoldDataList[index]
@@ -158,22 +156,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
                     }
                   }
                 }
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => SoldFilterBottomSheet(
-                  containerList: allContainers, transactionNames: transactionNames,
-                  onApply: (result) {
-                    setState(() {
-                      applyFilter(
-                        transactionState.getTransactionSoldDataList,
-                        result,
-                      );
-                    });
-                  },
-                ),
-              );
+
             },
           ),
         ),
@@ -238,7 +221,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
         DateFormat('dd.MM.yyyy')
             .parse(transaction.formattedDate!);
 
-        // Age Filter
+
         if (filter.ageRange != null && filter.ageRange!.start>20) {
           final ageInDays =
               DateTime.now()
@@ -249,7 +232,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
               ageInDays <= filter.ageRange!.end;
         }
 
-        // Month Filter
+
         if (filter.months != null &&
             filter.months!.isNotEmpty) {
           matches &= filter.months!.any(
@@ -259,13 +242,13 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
           );
         }
 
-        // Sold By Filter
+
         if (filter.soldBy != null &&
             filter.soldBy!.isNotEmpty) {
           matches &= filter.soldBy![0].contains(transaction.name!);
         }
 
-        // Container Filter
+
         if (filter.containers != null &&
             filter.containers!.isNotEmpty) {
           matches &= transaction.containers?.any(
@@ -298,139 +281,163 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
   }) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.all(16),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF184D3B), Color(0xFF0E3A2D)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
+      child: InkWell(
+        onTap:(){
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => TransactionSoldPopup(
+              transactions: transaction,
+              // onApply: (result) {
+              //   setState(() {
+              //     applyFilter(
+              //       transactionState.getTransactionSoldDataList,
+              //       result,
+              //     );
+              //   });
+              // },
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween),
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
+            gradient: const LinearGradient(
+              colors: [Constant.green7, Constant.green8],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: Constant.CONTAINER_SIZE_10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
+            child: Column(
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
-              const SizedBox(height: 14),
+                SizedBox(height: Constant.CONTAINER_SIZE_14),
 
-              Divider(color: Colors.white.withValues(alpha: 0.15), height: 1),
+                Divider(color: Colors.white.withValues(alpha: 0.15), height: Constant.SIZE_01),
 
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 60,
-                    width: 60,
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        "${NetworkUrls.IMAGE_BASE_URL}${container.imageUrl ?? ""}",
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.asset(
-                            "assets/images/no_image_container.png",
-                            fit: BoxFit.cover,
-                          );
-                        },
+                SizedBox(height: Constant.CONTAINER_SIZE_12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: Constant.CONTAINER_SIZE_60,
+                      width: Constant.CONTAINER_SIZE_60,
+                      padding: EdgeInsets.all(Constant.SIZE_06),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+                        child: Image.network(
+                          "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${container.imageUrl ?? ""}",
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              "assets/images/no_image_container.png",
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          container.containerName ?? "",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          container.productCode ?? "",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          "${container.capacity ?? ""} ",
-                          style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
+                    SizedBox(width: Constant.CONTAINER_SIZE_12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/images/bowl_img.png',
-                            height: Constant.CONTAINER_SIZE_16,
-                            width: Constant.CONTAINER_SIZE_16,
-                          ),
-                          SizedBox(width: Constant.SIZE_04),
                           Text(
-                            container.quantity?.toString() ?? "0",
+                            container.containerName ?? "",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium!.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: Constant.SIZE_02),
+                          Text(
+                            container.productCode ?? "",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleSmall!.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          SizedBox(height: Constant.SIZE_04),
+
+                          Text(
+                            "${container.capacity ?? ""} ",
                             style: theme.textTheme.titleSmall!.copyWith(
                               color: Colors.white,
                             ),
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 6),
-
-                      Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/diarhm.png',
-                            height: Constant.CONTAINER_SIZE_16,
-                            color: Constant.orange,
-                            colorBlendMode: BlendMode.srcIn,
-                          ),
-                          SizedBox(width: Constant.SIZE_02),
-                          Text(
-                            container.price?.toString() ?? "0",
-                            style: theme.textTheme.titleMedium!.copyWith(
-                              color: Color(0xFFE5C84B),
-                              fontWeight: FontWeight.w700,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              Strings.BOWL_IMG,
+                              height: Constant.CONTAINER_SIZE_16,
+                              width: Constant.CONTAINER_SIZE_16,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                            SizedBox(width: Constant.SIZE_04),
+                            Text(
+                              container.quantity?.toString() ?? "0",
+                              style: theme.textTheme.titleSmall!.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: Constant.SIZE_06),
+
+                        Row(
+                          children: [
+                            Image.asset(
+                              Strings.DIRHAM_IMG,
+                              height: Constant.CONTAINER_SIZE_16,
+                              color: Constant.PrimaryAssentColor,
+                              colorBlendMode: BlendMode.srcIn,
+                            ),
+                            SizedBox(width: Constant.SIZE_02),
+                            Text(
+                              container.price?.toString() ?? "0",
+                              style: theme.textTheme.titleMedium!.copyWith(
+                                color: Constant.PrimaryAssentColor,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: Constant.CONTAINER_SIZE_16,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -443,14 +450,14 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: Constant.CONTAINER_SIZE_12),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: Constant.SIZE_04),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -467,13 +474,33 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
           vertical: Constant.CONTAINER_SIZE_12,
           horizontal: Constant.CONTAINER_SIZE_16,
         ),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: Constant.CONTAINER_SIZE_15,
-            fontWeight: FontWeight.w600,
-          ),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Constant.CONTAINER_SIZE_15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Spacer(),
+            Image.asset(
+              Strings.DIRHAM_IMG,
+              height: Constant.CONTAINER_SIZE_16,
+              color: Constant.PrimaryAssentColor,
+              colorBlendMode: BlendMode.srcIn,
+            ),
+            SizedBox(width: Constant.SIZE_02),
+            Text(
+              count.toString(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Constant.CONTAINER_SIZE_15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
