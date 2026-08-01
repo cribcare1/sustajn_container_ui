@@ -1,6 +1,7 @@
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
 import 'package:flutter/material.dart';
-
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../utils/date_month_utils.dart';
 
 class DamageFilterResult {
@@ -38,9 +39,9 @@ class _DamageFilterBottomSheetState extends State<DamageFilterBottomSheet> {
         maxChildSize: .95,
         builder: (context, controller) {
           return Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0E3B2E),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            decoration: BoxDecoration(
+              color: Constant.PrimaryColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_24)),
             ),
             child: Column(
               children: [
@@ -51,7 +52,7 @@ class _DamageFilterBottomSheetState extends State<DamageFilterBottomSheet> {
                   height: 5,
                   decoration: BoxDecoration(
                     color: Colors.grey,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
                   ),
                 ),
 
@@ -202,13 +203,13 @@ class _DamageFilterBottomSheetState extends State<DamageFilterBottomSheet> {
         const SizedBox(height: 20),
 
         const Text(
-          "Age Limit",
+          Strings.AGE_LIMIT,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: Constant.CONTAINER_SIZE_20),
 
         RangeSlider(
           values: ageRange,
@@ -235,7 +236,7 @@ class _DamageFilterBottomSheetState extends State<DamageFilterBottomSheet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(color: Colors.white70, fontSize: 16,)),
+        Text(title, style: TextStyle(color: Colors.white70, fontSize: Constant.CONTAINER_SIZE_16,)),
 
         const SizedBox(height: 6),
         Container(

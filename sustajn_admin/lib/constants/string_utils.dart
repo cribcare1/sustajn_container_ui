@@ -352,4 +352,7 @@ class Strings {
   static const String NO_USERDAMAGE = 'No User Damage Data Found';
   static const String NO_PARTNERDAMAGE = 'No Partner Damage Data Found';
   static const String DAMAGE_DETAILS = 'Damage Details';
+  //Age Limit
+  static const String AGE_LIMIT = 'Age Limit';
+
 }

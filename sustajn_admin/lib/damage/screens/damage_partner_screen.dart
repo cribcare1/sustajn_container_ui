@@ -184,8 +184,8 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
               Text(
                 "${month.monthWiseTotalDamageContainers ?? 0}",
                 style: const TextStyle(
-                  color: Color(0xFFFFC107),
-                  fontSize: 18,
+                  color: Constant.PrimaryAssentColor,
+                  fontSize: Constant.SIZE_18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -210,19 +210,19 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         );
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
+        margin: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16, vertical: Constant.SIZE_08),
+        padding: EdgeInsets.symmetric(
+          horizontal: Constant.CONTAINER_SIZE_14,
+          vertical: Constant.CONTAINER_SIZE_14,
         ),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [
               Color(0xFF1D5A45),
-              Color(0xFF164434),
+              Constant.PrimaryColor,
             ],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           border: Border.all(
             color: Colors.white.withOpacity(.15),
           ),
@@ -234,7 +234,6 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Text(
                     product.productName ?? "",
                     maxLines: 1,
@@ -248,25 +247,23 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
 
                   const SizedBox(height: 5),
 
-
                   Text(
                     product.restaurantName ?? "-",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white70,
-                      fontSize: 13,
+                      fontSize: Constant.CONTAINER_SIZE_13,
                     ),
                   ),
 
-                  const SizedBox(height: 5),
-
+                  SizedBox(height: Constant.SIZE_05),
 
                   Text(
                     damageContainer.localDateTime ?? "",
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white54,
-                      fontSize: 12,
+                      fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
                 ],
@@ -278,19 +275,19 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
               children: [
                 Text(
                   "${damageContainer.dateWiseTotalDamageContainers ?? 0}",
-                  style: const TextStyle(
-                    color: Color(0xFFFFC107),
+                  style: TextStyle(
+                    color: Constant.PrimaryAssentColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: Constant.CONTAINER_SIZE_22,
                   ),
                 ),
 
-                const SizedBox(width: 12),
+                SizedBox(width: Constant.CONTAINER_SIZE_12),
 
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.white70,
-                  size: 16,
+                  size: Constant.CONTAINER_SIZE_16,
                 ),
               ],
             ),

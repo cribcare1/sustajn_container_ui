@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:container_tracking/common_widgets/submit_clear_button.dart';
+import '../constants/number_constants.dart';
+import '../constants/string_utils.dart';
 import '../utils/date_month_utils.dart';
 
 class DamagePartnerFilterResult {
@@ -40,20 +42,20 @@ class _DamagePartnerFilterBottomSheetState
         maxChildSize: .90,
         builder: (context, controller) {
           return Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0E3B2E),
+            decoration: BoxDecoration(
+              color: Constant.PrimaryColor,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(24),
+                top: Radius.circular(Constant.CONTAINER_SIZE_24),
               ),
             ),
             child: Column(
               children: [
 
-                const SizedBox(height: 10),
+                SizedBox(height: Constant.CONTAINER_SIZE_10),
 
                 Container(
-                  width: 50,
-                  height: 5,
+                  width: Constant.CONTAINER_SIZE_50,
+                  height: Constant.SIZE_05,
                   decoration: BoxDecoration(
                     color: Colors.grey,
                     borderRadius: BorderRadius.circular(20),
@@ -61,12 +63,12 @@ class _DamagePartnerFilterBottomSheetState
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                   child: Row(
                     children: [
 
                       const Text(
-                        "Filters",
+                        Strings.FILTER,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -119,7 +121,7 @@ class _DamagePartnerFilterBottomSheetState
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(Constant.SIZE_06),
                   child: SubmitClearButton(
                     onLeftTap: (){
                       setState(() {

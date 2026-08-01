@@ -191,7 +191,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
           Row(
             children: [
               Image.asset(
-                "assets/images/diarhm.png",
+                Strings.DIRHAM_IMG,
                 width: 18,
                 height: 18,
                 color: const Color(0xFFF5EBDF),
@@ -222,7 +222,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
         gradient: const LinearGradient(
           colors: [
             Color(0xFF215842),
-            Color(0xFF174836),
+            Constant.PrimaryColor,
           ],
         ),
         borderRadius: BorderRadius.circular(16),
@@ -284,10 +284,10 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
 
               const SizedBox(width: 12),
 
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.white70,
-                size: 16,
+                size: Constant.SIZE_06,
               ),
             ],
           ),

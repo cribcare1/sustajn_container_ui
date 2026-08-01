@@ -60,9 +60,9 @@ class _DamageHomeScreenState extends State<DamageHomeScreen>
           tabs: [
             Tab(
               child: Padding(
-                padding: const EdgeInsets.only(right: 55),
+                padding: EdgeInsets.only(right: Constant.CONTAINER_SIZE_55),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min, // ✅ important
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
                       Strings.DAMAGE_USER,
@@ -87,7 +87,8 @@ class _DamageHomeScreenState extends State<DamageHomeScreen>
                   ),
                   const SizedBox(width: 1.8),
                   const Text(Strings.PARTNER),
-                ],              ),
+                ],
+              ),
             ),
           ],
         ),

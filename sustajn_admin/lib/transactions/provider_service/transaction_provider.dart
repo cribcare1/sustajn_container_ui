@@ -49,7 +49,7 @@ final getTransactionSoldDataList = FutureProvider.family<dynamic, String>((
   try {
     var serviceProvider = ref.read(transactionServices);
     Utils.printLog("params===$params");
-    ExtendedFeeData responseData = await serviceProvider.getExtendedFeeService(
+    TransactionSoldData responseData = await serviceProvider.getSoldService(
       params,
     );
     Utils.printLog("On Success===${responseData.status}");
@@ -58,7 +58,9 @@ final getTransactionSoldDataList = FutureProvider.family<dynamic, String>((
         responseData.status!.toLowerCase() == Strings.SUCCESS) {
       Utils.printLog("On Success===${responseData.status}");
       transactionNotifier.setIsLoading(false);
-      transactionNotifier.setExtendedFeeData(responseData);
+      transactionNotifier.setSoldContainerData(responseData);
+      Utils.printLog(
+          "${transactionNotifier.getTransactionSoldDataList.length}");
     } else {
       transactionNotifier.setIsLoading(false);
     }

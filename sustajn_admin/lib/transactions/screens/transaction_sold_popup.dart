@@ -34,24 +34,22 @@ class TransactionSoldPopup extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Constant.CONTAINER_SIZE_20,
-              vertical: Constant.CONTAINER_SIZE_16,
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: Constant.CONTAINER_SIZE_20,
+            vertical: Constant.CONTAINER_SIZE_16,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(Constant.CONTAINER_SIZE_30),
             ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Constant.CONTAINER_SIZE_30),
-              ),
-            ),
-            child: Column(
-              children: [
-                _header(theme, context),
-                SizedBox(height: Constant.CONTAINER_SIZE_24),
-              ],
-            ),
+          ),
+          child: Column(
+            children: [
+              _header(theme, context),
+              SizedBox(height: Constant.CONTAINER_SIZE_24),
+            ],
           ),
         ),
       ],
@@ -111,29 +109,32 @@ class TransactionSoldPopup extends StatelessWidget {
                       transactions.name!,
                       style: theme.textTheme.titleLarge?.copyWith(
                         color: Colors.white,
-                        fontSize: Constant.LABEL_TEXT_SIZE_20,
+                        fontSize: Constant.CONTAINER_SIZE_18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.receipt_outlined,
+                          Icons.location_on_outlined,
                           size: Constant.CONTAINER_SIZE_18,
                           color: Colors.white70,
                         ),
                         SizedBox(width: Constant.SIZE_08),
 
-                        Text(
-                          transactions.address!,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontSize: Constant.LABEL_TEXT_SIZE_20,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            transactions.address ?? "",
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white70,
+                            ),
                           ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -146,7 +147,7 @@ class TransactionSoldPopup extends StatelessWidget {
             Row(
               children: [
                 Image.asset(
-                  'assets/images/diarhm.png',
+                  Strings.DIRHAM_IMG,
                   height: Constant.CONTAINER_SIZE_16,
                   color: Constant.orange,
                   colorBlendMode: BlendMode.srcIn,
@@ -194,7 +195,7 @@ class TransactionSoldPopup extends StatelessWidget {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1F5A46), Color(0xFF0E3B2E)],
+          colors: [Constant.green7, Constant.green8],
         ),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
         border: Border.all(color: Colors.white70),
@@ -282,7 +283,7 @@ class TransactionSoldPopup extends StatelessWidget {
               Row(
                 children: [
                   Image.asset(
-                  'assets/images/beige_bowl_count.png',
+                  'assets/images/bowl_img.png',
                   height: Constant.CONTAINER_SIZE_16,
                   color: Constant.orange,
                   colorBlendMode: BlendMode.srcIn,

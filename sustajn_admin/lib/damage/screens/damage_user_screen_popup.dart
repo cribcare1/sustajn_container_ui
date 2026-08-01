@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../models/damage_user_data.dart';
-
 
 class DamageDetailsPopup extends StatelessWidget {
   final DamageContainers damageContainer;
@@ -24,9 +25,9 @@ class DamageDetailsPopup extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(18),
+                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_18),
                 decoration: const BoxDecoration(
-                  color: Color(0xFF0E3B2E),
+                  color: Constant.PrimaryColor,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(25),
                   ),
@@ -35,8 +36,8 @@ class DamageDetailsPopup extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Damage Details",
+                    Text(
+                      Strings.DAMAGE_DETAILS,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -64,7 +65,7 @@ class DamageDetailsPopup extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                "assets/images/bowl_img.png",
+                                Strings.BOWL_IMG,
                                 width: 35,
                                 height: 35,
                               ),
@@ -102,7 +103,7 @@ class DamageDetailsPopup extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     const Text(
-                      "Container",
+                      Strings.CONTAINER,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -187,7 +188,7 @@ class DamageDetailsPopup extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: Icon(
                       Icons.close,
-                      size: 18,
+                      size: Constant.SIZE_18,
                       color: Colors.black,
                     ),
                   ),
