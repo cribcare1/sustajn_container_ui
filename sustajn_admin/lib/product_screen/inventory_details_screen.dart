@@ -71,7 +71,7 @@ class _ContainerDetailedScreenState
           },
           itemBuilder: (context) => [
             PopupMenuItem<String>(
-              value: 'edit',
+              value: Strings.EDIT,
               child: Row(
                 children: [
                   Image.asset(Strings.EDIT_ICON),
@@ -87,7 +87,7 @@ class _ContainerDetailedScreenState
               ),
             ),
             PopupMenuItem<String>(
-              value: 'delete',
+              value: Strings.DELETE,
               child: Row(
                 children: [
                   Image.asset(Strings.DELETE_ICON),
