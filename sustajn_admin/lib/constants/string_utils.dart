@@ -334,4 +334,5 @@ class Strings {
   static const String IN_STOCK = 'In-Stock';
   static const String VIEW_MORE = 'View More Details';
   static const String DELETE_DES = 'Deleting this container will remove it from all future orders and assignments. Existing records may be impacted. This action is irreversible.';
+  static const String NO_USER_FOUND = 'No Users Available';
 }

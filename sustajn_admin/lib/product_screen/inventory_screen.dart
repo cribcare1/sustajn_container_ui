@@ -14,6 +14,7 @@ import '../provider/order_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'inventory_details_screen.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key});
@@ -65,8 +66,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getContainerData!.inventorydata == null ||
-                  orderState.getContainerData!.inventorydata!.isEmpty
+                  : orderState.getContainerData!.data == null ||
+                  orderState.getContainerData!.data!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -105,6 +106,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
                   return inventoryItemCard(
                     context,
+                    productId: item.id??0,
                     image: item.imageUrl ?? "",
                     title: item.name ?? "-",
                     subTitle: item.productId ?? "-",
@@ -125,6 +127,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   Widget inventoryItemCard(
       BuildContext context, {
+        required int productId,
         required String image,
         required String title,
         required String subTitle,
@@ -137,7 +140,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, ContainerDetailedScreen(productId: productId));
       },
       child: GlassSummaryCard(
         child: Row(
