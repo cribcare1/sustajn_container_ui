@@ -8,8 +8,6 @@ import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
 import '../../../utils/date_month_utils.dart';
 import '../../../utils/utility.dart';
-import '../../Screen/users/model/user_borrowed_data.dart';
-import '../../Screen/users/screens/user_damage_popup.dart';
 import '../provider_service/transaction_provider.dart';
 
 class TransactionExtendedFeeScreen extends ConsumerStatefulWidget {
@@ -199,9 +197,7 @@ class _TransactionScreenState
   Widget _cardItem(Transactions item) {
     final theme = Theme.of(context);
 
-    return InkWell(
-      onTap: () => _openDetailDialog(context, item),
-      child: Container(
+    return Container(
         margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         decoration: BoxDecoration(
@@ -233,9 +229,43 @@ class _TransactionScreenState
                 ],
               ),
             ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
 
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Image.asset(
+                  "assets/images/bowl_img.png",
+                  width: 14,
+                  height: 14,
+                ),
+                const SizedBox(width: 4),
+
+                Text(
+                  "${item.totalQuantity ?? 0}",
+                  style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+            ),
+
+                const SizedBox(height: 6),
+
+                Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/images/diarhm.png",
+                    width: 14,
+                    height: 14,
+                  ),
+
                 Text(
                   '${item.totalAmount ?? 0}',
                   style: TextStyle(
@@ -244,25 +274,13 @@ class _TransactionScreenState
                   ),
                 ),
                 SizedBox(width: Constant.SIZE_06),
-                Text(
-                  '${item.totalQuantity!}',
-                  style: TextStyle(
-                    color: theme.secondaryHeaderColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: Constant.SIZE_06),
 
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white54,
-                  size: Constant.CONTAINER_SIZE_14,
-                ),
               ],
             ),
           ],
         ),
-      ),
+  ],
+        ),
     );
   }
 
@@ -351,7 +369,7 @@ class _TransactionScreenState
           Row(
             children: [
               Image.asset(
-                'assets/images/bowl_img.png',
+                'assets/images/diarhm.png',
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
@@ -367,29 +385,6 @@ class _TransactionScreenState
     );
   }
 
-  void _openDetailDialog(BuildContext context, Transactions item) {
-    final items = [
-      BorrowedUiItem(
-        restaurantName: '',
-        resturantAddress: '',
-        productName: item.name ?? '',
-        capacity: item.totalQuantity ?? 0,
-        containerCount: item.totalQuantity ?? 0,
-        productId: item.orderId.toString(),
-        date: item.formattedDateTime ?? '',
-        time: '',
-        imageUrl: '',
-      ),
-    ];
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) =>
-          DamageDetailsDialog(title: 'Damage Details', items: items),
-    );
-  }
 
   _getExtendedNetworkCall() async {
     try {
