@@ -126,24 +126,24 @@ class OrderServices {
     }
   }
   ///IncirculationList order Service
-  // Future<IncirculationDetailsData> getInCirculationListOrderService(String partUrl) async {
-  //   try {
-  //     Utils.printLog("requestData::::::: $partUrl");
-  //     String url = NetworkUrls.BASE_URL + partUrl;
-  //     ApiCallPresenter presenter = ApiCallPresenter();
-  //     var response = await presenter.getAPIData(url);
-  //     if (response != null) {
-  //       var responseData = IncirculationDetailsData.fromJson(response);
-  //       Utils.printLog("responseData in Service: $responseData");
-  //       return responseData;
-  //     } else {
-  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
-  //     }
-  //   } catch (e) {
-  //     Utils.printLog("Get Profile service::::$e");
-  //     throw Exception(e);
-  //   }
-  // }
+  Future<IncirculationDetailsData> getInCirculationListOrderService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = IncirculationDetailsData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
   ///WithPartner Detail order service
 
   Future<WithPartnerDetailsData> getWithPartnerDetailOrderService(String partUrl) async {

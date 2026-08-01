@@ -1,30 +1,26 @@
 class GetContainerData {
-  List<InventoryData>? inventoryData;
-  int? count;
+  List<InventoryData>? inventorydata;
   String? message;
   String? status;
 
-  GetContainerData({this.inventoryData, this.count, this.message, this.status});
+  GetContainerData({this.inventorydata, this.message, this.status});
 
   GetContainerData.fromJson(Map<String, dynamic> json) {
-    if (json['inventory_data'] != null) {
-      inventoryData = <InventoryData>[];
-      json['inventory_data'].forEach((v) {
-        inventoryData!.add(new InventoryData.fromJson(v));
+    if (json['data'] != null) {
+      inventorydata = <InventoryData>[];
+      json['data'].forEach((v) {
+        inventorydata!.add(new InventoryData.fromJson(v));
       });
     }
-    count = json['count'];
-    message = json['message'];
-    status = json['status'];
+    message = json['message']??"";
+    status = json['status']??"";
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.inventoryData != null) {
-      data['inventory_data'] =
-          this.inventoryData!.map((v) => v.toJson()).toList();
+    if (this.inventorydata != null) {
+      data['data'] = this.inventorydata!.map((v) => v.toJson()).toList();
     }
-    data['count'] = this.count;
     data['message'] = this.message;
     data['status'] = this.status;
     return data;
@@ -32,35 +28,40 @@ class GetContainerData {
 }
 
 class InventoryData {
-  int? inventoryId;
-  int? containerTypeId;
-  String? containerName;
-  String? containerDescription;
+  int? id;
+  String? name;
+  String? description;
   int? capacityMl;
+  String? productId;
   String? material;
   String? colour;
-  double? lengthCm;
-  int? widthCm;
-  int? heightCm;
-  int? weightGrams;
+  Null? lengthCm;
+  Null? widthCm;
+  Null? heightCm;
+  Null? weightGrams;
   bool? foodSafe;
   bool? dishwasherSafe;
   bool? microwaveSafe;
-  int? maxTemperature;
-  int? minTemperature;
-  int? lifespanCycle;
+  Null? maxTemperature;
+  Null? minTemperature;
+  Null? lifespanCycle;
   String? imageUrl;
-  double? costPerUnit;
-  int? totalContainers;
-  int? availableContainers;
-  String? productId;
+  int? costPerUnit;
+  double? extendFee;
+  String? status;
+  String? createdAt;
+  Null? createdBy;
+  String? updatedAt;
+  Null? updatedBy;
+  int? totalContainerCount;
+  int? availableContainerCount;
 
   InventoryData(
-      {this.inventoryId,
-        this.containerTypeId,
-        this.containerName,
-        this.containerDescription,
+      {this.id,
+        this.name,
+        this.description,
         this.capacityMl,
+        this.productId,
         this.material,
         this.colour,
         this.lengthCm,
@@ -75,18 +76,23 @@ class InventoryData {
         this.lifespanCycle,
         this.imageUrl,
         this.costPerUnit,
-        this.totalContainers,
-        this.availableContainers,
-        this.productId});
+        this.extendFee,
+        this.status,
+        this.createdAt,
+        this.createdBy,
+        this.updatedAt,
+        this.updatedBy,
+        this.totalContainerCount,
+        this.availableContainerCount});
 
   InventoryData.fromJson(Map<String, dynamic> json) {
-    inventoryId = json['inventoryId'];
-    containerTypeId = json['containerTypeId'];
-    containerName = json['containerName'];
-    containerDescription = json['containerDescription'];
-    capacityMl = json['capacityMl'];
-    material = json['material'];
-    colour = json['colour'];
+    id = json['id']??0;
+    name = json['name']??"";
+    description = json['description']??"";
+    capacityMl = json['capacityMl']??0;
+    productId = json['productId']??"";
+    material = json['material']??"";
+    colour = json['colour']??"";
     lengthCm = json['lengthCm'];
     widthCm = json['widthCm'];
     heightCm = json['heightCm'];
@@ -97,22 +103,25 @@ class InventoryData {
     maxTemperature = json['maxTemperature'];
     minTemperature = json['minTemperature'];
     lifespanCycle = json['lifespanCycle'];
-    imageUrl = json['imageUrl'];
-    costPerUnit = json['costPerUnit'];
-    totalContainers = json['totalContainers'];
-    availableContainers = json['availableContainers'];
-    productId = json['productId'];
+    imageUrl = json['imageUrl']??"";
+    costPerUnit = json['costPerUnit']??0;
+    extendFee = (json['extendFee'] ?? 0.0).toDouble();
+    status = json['status']??"";
+    createdAt = json['createdAt']??"";
+    createdBy = json['createdBy'];
+    updatedAt = json['updatedAt']??"";
+    updatedBy = json['updatedBy'];
+    totalContainerCount = json['totalContainerCount']??0;
+    availableContainerCount = json['availableContainerCount']??0;
   }
-
-  String? get containerImageUrl => null;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['inventoryId'] = this.inventoryId;
-    data['containerTypeId'] = this.containerTypeId;
-    data['containerName'] = this.containerName;
-    data['containerDescription'] = this.containerDescription;
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['description'] = this.description;
     data['capacityMl'] = this.capacityMl;
+    data['productId'] = this.productId;
     data['material'] = this.material;
     data['colour'] = this.colour;
     data['lengthCm'] = this.lengthCm;
@@ -127,9 +136,14 @@ class InventoryData {
     data['lifespanCycle'] = this.lifespanCycle;
     data['imageUrl'] = this.imageUrl;
     data['costPerUnit'] = this.costPerUnit;
-    data['totalContainers'] = this.totalContainers;
-    data['availableContainers'] = this.availableContainers;
-    data['productId'] = this.productId;
+    data['extendFee'] = this.extendFee;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['createdBy'] = this.createdBy;
+    data['updatedAt'] = this.updatedAt;
+    data['updatedBy'] = this.updatedBy;
+    data['totalContainerCount'] = this.totalContainerCount;
+    data['availableContainerCount'] = this.availableContainerCount;
     return data;
   }
 }

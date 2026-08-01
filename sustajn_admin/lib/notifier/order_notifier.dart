@@ -3,6 +3,7 @@ import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
 import '../product_screen/models/damage_data.dart';
+import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
@@ -25,8 +26,8 @@ class OrderState extends ChangeNotifier {
   InCirculationData? _inCirculationData;
   List<IncirculationList> _inCirculationList = [];
 
-  // IncirculationDetailsData? _incirculationDetailsData;
-  // List<IncirculationListData> _incirculationListData = [];
+  IncirculationDetailsData? _incirculationDetailsData;
+  IncirculationListData? _incirculationListData;
 
   WithPartnerData? _withPartnerData;
   List<WithPartnerList> _withPartnerList = [];
@@ -77,8 +78,8 @@ class OrderState extends ChangeNotifier {
   InCirculationData? get getInCirculationData => _inCirculationData;
   List<IncirculationList> get getInCirculationList => _inCirculationList;
 
-  // IncirculationDetailsData? get getIncirculationDetailsData => _incirculationDetailsData;
-  // List<IncirculationListData> get getIncirculationListData => _incirculationListData;
+  IncirculationDetailsData? get getIncirculationDetailsData => _incirculationDetailsData;
+  IncirculationListData? get getIncirculationListData => _incirculationListData;
 
   WithPartnerData? get getWithPartnerData => _withPartnerData;
   List<WithPartnerList> get getPartnerDataList => _withPartnerList;
@@ -120,7 +121,7 @@ class OrderState extends ChangeNotifier {
 
   void setOrderData(GetContainerData getContainer) {
     _getContainerData = getContainer;
-    _filterInventory = List.from(getContainer.inventoryData ?? []);
+    _filterInventory = List.from(getContainer.inventorydata ?? []);
     notifyListeners();
   }
 
@@ -136,12 +137,12 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void setIncirculationDetailsData(IncirculationDetailsData incirculationDetailsData) {
-  //   Utils.printLog("data list = ${incirculationDetailsData.data!.capacity}");
-  //   _incirculationDetailsData = incirculationDetailsData;
-  //   _incirculationListData = incirculationDetailsData!.data!;
-  //   notifyListeners();
-  // }
+  void setIncirculationDetailsData(IncirculationDetailsData incirculationDetailsData) {
+    Utils.printLog("data list = ${incirculationDetailsData.data!.capacity}");
+    _incirculationDetailsData = incirculationDetailsData;
+    _incirculationListData = incirculationDetailsData!.data!;
+    notifyListeners();
+  }
 
   void setWithPartnerData(WithPartnerData withPartnerData) {
     Utils.printLog("data list = ${withPartnerData.withpartnerData!.length}");
@@ -184,17 +185,17 @@ class OrderState extends ChangeNotifier {
 
   void filterInventoryByNameOrId(String query) {
     if (query.isEmpty) {
-      _filterInventory = _getContainerData?.inventoryData ?? [];
+      _filterInventory = _getContainerData?.inventorydata ?? [];
       notifyListeners();
       return;
     }
 
     final lowerQuery = query.toLowerCase();
 
-    _filterInventory = (_getContainerData?.inventoryData ?? [])
+    _filterInventory = (_getContainerData?.inventorydata ?? [])
         .where((container) {
       final nameMatch =
-          container.containerName?.toLowerCase().contains(lowerQuery) ??
+          container.name?.toLowerCase().contains(lowerQuery) ??
               false;
 
       final idMatch = container.productId
@@ -212,8 +213,8 @@ class OrderState extends ChangeNotifier {
   void sortByQuantity(bool ascending) {
     _isQtyAscending = ascending;
     _filterInventory.sort((a, b) {
-      final aQty = a.availableContainers ?? 0;
-      final bQty = b.availableContainers ?? 0;
+      final aQty = a.availableContainerCount ?? 0;
+      final bQty = b.availableContainerCount ?? 0;
       return ascending ? aQty.compareTo(bQty) : bQty.compareTo(aQty);
     });
     notifyListeners();
@@ -223,7 +224,7 @@ class OrderState extends ChangeNotifier {
   void resetSort() {
     _isQtyAscending = true;
     _filterInventory = List.from(
-      _getContainerData?.inventoryData ?? [],
+      _getContainerData?.inventorydata ?? [],
     );
     notifyListeners();
   }
@@ -243,7 +244,7 @@ class OrderState extends ChangeNotifier {
   }
 
   void removeContainer(int id) {
-    _selectedContainers.removeWhere((e) => e.inventoryId == id);
+    _selectedContainers.removeWhere((e) => e.id == id);
     notifyListeners();
   }
 

@@ -10,7 +10,8 @@ import '../provider/order_provider.dart';
 import '../utils/utility.dart';
 
 class InCirculationListScreen extends ConsumerStatefulWidget {
-  const InCirculationListScreen({super.key});
+  final int containerTypeId;
+  const InCirculationListScreen({super.key, required this.containerTypeId});
 
   @override
   ConsumerState<InCirculationListScreen> createState() =>
@@ -227,8 +228,8 @@ class _InCirculationScreenState
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final url = '${NetworkUrls.INCIRCULATION_DETAIL}';
-          ref.read(getWithPartnerDetailProvider(url));
+          final url = '${NetworkUrls.INCIRCULATION_DETAIL}${widget.containerTypeId}';
+          ref.read(getIncirculationListProvider(url));
         } else {
           orderState.setIsLoading(false);
           Utils.showToast(Strings.NO_INTERNET_CONNECTION);

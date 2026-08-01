@@ -112,7 +112,7 @@ class _ProductsScreenState extends State<HistoryHomeScreen>
               children: [
                 BorrowedTabScreen(userId: widget.userId),
                 ReturnedTabScreen(userId: widget.userId),
-                SoldTab(),
+                SoldTab(userId: widget.userId),
               ],
             ),
           ),

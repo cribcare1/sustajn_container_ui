@@ -1,3 +1,4 @@
+import 'package:container_tracking/resutants/models/get_container_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
-  const InventoryScreen({super.key, required int restaurantId});
+  const InventoryScreen({super.key});
 
   @override
   ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
@@ -34,7 +35,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-
+    final GetContainerData? getContainerData =
+        orderState.getContainerData;
     return SafeArea(
       top: false,
       bottom: true,
@@ -63,8 +65,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-                  : orderState.getContainerData!.inventoryData == null ||
-                  orderState.getContainerData!.inventoryData!.isEmpty
+                  : orderState.getContainerData!.inventorydata == null ||
+                  orderState.getContainerData!.inventorydata!.isEmpty
                   ? const Center(
                 child: Text(
                   Strings.NO_CONTAINER_AVAILABLE,
@@ -104,10 +106,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   return inventoryItemCard(
                     context,
                     image: item.imageUrl ?? "",
-                    title: item.containerName ?? "-",
+                    title: item.name ?? "-",
                     subTitle: item.productId ?? "-",
                     volume: item.capacityMl?.toString() ?? "0",
-                    qty: item.availableContainers ?? 0,
+                    qty: item.availableContainerCount ?? 0,
                     // data: item,
                   );
                 },
@@ -360,8 +362,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final userId = Utils.userId;
-          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}$userId';
+          // final userId = Utils.userId;
+          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}';
+              // '$userId';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
