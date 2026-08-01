@@ -219,7 +219,7 @@ class _InCirculationScreenState
                         Spacer(),
                         Text(item.count.toString(),
                           style: TextStyle(
-                            color: Constant.gold3,
+                            color: Constant.gold2,
                             fontSize: Constant.CONTAINER_SIZE_18,
                             fontWeight: FontWeight.w600,
                           ),
