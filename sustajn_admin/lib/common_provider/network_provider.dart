@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -7,20 +8,32 @@ final networkProvider = StateNotifierProvider<NetworkNotifier, bool>((ref) {
 });
 
 class NetworkNotifier extends StateNotifier<bool> {
-  NetworkNotifier() : super(false) {
-    isNetworkAvailable();
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription? _subscription;
 
-    // FIXED for new connectivity_plus API
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      isNetworkAvailable(); // just re-check internet
+  NetworkNotifier() : super(false) {
+    _init();
+  }
+
+  Future<void> _init() async {
+    await _checkNetworkStatus();
+
+    _subscription = _connectivity.onConnectivityChanged.listen((_) async {
+      await _checkNetworkStatus();
     });
   }
 
   Future<void> _checkNetworkStatus() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      state = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
+    final result = await _connectivity.checkConnectivity();
+
+    // connectivity_plus v7 returns List<ConnectivityResult>
+    if (result is List<ConnectivityResult>) {
+      state = !result.contains(ConnectivityResult.none);
+    }
+    // connectivity_plus v6 and below returns ConnectivityResult
+    else if (result is ConnectivityResult) {
+      state = result != ConnectivityResult.none;
+    } else {
       state = false;
     }
   }
@@ -28,5 +41,11 @@ class NetworkNotifier extends StateNotifier<bool> {
   Future<bool> isNetworkAvailable() async {
     await _checkNetworkStatus();
     return state;
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 }
