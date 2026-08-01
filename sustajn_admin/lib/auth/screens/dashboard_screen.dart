@@ -175,7 +175,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _handleNavigation(String title) {
     switch (title) {
       case "Products":
-        NavUtil.navigateToPushScreen(context, ContainerDetailedScreen());
+        NavUtil.navigateToPushScreen(context, ProductsScreen());
         break;
       case "Partners":
         NavUtil.navigateToPushScreen(context, PartnerScreen());

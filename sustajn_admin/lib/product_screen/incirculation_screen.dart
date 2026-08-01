@@ -8,8 +8,10 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
+import 'incirculation_list_screen.dart';
 import 'models/incirculation_data.dart';
 
 class InCirculationScreen extends ConsumerStatefulWidget {
@@ -139,7 +141,7 @@ class _InCirculationScreenState extends ConsumerState<InCirculationScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        // NavUtil.navigateToPushScreen(context, ContainersDetailsScreen(details: data,));
+        NavUtil.navigateToPushScreen(context, InCirculationListScreen(containerTypeId: containerTypeId));
       },
       child: GlassSummaryCard(
         child: Row(

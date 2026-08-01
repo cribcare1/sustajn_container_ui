@@ -13,7 +13,8 @@ import 'model/detail_model.dart';
 import 'model/sold_container_data.dart';
 
 class SoldTab extends ConsumerStatefulWidget {
-  const SoldTab({super.key});
+  final int userId;
+  const SoldTab({super.key, required this.userId});
 
   @override
   ConsumerState<SoldTab> createState() => _SoldTabState();
@@ -55,7 +56,7 @@ class _SoldTabState extends ConsumerState<SoldTab> {
                         ),
                         ...historyState
                             .soldContainerList[index]
-                            .dateWiseSoldContainers!
+                            .items!
                             .map((item) => _soldItemCard(item: item)),
                       ],
                     );
@@ -242,7 +243,7 @@ class _SoldTabState extends ConsumerState<SoldTab> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        "${NetworkUrls.BASE_CONTAINER_URL}${item.productImageUrl}",
+                        "${NetworkUrls.BASE_CONTAINER_URL}${item.imageUrl}",
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
@@ -319,7 +320,7 @@ class _SoldTabState extends ConsumerState<SoldTab> {
                           ),
                           SizedBox(width: Constant.SIZE_02),
                           Text(
-                            item.soldAmount?.toString() ?? "",
+                            item.soldQuantity?.toString() ?? "",
                             style: theme.textTheme.titleMedium!.copyWith(
                               color: Color(0xFFE5C84B),
                               fontWeight: FontWeight.w700,

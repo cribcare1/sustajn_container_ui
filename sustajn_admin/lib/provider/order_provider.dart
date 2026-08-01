@@ -6,6 +6,7 @@ import '../constants/string_utils.dart';
 import '../notifier/order_notifier.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
+import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
 import '../product_screen/models/sold_data.dart';
 import '../product_screen/models/with_partner_data.dart';
@@ -183,31 +184,31 @@ final getSoldOrderProvider = FutureProvider.family<dynamic, String>((
 
 ///Incirculation details provider
 
-// final getIncirculationListProvider = FutureProvider.family<dynamic, String>((
-//     ref,
-//     params,
-//     ) async {
-//   final orderState = ref.watch(orderProvider);
-//   try {
-//     var serviceProvider = ref.read(getOrderApiProvider);
-//     Utils.printLog("params===$params");
-//     IncirculationData responseData = await serviceProvider.getInCirculationOrderService(
-//       params,
-//     );
-//     if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
-//       orderState.setIsLoading(false);
-//       orderState.setIncirculationData(responseData);
-//     } else {
-//       orderState.setIsLoading(false);
-//       Utils.showToast(responseData.message!);
-//     }
-//     return null;
-//   } catch (e) {
-//     Utils.printLog("Get Profile provider error called: $e");
-//     orderState.setIsLoading(false);
-//     Utils.showNetworkErrorToast(orderState.context, e.toString());
-//   }
-// });
+final getIncirculationListProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+    Utils.printLog("params===$params");
+    IncirculationDetailsData responseData = await serviceProvider.getInCirculationListOrderService(
+      params,
+    );
+    if (responseData.status != null && responseData.status!.isNotEmpty && responseData.status!.toLowerCase() == Strings.SUCCESS) {
+      orderState.setIsLoading(false);
+      orderState.setIncirculationDetailsData(responseData);
+    } else {
+      orderState.setIsLoading(false);
+      Utils.showToast(responseData.message!);
+    }
+    return null;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
 ///With partner details provider
 
 final getWithPartnerDetailProvider = FutureProvider.family<dynamic, String>((
