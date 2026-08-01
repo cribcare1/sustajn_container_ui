@@ -5,6 +5,7 @@ import '../constants/string_utils.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
+import '../product_screen/models/inventory_order_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
@@ -15,6 +16,8 @@ class OrderState extends ChangeNotifier {
   bool _isLoading = false;
   GetContainerData? _getContainerData;
   List<InventoryData> _filterInventory = [];
+
+  InventoryOrderData? _inventoryOrderData;
 
   BuildContext? _context;
   bool _isVerifying = false;
@@ -27,7 +30,7 @@ class OrderState extends ChangeNotifier {
   List<IncirculationList> _inCirculationList = [];
 
   IncirculationDetailsData? _incirculationDetailsData;
-  IncirculationListData? _incirculationListData;
+ // IncirculationListData? _incirculationListData;
 
   WithPartnerData? _withPartnerData;
   List<WithPartnerList> _withPartnerList = [];
@@ -37,13 +40,13 @@ class OrderState extends ChangeNotifier {
   List<Partners> _partners = [];
 
 
-  DamagedContainerData? _damagedContainerData;
-  List<DamagedList> _damagedList = [];
-  List<ProductsList> _productsList = [];
+  // DamagedContainerData? _damagedContainerData;
+  // List<DamagedList> _damagedList = [];
+  // List<ProductsList> _productsList = [];
 
-  SoldContainersData? _soldContainersData;
-  List<SoldList> _soldList = [];
-  List<ContainersList> _containersList = [];
+  // SoldContainersData? _soldContainersData;
+  // List<SoldList> _soldList = [];
+  // List<ContainersList> _containersList = [];
 
   InventoryDetailsData? _inventoryDetailsData;
 
@@ -56,6 +59,8 @@ class OrderState extends ChangeNotifier {
   GetContainerData? get getContainerData => _getContainerData;
 
   List<InventoryData> get filterInventory => _filterInventory;
+
+  InventoryOrderData? get getInventoryOrderData => _inventoryOrderData;
 
   BuildContext get context => _context!;
 
@@ -76,10 +81,10 @@ class OrderState extends ChangeNotifier {
   int get returnedContainerCount => _returnedContainerCount;
 
   InCirculationData? get getInCirculationData => _inCirculationData;
-  List<IncirculationList> get getInCirculationList => _inCirculationList;
+   List<IncirculationList> get getInCirculationList => _inCirculationList;
 
   IncirculationDetailsData? get getIncirculationDetailsData => _incirculationDetailsData;
-  IncirculationListData? get getIncirculationListData => _incirculationListData;
+ // IncirculationListData? get getIncirculationListData => _incirculationListData;
 
   WithPartnerData? get getWithPartnerData => _withPartnerData;
   List<WithPartnerList> get getPartnerDataList => _withPartnerList;
@@ -88,13 +93,13 @@ class OrderState extends ChangeNotifier {
   List<PartnersDataList> get getPartnersDataList => _partnersDataList;
   List<Partners> get getPartners => _partners;
 
-  DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
-  List<DamagedList> get getDamagedList => _damagedList;
-  List<ProductsList> get getProductsList => _productsList;
+  // DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
+  // List<DamagedList> get getDamagedList => _damagedList;
+  // List<ProductsList> get getProductsList => _productsList;
 
-  SoldContainersData? get getSoldContainersData => _soldContainersData;
-  List<SoldList> get getSoldList => _soldList;
-  List<ContainersList> get getContainersList => _containersList;
+  // SoldContainersData? get getSoldContainersData => _soldContainersData;
+  // List<SoldList> get getSoldList => _soldList;
+  // List<ContainersList> get getContainersList => _containersList;
 
   InventoryDetailsData? get getInventoryDetailsData => _inventoryDetailsData;
 
@@ -121,7 +126,7 @@ class OrderState extends ChangeNotifier {
 
   void setOrderData(GetContainerData getContainer) {
     _getContainerData = getContainer;
-    _filterInventory = List.from(getContainer.inventorydata ?? []);
+    _filterInventory = List.from(getContainer.data ?? []);
     notifyListeners();
   }
 
@@ -130,17 +135,22 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setInventoryOrderData(InventoryOrderData inventoryOrderData) {
+    _inventoryOrderData = inventoryOrderData;
+    notifyListeners();
+  }
+
   void setInCirculationData(InCirculationData inCirculationData) {
-    Utils.printLog("data list = ${inCirculationData.data!.length}");
+    Utils.printLog("data list = ${inCirculationData.message}");
     _inCirculationData = inCirculationData;
-    _inCirculationList = inCirculationData!.data!;
+     _inCirculationList = inCirculationData!.data!;
     notifyListeners();
   }
 
   void setIncirculationDetailsData(IncirculationDetailsData incirculationDetailsData) {
     Utils.printLog("data list = ${incirculationDetailsData.data!.capacity}");
     _incirculationDetailsData = incirculationDetailsData;
-    _incirculationListData = incirculationDetailsData!.data!;
+    // _incirculationListData = incirculationDetailsData!.data!;
     notifyListeners();
   }
 
@@ -159,21 +169,21 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setDamagedData(DamagedContainerData damagedContainerData) {
-    Utils.printLog("data list = ${damagedContainerData.data!.length}");
-    _damagedContainerData = damagedContainerData;
-    _damagedList = _damagedContainerData!.data!;
-    _productsList = _productsList!;
-    notifyListeners();
-  }
+  // void setDamagedData(DamagedContainerData damagedContainerData) {
+  //   Utils.printLog("data list = ${damagedContainerData.data!.length}");
+  //   _damagedContainerData = damagedContainerData;
+  //   _damagedList = _damagedContainerData!.data!;
+  //   // _productsList = _damagedList.damageContainers;
+  //   notifyListeners();
+  // }
 
-  void setSoldContainersData(SoldContainersData soldContainersData) {
-    Utils.printLog("data list = ${soldContainersData.data!.length}");
-    _soldContainersData = soldContainersData;
-    _soldList = _soldContainersData!.data!;
-    _containersList = _containersList!;
-    notifyListeners();
-  }
+  // void setSoldContainersData(SoldContainersData soldContainersData) {
+  //   Utils.printLog("data list = ${soldContainersData.data!.length}");
+  //   _soldContainersData = soldContainersData;
+  //   _soldList = _soldContainersData!.data!;
+  //   _containersList = _containersList!;
+  //   notifyListeners();
+  // }
 
   void setInventoryDetailsData(InventoryDetailsData inventoryDetailsData) {
     Utils.printLog("data = ${inventoryDetailsData.capacity}");
@@ -185,14 +195,14 @@ class OrderState extends ChangeNotifier {
 
   void filterInventoryByNameOrId(String query) {
     if (query.isEmpty) {
-      _filterInventory = _getContainerData?.inventorydata ?? [];
+      _filterInventory = _getContainerData?.data ?? [];
       notifyListeners();
       return;
     }
 
     final lowerQuery = query.toLowerCase();
 
-    _filterInventory = (_getContainerData?.inventorydata ?? [])
+    _filterInventory = (_getContainerData?.data ?? [])
         .where((container) {
       final nameMatch =
           container.name?.toLowerCase().contains(lowerQuery) ??
@@ -224,7 +234,7 @@ class OrderState extends ChangeNotifier {
   void resetSort() {
     _isQtyAscending = true;
     _filterInventory = List.from(
-      _getContainerData?.inventorydata ?? [],
+      _getContainerData?.data ?? [],
     );
     notifyListeners();
   }

@@ -1,11 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/network_urls.dart';
 import '../network/ApiCallPresentor.dart';
-import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
-import '../product_screen/models/sold_data.dart';
+import '../product_screen/models/inventory_order_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
@@ -30,9 +29,14 @@ class OrderServices {
       throw Exception(e);
     }
   }
-  Future<Map<String, dynamic>> fetchContainerCount(int restaurantId, int productId) async {
+
+  Future<Map<String, dynamic>> fetchContainerCount(
+    int restaurantId,
+    int productId,
+  ) async {
     try {
-      String url = "${NetworkUrls.BASE_URL + NetworkUrls.CONTAINER_COUNT}?restaurantId=$restaurantId&productId=$productId";
+      String url =
+          "${NetworkUrls.BASE_URL + NetworkUrls.CONTAINER_COUNT}?restaurantId=$restaurantId&productId=$productId";
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
       if (response != null) {
@@ -87,46 +91,48 @@ class OrderServices {
   }
 
   //Damaged order service
-  Future<DamagedContainerData> getDamagedOrderService(String partUrl) async {
-    try {
-      Utils.printLog("requestData::::::: $partUrl");
-      String url = NetworkUrls.BASE_URL + partUrl;
-      ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.getAPIData(url);
-      if (response != null) {
-        var responseData = DamagedContainerData.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
-        return responseData;
-      } else {
-        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
-      }
-    } catch (e) {
-      Utils.printLog("Get Profile service::::$e");
-      throw Exception(e);
-    }
-  }
+  // Future<DamagedContainerData> getDamagedOrderService(String partUrl) async {
+  //   try {
+  //     Utils.printLog("requestData::::::: $partUrl");
+  //     String url = NetworkUrls.BASE_URL + partUrl;
+  //     ApiCallPresenter presenter = ApiCallPresenter();
+  //     var response = await presenter.getAPIData(url);
+  //     if (response != null) {
+  //       var responseData = DamagedContainerData.fromJson(response);
+  //       Utils.printLog("responseData in Service: $responseData");
+  //       return responseData;
+  //     } else {
+  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+  //     }
+  //   } catch (e) {
+  //     Utils.printLog("Get Profile service::::$e");
+  //     throw Exception(e);
+  //   }
+  // }
 
   //Sold order service
-  Future<SoldContainersData> getSoldOrderService(String partUrl) async {
-    try {
-      Utils.printLog("requestData::::::: $partUrl");
-      String url = NetworkUrls.BASE_URL + partUrl;
-      ApiCallPresenter presenter = ApiCallPresenter();
-      var response = await presenter.getAPIData(url);
-      if (response != null) {
-        var responseData = SoldContainersData.fromJson(response);
-        Utils.printLog("responseData in Service: $responseData");
-        return responseData;
-      } else {
-        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
-      }
-    } catch (e) {
-      Utils.printLog("Get Profile service::::$e");
-      throw Exception(e);
-    }
-  }
+  // Future<SoldContainersData> getSoldOrderService(String partUrl) async {
+  //   try {
+  //     Utils.printLog("requestData::::::: $partUrl");
+  //     String url = NetworkUrls.BASE_URL + partUrl;
+  //     ApiCallPresenter presenter = ApiCallPresenter();
+  //     var response = await presenter.getAPIData(url);
+  //     if (response != null) {
+  //       var responseData = SoldContainersData.fromJson(response);
+  //       Utils.printLog("responseData in Service: $responseData");
+  //       return responseData;
+  //     } else {
+  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+  //     }
+  //   } catch (e) {
+  //     Utils.printLog("Get Profile service::::$e");
+  //     throw Exception(e);
+  //   }
+  // }
   ///IncirculationList order Service
-  Future<IncirculationDetailsData> getInCirculationListOrderService(String partUrl) async {
+  Future<IncirculationDetailsData> getInCirculationListOrderService(
+    String partUrl,
+  ) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
       String url = NetworkUrls.BASE_URL + partUrl;
@@ -144,9 +150,12 @@ class OrderServices {
       throw Exception(e);
     }
   }
+
   ///WithPartner Detail order service
 
-  Future<WithPartnerDetailsData> getWithPartnerDetailOrderService(String partUrl) async {
+  Future<WithPartnerDetailsData> getWithPartnerDetailOrderService(
+    String partUrl,
+  ) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
       String url = NetworkUrls.BASE_URL + partUrl;
@@ -166,7 +175,7 @@ class OrderServices {
   }
 
   ///Inventory Detail Order Service
-  Future<InventoryDetailsData> getInventoryDetailOrderService(String partUrl) async {
+  Future<InventoryDetailsData> getInventoryOrdersService(String partUrl) async {
     try {
       Utils.printLog("requestData::::::: $partUrl");
       String url = NetworkUrls.BASE_URL + partUrl;
@@ -184,6 +193,26 @@ class OrderServices {
       throw Exception(e);
     }
   }
-}
-  final getOrderApiProvider = Provider<OrderServices>((ref) => OrderServices());
 
+  ///Inventory Order Service
+  Future<InventoryOrderData> getInventoryOrderedService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = InventoryOrderData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+}
+
+final getOrderApiProvider = Provider<OrderServices>((ref) => OrderServices());

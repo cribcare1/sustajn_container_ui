@@ -1,20 +1,20 @@
 class IncirculationDetailsData {
-  String? message;
   String? status;
-  IncirculationListData? data;
+  String? message;
+  InCirculationDetails? data;
 
-  IncirculationDetailsData({this.message, this.status, this.data});
+  IncirculationDetailsData({this.status, this.message, this.data});
 
   IncirculationDetailsData.fromJson(Map<String, dynamic> json) {
-    message = json['message']??"";
-    status = json['status']??"";
-    data = json['data'] != null ? new IncirculationListData.fromJson(json['data']) : null;
+    status = json['status'];
+    message = json['message'];
+    data = json['data'] != null ? new InCirculationDetails.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
     data['status'] = this.status;
+    data['message'] = this.message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -22,38 +22,37 @@ class IncirculationDetailsData {
   }
 }
 
-class IncirculationListData {
+class InCirculationDetails {
   String? capacity;
   int? containerTypeId;
   String? imageUrl;
   String? name;
   String? productId;
   int? totalInCirculation;
-  List<Null>? users;
+  List<Users>? users;
 
-  IncirculationListData(
+  InCirculationDetails(
       {this.capacity,
         this.containerTypeId,
         this.imageUrl,
         this.name,
         this.productId,
         this.totalInCirculation,
-        // this.users
-      });
+        this.users});
 
-  IncirculationListData.fromJson(Map<String, dynamic> json) {
-    capacity = json['capacity']??"";
-    containerTypeId = json['containerTypeId']??0;
-    imageUrl = json['imageUrl']??"";
-    name = json['name']??"";
-    productId = json['productId']??"";
-    totalInCirculation = json['totalInCirculation']??0;
-    // if (json['users'] != null) {
-    //   users = <Null>[];
-    //   json['users'].forEach((v) {
-    //     users!.add(new Null.fromJson(v));
-    //   });
-    // }
+  InCirculationDetails.fromJson(Map<String, dynamic> json) {
+    capacity = json['capacity'];
+    containerTypeId = json['containerTypeId'];
+    imageUrl = json['imageUrl'];
+    name = json['name'];
+    productId = json['productId'];
+    totalInCirculation = json['totalInCirculation'];
+    if (json['users'] != null) {
+      users = <Users>[];
+      json['users'].forEach((v) {
+        users!.add(new Users.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -64,9 +63,28 @@ class IncirculationListData {
     data['name'] = this.name;
     data['productId'] = this.productId;
     data['totalInCirculation'] = this.totalInCirculation;
-    // if (this.users != null) {
-    //   data['users'] = this.users!.map((v) => v.toJson()).toList();
-    // }
+    if (this.users != null) {
+      data['users'] = this.users!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Users {
+  int? count;
+  String? userId;
+
+  Users({this.count, this.userId});
+
+  Users.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    userId = json['userId'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
+    data['userId'] = this.userId;
     return data;
   }
 }

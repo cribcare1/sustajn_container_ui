@@ -6,7 +6,6 @@ import '../../container_list/screens/container_list_screen.dart';
 import '../../damage/screens/damage_screen.dart';
 import '../../container_list/screens/add_new_container.dart';
 import '../../order_request_screen/screens/order_request_home_screen.dart';
-import '../../product_screen/inventory_details_screen.dart';
 import '../../product_screen/product_home_screen.dart';
 import '../../transactions/screens/transaction_home_screen.dart';
 import '../../utils/theme_utils.dart';

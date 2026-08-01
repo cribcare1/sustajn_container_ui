@@ -1,7 +1,6 @@
 import 'package:container_tracking/product_screen/with_partnerist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../common_provider/network_provider.dart';
 import '../common_widgets/card_widget.dart';
 import '../common_widgets/submit_button.dart';
@@ -138,7 +137,10 @@ class _WithPartnerScreenState extends ConsumerState<WithPartnerScreen> {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () {
-        NavUtil.navigateToPushScreen(context, WithPartnerListScreen());
+        NavUtil.navigateToPushScreen(
+          context,
+          WithPartnerListScreen(containerTypeId: containerTypeId),
+        );
       },
       child: GlassSummaryCard(
         child: Row(
