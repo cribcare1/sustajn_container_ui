@@ -11,7 +11,8 @@ import '../utils/utility.dart';
 import 'delete_bottomsheet.dart';
 
 class ContainerDetailedScreen extends ConsumerStatefulWidget {
-  const ContainerDetailedScreen({super.key});
+  final int productId;
+  const ContainerDetailedScreen({super.key, required this.productId});
 
   @override
   ConsumerState<ContainerDetailedScreen> createState() =>
@@ -25,7 +26,7 @@ class _ContainerDetailedScreenState
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getInventoryDetailsNetworkCall(ref);
+      _getInventoryDetailsNetworkCall(ref, widget.productId);
     });
   }
 
@@ -304,18 +305,23 @@ class _Summary extends StatelessWidget {
   }
 }
 
-Future<void> _getInventoryDetailsNetworkCall(WidgetRef ref) async {
+Future<void> _getInventoryDetailsNetworkCall(
+    WidgetRef ref,
+    int productId,
+    ) async {
   try {
     await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-      isNetworkAvailable,
-    ) {
-      Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
-
+        isNetworkAvailable,
+        ) {
       final orderState = ref.read(orderProvider);
 
       if (isNetworkAvailable) {
         orderState.setIsLoading(true);
-        final url = '${NetworkUrls.INVENTORY_DETAILS}';
+
+        final url = NetworkUrls.INVENTORY_DETAILS.replaceFirst(
+          '{id}',
+          productId.toString(),
+        );
 
         ref.read(getInventoryDetailProvider(url));
       } else {
@@ -327,3 +333,4 @@ Future<void> _getInventoryDetailsNetworkCall(WidgetRef ref) async {
     Utils.printLog('Error: $e');
   }
 }
+

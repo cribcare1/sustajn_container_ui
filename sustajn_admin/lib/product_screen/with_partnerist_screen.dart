@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../common_provider/network_provider.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../common_widgets/custom_back_button.dart';
@@ -12,7 +11,9 @@ import '../utils/utility.dart';
 import 'models/withpartner_detail_data.dart';
 
 class WithPartnerListScreen extends ConsumerStatefulWidget {
-  const WithPartnerListScreen({super.key});
+  final int containerTypeId;
+
+  const WithPartnerListScreen({super.key, required this.containerTypeId});
 
   @override
   ConsumerState<WithPartnerListScreen> createState() =>
@@ -264,7 +265,8 @@ class _InPartnerListScreenState extends ConsumerState<WithPartnerListScreen> {
         final orderState = ref.read(orderProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final url = '${NetworkUrls.WITH_PARTNER_DETAIL}';
+          final url =
+              '${NetworkUrls.WITH_PARTNER_DETAIL}${widget.containerTypeId}';
           ref.read(getWithPartnerDetailProvider(url));
         } else {
           orderState.setIsLoading(false);

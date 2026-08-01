@@ -97,30 +97,31 @@ class _ProductsScreenState extends State<ProductsScreen>
                 ],
               ),
             ),
-            Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ImageIcon(
-                    const AssetImage('assets/icons/damaged.png'),
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  const Text(Strings.DAMAGED),
-                ],
-              ),
-            ),
-            Tab(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ImageIcon(
-                    const AssetImage('assets/icons/sold.png'),
-                  ),
-                  SizedBox(width: Constant.SIZE_06),
-                  const Text(Strings.SOLD),
-                ],
-              ),
-            ),
+
+            // Tab(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       ImageIcon(
+            //         const AssetImage('assets/icons/damaged.png'),
+            //       ),
+            //       SizedBox(width: Constant.SIZE_06),
+            //       const Text(Strings.DAMAGED),
+            //     ],
+            //   ),
+            // ),
+            // Tab(
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       ImageIcon(
+            //         const AssetImage('assets/icons/sold.png'),
+            //       ),
+            //       SizedBox(width: Constant.SIZE_06),
+            //       const Text(Strings.SOLD),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -134,8 +135,8 @@ class _ProductsScreenState extends State<ProductsScreen>
                 InventoryScreen(),
                 InCirculationScreen(restaurantId: 2),
                 WithPartnerScreen(restaurantId: 2),
-                DamageScreen(restaurantId: 2),
-                SoldsScreen(restaurantId: 2),
+                // DamageScreen(),
+                // SoldsScreen(restaurantId: 2),
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/no_data_custom_text.dart';
 import '../utils/utility.dart';
 
 class InCirculationListScreen extends ConsumerStatefulWidget {
@@ -32,7 +33,7 @@ class _InCirculationScreenState
   Widget build(BuildContext context,) {
     final theme = Theme.of(context);
     final orderState = ref.watch(orderProvider);
-    final list = orderState.getInCirculationList;
+    final inCirculationData = orderState.getIncirculationDetailsData!.data!;
 
     return Scaffold(
       backgroundColor: Constant.PrimaryColor,
@@ -82,10 +83,9 @@ class _InCirculationScreenState
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(Constant.SIZE_08),
-                        child: list.isNotEmpty
+                        child: inCirculationData != null
                             ? Image.network(
-                          "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${list.first
-                              .imageUrl}",
+                          "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${inCirculationData.imageUrl}",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Image.asset(
@@ -103,7 +103,7 @@ class _InCirculationScreenState
                         CrossAxisAlignment.start,
                         children: [
                           Text(
-                            list.isNotEmpty ? list.first.name ?? "" : "",
+                            inCirculationData != null ? inCirculationData.name ?? "" : "",
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontSize: Constant.LABEL_TEXT_SIZE_16,
                               fontWeight: FontWeight.w600,
@@ -112,7 +112,7 @@ class _InCirculationScreenState
                           ),
                           SizedBox(height: Constant.SIZE_02),
                           Text(
-                            list.isNotEmpty ? list.first.productId ?? "" : "",
+                            inCirculationData != null ? inCirculationData.productId ?? "" : "",
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: Constant.CONTAINER_SIZE_13,
@@ -120,8 +120,8 @@ class _InCirculationScreenState
                           ),
                           SizedBox(height: Constant.SIZE_04),
                           Text(
-                            list.isNotEmpty
-                                ? "${list.first.capacity} ml"
+                            inCirculationData != null
+                                ? "${inCirculationData.capacity} ml"
                                 : "",
                             style: TextStyle(
                               color: Colors.white54,
@@ -132,8 +132,8 @@ class _InCirculationScreenState
                       ),
                     ),
                     Text(
-                      list.isNotEmpty
-                          ? "${list.first.inCirculationCount}"
+                      inCirculationData != null
+                          ? "${inCirculationData.totalInCirculation}"
                           : "0",
                       style: TextStyle(
                         color: Colors.white,
@@ -186,13 +186,13 @@ class _InCirculationScreenState
             SizedBox(height: Constant.CONTAINER_SIZE_14),
 
             Expanded(
-              child: ListView.separated(
+              child: (inCirculationData!=null && inCirculationData.users!.length! >0) ?ListView.separated(
                 padding:
                 EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
-                itemCount: list.length, separatorBuilder: (_, __) =>
+                itemCount: inCirculationData?.users!.length ?? 0, separatorBuilder: (_, __) =>
                   SizedBox(height: Constant.CONTAINER_SIZE_10),
                 itemBuilder: (context, index) {
-                  final item = list[index];
+                  final item = inCirculationData?.users![index];
                   return Container(
                     height: Constant.CONTAINER_SIZE_55,
                     padding: EdgeInsets.symmetric(
@@ -208,10 +208,30 @@ class _InCirculationScreenState
                     ),
                     child: Row(
                       children: [
+                        Text(item!.userId!,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constant.CONTAINER_SIZE_16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+
+                        Spacer(),
+                        Text(item.count.toString(),
+                          style: TextStyle(
+                            color: Constant.gold2,
+                            fontSize: Constant.CONTAINER_SIZE_18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
                       ],
                     ),
                   );
                 },
+              ): Center(
+                child: NoDataFoundCustomText(
+                  text: Strings.NO_USER_FOUND,
+                ),
               ),
             ),
           ],

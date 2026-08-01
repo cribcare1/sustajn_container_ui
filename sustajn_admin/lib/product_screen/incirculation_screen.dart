@@ -9,6 +9,7 @@ import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
 import '../utils/nav_utils.dart';
+import '../utils/no_data_custom_text.dart';
 import '../utils/theme_utils.dart';
 import '../utils/utility.dart';
 import 'incirculation_list_screen.dart';
@@ -59,15 +60,14 @@ class _InCirculationScreenState extends ConsumerState<InCirculationScreen> {
             Expanded(
               child: orderState.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : orderState.getInCirculationData == null
+                  : inCirculationData == null
                   ? const Center(
                       child: Text(
                         Strings.NO_INCIRCULATION_AVAILABLE,
                         style: TextStyle(color: Colors.white),
                       ),
                     )
-                  : orderState.getInCirculationData!.data == null ||
-                        orderState.getInCirculationData!.data!.isEmpty
+                  : inCirculationData!.data == null
                   ? const Center(
                       child: Text(
                         Strings.NO_CONTAINER_AVAILABLE,
@@ -80,9 +80,10 @@ class _InCirculationScreenState extends ConsumerState<InCirculationScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            Strings.NO_CONTAINER_AVAILABLE,
-                            style: TextStyle(color: Colors.white),
+                          Center(
+                            child: NoDataFoundCustomText(
+                              text: Strings.NO_CONTAINER_AVAILABLE,
+                            ),
                           ),
                           SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
                           SubmitButton(
