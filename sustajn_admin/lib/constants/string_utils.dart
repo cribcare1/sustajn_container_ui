@@ -325,4 +325,13 @@ class Strings {
   static const String ORDER_ID_ICON = 'assets/icons/order_id.png';
   static const String BOWL_IMGS = 'assets/images/bowl_img.png';
   static const String NO_IMG = 'assets/images/no_image_container.png';
+  static const String CORNER_ARROW = 'assets/icons/corner_arrow.png';
+  static const String DELETE_CONTAINER = 'Delete Container?';
+  static const String EDIT_ICON = 'assets/icons/edit_icon.png';
+  static const String DELETE_ICON = 'assets/icons/delete_icon.png';
+  static const String ORDERED = 'Ordered';
+  static const String ISSUED_PARTNER = 'Issued to Partner';
+  static const String IN_STOCK = 'In-Stock';
+  static const String VIEW_MORE = 'View More Details';
+  static const String DELETE_DES = 'Deleting this container will remove it from all future orders and assignments. Existing records may be impacted. This action is irreversible.';
 }

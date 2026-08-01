@@ -63,4 +63,5 @@ static const DAMAGED_CONTAINER = 'inventory/getDamageContainerByUserType?damageB
 static const SOLD_CONTAINERS = 'inventory/admin/transactions/sold-dashboard';
 static const WITH_PARTNER_DETAIL = 'inventory/cointainerstatistic//with-partner/2';
 static const INCIRCULATION_DETAIL = 'inventory/cointainerstatistic/in-circulation/2';
+static const INVENTORY_DETAILS = 'orders/containers/1/details';
 }

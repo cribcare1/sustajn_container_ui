@@ -3,6 +3,7 @@ import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
 import '../product_screen/models/damage_data.dart';
+import '../product_screen/models/inventory_details_data.dart';
 import '../product_screen/models/with_partner_data.dart';
 import '../product_screen/models/withpartner_detail_data.dart';
 import '../resutants/models/get_container_data.dart';
@@ -42,6 +43,8 @@ class OrderState extends ChangeNotifier {
   SoldContainersData? _soldContainersData;
   List<SoldList> _soldList = [];
   List<ContainersList> _containersList = [];
+
+  InventoryDetailsData? _inventoryDetailsData;
 
   bool get isVerifying => _isVerifying;
 
@@ -91,6 +94,8 @@ class OrderState extends ChangeNotifier {
   SoldContainersData? get getSoldContainersData => _soldContainersData;
   List<SoldList> get getSoldList => _soldList;
   List<ContainersList> get getContainersList => _containersList;
+
+  InventoryDetailsData? get getInventoryDetailsData => _inventoryDetailsData;
 
   void setLeaseCount(int count) {
     _leasedContainerCount = count;
@@ -166,6 +171,14 @@ class OrderState extends ChangeNotifier {
     _soldContainersData = soldContainersData;
     _soldList = _soldContainersData!.data!;
     _containersList = _containersList!;
+    notifyListeners();
+  }
+
+  void setInventoryDetailsData(InventoryDetailsData inventoryDetailsData) {
+    Utils.printLog("data = ${inventoryDetailsData.capacity}");
+
+    _inventoryDetailsData = inventoryDetailsData;
+
     notifyListeners();
   }
 
