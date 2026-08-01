@@ -221,10 +221,10 @@ class _TransactionScreenState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: Constant.SIZE_04),
                   Text(
                     item.formattedDateTime ?? '',
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12),
                   ),
                 ],
               ),
@@ -239,31 +239,31 @@ class _TransactionScreenState
               children: [
                 Image.asset(
                   "assets/images/bowl_img.png",
-                  width: 14,
-                  height: 14,
+                  width: Constant.CONTAINER_SIZE_14,
+                  height: Constant.CONTAINER_SIZE_14,
                 ),
-                const SizedBox(width: 4),
+                SizedBox(width: Constant.SIZE_04),
 
                 Text(
                   "${item.totalQuantity ?? 0}",
-                  style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
+                  style: TextStyle(
+                  color: Colors.white,
+                  fontSize: Constant.CONTAINER_SIZE_13,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ],
             ),
 
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
 
                 Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     "assets/images/diarhm.png",
-                    width: 14,
-                    height: 14,
+                    width: Constant.CONTAINER_SIZE_14,
+                    height: Constant.CONTAINER_SIZE_14,
                   ),
 
                 Text(
