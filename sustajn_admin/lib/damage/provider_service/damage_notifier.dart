@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-
 import '../../utils/utility.dart';
 import '../models/damage_partner_data.dart';
 import '../models/damage_user_data.dart';

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 import '../../common_provider/network_provider.dart';
 import '../../common_widgets/damage_filter_bottom_sheet.dart';
 import '../../common_widgets/damage_filter_bottom_sheet_2.dart';
@@ -83,7 +81,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
 
   Widget _searchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       child: TextField(
         controller: searchController,
         onChanged: (value) {
@@ -116,9 +114,9 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
             },
           ),
           filled: true,
-          fillColor: const Color(0xFF184D3B),
+          fillColor: Constant.PrimaryColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
           ),
         ),
@@ -158,7 +156,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
   Widget _monthHeader(DamagePartnerDataList month) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16, vertical: Constant.CONTAINER_SIZE_10),
       color: Colors.white.withOpacity(0.15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -175,10 +173,10 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
           Row(
             children: [
               Image.asset(
-                "assets/images/diarhm.png",
+                Strings.DIRHAM_IMG,
                 width: 18,
                 height: 18,
-                color: const Color(0xFFF5EBDF),
+                color: Constant.white,
               ),
 
               const SizedBox(width: 6),

@@ -53,6 +53,7 @@ class Strings {
   static const CLEAR = 'Clear';
   static const APPLY = 'Apply';
   static const CONTAINERS_TITLE = 'Containers';
+  static const CONTAINER = 'Container';
   static const CONTAINER_DETAILS = 'Container Details';
   static const ADD_NEWCONTAINER_TITLE = 'Add New Container';
   static const CONTAINER_INFORMATION = 'Container Information';
@@ -192,8 +193,6 @@ class Strings {
       'If you go back now, your password reset process will be canceled.Do you still want to go back?';
   static const STAY_THIS_PAGE = 'Stay on this page';
   static const GO_BACK = 'Go back';
-  // static const PRODUCTS = 'Products';
-  // static const INVENTORY = 'Inventory';
   static const IN_CIRCULATION = 'In Circulation';
   static const WITH_PARTNER = 'With Partner';
   static const DAMAGED = 'Damaged';
@@ -217,7 +216,7 @@ class Strings {
   static final String CUP_IMG = "assets/images/cups.png";
   static final String USER_IMG = "assets/images/user.png";
 
-  // static final String SUBSCRIPTION_IMG = "assets/images/subscription_icon.png";
+
   static final String SUBSCRIPTION_IMG = "assets/images/bowl_img.png";
   static final String SOLD_IMG = "assets/images/bowl_img.png";
   static final String CLOCK_IMG = "assets/images/bowl_img.png";
@@ -230,7 +229,7 @@ class Strings {
   static const String NO_BORROWED  = 'No borrowed containers found';
   static const String FILTERS = 'Filters';
 
-  //static const SEARCH_BY_RESTURANT = 'Search by restaurant';
+
   static const String RETURNED_ON = 'Returned On';
   static const String BORROWED_ON = 'Borrowed On';
   static const String NO_RETURNED_CONTAINERS = 'No returned containers found';
@@ -315,7 +314,7 @@ class Strings {
 
  static const String SUBSCRIPTION = 'Subscription';
  static const String EXTENDED_FEE = 'Extended Fee';
- //static const String FILTER = 'Filter';
+
 
   //Damage
   static const String DAMAGE = 'Damage';
@@ -323,5 +322,5 @@ class Strings {
   static const String PARTNER = 'Partner';
   static const String NO_USERDAMAGE = 'No User Damage Data Found';
   static const String NO_PARTNERDAMAGE = 'No Partner Damage Data Found';
-
+  static const String DAMAGE_DETAILS = 'Damage Details';
 }

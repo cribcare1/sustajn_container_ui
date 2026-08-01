@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../constants/number_constants.dart';
+import '../../constants/string_utils.dart';
 import '../models/damage_partner_data.dart';
 
 class DamagePartnerPopup extends StatelessWidget {
@@ -24,12 +26,12 @@ class DamagePartnerPopup extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                margin: const EdgeInsets.only(top: 25),
+                margin: EdgeInsets.only(top: Constant.CONTAINER_SIZE_25),
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF0E3B2E),
+                decoration: BoxDecoration(
+                  color: Constant.PrimaryColor,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(24),
+                    top: Radius.circular(Constant.CONTAINER_SIZE_24),
                   ),
                 ),
                 child: Column(
@@ -38,7 +40,7 @@ class DamagePartnerPopup extends StatelessWidget {
                   children: [
 
                     const Text(
-                      "Damage Details",
+                      Strings.DAMAGE_DETAILS,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 19,
@@ -66,7 +68,7 @@ class DamagePartnerPopup extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                "assets/images/bowl_img.png",
+                                Strings.BOWL_IMG,
                                 width: 34,
                                 height: 34,
                               ),
@@ -111,7 +113,7 @@ class DamagePartnerPopup extends StatelessWidget {
                     const SizedBox(height: 25),
 
                     const Text(
-                      "Container",
+                      Strings.CONTAINER,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 17,

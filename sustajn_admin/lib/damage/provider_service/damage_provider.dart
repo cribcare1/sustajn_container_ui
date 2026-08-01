@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-
 import '../../constants/string_utils.dart';
 import '../../utils/utility.dart';
 import '../models/damage_partner_data.dart';

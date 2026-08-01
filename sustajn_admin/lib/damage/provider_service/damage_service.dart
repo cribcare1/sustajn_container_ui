@@ -7,8 +7,6 @@ import '../../utils/utility.dart';
 import '../models/damage_partner_data.dart';
 import '../models/damage_user_data.dart';
 
-
-
 class DamageServices {
 
   Future<DamageUserData> getDamageUserService(String partUrl) async {
