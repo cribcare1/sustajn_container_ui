@@ -60,9 +60,10 @@ static const USER_DAMAGED_DATA = "inventory/getDamagedContainersByUser?userId=";
   // Admin Product
 static const PRODUCT_INCIRCULATION ='inventory/cointainerstatistic/in-circulation-list';
 static const WITH_PARTNER = 'inventory/cointainerstatistic/with-partner-list';
-static const DAMAGED_CONTAINER = 'inventory/getDamageContainerByUserType?damageBy=USER';
+static const DAMAGE_USER = 'inventory/getDamageContainerByUserType?damageBy=USER';
 static const SOLD_CONTAINERS = 'inventory/admin/transactions/sold-dashboard';
 static const WITH_PARTNER_DETAIL = 'inventory/cointainerstatistic/with-partner/';
 static const INCIRCULATION_DETAIL = 'inventory/cointainerstatistic/in-circulation/';
 static const INVENTORY_DETAILS = 'orders/containers/{id}/details';
+static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=PARTNER';
 }
