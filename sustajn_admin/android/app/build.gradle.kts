@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 val keystoreProperties = Properties()
@@ -15,13 +16,14 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.container_tracking"
+    namespace = "com.sustajn.container_tracking"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -29,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.container_tracking"
+        applicationId = "com.sustajn.container_tracking"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -66,6 +68,24 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+}
+
+dependencies {
+
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    implementation("com.google.firebase:firebase-analytics")
+
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    implementation("com.google.android.play:core:1.10.3")
+
+    coreLibraryDesugaring(
+        "com.android.tools:desugar_jdk_libs:2.1.4"
+    )
+    implementation ("androidx.multidex:multidex:2.0.1")
 }
 
 flutter {
