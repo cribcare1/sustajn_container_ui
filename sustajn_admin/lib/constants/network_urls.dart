@@ -8,7 +8,7 @@ class NetworkUrls {
   static const IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/";
   static const CONTAINER_IMAGE_BASE_URL = "http://65.0.241.5:9090/auth/images/container/";
   static const GET_CONTAINER = "inventory/getAllActiveInventory/";
-  static const GET_CONTAINER_BY_ID = "inventory/restaurant/getAvailableContainers/";
+  static const GET_CONTAINER_BY_ID = "inventory/getAllContainerTypes";
   static const CONTAINER_COUNT = "orders/getLeasedReturnedCount";
   static const LOGIN_API = "auth/login";
   static const REGISTER_USER = "auth/register-user";
