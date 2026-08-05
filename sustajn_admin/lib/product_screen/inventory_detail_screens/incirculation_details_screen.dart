@@ -41,7 +41,7 @@ class _IncirculationDetailsScreenState
     return Scaffold(
       backgroundColor: Constant.PrimaryColor,
       appBar: CustomAppBar(
-        title: Strings.ORDERED,
+        title: Strings.IN_CIRCULATION,
         leading: const CustomBackButton(),
       ).getAppBar(context),
       body: Column(
