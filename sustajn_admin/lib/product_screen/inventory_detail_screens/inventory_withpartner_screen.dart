@@ -8,7 +8,6 @@ import '../../../utils/utility.dart';
 import '../../common_widgets/custom_app_bar.dart';
 import '../../common_widgets/custom_back_button.dart';
 import '../../provider/order_provider.dart';
-import '../models/incirculation_detail_data.dart';
 import '../models/withpartner_detail_data.dart';
 
 class WithPartnerDetailsScreen extends ConsumerStatefulWidget {

@@ -242,16 +242,16 @@ class _ContainerDetailedScreenState
                   Strings.WITH_PARTNER,
                   "${inventory?.withPartnerCount ?? 0}",
                   true,
-                  // onTap: () {
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (_) => WithPartnerDetailsScreen(
-                  //         productId: widget.productId,
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WithPartnerDetailsScreen(
+                          productId: widget.productId,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 _Summary(Strings.SOLD, "${inventory?.soldCount ?? 0}", true),
                 _Summary(
