@@ -52,7 +52,7 @@ class _WithPartnerDetailsScreenState
 
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_12),
               itemCount: partners.length,
               itemBuilder: (context, index) {
                 return _partnerCard(partners[index]);
@@ -98,19 +98,19 @@ class _WithPartnerDetailsScreenState
 
   Widget _partnerCard(Partners item) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 14,
+      margin: EdgeInsets.only(bottom: Constant.CONTAINER_SIZE_12),
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_14,
+        vertical: Constant.CONTAINER_SIZE_14,
       ),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xff255742),
+            Constant.green4,
             Constant.PrimaryColor,
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(color: Colors.white38),
       ),
       child: Row(
@@ -124,36 +124,35 @@ class _WithPartnerDetailsScreenState
                   item.partnerName ?? "",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: Constant.CONTAINER_SIZE_16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-
-                const SizedBox(height: 4),
+                SizedBox(height: Constant.SIZE_04),
 
                 Text(
                   item.address ?? "",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white60,
-                    fontSize: 13,
+                    fontSize: Constant.CONTAINER_SIZE_13,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(width: 10),
+          SizedBox(width: Constant.CONTAINER_SIZE_10),
 
           Text(
             "${item.count ?? 0}",
-            style: const TextStyle(
+            style: TextStyle(
               color: Constant.gold,
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: Constant.CONTAINER_SIZE_22,
             ),
           ),
         ],
@@ -172,7 +171,6 @@ class _WithPartnerDetailsScreenState
           orderState.setIsLoading(true);
 
           final url = '${NetworkUrls.WITH_PARTNER_DETAIL}${widget.productId}';
-          // '${widget.userId}';
           ref.read(getWithPartnerDetailProvider(url));
         } else {
           orderState.setIsLoading(false);
