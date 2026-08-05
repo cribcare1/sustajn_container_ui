@@ -2,6 +2,7 @@ import 'package:container_tracking/product_screen/models/incirculation_data.dart
 import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
+import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
@@ -18,6 +19,8 @@ class OrderState extends ChangeNotifier {
   List<InventoryData> _filterInventory = [];
 
   InventoryOrderData? _inventoryOrderData;
+
+  List<OrderedData> _orderedData = [];
 
   BuildContext? _context;
   bool _isVerifying = false;
@@ -61,6 +64,8 @@ class OrderState extends ChangeNotifier {
   List<InventoryData> get filterInventory => _filterInventory;
 
   InventoryOrderData? get getInventoryOrderData => _inventoryOrderData;
+
+  List<OrderedData> get getOrderedData => _orderedData;
 
   BuildContext get context => _context!;
 
@@ -137,6 +142,11 @@ class OrderState extends ChangeNotifier {
 
   void setInventoryOrderData(InventoryOrderData inventoryOrderData) {
     _inventoryOrderData = inventoryOrderData;
+    notifyListeners();
+  }
+
+  void setOrderedData(List<OrderedData> data) {
+    _orderedData = data;
     notifyListeners();
   }
 
