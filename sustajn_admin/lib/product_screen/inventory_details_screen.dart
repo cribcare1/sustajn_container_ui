@@ -7,6 +7,7 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
 import 'delete_bottomsheet.dart';
 import 'inventory_detail_screens/incirculation_details_screen.dart';
@@ -206,12 +207,10 @@ class _ContainerDetailedScreenState
                   "${inventory?.orderedCount ?? 0}",
                   true,
                   onTap: () {
-                    Navigator.push(
+                    NavUtil.navigateToPushScreen(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => InventoryOrderDetailsScreen(
-                          productId: widget.productId,
-                        ),
+                      InventoryOrderDetailsScreen(
+                        productId: widget.productId,
                       ),
                     );
                   },
@@ -227,28 +226,23 @@ class _ContainerDetailedScreenState
                   "${inventory?.inCirculationCount ?? 0}",
                   true,
                   onTap: () {
-                    Navigator.push(
+                    NavUtil.navigateToPushScreen(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => IncirculationDetailsScreen(
-                          productId: widget.productId,
-                        ),
+                      IncirculationDetailsScreen(
+                        productId: widget.productId,
                       ),
                     );
                   },
-
                 ),
                 _Summary(
                   Strings.WITH_PARTNER,
                   "${inventory?.withPartnerCount ?? 0}",
                   true,
                   onTap: () {
-                    Navigator.push(
+                    NavUtil.navigateToPushScreen(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => WithPartnerDetailsScreen(
-                          productId: widget.productId,
-                        ),
+                      WithPartnerDetailsScreen(
+                        productId: widget.productId,
                       ),
                     );
                   },
