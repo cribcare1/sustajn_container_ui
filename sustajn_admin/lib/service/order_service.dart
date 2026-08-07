@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/network_urls.dart';
 import '../network/ApiCallPresentor.dart';
+import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
 import '../product_screen/models/incirculation_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
@@ -210,6 +211,35 @@ class OrderServices {
       }
     } catch (e) {
       Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+
+  /// Inventory OrderDetails Service
+  Future<List<OrderedData>> getOrderDetailsService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+
+      String url = NetworkUrls.BASE_URL + partUrl;
+
+      ApiCallPresenter presenter = ApiCallPresenter();
+
+      var response = await presenter.getAPIData(url);
+
+      if (response != null) {
+        List<OrderedData> responseData =
+        (response as List)
+            .map((e) => OrderedData.fromJson(e))
+            .toList();
+
+        Utils.printLog("responseData length = ${responseData.length}");
+
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Order service:::: $e");
       throw Exception(e);
     }
   }
