@@ -44,7 +44,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
       body: Column(
         children: [
           _searchBar(),
@@ -92,8 +92,8 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         },
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_PARTNER_NAME,
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintStyle: TextStyle(color: Constant.white),
+          prefixIcon: Icon(Icons.search, color: Constant.PrimaryDarkColor),
           suffixIcon: IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: () {
@@ -176,7 +176,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
                 Strings.DIRHAM_IMG,
                 width: 18,
                 height: 18,
-                color: Constant.white,
+                color: Constant.PrimaryAssentColor,
               ),
 
               const SizedBox(width: 6),
@@ -235,7 +235,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.productName ?? "",
+                    damageContainer.productIds ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -307,7 +307,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         if (isNetworkAvailable) {
           damageState.setIsLoading(true);
 
-          final url = '${NetworkUrls.DAMAGE_RESTAURANT}';
+          final url = '${NetworkUrls.DAMAGE_PARTNER}';
           ref.read(getDamagePartnerDataProvider(url));
         } else {
           damageState.setIsLoading(false);

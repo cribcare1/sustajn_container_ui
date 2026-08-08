@@ -98,8 +98,8 @@ class DamageContainers {
 }
 
 class Products {
-  Null? customerId;
-  Null? restaurantName;
+  String? customerId;
+  String? restaurantName;
   int? productId;
   String? productName;
   String? productDescription;
@@ -122,8 +122,8 @@ class Products {
         this.damageImagesUrls});
 
   Products.fromJson(Map<String, dynamic> json) {
-    customerId = json['customerId'];
-    restaurantName = json['restaurantName'];
+    customerId = json['customerId'] ?? "";
+    restaurantName = json['restaurantName'] ?? "";
     productId = json['productId'] ?? 0;
     productName = json['productName'] ?? "";
     productDescription = json['productDescription'] ?? "";

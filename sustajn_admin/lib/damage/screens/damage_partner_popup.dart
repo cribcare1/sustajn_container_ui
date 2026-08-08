@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../constants/number_constants.dart';
 import '../../constants/string_utils.dart';
 import '../models/damage_partner_data.dart';
@@ -15,8 +16,7 @@ class DamagePartnerPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateTime =
-    DateTime.tryParse(damageContainer.localDateTime ?? "");
+    final dateTime = DateTime.tryParse(damageContainer.localDateTime ?? "");
 
     return SafeArea(
       child: Stack(
@@ -38,7 +38,6 @@ class DamagePartnerPopup extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     const Text(
                       Strings.DAMAGE_DETAILS,
                       style: TextStyle(
@@ -51,7 +50,7 @@ class DamagePartnerPopup extends StatelessWidget {
                     const SizedBox(height: 18),
 
                     Text(
-                      "Product ID : ${product.productUniqueId ?? ""}",
+                      "Product Name : ${product.restaurantName ?? ""}",
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 15,
@@ -59,7 +58,6 @@ class DamagePartnerPopup extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 25),
-
 
                     Center(
                       child: Column(
@@ -86,24 +84,14 @@ class DamagePartnerPopup extends StatelessWidget {
 
                           const SizedBox(height: 8),
 
-                          Text(
-                            dateTime == null
-                                ? ""
-                                : "${dateTime.day}.${dateTime.month}.${dateTime.year}",
-                            style: const TextStyle(
-                              color: Colors.white70,
-                            ),
-                          ),
-
-                          const SizedBox(height: 3),
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                           Text(
-                            dateTime == null
-                                ? ""
-                                : TimeOfDay.fromDateTime(dateTime)
-                                .format(context),
-                            style: const TextStyle(
-                              color: Colors.white70,
+                            damageContainer.localDateTime ?? "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Constant.BeigeColor,
+                              fontSize: Constant.CONTAINER_SIZE_14,
                             ),
                           ),
                         ],
@@ -128,34 +116,26 @@ class DamagePartnerPopup extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(.05),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(.1),
-                        ),
+                        border: Border.all(color: Colors.white.withOpacity(.1)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              product.productImageUrl ?? "",
-                              width: 60,
-                              height: 60,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              "assets/images/dipcup.png",
+                              width: Constant.CONTAINER_SIZE_35,
+                              height: Constant.CONTAINER_SIZE_35,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.image,
-                                color: Colors.white,
-                                size: 60,
-                              ),
-                            ),
+                            )
                           ),
 
                           const SizedBox(width: 14),
 
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   product.productName ?? "",
@@ -170,27 +150,14 @@ class DamagePartnerPopup extends StatelessWidget {
 
                                 Text(
                                   product.productUniqueId ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
+                                  style: const TextStyle(color: Colors.white70),
                                 ),
 
                                 const SizedBox(height: 5),
 
                                 Text(
                                   "${product.capacity ?? 0} ml",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 5),
-
-                                Text(
-                                  "Remark : ${product.damageRemark ?? "-"}",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
+                                  style: const TextStyle(color: Colors.white70),
                                 ),
                               ],
                             ),
@@ -206,7 +173,6 @@ class DamagePartnerPopup extends StatelessWidget {
             ],
           ),
 
-
           Positioned(
             right: 18,
             top: 0,
@@ -218,11 +184,7 @@ class DamagePartnerPopup extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(7),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.black,
-                  size: 22,
-                ),
+                child: const Icon(Icons.close, color: Colors.black, size: 22),
               ),
             ),
           ),

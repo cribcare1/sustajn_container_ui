@@ -26,10 +26,10 @@ class DamageDetailsPopup extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(Constant.CONTAINER_SIZE_18),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Constant.PrimaryColor,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(25),
+                    top: Radius.circular(Constant.CONTAINER_SIZE_24),
                   ),
                 ),
                 child: Column(
@@ -39,24 +39,24 @@ class DamageDetailsPopup extends StatelessWidget {
                     Text(
                       Strings.DAMAGE_DETAILS,
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
+                        color: Constant.white,
+                        fontSize: Constant.CONTAINER_SIZE_18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 12),
+                    SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                     Text(
                       "User ID : ${product.customerId ?? ""}",
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
+                      style: TextStyle(
+                        color: Constant.BeigeColor,
+                        fontSize: Constant.CONTAINER_SIZE_16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
 
                     Center(
                       child: Column(
@@ -66,76 +66,69 @@ class DamageDetailsPopup extends StatelessWidget {
                             children: [
                               Image.asset(
                                 Strings.BOWL_IMG,
-                                width: 35,
-                                height: 35,
+                                width: Constant.CONTAINER_SIZE_35,
+                                height: Constant.CONTAINER_SIZE_35,
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: Constant.SIZE_08),
                               Text(
                                 "${damageContainer.dateWiseTotalDamageContainers ?? 0}",
-                                style: const TextStyle(
-                                  color: Colors.amber,
-                                  fontSize: 30,
+                                style: TextStyle(
+                                  color: Constant.PrimaryAssentColor,
+                                  fontSize: Constant.CONTAINER_SIZE_30,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 8),
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                           Text(
-                            dateTime == null
-                                ? ""
-                                : "${dateTime.day}/${dateTime.month}/${dateTime.year}",
-                            style: const TextStyle(color: Colors.white70),
-                          ),
-
-                          Text(
-                            dateTime == null
-                                ? ""
-                                : TimeOfDay.fromDateTime(dateTime).format(context),
-                            style: const TextStyle(color: Colors.white70),
+                            damageContainer.localDateTime ?? "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Constant.BeigeColor,
+                              fontSize: Constant.CONTAINER_SIZE_14,
+                            ),
                           ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
 
-                    const Text(
+                    Text(
                       Strings.CONTAINER,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Constant.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    SizedBox(height: Constant.CONTAINER_SIZE_10),
 
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(.05),
-                        borderRadius: BorderRadius.circular(12),
+                        color: Constant.white.withOpacity(.05),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                         border: Border.all(
-                          color: Colors.white.withOpacity(.1),
+                          color: Constant.white.withOpacity(.1),
                         ),
                       ),
                       child: Row(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              product.productImageUrl ?? "",
-                              width: 50,
-                              height: 50,
+                            borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                            child: Image.asset(
+                              "assets/images/dipcup.png",
+                              width: Constant.CONTAINER_SIZE_35,
+                              height: Constant.CONTAINER_SIZE_35,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                              const Icon(Icons.image, color: Colors.white),
                             ),
                           ),
 
-                          const SizedBox(width: 12),
+                          SizedBox(width: Constant.CONTAINER_SIZE_12),
 
                           Expanded(
                             child: Column(
@@ -143,27 +136,27 @@ class DamageDetailsPopup extends StatelessWidget {
                               children: [
                                 Text(
                                   product.productName ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: Constant.BeigeColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
 
-                                const SizedBox(height: 4),
+                                SizedBox(height: Constant.SIZE_04),
 
                                 Text(
                                   product.productUniqueId ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
+                                  style: TextStyle(
+                                    color: Constant.BeigeColor,
                                   ),
                                 ),
 
-                                const SizedBox(height: 4),
+                                SizedBox(height: Constant.SIZE_04),
 
                                 Text(
                                   "${product.capacity ?? 0} ml",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
+                                  style: TextStyle(
+                                    color: Constant.BeigeColor,
                                   ),
                                 ),
                               ],
@@ -173,23 +166,23 @@ class DamageDetailsPopup extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
                   ],
                 ),
               ),
 
               Positioned(
-                top: 10,
-                right: 10,
+                top: Constant.CONTAINER_SIZE_10,
+                right: Constant.CONTAINER_SIZE_10,
                 child: InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: const CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                    radius: Constant.CONTAINER_SIZE_16,
+                    backgroundColor: Constant.white,
                     child: Icon(
                       Icons.close,
                       size: Constant.SIZE_18,
-                      color: Colors.black,
+                      color: Constant.black,
                     ),
                   ),
                 ),

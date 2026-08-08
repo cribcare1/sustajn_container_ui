@@ -45,7 +45,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
       body: Column(
         children: [
           _searchBar(),
@@ -97,7 +97,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
 
   Widget _searchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       child: TextField(
         controller: searchController,
         onChanged: (value) {
@@ -108,15 +108,15 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
         },
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_USER_ID,
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintStyle: TextStyle(color: Constant.BeigeColor),
+          prefixIcon: Icon(Icons.search, color: Colors.white70),
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: Icon(Icons.filter_list, color: Constant.BeigeColor),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
-                backgroundColor: Color(0xFF0E3B2E),
+                backgroundColor: Constant.PrimaryColor,
                 builder: (_) => DamageFilterBottomSheet(
                   onApply: (result) {
                     setState(() {
@@ -129,9 +129,9 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
             },
           ),
           filled: true,
-          fillColor: const Color(0xFF184D3B),
+          fillColor: Constant.green9,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
           ),
         ),
@@ -171,19 +171,19 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
   Widget _monthHeader(DamageUserDataList month) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
+      padding: EdgeInsets.symmetric(
+        horizontal: Constant.CONTAINER_SIZE_16,
+        vertical: Constant.CONTAINER_SIZE_12,
       ),
-      color: Colors.white.withOpacity(0.15),
+      color: Constant.white.withOpacity(0.15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             month.monthYear ?? "",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+            style: TextStyle(
+              color: Constant.BeigeColor,
+              fontSize: Constant.CONTAINER_SIZE_16,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -191,19 +191,19 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
           Row(
             children: [
               Image.asset(
-                Strings.DIRHAM_IMG,
-                width: 18,
-                height: 18,
-                color: const Color(0xFFF5EBDF),
+                Strings.BOWL_IMG,
+                width: Constant.CONTAINER_SIZE_18,
+                height: Constant.CONTAINER_SIZE_18,
+                color: Constant.PrimaryAssentColor,
               ),
 
-              const SizedBox(width: 6),
+              SizedBox(width: Constant.SIZE_06),
 
               Text(
                 "${month.monthWiseTotalDamageContainers ?? 0}",
-                style: const TextStyle(
-                  color: Color(0xFFFFC107),
-                  fontSize: 18,
+                style: TextStyle(
+                  color: Constant.PrimaryAssentColor,
+                  fontSize: Constant.CONTAINER_SIZE_18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -216,18 +216,18 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
 
   Widget _damageCard(DamageContainers damageContainer, Products product) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: Constant.CONTAINER_SIZE_16, vertical: Constant.SIZE_08),
+      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [
             Color(0xFF215842),
             Constant.PrimaryColor,
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
         border: Border.all(
-          color: Colors.white.withOpacity(.15),
+          color: Constant.white.withOpacity(.15),
         ),
       ),
       child: Row(
@@ -239,31 +239,31 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
               children: [
 
                 Text(
-                  product.productName ?? product.productName ?? "",
-                  style: const TextStyle(
-                    color: Colors.white,
+                  "${damageContainer.productIds ?? 0 }",
+                  style: TextStyle(
+                    color: Constant.BeigeColor,
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: Constant.CONTAINER_SIZE_16,
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                SizedBox(height: Constant.SIZE_06),
 
                 Text(
-                  product.productUniqueId ?? "",
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
+                  product.customerId ?? "",
+                  style:  TextStyle(
+                    color: Constant.BeigeColor,
+                    fontSize: Constant.CONTAINER_SIZE_13,
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                SizedBox(height: Constant.SIZE_06),
 
                 Text(
                   damageContainer.localDateTime ?? "",
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 12,
+                  style: TextStyle(
+                    color: Constant.BeigeColor,
+                    fontSize: Constant.CONTAINER_SIZE_12,
                   ),
                 ),
               ],
@@ -275,19 +275,19 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
 
               Text(
                 "${damageContainer.dateWiseTotalDamageContainers ?? 0}",
-                style: const TextStyle(
-                  color: Color(0xFFFFC107),
-                  fontSize: 22,
+                style: TextStyle(
+                  color: Constant.PrimaryAssentColor,
+                  fontSize: Constant.CONTAINER_SIZE_22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
-              const SizedBox(width: 12),
+              SizedBox(width: Constant.CONTAINER_SIZE_12),
 
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.white70,
-                size: Constant.SIZE_06,
+                color: Constant.BeigeColor,
+                size: Constant.SIZE_15,
               ),
             ],
           ),

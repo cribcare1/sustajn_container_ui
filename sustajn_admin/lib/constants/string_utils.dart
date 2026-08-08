@@ -355,5 +355,7 @@ class Strings {
   static const String DAMAGE_DETAILS = 'Damage Details';
   //Age Limit
   static const String AGE_LIMIT = 'Age Limit';
+  //Sold Details
+static const String SOLD_DETAILS = 'Sold Details';
 
 }

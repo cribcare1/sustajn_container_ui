@@ -15,8 +15,13 @@ class DamageServices {
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
+      print("RAW RESPONSE = $response");
       if (response != null) {
         var responseData = DamageUserData.fromJson(response);
+
+        print("Status = ${responseData.status}");
+        print("Data Length = ${responseData.data?.length}");
+
         Utils.printLog("User responseData in Service: ${responseData.status}");
 
         return responseData;
@@ -35,8 +40,11 @@ class DamageServices {
       String url = NetworkUrls.BASE_URL + partUrl;
       ApiCallPresenter presenter = ApiCallPresenter();
       var response = await presenter.getAPIData(url);
+      print("RAW RESPONSE = $response");
       if (response != null) {
         var responseData = DamagePartnerData.fromJson(response);
+        print("Status = ${responseData.status}");
+        print("Length = ${responseData.data?.length}");
         Utils.printLog("User responseData in Service: ${responseData.status}");
 
         return responseData;

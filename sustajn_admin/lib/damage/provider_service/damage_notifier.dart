@@ -40,17 +40,26 @@ class DamageNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setDamageUserData(DamageUserData damageUserData){
-    Utils.printLog("data list = ${damageUserData.data!.length}");
+  void setDamageUserData(DamageUserData damageUserData) {
+    print("Notifier Called");
+    print("List Length = ${damageUserData.data?.length}");
+
     _damageUserData = damageUserData;
     _damageUserDataList = damageUserData.data ?? [];
+
+    print("Stored Length = ${_damageUserDataList.length}");
+
     notifyListeners();
   }
 
-  void setDamagePartnerData(DamagePartnerData damagePartnerData){
-    Utils.printLog("data list = ${damagePartnerData.data!.length}");
+  void setDamagePartnerData(DamagePartnerData damagePartnerData) {
+    print("Partner Data Length = ${damagePartnerData.data?.length}");
+
     _damagePartnerData = damagePartnerData;
     _damagePartnerDataList = damagePartnerData.data ?? [];
+
+    print("Notifier Partner List = ${_damagePartnerDataList.length}");
+
     notifyListeners();
   }
 

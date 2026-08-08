@@ -45,17 +45,17 @@ class _DamageHomeScreenState extends State<DamageHomeScreen>
         leading: CustomBackButton(),
         title: Text(
           Strings.DAMAGE,
-          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+          style: theme.textTheme.titleMedium!.copyWith(color: Constant.white),
         ),
         bottom: TabBar(
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
-          indicatorColor: Colors.amber,
+          indicatorColor: Constant.PrimaryAssentColor,
           indicatorWeight: 2,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          labelColor: Colors.amber,
-          unselectedLabelColor: Colors.white,
+          labelColor: Constant.PrimaryAssentColor,
+          unselectedLabelColor: Constant.white,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
             Tab(
@@ -69,8 +69,8 @@ class _DamageHomeScreenState extends State<DamageHomeScreen>
                       height: Constant.SIZE_HEIGHT_10,
                       width: Constant.CONTAINER_SIZE_75,
                     ),
-                    const SizedBox(width: 1.8),
-                    const Text(Strings.USER),
+                    SizedBox(width: 1.8),
+                    Text(Strings.USER),
                   ],
                 ),
               )
@@ -85,8 +85,8 @@ class _DamageHomeScreenState extends State<DamageHomeScreen>
                     height:Constant.SIZE_HEIGHT_10,
                     width: Constant.CONTAINER_SIZE_75,
                   ),
-                  const SizedBox(width: 1.8),
-                  const Text(Strings.PARTNER),
+                  SizedBox(width: 1.8),
+                  Text(Strings.PARTNER),
                 ],
               ),
             ),
