@@ -68,4 +68,7 @@ static const INVENTORY_DETAILS = 'orders/containers/{id}/details';
 static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=PARTNER';
 static const INVENTORY_ORDERED = 'orders/containers/ordered-history/';
 static const ISSUED_TO_PARTNER = 'inventory/containers/issued-to-partner/';
+static const INV_USER_SOLD = 'orders/sold-history?userType=RESTAURANT&productId=';
+static const INV_PARTNER_SOLD = 'orders/sold-history?userType=USER&productId=';
+static const INV_RETURNED_DATA = 'inventory/containers/returned-history/';
 }

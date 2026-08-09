@@ -3,6 +3,9 @@ import '../constants/network_urls.dart';
 import '../network/ApiCallPresentor.dart';
 import '../product_screen/inventory_detail_screens/models/issuedtopartner_model.dart';
 import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
+import '../product_screen/inventory_detail_screens/models/partner_sold_model.dart';
+import '../product_screen/inventory_detail_screens/models/return_model.dart';
+import '../product_screen/inventory_detail_screens/models/user_sold_model.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
@@ -292,6 +295,67 @@ class OrderServices {
 
       throw Exception(e);
 
+    }
+  }
+
+  ///Inventory UserSold order service
+
+  Future<UserSoldData> getUserOrderedService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = UserSoldData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+
+  ///Inventory PartnerSold order service
+
+  Future<PartnerSoldData> getPartnerOrderedService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = PartnerSoldData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
+  ///Inventory Returned order service
+  Future<ReturnedData> getReturnOrderedService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = ReturnedData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
     }
   }
 }

@@ -4,6 +4,9 @@ import '../constants/string_utils.dart';
 import '../notifier/order_notifier.dart';
 import '../product_screen/inventory_detail_screens/models/issuedtopartner_model.dart';
 import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
+import '../product_screen/inventory_detail_screens/models/partner_sold_model.dart';
+import '../product_screen/inventory_detail_screens/models/return_model.dart';
+import '../product_screen/inventory_detail_screens/models/user_sold_model.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
@@ -344,6 +347,85 @@ final getIssuedPartnerOrderProvider = FutureProvider.family<dynamic, String>((
 
     orderState.setIsLoading(false);
     orderState.setIssuedToPartnerData(responseData);
+
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+
+///Inventory UserSold order provider
+
+final getUserSoldOrderProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+
+    Utils.printLog("params===$params");
+
+    UserSoldData responseData = await serviceProvider
+        .getUserOrderedService(params);
+
+    orderState.setIsLoading(false);
+    orderState.setUserSoldData(responseData);
+
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+
+///Inventory PartnerSold order provider
+
+final getPartnerSoldOrderProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+
+    Utils.printLog("params===$params");
+
+    PartnerSoldData responseData = await serviceProvider
+        .getPartnerOrderedService(params);
+
+    orderState.setIsLoading(false);
+    orderState.setPartnerSoldData(responseData);
+
+    return responseData;
+  } catch (e) {
+    Utils.printLog("Get Profile provider error called: $e");
+    orderState.setIsLoading(false);
+    Utils.showNetworkErrorToast(orderState.context, e.toString());
+  }
+});
+///Inventory Returned order provider
+final getReturnOrderProvider = FutureProvider.family<dynamic, String>((
+    ref,
+    params,
+    ) async {
+  final orderState = ref.watch(orderProvider);
+
+  try {
+    var serviceProvider = ref.read(getOrderApiProvider);
+
+    Utils.printLog("params===$params");
+
+    ReturnedData responseData = await serviceProvider
+        .getReturnOrderedService(params);
+
+    orderState.setIsLoading(false);
+    orderState.setReturnedData(responseData);
 
     return responseData;
   } catch (e) {

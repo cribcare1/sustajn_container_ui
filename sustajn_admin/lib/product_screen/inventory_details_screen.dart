@@ -15,6 +15,8 @@ import 'inventory_detail_screens/incirculation_details_screen.dart';
 import 'inventory_detail_screens/inventory_withpartner_screen.dart';
 import 'inventory_detail_screens/issued_to_partner_screen.dart';
 import 'inventory_detail_screens/ordered_screen.dart';
+import 'inventory_detail_screens/return_details_screen.dart';
+import 'inventory_detail_screens/sold_details_screen.dart';
 
 class ContainerDetailedScreen extends ConsumerStatefulWidget {
   final int productId;
@@ -257,7 +259,19 @@ class _ContainerDetailedScreenState
                     );
                   },
                 ),
-                _Summary(Strings.SOLD, "${inventory?.soldCount ?? 0}", true),
+                _Summary(
+                    Strings.SOLD,
+                    "${inventory?.soldCount ?? 0}",
+                    true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventorySoldDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
+                ),
                 _Summary(
                   Strings.DAMAGED,
                   "${inventory?.damagedCount ?? 0}",
@@ -280,6 +294,14 @@ class _ContainerDetailedScreenState
                   Strings.RETURNED,
                   "${inventory?.returnedCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventoryReturnDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
