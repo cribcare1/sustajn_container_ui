@@ -261,7 +261,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Text(
                   "Active",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_12,
                   ),
                 ),
@@ -269,7 +269,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Text(
                   "7",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_22,
                     fontWeight: FontWeight.w600,
                   ),
@@ -300,7 +300,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Text(
                   "Overdue",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_12,
                   ),
                 ),
@@ -308,7 +308,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Text(
                   "4",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_22,
                     fontWeight: FontWeight.w600,
                   ),
@@ -414,8 +414,8 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
             children: [
               Image.asset(
                 icon,
-                height: 16,
-                width: 16,
+                height: Constant.CONTAINER_SIZE_16,
+                width: Constant.CONTAINER_SIZE_16,
                 color: themeData.secondaryHeaderColor,
               ),
               SizedBox(width: Constant.SIZE_04),
@@ -443,7 +443,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
           Image.asset(
             data["image"]?.toString() ?? "",
-            height: 40,
+            height: Constant.CONTAINER_SIZE_40,
             fit: BoxFit.contain,
           ),
 
@@ -455,13 +455,13 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.BeigeColor,
               fontSize: Constant.CONTAINER_SIZE_12,
               fontWeight: FontWeight.w600,
             ),
           ),
 
-          SizedBox(height: 2),
+          SizedBox(height: Constant.SIZE_02),
 
           Text(
             data["code"]?.toString() ?? "",
@@ -469,7 +469,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.BeigeColor,
               fontSize: Constant.CONTAINER_SIZE_10,
             ),
           ),
@@ -480,7 +480,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.BeigeColor,
               fontSize: Constant.CONTAINER_SIZE_10,
             ),
           ),

@@ -27,7 +27,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
               width: Constant.CONTAINER_SIZE_60,
               height: Constant.SIZE_05,
               decoration: BoxDecoration(
-                color: Colors.white70,
+                color: Constant.white,
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
               ),
             ),
@@ -39,7 +39,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                 Text(
                   Strings.SUBSCRIPTION_DETAILS,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -49,7 +49,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                   onTap: () => Navigator.pop(context),
                   child: const Icon(
                     Icons.close,
-                    color: Colors.white,
+                    color: Constant.white,
                   ),
                 )
               ],
@@ -61,10 +61,10 @@ class SubscriptionDetailsDialog extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_18),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.08),
+                color: Constant.white.withOpacity(.08),
                 borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
                 border: Border.all(
-                  color: Colors.white24,
+                  color: Constant.PrimaryDarkColor,
                 ),
               ),
               child: Column(
@@ -73,7 +73,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                   Text(
                     items.name!,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_18,
                       fontWeight: FontWeight.w500,
                     ),
@@ -86,7 +86,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.location_on_outlined,
-                        color: Colors.white70,
+                        color: Constant.BeigeColor,
                         size: Constant.CONTAINER_SIZE_18,
                       ),
                       SizedBox(width: Constant.SIZE_06),
@@ -94,7 +94,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                         child: Text(
                           items.restaurantAddress!,
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Constant.BeigeColor,
                             fontSize: Constant.CONTAINER_SIZE_14,
                           ),
                         ),
@@ -132,7 +132,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
             Text(
               items.formattedDate!,
               style: TextStyle(
-                color: Colors.white70,
+                color: Constant.BeigeColor,
                 fontSize: Constant.CONTAINER_SIZE_16,
               ),
             ),
@@ -146,14 +146,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
                   Text(
                     Strings.PLAN_TYPE,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(.8),
-                      fontSize: Constant.CONTAINER_SIZE_14,
-                    ),
-                  ),
-                  Text(
-                    items.planType!,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(.8),
+                      color: Constant.BeigeColor.withOpacity(.8),
                       fontSize: Constant.CONTAINER_SIZE_14,
                     ),
                   ),
@@ -168,7 +161,7 @@ class SubscriptionDetailsDialog extends StatelessWidget {
               child: Text(
                 Strings.PAY_USE,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Constant.BeigeColor,
                   fontSize: Constant.CONTAINER_SIZE_20,
                   fontWeight: FontWeight.bold,
                 ),

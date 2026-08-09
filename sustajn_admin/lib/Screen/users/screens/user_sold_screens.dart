@@ -86,15 +86,15 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           gradient: const LinearGradient(
-            colors: [Color(0xFF184D3B), Color(0xFF0E3A2D)],
+            colors: [Constant.green7, Constant.green8],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           border: Border.all(color: Colors.white.withOpacity(0.15)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              blurRadius: 10,
+              color: Constant.black.withOpacity(0.25),
+              blurRadius: Constant.CONTAINER_SIZE_10,
               offset: const Offset(0, 4),
             ),
           ],
@@ -115,18 +115,18 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                 ],
               ),
 
-              const SizedBox(height: 14),
+              SizedBox(height: Constant.CONTAINER_SIZE_14),
 
-              Divider(color: Colors.white.withOpacity(0.15), height: 1),
+              Divider(color: Colors.white.withOpacity(0.15), height: Constant.SIZE_01),
 
-              const SizedBox(height: 12),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 60,
-                    width: 60,
-                    padding: const EdgeInsets.all(6),
+                    height: Constant.CONTAINER_SIZE_60,
+                    width: Constant.CONTAINER_SIZE_60,
+                    padding: EdgeInsets.all(Constant.SIZE_06),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(12),
@@ -145,7 +145,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,25 +155,25 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        SizedBox(height: Constant.SIZE_02),
                         Text(
                           item.productUniqueId ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
 
-                        const SizedBox(height: 4),
+                        SizedBox(height: Constant.SIZE_04),
 
                         Text(
                           "${item.capacity}ml",
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
                       ],
@@ -185,7 +185,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                       Row(
                         children: [
                           Image.asset(
-                            'assets/images/bowl_img.png',
+                            Strings.BOWL_IMG,
                             height: Constant.CONTAINER_SIZE_16,
                             width: Constant.CONTAINER_SIZE_16,
                           ),
@@ -193,18 +193,18 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           Text(
                             item.soldQuantity?.toString() ?? "",
                             style: theme.textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
+                              color: Constant.BeigeColor,
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6),
 
                       Row(
                         children: [
                           Image.asset(
-                            'assets/images/diarhm.png',
+                            Strings.DIRHAM_IMG,
                             height: Constant.CONTAINER_SIZE_16,
                             color: Constant.orange,
                             colorBlendMode: BlendMode.srcIn,
@@ -213,7 +213,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           Text(
                             item.soldAmount?.toString() ?? "",
                             style: theme.textTheme.titleMedium!.copyWith(
-                              color: Color(0xFFE5C84B),
+                              color: Constant.PrimaryAssentColor,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -236,14 +236,14 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+          style: TextStyle(color: Constant.BeigeColor.withOpacity(0.7), fontSize: Constant.CONTAINER_SIZE_12),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: Constant.SIZE_02),
         Text(
           value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
+          style: TextStyle(
+            color: Constant.BeigeColor,
+            fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -263,7 +263,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
         child: Text(
           title,
           style: TextStyle(
-            color: Colors.white,
+            color: Constant.BeigeColor,
             fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w600,
           ),

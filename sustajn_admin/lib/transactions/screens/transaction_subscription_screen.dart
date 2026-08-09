@@ -133,7 +133,7 @@ class _SubscriptionScreenState
           fillColor: Constant.grey.withOpacity(0.1),
           filled: true,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: const Icon(Icons.filter_list, color: Constant.white),
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
@@ -209,23 +209,14 @@ class _SubscriptionScreenState
         padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF1F5A46), Color(0xFF0E3B2E)],
+            colors: [Constant.green7, Constant.green8],
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
           border: Border.all(color: Colors.white70),
         ),
         child: Row(
           children: [
-            // Container(
-            //   height: Constant.CONTAINER_SIZE_50,
-            //   width: Constant.CONTAINER_SIZE_50,
-            //   decoration: BoxDecoration(
-            //     color: Colors.white10,
-            //     borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
-            //   ),
-            //   child: Image.asset(getContainerImage(item.type)),
-            // ),
-            // SizedBox(width: Constant.CONTAINER_SIZE_12),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,15 +224,27 @@ class _SubscriptionScreenState
                   Text(
                     item.name!,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Constant.BeigeColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_04),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      Strings.PAY_USE,
+                      style: TextStyle(
+                        color: Constant.BeigeColor,
+                        fontSize: Constant.CONTAINER_SIZE_20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Constant.SIZE_04),
                   Text(
-                    item.planType!,
+                    item.formattedDate!,
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
@@ -251,17 +254,22 @@ class _SubscriptionScreenState
 
             Row(
               children: [
+                Image.asset(
+                  Strings.DIRHAM_IMG,
+                  height: Constant.CONTAINER_SIZE_16,
+                  width: Constant.CONTAINER_SIZE_16,
+                ),
                 Text(
                   '${item.amount!}',
                   style: TextStyle(
-                    color: theme.secondaryHeaderColor,
+                    color: Constant.PrimaryAssentColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white54,
+                  color: Constant.BeigeColor,
                   size: Constant.CONTAINER_SIZE_14,
                 ),
               ],
@@ -292,14 +300,14 @@ class _SubscriptionScreenState
               children: [
                 Icon(
                   Icons.sort,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.SORT,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -312,7 +320,7 @@ class _SubscriptionScreenState
             ),
             height: Constant.CONTAINER_SIZE_18,
             width: Constant.SIZE_02,
-            color: Colors.black26,
+            color: Constant.black,
           ),
 
           InkWell(
@@ -321,7 +329,7 @@ class _SubscriptionScreenState
               children: [
                 Icon(
                   Icons.filter_list,
-                  color: Colors.black,
+                  color: Constant.BeigeColor,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
@@ -357,12 +365,12 @@ class _SubscriptionScreenState
           Row(
             children: [
               Image.asset(
-                Strings.BOWL_IMG,
+                Strings.DIRHAM_IMG,
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
-              Text("$count", style: const TextStyle(color: Colors.white)),
+              Text("$count", style: const TextStyle(color: Constant.white)),
             ],
           ),
         ],
@@ -371,19 +379,6 @@ class _SubscriptionScreenState
   }
 
   void _openDetailDialog(BuildContext context, DateWiseSubscription item) {
-    // //final items = (item.name ?? []).map((product) {
-    //   return BorrowedUiItem(
-    //     restaurantName: '',
-    //     resturantAddress: '',
-    //     productName: product.productName ?? '',
-    //     capacity: product.capacity ?? 0,
-    //     containerCount: item.dateWiseTotalDamageContainers ?? 0,
-    //     productId: product.productUniqueId ?? '',
-    //     date: item.localDateTime ?? '',
-    //     time: '',
-    //     imageUrl: product.productImageUrl ?? '',
-    //   );
-    // //}).toList();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

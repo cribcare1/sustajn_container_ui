@@ -46,30 +46,30 @@ class _TransactionHomeScreenState extends State<TransactionHomeScreen>
         leading: CustomBackButton(),
         title: Text(
           Strings.TRANSACTIONS,
-          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+          style: theme.textTheme.titleMedium!.copyWith(color: Constant.white),
         ),
         bottom: TabBar(
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
-          indicatorColor: Colors.amber,
+          indicatorColor: Constant.PrimaryAssentColor,
           indicatorWeight: 3,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          labelColor: Colors.amber,
-          unselectedLabelColor: Colors.white,
+          labelColor: Constant.PrimaryAssentColor,
+          unselectedLabelColor: Constant.white,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
             Tab(
               child: Row(
-                mainAxisSize: MainAxisSize.min, // ✅ important
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     Strings.SUBSCRIPTION_IMG,
-                    height: 14,
-                    width: 14,
+                    height: Constant.CONTAINER_SIZE_14,
+                    width: Constant.CONTAINER_SIZE_14,
                   ),
-                  const SizedBox(width: 1.8),
-                  const Text("Subscription"),
+                  SizedBox(width: 1.8),
+                  Text(Strings.SUBSCRIPTION),
                 ],
               ),
             ),
@@ -80,11 +80,11 @@ class _TransactionHomeScreenState extends State<TransactionHomeScreen>
                 children: [
                   Image.asset(
                     Strings.SOLD_IMG,
-                    height:14,
-                    width: 14,
+                    height: Constant.CONTAINER_SIZE_14,
+                    width: Constant.CONTAINER_SIZE_14,
                   ),
                   const SizedBox(width: 1.8),
-                  const Text("Sold"),
+                  Text(Strings.SOLD),
                 ],
               ),
             ),
@@ -95,11 +95,11 @@ class _TransactionHomeScreenState extends State<TransactionHomeScreen>
                 children: [
                   Image.asset(
                     Strings.CLOCK_IMG,
-                    height:14,
-                    width:14,
+                    height: Constant.CONTAINER_SIZE_14,
+                    width: Constant.CONTAINER_SIZE_14,
                   ),
                   const SizedBox(width: 1.8),
-                  const Text("Extended Fee"),
+                  Text(Strings.EXTENDED_FEE),
                 ],
               ),
             ),
