@@ -43,8 +43,6 @@ class _InventoryDamageDetailsScreenState
       body: Column(
         children: [
           SizedBox(height: Constant.CONTAINER_SIZE_12),
-
-          /// User / Partner Toggle
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: Constant.CONTAINER_SIZE_12,
@@ -209,6 +207,7 @@ class _InventoryDamageDetailsScreenState
     );
   }
 
+//user damaged card
   Widget _damageCard(DamagedContainers item) {
     final customerId = item.products?.isNotEmpty == true
         ? item.products!.first.customerId ?? ""
