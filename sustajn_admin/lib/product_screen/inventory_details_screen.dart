@@ -10,8 +10,10 @@ import '../provider/order_provider.dart';
 import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
 import 'delete_bottomsheet.dart';
+import 'inventory_detail_screens/damaged_details_screen.dart';
 import 'inventory_detail_screens/incirculation_details_screen.dart';
 import 'inventory_detail_screens/inventory_withpartner_screen.dart';
+import 'inventory_detail_screens/issued_to_partner_screen.dart';
 import 'inventory_detail_screens/ordered_screen.dart';
 
 class ContainerDetailedScreen extends ConsumerStatefulWidget {
@@ -219,6 +221,14 @@ class _ContainerDetailedScreenState
                   Strings.ISSUED_PARTNER,
                   "${inventory?.issuedToPartnerCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      IssuedToPartnerScreenDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
 
                 ),
                 _Summary(
@@ -252,6 +262,14 @@ class _ContainerDetailedScreenState
                   Strings.DAMAGED,
                   "${inventory?.damagedCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventoryDamageDetailsScreen(
+                        // productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
                 _Summary(
                   Strings.IN_STOCK,

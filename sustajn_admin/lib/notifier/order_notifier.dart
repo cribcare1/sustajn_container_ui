@@ -2,6 +2,7 @@ import 'package:container_tracking/product_screen/models/incirculation_data.dart
 import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
+import '../product_screen/inventory_detail_screens/models/issuedtopartner_model.dart';
 import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
@@ -21,6 +22,7 @@ class OrderState extends ChangeNotifier {
   InventoryOrderData? _inventoryOrderData;
 
   List<OrderedData> _orderedData = [];
+  List<IssuedToPartnerData> _issuedToPartnerList = [];
 
   BuildContext? _context;
   bool _isVerifying = false;
@@ -43,9 +45,9 @@ class OrderState extends ChangeNotifier {
   List<Partners> _partners = [];
 
 
-  // DamagedContainerData? _damagedContainerData;
-  // List<DamagedList> _damagedList = [];
-  // List<ProductsList> _productsList = [];
+  DamagedContainerData? _damagedContainerData;
+  List<DamagedList> _damagedList = [];
+  List<ProductsList> _productsList = [];
 
   // SoldContainersData? _soldContainersData;
   // List<SoldList> _soldList = [];
@@ -66,6 +68,9 @@ class OrderState extends ChangeNotifier {
   InventoryOrderData? get getInventoryOrderData => _inventoryOrderData;
 
   List<OrderedData> get getOrderedData => _orderedData;
+
+  List<IssuedToPartnerData> get getIssuedToPartnerList =>
+      _issuedToPartnerList;
 
   BuildContext get context => _context!;
 
@@ -98,9 +103,9 @@ class OrderState extends ChangeNotifier {
   List<PartnersDataList> get getPartnersDataList => _partnersDataList;
   List<Partners> get getPartners => _partners;
 
-  // DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
-  // List<DamagedList> get getDamagedList => _damagedList;
-  // List<ProductsList> get getProductsList => _productsList;
+  DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
+  List<DamagedList> get getDamagedList => _damagedList;
+  List<ProductsList> get getProductsList => _productsList;
 
   // SoldContainersData? get getSoldContainersData => _soldContainersData;
   // List<SoldList> get getSoldList => _soldList;
@@ -135,6 +140,10 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setIssuedToPartnerData(List<IssuedToPartnerData> data) {
+    _issuedToPartnerList = data;
+    notifyListeners();
+  }
   void setInventoryFilter(List<InventoryData> data) {
     _filterInventory = List.from(data);
     notifyListeners();
@@ -179,13 +188,13 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void setDamagedData(DamagedContainerData damagedContainerData) {
-  //   Utils.printLog("data list = ${damagedContainerData.data!.length}");
-  //   _damagedContainerData = damagedContainerData;
-  //   _damagedList = _damagedContainerData!.data!;
-  //   // _productsList = _damagedList.damageContainers;
-  //   notifyListeners();
-  // }
+  void setDamagedData(DamagedContainerData damagedContainerData) {
+    Utils.printLog("data list = ${damagedContainerData.data!.length}");
+    _damagedContainerData = damagedContainerData;
+    _damagedList = _damagedContainerData!.data!;
+    // _productsList = _damagedList.damageContainers;
+    notifyListeners();
+  }
 
   // void setSoldContainersData(SoldContainersData soldContainersData) {
   //   Utils.printLog("data list = ${soldContainersData.data!.length}");

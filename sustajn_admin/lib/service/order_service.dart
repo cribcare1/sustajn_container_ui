@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/network_urls.dart';
 import '../network/ApiCallPresentor.dart';
+import '../product_screen/inventory_detail_screens/models/issuedtopartner_model.dart';
 import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
+import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
@@ -92,24 +94,24 @@ class OrderServices {
   }
 
   //Damaged order service
-  // Future<DamagedContainerData> getDamagedOrderService(String partUrl) async {
-  //   try {
-  //     Utils.printLog("requestData::::::: $partUrl");
-  //     String url = NetworkUrls.BASE_URL + partUrl;
-  //     ApiCallPresenter presenter = ApiCallPresenter();
-  //     var response = await presenter.getAPIData(url);
-  //     if (response != null) {
-  //       var responseData = DamagedContainerData.fromJson(response);
-  //       Utils.printLog("responseData in Service: $responseData");
-  //       return responseData;
-  //     } else {
-  //       throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
-  //     }
-  //   } catch (e) {
-  //     Utils.printLog("Get Profile service::::$e");
-  //     throw Exception(e);
-  //   }
-  // }
+  Future<DamagedContainerData> getDamagedOrderService(String partUrl) async {
+    try {
+      Utils.printLog("requestData::::::: $partUrl");
+      String url = NetworkUrls.BASE_URL + partUrl;
+      ApiCallPresenter presenter = ApiCallPresenter();
+      var response = await presenter.getAPIData(url);
+      if (response != null) {
+        var responseData = DamagedContainerData.fromJson(response);
+        Utils.printLog("responseData in Service: $responseData");
+        return responseData;
+      } else {
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+      }
+    } catch (e) {
+      Utils.printLog("Get Profile service::::$e");
+      throw Exception(e);
+    }
+  }
 
   //Sold order service
   // Future<SoldContainersData> getSoldOrderService(String partUrl) async {
@@ -241,6 +243,55 @@ class OrderServices {
     } catch (e) {
       Utils.printLog("Get Order service:::: $e");
       throw Exception(e);
+    }
+  }
+
+  ///Issued to Partner service
+  Future<List<IssuedToPartnerData>> getIssuedToPartnerOrdersService(
+      String partUrl) async {
+
+    try {
+
+      Utils.printLog("requestData::::::: $partUrl");
+
+      String url = NetworkUrls.BASE_URL + partUrl;
+
+      ApiCallPresenter presenter = ApiCallPresenter();
+
+      var response = await presenter.getAPIData(url);
+
+
+      if (response != null) {
+
+        List<IssuedToPartnerData> responseData = [];
+
+        for (var item in response) {
+          responseData.add(
+            IssuedToPartnerData.fromJson(item),
+          );
+        }
+
+
+        Utils.printLog(
+            "responseData length: ${responseData.length}"
+        );
+
+        return responseData;
+
+      } else {
+
+        throw Exception(NetworkUrls.EMPTY_RESPONSE_CODE);
+
+      }
+
+    } catch (e) {
+
+      Utils.printLog(
+        "Issued Partner service error::::$e",
+      );
+
+      throw Exception(e);
+
     }
   }
 }
