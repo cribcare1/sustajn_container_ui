@@ -55,6 +55,10 @@ dependencies:
   fluttertoast: ^9.0.0
   flutter_launcher_icons: ^0.14.4
   intl: ^0.20.2
+  firebase_crashlytics: ^5.0.5
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.1.0
+  flutter_local_notifications: ^20.1.0
 
 
 dev_dependencies:

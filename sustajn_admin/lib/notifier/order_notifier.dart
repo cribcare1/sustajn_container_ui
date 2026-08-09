@@ -2,6 +2,11 @@ import 'package:container_tracking/product_screen/models/incirculation_data.dart
 import 'package:container_tracking/product_screen/models/sold_data.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/string_utils.dart';
+import '../product_screen/inventory_detail_screens/models/issuedtopartner_model.dart';
+import '../product_screen/inventory_detail_screens/models/ordered_data_model.dart';
+import '../product_screen/inventory_detail_screens/models/partner_sold_model.dart';
+import '../product_screen/inventory_detail_screens/models/return_model.dart';
+import '../product_screen/inventory_detail_screens/models/user_sold_model.dart';
 import '../product_screen/models/damage_data.dart';
 import '../product_screen/models/incirculation_detail_data.dart';
 import '../product_screen/models/inventory_details_data.dart';
@@ -18,6 +23,9 @@ class OrderState extends ChangeNotifier {
   List<InventoryData> _filterInventory = [];
 
   InventoryOrderData? _inventoryOrderData;
+
+  List<OrderedData> _orderedData = [];
+  List<IssuedToPartnerData> _issuedToPartnerList = [];
 
   BuildContext? _context;
   bool _isVerifying = false;
@@ -40,13 +48,21 @@ class OrderState extends ChangeNotifier {
   List<Partners> _partners = [];
 
 
-  // DamagedContainerData? _damagedContainerData;
-  // List<DamagedList> _damagedList = [];
-  // List<ProductsList> _productsList = [];
+  DamagedContainerData? _damagedContainerData;
+  List<DamagedList> _damagedList = [];
+  List<ProductsList> _productsList = [];
 
-  // SoldContainersData? _soldContainersData;
-  // List<SoldList> _soldList = [];
-  // List<ContainersList> _containersList = [];
+  UserSoldData? _userSoldData;
+  List<SoldDataList> _soldDataList = [];
+  List<UserItems> _useritems = [];
+
+  PartnerSoldData? _partnerSoldData;
+  List<PartnerDataLists> _partnerDataLists = [];
+  List<PartnerItems> _partnerItems = [];
+
+  ReturnedData? _returnedData;
+  List<ReturnDataList> _returnDataList = [];
+  List<ReturnItems> _returnItems = [];
 
   InventoryDetailsData? _inventoryDetailsData;
 
@@ -61,6 +77,11 @@ class OrderState extends ChangeNotifier {
   List<InventoryData> get filterInventory => _filterInventory;
 
   InventoryOrderData? get getInventoryOrderData => _inventoryOrderData;
+
+  List<OrderedData> get getOrderedData => _orderedData;
+
+  List<IssuedToPartnerData> get getIssuedToPartnerList =>
+      _issuedToPartnerList;
 
   BuildContext get context => _context!;
 
@@ -93,13 +114,21 @@ class OrderState extends ChangeNotifier {
   List<PartnersDataList> get getPartnersDataList => _partnersDataList;
   List<Partners> get getPartners => _partners;
 
-  // DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
-  // List<DamagedList> get getDamagedList => _damagedList;
-  // List<ProductsList> get getProductsList => _productsList;
+  DamagedContainerData? get getDamagedContainerData => _damagedContainerData;
+  List<DamagedList> get getDamagedList => _damagedList;
+  List<ProductsList> get getProductsList => _productsList;
 
-  // SoldContainersData? get getSoldContainersData => _soldContainersData;
-  // List<SoldList> get getSoldList => _soldList;
-  // List<ContainersList> get getContainersList => _containersList;
+  UserSoldData? get getUserSoldData=> _userSoldData;
+  List<SoldDataList> get getSoldDataList => _soldDataList;
+  List<UserItems> get getUserItems => _useritems;
+
+  PartnerSoldData? get getPartnerSoldData => _partnerSoldData;
+  List<PartnerDataLists> get getPartnerDataLists => _partnerDataLists;
+  List<PartnerItems> get getPartnerItems => _partnerItems;
+
+  ReturnedData? get getReturnedData => _returnedData;
+  List<ReturnDataList> get getReturnDataList => _returnDataList;
+  List<ReturnItems> get getReturnItems => _returnItems;
 
   InventoryDetailsData? get getInventoryDetailsData => _inventoryDetailsData;
 
@@ -130,6 +159,10 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setIssuedToPartnerData(List<IssuedToPartnerData> data) {
+    _issuedToPartnerList = data;
+    notifyListeners();
+  }
   void setInventoryFilter(List<InventoryData> data) {
     _filterInventory = List.from(data);
     notifyListeners();
@@ -137,6 +170,11 @@ class OrderState extends ChangeNotifier {
 
   void setInventoryOrderData(InventoryOrderData inventoryOrderData) {
     _inventoryOrderData = inventoryOrderData;
+    notifyListeners();
+  }
+
+  void setOrderedData(List<OrderedData> data) {
+    _orderedData = data;
     notifyListeners();
   }
 
@@ -169,21 +207,37 @@ class OrderState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void setDamagedData(DamagedContainerData damagedContainerData) {
-  //   Utils.printLog("data list = ${damagedContainerData.data!.length}");
-  //   _damagedContainerData = damagedContainerData;
-  //   _damagedList = _damagedContainerData!.data!;
-  //   // _productsList = _damagedList.damageContainers;
-  //   notifyListeners();
-  // }
+  void setDamagedData(DamagedContainerData damagedContainerData) {
+    Utils.printLog("data list = ${damagedContainerData.data!.length}");
+    _damagedContainerData = damagedContainerData;
+    _damagedList = _damagedContainerData!.data!;
+    // _productsList = _damagedList.damageContainers;
+    notifyListeners();
+  }
 
-  // void setSoldContainersData(SoldContainersData soldContainersData) {
-  //   Utils.printLog("data list = ${soldContainersData.data!.length}");
-  //   _soldContainersData = soldContainersData;
-  //   _soldList = _soldContainersData!.data!;
-  //   _containersList = _containersList!;
-  //   notifyListeners();
-  // }
+  void setUserSoldData(UserSoldData userSoldData) {
+    Utils.printLog("data list = ${userSoldData.data!.length}");
+    _userSoldData = userSoldData;
+    _soldDataList = _userSoldData!.data!;
+    _useritems = _useritems!;
+    notifyListeners();
+  }
+
+  void setPartnerSoldData(PartnerSoldData partnerSoldData) {
+    Utils.printLog("data list = ${partnerSoldData.data!.length}");
+    _partnerSoldData = partnerSoldData;
+    _partnerDataLists = _partnerSoldData!.data!;
+    _partnerItems = _partnerItems!;
+    notifyListeners();
+  }
+
+  void setReturnedData(ReturnedData returnedData) {
+    Utils.printLog("data list = ${returnedData.data!.length}");
+    _returnedData = returnedData;
+    _returnDataList = _returnedData!.data!;
+    _returnItems = _returnItems!;
+    notifyListeners();
+  }
 
   void setInventoryDetailsData(InventoryDetailsData inventoryDetailsData) {
     Utils.printLog("data = ${inventoryDetailsData.capacity}");

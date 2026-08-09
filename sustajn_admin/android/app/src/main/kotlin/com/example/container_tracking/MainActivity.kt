@@ -1,4 +1,4 @@
-package com.example.container_tracking
+package com.sustajn.container_tracking
 
 import io.flutter.embedding.android.FlutterActivity
 
