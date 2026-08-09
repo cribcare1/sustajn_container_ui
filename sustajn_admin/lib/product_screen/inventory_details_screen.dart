@@ -7,8 +7,16 @@ import '../constants/network_urls.dart';
 import '../constants/number_constants.dart';
 import '../constants/string_utils.dart';
 import '../provider/order_provider.dart';
+import '../utils/nav_utils.dart';
 import '../utils/utility.dart';
 import 'delete_bottomsheet.dart';
+import 'inventory_detail_screens/damaged_details_screen.dart';
+import 'inventory_detail_screens/incirculation_details_screen.dart';
+import 'inventory_detail_screens/inventory_withpartner_screen.dart';
+import 'inventory_detail_screens/issued_to_partner_screen.dart';
+import 'inventory_detail_screens/ordered_screen.dart';
+import 'inventory_detail_screens/return_details_screen.dart';
+import 'inventory_detail_screens/sold_details_screen.dart';
 
 class ContainerDetailedScreen extends ConsumerStatefulWidget {
   final int productId;
@@ -202,27 +210,80 @@ class _ContainerDetailedScreenState
                   Strings.ORDERED,
                   "${inventory?.orderedCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventoryOrderDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
                 _Summary(
                   Strings.ISSUED_PARTNER,
                   "${inventory?.issuedToPartnerCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      IssuedToPartnerScreenDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
+
                 ),
                 _Summary(
                   Strings.IN_CIRCULATION,
                   "${inventory?.inCirculationCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      IncirculationDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
                 _Summary(
                   Strings.WITH_PARTNER,
                   "${inventory?.withPartnerCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      WithPartnerDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
-                _Summary(Strings.SOLD, "${inventory?.soldCount ?? 0}", true),
+                _Summary(
+                    Strings.SOLD,
+                    "${inventory?.soldCount ?? 0}",
+                    true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventorySoldDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
+                ),
                 _Summary(
                   Strings.DAMAGED,
                   "${inventory?.damagedCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventoryDamageDetailsScreen(
+                        // productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
                 _Summary(
                   Strings.IN_STOCK,
@@ -233,6 +294,14 @@ class _ContainerDetailedScreenState
                   Strings.RETURNED,
                   "${inventory?.returnedCount ?? 0}",
                   true,
+                  onTap: () {
+                    NavUtil.navigateToPushScreen(
+                      context,
+                      InventoryReturnDetailsScreen(
+                        productId: widget.productId,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -247,59 +316,70 @@ class _Summary extends StatelessWidget {
   final String title;
   final String value;
   final bool arrow;
+  final VoidCallback? onTap;
 
-  const _Summary(this.title, this.value, this.arrow);
+  const _Summary(
+      this.title,
+      this.value,
+      this.arrow, {
+        this.onTap,
+        super.key,
+      });
 
   @override
   Widget build(BuildContext context) {
     const gold = Constant.gold2;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.06),
-        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Constant.CONTAINER_SIZE_14,
-                  ),
-                ),
-              ),
-              if (arrow)
-                CircleAvatar(
-                  radius: Constant.CONTAINER_SIZE_20,
-                  backgroundColor: gold,
-                  child: Padding(
-                    padding: EdgeInsets.all(Constant.SIZE_03),
-                    child: Image.asset(
-                      Strings.CORNER_ARROW,
-                      width: Constant.CONTAINER_SIZE_28,
-                      height: Constant.CONTAINER_SIZE_28,
-                      fit: BoxFit.contain,
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(.06),
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+          border: Border.all(color: Colors.white24),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: Constant.CONTAINER_SIZE_14,
                     ),
                   ),
                 ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: Constant.CONTAINER_SIZE_22,
-              fontWeight: FontWeight.w600,
+                if (arrow)
+                  CircleAvatar(
+                    radius: Constant.CONTAINER_SIZE_20,
+                    backgroundColor: gold,
+                    child: Padding(
+                      padding: EdgeInsets.all(Constant.SIZE_03),
+                      child: Image.asset(
+                        Strings.CORNER_ARROW,
+                        width: Constant.CONTAINER_SIZE_28,
+                        height: Constant.CONTAINER_SIZE_28,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          ),
-        ],
+            const Spacer(),
+            Text(
+              value,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: Constant.CONTAINER_SIZE_22,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
