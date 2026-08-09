@@ -67,4 +67,5 @@ static const INCIRCULATION_DETAIL = 'inventory/cointainerstatistic/in-circulatio
 static const INVENTORY_DETAILS = 'orders/containers/{id}/details';
 static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=PARTNER';
 static const INVENTORY_ORDERED = 'orders/containers/ordered-history/';
+static const ISSUED_TO_PARTNER = 'inventory/containers/issued-to-partner/';
 }
