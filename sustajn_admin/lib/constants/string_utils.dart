@@ -357,5 +357,7 @@ class Strings {
   static const String AGE_LIMIT = 'Age Limit';
   //Sold Details
 static const String SOLD_DETAILS = 'Sold Details';
+  static const SEARCH_BY_USER_NAME = 'Search by Users Name';
+  static const USER_NOT_AVAILABLE = 'Users List is not available';
 
 }

@@ -109,7 +109,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_USER_ID,
           hintStyle: TextStyle(color: Constant.BeigeColor),
-          prefixIcon: Icon(Icons.search, color: Colors.white70),
+          prefixIcon: Icon(Icons.search, color: Constant.PrimaryDarkColor),
           suffixIcon: IconButton(
             icon: Icon(Icons.filter_list, color: Constant.BeigeColor),
             onPressed: () {
@@ -221,7 +221,7 @@ class _DamageUserScreenState extends ConsumerState<DamageUserScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF215842),
+            Constant.green9,
             Constant.PrimaryColor,
           ],
         ),

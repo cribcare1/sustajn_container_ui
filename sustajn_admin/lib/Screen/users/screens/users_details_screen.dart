@@ -6,6 +6,7 @@ import 'package:container_tracking/Screen/users/screens/user_extendedfee_screen.
 import 'package:container_tracking/Screen/users/screens/user_sold_screens.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../common_provider/network_provider.dart';
 import '../../../common_widgets/custom_app_bar.dart';
 import '../../../common_widgets/custom_back_button.dart';
@@ -17,21 +18,20 @@ import '../../../utils/utility.dart';
 import '../../Partner/model/get_container_data.dart';
 import '../model/users_data.dart';
 
-
 class UsersDetailsScreen extends ConsumerStatefulWidget {
   final CustomersData? customersData;
 
   const UsersDetailsScreen({super.key, required this.customersData});
 
   @override
-  ConsumerState<UsersDetailsScreen> createState() => _PartnerDetailsScreenState();
+  ConsumerState<UsersDetailsScreen> createState() =>
+      _PartnerDetailsScreenState();
 }
 
 class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
-
   ContainersDetails? selectedType;
-  static final monthList=Utils.getLast12Months();
-  List<ContainersDetails> containerTypeList =[];
+  static final monthList = Utils.getLast12Months();
+  List<ContainersDetails> containerTypeList = [];
   String? selectedMonth = monthList.last;
   Map<String, dynamic> dashboardData = {
     "containers": "1286",
@@ -94,10 +94,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
               padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
               child: Column(
                 children: [
-                  _usersDetails(
-                    themeData!,
-                    widget.customersData
-                  ),
+                  _usersDetails(themeData!, widget.customersData),
                   _viewDetails(),
                   SizedBox(height: Constant.SIZE_05),
                   _productDetails(themeData!),
@@ -116,12 +113,10 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           if (orderState.isLoading)
             Container(
               color: Colors.black.withValues(alpha: 0.3),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
-      )
+      ),
     );
   }
 
@@ -132,7 +127,9 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
         children: [
           Text(
             customersData?.fullName! ?? "",
-            style: themeData.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: themeData.textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: Constant.SIZE_05),
           Row(
@@ -144,7 +141,12 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 size: Constant.CONTAINER_SIZE_18,
               ),
               SizedBox(width: Constant.SIZE_05),
-              Expanded(child: Text(customersData?.addresses![0].fullAddress?? "", style: themeData.textTheme.titleSmall,)),
+              Expanded(
+                child: Text(
+                  customersData?.addresses![0].fullAddress ?? "",
+                  style: themeData.textTheme.titleSmall,
+                ),
+              ),
             ],
           ),
         ],
@@ -161,7 +163,8 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (_) => UsersDetailsSheet(restaurantId: widget.customersData!.id!),
+            builder: (_) =>
+                UsersDetailsSheet(restaurantId: widget.customersData!.id!),
           );
         },
         child: Text(
@@ -169,7 +172,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           style: TextStyle(
             color: Color(0XFFD4AE37),
             decoration: TextDecoration.underline,
-            decorationColor: Color(0XFFD4AE37)
+            decorationColor: Color(0XFFD4AE37),
           ),
         ),
       ),
@@ -178,7 +181,6 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   Widget _productDetails(ThemeData themeData) {
     final items = [
-
       {"title": "Products", "image": "assets/images/products.png"},
       {"title": "Sold", "image": "assets/images/sold_container.png"},
       {"title": "Damaged", "image": "assets/images/Damaged.png"},
@@ -211,7 +213,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 1.5),
+                    border: Border.all(color: Constant.grey, width: 1.5),
                   ),
                   child: CircleAvatar(
                     radius: Constant.CONTAINER_SIZE_24,
@@ -220,7 +222,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                       padding: EdgeInsets.all(Constant.SIZE_06),
                       child: Image.asset(
                         item["image"] as String,
-                        color: Colors.white,
+                        color: Constant.white,
                       ),
                     ),
                   ),
@@ -229,7 +231,9 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 Text(
                   item["title"] as String,
                   textAlign: TextAlign.center,
-                  style: themeData.textTheme.titleSmall!.copyWith(fontSize: Constant.CONTAINER_SIZE_10,)
+                  style: themeData.textTheme.titleSmall!.copyWith(
+                    fontSize: Constant.CONTAINER_SIZE_10,
+                  ),
                 ),
               ],
             ),
@@ -244,22 +248,16 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: Constant.CONTAINER_SIZE_14,
-            ),
+            padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(
-                Constant.CONTAINER_SIZE_10,
-              ),
-              border: Border.all(
-                color: const Color(0xFF4CAF50),
-              ),
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+              border: Border.all(color: Constant.greenrgb),
             ),
             child: Column(
               children: [
                 Text(
-                  "Active",
+                  Strings.ACTIVE,
                   style: TextStyle(
                     color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_12,
@@ -283,17 +281,11 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: Constant.CONTAINER_SIZE_14,
-            ),
+            padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(
-                Constant.CONTAINER_SIZE_10,
-              ),
-              border: Border.all(
-                color: const Color(0xFFE53935),
-              ),
+              color: Constant.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
+              border: Border.all(color: Constant.rejectColor),
             ),
             child: Column(
               children: [
@@ -351,7 +343,6 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
         break;
     }
   }
-
 
   Widget _leased() {
     return Row(
@@ -431,10 +422,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
               Text(
                 data["percent"]?.toString() ?? "",
-                style: _smallText(
-                  themeData.secondaryHeaderColor,
-                  bold: true,
-                ),
+                style: _smallText(themeData.secondaryHeaderColor, bold: true),
               ),
             ],
           ),
@@ -515,13 +503,14 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
   _getInventoryNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
           orderState.setIsLoading(true);
-          final url = '${NetworkUrls.GET_CONTAINER_BY_ID}${widget.customersData!.id}';
+          final url =
+              '${NetworkUrls.GET_CONTAINER_BY_ID}${widget.customersData!.id}';
           ref.read(getOrderProvider(url));
         } else {
           orderState.setIsLoading(false);
@@ -536,8 +525,8 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
   _getLeaseBorrowDataNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {
@@ -546,7 +535,8 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           var month = Utils.getFullMonth(parts[0]);
           var year = parts[1];
           var productId = selectedType != null ? selectedType!.containerId : 0;
-          final url = '${NetworkUrls.LEASE_BORROW_CONTAINER}${widget.customersData!.id}/daily-graph?monthName=$month&year=$year&productId=$productId';
+          final url =
+              '${NetworkUrls.LEASE_BORROW_CONTAINER}${widget.customersData!.id}/daily-graph?monthName=$month&year=$year&productId=$productId';
           ref.read(getLeaseBorrowProvider(url));
         } else {
           orderState.setIsLoading(false);

@@ -95,7 +95,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
           hintStyle: TextStyle(color: Constant.white),
           prefixIcon: Icon(Icons.search, color: Constant.PrimaryDarkColor),
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: Icon(Icons.filter_list, color: Constant.BeigeColor),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -163,9 +163,9 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         children: [
           Text(
             month.monthYear ?? "",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+            style: TextStyle(
+              color: Constant.BeigeColor,
+              fontSize: Constant.CONTAINER_SIZE_16,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -174,16 +174,16 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
             children: [
               Image.asset(
                 Strings.DIRHAM_IMG,
-                width: 18,
-                height: 18,
+                width: Constant.CONTAINER_SIZE_18,
+                height: Constant.CONTAINER_SIZE_18,
                 color: Constant.PrimaryAssentColor,
               ),
 
-              const SizedBox(width: 6),
+              SizedBox(width: Constant.SIZE_06),
 
               Text(
                 "${month.monthWiseTotalDamageContainers ?? 0}",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Constant.PrimaryAssentColor,
                   fontSize: Constant.SIZE_18,
                   fontWeight: FontWeight.bold,
@@ -218,13 +218,13 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF1D5A45),
+              Constant.green9,
               Constant.PrimaryColor,
             ],
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
           border: Border.all(
-            color: Colors.white.withOpacity(.15),
+            color: Constant.white.withOpacity(.15),
           ),
         ),
         child: Row(
@@ -238,21 +238,21 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
                     damageContainer.productIds ?? "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Constant.white,
                       fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontSize: Constant.CONTAINER_SIZE_16,
                     ),
                   ),
 
-                  const SizedBox(height: 5),
+                  SizedBox(height: Constant.SIZE_05),
 
                   Text(
                     product.restaurantName ?? "-",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_13,
                     ),
                   ),
@@ -262,7 +262,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
                   Text(
                     damageContainer.localDateTime ?? "",
                     style: TextStyle(
-                      color: Colors.white54,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
@@ -286,7 +286,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
 
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white70,
+                  color: Constant.white4,
                   size: Constant.CONTAINER_SIZE_16,
                 ),
               ],
@@ -307,7 +307,7 @@ class _DamagePartnerScreenState extends ConsumerState<DamagePartnerScreen> {
         if (isNetworkAvailable) {
           damageState.setIsLoading(true);
 
-          final url = '${NetworkUrls.DAMAGE_PARTNER}';
+          final url = '${NetworkUrls.DAMAGE_RESTAURANT}';
           ref.read(getDamagePartnerDataProvider(url));
         } else {
           damageState.setIsLoading(false);

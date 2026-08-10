@@ -41,14 +41,14 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
     }
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Users",
+        title: Strings.USER,
         leading: CustomBackButton(),
       ).getAppBar(context),
 
       body: Column(
         children: [
           CustomSearchBar(
-            hintText: "Search by Users Name",
+            hintText: Strings.SEARCH_BY_USER_NAME,
             onChanged: (value) {
               setState(() {
                 if (value.isEmpty) {
@@ -71,8 +71,8 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                 : usersProvider.getUsersData == null
                 ? Center(
                     child: Text(
-                      "Users List is not available",
-                      style: TextStyle(color: Color(0xFFF5EBDF)),
+                      Strings.USER_NOT_AVAILABLE,
+                      style: TextStyle(color: Constant.BeigeColor),
                     ),
                   )
                 : ListView.separated(
