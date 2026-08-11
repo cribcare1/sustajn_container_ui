@@ -84,18 +84,18 @@ class _ExtendedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
       margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          gradient: const LinearGradient(
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
+          gradient: LinearGradient(
             colors: [Constant.green7, Constant.green8],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Constant.white.withOpacity(0.15)),
           boxShadow: [
             BoxShadow(
               color: Constant.black.withOpacity(0.25),
               blurRadius: Constant.CONTAINER_SIZE_10,
-              offset: const Offset(0, 4),
+              offset: Offset(Constant.SIZE_00, Constant.SIZE_04),
             ),
           ],
         ),
@@ -107,17 +107,17 @@ class _ExtendedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _dateItem(
-                    title: "Borrowed on:",
+                    title: Strings.BORROWED_ON1,
                     value: item.borrowedOn ?? "",
                   ),
-                  _dateItem(title: "Due on:", value: item.dueOn ?? ""),
-                  _dateItem(title: "Sold on:", value: item.soldOn ?? ""),
+                  _dateItem(title: Strings.DUE_ON, value: item.dueOn ?? ""),
+                  _dateItem(title: Strings.SOLD_ON, value: item.soldOn ?? ""),
                 ],
               ),
 
               SizedBox(height: Constant.CONTAINER_SIZE_14),
 
-              Divider(color: Colors.white.withOpacity(0.15), height: Constant.CONTAINER_SIZE_1),
+              Divider(color: Constant.white.withOpacity(0.15), height: Constant.CONTAINER_SIZE_1),
 
               SizedBox(height: Constant.CONTAINER_SIZE_12),
               Row(
@@ -128,7 +128,7 @@ class _ExtendedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
                     width: Constant.CONTAINER_SIZE_60,
                     padding: EdgeInsets.all(Constant.SIZE_06),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
+                      color: Constant.white.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                     ),
                     child: ClipRRect(
@@ -138,7 +138,7 @@ class _ExtendedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            "assets/images/no_image_container.png",
+                            Strings.NO_IMG,
                             fit: BoxFit.cover,
                           );
                         },
@@ -254,7 +254,7 @@ class _ExtendedFeeTabState extends ConsumerState<UserExtendedFeeScreen> {
   Widget _monthHeader(String title, int count) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
+      decoration: BoxDecoration(color: Constant.white.withOpacity(0.2)),
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: Constant.CONTAINER_SIZE_12,

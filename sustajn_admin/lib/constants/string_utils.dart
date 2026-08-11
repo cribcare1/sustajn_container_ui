@@ -357,7 +357,35 @@ class Strings {
   static const String AGE_LIMIT = 'Age Limit';
   //Sold Details
 static const String SOLD_DETAILS = 'Sold Details';
-  static const SEARCH_BY_USER_NAME = 'Search by Users Name';
-  static const USER_NOT_AVAILABLE = 'Users List is not available';
+  static const String SEARCH_BY_USER_NAME = 'Search by Users Name';
+  static const String USER_NOT_AVAILABLE = 'Users List is not available';
+//
+static const String MOST_BORROWED = "Most Borrowed";
+static const String LESS_BORROWED = "Less Borrowed";
+static const String MOST_RETURN = "Most Return";
+static const String LESS_RETURN = "Less Return";
+static const String MOST_LEASED = "mostLeased";
+static const String LESS_LEASED = "lessLeased";
+static const String MOST_RETURN1 = "mostReturn";
+static const String LESS_RETURN1 = "lessReturn";
+static const String STREAMLINE_FLEX = "assets/images/streamline_flex.png";
+static const String DOWN_ARROW = "assets/images/down-arrow.png";
+static const String NUMBER4 = "4";
+static const String LIST_LENGTH = "List length:";
+static const String PRODUCTS_IMG = "assets/images/products.png";
+static const String SOLD_IMAG = "assets/images/sold_container.png";
+static const String DAMAGED_IMG = "assets/images/Damaged.png";
+static const String TITLE = "title";
+static const String IMAG = "image";
+static const String BORROWED_ON1 = "Borrowed on:";
+  static const String DUE_ON = "Due on:";
+  static const String SOLD_ON = "Sold on:";
+  static const String USER_DETAILS = "User Details";
+  static const String NUMBER7 = "7";
+  static const String PERCENT = "percent";
+  static const String NAME1 = "name";
+  static const String CODE = "code";
+  static const String CAPACITY = "capacity";
+
 
 }

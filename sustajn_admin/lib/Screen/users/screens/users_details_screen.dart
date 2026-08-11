@@ -83,7 +83,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
     containerTypeList = orderState.filterInventory;
     return Scaffold(
       appBar: CustomAppBar(
-        title: "User Details",
+        title: Strings.USER_DETAILS,
         leading: CustomBackButton(),
       ).getAppBar(context),
 
@@ -112,7 +112,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
           if (orderState.isLoading)
             Container(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Constant.black.withOpacity(0.3),
               child: const Center(child: CircularProgressIndicator()),
             ),
         ],
@@ -168,11 +168,11 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           );
         },
         child: Text(
-          'View More Details',
+          Strings.VIEW_MORE,
           style: TextStyle(
-            color: Color(0XFFD4AE37),
+            color: Constant.PrimaryAssentColor,
             decoration: TextDecoration.underline,
-            decorationColor: Color(0XFFD4AE37),
+            decorationColor: Constant.PrimaryAssentColor,
           ),
         ),
       ),
@@ -181,10 +181,10 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   Widget _productDetails(ThemeData themeData) {
     final items = [
-      {"title": "Products", "image": "assets/images/products.png"},
-      {"title": "Sold", "image": "assets/images/sold_container.png"},
-      {"title": "Damaged", "image": "assets/images/Damaged.png"},
-      {"title": "Extended Fee", "image": "assets/images/bowl_img.png"},
+      {Strings.TITLE: Strings.PRODUCTS, Strings.IMAG: Strings.PRODUCTS_IMG},
+      {Strings.TITLE: Strings.SOLD, Strings.IMAG: Strings.SOLD_IMAG},
+      {Strings.TITLE: Strings.DAMAGED, Strings.IMAG: Strings.DAMAGED_IMG},
+      {Strings.TITLE: Strings.EXTENDED_FEE, Strings.IMAG: Strings.SOLD_IMG},
     ];
 
     return _card(
@@ -204,7 +204,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
           return InkWell(
             onTap: () {
-              final title = item["title"]?.toString() ?? "";
+              final title = item[Strings.IMAG]?.toString() ?? "";
               _handleNavigation(title);
             },
             child: Column(
@@ -221,7 +221,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(Constant.SIZE_06),
                       child: Image.asset(
-                        item["image"] as String,
+                        item[Strings.IMAG] as String,
                         color: Constant.white,
                       ),
                     ),
@@ -229,7 +229,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  item["title"] as String,
+                  item[Strings.TITLE] as String,
                   textAlign: TextAlign.center,
                   style: themeData.textTheme.titleSmall!.copyWith(
                     fontSize: Constant.CONTAINER_SIZE_10,
@@ -250,7 +250,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Constant.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
               border: Border.all(color: Constant.greenrgb),
             ),
@@ -265,7 +265,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  "7",
+                  Strings.NUMBER7,
                   style: TextStyle(
                     color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_22,
@@ -283,14 +283,14 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: Constant.CONTAINER_SIZE_14),
             decoration: BoxDecoration(
-              color: Constant.white.withValues(alpha: 0.15),
+              color: Constant.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
               border: Border.all(color: Constant.rejectColor),
             ),
             child: Column(
               children: [
                 Text(
-                  "Overdue",
+                  Strings.OVERDUE,
                   style: TextStyle(
                     color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_12,
@@ -298,7 +298,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
                 ),
                 SizedBox(height: Constant.SIZE_04),
                 Text(
-                  "4",
+                  Strings.NUMBER4,
                   style: TextStyle(
                     color: Constant.BeigeColor,
                     fontSize: Constant.CONTAINER_SIZE_22,
@@ -315,25 +315,25 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   void _handleNavigation(String title) {
     switch (title) {
-      case "Products":
+      case Strings.PRODUCTS:
         NavUtil.navigateToPushScreen(
           context,
           UserProductsHomeScreen(userId: widget.customersData!.id!),
         );
         break;
-      case "Sold":
+      case Strings.SOLD:
         NavUtil.navigateToPushScreen(
           context,
           UserSoldScreen(userId: widget.customersData!.id!),
         );
         break;
-      case "Damaged":
+      case Strings.DAMAGE:
         NavUtil.navigateToPushScreen(
           context,
           UserDamagedScreen(userId: widget.customersData!.id!),
         );
         break;
-      case "Extended Fee":
+      case Strings.EXTENDED_FEE:
         NavUtil.navigateToPushScreen(
           context,
           UserExtendedFeeScreen(userId: widget.customersData!.id!),
@@ -349,17 +349,17 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       children: [
         Expanded(
           child: _leasedCard(
-            title: "Most borrowed",
-            icon: "assets/images/streamline_flex.png",
-            data: dashboardData["mostLeased"],
+            title: Strings.MOST_BORROWED,
+            icon: Strings.STREAMLINE_FLEX,
+            data: dashboardData[Strings.MOST_LEASED],
           ),
         ),
         SizedBox(width: Constant.CONTAINER_SIZE_10),
         Expanded(
           child: _leasedCard(
-            title: "Less Borrowed",
-            icon: "assets/images/down-arrow.png",
-            data: dashboardData["lessLeased"],
+            title: Strings.LESS_BORROWED,
+            icon: Strings.DOWN_ARROW,
+            data: dashboardData[Strings.LESS_LEASED],
           ),
         ),
       ],
@@ -371,17 +371,17 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
       children: [
         Expanded(
           child: _leasedCard(
-            title: "Most Return",
-            icon: "assets/images/streamline_flex.png",
-            data: dashboardData["mostReturn"],
+            title: Strings.MOST_RETURN,
+            icon: Strings.STREAMLINE_FLEX,
+            data: dashboardData[Strings.MOST_RETURN1],
           ),
         ),
         SizedBox(width: Constant.CONTAINER_SIZE_10),
         Expanded(
           child: _leasedCard(
-            title: "Less Return",
-            icon: "assets/images/down-arrow.png",
-            data: dashboardData["lessReturn"],
+            title: Strings.LESS_RETURN,
+            icon: Strings.DOWN_ARROW,
+            data: dashboardData[Strings.LESS_RETURN1],
           ),
         ),
       ],
@@ -421,7 +421,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
               ),
 
               Text(
-                data["percent"]?.toString() ?? "",
+                data[Strings.PERCENT]?.toString() ?? "",
                 style: _smallText(themeData.secondaryHeaderColor, bold: true),
               ),
             ],
@@ -430,7 +430,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           SizedBox(height: Constant.SIZE_08),
 
           Image.asset(
-            data["image"]?.toString() ?? "",
+            data[Strings.IMAG]?.toString() ?? "",
             height: Constant.CONTAINER_SIZE_40,
             fit: BoxFit.contain,
           ),
@@ -438,7 +438,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           SizedBox(height: Constant.SIZE_06),
 
           Text(
-            data["name"]?.toString() ?? "",
+            data[Strings.NAME]?.toString() ?? "",
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -452,7 +452,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           SizedBox(height: Constant.SIZE_02),
 
           Text(
-            data["code"]?.toString() ?? "",
+            data[Strings.CODE]?.toString() ?? "",
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -463,7 +463,7 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
           ),
 
           Text(
-            data["capacity"]?.toString() ?? "",
+            data[Strings.CAPACITY]?.toString() ?? "",
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -479,7 +479,6 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   Widget _card({required Widget child}) {
     return Container(
-      //width: double.infinity,
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
       decoration: _cardDecoration(),
       child: child,
@@ -488,9 +487,9 @@ class _PartnerDetailsScreenState extends ConsumerState<UsersDetailsScreen> {
 
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.08),
+      color: Constant.white.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_16),
-      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+      border: Border.all(color: Constant.white.withValues(alpha: 0.3)),
     );
   }
 

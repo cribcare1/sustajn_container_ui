@@ -135,12 +135,12 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
             applySearchAndFilter(ref.read(userProvider).borrowedList);
           });
         },
-        cursorColor: Colors.white,
-        style: TextStyle(color: Colors.white),
+        cursorColor: Constant.white,
+        style: TextStyle(color: Constant.white),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_RESTAURANT,
           hintStyle: TextStyle(color: Constant.BeigeColor),
-          prefixIcon: const Icon(Icons.search, color: Constant.BeigeColor),
+          prefixIcon: Icon(Icons.search, color: Constant.BeigeColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
@@ -233,7 +233,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
-              Text("$count", style: const TextStyle(color: Constant.BeigeColor)),
+              Text("$count", style: TextStyle(color: Constant.BeigeColor)),
             ],
           ),
         ],
