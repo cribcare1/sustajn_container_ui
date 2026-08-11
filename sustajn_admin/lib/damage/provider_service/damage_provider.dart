@@ -48,6 +48,8 @@ final getDamagePartnerDataProvider = FutureProvider.family<dynamic, String>((
     Utils.printLog("params===$params");
     DamagePartnerData responseData = await serviceProvider
         .getDamagePartnerService(params);
+    print("Partner Status = ${responseData.status}");
+    print("Partner Length = ${responseData.data?.length}");
     Utils.printLog("On Success===${responseData.status}");
     if (responseData.status != null &&
         responseData.status!.isNotEmpty &&

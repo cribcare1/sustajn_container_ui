@@ -37,9 +37,9 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
   Widget build(BuildContext context) {
     final historyState = ref.watch(userProvider);
     return Scaffold(
-        backgroundColor: Color(0xFF0E3B2E),
+        backgroundColor: Constant.PrimaryColor,
         appBar: CustomAppBar(
-          title: "Sold",
+          title: Strings.SOLD,
           leading: CustomBackButton(),
         ).getAppBar(context),
         body: Column(
@@ -81,71 +81,71 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
   Widget _soldItemCard({required DateWiseSoldContainers item}) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF184D3B), Color(0xFF0E3A2D)],
+          borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
+          gradient: LinearGradient(
+            colors: [Constant.green7, Constant.green8],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Constant.white.withOpacity(0.15)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: Constant.black.withOpacity(0.25),
+              blurRadius: Constant.CONTAINER_SIZE_10,
+              offset: Offset(Constant.SIZE_00, Constant.SIZE_04),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _dateItem(
-                    title: "Borrowed on:",
+                    title: Strings.BORROWED_ON1,
                     value: item.borrowedOn ?? "",
                   ),
-                  _dateItem(title: "Due on:", value: item.dueOn ?? ""),
-                  _dateItem(title: "Sold on:", value: item.soldOn ?? ""),
+                  _dateItem(title: Strings.DUE_ON, value: item.dueOn ?? ""),
+                  _dateItem(title: Strings.SOLD_ON, value: item.soldOn ?? ""),
                 ],
               ),
 
-              const SizedBox(height: 14),
+              SizedBox(height: Constant.CONTAINER_SIZE_14),
 
-              Divider(color: Colors.white.withOpacity(0.15), height: 1),
+              Divider(color: Constant.white.withOpacity(0.15), height: Constant.SIZE_01),
 
-              const SizedBox(height: 12),
+              SizedBox(height: Constant.CONTAINER_SIZE_12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 60,
-                    width: 60,
-                    padding: const EdgeInsets.all(6),
+                    height: Constant.CONTAINER_SIZE_60,
+                    width: Constant.CONTAINER_SIZE_60,
+                    padding: EdgeInsets.all(Constant.SIZE_06),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(12),
+                      color: Constant.white.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
                       child: Image.network(
                         "${NetworkUrls.IMAGE_BASE_URL}${item.productImageUrl}",
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Image.asset(
-                            "assets/images/no_image_container.png",
+                            Strings.NO_IMG,
                             fit: BoxFit.cover,
                           );
                         },
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: Constant.CONTAINER_SIZE_12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,25 +155,25 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        SizedBox(height: Constant.SIZE_02),
                         Text(
                           item.productUniqueId ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
 
-                        const SizedBox(height: 4),
+                        SizedBox(height: Constant.SIZE_04),
 
                         Text(
                           "${item.capacity}ml",
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
+                            color: Constant.BeigeColor,
                           ),
                         ),
                       ],
@@ -185,7 +185,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                       Row(
                         children: [
                           Image.asset(
-                            'assets/images/bowl_img.png',
+                            Strings.BOWL_IMG,
                             height: Constant.CONTAINER_SIZE_16,
                             width: Constant.CONTAINER_SIZE_16,
                           ),
@@ -193,18 +193,18 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           Text(
                             item.soldQuantity?.toString() ?? "",
                             style: theme.textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
+                              color: Constant.BeigeColor,
                             ),
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 6),
+                      SizedBox(height: Constant.SIZE_06),
 
                       Row(
                         children: [
                           Image.asset(
-                            'assets/images/diarhm.png',
+                            Strings.DIRHAM_IMG,
                             height: Constant.CONTAINER_SIZE_16,
                             color: Constant.orange,
                             colorBlendMode: BlendMode.srcIn,
@@ -213,7 +213,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
                           Text(
                             item.soldAmount?.toString() ?? "",
                             style: theme.textTheme.titleMedium!.copyWith(
-                              color: Color(0xFFE5C84B),
+                              color: Constant.PrimaryAssentColor,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -236,14 +236,14 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+          style: TextStyle(color: Constant.BeigeColor.withOpacity(0.7), fontSize: Constant.CONTAINER_SIZE_12),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: Constant.SIZE_02),
         Text(
           value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 15,
+          style: TextStyle(
+            color: Constant.BeigeColor,
+            fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -254,7 +254,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
   Widget _monthHeader(String title, int count) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
+      decoration: BoxDecoration(color: Constant.white.withOpacity(0.2)),
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: Constant.CONTAINER_SIZE_12,
@@ -263,7 +263,7 @@ class _SoldTabState extends ConsumerState<UserSoldScreen> {
         child: Text(
           title,
           style: TextStyle(
-            color: Colors.white,
+            color: Constant.BeigeColor,
             fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w600,
           ),

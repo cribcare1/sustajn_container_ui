@@ -15,8 +15,7 @@ class DamagePartnerPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateTime =
-    DateTime.tryParse(damageContainer.localDateTime ?? "");
+    final dateTime = DateTime.tryParse(damageContainer.localDateTime ?? "");
 
     return SafeArea(
       child: Stack(
@@ -38,28 +37,26 @@ class DamagePartnerPopup extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    const Text(
+                    Text(
                       Strings.DAMAGE_DETAILS,
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
+                        color: Constant.BeigeColor,
+                        fontSize: Constant.CONTAINER_SIZE_18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    SizedBox(height: Constant.CONTAINER_SIZE_18),
 
                     Text(
-                      "Product ID : ${product.productUniqueId ?? ""}",
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
+                      "Product Name : ${product.restaurantName ?? ""}",
+                      style: TextStyle(
+                        color: Constant.BeigeColor,
+                        fontSize: Constant.CONTAINER_SIZE_15,
                       ),
                     ),
 
-                    const SizedBox(height: 25),
-
+                    SizedBox(height: Constant.CONTAINER_SIZE_25),
 
                     Center(
                       child: Column(
@@ -69,128 +66,97 @@ class DamagePartnerPopup extends StatelessWidget {
                             children: [
                               Image.asset(
                                 Strings.BOWL_IMG,
-                                width: 34,
-                                height: 34,
+                                width: Constant.CONTAINER_SIZE_35,
+                                height: Constant.CONTAINER_SIZE_35,
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: Constant.CONTAINER_SIZE_10),
                               Text(
                                 "${damageContainer.dateWiseTotalDamageContainers ?? 0}",
-                                style: const TextStyle(
-                                  color: Colors.amber,
-                                  fontSize: 32,
+                                style: TextStyle(
+                                  color: Constant.PrimaryAssentColor,
+                                  fontSize: Constant.CONTAINER_SIZE_32,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 8),
+                          SizedBox(height: Constant.SIZE_08),
+
+                          SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                           Text(
-                            dateTime == null
-                                ? ""
-                                : "${dateTime.day}.${dateTime.month}.${dateTime.year}",
-                            style: const TextStyle(
-                              color: Colors.white70,
-                            ),
-                          ),
-
-                          const SizedBox(height: 3),
-
-                          Text(
-                            dateTime == null
-                                ? ""
-                                : TimeOfDay.fromDateTime(dateTime)
-                                .format(context),
-                            style: const TextStyle(
-                              color: Colors.white70,
+                            damageContainer.localDateTime ?? "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Constant.BeigeColor,
+                              fontSize: Constant.CONTAINER_SIZE_14,
                             ),
                           ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 25),
+                    SizedBox(height: Constant.CONTAINER_SIZE_25),
 
-                    const Text(
+                    Text(
                       Strings.CONTAINER,
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
+                        color: Constant.BeigeColor,
+                        fontSize: Constant.SIZE_17,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    const SizedBox(height: 12),
+                    SizedBox(height: Constant.CONTAINER_SIZE_12),
 
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(.05),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(.1),
-                        ),
+                        color: Constant.BeigeColor.withOpacity(.05),
+                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
+                        border: Border.all(color: Constant.BeigeColor.withOpacity(.1)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              product.productImageUrl ?? "",
-                              width: 60,
-                              height: 60,
+                            borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                            child: Image.asset(
+                              "assets/images/dipcup.png",
+                              width: Constant.CONTAINER_SIZE_35,
+                              height: Constant.CONTAINER_SIZE_35,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.image,
-                                color: Colors.white,
-                                size: 60,
-                              ),
-                            ),
+                            )
                           ),
 
-                          const SizedBox(width: 14),
+                          SizedBox(width: Constant.CONTAINER_SIZE_14),
 
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   product.productName ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                                  style: TextStyle(
+                                    color: Constant.BeigeColor,
+                                    fontSize: Constant.CONTAINER_SIZE_16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
 
-                                const SizedBox(height: 5),
+                                SizedBox(height: Constant.SIZE_05),
 
                                 Text(
                                   product.productUniqueId ?? "",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
+                                  style: TextStyle(color: Constant.BeigeColor),
                                 ),
 
-                                const SizedBox(height: 5),
+                                SizedBox(height: Constant.SIZE_05),
 
                                 Text(
                                   "${product.capacity ?? 0} ml",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 5),
-
-                                Text(
-                                  "Remark : ${product.damageRemark ?? "-"}",
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                  ),
+                                  style: TextStyle(color: Constant.BeigeColor),
                                 ),
                               ],
                             ),
@@ -199,13 +165,12 @@ class DamagePartnerPopup extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: Constant.CONTAINER_SIZE_20),
                   ],
                 ),
               ),
             ],
           ),
-
 
           Positioned(
             right: 18,
@@ -213,16 +178,12 @@ class DamagePartnerPopup extends StatelessWidget {
             child: GestureDetector(
               onTap: () => Navigator.pop(context),
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: Constant.white,
                   shape: BoxShape.circle,
                 ),
-                padding: const EdgeInsets.all(7),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.black,
-                  size: 22,
-                ),
+                padding: EdgeInsets.all(Constant.SIZE_07),
+                child: Icon(Icons.close, color: Constant.black, size: Constant.CONTAINER_SIZE_22),
               ),
             ),
           ),

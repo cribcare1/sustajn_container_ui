@@ -1,6 +1,3 @@
-import 'package:container_tracking/Screen/Partner/model/get_all_restaurant_data.dart';
-import 'package:container_tracking/Screen/Partner/partner_details_screen.dart';
-import 'package:container_tracking/Screen/Partner/provider/provider/restaurant_list_provider.dart';
 import 'package:container_tracking/Screen/users/model/users_data.dart';
 import 'package:container_tracking/Screen/users/screens/users_details_screen.dart';
 import 'package:container_tracking/common_widgets/custom_app_bar.dart';
@@ -16,7 +13,6 @@ import '../../../constants/string_utils.dart';
 import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
 import '../provider/user_provider.dart';
-
 
 class UsersScreen extends ConsumerStatefulWidget {
   const UsersScreen({super.key});
@@ -45,14 +41,14 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
     }
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Users",
+        title: Strings.USER,
         leading: CustomBackButton(),
       ).getAppBar(context),
 
       body: Column(
         children: [
           CustomSearchBar(
-            hintText: "Search by Users Name",
+            hintText: Strings.SEARCH_BY_USER_NAME,
             onChanged: (value) {
               setState(() {
                 if (value.isEmpty) {
@@ -75,8 +71,8 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                 : usersProvider.getUsersData == null
                 ? Center(
                     child: Text(
-                      "Users List is not available",
-                      style: TextStyle(color: Color(0xFFF5EBDF)),
+                      Strings.USER_NOT_AVAILABLE,
+                      style: TextStyle(color: Constant.BeigeColor),
                     ),
                   )
                 : ListView.separated(
@@ -114,15 +110,14 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                   borderRadius: BorderRadius.circular(
                     Constant.CONTAINER_SIZE_12,
                   ),
-                  border: Border.all(color: Color(0xFFF5EBDF)),
+                  border: Border.all(color: Constant.BeigeColor),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(
                     Constant.CONTAINER_SIZE_12,
                   ),
                   child:
-                      item.profileImage != null &&
-                          item.profileImage!.isNotEmpty
+                      item.profileImage != null && item.profileImage!.isNotEmpty
                       ? Image.network(
                           "${NetworkUrls.IMAGE_BASE_URL}${item.profileImage}",
                           width: Constant.CONTAINER_SIZE_60,
@@ -155,7 +150,7 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
                       style: themeData.textTheme.titleMedium,
                     ),
                     SizedBox(height: Constant.SIZE_04),
-                    Text(item.mobile!, style: themeData.textTheme.titleSmall,),
+                    Text(item.mobile!, style: themeData.textTheme.titleSmall),
                   ],
                 ),
               ),
@@ -163,7 +158,7 @@ class _UsersScreenState extends ConsumerState<UsersScreen> {
               Icon(
                 Icons.arrow_forward_ios,
                 size: Constant.CONTAINER_SIZE_16,
-                color: Color(0xFFF5EBDF),
+                color: Constant.BeigeColor,
               ),
             ],
           ),

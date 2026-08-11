@@ -112,12 +112,12 @@ class _TransactionScreenState
             );
           });
         },
-        cursorColor: Colors.white,
-        style: TextStyle(color: Colors.white),
+        cursorColor: Constant.white,
+        style: TextStyle(color: Constant.white),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_EXTENDED_FEE,
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintStyle: const TextStyle(color: Constant.PrimaryDarkColor),
+          prefixIcon: const Icon(Icons.search, color: Constant.PrimaryDarkColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
@@ -133,7 +133,7 @@ class _TransactionScreenState
           fillColor: Constant.grey.withOpacity(0.1),
           filled: true,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: const Icon(Icons.filter_list, color: Constant.white),
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
@@ -206,7 +206,7 @@ class _TransactionScreenState
               Constant.PrimaryColor],
           ),
           borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-          border: Border.all(color: Colors.white70),
+          border: Border.all(color: Constant.PrimaryDarkColor),
         ),
         child: Row(
           children: [
@@ -217,14 +217,14 @@ class _TransactionScreenState
                   Text(
                     item.name ?? '',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Constant.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: Constant.SIZE_04),
                   Text(
                     item.formattedDateTime ?? '',
-                    style: TextStyle(color: Colors.white, fontSize: Constant.CONTAINER_SIZE_12),
+                    style: TextStyle(color: Constant.white, fontSize: Constant.CONTAINER_SIZE_12),
                   ),
                 ],
               ),
@@ -238,7 +238,7 @@ class _TransactionScreenState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  "assets/images/bowl_img.png",
+                  Strings.BOWL_IMG,
                   width: Constant.CONTAINER_SIZE_14,
                   height: Constant.CONTAINER_SIZE_14,
                 ),
@@ -247,7 +247,7 @@ class _TransactionScreenState
                 Text(
                   "${item.totalQuantity ?? 0}",
                   style: TextStyle(
-                  color: Colors.white,
+                  color: Constant.white,
                   fontSize: Constant.CONTAINER_SIZE_13,
                   fontWeight: FontWeight.w500,
                 ),
@@ -255,13 +255,13 @@ class _TransactionScreenState
             ],
             ),
 
-                SizedBox(height: 6),
+                SizedBox(height: Constant.SIZE_06),
 
                 Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
-                    "assets/images/diarhm.png",
+                    Strings.DIRHAM_IMG,
                     width: Constant.CONTAINER_SIZE_14,
                     height: Constant.CONTAINER_SIZE_14,
                   ),
@@ -304,14 +304,14 @@ class _TransactionScreenState
               children: [
                 Icon(
                   Icons.sort,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.SORT,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -324,7 +324,7 @@ class _TransactionScreenState
             ),
             height: Constant.CONTAINER_SIZE_18,
             width: Constant.SIZE_02,
-            color: Colors.black26,
+            color: Constant.black,
           ),
 
           InkWell(
@@ -333,14 +333,14 @@ class _TransactionScreenState
               children: [
                 Icon(
                   Icons.filter_list,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.FILTER,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -361,7 +361,7 @@ class _TransactionScreenState
           Text(
             title,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.white,
               fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
             ),
@@ -369,14 +369,14 @@ class _TransactionScreenState
           Row(
             children: [
               Image.asset(
-                'assets/images/diarhm.png',
+                Strings.DIRHAM_IMG,
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
               Text(
                 amount.toStringAsFixed(2),
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Constant.white),
               ),
             ],
           ),

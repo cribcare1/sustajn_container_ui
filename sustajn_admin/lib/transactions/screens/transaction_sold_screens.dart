@@ -2,6 +2,7 @@ import 'package:container_tracking/transactions/provider_service/transaction_pro
 import 'package:container_tracking/transactions/screens/transaction_sold_popup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import '../../../common_provider/network_provider.dart';
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
@@ -47,7 +48,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
           ? const Center(
               child: Text(
                 Strings.NO_CONTAINER_AVAILABLE,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Constant.PrimaryDarkColor),
               ),
             )
           : Column(
@@ -114,7 +115,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
             );
           });
         },
-        cursorColor: Colors.white,
+        cursorColor: Constant.white,
         style: const TextStyle(),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_SOLD,
@@ -135,7 +136,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
           fillColor: Constant.grey.withOpacity(0.1),
           filled: true,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: Icon(Icons.filter_list, color: Constant.white),
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
@@ -143,20 +144,21 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
 
               List<Containers> allContainers = [];
 
-              for (final soldData in transactionState.getTransactionSoldDataList) {
+              for (final soldData
+                  in transactionState.getTransactionSoldDataList) {
                 for (final transaction in soldData.transactions ?? []) {
                   allContainers.addAll(transaction.containers ?? []);
                 }
               }
               List<String> transactionNames = [];
-              for (var soldDataList in transactionState.getTransactionSoldData!.data! ?? []) {
-                  for (var transaction in soldDataList.transactions ?? []) {
-                    if (transaction.name != null) {
-                      transactionNames.add(transaction.name!);
-                    }
+              for (var soldDataList
+                  in transactionState.getTransactionSoldData!.data! ?? []) {
+                for (var transaction in soldDataList.transactions ?? []) {
+                  if (transaction.name != null) {
+                    transactionNames.add(transaction.name!);
                   }
                 }
-
+              }
             },
           ),
         ),
@@ -197,80 +199,71 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
     }
   }
 
+  void applyFilter(List<SoldDataList> sourceList, SoldFilterResult filter) {
+    filteredList = sourceList
+        .map((monthData) {
+          final filteredTransactions = monthData.transactions?.where((
+            transaction,
+          ) {
+            print('---------------------------------------');
+            print('Month  : ${monthData.monthYear}');
+            print('Transaction : ${transaction.id}');
+            print('Name        : ${transaction.name}');
+            print('Date        : ${transaction.formattedDate}');
 
-  void applyFilter(
-      List<SoldDataList> sourceList, SoldFilterResult filter,) {
-    filteredList = sourceList.map((monthData) {
-      final filteredTransactions = monthData.transactions?.where((transaction) {
-        print('---------------------------------------');
-        print('Month  : ${monthData.monthYear}');
-        print('Transaction : ${transaction.id}');
-        print('Name        : ${transaction.name}');
-        print('Date        : ${transaction.formattedDate}');
+            print(
+              'filter age        : ${filter.ageRange!.start} - ${filter.ageRange!.end}',
+            );
+            print('filter soldby : ${filter.soldBy.toString()}');
+            print('filter months : ${filter.months.toString()}');
+            print('filter containers : ${filter.containers!.toString()}');
 
-        print('filter age        : ${filter.ageRange!.start} - ${filter.ageRange!.end}');
-        print('filter soldby : ${filter.soldBy.toString()}');
-        print('filter months : ${filter.months.toString()}');
-        print('filter containers : ${filter.containers!.toString()}');
-       // print('filter container        : ${filter.containers!.elementAt(0).containerTypeId}');
+            bool matches = true;
 
+            final transactionDate = DateFormat(
+              'dd.MM.yyyy',
+            ).parse(transaction.formattedDate!);
 
-        bool matches = true;
-
-        final transactionDate =
-        DateFormat('dd.MM.yyyy')
-            .parse(transaction.formattedDate!);
-
-
-        if (filter.ageRange != null && filter.ageRange!.start>20) {
-          final ageInDays =
-              DateTime.now()
+            if (filter.ageRange != null && filter.ageRange!.start > 20) {
+              final ageInDays = DateTime.now()
                   .difference(transactionDate)
                   .inDays;
 
-          matches &= ageInDays >= filter.ageRange!.start &&
-              ageInDays <= filter.ageRange!.end;
-        }
+              matches &=
+                  ageInDays >= filter.ageRange!.start &&
+                  ageInDays <= filter.ageRange!.end;
+            }
 
-
-        if (filter.months != null &&
-            filter.months!.isNotEmpty) {
-          matches &= filter.months!.any(
+            if (filter.months != null && filter.months!.isNotEmpty) {
+              matches &= filter.months!.any(
                 (month) =>
-            DateMonthUtils.getMonthIndex(month) ==
-                transactionDate.month,
-          );
-        }
+                    DateMonthUtils.getMonthIndex(month) ==
+                    transactionDate.month,
+              );
+            }
 
+            if (filter.soldBy != null && filter.soldBy!.isNotEmpty) {
+              matches &= filter.soldBy![0].contains(transaction.name!);
+            }
 
-        if (filter.soldBy != null &&
-            filter.soldBy!.isNotEmpty) {
-          matches &= filter.soldBy![0].contains(transaction.name!);
-        }
-
-
-        if (filter.containers != null &&
-            filter.containers!.isNotEmpty) {
-          matches &= transaction.containers?.any(
-                (container) =>
-                filter.containers!.any(
+            if (filter.containers != null && filter.containers!.isNotEmpty) {
+              matches &=
+                  transaction.containers?.any(
+                    (container) => filter.containers!.any(
                       (selected) =>
-                  selected.containerTypeId ==
-                      container.containerTypeId,
-                ),
-          ) ??
-              false;
-        }
+                          selected.containerTypeId == container.containerTypeId,
+                    ),
+                  ) ??
+                  false;
+            }
 
-        return matches;
-      }).toList();
+            return matches;
+          }).toList();
 
-      if (filteredTransactions == null ||
-          filteredTransactions.isEmpty) {
-        return null;
-      }
-
-    })
+          if (filteredTransactions == null || filteredTransactions.isEmpty) {
+            return null;
+          }
+        })
         .whereType<SoldDataList>()
         .toList();
   }
@@ -279,166 +272,157 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
     required Transactions transaction,
     required Containers container,
   }) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
-      child: InkWell(
-        onTap:(){
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => TransactionSoldPopup(
-              transactions: transaction,
-              // onApply: (result) {
-              //   setState(() {
-              //     applyFilter(
-              //       transactionState.getTransactionSoldDataList,
-              //       result,
-              //     );
-              //   });
-              // },
-            ),
-          );
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_18),
-            gradient: const LinearGradient(
-              colors: [Constant.green7, Constant.green8],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                blurRadius: Constant.CONTAINER_SIZE_10,
-                offset: const Offset(0, 4),
-              ),
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => TransactionSoldPopup(
+            transactions: transaction,
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+          left: Constant.CONTAINER_SIZE_12,
+          right: Constant.CONTAINER_SIZE_12,
+          bottom: Constant.CONTAINER_SIZE_12,
+        ),
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [
+              Constant.green7,
+              Constant.green8,
             ],
           ),
-          child: Padding(
-            padding: EdgeInsets.all(Constant.CONTAINER_SIZE_14),
-            child: Column(
+          borderRadius: BorderRadius.circular(
+            Constant.CONTAINER_SIZE_14,
+          ),
+          border: Border.all(color: Colors.white70),
+        ),
+        child: Row(
+          children: [
+
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${container.imageUrl ?? ""}",
+                width: 55,
+                height: 55,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) {
+                  return Image.asset(
+                    "assets/images/no_image_container.png",
+                    width: 55,
+                    height: 55,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            ),
+
+            SizedBox(width: Constant.CONTAINER_SIZE_12),
+
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  Text(
+                    container.containerName ?? "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Constant.BeigeColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.SIZE_04),
+
+                  Text(
+                    container.productCode ?? "",
+                    style: const TextStyle(
+                      color: Constant.BeigeColor,
+                      fontSize: 12,
+                    ),
+                  ),
+
+                  SizedBox(height: Constant.SIZE_04),
+
+                  Text(
+                    transaction.formattedDate ?? "",
+                    style: const TextStyle(
+                      color: Constant.BeigeColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+
+            Row(
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
-                SizedBox(height: Constant.CONTAINER_SIZE_14),
-
-                Divider(color: Colors.white.withValues(alpha: 0.15), height: Constant.SIZE_01),
-
-                SizedBox(height: Constant.CONTAINER_SIZE_12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Container(
-                      height: Constant.CONTAINER_SIZE_60,
-                      width: Constant.CONTAINER_SIZE_60,
-                      padding: EdgeInsets.all(Constant.SIZE_06),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
-                        child: Image.network(
-                          "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${container.imageUrl ?? ""}",
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.asset(
-                              "assets/images/no_image_container.png",
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: Constant.CONTAINER_SIZE_12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            container.containerName ?? "",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleMedium!.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: Constant.SIZE_02),
-                          Text(
-                            container.productCode ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
 
-                          SizedBox(height: Constant.SIZE_04),
-
-                          Text(
-                            "${container.capacity ?? ""} ",
-                            style: theme.textTheme.titleSmall!.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              Strings.BOWL_IMG,
-                              height: Constant.CONTAINER_SIZE_16,
-                              width: Constant.CONTAINER_SIZE_16,
-                            ),
-                            SizedBox(width: Constant.SIZE_04),
-                            Text(
-                              container.quantity?.toString() ?? "0",
-                              style: theme.textTheme.titleSmall!.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        Image.asset(
+                          Strings.BOWL_IMG,
+                          height: 16,
+                          width: 16,
                         ),
-
-                        SizedBox(height: Constant.SIZE_06),
-
-                        Row(
-                          children: [
-                            Image.asset(
-                              Strings.DIRHAM_IMG,
-                              height: Constant.CONTAINER_SIZE_16,
-                              color: Constant.PrimaryAssentColor,
-                              colorBlendMode: BlendMode.srcIn,
-                            ),
-                            SizedBox(width: Constant.SIZE_02),
-                            Text(
-                              container.price?.toString() ?? "0",
-                              style: theme.textTheme.titleMedium!.copyWith(
-                                color: Constant.PrimaryAssentColor,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        SizedBox(width: 4),
+                        Text(
+                          "${container.quantity ?? 0}",
+                          style: const TextStyle(
+                            color: Constant.BeigeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
-                    ),Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.white,
-                      size: Constant.CONTAINER_SIZE_16,
+                    ),
+
+                    SizedBox(height: 5),
+
+                    Row(
+                      children: [
+                        Image.asset(
+                          Strings.DIRHAM_IMG,
+                          height: 16,
+                          width: 16,
+                        ),
+                        SizedBox(width: 3),
+                        Text(
+                          "${container.price ?? 0}",
+                          style: const TextStyle(
+                            color: Constant.PrimaryAssentColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+
+                SizedBox(width: 8),
+
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Constant.BeigeColor,
+                  size: 14,
+                ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -450,13 +434,16 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: Constant.CONTAINER_SIZE_12),
+          style: TextStyle(
+            color: Constant.white.withOpacity(0.7),
+            fontSize: Constant.CONTAINER_SIZE_12,
+          ),
         ),
         SizedBox(height: Constant.SIZE_04),
         Text(
           value,
           style: TextStyle(
-            color: Colors.white,
+            color: Constant.white,
             fontSize: Constant.CONTAINER_SIZE_15,
             fontWeight: FontWeight.w500,
           ),
@@ -468,7 +455,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
   Widget _monthHeader(String title, int count) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.2)),
+      decoration: BoxDecoration(color: Constant.white.withOpacity(0.2)),
       child: Padding(
         padding: EdgeInsets.symmetric(
           vertical: Constant.CONTAINER_SIZE_12,
@@ -479,7 +466,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
             Text(
               title,
               style: TextStyle(
-                color: Colors.white,
+                color: Constant.white,
                 fontSize: Constant.CONTAINER_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),
@@ -495,7 +482,7 @@ class _TransactionSoldState extends ConsumerState<TransactionSoldScreen> {
             Text(
               count.toString(),
               style: TextStyle(
-                color: Colors.white,
+                color: Constant.white,
                 fontSize: Constant.CONTAINER_SIZE_15,
                 fontWeight: FontWeight.w600,
               ),

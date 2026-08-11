@@ -65,6 +65,7 @@ static const SOLD_CONTAINERS = 'inventory/admin/transactions/sold-dashboard';
 static const WITH_PARTNER_DETAIL = 'inventory/cointainerstatistic/with-partner/';
 static const INCIRCULATION_DETAIL = 'inventory/cointainerstatistic/in-circulation/';
 static const INVENTORY_DETAILS = 'orders/containers/{id}/details';
+
 static const DAMAGE_RESTAURANT = 'inventory/getDamageContainerByUserType?damageBy=PARTNER';
 static const INVENTORY_ORDERED = 'orders/containers/ordered-history/';
 static const ISSUED_TO_PARTNER = 'inventory/containers/issued-to-partner/';

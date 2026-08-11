@@ -135,12 +135,12 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
             applySearchAndFilter(ref.read(userProvider).borrowedList);
           });
         },
-        cursorColor: Colors.white,
-        style: TextStyle(color: Colors.white),
+        cursorColor: Constant.white,
+        style: TextStyle(color: Constant.white),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_RESTAURANT,
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintStyle: TextStyle(color: Constant.BeigeColor),
+          prefixIcon: Icon(Icons.search, color: Constant.BeigeColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
@@ -156,7 +156,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
           fillColor: Constant.grey.withOpacity(0.1),
           filled: true,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: Icon(Icons.filter_list, color: Constant.BeigeColor),
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
@@ -220,7 +220,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
           Text(
             title,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.BeigeColor,
               fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
             ),
@@ -228,12 +228,12 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
           Row(
             children: [
               Image.asset(
-                'assets/images/bowl_img.png',
+                Strings.BOWL_IMG,
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
-              Text("$count", style: const TextStyle(color: Colors.white)),
+              Text("$count", style: TextStyle(color: Constant.BeigeColor)),
             ],
           ),
         ],
@@ -271,7 +271,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -285,7 +285,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Constant.BeigeColor,
                             fontSize: Constant.CONTAINER_SIZE_13,
                           ),
                         ),
@@ -294,7 +294,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                       Text(
                         item.containerCount.toString(),
                         style: TextStyle(
-                          color: Color(0xFFFFC727),
+                          color: Constant.PrimaryAssentColor,
                           fontSize: Constant.CONTAINER_SIZE_18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -305,7 +305,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white70,
+                        color: Constant.BeigeColor,
                       ),
                     ],
                   ),
@@ -313,7 +313,7 @@ class _BorrowedTabScreenState extends ConsumerState<UserReturnedScreen> {
                   Text(
                     '${item.date} | ${item.time}',
                     style: TextStyle(
-                      color: Colors.white60,
+                      color: Constant.BeigeColor,
                       fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
