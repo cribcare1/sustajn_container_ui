@@ -1,4 +1,3 @@
-import 'package:container_tracking/Screen/Partner/screens/receive_screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_active_screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_borrowed_screen.dart';
 import 'package:container_tracking/Screen/users/screens/user_returned_screen.dart';
@@ -6,11 +5,8 @@ import 'package:flutter/material.dart';
 
 import '../../../common_widgets/custom_back_button.dart';
 import '../../../constants/number_constants.dart';
-
 import '../../../constants/string_utils.dart';
 import '../../../utils/theme_utils.dart';
-import 'user_active_screen.dart';
-import 'user_borrowed_screen.dart';
 
 class UserProductsHomeScreen extends StatefulWidget {
   final int? userId;
@@ -51,28 +47,28 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
         leading: CustomBackButton(),
         title: Text(
           Strings.PRODUCTS,
-          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+          style: theme.textTheme.titleMedium!.copyWith(color: Constant.white),
         ),
         bottom: TabBar(
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
-          indicatorColor: Colors.amber,
+          indicatorColor: Constant.PrimaryAssentColor,
           indicatorWeight: 3,
-          labelColor: Colors.amber,
-          unselectedLabelColor: Colors.white,
+          labelColor: Constant.PrimaryAssentColor,
+          unselectedLabelColor: Constant.white,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
             Tab(
               child: Row(
-                mainAxisSize: MainAxisSize.min, // ✅ important
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     Strings.BOWL_IMG,
-                    height: 14,
-                    width: 14,
+                    height: Constant.CONTAINER_SIZE_14,
+                    width: Constant.CONTAINER_SIZE_14,
                   ),
                   const SizedBox(width: 1.8),
-                  const Text("Active"),
+                  Text(Strings.ACTIVE),
                 ],
               ),
             ),
@@ -81,9 +77,12 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_made_outlined, size: 14),
+                  Icon(
+                    Icons.call_made_outlined,
+                    size: Constant.CONTAINER_SIZE_14,
+                  ),
                   const SizedBox(width: 1.8),
-                  const Text("Borrowed"),
+                  Text(Strings.BORROWED),
                 ],
               ),
             ),
@@ -92,9 +91,12 @@ class _UserProductsHomeScreenState extends State<UserProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_received_outlined, size: 14),
+                  Icon(
+                    Icons.call_received_outlined,
+                    size: Constant.CONTAINER_SIZE_14,
+                  ),
                   const SizedBox(width: 1.8),
-                  const Text("Returned"),
+                  Text(Strings.RETURNED),
                 ],
               ),
             ),

@@ -47,28 +47,28 @@ class _ProductsHomeScreenState extends State<ProductsHomeScreen>
         leading: CustomBackButton(),
         title: Text(
           Strings.PRODUCTS,
-          style: theme.textTheme.titleMedium!.copyWith(color: Colors.white),
+          style: theme.textTheme.titleMedium!.copyWith(color: Constant.white),
         ),
         bottom: TabBar(
           controller: _tabController,
           dividerColor: Constant.grey.withOpacity(0.3),
-          indicatorColor: Colors.amber,
+          indicatorColor: Constant.PrimaryAssentColor,
           indicatorWeight: 3,
-          labelColor: Colors.amber,
-          unselectedLabelColor: Colors.white,
+          labelColor: Constant.PrimaryAssentColor,
+          unselectedLabelColor: Constant.white,
           indicatorSize: TabBarIndicatorSize.label,
           tabs: [
             Tab(
               child: Row(
-                mainAxisSize: MainAxisSize.min, // ✅ important
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     Strings.BOWL_IMG,
-                    height: 15,
-                    width: 15,
+                    height: Constant.CONTAINER_SIZE_15,
+                    width: Constant.CONTAINER_SIZE_15,
                   ),
-                  const SizedBox(width: 2),
-                  const Text(Strings.INVENTORY),
+                  SizedBox(width: Constant.SIZE_02),
+                  Text(Strings.INVENTORY),
                 ],
               ),
             ),
@@ -77,9 +77,12 @@ class _ProductsHomeScreenState extends State<ProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_made_outlined, size: 15),
-                  const SizedBox(width: 2),
-                  const Text(Strings.LEASE),
+                  Icon(
+                    Icons.call_made_outlined,
+                    size: Constant.CONTAINER_SIZE_15,
+                  ),
+                  SizedBox(width: Constant.SIZE_02),
+                  Text(Strings.LEASE),
                 ],
               ),
             ),
@@ -88,9 +91,12 @@ class _ProductsHomeScreenState extends State<ProductsHomeScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.call_received_outlined, size: 15),
-                  const SizedBox(width: 2),
-                  const Text(Strings.RECEIVE),
+                  Icon(
+                    Icons.call_received_outlined,
+                    size: Constant.CONTAINER_SIZE_15,
+                  ),
+                  SizedBox(width: Constant.SIZE_02),
+                  Text(Strings.RECEIVE),
                 ],
               ),
             ),

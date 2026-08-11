@@ -41,24 +41,24 @@ class DamageDetailsDialog extends StatelessWidget {
               height: Constant.SIZE_05,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Constant.SIZE_05),
-                color: Colors.white,
+                color: Constant.white,
               ),
             ),
             SizedBox(height: Constant.SIZE_15),
 
-            // Title row
             Row(
               children: [
                 Text(
                   title,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(color: Colors.white),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: Constant.white,
+                  ),
                 ),
                 Spacer(),
                 InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.close, color: Colors.white),
-                )
+                  child: Icon(Icons.close, color: Constant.white),
+                ),
               ],
             ),
 
@@ -71,9 +71,9 @@ class DamageDetailsDialog extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Containers",
+                Strings.CONTAINERS_TITLE,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
+                  color: Constant.white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -81,13 +81,11 @@ class DamageDetailsDialog extends StatelessWidget {
 
             SizedBox(height: Constant.SIZE_15),
 
-            // Product list
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: items.length,
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: Constant.SIZE_10),
+              separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
               itemBuilder: (context, index) =>
                   _containerCard(items[index], theme),
             ),
@@ -97,22 +95,19 @@ class DamageDetailsDialog extends StatelessWidget {
     );
   }
 
-  Widget _damageHeader(
-      ThemeData theme,
-      BorrowedUiItem item,
-      ) {
+  Widget _damageHeader(ThemeData theme, BorrowedUiItem item) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              "assets/images/bowl_img.png",
-              height: 34,
-              width: 34,
+              Strings.BOWL_IMG,
+              height: Constant.CONTAINER_SIZE_35,
+              width: Constant.CONTAINER_SIZE_35,
               color: Constant.gold,
             ),
-            const SizedBox(width: 6),
+            SizedBox(width: Constant.SIZE_06),
             Text(
               item.containerCount.toString(),
               style: theme.textTheme.headlineLarge?.copyWith(
@@ -125,9 +120,7 @@ class DamageDetailsDialog extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           "${item.date} | ${item.time}",
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: Colors.white70,
-          ),
+          style: theme.textTheme.bodySmall?.copyWith(color: Constant.white3),
         ),
       ],
     );
@@ -138,36 +131,32 @@ class DamageDetailsDialog extends StatelessWidget {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.2),
-        ),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        border: Border.all(color: Constant.grey.withOpacity(0.2)),
       ),
       child: Row(
         children: [
-          // Image
           item.imageUrl.isNotEmpty
               ? ClipOval(
-            child: Image.network(
-              NetworkUrls.IMAGE_BASE_URL + item.imageUrl,
-              width: Constant.CONTAINER_SIZE_60,
-              height: Constant.CONTAINER_SIZE_60,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
-                return Image.asset(
-                  'assets/images/cups.png',
+                  child: Image.network(
+                    NetworkUrls.IMAGE_BASE_URL + item.imageUrl,
+                    width: Constant.CONTAINER_SIZE_60,
+                    height: Constant.CONTAINER_SIZE_60,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) {
+                      return Image.asset(
+                        Strings.CUP_IMG,
+                        width: Constant.CONTAINER_SIZE_60,
+                        height: Constant.CONTAINER_SIZE_60,
+                      );
+                    },
+                  ),
+                )
+              : Image.asset(
+                  Strings.CUP_IMG,
                   width: Constant.CONTAINER_SIZE_60,
                   height: Constant.CONTAINER_SIZE_60,
-                );
-              },
-            ),
-          )
-              : Image.asset(
-            'assets/images/cups.png',
-            width: Constant.CONTAINER_SIZE_60,
-            height: Constant.CONTAINER_SIZE_60,
-          ),
+                ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -179,20 +168,23 @@ class DamageDetailsDialog extends StatelessWidget {
                   item.productName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(color: Colors.white),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Constant.white,
+                  ),
                 ),
                 Text(
                   item.productId,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.white70),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
                 ),
                 Text(
                   '${item.capacity}ml',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.white70),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
                 ),
               ],
             ),
@@ -202,33 +194,37 @@ class DamageDetailsDialog extends StatelessWidget {
     );
   }
 
-
-  Widget _viewResturantDetails(
-      ThemeData theme, BorrowedUiItem item) {
+  Widget _viewResturantDetails(ThemeData theme, BorrowedUiItem item) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.restaurantName,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(color: Colors.white)),
+          Text(
+            item.restaurantName,
+            style: theme.textTheme.titleMedium?.copyWith(color: Constant.white),
+          ),
           Row(
             children: [
-              Icon(Icons.location_on,
-                  color: Colors.white, size: Constant.CONTAINER_SIZE_14),
+              Icon(
+                Icons.location_on,
+                color: Constant.white,
+                size: Constant.CONTAINER_SIZE_14,
+              ),
               SizedBox(width: Constant.SIZE_06),
               Expanded(
-                child: Text(item.resturantAddress,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.white70)),
+                child: Text(
+                  item.resturantAddress,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
               ),
             ],
           ),

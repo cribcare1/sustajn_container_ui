@@ -58,14 +58,14 @@ class _SoldScreenState extends State<SoldScreen> {
 
   String getContainerImage(String type) {
     switch (type) {
-      case "dip":
-        return "assets/images/white_container.png";
-      case "round":
-        return "assets/images/round_container.png";
-      case "rectangular":
-        return "assets/images/rectangular_container.png";
+      case Strings.DIP:
+        return Strings.WHITE_CONTAINER;
+      case Strings.ROUND:
+        return Strings.ROUND_CONTAINER;
+      case Strings.RECTANGULAR:
+        return Strings.RECTANGULAR_CONTAINER;
       default:
-        return "assets/images/cups.png";
+        return Strings.CUP_IMG;
     }
   }
 
@@ -80,9 +80,9 @@ class _SoldScreenState extends State<SoldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
       appBar: CustomAppBar(
-        title: "Sold",
+        title: Strings.SOLD,
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: SafeArea(
@@ -133,10 +133,10 @@ class _SoldScreenState extends State<SoldScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1F5A46), Color(0xFF0E3B2E)],
+          colors: [Constant.green7, Constant.green8],
         ),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-        border: Border.all(color: Colors.white70),
+        border: Border.all(color: Constant.white4),
       ),
       child: Row(
         children: [
@@ -144,7 +144,7 @@ class _SoldScreenState extends State<SoldScreen> {
             height: Constant.CONTAINER_SIZE_50,
             width: Constant.CONTAINER_SIZE_50,
             decoration: BoxDecoration(
-              color: Colors.white10,
+              color: Constant.PrimaryDarkColor,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
             ),
             child: Image.asset(getContainerImage(item.type)),
@@ -158,7 +158,7 @@ class _SoldScreenState extends State<SoldScreen> {
                 Text(
                   item.name,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -166,14 +166,14 @@ class _SoldScreenState extends State<SoldScreen> {
                 Text(
                   item.code,
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Constant.white3,
                     fontSize: Constant.CONTAINER_SIZE_12,
                   ),
                 ),
                 Text(
                   item.size,
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Constant.white3,
                     fontSize: Constant.CONTAINER_SIZE_11,
                   ),
                 ),
@@ -193,7 +193,7 @@ class _SoldScreenState extends State<SoldScreen> {
               SizedBox(width: Constant.SIZE_06),
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.white54,
+                color: Constant.white4,
                 size: Constant.CONTAINER_SIZE_14,
               ),
             ],
@@ -223,14 +223,14 @@ class _SoldScreenState extends State<SoldScreen> {
               children: [
                 Icon(
                   Icons.sort,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.SORT,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -243,7 +243,7 @@ class _SoldScreenState extends State<SoldScreen> {
             ),
             height: Constant.CONTAINER_SIZE_18,
             width: Constant.SIZE_02,
-            color: Colors.black26,
+            color: Constant.black,
           ),
 
           InkWell(
@@ -252,14 +252,14 @@ class _SoldScreenState extends State<SoldScreen> {
               children: [
                 Icon(
                   Icons.filter_list,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.FILTER,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
