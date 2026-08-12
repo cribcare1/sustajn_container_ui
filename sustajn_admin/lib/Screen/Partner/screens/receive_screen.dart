@@ -1,4 +1,3 @@
-
 import 'package:container_tracking/Screen/Partner/screens/receive_details_dialogue.dart';
 import 'package:container_tracking/constants/imports.util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +15,7 @@ import 'lease_filter_bottomsheet.dart';
 
 class ReceiveScreen extends ConsumerStatefulWidget {
   final int? restaurantId;
+
   const ReceiveScreen({super.key, required this.restaurantId});
 
   @override
@@ -86,104 +86,99 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                   ? Center(child: CircularProgressIndicator())
                   : (container == null || container.isEmpty)
                   ? const Center(
-                child: Text(
-                  Strings.NO_CONTAINER_AVAILABLE,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Constant.white),
+                      ),
+                    )
                   : (containerState.groupedReceiveOrders.isEmpty)
                   ? _buildEmptyState(containerState)
                   : ListView.builder(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constant.CONTAINER_SIZE_16,
-                ),
-                itemCount:
-                containerState.groupedReceiveOrders.length,
-                itemBuilder: (context, index) {
-                  String monthYear = containerState
-                      .groupedReceiveOrders.keys
-                      .elementAt(index);
-                  List<ReceivedResponses> orders =
-                  containerState
-                      .groupedReceiveOrders[monthYear]!;
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: containerState.groupedReceiveOrders.length,
+                      itemBuilder: (context, index) {
+                        String monthYear = containerState
+                            .groupedReceiveOrders
+                            .keys
+                            .elementAt(index);
+                        List<ReceivedResponses> orders =
+                            containerState.groupedReceiveOrders[monthYear]!;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: Constant.CONTAINER_SIZE_10,
-                          horizontal: Constant.CONTAINER_SIZE_10,
-                        ),
-                        margin: EdgeInsets.only(
-                            bottom: Constant.SIZE_08),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              monthYear,
-                              style: theme.textTheme.titleMedium
-                                  ?.copyWith(
-                                fontSize:
-                                Constant.LABEL_TEXT_SIZE_16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white70,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Constant.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(
+                                  Constant.SIZE_06,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: Constant.CONTAINER_SIZE_10,
+                                horizontal: Constant.CONTAINER_SIZE_10,
+                              ),
+                              margin: EdgeInsets.only(bottom: Constant.SIZE_08),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    monthYear,
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontSize: Constant.LABEL_TEXT_SIZE_16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white70,
+                                        ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        Strings.BOWL_IMG,
+                                        height: Constant.CONTAINER_SIZE_16,
+                                        width: Constant.CONTAINER_SIZE_16,
+                                      ),
+                                      SizedBox(width: Constant.SIZE_06),
+                                      Text(
+                                        '${containerState.getMonthTotalReceive(orders)}',
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              color: Constant.gold,
+                                              fontSize:
+                                                  Constant.LABEL_TEXT_SIZE_18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            Row(
-                              children: [
-                                Image.asset(
-                                  Strings.BOWL_IMG,
-                                  height:
-                                  Constant.CONTAINER_SIZE_16,
-                                  width:
-                                  Constant.CONTAINER_SIZE_16,
-                                ),
-                                SizedBox(width: Constant.SIZE_06),
-                                Text(
-                                  '${containerState.getMonthTotalReceive(orders)}',
-                                  style: theme
-                                      .textTheme.titleMedium
-                                      ?.copyWith(
-                                    color: Constant.gold,
-                                    fontSize: Constant
-                                        .LABEL_TEXT_SIZE_18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        itemCount: orders.length,
-                        separatorBuilder: (_, __) =>
-                            SizedBox(height: Constant.SIZE_08),
-                        itemBuilder: (context, orderIndex) {
-                          return _receiveCard(
-                            context,
-                            theme,
-                            orders[orderIndex],
-                            containerState,
-                          );
-                        },
-                      ),
-                      SizedBox(
-                          height: Constant.CONTAINER_SIZE_24),
-                    ],
-                  );
-                },
-              ),
+                            ListView.separated(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.zero,
+                              itemCount: orders.length,
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: Constant.SIZE_08),
+                              itemBuilder: (context, orderIndex) {
+                                return _receiveCard(
+                                  context,
+                                  theme,
+                                  orders[orderIndex],
+                                  containerState,
+                                );
+                              },
+                            ),
+                            SizedBox(height: Constant.CONTAINER_SIZE_24),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -199,15 +194,14 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
           Icon(
             Icons.inventory_2_outlined,
             size: Constant.CONTAINER_SIZE_64,
-            color: Color(0xFF047857).withOpacity(0.3),
+            color: Constant.green5.withOpacity(0.3),
           ),
           SizedBox(height: Constant.CONTAINER_SIZE_16),
           Text(
             Strings.NO_ORDERS,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: Constant.white),
           ),
         ],
       ),
@@ -215,11 +209,11 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   }
 
   Widget _receiveCard(
-      BuildContext context,
-      ThemeData theme,
-      ReceivedResponses data,
-      OrderState containerState,
-      ) {
+    BuildContext context,
+    ThemeData theme,
+    ReceivedResponses data,
+    OrderState containerState,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_20),
       onTap: () => _openReceiveDialog(context, data),
@@ -237,14 +231,13 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                containerState
-                    .formatProductIds(data.productOrderListResponses),
+                containerState.formatProductIds(data.productOrderListResponses),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontSize: Constant.LABEL_TEXT_SIZE_16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white70,
+                  color: Constant.white3,
                 ),
               ),
               SizedBox(height: Constant.SIZE_06),
@@ -257,7 +250,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        color: Colors.white70,
+                        color: Constant.white3,
                       ),
                     ),
                   ),
@@ -273,7 +266,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                   Icon(
                     Icons.arrow_forward_ios,
                     size: Constant.CONTAINER_SIZE_14,
-                    color: Colors.white70,
+                    color: Constant.white3,
                   ),
                 ],
               ),
@@ -284,7 +277,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  color: Colors.white70,
+                  color: Constant.white3,
                 ),
               ),
             ],
@@ -326,22 +319,26 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
       isScrollControlled: true,
       builder: (_) {
         return CommonFilterBottomSheet(
-          items: receivedResponses!.map((e) => FilterItem(
-            dateTime: e.returnDateTime ?? '',
-            products: e.productOrderListResponses,
-          )).toList(),
+          items: receivedResponses!
+              .map(
+                (e) => FilterItem(
+                  dateTime: e.returnDateTime ?? '',
+                  products: e.productOrderListResponses,
+                ),
+              )
+              .toList(),
           onApply: (selectedMonths, selectedContainers) {
             _applyFilters(selectedMonths, selectedContainers);
-          }
+          },
         );
       },
     );
   }
 
   void _applyFilters(
-      List<String> selectedMonths,
-      List<String> selectedContainers,
-      ) {
+    List<String> selectedMonths,
+    List<String> selectedContainers,
+  ) {
     final containerState = ref.read(productProvider);
 
     List<ReceivedResponses>? allResponses =
@@ -354,14 +351,14 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
       return;
     }
 
-    List<ReceivedResponses> filteredResponses =
-    allResponses.where((response) {
+    List<ReceivedResponses> filteredResponses = allResponses.where((response) {
       bool matchesMonth = true;
       bool matchesContainer = true;
 
       if (selectedMonths.isNotEmpty) {
-        String responseMonth =
-        containerState.getMonthYearReceive(response.returnDateTime ?? '');
+        String responseMonth = containerState.getMonthYearReceive(
+          response.returnDateTime ?? '',
+        );
         matchesMonth = selectedMonths.contains(responseMonth);
       }
 
@@ -386,8 +383,8 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   _getReceiveNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final orderState = ref.read(productProvider);
         if (isNetworkAvailable) {

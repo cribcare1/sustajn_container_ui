@@ -71,8 +71,8 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                   : (container == null || container.isEmpty)
                   ? const Center(
                       child: Text(
-                        "No leased containers found",
-                        style: TextStyle(color: Colors.white),
+                        Strings.NO_LEASE,
+                        style: TextStyle(color: Constant.white),
                       ),
                     )
                   : (containerState.groupedReceiveOrders.isEmpty)
@@ -93,8 +93,10 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(Constant.SIZE_06),
+                                color: Constant.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(
+                                  Constant.SIZE_06,
+                                ),
                               ),
                               padding: EdgeInsets.symmetric(
                                 vertical: Constant.CONTAINER_SIZE_10,
@@ -111,7 +113,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                                         ?.copyWith(
                                           fontSize: Constant.LABEL_TEXT_SIZE_16,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.white70,
+                                          color: Constant.white3,
                                         ),
                                   ),
                                   Row(
@@ -174,15 +176,15 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
         children: [
           Icon(
             Icons.inventory_2_outlined,
-            size: 64,
-            color: Color(0xFF047857).withOpacity(0.3),
+            size: Constant.CONTAINER_SIZE_64,
+            color: Constant.green5.withOpacity(0.3),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: Constant.CONTAINER_SIZE_16),
           Text(
             Strings.NO_ORDERS,
             style: Theme.of(
               context,
-            ).textTheme.titleMedium!.copyWith(color: Colors.white),
+            ).textTheme.titleMedium!.copyWith(color: Constant.white),
           ),
         ],
       ),
@@ -218,7 +220,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontSize: Constant.LABEL_TEXT_SIZE_16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white70,
+                  color: Constant.white3,
                 ),
               ),
               SizedBox(height: Constant.SIZE_06),
@@ -231,7 +233,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: Constant.LABEL_TEXT_SIZE_14,
-                        color: Colors.white70,
+                        color: Constant.white3,
                       ),
                     ),
                   ),
@@ -248,7 +250,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                     icon: Icon(
                       Icons.arrow_forward_ios,
                       size: Constant.CONTAINER_SIZE_14,
-                      color: Colors.white70,
+                      color: Constant.white3,
                     ),
                     onPressed: () {},
                   ),
@@ -261,7 +263,7 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
-                  color: Colors.white70,
+                  color: Constant.white3,
                 ),
               ),
             ],

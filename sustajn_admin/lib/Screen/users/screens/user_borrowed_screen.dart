@@ -11,7 +11,6 @@ import '../../../utils/utility.dart';
 import '../model/user_borrowed_data.dart';
 import '../provider/user_provider.dart';
 
-
 class UsersBorrowedScreen extends ConsumerStatefulWidget {
   final int userId;
 
@@ -52,43 +51,39 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
 
             Expanded(
               child: list.isEmpty && !historyState.isLoading
-                  ? Center(
-                child: Utils.getErrorText(Strings.NO_BORROWED),
-              )
+                  ? Center(child: Utils.getErrorText(Strings.NO_BORROWED))
                   : ListView.builder(
-                padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
-                itemCount: groupedData.keys.length,
-                itemBuilder: (context, index) {
-                  final month = groupedData.keys.elementAt(index);
-                  final items = groupedData[month]!;
-                  final totalContainers = _getTotalContainerCount(items);
+                      padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
+                      itemCount: groupedData.keys.length,
+                      itemBuilder: (context, index) {
+                        final month = groupedData.keys.elementAt(index);
+                        final items = groupedData[month]!;
+                        final totalContainers = _getTotalContainerCount(items);
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _monthHeader(month, totalContainers),
-                      SizedBox(height: Constant.SIZE_06),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: items.length,
-                        itemBuilder: (_, i) => _historyCard(
-                          context: context,
-                          item: items[i],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _monthHeader(month, totalContainers),
+                            SizedBox(height: Constant.SIZE_06),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: items.length,
+                              itemBuilder: (_, i) => _historyCard(
+                                context: context,
+                                item: items[i],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ],
         ),
 
         if (historyState.isLoading)
-          const Center(child: CircularProgressIndicator(
-            color: Constant.gold,
-          )),
+          const Center(child: CircularProgressIndicator(color: Constant.gold)),
       ],
     );
   }
@@ -104,12 +99,12 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
             applySearchAndFilter(ref.read(userProvider).borrowedList);
           });
         },
-        cursorColor: Colors.white,
-        style: TextStyle(color: Colors.white),
+        cursorColor: Constant.white,
+        style: TextStyle(color: Constant.white),
         decoration: InputDecoration(
           hintText: Strings.SEARCH_BY_RESTAURANT,
-          hintStyle: const TextStyle(color: Colors.white70),
-          prefixIcon: const Icon(Icons.search, color: Colors.white70),
+          hintStyle: TextStyle(color: Constant.white3),
+          prefixIcon: Icon(Icons.search, color: Constant.white3),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_12),
             borderSide: BorderSide.none,
@@ -125,7 +120,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
           fillColor: Constant.grey.withOpacity(0.1),
           filled: true,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
+            icon: const Icon(Icons.filter_list, color: Constant.white),
             onPressed: () {
               final months = DateMonthUtils.getCurrentYearMonths();
 
@@ -145,9 +140,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                       selectedMonthYear = value;
                       applySearchAndFilter(ref.read(userProvider).borrowedList);
                     });
-
                   },
-
                 ),
               );
             },
@@ -162,20 +155,20 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
 
     if (_searchQuery.isNotEmpty) {
       filteredList = filteredList.where((item) {
-        return item.restaurantName
-            .toLowerCase()
-            .contains(_searchQuery.toLowerCase());
+        return item.restaurantName.toLowerCase().contains(
+          _searchQuery.toLowerCase(),
+        );
       }).toList();
     }
-    if(_searchQuery.isEmpty) {
+    if (_searchQuery.isEmpty) {
       if (selectedMonthYear != null) {
         final selectedMonthName = selectedMonthYear!.split('–')[0];
-        final selectedMonthIndex = DateMonthUtils.getMonthIndex(selectedMonthName);
+        final selectedMonthIndex = DateMonthUtils.getMonthIndex(
+          selectedMonthName,
+        );
 
         filteredList = filteredList.where((item) {
-          final itemMonth = DateTime
-              .parse(item.date)
-              .month;
+          final itemMonth = DateTime.parse(item.date).month;
           return itemMonth == selectedMonthIndex;
         }).toList();
       }
@@ -210,7 +203,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
           Text(
             title,
             style: TextStyle(
-              color: Colors.white,
+              color: Constant.white,
               fontSize: Constant.CONTAINER_SIZE_15,
               fontWeight: FontWeight.w600,
             ),
@@ -218,12 +211,12 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
           Row(
             children: [
               Image.asset(
-                'assets/images/bowl_img.png',
+                Strings.CUP_IMG,
                 height: Constant.CONTAINER_SIZE_16,
                 width: Constant.CONTAINER_SIZE_16,
               ),
               SizedBox(width: Constant.SIZE_06),
-              Text("$count", style: const TextStyle(color: Colors.white)),
+              Text("$count", style: TextStyle(color: Constant.white)),
             ],
           ),
         ],
@@ -261,7 +254,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Constant.white,
                       fontSize: Constant.CONTAINER_SIZE_16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -275,7 +268,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Colors.white70,
+                            color: Constant.white3,
                             fontSize: Constant.CONTAINER_SIZE_13,
                           ),
                         ),
@@ -284,7 +277,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                       Text(
                         item.containerCount.toString(),
                         style: TextStyle(
-                          color: Color(0xFFFFC727),
+                          color: Constant.PrimaryAssentColor,
                           fontSize: Constant.CONTAINER_SIZE_18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -295,7 +288,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: Constant.CONTAINER_SIZE_14,
-                        color: Colors.white70,
+                        color: Constant.white3,
                       ),
                     ],
                   ),
@@ -303,7 +296,7 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
                   Text(
                     '${item.date} | ${item.time}',
                     style: TextStyle(
-                      color: Colors.white60,
+                      color: Constant.white3,
                       fontSize: Constant.CONTAINER_SIZE_12,
                     ),
                   ),
@@ -322,22 +315,23 @@ class _BorrowedTabScreenState extends ConsumerState<UsersBorrowedScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) =>
-          ReceiveDetailsDialog(title: 'Borrowed Details', items: [item]),
+          ReceiveDetailsDialog(title: Strings.BORROWED_DETAILS, items: [item]),
     );
   }
 
   _getBorrowedData() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,
-          ) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         if (isNetworkAvailable) {
           ref.read(userProvider).clearBorrowedList();
           ref.read(userProvider).setIsLoading(true);
           final int year = DateTime.now().year;
 
-          final url = '${NetworkUrls.BORROWED_DATA}userId=${widget.userId}';//&year=$year
+          final url =
+              '${NetworkUrls.BORROWED_DATA}userId=${widget.userId}'; //&year=$year
           Utils.printLog("Fetching URL: $url");
           ref.read(borrowedProvider(url));
         } else {

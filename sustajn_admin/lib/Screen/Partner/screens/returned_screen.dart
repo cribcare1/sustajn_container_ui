@@ -22,17 +22,16 @@ class ReturnedScreen extends ConsumerStatefulWidget {
 }
 
 class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
-
   String getContainerImage(String type) {
     switch (type) {
-      case "dip":
-        return "assets/images/white_container.png";
-      case "round":
-        return "assets/images/round_container.png";
-      case "rectangular":
-        return "assets/images/rectangular_container.png";
+      case Strings.DIP:
+        return Strings.WHITE_CONTAINER;
+      case Strings.ROUND:
+        return Strings.ROUND_CONTAINER;
+      case Strings.RECTANGULAR:
+        return Strings.RECTANGULAR_CONTAINER;
       default:
-        return "assets/images/cups.png";
+        return Strings.CUP_IMG;
     }
   }
 
@@ -53,9 +52,9 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
       filteredItems = container;
     }
     return Scaffold(
-      backgroundColor: Color(0xFF0E3B2E),
+      backgroundColor: Constant.PrimaryColor,
       appBar: CustomAppBar(
-        title: "Returned",
+        title: Strings.RETURNED,
         leading: CustomBackButton(),
       ).getAppBar(context),
       body: SafeArea(
@@ -82,7 +81,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
               child: productState.isLoading
                   ? Center(child: CircularProgressIndicator())
                   : productState.containerHistorydata?.data == null
-                  ? Center(child: Text("No returned products found"))
+                  ? Center(child: Text(Strings.NO_RETURNED_CONTAINERS))
                   : ListView.builder(
                       padding: EdgeInsets.symmetric(
                         horizontal: Constant.CONTAINER_SIZE_16,
@@ -113,10 +112,10 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1F5A46), Color(0xFF0E3B2E)],
+          colors: [Constant.green7, Constant.green8],
         ),
         borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_14),
-        border: Border.all(color: Colors.white70),
+        border: Border.all(color: Constant.white3),
       ),
       child: Row(
         children: [
@@ -124,7 +123,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
             height: Constant.CONTAINER_SIZE_50,
             width: Constant.CONTAINER_SIZE_50,
             decoration: BoxDecoration(
-              color: Colors.white10,
+              color: Constant.white1,
               borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_10),
             ),
             child: Image.asset(
@@ -140,7 +139,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
                 Text(
                   item.productsName!,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Constant.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -148,14 +147,14 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
                 Text(
                   product?.productId?.toString() ?? '',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Constant.white3,
                     fontSize: Constant.CONTAINER_SIZE_12,
                   ),
                 ),
                 Text(
                   product?.capacity?.toString() ?? '',
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Constant.white4,
                     fontSize: Constant.CONTAINER_SIZE_11,
                   ),
                 ),
@@ -175,7 +174,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
               SizedBox(width: Constant.SIZE_06),
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.white54,
+                color: Constant.white4,
                 size: Constant.CONTAINER_SIZE_14,
               ),
             ],
@@ -205,14 +204,14 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
               children: [
                 Icon(
                   Icons.sort,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.SORT,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -225,7 +224,7 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
             ),
             height: Constant.CONTAINER_SIZE_18,
             width: Constant.SIZE_02,
-            color: Colors.black26,
+            color: Constant.black,
           ),
 
           InkWell(
@@ -234,14 +233,14 @@ class _ReturnedScreenState extends ConsumerState<ReturnedScreen> {
               children: [
                 Icon(
                   Icons.filter_list,
-                  color: Colors.black,
+                  color: Constant.black,
                   size: Constant.CONTAINER_SIZE_20,
                 ),
                 SizedBox(width: Constant.SIZE_06),
                 Text(
                   Strings.FILTER,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Constant.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -1,5 +1,3 @@
-
-
 import '../../../constants/imports.util.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/string_utils.dart';
@@ -45,35 +43,33 @@ class ReceiveDetailsDialog extends StatelessWidget {
               height: Constant.SIZE_05,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Constant.SIZE_05),
-                color: Colors.white,
+                color: Constant.white,
               ),
             ),
             SizedBox(height: Constant.SIZE_15),
 
-            // Title row
             Row(
               children: [
                 Text(
                   title,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(color: Colors.white),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: Constant.white,
+                  ),
                 ),
                 Spacer(),
                 InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.close, color: Colors.white),
-                )
+                  child: Icon(Icons.close, color: Constant.white),
+                ),
               ],
             ),
 
             SizedBox(height: Constant.SIZE_15),
 
-            // Restaurant block
             _viewResturantDetails(theme, firstItem),
 
             SizedBox(height: Constant.CONTAINER_SIZE_12),
 
-            // HEADER (Borrowed / Returned logic)
             isReturned
                 ? _returnedHeader(theme)
                 : _borrowedHeader(theme, firstItem),
@@ -85,8 +81,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: items.length,
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: Constant.SIZE_10),
+              separatorBuilder: (_, __) => SizedBox(height: Constant.SIZE_10),
               itemBuilder: (context, index) =>
                   _containerCard(items[index], theme),
             ),
@@ -103,7 +98,7 @@ class ReceiveDetailsDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/bowl_img.png',
+              Strings.BOWL_IMG,
               height: Constant.CONTAINER_SIZE_40,
               width: Constant.CONTAINER_SIZE_40,
               color: Constant.gold,
@@ -111,15 +106,15 @@ class ReceiveDetailsDialog extends StatelessWidget {
             SizedBox(width: Constant.SIZE_08),
             Text(
               item.containerCount.toString(),
-              style: theme.textTheme.headlineLarge
-                  ?.copyWith(color: Constant.gold),
+              style: theme.textTheme.headlineLarge?.copyWith(
+                color: Constant.gold,
+              ),
             ),
           ],
         ),
         Text(
           '${item.date} | ${item.time}',
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: Colors.white70),
+          style: theme.textTheme.bodySmall?.copyWith(color: Constant.white3),
         ),
       ],
     );
@@ -132,18 +127,17 @@ class ReceiveDetailsDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/bowl_img.png',
+              Strings.BOWL_IMG,
               height: Constant.CONTAINER_SIZE_40,
               width: Constant.CONTAINER_SIZE_40,
               color: Constant.gold,
             ),
             SizedBox(width: Constant.SIZE_08),
             Text(
-              items.fold<int>(
-                  0, (sum, e) => sum + e.containerCount)
-                  .toString(),
-              style: theme.textTheme.headlineLarge
-                  ?.copyWith(color: Constant.gold),
+              items.fold<int>(0, (sum, e) => sum + e.containerCount).toString(),
+              style: theme.textTheme.headlineLarge?.copyWith(
+                color: Constant.gold,
+              ),
             ),
           ],
         ),
@@ -153,22 +147,34 @@ class ReceiveDetailsDialog extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(Strings.BORROWED_ON,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.white70)),
-                Text(borrowedOn ?? '',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: Colors.white70)),
+                Text(
+                  Strings.BORROWED_ON,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
+                Text(
+                  borrowedOn ?? '',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
               ],
             ),
             Column(
               children: [
-                Text(Strings.RETURNED_ON,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.white70)),
-                Text(returnedOn ?? '',
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: Colors.white70)),
+                Text(
+                  Strings.RETURNED_ON,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
+                Text(
+                  returnedOn ?? '',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
               ],
             ),
           ],
@@ -182,36 +188,32 @@ class ReceiveDetailsDialog extends StatelessWidget {
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
-        border: Border.all(
-          color: Constant.grey.withOpacity(0.2),
-        ),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        border: Border.all(color: Constant.grey.withOpacity(0.2)),
       ),
       child: Row(
         children: [
-          // Image
           item.imageUrl.isNotEmpty
               ? ClipOval(
-            child: Image.network(
-              NetworkUrls.IMAGE_BASE_URL + item.imageUrl,
-              width: Constant.CONTAINER_SIZE_60,
-              height: Constant.CONTAINER_SIZE_60,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
-                return Image.asset(
-                  'assets/images/cups.png',
+                  child: Image.network(
+                    NetworkUrls.IMAGE_BASE_URL + item.imageUrl,
+                    width: Constant.CONTAINER_SIZE_60,
+                    height: Constant.CONTAINER_SIZE_60,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) {
+                      return Image.asset(
+                        Strings.CUP_IMG,
+                        width: Constant.CONTAINER_SIZE_60,
+                        height: Constant.CONTAINER_SIZE_60,
+                      );
+                    },
+                  ),
+                )
+              : Image.asset(
+                  Strings.CUP_IMG,
                   width: Constant.CONTAINER_SIZE_60,
                   height: Constant.CONTAINER_SIZE_60,
-                );
-              },
-            ),
-          )
-              : Image.asset(
-            'assets/images/cups.png',
-            width: Constant.CONTAINER_SIZE_60,
-            height: Constant.CONTAINER_SIZE_60,
-          ),
+                ),
 
           SizedBox(width: Constant.CONTAINER_SIZE_12),
 
@@ -223,20 +225,23 @@ class ReceiveDetailsDialog extends StatelessWidget {
                   item.productName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(color: Colors.white),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Constant.white,
+                  ),
                 ),
                 Text(
                   item.productId,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.white70),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
                 ),
                 Text(
                   '${item.capacity}ml',
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: Colors.white70),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
                 ),
               ],
             ),
@@ -246,41 +251,44 @@ class ReceiveDetailsDialog extends StatelessWidget {
 
           Text(
             item.containerCount.toString(),
-            style: theme.textTheme.titleLarge
-                ?.copyWith(color: Constant.gold),
+            style: theme.textTheme.titleLarge?.copyWith(color: Constant.gold),
           ),
         ],
       ),
     );
   }
 
-
-  Widget _viewResturantDetails(
-      ThemeData theme, BorrowedUiItem item) {
+  Widget _viewResturantDetails(ThemeData theme, BorrowedUiItem item) {
     return Container(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
       decoration: BoxDecoration(
         color: Constant.grey.withOpacity(0.2),
-        borderRadius:
-        BorderRadius.circular(Constant.CONTAINER_SIZE_15),
+        borderRadius: BorderRadius.circular(Constant.CONTAINER_SIZE_15),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.restaurantName,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(color: Colors.white)),
+          Text(
+            item.restaurantName,
+            style: theme.textTheme.titleMedium?.copyWith(color: Constant.white),
+          ),
           Row(
             children: [
-              Icon(Icons.location_on,
-                  color: Colors.white, size: Constant.CONTAINER_SIZE_14),
+              Icon(
+                Icons.location_on,
+                color: Constant.white,
+                size: Constant.CONTAINER_SIZE_14,
+              ),
               SizedBox(width: Constant.SIZE_06),
               Expanded(
-                child: Text(item.resturantAddress,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.white70)),
+                child: Text(
+                  item.resturantAddress,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Constant.white3,
+                  ),
+                ),
               ),
             ],
           ),

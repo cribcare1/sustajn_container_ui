@@ -147,7 +147,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               height: Constant.CONTAINER_SIZE_70,
               width: Constant.CONTAINER_SIZE_70,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Constant.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(Constant.SIZE_08),
               ),
               padding: EdgeInsets.all(Constant.SIZE_06),
@@ -155,7 +155,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
                 errorBuilder: (context, obj, stack) {
                   return Image.asset(
-                    "assets/images/no_image_container.png",
+                    Strings.NO_IMG,
                   );
                 },
                 fit: BoxFit.fill,
@@ -172,7 +172,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 child: Icon(
                   Icons.inbox,
                   size: Constant.CONTAINER_SIZE_30,
-                  color: Colors.white,
+                  color: Constant.white,
                 ),
               ),
             ),
@@ -190,7 +190,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white70,
+                      color: Constant.white3,
                     ),
                   ),
                   Row(
@@ -202,7 +202,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontSize: Constant.LABEL_TEXT_SIZE_14,
-                            color: Colors.white70,
+                            color: Constant.white3
                           ),
                         ),
                       ),
@@ -221,7 +221,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_14,
-                      color: Colors.white70,
+                      color: Constant.white3,
                     ),
                   ),
                 ],
@@ -265,7 +265,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                             Text(
                               Strings.SORT_BY,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Constant.white,
                                 fontSize: Constant.CONTAINER_SIZE_18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -283,8 +283,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            "Quantity : Low to High",
-                            style: TextStyle(color: Colors.white),
+                            Strings.QUANTITY,
+                            style: TextStyle(color: Constant.white),
                           ),
                           trailing: Radio<bool>(
                             value: true,
@@ -301,8 +301,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            "Quantity : High to Low",
-                            style: TextStyle(color: Colors.white),
+                            Strings.QUANTITY1,
+                            style: TextStyle(color: Constant.white),
                           ),
                           trailing: Radio<bool>(
                             value: false,

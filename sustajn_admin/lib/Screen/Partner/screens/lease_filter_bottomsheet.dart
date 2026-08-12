@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common_widgets/submit_clear_button.dart';
 import '../../../constants/imports.util.dart';
+import '../../../constants/string_utils.dart';
 import '../model/container_history_data.dart';
 
 class FilterItem {
@@ -28,7 +29,7 @@ class CommonFilterBottomSheet extends ConsumerStatefulWidget {
 
 class _CommonFilterBottomSheetState
     extends ConsumerState<CommonFilterBottomSheet> {
-  String _selectedTab = 'Month';
+  String _selectedTab = Strings.MONTH;
   final Set<String> _selectedMonths = {};
   final Set<String> _selectedContainers = {};
   final TextEditingController _searchController = TextEditingController();
@@ -46,7 +47,7 @@ class _CommonFilterBottomSheetState
 
     for (var item in widget.items) {
       String monthYear = _getMonthYear(item.dateTime);
-      if (monthYear != 'Unknown') {
+      if (monthYear != Strings.UNKNOWN) {
         months.add(monthYear);
       }
     }
@@ -75,10 +76,10 @@ class _CommonFilterBottomSheetState
     }
 
     List<Map<String, String>> list = containersMap.entries
-        .map((e) => {'name': e.value, 'uniqueId': e.key})
+        .map((e) => {Strings.NAME: e.value, Strings.UNIQUEID: e.key})
         .toList();
 
-    list.sort((a, b) => a['name']!.compareTo(b['name']!));
+    list.sort((a, b) => a[Strings.NAME]!.compareTo(b[Strings.NAME]!));
 
     return list;
   }
@@ -109,7 +110,7 @@ class _CommonFilterBottomSheetState
 
       return '${months[month - 1]}-$year';
     } catch (e) {
-      return 'Unknown';
+      return Strings.UNKNOWN;
     }
   }
 
@@ -151,7 +152,6 @@ class _CommonFilterBottomSheetState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          /// Close button
           Align(
             alignment: Alignment.topRight,
             child: Padding(
@@ -159,19 +159,20 @@ class _CommonFilterBottomSheetState
               child: InkWell(
                 onTap: () => Navigator.pop(context),
                 child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.close, color: Colors.black),
+                  backgroundColor: Constant.white,
+                  child: Icon(Icons.close, color: Constant.black),
                 ),
               ),
             ),
           ),
 
-          /// Main Container
           Container(
             height: height,
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(Constant.CONTAINER_SIZE_30)),
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Constant.CONTAINER_SIZE_30),
+              ),
             ),
             child: Column(
               children: [
@@ -181,7 +182,10 @@ class _CommonFilterBottomSheetState
                   child: Row(
                     children: [
                       _leftTabs(theme),
-                      Container(width: 1, color: Colors.white24),
+                      Container(
+                        width: Constant.SIZE_01,
+                        color: Constant.white2,
+                      ),
                       Expanded(child: _rightContent()),
                     ],
                   ),
@@ -202,9 +206,9 @@ class _CommonFilterBottomSheetState
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Filter",
+          Strings.FILTERS,
           style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
+            color: Constant.white,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -216,7 +220,10 @@ class _CommonFilterBottomSheetState
     return SizedBox(
       width: Constant.CONTAINER_SIZE_120,
       child: Column(
-        children: [_tabItem('Month', theme), _tabItem('Containers', theme)],
+        children: [
+          _tabItem(Strings.MONTH, theme),
+          _tabItem(Strings.CONTAINERS_TITLE, theme),
+        ],
       ),
     );
   }
@@ -233,19 +240,21 @@ class _CommonFilterBottomSheetState
         });
       },
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
         decoration: BoxDecoration(
           border: Border(
             left: BorderSide(
-              color: selected ? Colors.amber : Colors.transparent,
-              width: 3,
+              color: selected
+                  ? Constant.PrimaryAssentColor
+                  : Colors.transparent,
+              width: Constant.SIZE_03,
             ),
           ),
-          color: selected ? Colors.white10 : null,
+          color: selected ? Constant.white1 : null,
         ),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text(label, style: TextStyle(color: Colors.white)),
+          child: Text(label, style: TextStyle(color: Constant.white)),
         ),
       ),
     );
@@ -254,7 +263,7 @@ class _CommonFilterBottomSheetState
   Widget _rightContent() {
     return Column(
       children: [
-        if (_selectedTab == 'Containers')
+        if (_selectedTab == Strings.CONTAINERS_TITLE)
           Padding(
             padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
             child: TextField(
@@ -262,18 +271,20 @@ class _CommonFilterBottomSheetState
               onChanged: (v) {
                 setState(() => _searchQuery = v.toLowerCase());
               },
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Constant.white),
               decoration: InputDecoration(
-                hintText: "Search Container",
-                hintStyle: TextStyle(color: Colors.white54),
-                prefixIcon: Icon(Icons.search, color: Colors.white),
+                hintText: Strings.SEARCH_CONTAINER,
+                hintStyle: TextStyle(color: Constant.white2),
+                prefixIcon: Icon(Icons.search, color: Constant.white),
                 border: InputBorder.none,
               ),
             ),
           ),
 
         Expanded(
-          child: _selectedTab == 'Month' ? _monthList() : _containerList(),
+          child: _selectedTab == Strings.MONTH
+              ? _monthList()
+              : _containerList(),
         ),
       ],
     );
@@ -289,7 +300,7 @@ class _CommonFilterBottomSheetState
         final selected = _selectedMonths.contains(m);
 
         return ListTile(
-          title: Text(m, style: TextStyle(color: Colors.white)),
+          title: Text(m, style: TextStyle(color: Constant.white)),
           trailing: Checkbox(
             value: selected,
             onChanged: (_) {
@@ -308,8 +319,8 @@ class _CommonFilterBottomSheetState
 
     if (_searchQuery.isNotEmpty) {
       list = list.where((c) {
-        return c['name']!.toLowerCase().contains(_searchQuery) ||
-            c['uniqueId']!.toLowerCase().contains(_searchQuery);
+        return c[Strings.NAME]!.toLowerCase().contains(_searchQuery) ||
+            c[Strings.UNIQUEID]!.toLowerCase().contains(_searchQuery);
       }).toList();
     }
 
@@ -317,12 +328,15 @@ class _CommonFilterBottomSheetState
       itemCount: list.length,
       itemBuilder: (_, i) {
         final item = list[i];
-        final id = item['uniqueId']!;
+        final id = item[Strings.UNIQUEID]!;
         final selected = _selectedContainers.contains(id);
 
         return ListTile(
-          title: Text(item['name']!, style: TextStyle(color: Colors.white)),
-          subtitle: Text(id, style: TextStyle(color: Colors.white70)),
+          title: Text(
+            item[Strings.NAME]!,
+            style: TextStyle(color: Constant.white),
+          ),
+          subtitle: Text(id, style: TextStyle(color: Constant.white3)),
           trailing: Checkbox(
             value: selected,
             onChanged: (_) {
@@ -342,8 +356,8 @@ class _CommonFilterBottomSheetState
     return Padding(
       padding: EdgeInsets.all(Constant.CONTAINER_SIZE_20),
       child: SubmitClearButton(
-        leftText: "Clear",
-        rightText: "Apply",
+        leftText: Strings.CLEAR,
+        rightText: Strings.APPLY,
         onLeftTap: () {
           setState(() {
             _selectedMonths.clear();

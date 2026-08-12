@@ -1,8 +1,8 @@
-
 import 'package:container_tracking/constants/imports.util.dart';
 
 import '../../../common_widgets/card_widget.dart';
 import '../../../constants/network_urls.dart';
+import '../../../constants/string_utils.dart';
 import '../model/container_history_data.dart';
 
 class ReceiveDetailsDialogue extends StatelessWidget {
@@ -24,12 +24,12 @@ class ReceiveDetailsDialogue extends StatelessWidget {
               margin: EdgeInsets.all(Constant.CONTAINER_SIZE_12),
               padding: EdgeInsets.all(Constant.SIZE_08),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Constant.white,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.close,
-                color: Colors.black,
+                color: Constant.black,
                 size: Constant.CONTAINER_SIZE_20,
               ),
             ),
@@ -70,15 +70,15 @@ class ReceiveDetailsDialogue extends StatelessWidget {
             height: Constant.SIZE_05,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Constant.SIZE_05),
-              color: Colors.white30,
+              color: Constant.white1,
             ),
           ),
         ),
         SizedBox(height: Constant.CONTAINER_SIZE_20),
         Text(
-          "Receive Details",
+          Strings.RECEIVE_DETAILS,
           style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
+            color: Constant.white,
             fontSize: Constant.LABEL_TEXT_SIZE_20,
             fontWeight: FontWeight.w600,
           ),
@@ -89,13 +89,13 @@ class ReceiveDetailsDialogue extends StatelessWidget {
             Icon(
               Icons.receipt_outlined,
               size: Constant.CONTAINER_SIZE_18,
-              color: Colors.white70,
+              color: Constant.white3,
             ),
             SizedBox(width: Constant.SIZE_08),
             Text(
               "Order ID: #${data.orderId.toString().padLeft(8, '0')}",
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white70,
+                color: Constant.white3,
                 fontSize: Constant.LABEL_TEXT_SIZE_14,
               ),
             ),
@@ -109,7 +109,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "assets/images/bowl_img.png",
+                    Strings.BOWL_IMG,
                     height: Constant.CONTAINER_SIZE_40,
                     width: Constant.CONTAINER_SIZE_40,
                   ),
@@ -117,8 +117,8 @@ class ReceiveDetailsDialogue extends StatelessWidget {
                   Text(
                     "${data.returnedQuantity}",
                     style: theme.textTheme.headlineLarge?.copyWith(
-                      color: Color(0xFFFBBF24),
-                      fontSize: 40,
+                      color: Constant.PrimaryAssentColor,
+                      fontSize: Constant.CONTAINER_SIZE_40,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -128,7 +128,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
               Text(
                 _formatDateTime(data.returnDateTime ?? ''),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white60,
+                  color: Constant.white2,
                   fontSize: Constant.LABEL_TEXT_SIZE_14,
                 ),
               ),
@@ -145,10 +145,8 @@ class ReceiveDetailsDialogue extends StatelessWidget {
         data.productOrderListResponses!.isEmpty) {
       return Center(
         child: Text(
-          "No containers found",
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: Colors.white54,
-          ),
+          Strings.NO_CONTAINER_FOUND,
+          style: theme.textTheme.bodyMedium?.copyWith(color: Constant.white2),
         ),
       );
     }
@@ -158,8 +156,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: EdgeInsets.only(top: Constant.CONTAINER_SIZE_12),
       itemCount: data.productOrderListResponses!.length,
-      separatorBuilder: (_, __) =>
-          SizedBox(height: Constant.CONTAINER_SIZE_12),
+      separatorBuilder: (_, __) => SizedBox(height: Constant.CONTAINER_SIZE_12),
       itemBuilder: (context, index) {
         final product = data.productOrderListResponses![index];
         return _containerCard(product, theme);
@@ -172,41 +169,38 @@ class ReceiveDetailsDialogue extends StatelessWidget {
       child: Row(
         children: [
           (product.productImageUrl != null &&
-              product.productImageUrl!.isNotEmpty)
+                  product.productImageUrl!.isNotEmpty)
               ? Container(
-            height: Constant.CONTAINER_SIZE_70,
-            width: Constant.CONTAINER_SIZE_70,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(Constant.SIZE_08),
-            ),
-            padding: EdgeInsets.all(Constant.SIZE_06),
-            child: Image.network(
-              "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${product.productImageUrl}",
-              errorBuilder: (context, obj, stack) {
-                return Image.asset(
-                  "assets/images/no_image_container.png",
-                  fit: BoxFit.contain,
-                );
-              },
-              fit: BoxFit.contain,
-            ),
-          )
+                  height: Constant.CONTAINER_SIZE_70,
+                  width: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Constant.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  padding: EdgeInsets.all(Constant.SIZE_06),
+                  child: Image.network(
+                    "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}${product.productImageUrl}",
+                    errorBuilder: (context, obj, stack) {
+                      return Image.asset(Strings.NO_IMG, fit: BoxFit.contain);
+                    },
+                    fit: BoxFit.contain,
+                  ),
+                )
               : Container(
-            width: Constant.CONTAINER_SIZE_70,
-            height: Constant.CONTAINER_SIZE_70,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(Constant.SIZE_08),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.inbox_outlined,
-                size: Constant.CONTAINER_SIZE_30,
-                color: Colors.white70,
-              ),
-            ),
-          ),
+                  width: Constant.CONTAINER_SIZE_70,
+                  height: Constant.CONTAINER_SIZE_70,
+                  decoration: BoxDecoration(
+                    color: Constant.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(Constant.SIZE_08),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.inbox_outlined,
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: Constant.white3,
+                    ),
+                  ),
+                ),
           SizedBox(width: Constant.CONTAINER_SIZE_16),
           Expanded(
             child: Column(
@@ -215,7 +209,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
                 Text(
                   product.productName ?? '',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: Constant.white,
                     fontSize: Constant.LABEL_TEXT_SIZE_16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -224,7 +218,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
                 Text(
                   product.productUniqueId ?? '',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white70,
+                    color: Constant.white3,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
@@ -232,7 +226,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
                 Text(
                   '${product.capacity ?? 0}ml',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.white60,
+                    color: Constant.white2,
                     fontSize: Constant.LABEL_TEXT_SIZE_14,
                   ),
                 ),
@@ -242,7 +236,7 @@ class ReceiveDetailsDialogue extends StatelessWidget {
           Text(
             '${product.containerCount ?? 0}',
             style: theme.textTheme.headlineMedium?.copyWith(
-              color: Color(0xFFFBBF24),
+              color: Constant.PrimaryAssentColor,
               fontSize: Constant.LABEL_TEXT_SIZE_18,
               fontWeight: FontWeight.w600,
             ),

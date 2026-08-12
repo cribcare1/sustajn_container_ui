@@ -3,17 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../common_provider/network_provider.dart';
 import '../../../common_widgets/card_widget.dart';
-import '../../../common_widgets/submit_button.dart';
 import '../../../common_widgets/submit_clear_button.dart';
 import '../../../constants/network_urls.dart';
 import '../../../constants/number_constants.dart';
 import '../../../constants/string_utils.dart';
 import '../../../provider/order_provider.dart';
-import '../../../utils/theme_utils.dart';
 import '../../../utils/utility.dart';
-import '../../Partner/model/get_container_data.dart';
 import '../provider/user_provider.dart';
-
 
 class UsersActiveScreen extends ConsumerStatefulWidget {
   final int? userId;
@@ -25,8 +21,6 @@ class UsersActiveScreen extends ConsumerStatefulWidget {
 }
 
 class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
-  //TextEditingController searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -43,66 +37,38 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
       child: Scaffold(
         body: Column(
           children: [
-
             Expanded(
               child: userProviders.isLoading
                   ? const Center(child: CircularProgressIndicator())
-              //     : userProviders.productDataList! == null
-              //     ? Center(
-              //   child: Text(
-              //     Strings.SOMETHING_WENT_WRONG,
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // )
                   : userProviders.productList.isEmpty
                   ? const Center(
-                child: Text(
-                  Strings.NO_CONTAINER_AVAILABLE,
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-              //     : Center(
-              //   child: Column(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       Text(
-              //         Strings.NO_CONTAINER_AVAILABLE,
-              //         style: TextStyle(color: Colors.white),
-              //       ),
-              //       SizedBox(height: Constant.LABEL_TEXT_SIZE_20),
-              //       SubmitButton(
-              //         onRightTap: () {
-              //           searchController.clear();
-              //           userProviders.filterInventoryByNameOrId('');
-              //           setState(() {});
-              //         },
-              //         rightText: " Clear Filter ",
-              //       ),
-              //     ],
-              //   ),
-              // )
+                      child: Text(
+                        Strings.NO_CONTAINER_AVAILABLE,
+                        style: TextStyle(color: Constant.white),
+                      ),
+                    )
                   : ListView.separated(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constant.CONTAINER_SIZE_16,
-                  vertical: Constant.CONTAINER_SIZE_16,
-                ),
-                itemCount: userProviders.productList.length,
-                itemBuilder: (context, index) {
-                  final item = userProviders.productList[index];
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constant.CONTAINER_SIZE_16,
+                        vertical: Constant.CONTAINER_SIZE_16,
+                      ),
+                      itemCount: userProviders.productList.length,
+                      itemBuilder: (context, index) {
+                        final item = userProviders.productList[index];
 
-                  return inventoryItemCard(
-                    context,
-                    image: item.productImageUrl ?? "",
-                    title: item.productName ?? "-",
-                    subTitle: item.productUniqueId ?? "-",
-                    volume: item.containerQuantity?.toString() ?? "0",
-                    qty: item.quantity ?? 0,
-                    date: item.dueDate ?? "",
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Constant.CONTAINER_SIZE_10),
-              ),
+                        return inventoryItemCard(
+                          context,
+                          image: item.productImageUrl ?? "",
+                          title: item.productName ?? "-",
+                          subTitle: item.productUniqueId ?? "-",
+                          volume: item.containerQuantity?.toString() ?? "0",
+                          qty: item.quantity ?? 0,
+                          date: item.dueDate ?? "",
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: Constant.CONTAINER_SIZE_10),
+                    ),
             ),
           ],
         ),
@@ -110,7 +76,8 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
     );
   }
 
-  Widget inventoryItemCard(BuildContext context, {
+  Widget inventoryItemCard(
+    BuildContext context, {
     required String image,
     required String title,
     required String subTitle,
@@ -126,34 +93,30 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
       child: GlassSummaryCard(
         child: Row(
           children: [
-
             Container(
               height: Constant.CONTAINER_SIZE_70,
               width: Constant.CONTAINER_SIZE_70,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Constant.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(Constant.SIZE_08),
               ),
               padding: EdgeInsets.all(Constant.SIZE_06),
               child: image.isNotEmpty
                   ? Image.network(
-                "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
-                fit: BoxFit.fill,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    "assets/images/white_container.png",
-                  );
-                },
-              )
+                      "${NetworkUrls.CONTAINER_IMAGE_BASE_URL}$image",
+                      fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(Strings.WHITE_CONTAINER);
+                      },
+                    )
                   : Icon(
-                Icons.inbox,
-                size: Constant.CONTAINER_SIZE_30,
-                color: Colors.white,
-              ),
+                      Icons.inbox,
+                      size: Constant.CONTAINER_SIZE_30,
+                      color: Constant.white,
+                    ),
             ),
 
             SizedBox(width: Constant.CONTAINER_SIZE_12),
-
 
             Expanded(
               child: Column(
@@ -166,7 +129,7 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: Constant.LABEL_TEXT_SIZE_16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Constant.white,
                     ),
                   ),
 
@@ -175,7 +138,7 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                   Text(
                     subTitle,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white70,
+                      color: Constant.white3,
                     ),
                   ),
 
@@ -184,13 +147,12 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                   Text(
                     "$volume ml",
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white70,
+                      color: Constant.white3,
                     ),
                   ),
                 ],
               ),
             ),
-
 
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -201,28 +163,28 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                   children: [
                     Image.asset(
                       Strings.BOWL_IMG,
-                      height: 14,
-                      width: 14,
+                      height: Constant.CONTAINER_SIZE_14,
+                      width: Constant.CONTAINER_SIZE_14,
                     ),
-                    SizedBox(width: 4),
+                    SizedBox(width: Constant.SIZE_04),
                     Text(
                       qty.toString(),
                       style: TextStyle(
                         color: Constant.gold,
-                        fontSize: 20,
+                        fontSize: Constant.CONTAINER_SIZE_20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
 
-                SizedBox(height: 4),
+                SizedBox(height: Constant.SIZE_04),
 
                 Text(
                   "Due on: $date ",
                   style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 11,
+                    color: Constant.white3,
+                    fontSize: Constant.CONTAINER_SIZE_11,
                   ),
                 ),
               ],
@@ -232,7 +194,6 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
       ),
     );
   }
-
 
   void _showSortBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -251,9 +212,7 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                   return Container(
                     padding: EdgeInsets.all(Constant.CONTAINER_SIZE_16),
                     decoration: BoxDecoration(
-                      color: Theme
-                          .of(context)
-                          .primaryColor,
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(Constant.CONTAINER_SIZE_20),
                       ),
@@ -268,7 +227,7 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                             Text(
                               Strings.SORT_BY,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Constant.white,
                                 fontSize: Constant.CONTAINER_SIZE_18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -286,8 +245,8 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            "Quantity : Low to High",
-                            style: TextStyle(color: Colors.white),
+                            Strings.QUANTITY,
+                            style: TextStyle(color: Constant.white),
                           ),
                           trailing: Radio<bool>(
                             value: true,
@@ -304,8 +263,8 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            "Quantity : High to Low",
-                            style: TextStyle(color: Colors.white),
+                            Strings.QUANTITY1,
+                            style: TextStyle(color: Constant.white),
                           ),
                           trailing: Radio<bool>(
                             value: false,
@@ -349,13 +308,13 @@ class _UsersActiveScreenState extends ConsumerState<UsersActiveScreen> {
   _getUsersActiveNetworkCall() async {
     try {
       await ref.read(networkProvider.notifier).isNetworkAvailable().then((
-          isNetworkAvailable,) {
+        isNetworkAvailable,
+      ) {
         Utils.printLog("isNetworkAvailable::$isNetworkAvailable");
         final userProviders = ref.read(userProvider);
         if (isNetworkAvailable) {
           userProviders.setIsLoading(true);
-          final url = '${NetworkUrls.PRODUCT_DATA}${widget
-              .userId}';
+          final url = '${NetworkUrls.PRODUCT_DATA}${widget.userId}';
           ref.read(userActiveProvider(url));
         } else {
           userProviders.setIsLoading(false);
